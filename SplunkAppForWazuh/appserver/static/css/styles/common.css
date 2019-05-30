@@ -2010,3 +2010,8 @@ label.wz-icon-loupe  input {
 .complete-install-div {
   margin: 30px 0px 0px 40px;
 }
+
+.clip {
+  position: relative;
+  float: right;
+}

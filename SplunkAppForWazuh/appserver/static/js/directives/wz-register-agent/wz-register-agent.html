@@ -44,7 +44,8 @@
           <!-- Snipped with install steps-->
           <div class="wz-margin-top-10">
             <!-- Navbar to select if is a new install or not -->
-            <md-nav-bar ng-if="showNavTab" class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'newInstall'">
+            <md-nav-bar ng-if="showNavTab" class="wz-nav-bar wz-margin-10 no-margin-left"
+              md-selected-nav-item="'newInstall'">
               <md-nav-item class="wz-nav-item" md-nav-click="changeInstall('newInstall')" name="newInstall">New
                 installation
               </md-nav-item>
@@ -57,9 +58,9 @@
               <!-- If Redhat / Centos -->
               <div ng-if="config.osSelected === 'redhat'">
                 1. Add the Wazuh repository.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step1')"></i></span>
                 <div class="register-snipped" id="step1">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step1')"></i></span>
                   rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
                   cat > /etc/yum.repos.d/wazuh.repo <<\EOF<br>
                     [wazuh_repo]<br>
@@ -72,56 +73,56 @@
                     EOF
                 </div>
                 2. Deploy the installation.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step2')"></i></span>
                 <div class="register-snipped" id="step2">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step2')"></i></span>
                   WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
                 </div>
               </div>
               <!-- If Debian / Ubuntu -->
               <div ng-if="config.osSelected === 'debian'">
                 1. Install the necessaries utilities.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step1')"></i></span>
                 <div class="register-snipped" id="step1">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step1')"></i></span>
                   apt-get install curl apt-transport-https lsb-release
                 </div>
                 2. Install the Wazuh repository GPG key.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step2')"></i></span>
                 <div class="register-snipped" id="step2">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step2')"></i></span>
                   curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
                 </div>
                 3. Add the repository.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step3')"></i></span>
                 <div class="register-snipped" id="step3">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step3')"></i></span>
                   echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee
                   /etc/apt/sources.list.d/wazuh.list<br>
                   apt-get update
                 </div>
                 4. Deploy the installation.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step4')"></i></span>
                 <div class="register-snipped" id="step4">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step4')"></i></span>
                   WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
                 </div>
               </div>
               <!-- If Windows -->
               <div ng-if="config.osSelected === 'windows'">
                 1. Deploy the installation.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step1')"></i></span>
                 <div class="register-snipped" id="step1">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step1')"></i></span>
                   wazuh-agent-3.9.1-1.msi /q ADDRESS="{{config.managerIp}}" AUTHD_SERVER="{{config.managerIp}}"
                 </div>
               </div>
               <!-- If MacOS -->
               <div ng-if="config.osSelected === 'macos'">
                 1. Deploy the installation.
-                <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                    ng-click="toClipboard('step1')"></i></span>
                 <div class="register-snipped" id="step1">
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                      ng-click="toClipboard('step1')"></i></span>
                   launchctl setenv WAZUH_MANAGER_IP "{{config.managerIp}}" && installer -pkg wazuh-agent-<version>.pkg
                     -target /
                 </div>
@@ -146,19 +147,19 @@
                 <!-- If the agent is Linux -->
                 <div ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
                   1. Set the manager IP.
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i></span>
                   <div class="register-snipped" id="step1">
                     sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i></span>
                   <div class="register-snipped" id="step2">
                     /var/ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step3')"></i></span>
                   <div class="register-snipped" id="step3">
                     /var/ossec/bin/ossec-control restart
@@ -172,7 +173,7 @@
                       class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
                       (x86)\ossec-agent\ossec.conf</b>:
                   </div>
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i></span>
                   <div class="register-snipped" id="step1">
                     &lt;client&gt;<br>
@@ -183,7 +184,7 @@
                     &lt;/client&gt;
                   </div>
                   2. Register the agent against the manager.
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i></span>
                   <div class="register-snipped" id="step2">
                     'C:\Program Files (x86)\ossec-agent\manage_agents' -i {{config.agentKey}}
@@ -193,13 +194,13 @@
                     <div class="power-cmd">For this you can use Powershell or CMD.</div>
                     a) Powershell:
                     Restart-Service -Name wazuh
-                    <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                    <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                         ng-click="toClipboard('stepA')"></i></span>
                     <div class="register-snipped" id="stepA">
                       Restart-Service -Name wazuh
                     </div>
                     b) CMD:
-                    <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                    <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                         ng-click="toClipboard('stepB')"></i></span>
                     <div class="register-snipped" id="stepB">
                       net stop wazuh<br>
@@ -210,19 +211,19 @@
                 <!-- If the agent is MacOs -->
                 <div ng-if="config.osSelected === 'macos'">
                   1. Set the manager IP.
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i></span>
                   <div class="register-snipped" id="step1">
                     sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i></span>
                   <div class="register-snipped" id="step2">
                     /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
-                  <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step3')"></i></span>
                   <div class="register-snipped" id="step3">
                     /Library/Ossec/bin/ossec-control restart
