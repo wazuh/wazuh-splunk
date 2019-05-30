@@ -3,9 +3,7 @@
     <md-card-contents>
       <!-- Select the OS-->
       <div>
-        <div ng-if="!config.osSelected" class="bubble">1</div>
-        <div ng-if="config.osSelected" class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i>
-        </div>
+        <div class="bubble">1</div>
         <div class="reg-agent-text">Choose your OS</div>
         <div class="border-to-div">
           <div class="choose-os">
@@ -30,8 +28,7 @@
       </div>
       <!-- Select the IP-->
       <div class="wz-margin-top-30">
-        <div ng-if="!config.managerIp" class="bubble">2</div>
-        <div ng-if="config.managerIp" class="bubble bubble-checked"><i class="fa fa-check" aria-hidden="true"></i></div>
+        <div class="bubble">2</div>
         <div class="wz-padding-top-7"></div>
         <div class="reg-agent-text wz-padding-0">Wazuh server address</div>
         <div class="div-input-register-agent" ng-class="{'border-to-div' : config.osSelected && config.managerIp}">
