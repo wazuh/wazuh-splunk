@@ -34,7 +34,7 @@
         <div class="wz-padding-top-7"></div>
         <div class="reg-agent-text wz-padding-0">Wazuh server address</div>
         <div class="div-input-register-agent">
-          <input flex placeholder="Server address..." ng-model="managerAddress" type="text" class="input-register-agent"
+          <input flex placeholder="Server address..." ng-model="managerAddress" type="text" class="euiFieldText"
             ng-change="selectManagerAddress(managerAddress)">
         </div>
       </div>
@@ -137,17 +137,14 @@
             <div ng-if="!newInstall">
               <!-- Insert agent name -->
               <div>
-                <div>
-                  <div class="reg-agent-text">Agent name:</div> &nbsp;
-                  <span>{{config.agentName}}</span>
-                  <div class="wz-margin-top-15 wz-margin-left-20">
-                    <input flex placeholder="Agent name..." ng-model="agentName" type="text"
-                      class="input-register-agent" ng-change="selectAgentName(agentName)">
-                    <button ng-if="config.agentName && !registeredAgent" type="submit"
-                      class="btn wz-button-empty wz-margin-left-10 next-input-register-agent" ng-click="addAgent()">
-                      <span>Register</span>
-                    </button>
-                  </div>
+                <div class="wz-margin-top-10">
+                  <div class="reg-agent-text reg-agent-name">Agent name:</div> &nbsp;
+                  <input flex placeholder="Agent name..." ng-model="agentName" type="text" class="input-register-agent"
+                    ng-change="selectAgentName(agentName)">
+                  <button ng-if="config.agentName && !registeredAgent" type="submit"
+                    class="btn wz-button-empty wz-margin-left-10 next-input-register-agent" ng-click="addAgent()">
+                    <span>Register</span>
+                  </button>
                 </div>
               </div>
               <!-- If the key was generated -->
