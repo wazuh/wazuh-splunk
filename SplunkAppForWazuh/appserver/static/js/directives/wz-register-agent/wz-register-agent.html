@@ -63,8 +63,8 @@
                 <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                     ng-click="toClipboard('step1')"></i></span>
                 <div class="register-snipped" id="step1">
-                  # rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
-                  # cat > /etc/yum.repos.d/wazuh.repo <<\EOF<br>
+                  rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
+                  cat > /etc/yum.repos.d/wazuh.repo <<\EOF<br>
                     [wazuh_repo]<br>
                     gpgcheck=1<br>
                     gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
@@ -78,7 +78,7 @@
                 <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                     ng-click="toClipboard('step2')"></i></span>
                 <div class="register-snipped" id="step2">
-                  # WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
+                  WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
                 </div>
                 3. Wait until the process finish.
               </div>
@@ -88,27 +88,27 @@
                 <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                     ng-click="toClipboard('step1')"></i></span>
                 <div class="register-snipped" id="step1">
-                  # apt-get install curl apt-transport-https lsb-release
+                  apt-get install curl apt-transport-https lsb-release
                 </div>
                 2. Install the Wazuh repository GPG key.
                 <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                     ng-click="toClipboard('step2')"></i></span>
                 <div class="register-snipped" id="step2">
-                  # curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
+                  curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
                 </div>
                 3. Add the repository.
                 <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                     ng-click="toClipboard('step3')"></i></span>
                 <div class="register-snipped" id="step3">
-                  # echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee
+                  echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee
                   /etc/apt/sources.list.d/wazuh.list<br>
-                  # apt-get update
+                  apt-get update
                 </div>
                 4. Deploy the installation.
                 <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                     ng-click="toClipboard('step4')"></i></span>
                 <div class="register-snipped" id="step4">
-                  # WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
+                  WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
                 </div>
                 5. Wait until the process finish.
               </div>
@@ -128,7 +128,7 @@
                 <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                     ng-click="toClipboard('step1')"></i></span>
                 <div class="register-snipped" id="step1">
-                  # launchctl setenv WAZUH_MANAGER_IP "{{config.managerIp}}" && installer -pkg wazuh-agent-<version>.pkg
+                  launchctl setenv WAZUH_MANAGER_IP "{{config.managerIp}}" && installer -pkg wazuh-agent-<version>.pkg
                     -target /
                 </div>
                 2. Wait until the process finish.
@@ -156,19 +156,19 @@
                   <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i></span>
                   <div class="register-snipped" id="step1">
-                    # sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
+                    sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
                   <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i></span>
                   <div class="register-snipped" id="step2">
-                    # /var/ossec/bin/manage_agents -i {{config.agentKey}}
+                    /var/ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
                   <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step3')"></i></span>
                   <div class="register-snipped" id="step3">
-                    # /var/ossec/bin/ossec-control restart
+                    /var/ossec/bin/ossec-control restart
                   </div>
                 </div>
                 <!-- If the agent is Windows -->
@@ -193,24 +193,24 @@
                   <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i></span>
                   <div class="register-snipped" id="step2">
-                    # 'C:\Program Files (x86)\ossec-agent\manage_agents' -i {{config.agentKey}}
+                    'C:\Program Files (x86)\ossec-agent\manage_agents' -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
                   <div class="wz-margin-left-10">
                     <div class="power-cmd">For this you can use Powershell or CMD.</div>
                     a) Powershell:
-                    # Restart-Service -Name wazuh
+                    Restart-Service -Name wazuh
                     <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                         ng-click="toClipboard('stepA')"></i></span>
                     <div class="register-snipped" id="stepA">
-                      # Restart-Service -Name wazuh
+                      Restart-Service -Name wazuh
                     </div>
                     b) CMD:
                     <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                         ng-click="toClipboard('stepB')"></i></span>
                     <div class="register-snipped" id="stepB">
-                      # net stop wazuh<br>
-                      # net start wazuh
+                      net stop wazuh<br>
+                      net start wazuh
                     </div>
                   </div>
                 </div>
@@ -220,19 +220,19 @@
                   <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step1')"></i></span>
                   <div class="register-snipped" id="step1">
-                    # sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
+                    sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
                   <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step2')"></i></span>
                   <div class="register-snipped" id="step2">
-                    # /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
+                    /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
                   <span class="cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
                       ng-click="toClipboard('step3')"></i></span>
                   <div class="register-snipped" id="step3">
-                    # /Library/Ossec/bin/ossec-control restart
+                    /Library/Ossec/bin/ossec-control restart
                   </div>
                 </div>
               </div>
