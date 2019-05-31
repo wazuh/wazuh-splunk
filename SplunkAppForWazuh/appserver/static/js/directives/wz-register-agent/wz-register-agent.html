@@ -31,18 +31,18 @@
         <div class="bubble">2</div>
         <div class="wz-padding-top-7"></div>
         <div class="reg-agent-text wz-padding-0">Wazuh server address</div>
-        <div class="div-input-register-agent" ng-class="{'border-to-div' : config.osSelected && config.managerIp}">
+        <div class="div-input-register-agent border-to-div">
           <input flex placeholder="Server address..." ng-model="managerAddress" type="text" class="euiFieldText"
             ng-change="selectManagerAddress(managerAddress)">
         </div>
       </div>
-      <div ng-if="config.osSelected && config.managerIp">
+      <div>
 
         <div class="wz-margin-top-30">
           <div class="bubble">3</div>
           <div class="reg-agent-text">Complete the installation</div>
           <!-- snippet with install steps-->
-          <div class="wz-margin-top-10">
+          <div ng-if="config.osSelected && config.managerIp" class="wz-margin-top-10">
             <!-- Navbar to select if is a new install or not -->
             <md-nav-bar ng-if="showNavTab" class="wz-nav-bar wz-margin-10 no-margin-left"
               md-selected-nav-item="'newInstall'">
