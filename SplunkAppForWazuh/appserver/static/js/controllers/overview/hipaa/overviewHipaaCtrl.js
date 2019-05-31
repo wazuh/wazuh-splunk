@@ -80,9 +80,9 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
-        'rule.pci_dss{}',
-        '$form.pci$',
+        } sourcetype=wazuh rule.hipaa{}="*"| stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
+        'rule.hipaa{}',
+        '$form.hipaa$',
         'dropDownInput',
         this.scope
       )
@@ -95,18 +95,18 @@ define([
 
       this.vizz = [
         new ColumnChart(
-          'pciReqVizz',
+          'hipaaReqVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{}`,
-          'pciReqVizz',
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | stats count by rule.hipaa{}`,
+          'hipaaReqVizz',
           this.scope
         ),
         new LinearChart(
           'evoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="*" | timechart count by rule.pci_dss{}`,
+          } sourcetype=wazuh rule.hipaa{}="*" | timechart count by rule.hipaa{}`,
           'evoVizz',
           this.scope
         ),
@@ -114,7 +114,7 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by agent.name`,
           'agentsVizz',
           this.scope
         ),
@@ -122,7 +122,7 @@ define([
           'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=*| chart  count(rule.hipaa{}) by rule.hipaa{},agent.name`,
           'requirementsByAgentVizz',
           this.scope
         ),
@@ -130,7 +130,7 @@ define([
           'alertsSummaryViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryViz',
           this.scope
         ),
@@ -138,7 +138,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -159,7 +159,7 @@ define([
             'HIPAA',
             this.filters,
             [
-              'pciReqVizz',
+              'hipaaReqVizz',
               'groupsVizz',
               'agentsVizz',
               'requirementsByAgentVizz',

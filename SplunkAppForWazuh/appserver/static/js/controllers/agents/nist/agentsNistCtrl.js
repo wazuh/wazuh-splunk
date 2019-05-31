@@ -79,9 +79,9 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
-        'rule.pci_dss{}',
-        '$form.pci$',
+        } sourcetype=wazuh rule.nist-800-53{}="*"| stats count by "rule.nist-800-53{}" | sort "rule.nist-800-53{}" ASC | fields - count`,
+        'rule.nist-800-53{}',
+        '$form.nist$',
         'dropDownInput',
         this.scope
       )
@@ -107,18 +107,18 @@ define([
          * Visualizations
          */
         new ColumnChart(
-          'pciReqSearchVizz',
+          'nistReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{}`,
-          'pciReqSearchVizz',
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$"  | stats count by rule.nist-800-53{}`,
+          'nistReqSearchVizz',
           this.scope
         ),
         new PieChart(
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{}`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | top limit=5 rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
@@ -126,23 +126,23 @@ define([
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | top limit=5 rule.description`,
           'topRules',
           this.scope
         ),
         new PieChart(
-          'top5Pcidss',
+          'top5nist',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{}`,
-          'top5Pcidss',
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | top limit=5 rule.nist-800-53{}`,
+          'top5nist',
           this.scope
         ),
         new PieChart(
           'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count by rule.level`,
           'ruleLevelDistribution',
           this.scope
         ),
@@ -150,7 +150,7 @@ define([
           'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" agent.name=*| chart  count(rule.nist-800-53{}) by rule.nist-800-53{},agent.name`,
           'reqByAgentsVizz',
           this.scope
         ),
@@ -158,7 +158,7 @@ define([
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count sparkline by agent.name, rule.nist-800-53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist-800-53{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
@@ -166,7 +166,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count sparkline by agent.name, rule.nist-800-53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist-800-53{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -200,9 +200,9 @@ define([
           'NIST 800-53',
           this.filters,
           [
-            'pciReqSearchVizz',
+            'nistReqSearchVizz',
             'ruleLevelDistribution',
-            'top5Pcidss',
+            'top5nist',
             'groupsVizz',
             'topRules',
             'reqByAgentsVizz',

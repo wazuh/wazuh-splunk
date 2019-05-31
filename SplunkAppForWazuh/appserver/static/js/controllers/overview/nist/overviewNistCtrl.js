@@ -80,9 +80,9 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
-        'rule.pci_dss{}',
-        '$form.pci$',
+        } sourcetype=wazuh rule.nist-800-53{}="*"| stats count by "rule.nist-800-53{}" | sort "rule.nist-800-53{}" ASC | fields - count`,
+        'rule.nist-800-53{}',
+        '$form.nist$',
         'dropDownInput',
         this.scope
       )
@@ -95,18 +95,18 @@ define([
 
       this.vizz = [
         new ColumnChart(
-          'pciReqVizz',
+          'nistReqVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{}`,
-          'pciReqVizz',
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$"  | stats count by rule.nist-800-53{}`,
+          'nistReqVizz',
           this.scope
         ),
         new LinearChart(
           'evoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="*" | timechart count by rule.pci_dss{}`,
+          } sourcetype=wazuh rule.nist-800-53{}="*" | timechart count by rule.nist-800-53{}`,
           'evoVizz',
           this.scope
         ),
@@ -114,7 +114,7 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count by agent.name`,
           'agentsVizz',
           this.scope
         ),
@@ -122,7 +122,7 @@ define([
           'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" agent.name=*| chart  count(rule.nist-800-53{}) by rule.nist-800-53{},agent.name`,
           'requirementsByAgentVizz',
           this.scope
         ),
@@ -130,7 +130,7 @@ define([
           'alertsSummaryViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count sparkline by agent.name, rule.nist-800-53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist-800-53{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryViz',
           this.scope
         ),
@@ -138,7 +138,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count sparkline by agent.name, rule.nist-800-53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist-800-53{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -159,7 +159,7 @@ define([
             'NIST 800-53',
             this.filters,
             [
-              'pciReqVizz',
+              'nistReqVizz',
               'groupsVizz',
               'agentsVizz',
               'requirementsByAgentVizz',
