@@ -59,8 +59,7 @@
               <div ng-if="config.osSelected === 'redhat'">
                 1. Add the Wazuh repository.
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step1')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -78,8 +77,7 @@
                 </div>
                 2. Deploy the installation.
                 <div class="register-snippet" id="step2">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step2')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -91,8 +89,7 @@
               <div ng-if="config.osSelected === 'debian'">
                 1. Install the necessaries utilities.
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step1')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -101,8 +98,7 @@
                 </div>
                 2. Install the Wazuh repository GPG key.
                 <div class="register-snippet" id="step2">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step2')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -111,8 +107,7 @@
                 </div>
                 3. Add the repository.
                 <div class="register-snippet" id="step3">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step3')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -123,8 +118,7 @@
                 </div>
                 4. Deploy the installation.
                 <div class="register-snippet" id="step4">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step4')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step4')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -136,8 +130,7 @@
               <div ng-if="config.osSelected === 'windows'">
                 1. Deploy the installation.
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step1')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -149,8 +142,7 @@
               <div ng-if="config.osSelected === 'macos'">
                 1. Deploy the installation.
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step1')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -179,8 +171,7 @@
                 <!-- If the agent is Linux -->
                 <div ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
                   1. Set the manager IP.
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step1')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -189,8 +180,7 @@
                     sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step2')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -199,8 +189,7 @@
                     /var/ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step3')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -217,8 +206,7 @@
                       class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
                       (x86)\ossec-agent\ossec.conf</b>:
                   </div>
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step1')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -232,8 +220,7 @@
                     &lt;/client&gt;
                   </div>
                   2. Register the agent against the manager.
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step2')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -271,8 +258,7 @@
                 <!-- If the agent is MacOs -->
                 <div ng-if="config.osSelected === 'macos'">
                   1. Set the manager IP.
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step1')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -281,8 +267,7 @@
                     sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step2')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -291,8 +276,7 @@
                     /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
-                  <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
-                      ng-click="toClipboard('step3')"></i>
+                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
