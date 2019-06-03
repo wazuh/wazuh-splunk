@@ -9,11 +9,11 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wzMenu', function (BASE_URL) {
+  directives.directive('wzMenu', function(BASE_URL) {
     return {
-      controller: function (
+      controller: function(
         $scope,
         $currentDataService,
         $navigationService,
@@ -48,11 +48,10 @@ define(['../module'], function (directives) {
         const checkLastState = (prefix, state) => {
           try {
             const lastState = $navigationService.getLastState()
-            if ((
-              lastState &&
-              lastState !== '' &&
-              lastState.includes(prefix)
-            ) || lastState.includes(state)) {
+            if (
+              (lastState && lastState !== '' && lastState.includes(prefix)) ||
+              lastState.includes(state)
+            ) {
               return true
             } else {
               return false
@@ -60,7 +59,6 @@ define(['../module'], function (directives) {
           } catch (error) {
             throw new Error(error)
           }
-
         }
 
         const update = () => {

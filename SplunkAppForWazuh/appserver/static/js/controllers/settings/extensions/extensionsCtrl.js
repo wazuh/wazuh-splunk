@@ -24,7 +24,7 @@ define(['../../module'], function(controllers) {
             this.currentExtensions[key] === 'true' ? true : false)
       )
       this.setExtensions(id, this.currentExtensions)
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     toggleExtension(extension, state) {
@@ -32,7 +32,7 @@ define(['../../module'], function(controllers) {
         const api = this.currentApi['_key']
         this.currentExtensions[extension] = state.toString()
         this.setExtensions(api, this.currentExtensions)
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast(error)
       }

@@ -610,9 +610,11 @@ define([
             path = req.includes('?') ? req.split('?')[0] : req
           } else {
             path =
-            typeof JSONraw === 'object' && Object.keys(JSONraw).length
-              ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(queryString.stringify(JSONraw))}`
-              : req;
+              typeof JSONraw === 'object' && Object.keys(JSONraw).length
+                ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(
+                    queryString.stringify(JSONraw)
+                  )}`
+                : req
             JSONraw = {}
           }
           //if (typeof JSONraw === 'object') JSONraw.devTools = true

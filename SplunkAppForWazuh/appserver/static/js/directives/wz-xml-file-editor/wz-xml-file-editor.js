@@ -22,9 +22,9 @@ define([
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
   '../../libs/codemirror-conv/xml'
-], function (app, CodeMirror) {
+], function(app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function (BASE_URL) {
+  app.directive('wzXmlFileEditor', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -46,7 +46,7 @@ define([
          * evaluates regular expressions.
          * Alternative using split + join, same result.
          */
-        String.prototype.xmlReplace = function (str, newstr) {
+        String.prototype.xmlReplace = function(str, newstr) {
           return this.split(str).join(newstr)
         }
         let firstTime = true
@@ -105,7 +105,7 @@ define([
             $notificationService.showErrorToast(error, 'Error validating XML')
           }
           checkingXmlError = false
-          if (!$scope.$$phase) $scope.$digest()
+          $scope.$applyAsync()
           return
         }
 
@@ -152,10 +152,10 @@ define([
             var type = single
               ? 'single'
               : closing
-                ? 'closing'
-                : opening
-                  ? 'opening'
-                  : 'other'
+              ? 'closing'
+              : opening
+              ? 'opening'
+              : 'other'
             var fromTo = lastType + '->' + type
             lastType = type
             var padding = ''
@@ -205,7 +205,7 @@ define([
                   if (params.node) {
                     msg = `Succes. Node(${
                       params.node
-                      }) configuration has been updated.`
+                    }) configuration has been updated.`
                   } else {
                     msg = 'Succes. Manager configuration has been updated.'
                   }
@@ -270,14 +270,14 @@ define([
         }
 
         const dynamicHeight = () => {
-          setTimeout(function () {
+          setTimeout(function() {
             const editorContainer = $('.wzXmlEditor')
             const headerContainer = $('#wzXmlEditorHeader')
             const windows = $(window).height()
             const offsetTop = getPosition(editorContainer[0]).y
             editorContainer.height(windows - (offsetTop + 25))
             $('.wzXmlEditorBody').css({
-              height: 'calc(100% - ' + (headerContainer.height()) + 'px)'
+              height: 'calc(100% - ' + headerContainer.height() + 'px)'
             })
           }, 1)
         }
@@ -317,11 +317,9 @@ define([
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
 
-
-        $(window).on('resize', function () {
+        $(window).on('resize', function() {
           dynamicHeight()
         })
-
       },
       templateUrl:
         BASE_URL +

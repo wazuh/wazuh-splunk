@@ -1,6 +1,6 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$apiMgrService', function (
+  module.service('$apiMgrService', function(
     $requestService,
     $apiIndexStorageService,
     $splunkStoreService
@@ -222,9 +222,9 @@ define(['../module'], function (module) {
           const clusterEnabled = api.filterType === 'cluster.name'
           const checkConnectionEndpoint = `/manager/check_connection?ip=${
             api.url
-            }&port=${
+          }&port=${
             api.portapi
-            }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
+          }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
@@ -318,10 +318,9 @@ define(['../module'], function (module) {
       }
     }
 
-
-    /** 
-    * Checks if the Splunk Version are the same that the Wazuh version
-    */
+    /**
+     * Checks if the Splunk Version are the same that the Wazuh version
+     */
     const checkWazuhVersion = async () => {
       try {
         const wazuhVersion = await $requestService.apiReq('/version')
@@ -343,7 +342,9 @@ define(['../module'], function (module) {
           const appSplit = av.split('.')
 
           if (wazuhSplit[0] !== appSplit[0] || wazuhSplit[1] !== appSplit[1]) {
-            throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
+            throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${
+              appSplit[1]
+            }, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
           }
         }
       } catch (error) {

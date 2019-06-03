@@ -1,21 +1,33 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   PieChart,
   LinearChart,
   Table,
-  TimePicker,
   RawTableDataService
 ) {
   'use strict'
 
-  class Docker {
+  class Docker extends DashboardMain {
     /**
      * Class Docker
      * @param {*} $urlTokenModel
@@ -30,43 +42,26 @@ define([
       $scope,
       $currentDataService,
       $state,
-      $notificationService,
       $reportingService,
       reportingEnabled,
       extensions
     ) {
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.state = $state
-      this.currentDataService = $currentDataService
-      this.reportingService = $reportingService
-      this.tableResults = {}
       this.currentDataService.addFilter(
         `{"rule.groups{}":"docker", "implicit":true}`
       )
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
       this.scope.expandArray = [false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
+      this.filters = this.getFilters()
 
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        $urlTokenModel.handleValueChange
-      )
-      this.notification = $notificationService
       this.vizz = [
-        //`${this.filters} sourcetype=wazuh | timechart span=1h count`,
         /**
          * Visualizations
          */
@@ -117,86 +112,28 @@ define([
           'Alerts summary'
         )
       ]
-
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'ow-docker',
-          'Docker',
-          this.filters,
-          ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
-          {}, //Metrics
-          this.tableResults
-        )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * On controller destroy
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.scope.loadingVizz = true
-    }
-
-    /**
-     * Get filters and launches search
-     */
-    launchSearches() {
-      this.filters = this.getFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
+      try {
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png(
+            'ow-docker',
+            'Docker',
+            this.filters,
+            ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
+            {}, //Metrics
+            this.tableResults
+          )
+      } catch (error) {
+        console.error('Error onInit ', error)
+      }
     }
   }
 

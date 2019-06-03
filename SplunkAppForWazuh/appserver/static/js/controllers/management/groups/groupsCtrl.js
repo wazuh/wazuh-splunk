@@ -67,7 +67,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.currentGroup = false
         this.scope.lookingGroup = false
         this.scope.editingFile = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       })
 
       // Come from the pencil icon on the groups table
@@ -88,7 +88,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
       this.scope.$on('configurationSuccess', () => {
         this.scope.editingFile = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       })
 
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
@@ -130,7 +130,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         } catch (error) {
           this.notification.showErrorToast(error.message || error)
         }
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
         return
       })
 
@@ -232,7 +232,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
         this.scope.adminMode = this.extensions['admin'] === 'true'
 
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (err) {
         console.error('err ', err)
         this.scope.adminMode = true
@@ -278,7 +278,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.fileViewer = false
         this.scope.currentGroup = group
         this.mainGroup = group
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast('Cannot load group data')
       }
@@ -322,7 +322,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
         }
         this.scope.multipleSelectorLoading = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast(error.message || error)
       }
@@ -440,7 +440,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       } catch (err) {
         this.notification.showErrorToast('Error adding agents.')
       }
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
       return
     }
 
@@ -472,7 +472,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       } catch (error) {
         this.notification.showErrorToast(error.message || error, 'Groups')
       }
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
       return
     }
 
@@ -543,7 +543,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           'Error applying changes'
         )
       }
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
       return
     }
 
@@ -556,7 +556,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.fetchedXML = null
         this.notification.showErrorToast(error.message || error)
       }
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
       return
     }
 
@@ -635,12 +635,12 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
     closeEditingFile() {
       this.scope.editingFile = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     xmlIsValid(valid) {
       this.scope.xmlHasErrors = valid
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     doSaveGroupAgentConfig() {
@@ -656,7 +656,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.groupsSelectedTab = 'agents'
       this.scope.file = false
       this.scope.filename = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -684,7 +684,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.filename = false
       this.scope.fileViewer = false
       this.scope.editingFile = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -695,7 +695,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.currentGroup = false
       this.scope.lookingGroup = false
       this.scope.editingFile = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -712,7 +712,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         const data = await this.apiReq(tmpName)
         this.scope.file = this.beautifier.prettyPrint(data.data.data)
         this.scope.filename = fileName
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast('Error showing file ')
       }

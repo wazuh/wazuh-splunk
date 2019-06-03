@@ -1,25 +1,25 @@
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   LinearChart,
   ColumnChart,
   PieChart,
   Table,
-  TimePicker,
   Dropdown,
   RawTableDataService
 ) {
   'use strict'
 
-  class Hipaa {
+  class Hipaa extends DashboardMain {
     /**
      * Class Hipaa
      * @param {*} $urlTokenModel
@@ -40,41 +40,23 @@ define([
       gdprExtensionEnabled,
       nistExtensionEnabled,
     ) {
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.nistExtensionEnabled = nistExtensionEnabled
-      this.state = $state
       this.scope.hipaaTabs = hipaaTabs ? hipaaTabs : false
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.getFilters = $currentDataService.getSerializedFilters
+
+
       this.filters = this.getFilters()
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('$destroy', () => {
-        this.dropdown.destroy()
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        $urlTokenModel.handleValueChange
-      )
 
       this.scope.expandArray = [false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
 
       this.dropdown = new Dropdown(
         'dropDownInput',
@@ -169,58 +151,9 @@ define([
             this.tableResults
           )
 
-        this.scope.$on('loadingReporting', (event, data) => {
-          this.scope.loadingReporting = data.status
-        })
+    
 
-        this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) {
-            this.scope.loadingVizz = false
-          } else {
-            this.vizz.map(v => {
-              if (v.constructor.name === 'RawTableData') {
-                this.tableResults[v.name] = v.results
-              }
-            })
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        })
       } catch (error) {}
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
-    }
-
-    /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.getFilters()
-      this.state.reload()
     }
   }
   app.controller('overviewHipaaCtrl', Hipaa)

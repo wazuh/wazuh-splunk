@@ -1,3 +1,15 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define(['../../module', 'FileSaver'], function(app) {
   'use strict'
 
@@ -22,6 +34,7 @@ define(['../../module', 'FileSaver'], function(app) {
       logs
     ) {
       this.scope = $scope
+      this.scope.realtime = false
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
       this.scope.type_log = 'all'
@@ -32,11 +45,6 @@ define(['../../module', 'FileSaver'], function(app) {
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
-      this.scope.$on('scrolledToBottom', (ev, parameters) => {
-        ev.stopPropagation()
-        if (!this.scope.realtime)
-          this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
-      })
     }
 
     /**
@@ -55,6 +63,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.initialize()
 
         this.scope.sort = () => this.sort()
+
         this.scope.$on('wazuhFetched', (ev, params) => {
           ev.stopPropagation()
           this.scope.emptyResults = false
@@ -66,7 +75,19 @@ define(['../../module', 'FileSaver'], function(app) {
               data: this.scope.XMLContent
             })
           }
+
+          this.scope.$on('scrolledToBottom', (ev, parameters) => {
+            ev.stopPropagation()
+            if (!this.scope.realtime)
+              this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
+          })
+
           this.scope.$applyAsync()
+        })
+
+        this.scope.$on('loadingContent', (event, data) => {
+          this.scope.loadingContent = data.status
+          event.preventDefault()
         })
       } catch (err) {
         this.notification.showErrorToast('Cannot fetch logs data from server')
@@ -172,7 +193,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.daemons = Object.keys(daemons).map(item => ({
           title: item
         }))
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
         return
       } catch (err) {
         this.notification.showErrorToast('Error initializing data')
@@ -198,7 +219,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.daemons = Object.keys(daemons).map(item => ({
           title: item
         }))
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast('Error at fetching logs')
       }

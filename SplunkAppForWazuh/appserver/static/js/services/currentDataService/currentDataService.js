@@ -228,9 +228,9 @@ define(['../module'], function(module) {
       }
     }
 
-    /** 
-    * Checks if the Splunk Version are the same that the Wazuh version
-    */
+    /**
+     * Checks if the Splunk Version are the same that the Wazuh version
+     */
     const checkWazuhVersion = async () => {
       try {
         return await $apiMgrService.checkWazuhVersion()

@@ -46,36 +46,38 @@
       ui-sref="ag-docker" name="docker">Docker listener</md-nav-item>
   </md-nav-bar>
 
-  <!-- Filter bar -->
-  <wazuh-bar></wazuh-bar>
 
-  <div ng-show="loadingVizz">
-    <div align='center'>
-      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+  <div>
+    <!-- Filter bar -->
+    <wazuh-bar></wazuh-bar>
+
+    <div ng-show="loadingVizz">
+      <div align='center'>
+        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      </div>
     </div>
-  </div>
-  <div ng-show="!loadingVizz">
-    <!-- first row  -->
-    <div layout="row" layout-align="center stretch" class="wz-margin-9">
+    <div ng-show="!loadingVizz">
+      <!-- first row  -->
+      <div layout="row" layout-align="center stretch" class="wz-margin-9">
 
-      <md-card flex class="wz-metric-color">
-        <md-card-content layout="row" class="wz-padding-metric">
-          <div class="wz-text-truncatable" flex>Files added:
-            <span class="wz-text-bold">{{filesAdded}}</span>
-          </div>
-          <div class="wz-text-truncatable" flex>Files modified:
-            <span class="wz-text-bold">{{filesModified}}</span>
-          </div>
-          <div class="wz-text-truncatable" flex>Files deleted:
-            <span class="wz-text-bold">{{filesDeleted}}</span>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
+        <md-card flex class="wz-metric-color">
+          <md-card-content layout="row" class="wz-padding-metric">
+            <div class="wz-text-truncatable" flex>Files added:
+              <span class="wz-text-bold">{{filesAdded}}</span>
+            </div>
+            <div class="wz-text-truncatable" flex>Files modified:
+              <span class="wz-text-bold">{{filesModified}}</span>
+            </div>
+            <div class="wz-text-truncatable" flex>Files deleted:
+              <span class="wz-text-bold">{{filesDeleted}}</span>
+            </div>
+          </md-card-content>
+        </md-card>
+      </div>
 
 
-    <!-- second row  -->
-    <div layout="row" layout-align="center stretch">
+      <!-- second row  -->
+      <div layout="row" layout-align="center stretch">
         <!-- second row - first vis -->
         <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
           <md-card-content class="wazuh-column">
@@ -102,21 +104,21 @@
       </div>
 
 
-    <!-- third row  -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Last Files
-            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'lastFiles')">
-              <wz-svg icon="expand"></wz-svg>
+      <!-- third row  -->
+      <div layout="row" layout-align="center stretch">
+        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Last Files
+              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'lastFiles')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='lastFiles'></div>
-        </md-card-content>
-      </md-card>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='lastFiles'></div>
+          </md-card-content>
+        </md-card>
+      </div>
     </div>
-
   </div>
   <!-- end document  -->
 </md-content>
