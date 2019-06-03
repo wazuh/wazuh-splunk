@@ -26,6 +26,7 @@ define(['../module'], function(module) {
           pci: 'PCI',
           hipaa: 'HIPAA',
           nist: 'NIST 800-53',
+          'nist-800-53': 'NIST 800-53',
           groups: 'Groups',
           name: 'Name',
           count: 'Count',

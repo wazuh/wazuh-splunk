@@ -160,9 +160,9 @@ define([], function() {
       const result = this.base();
       result.meta.type = 'exists';
       result.meta.value = 'exists';
-      result.meta.key = 'rule.nist';
+      result.meta.key = 'rule.nist_800_53';
       result.exists = {
-        field: 'rule.nist'
+        field: 'rule.nist_800_53'
       };
       delete result.query;
       return result;

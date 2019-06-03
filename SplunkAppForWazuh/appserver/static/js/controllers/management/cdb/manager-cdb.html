@@ -43,6 +43,16 @@
             <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
           </span>
         </md-chip>
+        <md-chip class="wz-chip" ng-show="includesFilter('hipaa')">
+          <span>File: {{getFilter('hipaa')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('hipaa')"></i>
+          </span>
+        </md-chip>
+        <md-chip class="wz-chip" ng-show="includesFilter('nist-800-53')">
+          <span>File: {{getFilter('NIST 800-53')}}
+            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('nist-800-53')"></i>
+          </span>
+        </md-chip>
         <md-chip class="wz-chip" ng-show="includesFilter('path')">
           <span>Path: {{getFilter('path')}}
             <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('path')"></i>
