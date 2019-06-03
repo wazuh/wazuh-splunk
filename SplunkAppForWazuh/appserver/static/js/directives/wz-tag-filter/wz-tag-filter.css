@@ -41,7 +41,7 @@
   display: flex;
 }
 .wz-tags > ul li .grouped {
-  background: #e4f2f5;
+  background: #e4f5e6;
   border-radius: 3px;
   padding: 3px;
   height: 30px;
@@ -49,13 +49,13 @@
   display: flex;
 }
 .wz-tag-item {
-  color: #0079a5;
+  color: #396e3e;
   border-radius: 3px;
   display: inline-block;
   padding: 3px 5px;
   background: white;
   margin: 1px 3px;
-  border: solid 1px #0079a5 !important;
+  border: solid 1px #396e3e !important;
 }
 .wz-tag-item-connector {
   font-size: 10px;
@@ -112,6 +112,6 @@
 .wz-search-filter-bar-autocomplete ul li:hover,
 .wz-search-filter-bar-autocomplete ul li.selected {
   background: black;
-  color: #0079a5;
+  color: #396e3e;
   cursor: pointer;
 }

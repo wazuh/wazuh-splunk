@@ -45,7 +45,7 @@ define(['../../module', 'FileSaver'], function(app) {
         '#7F6025',
         '#104C19',
         '7C267F',
-        '#0079A5',
+        '#396e3e',
         '#00A69B',
         '#FF645C',
         '#FFC04A',
