@@ -17,6 +17,7 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
+  '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
@@ -25,6 +26,7 @@ define([
   ColumnChart,
   PieChart,
   Table,
+  SearchHandler,
   RawTableDataService
 ) {
   'use strict'
@@ -84,6 +86,49 @@ define([
       this.filters = this.getFilters()
 
       this.vizz = [
+      /**
+       * Metrics
+       */
+        new SearchHandler(
+          `totalAlerts`,
+          `${this.filters} | stats count`,
+          `totalAlertsToken`,
+          '$result.count$',
+          'totalAlerts',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `searchLevel12`,
+          `${this.filters} sourcetype=wazuh "rule.level">=12 | chart count`,
+          `level12token`,
+          '$result.count$',
+          'levelTwelve',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `searchAuthFailure`,
+          `${
+            this.filters
+          } sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
+          `authFailureToken`,
+          '$result.count$',
+          'authFailure',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `searchAuthSuccess`,
+          `${
+            this.filters
+          } sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
+          `authSuccessToken`,
+          '$result.count$',
+          'authSuccess',
+          this.submittedTokenModel,
+          this.scope
+        ),
         /**
          * Visualizations
          */
@@ -109,7 +154,7 @@ define([
           'alertLevelEvoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
+          } sourcetype=wazuh rule.level=*| timechart count by rule.level{}`,
           'alertLevelEvoVizz',
           this.scope
         ),

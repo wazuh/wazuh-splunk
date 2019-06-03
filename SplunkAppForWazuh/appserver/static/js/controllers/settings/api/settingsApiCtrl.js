@@ -279,7 +279,7 @@ define(['../../module'], function(controllers) {
         this.scope.$applyAsync()
         this.notification.showSuccessToast('New API was added')
       } catch (err) {
-        if (err.startsWith('Unexpected Wazuh version')) {
+        if (typeof err === 'string' && err.startsWith('Unexpected Wazuh version')) {
           this.scope.validatingError.push(err)
         } else {
           this.notification.showErrorToast(
