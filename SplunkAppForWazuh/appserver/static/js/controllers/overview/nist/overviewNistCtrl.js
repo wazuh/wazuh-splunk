@@ -54,6 +54,7 @@ define([
       this.scope.nistTabs = nistTabs ? nistTabs : false
 
       this.scope.expandArray = [false, false, false, false, false]
+      this.filters = this.getFilters()
 
       this.dropdown = new Dropdown(
         'dropDownInput',
@@ -139,8 +140,8 @@ define([
             this.filters,
             [
               'nistReqVizz',
-              'groupsVizz',
               'agentsVizz',
+              'evoVizz',
               'requirementsByAgentVizz',
               'alertsSummaryViz'
             ],
