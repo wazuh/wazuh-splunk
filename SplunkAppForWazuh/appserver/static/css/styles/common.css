@@ -1917,11 +1917,10 @@ label.wz-icon-loupe  input {
   background-color: #fafafa !important;
 }
 
-
-a, a:hover {
-  color: #396e3e !important;
-}
-
 .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
   background-color: #ecffee!important;
+}
+
+md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
+  background-color: rgb(57, 110, 62);
 }
