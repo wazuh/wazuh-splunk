@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function (module) {
+define(['../../module'], function(module) {
   'use strict'
   class Logs {
     constructor($scope, $requestService, logs, $rootScope) {
@@ -56,7 +56,7 @@ define(['../../module'], function (module) {
             const level = levelAndDate[0]
             const date = `${levelAndDate[1]}:${levelAndDate[2]}:${
               levelAndDate[3]
-              }`
+            }`
             const formatLog = { date, level, message }
             this.scope.logs.push(formatLog)
           })

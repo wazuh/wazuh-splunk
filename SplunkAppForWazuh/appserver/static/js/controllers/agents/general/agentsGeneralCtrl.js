@@ -86,9 +86,9 @@ define([
       this.filters = this.getFilters()
 
       this.vizz = [
-      /**
-       * Metrics
-       */
+        /**
+         * Metrics
+         */
         new SearchHandler(
           `totalAlerts`,
           `${this.filters} | stats count`,
