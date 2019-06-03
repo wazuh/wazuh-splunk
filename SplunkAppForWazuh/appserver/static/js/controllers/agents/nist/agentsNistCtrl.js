@@ -79,8 +79,8 @@ define([
         'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.nist-800-53{}="*"| stats count by "rule.nist-800-53{}" | sort "rule.nist-800-53{}" ASC | fields - count`,
-        'rule.nist-800-53{}',
+        } sourcetype=wazuh rule.nist_800_53{}="*"| stats count by "rule.nist_800_53{}" | sort "rule.nist_800_53{}" ASC | fields - count`,
+        'rule.nist_800_53{}',
         '$form.nist$',
         'dropDownInput',
         this.scope
@@ -110,7 +110,7 @@ define([
           'nistReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$"  | stats count by rule.nist-800-53{}`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{}`,
           'nistReqSearchVizz',
           this.scope
         ),
@@ -118,7 +118,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | top limit=5 rule.groups{}`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
@@ -126,7 +126,7 @@ define([
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | top limit=5 rule.description`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.description`,
           'topRules',
           this.scope
         ),
@@ -134,7 +134,7 @@ define([
           'top5nist',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | top limit=5 rule.nist-800-53{}`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.nist_800_53{}`,
           'top5nist',
           this.scope
         ),
@@ -142,7 +142,7 @@ define([
           'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count by rule.level`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by rule.level`,
           'ruleLevelDistribution',
           this.scope
         ),
@@ -150,7 +150,7 @@ define([
           'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$" agent.name=*| chart  count(rule.nist-800-53{}) by rule.nist-800-53{},agent.name`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=*| chart  count(rule.nist_800_53{}) by rule.nist_800_53{},agent.name`,
           'reqByAgentsVizz',
           this.scope
         ),
@@ -158,7 +158,7 @@ define([
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count sparkline by agent.name, rule.nist-800-53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist-800-53{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
@@ -166,7 +166,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist-800-53{}="$nist$" | stats count sparkline by agent.name, rule.nist-800-53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist-800-53{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
