@@ -80,7 +80,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         } else {
           this.scope[bindedValue] = '0'
         }
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       })
 
       this.submittedTokenModel.on(`change:${this.token}`, () => {
@@ -95,7 +95,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         } else {
           this.scope[bindedValue] = '0'
         }
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       })
 
       this.initSearch()

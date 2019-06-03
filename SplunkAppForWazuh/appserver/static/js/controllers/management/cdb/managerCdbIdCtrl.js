@@ -215,7 +215,7 @@ define([
     refreshCdbList() {
       this.scope.items = this.cdbToArr()
       this.initPagination()
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     async saveList() {
@@ -233,7 +233,7 @@ define([
         this.initPagination()
         this.notification.showSuccessToast('File saved successfully.')
         this.scope.saveIncomplete = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.scope.saveIncomplete = false
         this.notification.showErrorToast(error || `Cannot send this file.`)

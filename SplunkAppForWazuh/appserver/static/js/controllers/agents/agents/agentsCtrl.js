@@ -235,7 +235,9 @@ define([
             throw Error('Error fetching agent data')
           }
           if (agentInfo.data.data.items[0].id !== '000') {
-            this.state.go(`agent-overview`, { id: agentInfo.data.data.items[0].id })
+            this.state.go(`agent-overview`, {
+              id: agentInfo.data.data.items[0].id
+            })
           }
         } else {
           throw Error('Cannot fetch agent name')

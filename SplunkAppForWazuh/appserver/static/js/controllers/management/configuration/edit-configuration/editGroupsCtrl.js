@@ -88,7 +88,7 @@ define(['../../../module'], function(controllers) {
         this.scope.fetchedXML = null
         this.notification.showErrorToast(error.message || error)
       }
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
       return
     }
 
@@ -135,12 +135,12 @@ define(['../../../module'], function(controllers) {
     closeEditingFile() {
       this.scope.editingFile = false
       this.scope.currentGroup = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     xmlIsValid(valid) {
       this.scope.xmlHasErrors = valid
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     doSaveGroupAgentConfig() {

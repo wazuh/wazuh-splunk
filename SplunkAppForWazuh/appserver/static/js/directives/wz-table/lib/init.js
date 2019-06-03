@@ -60,7 +60,7 @@ define(['../../../utils/filter-handler'], function(FilterHandler) {
         `Error while init table. ${error.message || error}`
       )
     }
-    if (!$scope.$$phase) $scope.$digest()
+    $scope.$applyAsync()
     return
   }
 })

@@ -94,8 +94,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         while (element) {
           xPosition +=
             element.offsetLeft - element.scrollLeft + element.clientLeft
-          yPosition +=
-            element.offsetTop - element.scrollTop + element.clientTop
+          yPosition += element.offsetTop - element.scrollTop + element.clientTop
           element = element.offsetParent
         }
 
@@ -103,7 +102,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
       }
 
       const dynamicHeight = () => {
-        setTimeout(function () {
+        setTimeout(function() {
           const editorContainer = $('.wzConfigViewer')
           const windows = $(window).height()
           const offsetTop = getPosition(editorContainer[0]).y
@@ -158,7 +157,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         refreshXmlBox(params.data)
       })
 
-      $(window).on('resize', function () {
+      $(window).on('resize', function() {
         dynamicHeight()
       })
 

@@ -33,7 +33,7 @@ define(['../../module'], function(controllers) {
           ? (this.scope[key] = key)
           : (this.scope[key] = null)
       )
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
   }
   controllers.controller('overviewWelcomeCtrl', OverviewWelcome)

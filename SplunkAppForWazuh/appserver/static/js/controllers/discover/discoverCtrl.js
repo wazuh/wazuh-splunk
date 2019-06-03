@@ -17,7 +17,6 @@ define(['../module', 'jquery'], function(app, $) {
       this.state = $state
       this.stateParams = $stateParams
       this.iframe = $($document[0]).find('#searchAndReporting')
-      this.scope.loadingRing = true
       this.currentDataService = $currentDataService
       this.notification = $notificationService
     }
@@ -29,15 +28,9 @@ define(['../module', 'jquery'], function(app, $) {
       try {
         this.scope.fromDashboard = this.stateParams.fromDashboard
         this.scope.breadcrumbs = this.stateParams.breadcrumbs
+        this.scope.loadingRing = true
         this.loadIframeContent()
         this.scope.backToDashboard = () => this.backToDashboard()
-
-        this.scope.$on('loading', (event, data) => {
-          if (data.status === true) {
-            this.scope.loadingRing = true
-            if (!this.scope.$$phase) this.scope.$digest()
-          }
-        })
       } catch (error) {
         this.notification.showErrorToast('Cannot load discover.')
       }
@@ -54,7 +47,7 @@ define(['../module', 'jquery'], function(app, $) {
             if (header.is(':hidden')) {
               clearInterval(interval)
               this.scope.loadingRing = false
-              if (!this.scope.$$phase) this.scope.$digest()
+              this.scope.$applyAsync()
             }
           }
         }, 500)
