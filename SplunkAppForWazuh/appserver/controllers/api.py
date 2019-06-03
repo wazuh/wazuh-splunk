@@ -258,9 +258,9 @@ class api(controllers.BaseController):
         """
         try:
             self.logger.debug("api: Checking if Wazuh is ready.")
-            if 'id' not in kwargs:
+            if 'apiId' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing API ID.'})
-            the_id = kwargs['id']
+            the_id = kwargs['apiId']
             url, auth, verify, cluster_enabled = self.get_credentials(the_id)
             daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
             msg = "Wazuh is now ready." if daemons_ready else "Wazuh not ready yet."
@@ -281,7 +281,7 @@ class api(controllers.BaseController):
         """
         try:
             self.logger.debug("api: Preparing request.")
-            if 'id' not in kwargs or 'endpoint' not in kwargs:
+            if 'apiId' not in kwargs or 'endpoint' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
             if 'method' not in kwargs:
                 method = 'GET'
@@ -294,10 +294,10 @@ class api(controllers.BaseController):
                     return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
                 method = kwargs['method']
                 del kwargs['method']
-            the_id = kwargs['id']
+            the_id = kwargs['apiId']
             url, auth, verify, cluster_enabled = self.get_credentials(the_id)
             opt_endpoint = kwargs["endpoint"]
-            del kwargs['id']
+            del kwargs['apiId']
             del kwargs['endpoint']
             daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
             if not daemons_ready:
@@ -331,7 +331,7 @@ class api(controllers.BaseController):
         """
         try:
             self.logger.debug("api: Generating CSV file.")
-            if 'id' not in kwargs or 'path' not in kwargs:
+            if 'apiId' not in kwargs or 'path' not in kwargs:
                 raise Exception("Invalid arguments or missing params.")
             filters = {}
             filters['limit'] = 1000
@@ -348,7 +348,7 @@ class api(controllers.BaseController):
                         parsed_filters.pop(key, None)
                 filters.update(parsed_filters)
 
-            the_id = kwargs['id']
+            the_id = kwargs['apiId']
             api = self.db.get(the_id)
             api = jsonbak.loads(api)
             opt_username = api["data"]["userapi"]
@@ -426,9 +426,9 @@ class api(controllers.BaseController):
             pci_description = ''
             requirement = kwargs['requirement']
             if requirement == 'all':
-                if not 'id' in kwargs:
+                if not 'apiId' in kwargs:
                     return jsonbak.dumps(pci_requirements.pci)
-                the_id = kwargs['id']
+                the_id = kwargs['apiId']
                 url,auth,verify = self.get_credentials(the_id)
                 opt_endpoint = '/rules/pci'
                 request = self.session.get(
@@ -463,9 +463,9 @@ class api(controllers.BaseController):
             pci_description = ''
             requirement = kwargs['requirement']
             if requirement == 'all':
-                if not 'id' in kwargs:
+                if not 'apiId' in kwargs:
                     return jsonbak.dumps(gdpr_requirements.gdpr)
-                the_id = kwargs['id']
+                the_id = kwargs['apiId']
                 url,auth,verify = self.get_credentials(the_id)
                 opt_endpoint = '/rules/gdpr'
                 request = self.session.get(
