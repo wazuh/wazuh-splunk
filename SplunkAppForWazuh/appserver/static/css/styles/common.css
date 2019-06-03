@@ -1916,3 +1916,12 @@ label.wz-icon-loupe  input {
 .md-sidenav-right {
   background-color: #fafafa !important;
 }
+
+
+a, a:hover {
+  color: #396e3e !important;
+}
+
+.table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
+  background-color: #ecffee!important;
+}

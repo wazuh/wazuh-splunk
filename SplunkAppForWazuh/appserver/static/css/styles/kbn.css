@@ -102,3 +102,7 @@
     right: auto;
     left: -34px;
 }
+
+.euiIcon--app .euiIcon__fillSecondary {
+    fill: #017D73 !important;
+}
