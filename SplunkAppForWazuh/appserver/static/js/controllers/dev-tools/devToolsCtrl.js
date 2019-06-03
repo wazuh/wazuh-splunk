@@ -616,10 +616,17 @@ define([
             for (const key in extra) JSONraw[key] = extra[key]
             path = req.includes('?') ? req.split('?')[0] : req
           } else {
+            if (extra) {
+              Object.keys(JSONraw).map(k => {
+                if (extra[k]) {
+                  delete JSONraw[k]
+                }
+              })
+            }
             path =
             typeof JSONraw === 'object' && Object.keys(JSONraw).length
               ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(queryString.stringify(JSONraw))}`
-              : req;
+              : req
             JSONraw = {}
           }
 
