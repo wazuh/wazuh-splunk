@@ -129,6 +129,16 @@ define(['../module'], function(module) {
                   return false
                 }
               }
+            ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
             ]
           }
         })
@@ -187,6 +197,16 @@ define(['../module'], function(module) {
                 try {
                   return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
+                  return false
+                }
+              }
+            ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
                   return false
                 }
               }
@@ -279,6 +299,16 @@ define(['../module'], function(module) {
                 try {
                   return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
+                  return false
+                }
+              }
+            ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
                   return false
                 }
               }
