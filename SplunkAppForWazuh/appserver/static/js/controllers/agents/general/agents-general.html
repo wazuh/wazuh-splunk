@@ -54,18 +54,40 @@
     </div>
   </div>
   <div ng-show="!loadingVizz">
+
+    <!-- metrics row -->
+    <div layout="row" class="wz-margin-9">
+      <!-- metrics -->
+      <md-card flex class="wz-metric-color">
+        <md-card-content layout="row" class="wz-padding-metric">
+          <div class="wz-text-truncatable" flex>Alerts:
+            <span class="wz-text-bold" ng-bind="totalAlerts"></span>
+          </div>
+          <div class="wz-text-truncatable" flex>Level 12 or above alerts:
+            <span class="wz-text-bold" ng-bind="levelTwelve"></span>
+          </div>
+          <div class="wz-text-truncatable" flex>Authentication failure:
+            <span class="wz-text-bold" ng-bind="authFailure"></span>
+          </div>
+          <div class="wz-text-truncatable" flex>Authentication success:
+            <span class="wz-text-bold" ng-bind="authSuccess"></span>
+          </div>
+        </md-card-content>
+      </md-card>
+    </div>
+
     <!-- first row  -->
     <div id="row1" layout="row">
       <!-- first row - first vis - Alert level evolution -->
       <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
         <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alert level evolution
-            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertLevelEvoVizz')">
+          <span class="wz-headline-title">Alert groups evolution
+            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'alertGroupsEvoVizz')">
               <wz-svg icon="expand"></wz-svg>
             </span>
           </span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertLevelEvoVizz'></div>
+          <div id='alertGroupsEvoVizz'></div>
         </md-card-content>
       </md-card>
       <!-- first row - second vis - Alerts-->
