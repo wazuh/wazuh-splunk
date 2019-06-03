@@ -182,7 +182,7 @@ define(['../../module'], function(app) {
                       this.scope.agent.id
                     }) has been added to group ${group}.`
                   )
-                  if (!this.scope.$$phase) this.scope.$digest()
+                  this.scope.$applyAsync()
                 })
                 .catch(error => {
                   if (!this.scope.agent) {
@@ -313,7 +313,7 @@ define(['../../module'], function(app) {
      */
     switchGroupEdit() {
       this.scope.editGroup = !!!this.scope.editGroup
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**

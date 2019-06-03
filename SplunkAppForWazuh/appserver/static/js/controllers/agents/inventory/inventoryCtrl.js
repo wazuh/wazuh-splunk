@@ -118,6 +118,11 @@ define(['../../module', 'FileSaver'], function(module) {
           this.scope.loadingReporting = data.status
         })
 
+        this.scope.$on('loadingContent', (event, data) => {
+          this.scope.loadingContent = data.status
+          event.preventDefault()
+        })
+
         this.scope.setBrowserOffset = date => this.setBrowserOffset(date)
 
         return

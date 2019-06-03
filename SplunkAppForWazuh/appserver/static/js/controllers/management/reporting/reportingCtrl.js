@@ -48,6 +48,11 @@ define(['../../module'], function(app) {
           return ''
         }
       }
+
+      this.scope.$on('loadingContent', (event, data) => {
+        this.scope.loadingContent = data.status
+        event.preventDefault()
+      })
     }
 
     /**
@@ -164,7 +169,7 @@ define(['../../module'], function(app) {
         }
         this.search()
         this.loading = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast('Error loading reports.')
       }

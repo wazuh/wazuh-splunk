@@ -76,9 +76,7 @@ define(['../module'], function(module) {
       try {
         const check = await this.apiReq(`/${node}/configuration/validation`)
         if (check && check.data && !check.data.error) {
-          if (
-            check.data.data.status !== 'OK'
-          ) {
+          if (check.data.data.status !== 'OK') {
             const errObj = {}
             errObj['badConfig'] = true
             errObj['errMsg'] = [...new Set(check.data.data.details)]

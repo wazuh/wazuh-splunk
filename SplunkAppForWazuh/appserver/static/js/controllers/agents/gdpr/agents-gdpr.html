@@ -43,101 +43,103 @@
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="gdpr">GDPR</md-nav-item>
   </md-nav-bar>
 
-  <!-- Filter bar -->
-  <wazuh-bar></wazuh-bar>
 
-  <div ng-show="loadingVizz">
-    <div align='center'>
-      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+  <div>
+    <!-- Filter bar -->
+    <wazuh-bar></wazuh-bar>
+
+    <div ng-show="loadingVizz">
+      <div align='center'>
+        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      </div>
     </div>
-  </div>
-  <div ng-show="!loadingVizz">
-    <div layout="row" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-show='gdprTabs'>
-        <md-tabs md-selected="selectedPciIndex" class="wz-md-tab" md-border-bottom>
-          <md-tab ng-repeat="tab in gdprTabs" label="{{tab.title}}">
-            <div class="md-padding">
-              <span class="wz-headline-title">GDPR Requirement: {{tab.title}}</span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div layout="row" class="wz-padding-top-10 wz-line-height">
-                <div>{{tab.content}}</div>
+    <div ng-show="!loadingVizz">
+      <div layout="row" layout-align="center stretch">
+        <md-card flex class="wz-md-card" ng-show='gdprTabs'>
+          <md-tabs md-selected="selectedPciIndex" class="wz-md-tab" md-border-bottom>
+            <md-tab ng-repeat="tab in gdprTabs" label="{{tab.title}}">
+              <div class="md-padding">
+                <span class="wz-headline-title">GDPR Requirement: {{tab.title}}</span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div layout="row" class="wz-padding-top-10 wz-line-height">
+                  <div>{{tab.content}}</div>
+                </div>
               </div>
-            </div>
-          </md-tab>
-        </md-tabs>
-      </md-card>
+            </md-tab>
+          </md-tabs>
+        </md-card>
+      </div>
+
+      <!-- first row -->
+      <div layout="row" layout-align="center stretch">
+        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top 5 rule groups
+              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'groupsVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='groupsVizz'></div>
+          </md-card-content>
+        </md-card>
+
+
+        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top 5 rules
+              <span class="wz-text-link" style="float:right;" ng-click="expand(5,'rulesVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='rulesVizz'></div>
+          </md-card-content>
+        </md-card>
+
+        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Top 5 GDPR requirements
+              <span class="wz-text-link" style="float:right;" ng-click="expand(6,'top5GDPR')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='top5GDPR'></div>
+          </md-card-content>
+        </md-card>
+
+
+      </div>
+
+
+
+      <div layout="row" layout-align="center stretch">
+        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">GDPR Requirements
+              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'gdprRequirementsVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='gdprRequirementsVizz'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+
+      <div layout="row" layout-align="center stretch">
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Alerts summary
+              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummaryVizz')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='alertsSummaryVizz'></div>
+          </md-card-content>
+        </md-card>
+      </div>
     </div>
-
-    <!-- first row -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 5 rule groups
-            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'groupsVizz')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='groupsVizz'></div>
-        </md-card-content>
-      </md-card>
-
-
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 5 rules
-            <span class="wz-text-link" style="float:right;" ng-click="expand(5,'rulesVizz')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='rulesVizz'></div>
-        </md-card-content>
-      </md-card>
-
-      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Top 5 GDPR requirements
-            <span class="wz-text-link" style="float:right;" ng-click="expand(6,'top5GDPR')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='top5GDPR'></div>
-        </md-card-content>
-      </md-card>
-
-
-    </div>
-
-
-
-    <div layout="row" layout-align="center stretch">
-      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">GDPR Requirements
-            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'gdprRequirementsVizz')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='gdprRequirementsVizz'></div>
-        </md-card-content>
-      </md-card>
-    </div>
-
-    <div layout="row" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alerts summary
-            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummaryVizz')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertsSummaryVizz'></div>
-        </md-card-content>
-      </md-card>
-    </div>
-  </div>
 </md-content>

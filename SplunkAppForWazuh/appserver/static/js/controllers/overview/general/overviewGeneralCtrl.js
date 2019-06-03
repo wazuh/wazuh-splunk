@@ -1,23 +1,35 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   LinearChart,
   PieChart,
   Table,
-  TimePicker,
   SearchHandler,
   RawTableDataService
 ) {
   'use strict'
 
-  class OverviewGeneral {
+  class OverviewGeneral extends DashboardMain {
     /**
      * Class Overview General
      * @param {*} $urlTokenModel
@@ -43,21 +55,18 @@ define([
       reportingEnabled,
       awsExtensionEnabled
     ) {
-      this.currentDataService = $currentDataService
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.rootScope = $rootScope
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
-      this.reportingService = $reportingService
       this.scope.awsExtensionEnabled = awsExtensionEnabled
       this.apiReq = $requestService.apiReq
-      this.tableResults = {}
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        $urlTokenModel.handleValueChange
-      )
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      this.state = $state
+      this.notification = $notificationService
 
       try {
         this.pollingEnabled =
@@ -70,20 +79,9 @@ define([
         console.error('e', error)
       }
 
-      this.notification = $notificationService
-
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
       this.scope.expandArray = [false, false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -168,7 +166,7 @@ define([
           'agentsSummaryVizz',
           this.scope
         ),
-        new RawTableDataService(
+        (this.agentsSummaryTable = new RawTableDataService(
           'agentsSummaryTable',
           `${
             this.filters
@@ -177,7 +175,7 @@ define([
           '$result$',
           this.scope,
           'Agents Summary'
-        )
+        ))
       ]
     }
 
@@ -186,7 +184,6 @@ define([
      */
     $onInit() {
       try {
-        this.scope.loadingVizz = true
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
           this.apiReq(`/agents/summary`)
@@ -200,7 +197,7 @@ define([
                 ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) *
                   100
                 : 0
-              if (!this.scope.$$phase) this.scope.$digest()
+              this.scope.$applyAsync()
             })
             .catch(error => {
               this.notification.showErrorToast(
@@ -254,51 +251,16 @@ define([
             [
               'alertLevEvoVizz',
               'alertsVizz',
-              'alertsEvoTop5Agents',
-              'top5ruleGroups',
-              'agentStatus'
+              'alertsEvoTop10Agents',
+              'top10ruleGroups',
+              'agentsSummaryVizz'
             ],
             this.reportMetrics,
             this.tableResults
           )
-
-        this.scope.$on('$destroy', () => {
-          this.timePicker.destroy()
-          this.vizz.map(vizz => vizz.destroy())
-        })
-
-        this.scope.$on('loadingReporting', (event, data) => {
-          this.scope.loadingReporting = data.status
-        })
-
-        this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) {
-            this.scope.loadingVizz = false
-            this.setReportMetrics()
-          } else {
-            this.vizz.map(v => {
-              if (v.constructor.name === 'RawTableData') {
-                this.tableResults[v.name] = v.results
-              }
-            })
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        })
       } catch (error) {
         console.error('error on init ', error)
       }
-    }
-
-    /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
     }
 
     /**
@@ -311,29 +273,6 @@ define([
         'Authentication failure': this.scope.authFailure,
         'Authentication success': this.scope.authSuccess
       }
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
     }
   }
 

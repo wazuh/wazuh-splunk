@@ -1,25 +1,25 @@
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/map/map',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   PieChart,
   AreaChart,
   ColumnChart,
   Table,
   Map,
-  TimePicker,
   RawTableDataService
 ) {
   'use strict'
 
-  class AWS {
+  class AWS extends DashboardMain {
     /**
      * Class constructor
      * @param {*} $rootScope
@@ -38,24 +38,19 @@ define([
       $reportingService,
       reportingEnabled
     ) {
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
-      this.urlTokenModel = $urlTokenModel
-      this.state = $state
-      this.notification = $notificationService
-      this.reportingService = $reportingService
-      this.currentDataService = $currentDataService
-      this.tableResults = {}
       this.currentDataService.addFilter(
         `{"rule.groups{}":"amazon", "implicit":true}`
       )
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
+      this.notification = $notificationService
+
       this.scope.expandArray = [
         false,
         false,
@@ -66,7 +61,8 @@ define([
         false,
         false
       ]
-      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -165,17 +161,6 @@ define([
 
     $onInit() {
       try {
-        this.scope.loadingVizz = true
-        this.scope.$on('deletedFilter', event => {
-          event.stopPropagation()
-          this.launchSearches()
-        })
-
-        this.scope.$on('barFilter', event => {
-          event.stopPropagation()
-          this.launchSearches()
-        })
-
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
             'overview-aws',
@@ -195,71 +180,10 @@ define([
             {}, //Metrics
             this.tableResults
           )
-
-        /**
-         * On controller destroy
-         */
-        this.scope.$on('$destroy', () => {
-          this.timePicker.destroy()
-          this.vizz.map(vizz => vizz.destroy())
-        })
-
-        this.scope.$on('loadingReporting', (event, data) => {
-          this.scope.loadingReporting = data.status
-        })
-
-        this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) {
-            this.scope.loadingVizz = false
-          } else {
-            this.vizz.map(v => {
-              if (v.constructor.name === 'RawTableData') {
-                this.tableResults[v.name] = v.results
-              }
-            })
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        })
       } catch (error) {
         console.error('error on init ', error)
       }
     }
-
-    /**
-     * Gets filters and launches search
-     */
-    launchSearches() {
-      this.filters = this.getFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
-    }
   }
-
   app.controller('awsCtrl', AWS)
 })
