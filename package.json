@@ -12,6 +12,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "chai": "^4.2.0",
     "chai-match": "^1.1.1",
     "eslint": "^5.6.1",
@@ -21,7 +22,8 @@
     "esprima": "^4.0.1",
     "mocha": "^5.2.0",
     "needle": "^2.2.4",
-    "prettier": "^1.14.3"
+    "prettier": "^1.14.3",
+    "rollup": "^1.13.1"
   },
   "scripts": {
     "pretty": "prettier --single-quote --semi=false --write SplunkAppForWazuh/**/*.js !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
