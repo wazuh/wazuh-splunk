@@ -423,6 +423,10 @@ table span.badge {
   margin-top: -10px !important;
 }
 
+.wz-margin-top--30 {
+  margin-top: -30px !important;
+}
+
 .wz-margin-top-15 {
   margin-top: 15px !important;
 }
