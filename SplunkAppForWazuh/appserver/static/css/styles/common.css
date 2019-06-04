@@ -1396,6 +1396,17 @@ th.w-350 {
   padding-top: 30px;
 }
 
+.agent-stats-box{
+  padding: 10px 0 0 10px;
+  font-size: 14px;
+  background-color: white;
+  margin: 17px;
+  box-shadow: 0 2px 2px -1px rgba(153, 153, 153, 0.3), 0 1px 5px -2px rgba(153, 153, 153, 0.3);
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  clear: both;
+}
+
 .wz-no-padding-bottom {
   padding-bottom: 0px !important;
 }
@@ -1692,8 +1703,23 @@ input:focus {
 }
 
 .agentField {
-  font-size: 18px;
-    font-weight: 400;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.agentField.total {
+  color: #35468d !important;
+  background-color: none !important;
+}
+
+.agentField.active {
+  color: #396e3e !important;
+  background-color: none !important;
+}
+
+.agentField.disconnected {
+  color: #c74d4d !important;
+  background-color: none !important;
 }
 
 .wz-margin-side-20 {
@@ -1935,7 +1961,7 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 .welcome-card-main-title  {
   text-align: center;
   width: 50%;
-  font-size: 16px!important;
+  font-size: 14px!important;
   text-transform: uppercase;
   margin: -38px auto 0 auto;
   background: white;
@@ -1948,7 +1974,7 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
   border: 1px solid #d9d9d9 !important;
   border-radius: 5px !important;
   height: 115px !important;
-  width: 400px !important;
+  width: 360px !important;
   margin: 10px 0px -10px 10px !important;
   box-shadow: 0 2px 2px -1px rgba(153, 153, 153, 0.3), 0 1px 5px -2px rgba(153, 153, 153, 0.3) !important;
 }
