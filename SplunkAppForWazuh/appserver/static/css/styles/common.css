@@ -1676,9 +1676,9 @@ input:focus {
   font-size: 21px !important;
 }
 
-.wz-wc-item:hover {
+/*.wz-wc-item:hover {
   background: #fafcfe;
-}
+}*/
 
 .wz-wc-item:hover h4 {
   text-decoration: underline;
@@ -1923,4 +1923,29 @@ label.wz-icon-loupe  input {
 
 md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
   background-color: rgb(57, 110, 62);
+}
+
+.welcome-card-main-title  {
+  text-align: center;
+  width: 50%;
+  font-size: 16px!important;
+  text-transform: uppercase;
+  margin: -38px auto 0 auto;
+  background: white;
+  border: 1px solid #d9d9d9;
+  border-radius: 50px;
+  padding: 0 20px;
+}
+
+.mini-card {
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 5px !important;
+  height: 115px !important;
+  width: 400px !important;
+  margin: 10px 0px -10px 10px !important;
+  box-shadow: 0 2px 2px -1px rgba(153, 153, 153, 0.3), 0 1px 5px -2px rgba(153, 153, 153, 0.3) !important;
+}
+
+.hover-mini-card:hover {
+  transform: translateY(-2px);
 }
