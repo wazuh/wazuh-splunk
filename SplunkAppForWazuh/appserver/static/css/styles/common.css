@@ -1387,6 +1387,13 @@ th.w-350 {
 .agent-details-box{
   padding: 10px 0 0 10px;
   font-size: 14px;
+  background-color: white;
+  margin: 8px;
+  box-shadow: 0 2px 2px -1px rgba(153, 153, 153, 0.3), 0 1px 5px -2px rgba(153, 153, 153, 0.3);
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  clear: both;
+  padding-top: 30px;
 }
 
 .wz-no-padding-bottom {
@@ -1685,8 +1692,8 @@ input:focus {
 }
 
 .agentField {
-  font-weight: bold !important;
-  color: #396e3e !important;
+  font-size: 18px;
+    font-weight: 400;
 }
 
 .wz-margin-side-20 {
@@ -1948,4 +1955,28 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 
 .hover-mini-card:hover {
   transform: translateY(-2px);
+}
+
+.agent-name-title {
+  text-align: center;
+  font-weight: bold;
+  width: 400px;
+  font-size: 16px!important;
+  text-transform: uppercase;
+  background: white;
+  border: 1px solid #d9d9d9;
+  border-radius: 50px;
+  margin: 0 auto;
+  height: 25px;
+  line-height: 1.5;
+  margin-bottom: -22px;
+}
+
+.wz-float-agent {
+  float: left;
+  width: calc(100% - 8px);
+}
+
+.wz-text-align-center { 
+  text-align: center;
 }
