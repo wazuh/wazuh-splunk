@@ -357,7 +357,7 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
 
 .kuiLocalSearchInput:focus {
   border:none !important;
-  border-bottom: 1px solid rgb(64, 136, 231) !important;
+  border-bottom: 1px solid rgb(57, 110, 62) !important;
 }
 
 
@@ -525,8 +525,8 @@ div.uil-ring-css {
 .wz-button {
   color: white !important;
   transition: none !important;
-  background-color: rgb(57, 110, 62) !important;
-  border-color: rgb(57, 110, 62) !important;
+  background-color: rgb(28, 58, 31) !important;
+  border-color: rgb(28, 58, 31) !important;
 }
 
 .wz-button-flat {
@@ -593,7 +593,7 @@ div.uil-ring-css {
 }
 
 .wz-input-container input.ng-invalid.ng-touched {
-  border-color: rgba(59, 70, 226, 0.904) !important;
+  border-color: rgb(57, 110, 62) !important;
 }
 
 .wz-autocomplete md-autocomplete-wrap {
@@ -630,7 +630,7 @@ div.uil-ring-css {
 }
 
 .blue {
-  background-color: rgb(57, 110, 62);
+  background-color: rgb(28, 58, 31);
 }
 
 .grey {
@@ -1028,7 +1028,7 @@ md-dialog{
 
 .edit-cancel-button {
   border: none !important;
-  color: rgb(57, 110, 62) !important;
+  color: rgb(28, 58, 31) !important;
   background: #fafafa !important;
 }
 
@@ -1469,8 +1469,8 @@ tfoot.no-border tr td {
 /* New buttons style */
 .wz-button-empty {
   background: white !important;
-  border-color: rgb(57, 110, 62) !important;
-  color: rgb(57, 110, 62) !important;
+  border-color: rgb(28, 58, 31) !important;
+  color: rgb(28, 58, 31) !important;
   font-weight: 400 !important;
   border-width: 1px !important;
 }
@@ -1479,7 +1479,7 @@ tfoot.no-border tr td {
 .wz-button-empty:not([disabled]):hover,
 .wz-button-empty-flat:not([disabled]):hover {
   background-color: #e4f5e6 !important;
-  color: rgb(57, 110, 62) !important;
+  color: rgb(28, 58, 31) !important;
 }
 
 .wz-button-empty-yellow {
@@ -1625,7 +1625,7 @@ input:focus {
   height: 50px !important;
   background-color: #e4f5e6 !important;
   border-left: solid 3px !important;
-  border-color:rgb(57, 110, 62) !important;
+  border-color:rgb(28, 58, 31) !important;
   color: #006193 !important;
 }
 
@@ -1925,11 +1925,11 @@ label.wz-icon-loupe  input {
 }
 
 .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
-  background-color: #ecffee!important;
+  background-color: #c8efac7a !important;
 }
 
 md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
-  background-color: rgb(57, 110, 62);
+  background-color: rgb(28, 58, 31);
 }
 
 .welcome-card-main-title  {

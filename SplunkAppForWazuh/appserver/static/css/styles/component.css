@@ -75,7 +75,7 @@ md-dialog-actions button {
 }
 
 .wz-nav-item button.md-primary {
-  color: rgb(57, 110, 62) !important;
+  color: rgb(28, 58, 31) !important;
 }
 
 .wz-nav-item button.md-unselected {
@@ -83,8 +83,8 @@ md-dialog-actions button {
 }
 
 .wz-nav-bar md-nav-ink-bar {
-  color: rgb(57, 110, 62) !important;
-  background: rgb(57, 110, 62) !important;
+  color: rgb(28, 58, 31) !important;
+  background: rgb(28, 58, 31) !important;
 }
 
 .wz-nav-bar md-nav-ink-bar._md-left,
