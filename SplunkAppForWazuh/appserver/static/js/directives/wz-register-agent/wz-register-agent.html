@@ -57,14 +57,15 @@
             <div ng-if="newInstall" class="complete-install-div">
               <!-- If Redhat / Centos -->
               <div ng-if="config.osSelected === 'redhat'">
-                1. Add the Wazuh repository.
+                Install wazuh
                 <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
+                  rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br><br>
+
                   cat > /etc/yum.repos.d/wazuh.repo <<\EOF<br>
                     [wazuh_repo]<br>
                     gpgcheck=1<br>
@@ -73,56 +74,29 @@
                     name=Wazuh repository<br>
                     baseurl=https://packages.wazuh.com/3.x/yum/<br>
                     protect=1<br>
-                    EOF
-                </div>
-                2. Deploy the installation.
-                <div class="register-snippet" id="step2">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
-                    <md-tooltip md-direction="right" class="wz-tooltip">
-                      Copy to clipboard
-                    </md-tooltip>
-                  </span>
-                  WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
+                    EOF<br><br>
+
+                    WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
                 </div>
               </div>
               <!-- If Debian / Ubuntu -->
               <div ng-if="config.osSelected === 'debian'">
-                1. Install the necessaries utilities.
+                Install wazuh
                 <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  apt-get install curl apt-transport-https lsb-release
-                </div>
-                2. Install the Wazuh repository GPG key.
-                <div class="register-snippet" id="step2">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
-                    <md-tooltip md-direction="right" class="wz-tooltip">
-                      Copy to clipboard
-                    </md-tooltip>
-                  </span>
-                  curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
-                </div>
-                3. Add the repository.
-                <div class="register-snippet" id="step3">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
-                    <md-tooltip md-direction="right" class="wz-tooltip">
-                      Copy to clipboard
-                    </md-tooltip>
-                  </span>
+                  apt-get install curl apt-transport-https lsb-release<br><br>
+
+                  curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -<br><br>
+
                   echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee
-                  /etc/apt/sources.list.d/wazuh.list<br>
-                  apt-get update
-                </div>
-                4. Deploy the installation.
-                <div class="register-snippet" id="step4">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step4')"></wz-svg>
-                    <md-tooltip md-direction="right" class="wz-tooltip">
-                      Copy to clipboard
-                    </md-tooltip>
-                  </span>
+                  /etc/apt/sources.list.d/wazuh.list<br><br>
+
+                  apt-get update<br><br>
+
                   WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
                 </div>
               </div>
