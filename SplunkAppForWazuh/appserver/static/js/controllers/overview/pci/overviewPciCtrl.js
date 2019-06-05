@@ -78,7 +78,7 @@ define([
           'pciReqVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'pciReqVizz',
           this.scope
         ),
@@ -86,7 +86,7 @@ define([
           'evoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="*" | timechart count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="*" | timechart count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'evoVizz',
           this.scope
         ),
@@ -94,7 +94,7 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'agentsVizz',
           this.scope
         ),
@@ -102,7 +102,7 @@ define([
           'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'requirementsByAgentVizz',
           this.scope
         ),

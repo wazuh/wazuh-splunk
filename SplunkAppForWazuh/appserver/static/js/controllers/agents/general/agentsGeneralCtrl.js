@@ -154,13 +154,13 @@ define([
           'alertLevelEvoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.level=*| timechart count by rule.level{}`,
+          } sourcetype=wazuh rule.level=*| timechart count by rule.level{}  `,
           'alertLevelEvoVizz',
           this.scope
         ),
         new ColumnChart(
           'alertsVizz',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count`,
+          `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
           'alertsVizz',
           this.scope
         ),

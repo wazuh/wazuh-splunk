@@ -91,7 +91,7 @@ define([
           'hipaaReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | stats count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | stats count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
           'hipaaReqSearchVizz',
           this.scope
         ),
@@ -99,7 +99,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.groups{} | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.groups{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
@@ -107,7 +107,7 @@ define([
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.description | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.description | rename count as "Count", rule.hipaa{} as "Requirements"`,
           'topRules',
           this.scope
         ),
@@ -115,7 +115,7 @@ define([
           'top5hipaa',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.hipaa{} | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
           'top5hipaa',
           this.scope
         ),
@@ -123,7 +123,7 @@ define([
           'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by rule.level | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by rule.level | rename count as "Count", rule.hipaa{} as "Requirements"`,
           'ruleLevelDistribution',
           this.scope
         ),
@@ -131,7 +131,7 @@ define([
           'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=*| chart  count(rule.hipaa{}) by rule.hipaa{},agent.name  | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=*| chart  count(rule.hipaa{}) by rule.hipaa{},agent.name  | rename count as "Count", rule.hipaa{} as "Requirements"`,
           'reqByAgentsVizz',
           this.scope
         ),

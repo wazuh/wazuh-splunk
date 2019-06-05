@@ -103,7 +103,7 @@ define([
           'pciReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'pciReqSearchVizz',
           this.scope
         ),
@@ -111,7 +111,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
@@ -119,7 +119,7 @@ define([
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'topRules',
           this.scope
         ),
@@ -127,7 +127,7 @@ define([
           'top5Pcidss',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'top5Pcidss',
           this.scope
         ),
@@ -135,7 +135,7 @@ define([
           'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'ruleLevelDistribution',
           this.scope
         ),
@@ -143,7 +143,7 @@ define([
           'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "PCI DSS Requirements"`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'reqByAgentsVizz',
           this.scope
         ),

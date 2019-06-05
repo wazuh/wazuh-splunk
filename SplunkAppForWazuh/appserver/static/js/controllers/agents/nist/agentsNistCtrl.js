@@ -90,7 +90,7 @@ define([
           'nistReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Nist 800-53 Requirement"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'nistReqSearchVizz',
           this.scope
         ),
@@ -98,7 +98,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.groups{} | rename count as "Count", rule.nist_800_53{} as "Nist 800-53 Requirement"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.groups{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
@@ -106,7 +106,7 @@ define([
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.description | rename count as "Count", rule.nist_800_53{} as "Nist 800-53 Requirement"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.description | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'topRules',
           this.scope
         ),
@@ -114,7 +114,7 @@ define([
           'top5nist',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.nist_800_53{}  | rename count as "Count", rule.nist_800_53{} as "Nist 800-53 Requirement"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.nist_800_53{}  | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'top5nist',
           this.scope
         ),
@@ -122,7 +122,7 @@ define([
           'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by rule.level  | rename count as "Count", rule.nist_800_53{} as "Nist 800-53 Requirement"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by rule.level  | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'ruleLevelDistribution',
           this.scope
         ),
@@ -130,7 +130,7 @@ define([
           'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=*| chart  count(rule.nist_800_53{}) by rule.nist_800_53{},agent.name | rename count as "Count", rule.nist_800_53{} as "Nist 800-53 Requirement"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=*| chart  count(rule.nist_800_53{}) by rule.nist_800_53{},agent.name | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'reqByAgentsVizz',
           this.scope
         ),
@@ -146,7 +146,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as "Nist 800-53 Requirement", rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as "Requirements", rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
