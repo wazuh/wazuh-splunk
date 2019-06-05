@@ -2,7 +2,7 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v3.9.2 - Splunk Enterprise v7.2.6 - Revision 27
+## Wazuh v3.9.2 - Splunk Enterprise v7.3.0 - Revision 27
 
 ### Added
 
@@ -15,7 +15,11 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fix error when adding an api with invalid fields format [#729](https://github.com/wazuh/wazuh-splunk/pull/729).
 - Fix missing parameters in Dev Tools request [#731](https://github.com/wazuh/wazuh-splunk/pull/731).
 
-## Wazuh v3.9.1 - Splunk Enterprise v7.2.6 - Revision 26
+## Wazuh v3.9.1 - Splunk Enterprise v7.2.6 / v7.3.0 - Revision 26
+
+### Added
+
+- Support for Splunk Enterprise v7.3.0
 
 ### Changed
 
