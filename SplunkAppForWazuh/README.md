@@ -5,38 +5,54 @@
 [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
 [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
 
- Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
-* * *
+Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
+
+---
+
 ![](https://i.imgur.com/HkMjiwJ.png)
+
 ### Documentation
 
--   [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installing-splunk/index.html)
+- [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installing-splunk/index.html)
 
+## Branches
+
+- `stable` branch on correspond to the last Wazuh app stable version.
+- `master` branch contains the latest code, be aware of possible bugs on this branch.
 
 ### Requisites
+
 1. An already installed Wazuh Manager with access to the API.
-2. __Splunk Universal Forwarder__ where Wazuh Manager is installed.
-3. At least one __Splunk Enterprise indexer__.
+2. **Splunk Universal Forwarder** where Wazuh Manager is installed.
+3. At least one **Splunk Enterprise indexer**.
 
 ## Installation
 
-| Splunk version | Wazuh version | Installation                                                                                               |
-| :------------: | :---------------: | :--------------------------------------------------------------------------------------------------------- |
-|      7.0.3     |       3.2.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.1_7.0.3.tar.gz> |
-|      7.1.1     |       3.2.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.2_7.1.1.tar.gz> |
-|      7.1.1     |       3.2.3       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.3_7.1.1.tar.gz> |
-|      7.1.1     |       3.2.4       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.4_7.1.1.tar.gz> |
-|      7.1.1     |       3.3.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.3.0_7.1.1.tar.gz> |
-|      7.1.1     |       3.3.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.3.1_7.1.1.tar.gz> |
-|      7.1.2     |       3.4.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.4.0_7.1.2.tar.gz> |
-|      7.1.2     |       3.5.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.5.0_7.1.2.tar.gz> |
-|      7.1.2     |       3.6.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.6.0_7.1.2.tar.gz> |
-|      7.1.3     |       3.6.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.6.1_7.1.3.tar.gz> |
-|      7.2.0     |       3.7.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.0.tar.gz> |
-|      7.2.1     |       3.7.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.1.tar.gz> |
-|      7.2.1     |       3.7.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.1_7.2.1.tar.gz> |
-|      7.2.1     |       3.7.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.2_7.2.1.tar.gz> |
-|      7.2.3     |       3.8.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.0_7.2.3.tar.gz> |
+| Splunk version | Wazuh version | Installation                                                   |
+| :------------: | :-----------: | :------------------------------------------------------------- |
+|     7.0.3      |     3.2.1     | <https://packages.wazuh.com/3.x/splunkapp/v3.2.1_7.0.3.tar.gz> |
+|     7.1.1      |     3.2.2     | <https://packages.wazuh.com/3.x/splunkapp/v3.2.2_7.1.1.tar.gz> |
+|     7.1.1      |     3.2.3     | <https://packages.wazuh.com/3.x/splunkapp/v3.2.3_7.1.1.tar.gz> |
+|     7.1.1      |     3.2.4     | <https://packages.wazuh.com/3.x/splunkapp/v3.2.4_7.1.1.tar.gz> |
+|     7.1.1      |     3.3.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.3.0_7.1.1.tar.gz> |
+|     7.1.1      |     3.3.1     | <https://packages.wazuh.com/3.x/splunkapp/v3.3.1_7.1.1.tar.gz> |
+|     7.1.2      |     3.4.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.4.0_7.1.2.tar.gz> |
+|     7.1.2      |     3.5.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.5.0_7.1.2.tar.gz> |
+|     7.1.2      |     3.6.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.6.0_7.1.2.tar.gz> |
+|     7.1.3      |     3.6.1     | <https://packages.wazuh.com/3.x/splunkapp/v3.6.1_7.1.3.tar.gz> |
+|     7.2.0      |     3.7.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.0.tar.gz> |
+|     7.2.1      |     3.7.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.1.tar.gz> |
+|     7.2.1      |     3.7.1     | <https://packages.wazuh.com/3.x/splunkapp/v3.7.1_7.2.1.tar.gz> |
+|     7.2.1      |     3.7.2     | <https://packages.wazuh.com/3.x/splunkapp/v3.7.2_7.2.1.tar.gz> |
+|     7.2.3      |     3.8.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.8.0_7.2.3.tar.gz> |
+|     7.2.3      |     3.8.1     | <https://packages.wazuh.com/3.x/splunkapp/v3.8.1_7.2.3.tar.gz> |
+|     7.2.3      |     3.8.2     | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.3.tar.gz> |
+|     7.2.4      |     3.8.2     | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.4.tar.gz> |
+|     7.2.5      |     3.8.2     | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.5.tar.gz> |
+|     7.2.6      |     3.8.2     | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.6.tar.gz> |
+|     7.2.6      |     3.9.0     | <https://packages.wazuh.com/3.x/splunkapp/v3.9.0_7.2.6.tar.gz> |
+|     7.2.6      |     3.9.1     | <https://packages.wazuh.com/3.x/splunkapp/v3.9.1_7.2.6.tar.gz> |
+|     7.3.0      |     3.9.1     | <https://packages.wazuh.com/3.x/splunkapp/v3.9.1_7.3.0.tar.gz> |
 
 ## Upgrade
 
@@ -62,6 +78,6 @@ Find more information about this on the [LICENSE](LICENSE) file.
 
 ## References
 
--   [Wazuh website](https://wazuh.com)
--   [Wazuh documentation](https://documentation.wazuh.com)
--   [Splunk documentation](http://docs.splunk.com/Documentation)
+- [Wazuh website](https://wazuh.com)
+- [Wazuh documentation](https://documentation.wazuh.com)
+- [Splunk documentation](http://docs.splunk.com/Documentation)
