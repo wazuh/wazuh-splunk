@@ -496,6 +496,12 @@ define([
           'width: calc(70% - 7px); !important'
         )
       }
+
+      setTimeout(x => {
+          this.apiInputBox.refresh()
+          this.apiOutputBox.refresh()
+      },1);
+      
     }
 
     /**
@@ -549,7 +555,7 @@ define([
             })
             const currentPlayButton = $('#play_button').offset()
             $('#play_button').offset({
-              top: cords.top + 10,
+              top: cords.top + 35,
               left: currentPlayButton.left
             })
           }
