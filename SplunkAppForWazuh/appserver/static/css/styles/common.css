@@ -2005,3 +2005,14 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 .wz-text-align-center { 
   text-align: center;
 }
+
+a:hover {
+  color: #396e3e !important;
+}
+
+.pagination>ul>li>a:hover, .pagination>ul>li>span:hover {
+  color: #396e3e !important;
+  background: #ebeeef !important;
+  border-color: #c3cbd4 !important;
+  text-decoration: none !important;
+}
