@@ -106,17 +106,6 @@
 </div>
 <!-- End Filters and Realtime button section -->
 
-<!-- Logs section -->
-<div layout="row" layout-padding ng-if="logsPath" ng-hide="true">
-  <wazuh-table flex extra-limit="100" path="logsPath" implicit-sort="'timestamp'" wz-config-viewer="true"
-    keys="['timestamp',{value:'tag',size:2},'level',{value:'description',size:4,nosortable:true}]" rows-per-page="15">
-  </wazuh-table>
-</div>
-<div layout="row" layout-padding ng-show="XMLContent && !emptyResults">
-  <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true" />
-</div>
-<!-- End Logs section -->
-
 <!-- Empty results -->
 <div layout="row" class="wz-margin-20" layout-padding ng-show="emptyResults">
   <div flex class="euiCallOut euiCallOut--warning wz-margin-top-17">
