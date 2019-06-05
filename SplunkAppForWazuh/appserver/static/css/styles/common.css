@@ -1974,7 +1974,6 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
   border: 1px solid #d9d9d9 !important;
   border-radius: 5px !important;
   height: 115px !important;
-  width: 360px !important;
   margin: 10px 0px -10px 10px !important;
   box-shadow: 0 2px 2px -1px rgba(153, 153, 153, 0.3), 0 1px 5px -2px rgba(153, 153, 153, 0.3) !important;
 }

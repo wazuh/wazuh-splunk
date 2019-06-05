@@ -194,10 +194,6 @@ md-chip {
   margin-bottom: 0;
 }
 
-.euiFlexGrid--gutterLarge.euiFlexGrid--halves > .euiFlexItem {
-  -ms-flex-preferred-size: calc(50% - 24px);
-  flex-basis: calc(50% - 24px);
-}
 .euiFlexGrid--gutterLarge > .euiFlexItem {
   margin: 12px;
 }
@@ -208,19 +204,22 @@ md-chip {
   flex-grow: 0;
 }
 
-
 .euiFlexGrid--gutterLarge.euiFlexGrid--halves > .euiFlexItem {
     -ms-flex-preferred-size: calc(50% - 24px);
     flex-basis: calc(50% - 24px);
+    max-width: calc(50% - 24px);
 }
+
 .euiFlexGrid--gutterLarge > .euiFlexItem {
     margin: 12px;
 }
+
 .euiFlexGrid > .euiFlexItem {
     -webkit-box-flex: 0;
     -ms-flex-positive: 0;
     flex-grow: 0;
 }
+
 .euiFlexGroup .euiFlexItem {
     -webkit-box-flex: 1;
     -ms-flex-positive: 1;
