@@ -99,11 +99,11 @@ define([
         this.scope.searchBarModel = {
           name: [],
           status: ['Active', 'Disconnected', 'Never connected'],
-          group: groups ? groups.sort() : [],
-          version: versions ? versions : [],
-          'os.platform': os ? os.map(x => x.platform).sort() : [],
-          'os.version': os ? os.map(x => x.version).sort() : [],
-          'os.name': os ? os.map(x => x.name).sort() : []
+          group: groups ? groups.sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : [],
+          version: versions ? versions.sort((a, b) => { return a.toString().localeCompare(b.toString(), undefined, { numeric: true, sensitivity: 'base' }) }) : [],
+          'os.platform': os ? os.map(x => x.platform).sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : [],
+          'os.version': os ? os.map(x => x.version).sort((a, b) => { return a.toString().localeCompare(b.toString(), undefined, { numeric: true, sensitivity: 'base' }) }) : [],
+          'os.name': os ? os.map(x => x.name).sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : []
         }
 
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
