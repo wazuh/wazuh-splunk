@@ -657,6 +657,10 @@ div.uil-ring-css {
   color: black !important;
 }
 
+.md-tab{
+  font-weight: 100 !important;
+}
+
 .wazuhNavDiscover .euiTab ,
 .wazuhNavDiscover .euiText {
   font-size: 14px !important;

@@ -80,7 +80,7 @@ define([
           'hipaaReqVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | stats count by rule.hipaa{}`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | stats count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
           'hipaaReqVizz',
           this.scope
         ),
@@ -88,7 +88,7 @@ define([
           'evoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="*" | timechart count by rule.hipaa{}`,
+          } sourcetype=wazuh rule.hipaa{}="*" | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
           'evoVizz',
           this.scope
         ),
@@ -96,7 +96,7 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by agent.name`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by agent.name | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
           'agentsVizz',
           this.scope
         ),
@@ -104,7 +104,7 @@ define([
           'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=*| chart  count(rule.hipaa{}) by rule.hipaa{},agent.name`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=*| chart  count(rule.hipaa{}) by rule.hipaa{},agent.name | rename count as "Count", rule.hipaa{} as "HIPAA Requirements"`,
           'requirementsByAgentVizz',
           this.scope
         ),
@@ -120,7 +120,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as "HIPAA Requirements", rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

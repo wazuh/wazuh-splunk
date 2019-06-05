@@ -82,7 +82,7 @@ define([
           'gdprRequirements',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "GDPR Requirements"`,
           'gdprRequirements',
           this.scope
         ),
@@ -90,7 +90,7 @@ define([
           'evoViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "GDPR Requirements"`,
           'evoViz',
           this.scope
         ),
@@ -98,7 +98,7 @@ define([
           'agentsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "GDPR Requirements"`,
           'agentsViz',
           this.scope
         ),
@@ -106,7 +106,7 @@ define([
           'requirementsByAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "GDPR Requirements"`,
           'requirementsByAgents',
           this.scope
         ),
