@@ -46,6 +46,7 @@
 /* Style to mark active or when-hover buttons on the toolbar */
 .wz-menu-button.wz-menu-active{
   border-bottom: 6px solid rgb(57, 110, 62);
+  color: #5cc05c !important;
 }
 
 .wz-menu-button-settings.wz-menu-active{
