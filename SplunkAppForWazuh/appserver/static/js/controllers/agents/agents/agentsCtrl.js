@@ -72,6 +72,7 @@ define([
           groups
         ] = parsedResult
 
+        this.scope.noAgents = summary.Total - 1 < 1
         this.scope.agentsCountActive = summary.Active - 1
         this.scope.lastAgent = lastAgent.items[0]
           ? lastAgent.items[0]
@@ -128,7 +129,8 @@ define([
     /**
      * On controller loads
      */
-    $onInit() {
+    $onInit() {      
+      this.scope.addingAgents = false
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
       this.scope.isClusterEnabled =
@@ -143,6 +145,9 @@ define([
         this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
+
+      this.scope.addNewAgent = () => this.addNewAgent()
+      this.scope.closeAddAgent = () => this.closeAddAgent()
 
       this.scope.offsetTimestamp = (text, time) => {
         try {
@@ -248,6 +253,23 @@ define([
         )
       }
     }
+
+    /**
+     * Switchs view to add a new agent
+     */
+    addNewAgent() {
+      this.scope.addingAgents = true
+      this.scope.$applyAsync()
+    }
+
+    /**
+     * Switchs view to cancel the process to add a new agent
+     */
+    closeAddAgent() {
+      this.scope.addingAgents = false
+      this.scope.$applyAsync()
+    }
+
 
     /**
      * Reload list of agents
