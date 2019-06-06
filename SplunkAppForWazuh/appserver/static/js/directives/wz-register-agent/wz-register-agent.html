@@ -64,19 +64,9 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH<br><br>
-
-                  cat > /etc/yum.repos.d/wazuh.repo <<\EOF<br>
-                    [wazuh_repo]<br>
-                    gpgcheck=1<br>
-                    gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH<br>
-                    enabled=1<br>
-                    name=Wazuh repository<br>
-                    baseurl=https://packages.wazuh.com/3.x/yum/<br>
-                    protect=1<br>
-                    EOF<br><br>
-
-                    WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent
+                  rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH;
+                  printf "[wazuh_repo]\ngpgcheck=1\ngpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH\nenabled=1\nname=Wazuh repository\nbaseurl=https://packages.wazuh.com/3.x/yum/\nprotect=1" > /etc/yum.repos.d/wazuh.repo;
+                  WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent -y
                 </div>
               </div>
               <!-- If Debian / Ubuntu -->
@@ -88,16 +78,11 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  apt-get install curl apt-transport-https lsb-release<br><br>
-
-                  curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -<br><br>
-
-                  echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee
-                  /etc/apt/sources.list.d/wazuh.list<br><br>
-
-                  apt-get update<br><br>
-
-                  WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent
+                  apt-get install curl apt-transport-https lsb-release;
+                  curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -;
+                  echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list;
+                  apt-get update;
+                  WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent -y
                 </div>
               </div>
               <!-- If Windows -->
