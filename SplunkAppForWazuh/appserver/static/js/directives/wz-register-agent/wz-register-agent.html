@@ -58,35 +58,32 @@
               <!-- If Redhat / Centos -->
               <div ng-if="config.osSelected === 'redhat'">
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  rpm --import http://packages.wazuh.com/key/GPG-KEY-WAZUH;
-                  printf "[wazuh_repo]\ngpgcheck=1\ngpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH\nenabled=1\nname=Wazuh repository\nbaseurl=https://packages.wazuh.com/3.x/yum/\nprotect=1" > /etc/yum.repos.d/wazuh.repo;
                   WAZUH_MANAGER_IP="{{config.managerIp}}" yum install wazuh-agent -y
                 </div>
               </div>
               <!-- If Debian / Ubuntu -->
               <div ng-if="config.osSelected === 'debian'">
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  apt-get install curl apt-transport-https lsb-release;
-                  curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -;
-                  echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list;
-                  apt-get update;
                   WAZUH_MANAGER_IP="{{config.managerIp}}" apt-get install wazuh-agent -y
                 </div>
               </div>
               <!-- If Windows -->
               <div ng-if="config.osSelected === 'windows'">
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -97,7 +94,8 @@
               <!-- If MacOS -->
               <div ng-if="config.osSelected === 'macos'">
                 <div class="register-snippet" id="step1">
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -126,7 +124,8 @@
                 <!-- If the agent is Linux -->
                 <div ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
                   1. Set the manager IP.
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -135,7 +134,8 @@
                     sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -144,7 +144,8 @@
                     /var/ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -161,7 +162,8 @@
                       class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
                       (x86)\ossec-agent\ossec.conf</b>:
                   </div>
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -175,7 +177,8 @@
                     &lt;/client&gt;
                   </div>
                   2. Register the agent against the manager.
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -213,7 +216,8 @@
                 <!-- If the agent is MacOs -->
                 <div ng-if="config.osSelected === 'macos'">
                   1. Set the manager IP.
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -222,7 +226,8 @@
                     sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -231,7 +236,8 @@
                     /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
-                  <span class="clip cursor-pointer"><wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
+                  <span class="clip cursor-pointer">
+                    <wz-svg icon="copy" color="#00445a" ng-click="toClipboard('step3')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
