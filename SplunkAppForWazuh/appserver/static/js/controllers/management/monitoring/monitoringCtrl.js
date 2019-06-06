@@ -45,12 +45,14 @@ define([
 
       this.notification = $notificationService
       this.apiReq = $requestService.apiReq
+
       this.vizz = [
         new LinearChart(
           'alertSummary',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertSummary',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new LinearChart(
           'alertNodeSummary',
@@ -58,7 +60,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart span=1h count by cluster.node`,
           'alertNodeSummary',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'topNodes',
@@ -70,7 +73,8 @@ define([
           'overviewNode',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
           'overviewNode',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         )
       ]
       const parsedResult = monitoringInfo.map(item =>
@@ -113,6 +117,11 @@ define([
       this.scope.goConfiguration = () => this.goConfiguration()
       this.scope.goBack = () => this.goBack()
       this.scope.goNodes = () => this.goNodes()
+
+      this.scope.$on('loadingContent', (event, data) => {
+        this.scope.loadingContent = data.status
+        event.preventDefault()
+      })
 
       this.scope.$on('wazuhShowClusterNode', async (event, parameters) => {
         event.stopPropagation()
@@ -190,7 +199,7 @@ define([
               }
             }
           }
-          if (!this.scope.$$phase) this.scope.$digest()
+          this.scope.$applyAsync()
         } catch (error) {
           this.notification.showErrorToast(error.message || error)
         }
@@ -230,7 +239,7 @@ define([
       this.scope.showConfig = false
       this.scope.showNodes = false
       this.scope.currentNode = false
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -265,7 +274,7 @@ define([
         this.scope.showNodes = false
       }
       this.scope.currentNode = null
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**

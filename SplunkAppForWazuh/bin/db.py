@@ -41,6 +41,7 @@ class database():
 
         """
         try:
+            self.logger.debug("bin.db: Inserting API.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             if not '_key' in result:
@@ -61,6 +62,7 @@ class database():
 
         """
         try:
+            self.logger.debug("bin.db: Updating API.")
             if not '_key' in obj:
                 raise Exception('Missing Key')
             id = obj['_key']
@@ -84,6 +86,7 @@ class database():
 
         """
         try:
+            self.logger.debug("bin.db: Removing API.")
             if not _key:
                 raise Exception('Missing ID in remove DB module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
@@ -101,6 +104,7 @@ class database():
 
     def all(self, session_key=False):
         try:
+            self.logger.debug("bin.db: Getting all APIs .")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(kvstoreUri, headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
@@ -111,6 +115,7 @@ class database():
 
     def get(self, id, session_key=False):
         try:
+            self.logger.debug("bin.db: Getting an API.")
             if not id:
                 raise Exception('Missing ID')
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'

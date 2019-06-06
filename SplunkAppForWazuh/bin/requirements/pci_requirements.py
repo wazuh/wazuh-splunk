@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Wazuh app - GDPR requirements module.
+Wazuh app - PCI DSS requirements module.
 
 Copyright (C) 2015-2019 Wazuh, Inc.
 

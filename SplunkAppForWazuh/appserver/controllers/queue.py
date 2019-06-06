@@ -36,9 +36,7 @@ class Queue(controllers.BaseController):
             self.logger = log()
             controllers.BaseController.__init__(self)
         except Exception as e:
-            self.logger.error(
-                "Error in Jobs queue module constructor: %s" % (e))
-
+            self.logger.error("queue: Error in Jobs queue module constructor: %s" % (e))
     @expose_page(must_login=False, methods=['POST'])
     def add_job(self, **kwargs):
         """Add job to the queue.
@@ -49,6 +47,7 @@ class Queue(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("queue: Adding job to the jobs queue.")
             now = time.time()
             exec_time = now + float(kwargs['delay'])
             del kwargs['delay']
@@ -56,5 +55,5 @@ class Queue(controllers.BaseController):
             self.queue.insert_job(job)
             return jsonbak.dumps({"data": "Job added to the queue.", "error": 0})
         except Exception as e:
-            self.logger.error("Error adding job: %s" % (e))
+            self.logger.error("queue: Error adding job: %s" % (e))
             return jsonbak.dumps({'error': str(e)})

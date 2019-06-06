@@ -24,276 +24,307 @@
       </md-nav-item>
     </md-nav-bar>
 
-    <!-- Back button and title -->
-    <div layout="row" layout-align="start center">
-      <!-- Back button -->
-      <md-button class="md-icon-button" aria-label="Back to rules list" ui-sref="mg-rules">
-        <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Back
-        </md-tooltip>
-      </md-button>
-      <!-- Rule title -->
-      <h1 class="font-size-20" ng-bind-html="colorRuleArg(ruleInfo.description)"></h1>
+    <!-- Loading content -->
+    <div ng-show="loadingContent">
+      <div class="loader-bar" ng-show="loadingContent">
+        <div class="loader"></div>
+      </div>
     </div>
-    <!-- End back button, title and status indicator -->
+    <div>
+      <!-- Back button and title -->
+      <div layout="row" layout-align="start center">
+        <!-- Back button -->
+        <md-button class="md-icon-button" aria-label="Back to rules list" ui-sref="mg-rules">
+          <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+          <md-tooltip md-direction="bottom" class="wz-tooltip">
+            Back
+          </md-tooltip>
+        </md-button>
+        <!-- Rule title -->
+        <h1 class="font-size-20" ng-bind-html="colorRuleArg(ruleInfo.description)"></h1>
+      </div>
+      <!-- End back button, title and status indicator -->
 
-    <!-- Rule information ribbon -->
-    <div layout="row" ng-if="!editingFile" class="wz-margin-9">
-      <md-card flex class="wz-metric-color">
-        <md-card-content layout="row" class="wz-padding-metric">
-          <div flex="15" ng-if="ruleInfo.id" class="wz-text-truncatable">
-            ID:
-            <span class="wz-text-bold">{{ ruleInfo.id }}</span>
-          </div>
-          <div flex="15" ng-if="ruleInfo.level || ruleInfo.level == 0" class="wz-text-truncatable">
-            Level:
-            <span class="wz-text-bold wz-text-link"
-              ng-click="addDetailFilter('level', ruleInfo.level)">{{ ruleInfo.level }}
-              <md-tooltip md-direction="bottom" class="wz-tooltip">
-                Filter by this level
-              </md-tooltip>
-            </span>
-          </div>
-          <div flex="35" ng-if="ruleInfo.file" class="wz-text-truncatable">
-            File:
-            <span class="wz-text-bold wz-text-link"
-              ng-click="addDetailFilter('file', ruleInfo.file)">{{ ruleInfo.file }}
-              <md-tooltip md-direction="bottom" class="wz-tooltip">
-                Filter by this file
-              </md-tooltip>
-            </span>
-          </div>
-          <div flex="35" ng-if="ruleInfo.path" class="wz-text-truncatable">
-            Path:
-            <span class="wz-text-bold wz-text-link"
-              ng-click="addDetailFilter('path', ruleInfo.path)">{{ ruleInfo.path }}
-              <md-tooltip md-direction="bottom" class="wz-tooltip">
-                Filter by this path
-              </md-tooltip>
-            </span>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-    <!-- End Rule information ribbon -->
+      <!-- Rule information ribbon -->
+      <div layout="row" ng-if="!editingFile" class="wz-margin-9">
+        <md-card flex class="wz-metric-color">
+          <md-card-content layout="row" class="wz-padding-metric">
+            <div flex="15" ng-if="ruleInfo.id" class="wz-text-truncatable">
+              ID:
+              <span class="wz-text-bold">{{ ruleInfo.id }}</span>
+            </div>
+            <div flex="15" ng-if="ruleInfo.level || ruleInfo.level == 0" class="wz-text-truncatable">
+              Level:
+              <span class="wz-text-bold wz-text-link"
+                ng-click="addDetailFilter('level', ruleInfo.level)">{{ ruleInfo.level }}
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Filter by this level
+                </md-tooltip>
+              </span>
+            </div>
+            <div flex="35" ng-if="ruleInfo.file" class="wz-text-truncatable">
+              File:
+              <span class="wz-text-bold wz-text-link"
+                ng-click="addDetailFilter('file', ruleInfo.file)">{{ ruleInfo.file }}
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Filter by this file
+                </md-tooltip>
+              </span>
+            </div>
+            <div flex="35" ng-if="ruleInfo.path" class="wz-text-truncatable">
+              Path:
+              <span class="wz-text-bold wz-text-link"
+                ng-click="addDetailFilter('path', ruleInfo.path)">{{ ruleInfo.path }}
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Filter by this path
+                </md-tooltip>
+              </span>
+            </div>
+          </md-card-content>
+        </md-card>
+      </div>
+      <!-- End Rule information ribbon -->
 
-    <!-- Edit button -->
-    <div layout="row" ng-if="!editingFile">
-      <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)"
-        class="btn wz-button-empty btn-ruleset ng-scope">
-        <wz-svg icon="pencil"></wz-svg> Edit
-        {{ ruleInfo.file }}
-      </button>
-    </div>
+      <!-- Edit button -->
+      <div layout="row" ng-if="!editingFile">
+        <button ng-if="ruleInfo.file && isLocal && adminMode" ng-click="editRule(ruleInfo.file)"
+          class="btn wz-button-empty btn-ruleset ng-scope">
+          <wz-svg icon="pencil"></wz-svg> Edit
+          {{ ruleInfo.file }}
+        </button>
+      </div>
 
-    <!-- Rest of rule information -->
-    <div layout="column" layout-align="start">
-      <div layout="row" layout-align="start stretch">
-        <!-- Details section -->
-        <md-card flex class="wz-md-card" ng-if="ruleInfo.details && !editingFile">
-          <md-card-content>
-            <span class="wz-headline-title wz-margin-left--10"><i class="fa fa-fw fa-info" aria-hidden="true"></i>
-              Details</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" class="wz-margin-top-10">
-              <div class="euiFlexItem">
-                <dl ng-repeat="(key, value) in ruleInfo.details" class="dl-rules">
-                  <dt>{{ key }}</dt>
-                  <dd class="dd-rules">
-                    <div ng-if="!isArray(value)" class="wz-word-break">
-                      <span ng-if="!isObject(value)" class="wz-text-right color-grey">{{ value }}</span>
-                      <span ng-if="isObject(value)" class="color-grey">
-                        <span ng-repeat="(key, value) in value">{{ key }}: {{ value }} <span ng-if="!$last">|</span>
+      <!-- Rest of rule information -->
+      <div layout="column" layout-align="start">
+        <div layout="row" layout-align="start stretch">
+          <!-- Details section -->
+          <md-card flex class="wz-md-card" ng-if="ruleInfo.details && !editingFile">
+            <md-card-content>
+              <span class="wz-headline-title wz-margin-left--10"><i class="fa fa-fw fa-info" aria-hidden="true"></i>
+                Details</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div layout="row" class="wz-margin-top-10">
+                <div class="euiFlexItem">
+                  <dl ng-repeat="(key, value) in ruleInfo.details" class="dl-rules">
+                    <dt>{{ key }}</dt>
+                    <dd class="dd-rules">
+                      <div ng-if="!isArray(value)" class="wz-word-break">
+                        <span ng-if="!isObject(value)" class="wz-text-right color-grey">{{ value }}</span>
+                        <span ng-if="isObject(value)" class="color-grey">
+                          <span ng-repeat="(key, value) in value">{{ key }}: {{ value }} <span ng-if="!$last">|</span>
+                          </span>
                         </span>
+                      </div>
+                      <span ng-if="isArray(value)" ng-repeat="v in value track by $index"
+                        class="wz-text-right color-grey">
+                        {{ v }}{{ $last ? "" : ",&nbsp;" }}
                       </span>
-                    </div>
-                    <span ng-if="isArray(value)" ng-repeat="v in value track by $index"
-                      class="wz-text-right color-grey">
-                      {{ v }}{{ $last ? "" : ",&nbsp;" }}
-                    </span>
-                  </dd>
-                </dl>
+                    </dd>
+                  </dl>
+                </div>
               </div>
-            </div>
-            <div layout="row" class="wz-padding-top-10" ng-repeat="(key, value) in ruleInfo.details"
-              ng-if="isArray(value)">
-              <span class="wz-word-break-rule">{{ key }}</span>
-              <span ng-if="isArray(value)" ng-repeat="v in value track by $index"
-                class="wz-text-right color-grey wz-margin-left-7">{{ v }}{{ $last ? "" : ",&nbsp;" }}</span>
-            </div>
-          </md-card-content>
-        </md-card>
-        <!-- End details section -->
+              <div layout="row" class="wz-padding-top-10" ng-repeat="(key, value) in ruleInfo.details"
+                ng-if="isArray(value)">
+                <span class="wz-word-break-rule">{{ key }}</span>
+                <span ng-if="isArray(value)" ng-repeat="v in value track by $index"
+                  class="wz-text-right color-grey wz-margin-left-7">{{ v }}{{ $last ? "" : ",&nbsp;" }}</span>
+              </div>
+            </md-card-content>
+          </md-card>
+          <!-- End details section -->
 
-        <!-- Groups section -->
-        <md-card ng-if="ruleInfo.groups.length > 0 && !editingFile" flex class="wz-md-card">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> Groups</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" layout-align="start start" layout-wrap>
-              <dl class="dl-rules">
-                <dd class="dd-rules" ng-repeat="item in ruleInfo.groups">
-                  <span class="wz-text-link" tooltip="Filter by this group" tooltip-placement="bottom"
-                    ng-click="addDetailFilter('group', item)">
-                    {{ item }}
-                    <md-tooltip md-direction="bottom" class="wz-tooltip">
-                      Filter by this group
-                    </md-tooltip>
-                  </span>
-                </dd>
-              </dl>
-            </div>
-          </md-card-content>
-        </md-card>
-        <!-- End groups section -->
-
-        <!-- PCI section -->
-        <md-card ng-if="(ruleInfo.pci.length > 0 || ruleInfo.gdpr.length > 0) && !editingFile" flex class="wz-md-card">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> Compliance
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row" class="wz-margin-top-10" ng-if="ruleInfo.pci.length">
-              <div class="euiFlexItem">
+          <!-- Groups section -->
+          <md-card ng-if="ruleInfo.groups.length > 0 && !editingFile" flex class="wz-md-card">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title wz-margin-left--10">
+                <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> Groups</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div layout="row" layout-align="start start" layout-wrap>
                 <dl class="dl-rules">
-                  <dt>PCI DSS</dt>
-                  <dd class="dd-rules" ng-repeat="item in ruleInfo.pci">
-                    <span class="wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom"
-                      ng-click="addDetailFilter('pci', item)">
+                  <dd class="dd-rules" ng-repeat="item in ruleInfo.groups">
+                    <span class="wz-text-link" tooltip="Filter by this group" tooltip-placement="bottom"
+                      ng-click="addDetailFilter('group', item)">
                       {{ item }}
+                      <md-tooltip md-direction="bottom" class="wz-tooltip">
+                        Filter by this group
+                      </md-tooltip>
                     </span>
                   </dd>
                 </dl>
               </div>
-            </div>
-            <div layout="row" class="wz-margin-top-10" ng-if="ruleInfo.gdpr.length">
-              <div class="euiFlexItem">
-                <dl class="dl-rules">
-                  <dt>GDPR</dt>
-                  <dd class="dd-rules" ng-repeat="item in ruleInfo.gdpr">
-                    <span class="wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom"
-                      ng-click="addDetailFilter('gdpr', item)">
-                      {{ item }}
-                    </span>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </md-card-content>
-        </md-card>
-        <!-- End PCI section -->
-      </div>
+            </md-card-content>
+          </md-card>
+          <!-- End groups section -->
 
-      <div layout="row" layout-align="start stretch"
-        ng-if="isArray(ruleInfo.details.regex) || isArray(ruleInfo.details.match) || isArray(ruleInfo.details.prematch)">
-        <!-- Regex section -->
-        <md-card flex class="wz-md-card" ng-if="isArray(ruleInfo.details.regex)">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
-              Regex</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div ng-repeat="item in ruleInfo.details.regex">
-              <div layout="row" class="wz-padding-top-10" layout-wrap>
-                <span>{{ item }}</span>
+          <!-- PCI section -->
+          <md-card ng-if="(ruleInfo.pci.length > 0 || ruleInfo.gdpr.length > 0) && !editingFile" flex
+            class="wz-md-card">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title wz-margin-left--10">
+                <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> Compliance
+              </span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div layout="row" class="wz-margin-top-10" ng-if="ruleInfo.pci.length">
+                <div class="euiFlexItem">
+                  <dl class="dl-rules">
+                    <dt>PCI DSS</dt>
+                    <dd class="dd-rules" ng-repeat="item in ruleInfo.pci">
+                      <span class="wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom"
+                        ng-click="addDetailFilter('pci', item)">
+                        {{ item }}
+                      </span>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="euiFlexItem" style="padding-left: 40px;">
+                  <dl class="dl-rules">
+                    <dt>HIPAA</dt>
+                    <dd class="dd-rules" ng-repeat="item in ruleInfo.hipaa">
+                      <span class="wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom"
+                        ng-click="addDetailFilter('hipaa', item)">
+                        {{ item }}
+                      </span>
+                    </dd>
+                  </dl>
+                </div>
               </div>
-            </div>
-          </md-card-content>
-        </md-card>
-        <!-- End regex section -->
-
-        <!-- Match section -->
-        <md-card flex class="wz-md-card" ng-if="isArray(ruleInfo.details.match)">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> Match</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div ng-repeat="item in ruleInfo.details.match">
-              <div layout="row" class="wz-padding-top-10" layout-wrap>
-                <span>{{ item }}</span>
+              <div layout="row" class="wz-margin-top-10" ng-if="ruleInfo.gdpr.length">
+                <div class="euiFlexItem">
+                  <dl class="dl-rules">
+                    <dt>GDPR</dt>
+                    <dd class="dd-rules" ng-repeat="item in ruleInfo.gdpr">
+                      <span class="wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom"
+                        ng-click="addDetailFilter('gdpr', item)">
+                        {{ item }}
+                      </span>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="euiFlexItem" style="padding-left: 40px;">
+                  <dl class="dl-rules">
+                    <dt>NIST 800-53</dt>
+                    <dd class="dd-rules" ng-repeat="item in ruleInfo['nist-800-53']">
+                      <span class="wz-text-link" tooltip="Filter by this requirement" tooltip-placement="bottom"
+                        ng-click="addDetailFilter('nist-800-53', item)">
+                        {{ item }}
+                      </span>
+                    </dd>
+                  </dl>
+                </div>
               </div>
-            </div>
-          </md-card-content>
-        </md-card>
-        <!-- End match section -->
-
-        <!-- Prematch section -->
-        <md-card flex class="wz-md-card" ng-if="isArray(ruleInfo.details.prematch)">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-retweet" aria-hidden="true"></i>
-              Prematch</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div ng-repeat="item in ruleInfo.details.prematch">
-              <div layout="row" class="wz-padding-top-10" layout-wrap>
-                <span>{{ item }}</span>
-              </div>
-            </div>
-          </md-card-content>
-        </md-card>
-        <!-- End prematch section -->
-      </div>
-
-      <!-- Related rules section -->
-      <md-card class="wz-md-card" ng-if="ruleInfo && !editingFile">
-        <md-card-contents>
-          <div layout="row">
-            <h1 class="md-headline wz-headline">
-              <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i>
-              Related rules
-            </h1>
-          </div>
-          <div layout="row" class="md-padding">
-            <wazuh-table custom-columns="true" flex path="'/rules'"
-              implicit-filter="[{ name:'file',value: ruleInfo.file}]"
-              keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
-              allow-click="true">
-            </wazuh-table>
-          </div>
-          <div ng-show="!editingFile" layout="row" class="ruleset-csv-formater">
-            <span flex></span>
-            <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">
-              <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
-                height="16" viewBox="0 0 16 16">
-                <path
-                  d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
-                </path>
-              </svg>&nbsp;Formatted
-            </a>
-          </div>
-        </md-card-contents>
-      </md-card>
-      <!-- End related rules section -->
-      <!-- XML editor for rules -->
-      <div ng-show="editingFile">
-        <div layout="row" class="md-padding wz-padding-top-0">
-          <button class="md-icon-button cursor-pointer" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()">
-            <i class="fa fa-fw fa-close" aria-hidden="true"></i>
-            <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
-          </button>
-          <span ng-if="adminMode" ng-click="closeEditingFile()" class="btn wz-button-cancel">Cancel</span>
-          <button ng-if="adminMode" ng-disabled="xmlHasErrors || saveIncomplete"
-            ng-click="saveRuleConfig(ruleInfo.file)" class="btn wz-button-empty pull-right wz-margin-left-10">
-            <span ng-show="!xmlHasErrors && adminMode">
-              <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                aria-hidden="true"></i>
-              Save file</span>
-            <span ng-show="xmlHasErrors && adminMode" class="btn-danger"><i aria-hidden="true"
-                class="fa fa-fw fa-exclamation-triangle"></i>
-              XML format error</span>
-          </button>
+            </md-card-content>
+          </md-card>
+          <!-- End PCI section -->
         </div>
-        <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
-          <wz-xml-file-editor style="height: inherit;" file-name="rules" data="fetchedXML" target-name="ruleInfo.file"
-            valid-fn="xmlIsValid(valid)" close-fn="closeEditingFile()">
-          </wz-xml-file-editor>
+
+        <div layout="row" layout-align="start stretch"
+          ng-if="isArray(ruleInfo.details.regex) || isArray(ruleInfo.details.match) || isArray(ruleInfo.details.prematch)">
+          <!-- Regex section -->
+          <md-card flex class="wz-md-card" ng-if="isArray(ruleInfo.details.regex)">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title wz-margin-left--10">
+                <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                Regex</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div ng-repeat="item in ruleInfo.details.regex">
+                <div layout="row" class="wz-padding-top-10" layout-wrap>
+                  <span>{{ item }}</span>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
+          <!-- End regex section -->
+
+          <!-- Match section -->
+          <md-card flex class="wz-md-card" ng-if="isArray(ruleInfo.details.match)">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title wz-margin-left--10">
+                <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> Match</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div ng-repeat="item in ruleInfo.details.match">
+                <div layout="row" class="wz-padding-top-10" layout-wrap>
+                  <span>{{ item }}</span>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
+          <!-- End match section -->
+
+          <!-- Prematch section -->
+          <md-card flex class="wz-md-card" ng-if="isArray(ruleInfo.details.prematch)">
+            <md-card-content class="wazuh-column">
+              <span class="wz-headline-title wz-margin-left--10">
+                <i class="fa fa-fw fa-retweet" aria-hidden="true"></i>
+                Prematch</span>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <div ng-repeat="item in ruleInfo.details.prematch">
+                <div layout="row" class="wz-padding-top-10" layout-wrap>
+                  <span>{{ item }}</span>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
+          <!-- End prematch section -->
         </div>
+
+        <!-- Related rules section -->
+        <md-card class="wz-md-card" ng-if="ruleInfo && !editingFile">
+          <md-card-contents>
+            <div layout="row">
+              <h1 class="md-headline wz-headline">
+                <i class="fa fa-fw fa-link wz-padding-left-16" aria-hidden="true"></i>
+                Related rules
+              </h1>
+            </div>
+            <div layout="row" class="md-padding">
+              <wazuh-table custom-columns="true" flex path="'/rules'"
+                implicit-filter="[{ name:'file',value: ruleInfo.file}]"
+                keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},{value:'hipaa',nosortable:true},{value:'nist-800-53',nosortable:true},'level']"
+                allow-click="true">
+              </wazuh-table>
+            </div>
+            <div ng-show="!editingFile" layout="row" class="ruleset-csv-formater">
+              <span flex></span>
+              <a class="small" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">
+                <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
+                  height="16" viewBox="0 0 16 16">
+                  <path
+                    d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
+                  </path>
+                </svg>&nbsp;Formatted
+              </a>
+            </div>
+          </md-card-contents>
+        </md-card>
+        <!-- End related rules section -->
+        <!-- XML editor for rules -->
+        <div ng-show="editingFile">
+          <div layout="row" class="md-padding wz-padding-top-0">
+            <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()">
+              <i class="fa fa-fw fa-close" aria-hidden="true"></i>
+              <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+            </button>
+            <span ng-if="adminMode" ng-click="closeEditingFile()" class="btn wz-button-cancel">Cancel</span>
+            <button ng-if="adminMode" ng-disabled="xmlHasErrors || saveIncomplete"
+              ng-click="saveRuleConfig(ruleInfo.file)" class="btn wz-button-empty pull-right wz-margin-left-10">
+              <span ng-show="!xmlHasErrors && adminMode">
+                <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                  aria-hidden="true"></i>
+                Save file</span>
+              <span ng-show="xmlHasErrors && adminMode" class="btn-danger"><i aria-hidden="true"
+                  class="fa fa-fw fa-exclamation-triangle"></i>
+                XML format error</span>
+            </button>
+          </div>
+          <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
+            <wz-xml-file-editor style="height: inherit;" file-name="rules" data="fetchedXML" target-name="ruleInfo.file"
+              valid-fn="xmlIsValid(valid)" close-fn="closeEditingFile()">
+            </wz-xml-file-editor>
+          </div>
+        </div>
+        <!-- End XML editor-->
+        <!-- End rest of rule information -->
       </div>
-      <!-- End XML editor-->
-      <!-- End rest of rule information -->
     </div>
   </div>
 </div>

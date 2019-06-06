@@ -115,7 +115,7 @@ define(['../module', 'jquery'], function(module, $) {
           this.notification.showSimpleToast('Report in progress')
           return
         }
-        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        this.$rootScope.$applyAsync()
 
         this.vis2png.clear()
 
@@ -166,7 +166,7 @@ define(['../module', 'jquery'], function(module, $) {
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
-        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        this.$rootScope.$applyAsync()
         try {
           const reportingUrl = this.navigationService.updateURLParameter(
             window.location.href,
@@ -321,7 +321,7 @@ define(['../module', 'jquery'], function(module, $) {
           data: JSON.stringify(data)
         })
 
-        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        this.$rootScope.$applyAsync()
         const reportingUrl = this.navigationService.updateURLParameter(
           window.location.href,
           'currentTab',

@@ -1,21 +1,33 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   PieChart,
   Table,
   LinearChart,
-  TimePicker,
   RawTableDataService
 ) {
   'use strict'
 
-  class OverviewFIM {
+  class OverviewFIM extends DashboardMain {
     /**
      * Class File Integrity Monitoring (syscheck)
      * @param {*} $urlTokenModel
@@ -33,38 +45,35 @@ define([
       reportingEnabled,
       awsExtensionEnabled
     ) {
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.awsExtensionEnabled = awsExtensionEnabled
-      this.state = $state
-      this.reportingService = $reportingService
-      $currentDataService.addFilter(
+      this.currentDataService.addFilter(
         `{"rule.groups{}":"syscheck", "implicit":true, "onlyShow":true}`
-      )
-      this.getFilters = $currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
-      this.tableResults = {}
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        $urlTokenModel.handleValueChange
       )
 
       this.scope.expandArray = [false, false, false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
          * Visualizations
          */
-
         new LinearChart(
           'alertsByActionOverTime',
           `${
             this.filters
           } sourcetype=wazuh rule.groups{}=syscheck  | timechart count by syscheck.event`,
           'alertsByActionOverTime',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'top5Agents',
@@ -80,7 +89,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}=syscheck  | timechart count`,
           'eventsSummary',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'ruleDistribution',
@@ -111,7 +121,7 @@ define([
           `${
             this.filters
           } sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
-          'topUsersTable',
+          'topUsersTableToken',
           '$result$',
           this.scope,
           'Top users'
@@ -121,17 +131,6 @@ define([
 
     $onInit() {
       try {
-        this.scope.loadingVizz = true
-        this.scope.$on('deletedFilter', event => {
-          event.stopPropagation()
-          this.launchSearches()
-        })
-
-        this.scope.$on('barFilter', event => {
-          event.stopPropagation()
-          this.launchSearches()
-        })
-
         /**
          * Generates report
          */
@@ -145,75 +144,17 @@ define([
               'top5Agents',
               'eventsSummary',
               'ruleDistribution',
-              'topActions'
+              'topActions',
+              'topUsers'
             ],
             {}, //Metrics
             this.tableResults
           )
-
-        this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) {
-            this.scope.loadingVizz = false
-          } else {
-            this.vizz.map(v => {
-              if (v.constructor.name === 'RawTableData') {
-                this.tableResults[v.name] = v.results
-              }
-            })
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        })
-
-        /**
-         * On controller destroy
-         */
-        this.scope.$on('$destroy', () => {
-          this.timePicker.destroy()
-          this.vizz.map(vizz => vizz.destroy())
-        })
-
-        this.scope.$on('loadingReporting', (event, data) => {
-          this.scope.loadingReporting = data.status
-        })
       } catch (error) {
         console.error('error on init ', error)
       }
     }
-
-    /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.getFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
-    }
   }
+
   app.controller('overviewFimCtrl', OverviewFIM)
 })

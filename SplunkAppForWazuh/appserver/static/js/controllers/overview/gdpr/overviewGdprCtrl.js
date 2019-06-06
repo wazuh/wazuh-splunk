@@ -1,24 +1,24 @@
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   LinearChart,
   ColumnChart,
   PieChart,
   Table,
-  TimePicker,
   Dropdown,
   RawTableDataService
 ) {
   'use strict'
-  class OverviewGDPR {
+  class OverviewGDPR extends DashboardMain {
     /**
      * Class GDPR
      * @param {*} $urlTokenModel
@@ -35,31 +35,23 @@ define([
       $reportingService,
       gdprTabs,
       reportingEnabled,
-      pciExtensionEnabled
+      pciExtensionEnabled,
+      hipaaExtensionEnabled,
+      nistExtensionEnabled
     ) {
-      this.scope = $scope
-      ;(this.scope.reportingEnabled = reportingEnabled),
-        (this.scope.pciExtensionEnabled = pciExtensionEnabled)
-      this.state = $state
-      this.getFilters = $currentDataService.getSerializedFilters
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.filters = this.getFilters()
-      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        $urlTokenModel.handleValueChange
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
       )
+      this.scope.reportingEnabled = reportingEnabled
+      this.scope.pciExtensionEnabled = pciExtensionEnabled
+      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
+      this.scope.nistExtensionEnabled = nistExtensionEnabled
+      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
+
       this.dropdown = new Dropdown(
         'dropDownInputAgent',
         `${
@@ -79,7 +71,8 @@ define([
       })
 
       this.scope.expandArray = [false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -89,7 +82,7 @@ define([
           'gdprRequirements',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'gdprRequirements',
           this.scope
         ),
@@ -97,15 +90,16 @@ define([
           'evoViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"  `,
           'evoViz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'agentsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'agentsViz',
           this.scope
         ),
@@ -113,7 +107,7 @@ define([
           'requirementsByAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'requirementsByAgents',
           this.scope
         ),
@@ -130,17 +124,16 @@ define([
           `${
             this.filters
           } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizToken',
+          'alertsSummaryVizTableToken',
           '$result$',
           this.scope,
-          'Alerts summary'
+          'Alerts Summary'
         )
       ]
     }
 
     $onInit() {
       try {
-        this.scope.loadingVizz = true
         /**
          * Generates report
          */
@@ -151,77 +144,17 @@ define([
             this.filters,
             [
               'gdprRequirements',
+              'groupsViz',
               'agentsViz',
-              'evoViz',
               'requirementsByAgents',
               'alertsSummaryViz'
             ],
             {}, //Metrics,
             this.tableResults
           )
-
-        this.scope.$on('loadingReporting', (event, data) => {
-          this.scope.loadingReporting = data.status
-        })
-
-        this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) {
-            this.scope.loadingVizz = false
-          } else {
-            this.vizz.map(v => {
-              if (v.constructor.name === 'RawTableData') {
-                this.tableResults[v.name] = v.results
-              }
-            })
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        })
-
-        /**
-         * When controller is destroyed
-         */
-        this.scope.$on('$destroy', () => {
-          this.timePicker.destroy()
-          this.dropdown.destroy()
-          this.vizz.map(vizz => vizz.destroy())
-        })
       } catch (error) {} //eslint-disable-line
     }
-
-    /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.getFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
-    }
   }
+
   app.controller('overviewGdprCtrl', OverviewGDPR)
 })

@@ -1,22 +1,34 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   ColumnChart,
   LinearChart,
   Table,
-  TimePicker,
   SearchHandler,
   RawTableDataService
 ) {
   'use strict'
-  class Ciscat {
+  class Ciscat extends DashboardMain {
     /**
      * Class CIS-CAT
      * @param {*} $urlTokenModel
@@ -33,34 +45,19 @@ define([
       reportingEnabled,
       extensions
     ) {
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.state = $state
-      this.reportingService = $reportingService
       this.addFilter = $currentDataService.addFilter
-      this.getFilters = $currentDataService.getSerializedFilters
-      this.tableResults = {}
-      this.currentDataService = $currentDataService
-      this.filters = this.getFilters()
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        $urlTokenModel.handleValueChange
-      )
-
       this.scope.expandArray = [false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
 
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -171,7 +168,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummary',
@@ -192,57 +190,29 @@ define([
           'Alerts Summary'
         )
       ]
-
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'overview-ciscat',
-          'CIS-CAT',
-          this.filters,
-          ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
-          this.reportMetrics,
-          this.tableResults
-        )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-          this.setReportMetrics()
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
-      this.scope.loadingVizz = true
-
-      /**
-       * On controller destroy
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
+      try {
+        this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
+        /**
+         * Generates report
+         */
+        this.scope.startVis2Png = () =>
+          this.reportingService.startVis2Png(
+            'overview-ciscat',
+            'CIS-CAT',
+            this.filters,
+            ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
+            this.reportMetrics,
+            this.tableResults
+          )
+      } catch (error) {
+        console.error('Error onInit ', error)
+      }
     }
 
     /**
@@ -259,37 +229,6 @@ define([
         'Last unknown': this.scope.lastUnknown,
         'Last scan benchmark': this.scope.lastScanBenchmark
       }
-    }
-
-    /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
     }
   }
   app.controller('ciscatCtrl', Ciscat)

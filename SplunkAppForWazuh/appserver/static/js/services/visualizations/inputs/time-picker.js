@@ -11,10 +11,10 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
      * @param {Function} handleValueChange
      */
     constructor(element, handleValueChange) {
-      mvc.Components.revokeInstance(`timePicker`)
+      mvc.Components.revokeInstance('timePicker')
       this.input = new TimeRangeInput(
         {
-          id: `timePicker`,
+          id: 'timePicker',
           default: { latest_time: 'now', earliest_time: '-24h@h' },
           searchWhenChanged: true,
           earliest_time: '$form.when.earliest$',
@@ -43,7 +43,7 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
      * Destroys the TimeRangeInput instance
      */
     destroy() {
-      mvc.Components.revokeInstance(`timePicker`)
+      mvc.Components.revokeInstance('timePicker')
       this.input.off('change')
       this.input = null
     }

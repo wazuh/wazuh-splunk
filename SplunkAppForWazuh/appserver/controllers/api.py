@@ -21,7 +21,7 @@ from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
 from log import log
 from splunk.clilib import cli_common as cli
-from requirements import pci_requirements,gdpr_requirements
+from requirements import pci_requirements,gdpr_requirements,hipaa_requirements,nist_requirements
 import time
 
 class api(controllers.BaseController):
@@ -35,15 +35,18 @@ class api(controllers.BaseController):
         """Constructor."""
         try:
             self.logger = log()
-            controllers.BaseController.__init__(self)
+            self.config =  self.get_config_on_memory()
+            self.timeout = int(self.config['timeout'])
             self.db = database()
+            controllers.BaseController.__init__(self)
             self.session = requestsbak.Session()
             self.session.trust_env = False
         except Exception as e:
-            self.logger.error("Error in API module constructor: %s" % (e))
+            self.logger.error("api: Error in API module constructor: %s" % (e))
 
     def get_credentials(self, the_id):
         try:
+            self.logger.debug("api: Getting API credentials.")
             api = self.db.get(the_id)
             api = jsonbak.loads(api)
             if api:
@@ -65,7 +68,7 @@ class api(controllers.BaseController):
         """Get the configuration from a stanza.
         """
         try:
-            apikeyconf = cli.getConfStanza('config', 'extensions')
+            apikeyconf = cli.getConfStanza('config', 'configuration')
             # parsed_data = jsonbak.dumps(apikeyconf)
         except Exception as e:
             raise e
@@ -74,6 +77,7 @@ class api(controllers.BaseController):
     def clean_keys(self, response):
         """Hide sensible data from API response."""
         try:
+            self.logger.debug("api: Offuscating keys.")
             hide = "********"
             if "data" in response and type(response["data"]) == dict:
                 # Remove agent key
@@ -109,7 +113,7 @@ class api(controllers.BaseController):
                         integ["api_key"] = hide
             return response
         except Exception as e:
-            self.logger.error("Error while cleaning keys in request response: %s" % (e))
+            self.logger.error("api: Error while cleaning keys in request response: %s" % (e))
             raise e
 
     def format_output(self, arr):
@@ -121,6 +125,7 @@ class api(controllers.BaseController):
             A list of dicts
         """
         try:
+            self.logger.debug("api: Formatting data to generate CSV file.")
             if isinstance(arr, list):
                 for item in arr:
                     if isinstance(item, dict):
@@ -152,11 +157,12 @@ class api(controllers.BaseController):
             A dic with the response.
         """    
         try:
+            self.logger.debug("api: Formatting CDB list content to generate CSV file.")
             items = dic["data"]["items"][0]
             dic["data"]["items"] = [{"items": items}]
             return dic
         except Exception as e:
-            self.logger.error("Error formating CDB list: %s" % (e))
+            self.logger.error("api: Error formating CDB list: %s" % (e))
             raise e
 
 
@@ -189,7 +195,9 @@ class api(controllers.BaseController):
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, auth=auth,
                     verify=verify).json()
+            self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))                    
             if request['error'] and request['error'] in socket_errors:
+                self.logger.debug("api: Trying the previous request again.")                    
                 if counter > 0:
                     time.sleep(0.5)
                     return self.make_request(method, url, opt_endpoint, kwargs, auth, verify, counter - 1)
@@ -197,7 +205,7 @@ class api(controllers.BaseController):
                     raise Exception("Tried to execute %s %s three times with no success, aborted." % (method, opt_endpoint))
             return self.clean_keys(request)
         except Exception as e:
-            self.logger.error("Error while requesting to Wazuh API: %s" % (e))
+            self.logger.error("api: Error while requesting to Wazuh API: %s" % (e))
             raise e
 
     def check_daemons(self, url, auth, verify, check_cluster):
@@ -211,8 +219,9 @@ class api(controllers.BaseController):
         cluster_enabled: bool
         """
         try:
+            self.logger.debug("api: Checking Wazuh daemons.")
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
@@ -230,9 +239,11 @@ class api(controllers.BaseController):
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
                 wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
+                checked_debug_msg = "Wazuh daemons ready" if wazuh_ready else "Wazuh daemons not ready yet"
+                self.logger.debug("api: %s" % checked_debug_msg)
                 return wazuh_ready
         except Exception as e:
-            self.logger.error("Error checking daemons: %s" % (e))
+            self.logger.error("api: Error checking daemons: %s" % (e))
             raise e
 
 
@@ -246,15 +257,17 @@ class api(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("api: Checking if Wazuh is ready.")
             if 'apiId' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing API ID.'})
             the_id = kwargs['apiId']
             url, auth, verify, cluster_enabled = self.get_credentials(the_id)
             daemons_ready = self.check_daemons(url, auth, verify, cluster_enabled)
             msg = "Wazuh is now ready." if daemons_ready else "Wazuh not ready yet."
+            self.logger.debug("api: %s" % msg)
             return jsonbak.dumps({"status": "200", "ready": daemons_ready, "message": msg})
         except Exception as e:
-            self.logger.error("Error checking daemons: %s" % (e))
+            self.logger.error("api: Error checking daemons: %s" % (e))
             return jsonbak.dumps({"status": "200", "ready": False, "message": "Error getting the Wazuh daemons status."})
 
     @expose_page(must_login=False, methods=['POST'])
@@ -267,6 +280,7 @@ class api(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("api: Preparing request.")
             if 'apiId' not in kwargs or 'endpoint' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
             if 'method' not in kwargs:
@@ -276,7 +290,7 @@ class api(controllers.BaseController):
                 method = 'GET'
             else:
                 if str(self.getSelfAdminStanza()['admin']) != 'true':
-                    self.logger.error('Admin mode is disabled.')
+                    self.logger.error('api: Admin mode is disabled.')
                     return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
                 method = kwargs['method']
                 del kwargs['method']
@@ -291,7 +305,7 @@ class api(controllers.BaseController):
             request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
             result = jsonbak.dumps(request)
         except Exception as e:
-            self.logger.error("Error making API request: %s" % (e))
+            self.logger.error("api: Error making API request: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
         return result
 
@@ -299,7 +313,8 @@ class api(controllers.BaseController):
     def autocomplete(self, **kwargs):
         """Provisional method for returning the full list of Wazuh API endpoints."""
         try:
-            parsed_json = jsonbak.dumps([{"method":'PUT',"endpoints":[{"name":'/active-response/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/:agent_id/restart',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_custom',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/restart',"args":[]},{"name":'/cluster/:node_id/restart',"args":[{"name":':node_id'}]},{"name":'/cluster/restart',"args":[]},{"name":'/manager/restart',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'DELETE',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/group/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/cache',"args":[]},{"name":'/cache',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'GET',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/config/:component/:configuration',"args":[{"name":':agent_id'},{"name":':component'},{"name":':configuration'}]},{"name":'/agents/:agent_id/group/is_sync',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/key',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_result',"args":[{"name":':agent_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:filename',"args":[{"name":':group_id'},{"name":':filename'}]},{"name":'/agents/name/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/no_group',"args":[]},{"name":'/agents/outdated',"args":[]},{"name":'/agents/stats/distinct',"args":[]},{"name":'/agents/summary',"args":[]},{"name":'/agents/summary/os',"args":[]},{"name":'/cache',"args":[]},{"name":'/cache/config',"args":[]},{"name":'/ciscat/:agent_id/results',"args":[{"name":':agent_id'}]},{"name":'/cluster/:node_id/configuration',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/configuration/validation',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/files',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/info',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs/summary',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/analysisd',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/hourly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/remoted',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/weekly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/status',"args":[{"name":':node_id'}]},{"name":'/cluster/config',"args":[]},{"name":'/cluster/configuration/validation',"args":[]},{"name":'/cluster/healthcheck',"args":[]},{"name":'/cluster/node',"args":[]},{"name":'/cluster/nodes',"args":[]},{"name":'/cluster/nodes/:node_name',"args":[{"name":':node_name'}]},{"name":'/cluster/status',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/sca/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/sca/:agent_id/checks/:id',"args":[{"name":':agent_id'},{"name":':id'}]},{"name":'/decoders',"args":[]},{"name":'/decoders/:decoder_name',"args":[{"name":':decoder_name'}]},{"name":'/decoders/files',"args":[]},{"name":'/decoders/parents',"args":[]},{"name":'/lists',"args":[]},{"name":'/lists/files',"args":[]},{"name":'/manager/configuration',"args":[]},{"name":'/manager/configuration/validation',"args":[]},{"name":'/manager/files',"args":[]},{"name":'/manager/info',"args":[]},{"name":'/manager/logs',"args":[]},{"name":'/manager/logs/summary',"args":[]},{"name":'/manager/stats',"args":[]},{"name":'/manager/stats/analysisd',"args":[]},{"name":'/manager/stats/hourly',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/manager/stats/weekly',"args":[]},{"name":'/manager/status',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/cis',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/pci',"args":[{"name":':agent_id'}]},{"name":'/rules',"args":[]},{"name":'/rules/:rule_id',"args":[{"name":':rule_id'}]},{"name":'/rules/files',"args":[]},{"name":'/rules/gdpr',"args":[]},{"name":'/rules/groups',"args":[]},{"name":'/rules/pci',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/hardware',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netaddr',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netiface',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netproto',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/os',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/packages',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/ports',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/processes',"args":[{"name":':agent_id'}]}]},{"method":'POST',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/group/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:file_name',"args":[{"name":':group_id'},{"name":':file_name'}]},{"name":'/agents/insert',"args":[]},{"name":'/agents/restart',"args":[]},{"name":'/cluster/:node_id/files',"args":[{"name":':node_id'}]},{"name":'/manager/files',"args":[]}]}])
+            self.logger.debug("Returning autocomplet for devtools.")
+            parsed_json = jsonbak.dumps([{"method":'PUT',"endpoints":[{"name":'/active-response/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/:agent_id/restart',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_custom',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/restart',"args":[]},{"name":'/cluster/:node_id/restart',"args":[{"name":':node_id'}]},{"name":'/cluster/restart',"args":[]},{"name":'/manager/restart',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'DELETE',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/group/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/cache',"args":[]},{"name":'/cache',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'GET',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/config/:component/:configuration',"args":[{"name":':agent_id'},{"name":':component'},{"name":':configuration'}]},{"name":'/agents/:agent_id/group/is_sync',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/key',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_result',"args":[{"name":':agent_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:filename',"args":[{"name":':group_id'},{"name":':filename'}]},{"name":'/agents/name/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/no_group',"args":[]},{"name":'/agents/outdated',"args":[]},{"name":'/agents/stats/distinct',"args":[]},{"name":'/agents/summary',"args":[]},{"name":'/agents/summary/os',"args":[]},{"name":'/cache',"args":[]},{"name":'/cache/config',"args":[]},{"name":'/ciscat/:agent_id/results',"args":[{"name":':agent_id'}]},{"name":'/cluster/:node_id/configuration',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/configuration/validation',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/files',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/info',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs/summary',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/analysisd',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/hourly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/remoted',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/weekly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/status',"args":[{"name":':node_id'}]},{"name":'/cluster/config',"args":[]},{"name":'/cluster/configuration/validation',"args":[]},{"name":'/cluster/healthcheck',"args":[]},{"name":'/cluster/node',"args":[]},{"name":'/cluster/nodes',"args":[]},{"name":'/cluster/nodes/:node_name',"args":[{"name":':node_name'}]},{"name":'/cluster/status',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/sca/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/sca/:agent_id/checks/:id',"args":[{"name":':agent_id'},{"name":':id'}]},{"name":'/decoders',"args":[]},{"name":'/decoders/:decoder_name',"args":[{"name":':decoder_name'}]},{"name":'/decoders/files',"args":[]},{"name":'/decoders/parents',"args":[]},{"name":'/lists',"args":[]},{"name":'/lists/files',"args":[]},{"name":'/manager/configuration',"args":[]},{"name":'/manager/configuration/validation',"args":[]},{"name":'/manager/files',"args":[]},{"name":'/manager/info',"args":[]},{"name":'/manager/logs',"args":[]},{"name":'/manager/logs/summary',"args":[]},{"name":'/manager/stats',"args":[]},{"name":'/manager/stats/analysisd',"args":[]},{"name":'/manager/stats/hourly',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/manager/stats/weekly',"args":[]},{"name":'/manager/status',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/cis',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/pci',"args":[{"name":':agent_id'}]},{"name":'/rules',"args":[]},{"name":'/rules/:rule_id',"args":[{"name":':rule_id'}]},{"name":'/rules/files',"args":[]},{"name":'/rules/gdpr',"args":[]},{"name":'/rules/nist-800-53',"args":[]},{"name":'/rules/hipaa',"args":[]},{"name":'/rules/groups',"args":[]},{"name":'/rules/pci',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/hardware',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netaddr',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netiface',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netproto',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/os',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/packages',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/ports',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/processes',"args":[{"name":':agent_id'}]}]},{"method":'POST',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/group/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:file_name',"args":[{"name":':group_id'},{"name":':file_name'}]},{"name":'/agents/insert',"args":[]},{"name":'/agents/restart',"args":[]},{"name":'/cluster/:node_id/files',"args":[{"name":':node_id'}]},{"name":'/manager/files',"args":[]}]}])
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
         return parsed_json
@@ -315,6 +330,7 @@ class api(controllers.BaseController):
             Request parameters
         """
         try:
+            self.logger.debug("api: Generating CSV file.")
             if 'apiId' not in kwargs or 'path' not in kwargs:
                 raise Exception("Invalid arguments or missing params.")
             filters = {}
@@ -349,6 +365,7 @@ class api(controllers.BaseController):
             request = self.session.get(
                 url + opt_endpoint, params=filters, auth=auth,
                 verify=verify).json()
+            self.logger.debug("api: Data obtained for generate CSV file.")
             if ('items' in request['data'] and
                     len(request['data']['items']) > 0):
                 if "?path=etc/list" in opt_endpoint:
@@ -388,19 +405,22 @@ class api(controllers.BaseController):
                             dict_writer.writerows(format_paginated_results)
 
                         csv_result = output_file.getvalue()
+                        self.logger.info("api: CSV generated successfully.")
                 else:
                     csv_result = '[]'
             else:
                 csv_result = '[]'
             output_file.close()
+            self.logger.debug("api: CSV file generated.")
         except Exception as e:
-            self.logger.error("Error in CSV generation!: %s" % (str(e)))
+            self.logger.error("api: Error in CSV generation!: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
         return csv_result
 
     @expose_page(must_login=False, methods=['GET'])
     def pci(self, **kwargs):
         try:
+            self.logger.debug("api: Getting PCI data.")
             if not 'requirement' in kwargs:
                 raise Exception('Missing requirement.')
             pci_description = ''
@@ -431,12 +451,13 @@ class api(controllers.BaseController):
                 result['pci']['description'] = pci_description
                 return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error("Error getting PCI-DSS requirements: %s" % (str(e)))
+            self.logger.error("api: Error getting PCI-DSS requirements: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
 
     @expose_page(must_login=False, methods=['GET'])
     def gdpr(self, **kwargs):
         try:
+            self.logger.debug("api: Getting GDPR data.")
             if not 'requirement' in kwargs:
                 raise Exception('Missing requirement.')
             pci_description = ''
@@ -467,5 +488,90 @@ class api(controllers.BaseController):
                 result['gdpr']['description'] = pci_description
                 return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error("Error getting PCI-DSS requirements: %s" % (str(e)))
+            self.logger.error("api: Error getting PCI-DSS requirements: %s" % (str(e)))
             return jsonbak.dumps({"error": str(e)})
+
+            
+    @expose_page(must_login=False, methods=['GET'])
+    def hipaa(self, **kwargs):
+        try:
+            self.logger.debug("api: Getting HIPAA data.")
+            if not 'requirement' in kwargs:
+                raise Exception('Missing requirement.')
+            hipaa_description = ''
+            requirement = kwargs['requirement']
+            if requirement == 'all':
+                if not 'apiId' in kwargs:
+                    return jsonbak.dumps(hipaa_requirements.hipaa)
+                the_id = kwargs['apiId']
+                url,auth,verify = self.get_credentials(the_id)
+                opt_endpoint = '/rules/hipaa'
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+                if request['error'] != 0:
+                    return jsonbak.dumps({'error':request['error']})
+                data = request['data']['items']
+                result = {}
+                for item in data:
+                    result[item] = hipaa_requirements.hipaa[item]
+                return jsonbak.dumps(result)
+            else:
+                if not requirement in hipaa_requirements.hipaa:
+                    return jsonbak.dumps({'error':'Requirement not found.'})
+                hipaa_description = hipaa_requirements.hipaa[requirement]
+                result = {}
+                result['hipaa'] = {}
+                result['hipaa']['requirement'] = requirement
+                result['hipaa']['description'] = hipaa_description
+                return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error("api: Error getting HIPAA requirements: %s" % (str(e)))
+            return jsonbak.dumps({"error": str(e)})
+         
+    @expose_page(must_login=False, methods=['GET'])
+    def nist(self, **kwargs):
+        try:
+            self.logger.debug("api: Getting NIST 800-53 data.")
+            if not 'requirement' in kwargs:
+                raise Exception('Missing requirement.')
+            nist_description = ''
+            requirement = kwargs['requirement']
+            if requirement == 'all':
+                if not 'apiId' in kwargs:
+                    return jsonbak.dumps(nist_requirements.nist)
+                the_id = kwargs['apiId']
+                url,auth,verify = self.get_credentials(the_id)
+                opt_endpoint = '/rules/nist-800-53'
+                request = self.session.get(
+                    url + opt_endpoint, params=kwargs, auth=auth,
+                    verify=verify).json()
+                if request['error'] != 0:
+                    return jsonbak.dumps({'error':request['error']})
+                data = request['data']['items']
+                result = {}
+                for item in data:
+                    result[item] = nist_requirements.nist[item]
+                return jsonbak.dumps(result)
+            else:
+                if not requirement in nist_requirements.nist:
+                    return jsonbak.dumps({'error':'Requirement not found.'})
+                nist_description = nist_requirements.nist[requirement]
+                result = {}
+                result['nist'] = {}
+                result['nist']['requirement'] = requirement
+                result['nist']['description'] = nist_description
+                return jsonbak.dumps(result)
+        except Exception as e:
+            self.logger.error("api: Error getting NIST 800-53 requirements: %s" % (str(e)))
+            return jsonbak.dumps({"error": str(e)})
+
+
+    def get_config_on_memory(self):
+        try:
+            self.logger.debug("api: Getting configuration on memory.")
+            config = cli.getConfStanza("config", "configuration")
+            return config
+        except Exception as e:
+            self.logger.error("api: Error getting the configuration on memory: %s" % (e))
+            raise e

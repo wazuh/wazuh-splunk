@@ -100,11 +100,11 @@ define([
         this.scope.searchBarModel = {
           name: [],
           status: ['Active', 'Disconnected', 'Never connected'],
-          group: groups ? groups : [],
-          version: versions ? versions : [],
-          'os.platform': os ? os.map(x => x.platform) : [],
-          'os.version': os ? os.map(x => x.version) : [],
-          'os.name': os ? os.map(x => x.name) : []
+          group: groups ? groups.sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : [],
+          version: versions ? versions.sort((a, b) => { return a.toString().localeCompare(b.toString(), undefined, { numeric: true, sensitivity: 'base' }) }) : [],
+          'os.platform': os ? os.map(x => x.platform).sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : [],
+          'os.version': os ? os.map(x => x.version).sort((a, b) => { return a.toString().localeCompare(b.toString(), undefined, { numeric: true, sensitivity: 'base' }) }) : [],
+          'os.name': os ? os.map(x => x.name).sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : []
         }
 
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
@@ -240,7 +240,9 @@ define([
             throw Error('Error fetching agent data')
           }
           if (agentInfo.data.data.items[0].id !== '000') {
-            this.state.go(`agent-overview`, { id: agentInfo.data.data.items[0].id })
+            this.state.go(`agent-overview`, {
+              id: agentInfo.data.data.items[0].id
+            })
           }
         } else {
           throw Error('Cannot fetch agent name')

@@ -15,5 +15,7 @@ define([
   './scap/agentsOpenScapCtrl',
   './ciscat/agentsCiscatCtrl',
   './vulnerabilities/agentsVulnerabilitiesCtrl',
-  './configuration-assessment/agentsConfigurationAssessmentsCtrl'
+  './configuration-assessment/agentsConfigurationAssessmentsCtrl',
+  './hipaa/agentsHipaaCtrl',
+  './nist/agentsNistCtrl',
 ], function() {})

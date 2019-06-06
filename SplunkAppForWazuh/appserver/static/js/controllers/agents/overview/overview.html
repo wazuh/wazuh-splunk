@@ -309,6 +309,16 @@
               ui-sref='ag-gdpr({id:agent.id})' current-tab="'gdpr'"
               description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'">
             </wz-welcome-card>
+            <wz-welcome-card ng-if="hipaa" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'HIPAA'"
+              ui-sref='ag-hipaa({id:agent.id})' current-tab="'gdpr'"
+              description="'Health Insurance Portability and Accountability Act of 1996 (HIPAA) provides data privacy and security provisions for safeguarding medical information.'">
+            </wz-welcome-card>
+            <wz-welcome-card ng-if="nist" class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'NIST 800-53'"
+              ui-sref='ag-nist({id:agent.id})' current-tab="'gdpr'"
+              description="'National Institute of Standards and Technology Special Publication 800-53 (NIST 800-53) sets guidelines for federal information systems.'">
+            </wz-welcome-card>
           </div>
         </div>
       </div>

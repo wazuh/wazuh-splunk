@@ -10,14 +10,13 @@
  * Find more information about this on the LICENSE file.
  */
 
-define([
-  '../../module',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, PieChart, TimePicker) {
+define(['../../module', '../../../dashboardMain'], function(
+  app,
+  DashboardMain
+) {
   'use strict'
 
-  class AgentsCA {
+  class AgentsCA extends DashboardMain {
     /**
      * Class Agents Policy-Monitoring
      * @param {Object} $urlTokenModel
@@ -48,19 +47,15 @@ define([
       extensions,
       $dateDiffService
     ) {
-      this.urlTokenModel = $urlTokenModel
+      super($scope, null, $state, $currentDataService, $urlTokenModel)
       this.rootScope = $rootScope
-      this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
-      this.state = $state
-      this.tableResults = {}
-      this.currentDataService = $currentDataService
       this.agent = agent
       this.configAssess = configAssess
       this.notification = $notificationService
-      this.api = $currentDataService.getApi()
+      this.api = this.currentDataService.getApi()
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       this.csvReq = $csvRequestService
 
@@ -81,7 +76,6 @@ define([
         `{"rule.groups{}":"sca", "implicit":true}`
       )
       this.scope.expandArray = [false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
 
       if (
         this.agent &&
@@ -104,58 +98,7 @@ define([
         this.scope.configAssess = this.configAssess
       }
 
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
-
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.vizz = [
-        /**
-         * Visualizations
-         */
-        new PieChart(
-          'resultDistribution',
-          `${
-            this.filters
-          }  rule.groups{}="sca" | stats count by data.sca.policy,data.sca.check.result `,
-          'resultDistribution',
-          this.scope,
-          { trellisEnabled: true }
-        )
-      ]
-
-      /**
-       * Generates report
-       */
-      this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'agents-ca',
-          'Configuration assessment',
-          this.filters,
-          ['resultDistribution'],
-          {}, //Metrics,
-          this.tableResults,
-          this.agentReportData
-        )
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
+      this.filters = this.getFilters()
     }
 
     $onInit() {
@@ -284,27 +227,30 @@ define([
       this.scope.showPolicyChecks = false
     }
 
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '280px')
+    /**
+     *
+     * Backs to config assessment
+     */
+    backToConfAssess() {
+      this.scope.showPolicyChecks = false
+    }
 
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '280px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
+    /**
+     * Loads policies checks
+     */
+    async loadPolicyChecks(policy) {
+      this.scope.showPolicyChecks = true
+      this.scope.policy = policy
+      const agentId = this.agent.data.data.id
+      this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
+    }
+
+    /**
+     *
+     * Backs to config assessment
+     */
+    backToConfAssess() {
+      this.scope.showPolicyChecks = false
     }
 
     /**
@@ -314,5 +260,6 @@ define([
       this.state.reload()
     }
   }
+
   app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)
 })

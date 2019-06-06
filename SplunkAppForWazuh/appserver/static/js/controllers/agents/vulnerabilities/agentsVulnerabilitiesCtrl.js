@@ -12,24 +12,24 @@
 
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   PieChart,
   AreaChart,
   Table,
-  TimePicker,
   SearchHandler,
   RawTableDataService
 ) {
   'use strict'
 
-  class AgentsVulnerabilities {
+  class AgentsVulnerabilities extends DashboardMain {
     /**
      * Class constructor
      * @param {Object} $urlTokenModel
@@ -50,20 +50,20 @@ define([
       reportingEnabled,
       extensions
     ) {
-      this.urlTokenModel = $urlTokenModel
-      this.scope = $scope
-      ;(this.scope.reportingEnabled = reportingEnabled),
-        (this.scope.extensions = extensions)
-      this.currentDataService = $currentDataService
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
+      this.scope.extensions = extensions
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
       )
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.state = $state
+
       this.agent = agent
       this.scope.expandArray = [false, false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
 
       if (
         this.agent &&
@@ -77,22 +77,8 @@ define([
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
 
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -143,7 +129,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
           'alertsSeverityOverTimeVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'commonRules',
@@ -242,43 +229,12 @@ define([
           this.tableResults,
           this.agentReportData
         )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-          this.setReportMetrics()
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -308,14 +264,6 @@ define([
     }
 
     /**
-     * Gets filters and launches search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    /**
      * Set report metrics
      */
     setReportMetrics() {
@@ -326,30 +274,6 @@ define([
         'Low severity alerts': this.scope.lowSeverity
       }
     }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
-    }
   }
-
   app.controller('agentsVulnerabilitiesCtrl', AgentsVulnerabilities)
 })

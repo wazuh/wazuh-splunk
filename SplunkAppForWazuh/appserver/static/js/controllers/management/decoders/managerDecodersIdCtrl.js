@@ -125,7 +125,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         this.scope.fetchedXML = null
         this.notification.showErrorToast(error.message || error)
       }
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
       return
     }
 

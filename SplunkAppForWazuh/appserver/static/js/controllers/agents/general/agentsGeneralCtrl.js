@@ -12,24 +12,26 @@
 
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
+  '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   LinearChart,
   ColumnChart,
   PieChart,
   Table,
-  TimePicker,
+  SearchHandler,
   RawTableDataService
 ) {
   'use strict'
 
-  class AgentsGeneral {
+  class AgentsGeneral extends DashboardMain {
     /**
      * Class constructor
      * @param {Object} $scope
@@ -56,19 +58,19 @@ define([
       $reportingService,
       reportingEnabled
     ) {
-      this.state = $state
-      this.urlTokenModel = $urlTokenModel
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.requestService = $requestService
-      this.tableResults = {}
       this.notification = $notificationService
       this.stateParams = $stateParams
       this.agent = agent
-      this.currentDataService = $currentDataService
-      this.reportingService = $reportingService
       this.scope.expandArray = [false, false, false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
       if (
         this.agent &&
         this.agent.length &&
@@ -79,24 +81,54 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent[0].data.data.id}", "implicit":true}`
         )
-      this.filters = this.currentDataService.getSerializedFilters()
       this.dateDiffService = $dateDiffService
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
 
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+      this.filters = this.getFilters()
 
       this.vizz = [
+        /**
+         * Metrics
+         */
+        new SearchHandler(
+          `totalAlerts`,
+          `${this.filters} | stats count`,
+          `totalAlertsToken`,
+          '$result.count$',
+          'totalAlerts',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `searchLevel12`,
+          `${this.filters} sourcetype=wazuh "rule.level">=12 | chart count`,
+          `level12token`,
+          '$result.count$',
+          'levelTwelve',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `searchAuthFailure`,
+          `${
+            this.filters
+          } sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
+          `authFailureToken`,
+          '$result.count$',
+          'authFailure',
+          this.submittedTokenModel,
+          this.scope
+        ),
+        new SearchHandler(
+          `searchAuthSuccess`,
+          `${
+            this.filters
+          } sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
+          `authSuccessToken`,
+          '$result.count$',
+          'authSuccess',
+          this.submittedTokenModel,
+          this.scope
+        ),
         /**
          * Visualizations
          */
@@ -122,15 +154,17 @@ define([
           'alertLevelEvoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
+          } sourcetype=wazuh rule.level=*| timechart count by rule.level{}  `,
           'alertLevelEvoVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new ColumnChart(
           'alertsVizz',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count`,
+          `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
           'alertsVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'agentsSummaryVizz',
@@ -169,35 +203,6 @@ define([
           'Groups Summary'
         )
       ]
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
@@ -205,7 +210,6 @@ define([
      */
     $onInit() {
       try {
-        this.scope.loadingVizz = true
         this.agentInfo = {
           name: this.agent[0].data.data.name,
           id: this.agent[0].data.data.id,
@@ -366,37 +370,6 @@ define([
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
-    }
-
-    /**
-     * Gets filters and launches search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
     }
   }
 

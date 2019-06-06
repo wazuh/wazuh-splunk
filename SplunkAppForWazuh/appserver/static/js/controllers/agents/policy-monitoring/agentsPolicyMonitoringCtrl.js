@@ -12,15 +12,22 @@
 
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function(
+  app,
+  DashboardMain,
+  PieChart,
+  AreaChart,
+  Table,
+  RawTableDataService
+) {
   'use strict'
 
-  class AgentsPM {
+  class AgentsPM extends DashboardMain {
     /**
      * Class Agents Policy-Monitoring
      * @param {Object} $urlTokenModel
@@ -49,17 +56,18 @@ define([
       reportingEnabled,
       extensions
     ) {
-      this.urlTokenModel = $urlTokenModel
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.rootScope = $rootScope
-      this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
       this.scope.showPolicies = false
-      this.state = $state
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.currentDataService = $currentDataService
       this.agent = agent
       this.notification = $notificationService
       this.api = $currentDataService.getApi()
@@ -69,7 +77,6 @@ define([
         `{"rule.groups{}":"rootcheck", "implicit":true}`
       )
       this.scope.expandArray = [false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
       if (
         this.agent &&
         this.agent.data &&
@@ -80,21 +87,7 @@ define([
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
 
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
-
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -104,9 +97,10 @@ define([
           'elementOverTime',
           `${
             this.filters
-          } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
+          } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description  `,
           'elementOverTime',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'cisRequirements',
@@ -126,9 +120,10 @@ define([
           'eventsPerAgent',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=2h count by agent.name`,
+          } sourcetype=wazuh | timechart span=2h count by agent.name  `,
           'eventsPerAgent',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummary',
@@ -186,39 +181,9 @@ define([
           this.tableResults,
           this.agentReportData
         )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     $onInit() {
-      this.scope.loadingVizz = true
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
@@ -274,37 +239,6 @@ define([
         this.notification.showErrorToast('Error downloading CSV')
       }
       return
-    }
-
-    /**
-     * Gets filters and launches search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
     }
 
     /**
