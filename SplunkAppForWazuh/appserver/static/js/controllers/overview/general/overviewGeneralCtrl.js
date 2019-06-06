@@ -136,13 +136,15 @@ define([
             this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level  `,
           'alertLevEvoVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new LinearChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
           'alertsVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'alertsEvoTop5Agents',
@@ -238,7 +240,8 @@ define([
                 this.spanTime
               } cont=FALSE count by status usenull=f`,
               `agentStatus`,
-              this.scope
+              this.scope,
+              {customAxisTitleX : "Time span"}
             )
           )
         }

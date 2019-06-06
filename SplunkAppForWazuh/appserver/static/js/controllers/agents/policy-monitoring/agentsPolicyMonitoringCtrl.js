@@ -99,7 +99,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description  `,
           'elementOverTime',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'cisRequirements',
@@ -121,7 +122,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart span=2h count by agent.name  `,
           'eventsPerAgent',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummary',

@@ -78,7 +78,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'topOsqueryAdded',

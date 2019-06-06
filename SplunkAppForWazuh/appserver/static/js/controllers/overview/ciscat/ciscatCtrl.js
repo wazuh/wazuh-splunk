@@ -168,7 +168,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummary',

@@ -88,7 +88,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.nist_800_53{}="*" | timechart count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'evoVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'agentsVizz',

@@ -158,7 +158,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
           'alertsOverTimeElement',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummary',

@@ -88,7 +88,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.pci_dss{}="*" | timechart count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'evoVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'agentsVizz',
@@ -124,7 +125,7 @@ define([
           this.scope,
           'Alerts Summary'
         )
-      ]
+      ]      
     }
 
     $onInit() {

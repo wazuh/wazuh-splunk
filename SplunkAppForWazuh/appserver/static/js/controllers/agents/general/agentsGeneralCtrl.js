@@ -156,13 +156,15 @@ define([
             this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level{}  `,
           'alertLevelEvoVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new ColumnChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
           'alertsVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'agentsSummaryVizz',
