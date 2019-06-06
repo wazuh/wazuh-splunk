@@ -325,7 +325,27 @@ define(['../module'], function(module) {
                   return false
                 }
               }
-            ]
+            ],
+            hipaaExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('hipaa')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            nistExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('nist')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
           }
         })
         // Overview - GDPR
@@ -373,10 +393,164 @@ define(['../module'], function(module) {
                   return false
                 }
               }
+            ],
+            hipaaExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('hipaa')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            nistExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('nist')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+          }
+        }) // Overview - HIPAA
+        .state('ow-hipaa', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/hipaa/overview-hipaa.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-hipaa')
+          },
+          controller: 'overviewHipaaCtrl',
+          resolve: {
+            hipaaTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const hipaaTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/hipaa?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    hipaaTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return hipaaTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            nistExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('nist')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
-
+        // Overview - NIST 800-53
+        .state('ow-nist', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/nist/overview-nist.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-nist')
+          },
+          controller: 'overviewNistCtrl',
+          resolve: {
+            nistTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const nistTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/nist?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    nistTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return nistTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            hipaaExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('hipaa')
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
         // Overview - Vulnerabilities
         .state('ow-vul', {
           templateUrl:

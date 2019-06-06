@@ -18,9 +18,10 @@ define([
   RawTableDataService
 ) {
   'use strict'
-  class OverviewGDPR extends DashboardMain {
+
+  class Nist extends DashboardMain {
     /**
-     * Class GDPR
+     * Class Nist 800-53
      * @param {*} $urlTokenModel
      * @param {*} $scope
      * @param {*} $currentDataService
@@ -33,11 +34,11 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      gdprTabs,
+      nistTabs,
       reportingEnabled,
       pciExtensionEnabled,
+      gdprExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -48,83 +49,78 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
+      this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
-      this.scope.nistExtensionEnabled = nistExtensionEnabled
-      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
+      this.scope.nistTabs = nistTabs ? nistTabs : false
+
+      this.scope.expandArray = [false, false, false, false, false]
+      this.filters = this.getFilters()
 
       this.dropdown = new Dropdown(
-        'dropDownInputAgent',
+        'dropDownInput',
         `${
           this.filters
-        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
-        'rule.gdpr{}',
-        '$form.gdpr$',
+        } sourcetype=wazuh rule.nist_800_53{}="*"| stats count by "rule.nist_800_53{}" | sort "rule.nist_800_53{}" ASC | fields - count | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+        'rule.nist_800_53{}',
+        '$form.nist$',
         'dropDownInput',
         this.scope
       )
-
       this.dropdownInstance = this.dropdown.getElement()
+
       this.dropdownInstance.on('change', newValue => {
-        if (newValue && this.dropdownInstance) {
+        if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
-        }
       })
 
-      this.scope.expandArray = [false, false, false, false, false]
-
-      this.filters = this.getFilters()
-
       this.vizz = [
-        /**
-         * Visualizations
-         */
         new ColumnChart(
-          'gdprRequirements',
+          'nistReqVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'gdprRequirements',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'nistReqVizz',
           this.scope
         ),
         new LinearChart(
-          'evoViz',
+          'evoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"  `,
-          'evoViz',
+          } sourcetype=wazuh rule.nist_800_53{}="*" | timechart count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'evoVizz',
           this.scope,
           {customAxisTitleX : "Time span"}
         ),
         new PieChart(
-          'agentsViz',
+          'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'agentsViz',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by agent.name | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'agentsVizz',
           this.scope
         ),
         new ColumnChart(
-          'requirementsByAgents',
+          'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'requirementsByAgents',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=*| chart  count(rule.nist_800_53{}) by rule.nist_800_53{},agent.name | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'requirementsByAgentVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as "Requirements", rule.description as "Rule description", count as Count`,
           'alertsSummaryViz',
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryVizTable',
+          'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizTableToken',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as "Requirements", rule.description as "Rule description", count as Count`,
+          'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
@@ -134,27 +130,29 @@ define([
 
     $onInit() {
       try {
+        this.scope.loadingVizz = true
         /**
          * Generates report
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-gdpr',
-            'GDPR',
+            'overview-nist',
+            'NIST 800-53',
             this.filters,
             [
-              'gdprRequirements',
-              'groupsViz',
-              'agentsViz',
-              'requirementsByAgents',
+              'nistReqVizz',
+              'agentsVizz',
+              'evoVizz',
+              'requirementsByAgentVizz',
               'alertsSummaryViz'
             ],
-            {}, //Metrics,
+            {}, //Metrics
             this.tableResults
           )
-      } catch (error) {} //eslint-disable-line
+      } catch (error) {}
     }
-  }
 
-  app.controller('overviewGdprCtrl', OverviewGDPR)
+
+  }
+  app.controller('overviewNistCtrl', Nist)
 })

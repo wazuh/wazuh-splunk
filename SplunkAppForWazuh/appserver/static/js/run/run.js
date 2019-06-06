@@ -20,7 +20,6 @@ define(['./module'], function(module) {
         try {
           const { api } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
-          $currentDataService.cleanFilters()
           $navigationService.storeRoute(state)
           $currentDataService.addFilter(
             `{"${api.filterType}":"${api.filterName}", "implicit":true}`

@@ -318,6 +318,30 @@ define(['../../module', 'FileSaver'], function(app) {
         )
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
+      }else if (
+        term &&
+        term.startsWith('hipaa:') &&
+        term.split('hipaa:')[1].trim()
+      ) {
+        this.scope.custom_search = '';
+        const filter = { name: 'hipaa', value: term.split('hipaa:')[1].trim() };
+        this.scope.appliedFilters = this.scope.appliedFilters.filter(
+          item => item.name !== 'hipaa'
+        );
+        this.scope.appliedFilters.push(filter);
+        this.scope.$broadcast('wazuhFilter', { filter });
+      } else if (
+        term &&
+        term.startsWith('nist-800-53:') &&
+        term.split('nist-800-53:')[1].trim()
+      ) {
+        this.scope.custom_search = '';
+        const filter = { name: 'nist-800-53', value: term.split('nist-800-53:')[1].trim() };
+        this.scope.appliedFilters = this.scope.appliedFilters.filter(
+          item => item.name !== 'nist-800-53'
+        );
+        this.scope.appliedFilters.push(filter);
+        this.scope.$broadcast('wazuhFilter', { filter });
       } else {
         clearInput = false
         this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })

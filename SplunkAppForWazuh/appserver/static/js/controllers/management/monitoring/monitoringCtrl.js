@@ -51,7 +51,8 @@ define([
           'alertSummary',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertSummary',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new LinearChart(
           'alertNodeSummary',
@@ -59,7 +60,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart span=1h count by cluster.node`,
           'alertNodeSummary',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'topNodes',
@@ -71,7 +73,8 @@ define([
           'overviewNode',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
           'overviewNode',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         )
       ]
       const parsedResult = monitoringInfo.map(item =>

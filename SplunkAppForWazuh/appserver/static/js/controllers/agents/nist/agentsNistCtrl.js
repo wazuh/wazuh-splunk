@@ -1,22 +1,9 @@
-/*
- * Wazuh app - Agents controller
- * Copyright (C) 2015-2019 Wazuh, Inc.
- *
- * This program is free software you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation either version 2 of the License, or
- * (at your option) any later version.
- *
- * Find more information about this on the LICENSE file.
- */
-
 define([
   '../../module',
   '../../../dashboardMain',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
@@ -25,35 +12,33 @@ define([
   ColumnChart,
   PieChart,
   Table,
-  TimePicker,
   Dropdown,
   RawTableDataService
 ) {
   'use strict'
 
-  class AgentsGdpr extends DashboardMain {
+  class AgentsNist extends DashboardMain{
     /**
-     * Class constructor
-     * @param {Object} $urlTokenModel
-     * @param {Object} $scope
-     * @param {Object} $currentDataService
-     * @param {Object} $state
+     * Class Agents Nist 800-53
+     * @param {*} $urlTokenModel
+     * @param {*} $scope
+     * @param {*} $state
+     * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
      */
-
     constructor(
       $urlTokenModel,
-      $currentDataService,
       $scope,
       $state,
+      $currentDataService,
       agent,
       $reportingService,
-      gdprTabs,
+      nistTabs,
       reportingEnabled,
       pciExtensionEnabled,
+      gdprExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -63,25 +48,29 @@ define([
         $urlTokenModel
       )
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
-      this.scope.nistExtensionEnabled = nistExtensionEnabled
-      this.state = $state
-      this.currentDataService = $currentDataService
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.agent = agent
-      this.scope.expandArray = [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
+      this.scope.nistTabs = nistTabs ? nistTabs : false
 
+      this.scope.expandArray = [false, false, false, false, false]
+
+      this.dropdown = new Dropdown(
+        'dropDownInput',
+        `${
+          this.filters
+        } sourcetype=wazuh rule.nist_800_53{}="*"| stats count by "rule.nist_800_53{}" | sort "rule.nist_800_53{}" ASC | fields - count`,
+        'rule.nist_800_53{}',
+        '$form.nist$',
+        'dropDownInput',
+        this.scope
+      )
+      this.dropdownInstance = this.dropdown.getElement()
+      this.dropdownInstance.on('change', newValue => {
+        if (newValue && this.dropdownInstance)
+          $urlTokenModel.handleValueChange(this.dropdownInstance)
+      })
+      this.agent = agent
       if (
         this.agent &&
         this.agent.data &&
@@ -91,82 +80,65 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-
-      this.dropdown = new Dropdown(
-        'dropDownInput',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
-        'rule.gdpr{}',
-        '$form.gdpr$',
-        'dropDownInput',
-        this.scope
-      )
-      this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
-        if (newValue && this.dropdownInstance) {
-          $urlTokenModel.handleValueChange(this.dropdownInstance)
-        }
-      })
-      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
-
-      this.filters = this.getFilters()
+      this.filters = this.currentDataService.getSerializedFilters()
 
       this.vizz = [
         /**
          * Visualizations
          */
         new ColumnChart(
-          'gdprRequirementsVizz',
+          'nistReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}  | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'gdprRequirementsVizz',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'nistReqSearchVizz',
           this.scope
         ),
         new PieChart(
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.groups{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
         new PieChart(
-          'top5GDPR',
+          'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements" `,
-          'top5GDPR',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.description | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'topRules',
           this.scope
         ),
         new PieChart(
-          'rulesVizz',
-          `${this.filters} sourcetype=wazuh  | top limit=5 rule.description | rename count as "Count", rule.gdpr{} as "Requirements" `,
-          'rulesVizz',
+          'top5nist',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.nist_800_53{}  | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'top5nist',
           this.scope
         ),
         new PieChart(
-          'agentsVizz',
+          'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'agentsVizz',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by rule.level  | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'ruleLevelDistribution',
           this.scope
         ),
         new ColumnChart(
-          'requirementsByAgentVizz',
+          'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'requirementsByAgentVizz',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=*| chart  count(rule.nist_800_53{}) by rule.nist_800_53{},agent.name | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+          'reqByAgentsVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
@@ -174,7 +146,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as "Requirements", rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -204,28 +176,50 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-gdpr',
-          'GDPR',
+          'agents-nist',
+          'NIST 800-53',
           this.filters,
           [
-            'gdprRequirementsVizz',
+            'nistReqSearchVizz',
+            'ruleLevelDistribution',
+            'top5nist',
             'groupsVizz',
-            'top5GDPR',
-            'rulesVizz',
-            'agentsVizz',
-            'requirementsByAgentVizz',
+            'topRules',
+            'reqByAgentsVizz',
             'alertsSummaryVizz'
           ],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData
         )
+
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
+      this.scope.$on('checkReportingStatus', () => {
+        this.vizzReady = !this.vizz.filter(v => {
+          return v.finish === false
+        }).length
+        if (this.vizzReady) {
+          this.scope.loadingVizz = false
+        } else {
+          this.vizz.map(v => {
+            if (v.constructor.name === 'RawTableData') {
+              this.tableResults[v.name] = v.results
+            }
+          })
+          this.scope.loadingVizz = true
+        }
+        if (!this.scope.$$phase) this.scope.$digest()
+      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
+      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -253,6 +247,7 @@ define([
         ? agentStatus
         : 'Never connected'
     }
+
   }
-  app.controller('agentsGdprCtrl', AgentsGdpr)
+  app.controller('agentsNistCtrl', AgentsNist)
 })

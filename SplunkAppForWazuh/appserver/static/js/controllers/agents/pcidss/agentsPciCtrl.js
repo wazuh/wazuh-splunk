@@ -48,7 +48,9 @@ define([
       $reportingService,
       pciTabs,
       reportingEnabled,
-      gdprExtensionEnabled
+      gdprExtensionEnabled,
+      hipaaExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -59,6 +61,8 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
+      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
+      this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.pciTabs = pciTabs ? pciTabs : false
 
       this.scope.expandArray = [false, false, false, false, false]
@@ -99,7 +103,7 @@ define([
           'pciReqSearchVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{}`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'pciReqSearchVizz',
           this.scope
         ),
@@ -107,7 +111,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{}`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
@@ -115,7 +119,7 @@ define([
           'topRules',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'topRules',
           this.scope
         ),
@@ -123,7 +127,7 @@ define([
           'top5Pcidss',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{}`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'top5Pcidss',
           this.scope
         ),
@@ -131,7 +135,7 @@ define([
           'ruleLevelDistribution',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'ruleLevelDistribution',
           this.scope
         ),
@@ -139,7 +143,7 @@ define([
           'reqByAgentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name`,
+          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'reqByAgentsVizz',
           this.scope
         ),

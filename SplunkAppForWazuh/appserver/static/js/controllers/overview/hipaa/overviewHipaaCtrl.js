@@ -18,9 +18,10 @@ define([
   RawTableDataService
 ) {
   'use strict'
-  class OverviewGDPR extends DashboardMain {
+
+  class Hipaa extends DashboardMain {
     /**
-     * Class GDPR
+     * Class Hipaa
      * @param {*} $urlTokenModel
      * @param {*} $scope
      * @param {*} $currentDataService
@@ -33,11 +34,11 @@ define([
       $currentDataService,
       $state,
       $reportingService,
-      gdprTabs,
+      hipaaTabs,
       reportingEnabled,
       pciExtensionEnabled,
-      hipaaExtensionEnabled,
-      nistExtensionEnabled
+      gdprExtensionEnabled,
+      nistExtensionEnabled,
     ) {
       super(
         $scope,
@@ -48,83 +49,80 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
-      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
+      this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.nistExtensionEnabled = nistExtensionEnabled
-      this.scope.gdprTabs = gdprTabs ? gdprTabs : false
+      this.scope.hipaaTabs = hipaaTabs ? hipaaTabs : false
 
-      this.dropdown = new Dropdown(
-        'dropDownInputAgent',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
-        'rule.gdpr{}',
-        '$form.gdpr$',
-        'dropDownInput',
-        this.scope
-      )
-
-      this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
-        if (newValue && this.dropdownInstance) {
-          $urlTokenModel.handleValueChange(this.dropdownInstance)
-        }
-      })
-
-      this.scope.expandArray = [false, false, false, false, false]
 
       this.filters = this.getFilters()
 
+      this.scope.expandArray = [false, false, false, false, false]
+
+      this.dropdown = new Dropdown(
+        'dropDownInput',
+        `${
+          this.filters
+        } sourcetype=wazuh rule.hipaa{}="*"| stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
+        'rule.hipaa{}',
+        '$form.hipaa$',
+        'dropDownInput',
+        this.scope
+      )
+      this.dropdownInstance = this.dropdown.getElement()
+
+      this.dropdownInstance.on('change', newValue => {
+        if (newValue && this.dropdownInstance)
+          $urlTokenModel.handleValueChange(this.dropdownInstance)
+      })
+
       this.vizz = [
-        /**
-         * Visualizations
-         */
         new ColumnChart(
-          'gdprRequirements',
+          'hipaaReqVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'gdprRequirements',
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | stats count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
+          'hipaaReqVizz',
           this.scope
         ),
         new LinearChart(
-          'evoViz',
+          'evoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"  `,
-          'evoViz',
+          } sourcetype=wazuh rule.hipaa{}="*" | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
+          'evoVizz',
           this.scope,
           {customAxisTitleX : "Time span"}
         ),
         new PieChart(
-          'agentsViz',
+          'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'agentsViz',
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by agent.name | rename count as "Count", rule.hipaa{} as "Requirements"`,
+          'agentsVizz',
           this.scope
         ),
         new ColumnChart(
-          'requirementsByAgents',
+          'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'requirementsByAgents',
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=*| chart  count(rule.hipaa{}) by rule.hipaa{},agent.name | rename count as "Count", rule.hipaa{} as "Requirements"`,
+          'requirementsByAgentVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryViz',
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryVizTable',
+          'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizTableToken',
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as "Requirements", rule.description as "Rule description", count as Count`,
+          'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
@@ -134,27 +132,30 @@ define([
 
     $onInit() {
       try {
+        this.scope.loadingVizz = true
         /**
          * Generates report
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-gdpr',
-            'GDPR',
+            'overview-hipaa',
+            'HIPAA',
             this.filters,
             [
-              'gdprRequirements',
-              'groupsViz',
-              'agentsViz',
-              'requirementsByAgents',
+              'hipaaReqVizz',
+              'groupsVizz',
+              'agentsVizz',
+              'requirementsByAgentVizz',
               'alertsSummaryViz'
             ],
-            {}, //Metrics,
+            {}, //Metrics
             this.tableResults
           )
-      } catch (error) {} //eslint-disable-line
+
+    
+
+      } catch (error) {}
     }
   }
-
-  app.controller('overviewGdprCtrl', OverviewGDPR)
+  app.controller('overviewHipaaCtrl', Hipaa)
 })
