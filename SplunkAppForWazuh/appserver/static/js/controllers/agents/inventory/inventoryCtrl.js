@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function(module) {
+define(['../../module', 'FileSaver'], function (module) {
   'use strict'
   class Inventory {
     /**
@@ -66,16 +66,17 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     $onInit() {
       try {
+        console.log("this.data ", this.data)
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
 
         this.scope.agent =
           this.data.length &&
-          this.data.length > 4 &&
-          typeof this.data[4] === 'object' &&
-          this.data[4].data &&
-          this.data[4].data.data
+            this.data.length > 4 &&
+            typeof this.data[4] === 'object' &&
+            this.data[4].data &&
+            this.data[4].data.data
             ? this.data[4].data.data
             : { error: true }
         this.scope.search = (term, specificPath) => {
@@ -108,6 +109,10 @@ define(['../../module', 'FileSaver'], function(module) {
             Object.assign(this.packagesDate, this.data[3].data.data)
           if (this.data[5] && this.data[5].data && this.data[5].data.data)
             Object.assign(this.processesDate, this.data[5].data.data)
+          if (this.data[6] && this.data[6].data && this.data[6].data.data)
+            this.netifaceResponse = ((this.data[6] || {}).data || {}).data || false
+          if (this.data[7] && this.data[7].data && this.data[7].data.data)
+            this.netaddrResponse = ((this.data[7] || {}).data || {}).data || false
         }
         this.init()
 
@@ -131,25 +136,6 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     async init() {
       try {
-        try {
-          const resultNetiface = await this.apiReq(
-            `/syscollector/${this.scope.agent.id}/netiface`,
-            {}
-          )
-          this.netifaceResponse =
-            ((resultNetiface || {}).data || {}).data || false
-        } catch (error) {} // eslint-disable-line
-
-        // This API call may fail so we put it out of Promise.all
-        try {
-          const resultNetaddrResponse = await this.apiReq(
-            `/syscollector/${this.scope.agent.id}/netaddr`,
-            { limit: 1 }
-          )
-          this.netaddrResponse =
-            ((resultNetaddrResponse || {}).data || {}).data || false
-        } catch (error) {} // eslint-disable-line
-
         this.scope.syscollector = {
           hardware: this.data[0].data.data,
           os: this.data[1].data.data,
@@ -158,8 +144,8 @@ define(['../../module', 'FileSaver'], function(module) {
           netaddr: this.netaddrResponse,
           packagesDate:
             this.packagesDate &&
-            this.packagesDate.items &&
-            this.packagesDate.items.length
+              this.packagesDate.items &&
+              this.packagesDate.items.length
               ? this.packagesDate.items[0].scan_time
               : 'Unknown',
           processesDate: ((this.processesDate || {}).items || []).length

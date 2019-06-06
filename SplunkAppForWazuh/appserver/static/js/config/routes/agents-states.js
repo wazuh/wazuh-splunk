@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
@@ -40,18 +40,18 @@ define(['../module'], function(module) {
                       select: 'version'
                     }),
                     responseStatus &&
-                    responseStatus.data &&
-                    responseStatus.data.data &&
-                    responseStatus.data.data.enabled === 'yes' &&
-                    responseStatus.data.data.running === 'yes'
+                      responseStatus.data &&
+                      responseStatus.data.data &&
+                      responseStatus.data.data.enabled === 'yes' &&
+                      responseStatus.data.data.running === 'yes'
                       ? $requestService.apiReq('/agents/stats/distinct', {
-                          fields: 'node_name',
-                          select: 'node_name'
-                        })
+                        fields: 'node_name',
+                        select: 'node_name'
+                      })
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
-                } catch (err) {} //eslint-disable-line
+                } catch (err) { } //eslint-disable-line
               }
             ]
           }
@@ -172,6 +172,10 @@ define(['../module'], function(module) {
                     $requestService.apiReq(`/syscollector/${id}/processes`, {
                       limit: 1,
                       select: 'scan_time'
+                    }),
+                    $requestService.apiReq(`/syscollector/${id}/netiface`, {}),
+                    $requestService.apiReq(`/syscollector/${id}/netaddr`, {
+                      limit: 1
                     })
                   ])
                   return results
