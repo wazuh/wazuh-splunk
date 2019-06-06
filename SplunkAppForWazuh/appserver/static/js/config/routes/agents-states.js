@@ -37,7 +37,8 @@ define(['../module'], function(module) {
                     }),
                     $requestService.apiReq('/agents/stats/distinct', {
                       fields: 'version',
-                      select: 'version'
+                      select: 'version',
+                      sort: 'version'
                     }),
                     responseStatus &&
                     responseStatus.data &&
