@@ -257,8 +257,8 @@ define([
            * @param {String} query
            * @param {String} search
            */
-          const query = async (query, search) =>
-            data.queryData(
+          const query = async (query, search) => {
+            await data.queryData(
               query,
               search,
               instance,
@@ -267,6 +267,9 @@ define([
               fetch,
               $notificationService
             )
+            $scope.wazuhTableLoading = false
+            $scope.$applyAsync()
+          }
 
           /**
            * Filters API results
@@ -406,9 +409,10 @@ define([
             )
           )
 
-          $scope.$on('wazuhQuery', (event, parameters) =>
+          $scope.$on('wazuhQuery', (event, parameters) => {
+            $scope.wazuhTableLoading = true
             listeners.wazuhQuery(parameters, query)
-          )
+          })
 
           $scope.$on('wazuhPlayRealTime', () => {
             realTime = true
