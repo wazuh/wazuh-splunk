@@ -576,7 +576,6 @@ class report(controllers.BaseController):
                                 pass
                             else:
                                 for item in conf_data['data']['items']:
-                                    self.logger.info(item)
                                     if first_page:
                                         first_page = False
                                     else:
