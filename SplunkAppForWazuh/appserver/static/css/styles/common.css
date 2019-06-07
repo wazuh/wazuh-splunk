@@ -2191,3 +2191,9 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   color: rgb(57, 110, 62) !important;
   background: rgb(57, 110, 62) !important;
 }
+
+.extensions-eye {
+  margin-left: -25px !important;
+  width: 30px;
+  float: right;
+}

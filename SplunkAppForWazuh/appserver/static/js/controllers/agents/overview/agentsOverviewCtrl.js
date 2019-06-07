@@ -163,6 +163,7 @@ define(['../../module'], function(app) {
 
             this.scope.restart = () => this.restartAgent()
             this.scope.switchRestart = () => this.switchRestart()
+            this.scope.showExtensionsLists = card => this.showExtensionsLists(card)
 
             this.scope.confirmAddGroup = group => {
               this.groupHandler
@@ -348,6 +349,13 @@ define(['../../module'], function(app) {
     switchRestart() {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
       this.scope.$applyAsync()
+    }
+
+    /**
+     * Shows the extensions list to enable or disable them
+     */
+    showExtensionsLists = card => {
+      console.log(`Received card: ${card}`)
     }
   }
 

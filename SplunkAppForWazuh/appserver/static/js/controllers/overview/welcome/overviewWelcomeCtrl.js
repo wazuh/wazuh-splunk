@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class OverviewWelcome {
@@ -16,11 +16,11 @@ define(['../../module'], function(controllers) {
         this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
         this.scope.agentsCountNeverConnected =
           agentsInfo.data.data['Never Connected']
-      } catch (error) {} //eslint-disable-line
+      } catch (error) { } //eslint-disable-line
 
       try {
         this.extensions = extensions
-      } catch (error) {} //eslint-disable-line
+      } catch (error) { } //eslint-disable-line
     }
 
     /**
@@ -33,8 +33,18 @@ define(['../../module'], function(controllers) {
           ? (this.scope[key] = key)
           : (this.scope[key] = null)
       )
+
+      this.scope.showExtensionsLists = card => showExtensionsLists(card)
       this.scope.$applyAsync()
     }
   }
+
+  /**
+   * Shows the extensions list to enable or disable them
+   */
+  const showExtensionsLists = card => {
+    console.log(`Received card: ${card}`)
+  }
+
   controllers.controller('overviewWelcomeCtrl', OverviewWelcome)
 })

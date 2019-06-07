@@ -48,6 +48,7 @@
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">Security Information Management</h3>
+          <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('security')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'"
@@ -70,6 +71,7 @@
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">Auditing and Policy Monitoring</h3>
+          <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('auditing')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem"
@@ -107,6 +109,7 @@
     <div class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
         <h3 class="euiTitle wc-title welcome-card-main-title">Threat Detection and Response</h3>
+        <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('threadDetection')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
@@ -135,6 +138,7 @@
     <div ng-if="pci || gdpr || hipaa || nist" class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
         <h3 class="euiTitle wc-title welcome-card-main-title">Regulatory Compliance</h3>
+        <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('regulatory')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card ng-if="pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
