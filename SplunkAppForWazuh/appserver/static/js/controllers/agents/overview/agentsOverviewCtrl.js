@@ -69,12 +69,10 @@ define(['../../module'], function(app) {
           typeof this.agent[0].data.data === 'object'
         ) {
           this.scope.agent = this.agent[0].data.data
-
           this.scope.agentOS =
             this.scope.agent &&
             this.scope.agent.os &&
             this.scope.agent.os.name &&
-            this.scope.agent.os.codename &&
             this.scope.agent.os.version
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
                   .codename || '-'} ${this.scope.agent.os.version || '-'}`
