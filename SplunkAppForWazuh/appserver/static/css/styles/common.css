@@ -1788,3 +1788,9 @@ label.wz-icon-loupe  input {
   display: block;
   color: gray;
 }
+
+.link-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}

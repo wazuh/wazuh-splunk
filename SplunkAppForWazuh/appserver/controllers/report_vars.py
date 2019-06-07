@@ -7,6 +7,15 @@ labels =  {
 'crypto_method': 'Method used to encrypt communications',
 'auto_restart':
 'Auto-restart the agent when receiving valid configuration from manager',
+'rootcheck':'Rootcheck',
+'syscheck': 'Syscheck',
+'syscollector' : 'Syscollector',
+'item' : 'Item   ',
+'all': 'All ',
+'bin_path': 'Bin path',
+'type' : 'Type ',
+'profile' : 'Profile ',
+'path' : 'Path ',
 'notify_time':
 'Time (in seconds) between agent checkings to the manager',
 'time-reconnect':
@@ -86,7 +95,7 @@ labels =  {
 'sca' : 'Configuration Assessment',
 'label' : 'Labels',
 'os' : 'OS',
-'name' : 'Name',
+'name' : 'Name ',
 'log_format' : 'Log format',
 'audit': 'Audit',
 'repeated_offenders' : 'List of timeouts (in minutes) for repeated offender'

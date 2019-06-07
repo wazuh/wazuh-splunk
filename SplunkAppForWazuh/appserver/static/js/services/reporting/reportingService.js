@@ -346,7 +346,7 @@ define(['../module', 'jquery'], function(module, $) {
           images: [],
           apiId : apiId,
           timeRange: false,
-          sectionTitle: 'Group configuration',
+          sectionTitle: 'Group ' + groupName.name + ' configuration',
           queryFilters: '',
           metrics: {},
           tableResults : {},
@@ -442,6 +442,9 @@ define(['../module', 'jquery'], function(module, $) {
         await this.genericReq('POST', '/report/generateConfigurationReport', {
           data: JSON.stringify(data)
         })
+        
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         const reportingUrl = this.navigationService.updateURLParameter(
@@ -452,7 +455,8 @@ define(['../module', 'jquery'], function(module, $) {
         this.notification.showSuccessToast(
           `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
         )
-        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        this.$rootScope.$applyAsync()
+
         return
       } catch (error) {
         this.notification.showErrorToast('Reporting error')

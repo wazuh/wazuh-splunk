@@ -65,6 +65,11 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.selectedItem = 0
       this.$scope.isSynchronized =
         data && data.data && data.data.data && data.data.data.synced
+
+      
+      this.$scope.$on('loadingReporting', (event, data) => {
+        this.$scope.loadingReporting = data.status
+      })
     }
 
     /**
@@ -317,9 +322,8 @@ define(['../../module', '../../../utils/config-handler'], function(
         ]
       }
 
-
-      this.reportingService.reportAgentConfiguration(this.id,data,this.api)
-
+      if(!this.$scope.loadingReporting)
+        this.reportingService.reportAgentConfiguration(this.id,data,this.api)
 
 
     }

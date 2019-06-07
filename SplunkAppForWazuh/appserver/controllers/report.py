@@ -100,9 +100,13 @@ class report(controllers.BaseController):
 
     def getString(self, value,labels={}):
         result = ""
-        if type(value) is list:
+        if type(value) is list:  # transforms a list ['list1', 'list2'] to a string -> list1, list2
             for i in value:
-                result += str(i) + ", "
+                if type(i) == dict:
+                    if 'item' in i:
+                        result+= i['item'] + ", "
+                else:
+                    result += str(i) + ", "
             result = result[:len(result)-2]
         elif value or value == 0 or value == " ":
             if value in labels:
@@ -179,39 +183,9 @@ class report(controllers.BaseController):
 
         return newRow
 
-
-    def addTableRow(self,key,value,pdf,labels):
-        self.setTableRowStyle(pdf)
-        fullValue = self.getString(value,labels)
-        
-        # If value's length is greater than 50, we write 50characters per row
-        if len(fullValue) > 50:
-            num_lines = ( len(fullValue) / 50 ) + 1
-            for i in range(1,num_lines+1):
-                if(pdf.get_y() > 250):
-                    pdf.add_page()
-                    pdf.ln(20)
-                tmpValue = fullValue[(i-1)*50:i*50]
-                useBorder = ''
-                useKey = ''
-                if i == num_lines:
-                    useBorder = 'B'
-                if i == 1:
-                    useKey = key
-                if key:
-                    pdf.cell(1, 6, txt = " " , border = useBorder, ln = 0, align = 'C', fill = False, link = '')
-                    pdf.cell(90, 6, txt = self.getString(useKey,labels).capitalize() , border = useBorder, ln = 0, align = 'L', fill = False, link = '')
-                    pdf.cell(0, 6, txt = tmpValue, border = useBorder, ln = 1, align = '', fill = False, link = '')
-        else: # if value's length is lower than 50 we write the full string
-            pdf.cell(1, 6, txt = " " , border = 'B', ln = 0, align = 'C', fill = False, link = '')
-            pdf.cell(90, 6, txt = self.getString(key,labels).capitalize() , border = 'B', ln = 0, align = 'L', fill = False, link = '')
-            pdf.cell(0, 6, txt = fullValue, border = 'B', ln = 1, align = '', fill = False, link = '')
-            if(pdf.get_y() > 250):
-                pdf.add_page()
-                pdf.ln(20)
-
     def setTableTitle(self,pdf):
-        pdf.set_font('RobotoLight', '', 18)
+        pdf.set_font('RobotoLight', '', 10)
+        pdf.set_margins(11, 0, 11)
         pdf.set_fill_color(255, 255, 255)
         pdf.set_text_color(11,11,11)
 
@@ -231,8 +205,27 @@ class report(controllers.BaseController):
         pdf.set_text_color(120,200,222)
 
     def addKeyValueTable(self,keyList,valueList,pdf):
-        max_key_width = 0
-        max_value_width = 0
+        """ Creates tables with key - value aspect
+            the width of each column is calculated depending on its content size
+            
+            Parameters
+                    ----------
+                    - keyList: array of keys to be printed 
+                    - valueList: array of values to be printed 
+                    - pdf: pdf where the table will be printed
+
+                    eg:
+                    keyList = ['value1','value2']
+                    valueList = ['key1','key2']
+                    
+                    table result:
+                    ------------------
+                    | key1:   value1 |
+                    | key2:   value2 |
+                    ------------------
+        """
+        max_key_width = 20
+        max_value_width = 20
         for i in keyList:
             current_width = int((len(i)) *1.5)
             if current_width > max_key_width:
@@ -303,8 +296,7 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 table_title = key
                 self.setTableTitle(pdf)
-                pdf.set_font('RobotoLight', '', 10)
-                pdf.set_margins(11, 0, 11)
+                #if 'title' in tables and tables['title']:
                 pdf.ln(5)
                 pdf.cell(max_width, 5, txt = table_title, border = '', align = '', fill = False, link = '')
                 pdf.set_margins(12, 0, 12)
@@ -333,7 +325,7 @@ class report(controllers.BaseController):
                     reset_y = False
                     rh = 4 #Row heigth
                     count = 0
-                    if(pdf.get_y() > 250):
+                    if(pdf.get_y() > 260):
                         pdf.add_page()
                         pdf.ln(20)
                     for value in row:
@@ -370,92 +362,99 @@ class report(controllers.BaseController):
                 
 
 
-    def addTable(self, data, pdf, labels):
+    def addTable(self, data, pdf, labels,currentSection = {}):
         try:
             customTables = []
             keyList = []
             valueList = []
             if not data: # if data is empty
-                pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
-            elif type(data) is dict:
-                for key,value in data.iteritems():
-                    if type(value) is not list and type(value) is not dict:
-                        keyList.append(self.getString(key,labels))
-                        valueList.append(self.getString(value,labels))
-                    elif type(value) is list:
-                        if key == 'directories':
-                            directoriesTable = {}
-                            fields = ['Dir','RT','WD','Changes','SHA-1','MD5','SHA256','Size','Owner','Group','Perm','MT','Inode','SL','RL']
-                            rows = []
-                            for row in value:
-                                newRow = self.getDirectoriesChecks(row)
-                                rows.append(newRow)
-                            directoriesTable['Monitored directories'] = { "fields": fields, "rows": rows}
-                            self.addTables(directoriesTable,pdf,185,12)
-                            pdf.set_text_color(75, 179, 204)
-                            pdf.cell(0, 5, txt = "Rt: Real Time | Wd: Who-Data | Per: Permission | Mt: Modification Time | Sl: Symbolic link | Rl: Recursion Level ", border = '',ln=1, align = '', fill = False, link = '')
-                            pdf.ln(5)
-                        elif value and type(value[0]) is dict:
-                            customTables.append({key:value})
-                        elif value and type(value[0]) is list:
-                            self.addTable(value,pdf,labels)
-                        else:
+                pass
+                #df.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+            else:
+                if currentSection:
+                    self.addSubtitle(currentSection,pdf)
+                if type(data) is dict:
+                    for key,value in data.iteritems():
+                        if type(value) is not list and type(value) is not dict:
                             keyList.append(self.getString(key,labels))
                             valueList.append(self.getString(value,labels))
-                            
-                            if(pdf.get_y() > 250):
-                                pdf.add_page()
-                                pdf.ln(20)
-                    elif type(value) is dict:
-                            customTables.append({key:value})
-            elif type(data) is list:
-                for item in data:
-                    if type(item) is not list and type(item) is not dict:
-                        keyList.append(self.getString(key,labels))
-                        valueList.append(self.getString(value,labels))
-                    if type(item) is list:
-                        for listItem in item:
-                            self.addTable(listItem,pdf,labels)
-            if keyList and valueList:
-                self.addKeyValueTable(keyList,valueList,pdf)
-
-            if customTables:
-                tables = {}
-                for extraTable in customTables:
-                    for key,value in extraTable.iteritems():
-                        pdf.set_text_color(0,0,0)
-                        pdf.set_font('RobotoLight', '', 10)
-                        tableKey = self.getString(key,labels)
-                        newTable  = { tableKey : {} }
-                        fields = []
-                        rows = []
-                        if type(value) is list:
-                            keys_amount = len(value[0].keys())
-                            for key in value[0]: #Header
-                                fields.append(self.getString(key,labels))
-                            self.setTableRowStyle(pdf)
-                            for row in value: # rows
-                                nextRow = []
-                                for rowKeys, rowValues in row.iteritems():
-                                    if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
-                                        customTables.append({rowKeys:rowValues})
-                                    else:
-                                        nextRow.append(self.getString(rowValues))
-                                rows.append(nextRow)
-                            if rows and type(rows) is list and rows[0]:
-                                newTable[tableKey] = { "fields": fields, "rows": rows}
-                                self.addTables(newTable,pdf,185,12)
+                        elif type(value) is list:
+                            if key == 'directories':
+                                directoriesTable = {}
+                                fields = ['Dir','RT','WD','Changes','SHA-1','MD5','SHA256','Size','Owner','Group','Perm','MT','Inode','SL','RL']
+                                rows = []
+                                for row in value:
+                                    newRow = self.getDirectoriesChecks(row)
+                                    rows.append(newRow)
+                                directoriesTable['Monitored directories'] = { "fields": fields, "rows": rows}
+                                self.addTables(directoriesTable,pdf,185,12)
+                                pdf.set_text_color(75, 179, 204)
+                                pdf.cell(0, 5, txt = "Rt: Real Time | Wd: Who-Data | Per: Permission | Mt: Modification Time | Sl: Symbolic link | Rl: Recursion Level ", border = '',ln=1, align = '', fill = False, link = '')
+                                pdf.ln(5)
+                            elif value and type(value[0]) is dict:
+                                customTables.append({key:value})
+                            elif value and type(value[0]) is list:
+                                self.addTable(value,pdf,labels)
+                            else:
+                                keyList.append(self.getString(key,labels))
+                                valueList.append(self.getString(value,labels))
                         elif type(value) is dict:
-                            customKeyList = []
-                            customValueList = []
-                            pdf.ln(5)
-                            self.setTableTitle(pdf)
-                            pdf.cell(0, 5, txt = self.getString(key,labels), border = 'B', align = '', fill = False, link = '')
-                            pdf.ln(5)
-                            for currentTableKey, currentTableValue in value.iteritems():
-                                customKeyList.append(self.getString(currentTableKey,labels))
-                                customValueList.append(self.getString(currentTableValue,labels))
-                            self.addKeyValueTable(customKeyList,customValueList,pdf)
+                                customTables.append({key:value})
+                elif type(data) is list:
+                    for item in data:
+                        if type(item) is not list and type(item) is not dict:
+                            keyList.append(self.getString(key,labels))
+                            valueList.append(self.getString(value,labels))
+                        if type(item) is list:
+                            for listItem in item:
+                                self.addTable(listItem,pdf,labels)
+                if keyList and valueList:
+                    self.addKeyValueTable(keyList,valueList,pdf)
+
+                if customTables:
+                    tables = {}
+                    for extraTable in customTables:
+                        for key,value in extraTable.iteritems():
+                            pdf.set_text_color(0,0,0)
+                            pdf.set_font('RobotoLight', '', 10)
+                            tableKey = self.getString(key,labels)
+                            newTable  = { tableKey : {} }
+                            fields = []
+                            rows = []
+                            if tableKey == 'Command' and type(value) is list and value:
+                                value = value[0]
+                            if type(value) is list:
+                                keys_amount = len(value[0].keys())
+                                for key in value[0]: #Header
+                                    fields.append(self.getString(key,labels))
+                                self.setTableRowStyle(pdf)
+                                for row in value: # rows
+                                    nextRow = []
+                                    for rowKeys, rowValues in row.iteritems():
+                                        if self.getString(rowKeys,labels) in fields:
+                                            if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
+                                                customTables.append({rowKeys:rowValues})
+                                            else:
+                                                nextRow.append(self.getString(rowValues))
+                                    rows.append(nextRow)
+                                if rows and fields and type(rows) is list and rows[0]:
+                                    newTable[tableKey] = { "fields": fields, "rows": rows}
+                                    self.addTables(newTable,pdf,185,12)
+                            elif type(value) is dict:
+                                customKeyList = []
+                                customValueList = []
+                                pdf.ln(5)
+                                self.setTableTitle(pdf)
+                                pdf.cell(0, 5, txt = self.getString(key,labels).capitalize(), border = '', align = '', fill = False, link = '')
+                                pdf.set_margins(12, 0, 12)
+                                pdf.ln(5)
+                                for currentTableKey, currentTableValue in value.iteritems():
+                                    if type(currentTableValue) is dict:
+                                        customTables.append({currentTableKey:currentTableValue})
+                                    else:
+                                        customKeyList.append(self.getString(currentTableKey,labels))
+                                        customValueList.append(self.getString(currentTableValue,labels))
+                                self.addKeyValueTable(customKeyList,customValueList,pdf)
                             
 
         except Exception as e:
@@ -476,7 +475,20 @@ class report(controllers.BaseController):
 
         return result
 
-
+    def addSubtitle(self,currentSection,pdf):
+        self.setBlueTableTitle(pdf)
+        if 'subtitle' in currentSection:
+            pdf.set_margins(10, 0, 10)
+            pdf.ln(1)
+            pdf.cell(0, 6, txt = currentSection['subtitle'], border = '', align = 'L', fill = False, link = '')
+            pdf.ln(6)
+            if 'desc' in currentSection:
+                pdf.set_text_color(0,0,0)
+                pdf.set_font('RobotoLight', '', 11)
+                pdf.cell(0, 6, txt = currentSection['desc'], border = '', align = 'L', fill = False, link = '')
+                pdf.set_margins(11, 0, 11)
+                pdf.ln(6)
+            del currentSection['subtitle']
 
 
     @expose_page(must_login=False, methods=['POST'])
@@ -544,22 +556,6 @@ class report(controllers.BaseController):
                     pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
                     pdf.ln(6)
                     for currentSection in n['sections']:
-                        # header
-                        self.setBlueTableTitle(pdf)
-                        if(pdf.get_y() > 230):
-                            pdf.add_page()
-                            pdf.ln(20)
-                        if 'subtitle' in currentSection:
-                            pdf.set_margins(10, 0, 10)
-                            pdf.ln(1)
-                            pdf.cell(0, 6, txt = currentSection['subtitle'], border = '', align = 'L', fill = False, link = '')
-                            pdf.ln(6)
-                            if 'desc' in currentSection:
-                                pdf.set_text_color(0,0,0)
-                                pdf.set_font('RobotoLight', '', 11)
-                                pdf.cell(0, 6, txt = currentSection['desc'], border = '', align = 'L', fill = False, link = '')
-                                pdf.set_margins(11, 0, 11)
-                                pdf.ln(7)
                         customLabels = {} 
                         if self.labels:
                             customLabels = self.labels
@@ -572,6 +568,7 @@ class report(controllers.BaseController):
                                 pass
                             else:
                                 for item in conf_data['data']['items']:
+                                    self.logger.info(item)
                                     if first_page:
                                         first_page = False
                                     else:
@@ -579,29 +576,25 @@ class report(controllers.BaseController):
                                         pdf.ln(20)
                                     self.setTableRowStyle(pdf)
                                     #print the filters 
-                                    if 'filters' in item:
+                                    if 'filters' in item and item['filters'] and 'config' in item and item['config']:
                                         filters = " "
                                         values = []
                                         for currentFilterKey,currentFilterValue in item['filters'].iteritems():
-                                            filters = filters + str(currentFilterKey) + ": " + str(currentFilterValue) + "   "
+                                            filters = filters + str(currentFilterKey) + ": " + str(currentFilterValue) + " |"
                                             values.append(currentFilterValue)
+                                        filters = filters[:len(filters)-1]
                                         rows = []
                                         rows.append(values)
                                         self.setBlueTableTitle(pdf)
-                                        pdf.cell(0, 5, txt = "Configuration " , border = 'B', ln = 0, align = 'L', fill = True, link = '')
-                                        pdf.set_font('RobotoLight','',8)
-                                        pdf.set_margins(11, 0, 11)
-                                        pdf.cell(0, 5, txt =  filters, border = 'B', ln = 1, align = 'R', fill = True, link = '')
-                                        pdf.set_font('RobotoLight','',10)
-                                        pdf.set_text_color(23,23,23)
-                                        self.addTables({"Filters:" : {"fields" : item['filters'].keys(), "rows": rows}},pdf,185,12)
-                                        for currentFilterKey,currentFilterValue in item['filters'].iteritems():
-                                            pdf.cell(0,7, currentFilterKey + ": " + currentFilterValue, 0, 0, 'L', 0)
-                                            pdf.ln()
+                                        pdf.multi_cell(0, 5, txt = filters , border = '', align = 'L')
                                         del item['filters']
                                     if 'config' in item:
-                                        self.addTable(item['config'], pdf, customLabels)
-
+                                        pdf.set_font('RobotoLight', '', 10)
+                                        pdf.set_margins(12, 0, 12)
+                                        pdf.ln(1)
+                                        self.addTable(item['config'], pdf, customLabels,currentSection)
+                                pdf.add_page()  
+                                pdf.ln(20)
                         if 'agentList' in currentSection:
                             config_request = {'endpoint': '/agents/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
@@ -612,17 +605,38 @@ class report(controllers.BaseController):
                                 rows = []
                                 for agent in conf_data['data']['items']:
                                     currentAgentRow = []
-                                    currentAgentRow.append(agent['id'])
-                                    currentAgentRow.append(agent['name'])
-                                    currentAgentRow.append(agent['ip'])
-                                    currentAgentRow.append(agent['version'])
-                                    currentAgentRow.append(agent['manager'])
-                                    currentAgentRow.append(agent['os']['name'])
+                                    if 'id' in agent:
+                                        currentAgentRow.append(agent['id'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'name' in agent:
+                                        currentAgentRow.append(agent['name'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'ip' in agent:
+                                        currentAgentRow.append(agent['ip'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'version' in agent:
+                                        currentAgentRow.append(agent['version'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'manager' in agent:
+                                        currentAgentRow.append(agent['manager'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'os' in agent and 'name' in agent['os']:
+                                        currentAgentRow.append(agent['os']['name'])
+                                    else:
+                                        currentAgentRow.append('-')
                                     rows.append(currentAgentRow)
-                                table["Agent List"] = { "fields" : fields, "rows" : rows}
+                                table["Agent List"] = { "fields" : fields, "rows" : rows , "title": False}
                                 self.addTables(table,pdf,185,12)
-                            pdf.add_page()
-                            pdf.ln(20)
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
                                 pdf.set_text_color(23,23,23)
@@ -636,10 +650,10 @@ class report(controllers.BaseController):
                                 else:
                                     if 'filterBy' in currentConfig:
                                         filteredTables = self.filterTableByField(currentConfig['filterBy'], conf_data['data'][configuration])
-                                        self.addTable(filteredTables, pdf, customLabels)
+                                        self.addTable(filteredTables, pdf, customLabels,currentSection)
                                     else:
                                         pdf.set_margins(11, 0, 11)
-                                        self.addTable(conf_data['data'][configuration], pdf, customLabels)
+                                        self.addTable(conf_data['data'][configuration], pdf, customLabels,currentSection)
 
                         if 'wodle' in currentSection:
                             currentWodle = currentSection['wodle']
@@ -648,11 +662,16 @@ class report(controllers.BaseController):
                                 conf_data = self.miapi.exec_request(config_request)
                                 wmodules_conf_data = jsonbak.loads(conf_data)
 
-                            currentWodle_data = next(item for item in wmodules_conf_data['data']['wmodules'] if currentWodle in item) # finds the current wodle in the list of wodles
+                            currentWodle_data = {}
+                            for tmpWodle in wmodules_conf_data['data']['wmodules']:
+                                if currentWodle in tmpWodle:
+                                    currentWodle_data = tmpWodle
+                            #currentWodle_data = next(item for item in wmodules_conf_data['data']['wmodules'] if currentWodle in item) # finds the current wodle in the list of wodles
                             if not currentWodle_data and currentWodle not in currentWodle_data:
-                                pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                                pass
+                                #pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
                             else:
-                                self.addTable(currentWodle_data[currentWodle], pdf, customLabels)
+                                self.addTable(currentWodle_data[currentWodle], pdf, customLabels,currentSection)
                             pdf.ln(5)
                         pdf.ln(5) # space between configuration tables
                 except Exception as e:
@@ -950,10 +969,6 @@ class report(controllers.BaseController):
         pdf.ln(8)
         pdf.set_font('RobotoLight','',11)
         pdf.set_text_color(23,23,23)
-        pdf.cell(0,8, "Group name:  " + str(group['name']), 0, 0, 'L', 0)
-        pdf.ln()
-        pdf.cell(0,8, "Agents count:  " + str(group['count']), 0, 0, 'L', 0)
-        pdf.ln(5)
     
     #Print agent info
     def print_agent_info(self, agent_info, pdf):

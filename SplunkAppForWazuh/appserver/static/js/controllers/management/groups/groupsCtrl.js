@@ -83,6 +83,11 @@ define(['../../module', 'FileSaver'], function(controllers) {
           .then(() => this.scope.editGroupAgentConfig())
       })
 
+       
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
+      })
+
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
         event.stopPropagation()
         this.goBackToAgents()
@@ -728,17 +733,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
         configurations: [
 
           {
-            title: 'Agents ',
-            sections: [
-              {
-                desc: 'agents',
-                agentList: true,
-                labels : { }
-              },
-              
-            ]
-          },
-          {
             title: 'Main group configurations',
             sections: [
               {
@@ -749,11 +743,22 @@ define(['../../module', 'FileSaver'], function(controllers) {
               
             ]
           },
+          {
+            title: 'Agents ',
+            sections: [
+              {
+                desc: 'agents',
+                agentList: true,
+                labels : { }
+              },
+              
+            ]
+          },
         ]
       }
 
-
-      this.reportingService.reportGroupConfiguration(this.scope.currentGroup,data,this.api)
+      if(!this.scope.loadingReporting)
+        this.reportingService.reportGroupConfiguration(this.scope.currentGroup,data,this.api)
 
     }
 
