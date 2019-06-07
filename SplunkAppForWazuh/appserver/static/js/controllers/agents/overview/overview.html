@@ -99,7 +99,8 @@
                 <div class="euiText euiText--small euiStat__description">
                   <p class="agentField">Last keep alive</p>
                 </div>
-                <p class="euiText--small euiStat__description">{{offsetTimestamp('', agent.lastKeepAlive) || '-'}}</p>
+                <p ng-if="agent.status !== 'Never connected'" class="euiText--small euiStat__description">{{offsetTimestamp('', agent.lastKeepAlive) || '-'}}</p>
+                <p ng-if="agent.status === 'Never connected'" class="euiText--small euiStat__description">-</p>
               </div>
             </div>
             <div class="euiFlexItem euiFlexItem">
@@ -107,9 +108,10 @@
                 <div class="euiText euiText--small euiStat__description">
                   <p class="agentField">Last syscheck scan</p>
                 </div>
-                <p class="euiText--small euiStat__description" ng-if="syscheck.inProgress">Scan
+                <p ng-if="agent.status === 'Never connected'" class="euiText--small euiStat__description">-</p>
+                <p class="euiText--small euiStat__description" ng-if="syscheck.inProgress && agent.status !== 'Never connected'">Scan
                   in progress</p>
-                <p class="euiText--small euiStat__description" ng-if="!syscheck.inProgress">
+                <p class="euiText--small euiStat__description" ng-if="!syscheck.inProgress && agent.status !== 'Never connected'">
                   {{offsetTimestamp('', syscheck.end) || '-'}}
                   <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end"
                     md-direction="bottom" class="wz-tooltip">
@@ -125,9 +127,10 @@
                 <div class="euiText euiText--small euiStat__description">
                   <p class="agentField">Last rootcheck scan</p>
                 </div>
-                <p class="euiText--small euiStat__description" ng-if="rootcheck.inProgress">Scan
+                <p ng-if="agent.status === 'Never connected'" class="euiText--small euiStat__description">-</p>
+                <p class="euiText--small euiStat__description" ng-if="rootcheck.inProgress && agent.status !== 'Never connected'">Scan
                   in progress</p>
-                <p class="euiText--small euiStat__description" ng-if="!rootcheck.inProgress">{{offsetTimestamp('', rootcheck.end)
+                <p class="euiText--small euiStat__description" ng-if="!rootcheck.inProgress && agent.status !== 'Never connected'">{{offsetTimestamp('', rootcheck.end)
                               || '-'}}
                   <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end"
                     md-direction="bottom" class="wz-tooltip">
@@ -145,7 +148,7 @@
   </div>
   <!-- End headline -->
 
-  <div layout="row" layout-padding class="wz-margin-top--15">
+  <div ng-if="agent.status !== 'Never connected'" layout="row" layout-padding class="wz-margin-top--15">
     <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
       <md-card-content>
 
