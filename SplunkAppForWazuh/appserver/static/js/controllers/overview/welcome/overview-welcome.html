@@ -48,7 +48,19 @@
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">Security Information Management</h3>
-          <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('security')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
+          <div class="extensions-eye">
+            <md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip>
+            <wz-svg ng-click="showExtensionsLists('security')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
+          </div>
+          <div ng-show="extensionsLists.security" class="extensions-list">
+            <ul class="noDot ul-extensions">
+              <li>
+                <wz-kbn-switch switch-model="extensions.aws" switch-change="toggleExtension('aws',!extensions.aws)">
+                </wz-kbn-switch><span class="wz-headline-title"><i class="fa fa-fw fa-amazon"
+                    aria-hidden="true"></i>Amazon AWS</span>
+              </li>
+            </ul>
+          </div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'"
@@ -71,7 +83,22 @@
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">Auditing and Policy Monitoring</h3>
-          <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('auditing')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
+          <div class="extensions-eye">
+            <md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip>
+            <wz-svg ng-click="showExtensionsLists('auditing')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
+          </div>
+          <div ng-show="extensionsLists.auditing" class="extensions-list">
+            <ul class="noDot ul-extensions">
+              <li>
+                <wz-kbn-switch switch-model="extensions.oscap" switch-change="toggleExtension('oscap',!extensions.oscap)">
+                </wz-kbn-switch><span class="wz-headline-title"><i class="fa fa-fw fa-search" aria-hidden="true"></i>OpenSCAP</span>
+              </li>
+              <li>
+                <wz-kbn-switch switch-model="extensions.ciscat" switch-change="toggleExtension('ciscat',!extensions.ciscat)">
+                </wz-kbn-switch><span class="wz-headline-title"><i class="fa fa-fw fa-rocket" aria-hidden="true"></i>CIS-CAT</span>
+              </li>
+            </ul>
+          </div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem"
@@ -109,7 +136,12 @@
     <div class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
         <h3 class="euiTitle wc-title welcome-card-main-title">Threat Detection and Response</h3>
-        <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('threadDetection')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
+        <div class="extensions-eye">
+          <md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip>
+          <wz-svg ng-click="showExtensionsLists('threadDetection')" icon="eye" color="#396e3e" class="pull-right">
+          </wz-svg>
+        </div>
+        <div ng-show="extensionsLists.threadDetection" class="extensions-list"></div>
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
@@ -138,17 +170,32 @@
     <div ng-if="pci || gdpr || hipaa || nist" class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
         <h3 class="euiTitle wc-title welcome-card-main-title">Regulatory Compliance</h3>
-        <div class="extensions-eye"><md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip><wz-svg ng-click="showExtensionsLists('regulatory')" icon="eye" color="#396e3e" class="pull-right"></wz-svg></div>
+        <div class="extensions-eye">
+          <md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip>
+          <wz-svg ng-click="showExtensionsLists('regulatory')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
+        </div>
+        <div ng-show="extensionsLists.regulatory" class="extensions-list"></div>
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card ng-if="pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
-            sub-title="'PCI DSS'" ui-sref='ow-pci' current-tab="'pci'" description="'Global security standard for entities that process, store or transmit payment cardholder data.'"></wz-welcome-card>
-          <wz-welcome-card ng-if="gdpr" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
-            sub-title="'GDPR'" ui-sref='ow-gdpr' current-tab="'gdpr'" description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'"></wz-welcome-card>
-          <wz-welcome-card ng-if="hipaa" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
-            sub-title="'HIPAA'" ui-sref='ow-hipaa' current-tab="'hipaa'" description="'Health Insurance Portability and Accountability Act of 1996 (HIPAA) provides data privacy and security provisions for safeguarding medical information.'"></wz-welcome-card>
-          <wz-welcome-card ng-if="nist" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
-            sub-title="'NIST 800-53'" ui-sref='ow-nist' current-tab="'nist'" description="'National Institute of Standards and Technology Special Publication 800-53 (NIST 800-53) sets guidelines for federal information systems.'"></wz-welcome-card>
+            sub-title="'PCI DSS'" ui-sref='ow-pci' current-tab="'pci'"
+            description="'Global security standard for entities that process, store or transmit payment cardholder data.'">
+          </wz-welcome-card>
+          <wz-welcome-card ng-if="gdpr" class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'GDPR'" ui-sref='ow-gdpr'
+            current-tab="'gdpr'"
+            description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'">
+          </wz-welcome-card>
+          <wz-welcome-card ng-if="hipaa" class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'HIPAA'" ui-sref='ow-hipaa'
+            current-tab="'hipaa'"
+            description="'Health Insurance Portability and Accountability Act of 1996 (HIPAA) provides data privacy and security provisions for safeguarding medical information.'">
+          </wz-welcome-card>
+          <wz-welcome-card ng-if="nist" class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'NIST 800-53'"
+            ui-sref='ow-nist' current-tab="'nist'"
+            description="'National Institute of Standards and Technology Special Publication 800-53 (NIST 800-53) sets guidelines for federal information systems.'">
+          </wz-welcome-card>
         </div>
       </div>
     </div>

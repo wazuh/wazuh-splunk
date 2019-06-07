@@ -2197,3 +2197,36 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   width: 30px;
   float: right;
 }
+
+.extensions-list {
+  width: 220px;
+  /* height: auto; */
+  z-index: 100;
+  float: right;
+  position: relative;
+  border: 1px solid #d9d9d9;
+  background: white;
+  border-radius: 3px;
+  margin: 2px 15px 0px -500px;
+  height: auto;
+}
+
+/*.extensions-list:before {
+  content:"" !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  margin: -30px 0 0 40px !important;
+  border-bottom: 20px solid chocolate !important;
+  border-right: 18px solid transparent !important;
+  border-left: 18px solid transparent !important;
+  }*/
+  
+.green-href {
+  color: #396e3e !important;
+}
+
+.ul-extensions {
+  margin: 20px;
+  float: right;
+}
