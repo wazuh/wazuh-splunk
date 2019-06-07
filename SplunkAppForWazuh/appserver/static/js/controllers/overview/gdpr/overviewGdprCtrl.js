@@ -35,7 +35,9 @@ define([
       $reportingService,
       gdprTabs,
       reportingEnabled,
-      pciExtensionEnabled
+      pciExtensionEnabled,
+      hipaaExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -46,6 +48,8 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
+      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
+      this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.gdprTabs = gdprTabs ? gdprTabs : false
 
       this.dropdown = new Dropdown(
@@ -78,7 +82,7 @@ define([
           'gdprRequirements',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'gdprRequirements',
           this.scope
         ),
@@ -86,15 +90,16 @@ define([
           'evoViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="*" | timechart count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"  `,
           'evoViz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'agentsViz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'agentsViz',
           this.scope
         ),
@@ -102,7 +107,7 @@ define([
           'requirementsByAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'requirementsByAgents',
           this.scope
         ),

@@ -153,13 +153,15 @@ define([
             this.filters
           } sourcetype=wazuh rule.level=*| timechart count by rule.level`,
           'profilesVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new ColumnChart(
           'contentVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
           'contentVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'severityVizz',
@@ -173,7 +175,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart span=1h limit=5 useother=f count by agent.name`,
           'top5AgentsVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'top10AlertsVizz',

@@ -27,7 +27,6 @@ define(['../module'], function(app) {
         $scope.isAutocomplete = false
         $scope.dataModel = []
         $scope.connectors = []
-
         /**
          * Adds a new tag
          */

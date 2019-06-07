@@ -131,7 +131,8 @@ define([
             this.filters
           } rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
           'alertsEvolution',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new ColumnChart(
           'severityDist',

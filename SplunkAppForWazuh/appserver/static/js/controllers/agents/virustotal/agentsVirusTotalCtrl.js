@@ -90,9 +90,10 @@ define([
           'maliciousEventsOverTimeElement',
           `${
             this.filters
-          } data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives`,
+          } data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives  `,
           'maliciousEventsOverTimeElement',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'lastFiles',

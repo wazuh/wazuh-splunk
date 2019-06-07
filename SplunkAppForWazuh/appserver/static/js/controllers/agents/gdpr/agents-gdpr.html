@@ -41,6 +41,10 @@
     <md-nav-item ng-if="pciExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-pci"
       name="pcidss">PCI DSS</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="gdpr">GDPR</md-nav-item>
+    <md-nav-item ng-if="hipaaExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-hipaa"
+      name="hipaa">HIPAA</md-nav-item>
+    <md-nav-item ng-if="nistExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-nist"
+      name="nist">NIST 800-53</md-nav-item>
   </md-nav-bar>
 
 
@@ -56,7 +60,7 @@
     <div ng-show="!loadingVizz">
       <div layout="row" layout-align="center stretch">
         <md-card flex class="wz-md-card" ng-show='gdprTabs'>
-          <md-tabs md-selected="selectedPciIndex" class="wz-md-tab" md-border-bottom>
+          <md-tabs md-selected="selectedPciIndex" class="wz-md-tab"  style="min-height: 183px;"  md-border-bottom>
             <md-tab ng-repeat="tab in gdprTabs" label="{{tab.title}}">
               <div class="md-padding">
                 <span class="wz-headline-title">GDPR Requirement: {{tab.title}}</span>

@@ -657,6 +657,10 @@ div.uil-ring-css {
   color: black !important;
 }
 
+.md-tab{
+  font-weight: 100 !important;
+}
+
 .wazuhNavDiscover .euiTab ,
 .wazuhNavDiscover .euiText {
   font-size: 14px !important;
@@ -1916,3 +1920,170 @@ label.wz-icon-loupe  input {
 .md-sidenav-right {
   background-color: #fafafa !important;
 }
+
+.wz-margin-auto {
+  margin: auto !important;
+}
+
+.add-agent-card {
+  padding: 50px;
+  width: 750px;
+  margin: auto;
+}
+
+.title-register-agent {
+  width: 750px;
+  text-align: left;
+}
+
+.bubble {
+  background-color: #006BB4;
+  height: 32px;
+  width: 32px;
+  line-height: 32px;
+  float: left;
+  border-radius: 32px;
+  text-align: center;
+  color: #FFF;
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 10px;
+  margin-top: -2px;
+  text-align: center;
+}
+
+.bubble-checked {
+  background: #006BB4 !important;
+  color: #FFF !important;
+}
+
+
+.reg-agent-name {
+  width: 110px;
+  display: inline;
+  margin-left: 10px;
+}
+
+.reg-agent-text {
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 5px;
+}
+
+.close-register-agent {
+  float: right;
+  color: #00445a;
+  margin-right: 5px;
+}
+
+.div-input-register-agent {
+  margin: 20px 0px 0px 45px;
+}
+
+.input-register-agent {
+  border: none !important; 
+  border-right: none !important;
+  border-left: none !important;
+  border-image: initial !important;
+  border-bottom: 1px solid rgb(21, 147, 210) !important;
+  border-radius: 0px !important;
+  margin-bottom: -5px !important;
+}
+
+.choose-os {
+  margin: 25px 0px 0px -10px;
+}
+
+.next-input-register-agent {
+  margin-top: -12px;
+  width: 100px;
+}
+
+.reset-register-agent {
+  margin: 30px 10px -10px 0px;
+  color: #00445a;
+  width: 80px;
+}
+
+.register-snippet {
+  background-color: #f5f5f5;
+  margin: 15px 5px;
+  padding: 15px 20px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+.btn-empty-selected {
+  background-color: rgb(228, 242, 245) !important;
+  color: rgb(0, 121, 165) !important;
+}
+
+.power-cmd {
+  margin: 10px 0px 10px 5px;
+}
+
+.bg-whitesmoke {
+  background-color: whitesmoke;
+}
+
+
+.vertical-line {
+  border-left: solid 2px #D3DAE6;
+  height: 85px;
+  margin: -20px 0px -5px 15px;
+}
+
+.wz-padding-0 {
+  padding: 0px !important;
+}
+
+.euiFieldText {
+  max-width: 400px !important;
+  width: 100% !important;
+  height: 40px !important;
+  background-color: #fbfcfd !important;
+  background-repeat: no-repeat !important;
+  background-size: 0% 100% !important;
+  /* 3 */
+  -webkit-box-shadow: 0 1px 1px -1px rgba(152, 162, 179, 0.2), 0 3px 2px -2px rgba(152, 162, 179, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+          box-shadow: 0 1px 1px -1px rgba(152, 162, 179, 0.2), 0 3px 2px -2px rgba(152, 162, 179, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+  -webkit-transition: background-color 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, -webkit-box-shadow 150ms ease-in !important;
+  transition: background-color 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, -webkit-box-shadow 150ms ease-in !important;
+  transition: box-shadow 150ms ease-in, background-color 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in !important;
+  transition: box-shadow 150ms ease-in, background-color 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, -webkit-box-shadow 150ms ease-in !important;
+  font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  font-weight: 400 !important;
+  letter-spacing: -.005em !important;
+  -webkit-text-size-adjust: 100% !important;
+  -ms-text-size-adjust: 100% !important;
+  -webkit-font-kerning: normal !important;
+          font-kerning: normal !important;
+  font-size: 14px !important;
+  line-height: 1em !important;
+  color: #343741 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 12px !important;
+}
+
+.euiFieldText:focus {
+  background: none !important;
+}
+
+.border-to-div {
+  border-left: solid 2px #D3DAE6;
+  padding-left: 26px;
+  margin-left: 15px;
+}
+
+.complete-install-div {
+  margin: 30px 0px 0px 40px;
+}
+
+.clip {
+  position: relative;
+  float: right;
+  margin-right: -5px;
+  margin-top: -5px;
+}
+

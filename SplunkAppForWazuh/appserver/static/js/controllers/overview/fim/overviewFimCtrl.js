@@ -72,7 +72,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}=syscheck  | timechart count by syscheck.event`,
           'alertsByActionOverTime',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'top5Agents',
@@ -88,7 +89,8 @@ define([
             this.filters
           } sourcetype=wazuh rule.groups{}=syscheck  | timechart count`,
           'eventsSummary',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'ruleDistribution',

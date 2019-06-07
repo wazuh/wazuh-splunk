@@ -51,7 +51,9 @@ define([
       $reportingService,
       gdprTabs,
       reportingEnabled,
-      pciExtensionEnabled
+      pciExtensionEnabled,
+      hipaaExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -62,6 +64,12 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
+      this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
+      this.scope.nistExtensionEnabled = nistExtensionEnabled
+      this.state = $state
+      this.currentDataService = $currentDataService
+      this.reportingService = $reportingService
+      this.tableResults = {}
       this.agent = agent
       this.scope.expandArray = [
         false,
@@ -112,7 +120,7 @@ define([
           'gdprRequirementsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}  | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'gdprRequirementsVizz',
           this.scope
         ),
@@ -120,7 +128,7 @@ define([
           'groupsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{}`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
@@ -128,13 +136,13 @@ define([
           'top5GDPR',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} `,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements" `,
           'top5GDPR',
           this.scope
         ),
         new PieChart(
           'rulesVizz',
-          `${this.filters} sourcetype=wazuh  | top limit=5 rule.description `,
+          `${this.filters} sourcetype=wazuh  | top limit=5 rule.description | rename count as "Count", rule.gdpr{} as "Requirements" `,
           'rulesVizz',
           this.scope
         ),
@@ -142,7 +150,7 @@ define([
           'agentsVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'agentsVizz',
           this.scope
         ),
@@ -150,7 +158,7 @@ define([
           'requirementsByAgentVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name`,
+          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'requirementsByAgentVizz',
           this.scope
         ),

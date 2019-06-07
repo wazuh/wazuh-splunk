@@ -1,5 +1,6 @@
 <!-- End loading ring -->
-<div flex ng-if="!loading" class="md-padding" layout="column" layout-align="start space-around">
+<div flex ng-if="!loading && !noAgents && !addingAgents" class="md-padding" layout="column"
+  layout-align="start space-around">
 
   <div layout="row" layout-align="space-between stretch" ng-if="!wazuhNotReadyYet">
 
@@ -112,11 +113,18 @@
 
   <md-card class="wz-md-card no-margin-sides wz-margin-top-15">
     <!-- Table -->
-    <div ng-if="!loading" layout="row" class="wz-margin-10">
+
+    <md-card-actions layout="row" layout-align="start center"
+      class="layout-align-start-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+      <a class="cursor-pointer" ng-click="addNewAgent()">Add new agent</a>
+    </md-card-actions>
+    <md-card-contents>
       <wazuh-table flex path="'/agents'" custom-columns="true"
         keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
-        allow-click="true" rows-per-page="17"></wazuh-table>
-    </div>
+        allow-click="true" rows-per-page="17">
+      </wazuh-table>
+    </md-card-contents>
+
 
     <!-- Download CSV -->
     <div layout="row" class="ruleset-csv-formater">
@@ -131,4 +139,16 @@
       </a>
     </div>
   </md-card>
+</div>
+
+
+<!-- Register a new agent -->
+<div flex ng-if="!loading && noAgents || addingAgents" class="md-padding" layout="column"
+  layout-align="start space-around">
+  <div class="wz-margin-auto title-register-agent" ng-if="!wazuhNotReadyYet">
+    <span ng-if="noAgents" class="font-size-20">There are not agents registered</span>
+    <span ng-if="addingAgents" class="font-size-20">Add a new agent</span>
+    <span ng-if="addingAgents" class="close-register-agent cursor-pointer" ng-click="closeAddAgent()"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;close</span>
+  </div>
+  <wz-register-agent></wz-register-agent>
 </div>
