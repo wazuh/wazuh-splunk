@@ -36,7 +36,6 @@
           </button>
         </md-card-actions>
         <!-- Export agent config -->
-        
         <md-card-actions layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf" ng-if="agent && agent.id !== '000' && agent.status === 'Active'">
           <a ng-class="{'link-disabled': loadingReporting}" class="small formatted-color" style="float:right; height:45px; padding-top: 12px; padding-right: 15px;" id="btnDownload" ng-click="initReportConfig()"  ng-disabled="loadingReporting">
             <div ng-show="!loadingReporting"><svg ng-show="!loadingReporting" class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"

@@ -359,6 +359,54 @@ class report(controllers.BaseController):
                     y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
                     pdf.set_xy(margin, y)
                     pdf.line(margin, y, max_width+margin, y)
+
+
+    def addCustomTable(self,customTables,pdf,labels,currentSection):
+        if customTables:
+            tables = {}
+            for extraTable in customTables:
+                for key,value in extraTable.iteritems():
+                    pdf.set_text_color(0,0,0)
+                    pdf.set_font('RobotoLight', '', 10)
+                    tableKey = self.getString(key,labels)
+                    newTable  = { tableKey : {} }
+                    fields = []
+                    rows = []
+                    if tableKey == 'Command' and type(value) is list and value:
+                        value = value[0]
+                    if type(value) is list:
+                        keys_amount = len(value[0].keys())
+                        for key in value[0]: #Header
+                            fields.append(self.getString(key,labels))
+                        self.setTableRowStyle(pdf)
+                        for row in value: # rows
+                            nextRow = []
+                            for rowKeys, rowValues in row.iteritems():
+                                if self.getString(rowKeys,labels) in fields:
+                                    if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
+                                        customTables.append({rowKeys:rowValues})
+                                    else:
+                                        nextRow.append(self.getString(rowValues))
+                            rows.append(nextRow)
+                        if rows and fields and type(rows) is list and rows[0]:
+                            newTable[tableKey] = { "fields": fields, "rows": rows}
+                            self.addTables(newTable,pdf,185,12)
+                    elif type(value) is dict:
+                        customKeyList = []
+                        customValueList = []
+                        pdf.ln(5)
+                        self.setTableTitle(pdf)
+                        pdf.cell(0, 5, txt = self.getString(key,labels).capitalize(), border = '', align = '', fill = False, link = '')
+                        pdf.set_margins(12, 0, 12)
+                        pdf.ln(5)
+                        for currentTableKey, currentTableValue in value.iteritems():
+                            if type(currentTableValue) is dict:
+                                customTables.append({currentTableKey:currentTableValue})
+                            else:
+                                customKeyList.append(self.getString(currentTableKey,labels))
+                                customValueList.append(self.getString(currentTableValue,labels))
+                        self.addKeyValueTable(customKeyList,customValueList,pdf)
+
                 
 
 
@@ -400,6 +448,8 @@ class report(controllers.BaseController):
                                 valueList.append(self.getString(value,labels))
                         elif type(value) is dict:
                                 customTables.append({key:value})
+                        self.addCustomTable(customTables,pdf,labels,currentSection)
+                        customTables = []
                 elif type(data) is list:
                     for item in data:
                         if type(item) is not list and type(item) is not dict:
@@ -408,53 +458,11 @@ class report(controllers.BaseController):
                         if type(item) is list:
                             for listItem in item:
                                 self.addTable(listItem,pdf,labels)
+                        self.addCustomTable(customTables,pdf,labels,currentSection)
+                        customTables = []
                 if keyList and valueList:
                     self.addKeyValueTable(keyList,valueList,pdf)
 
-                if customTables:
-                    tables = {}
-                    for extraTable in customTables:
-                        for key,value in extraTable.iteritems():
-                            pdf.set_text_color(0,0,0)
-                            pdf.set_font('RobotoLight', '', 10)
-                            tableKey = self.getString(key,labels)
-                            newTable  = { tableKey : {} }
-                            fields = []
-                            rows = []
-                            if tableKey == 'Command' and type(value) is list and value:
-                                value = value[0]
-                            if type(value) is list:
-                                keys_amount = len(value[0].keys())
-                                for key in value[0]: #Header
-                                    fields.append(self.getString(key,labels))
-                                self.setTableRowStyle(pdf)
-                                for row in value: # rows
-                                    nextRow = []
-                                    for rowKeys, rowValues in row.iteritems():
-                                        if self.getString(rowKeys,labels) in fields:
-                                            if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
-                                                customTables.append({rowKeys:rowValues})
-                                            else:
-                                                nextRow.append(self.getString(rowValues))
-                                    rows.append(nextRow)
-                                if rows and fields and type(rows) is list and rows[0]:
-                                    newTable[tableKey] = { "fields": fields, "rows": rows}
-                                    self.addTables(newTable,pdf,185,12)
-                            elif type(value) is dict:
-                                customKeyList = []
-                                customValueList = []
-                                pdf.ln(5)
-                                self.setTableTitle(pdf)
-                                pdf.cell(0, 5, txt = self.getString(key,labels).capitalize(), border = '', align = '', fill = False, link = '')
-                                pdf.set_margins(12, 0, 12)
-                                pdf.ln(5)
-                                for currentTableKey, currentTableValue in value.iteritems():
-                                    if type(currentTableValue) is dict:
-                                        customTables.append({currentTableKey:currentTableValue})
-                                    else:
-                                        customKeyList.append(self.getString(currentTableKey,labels))
-                                        customValueList.append(self.getString(currentTableValue,labels))
-                                self.addKeyValueTable(customKeyList,customValueList,pdf)
                             
 
         except Exception as e:
