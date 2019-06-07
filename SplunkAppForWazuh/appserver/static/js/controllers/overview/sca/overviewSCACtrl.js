@@ -147,7 +147,8 @@ define([
           'overTimePolicy',
           `${this.filters} | timechart count by data.sca.policy`,
           'overTimePolicy',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummary',

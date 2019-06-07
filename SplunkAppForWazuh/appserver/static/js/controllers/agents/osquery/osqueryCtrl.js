@@ -98,7 +98,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'mostCommonActions',
@@ -118,7 +119,8 @@ define([
           'alertsOverTime',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertsOverTime',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummary',

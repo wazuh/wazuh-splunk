@@ -92,7 +92,8 @@ define([
             this.filters
           } data.virustotal.malicious="*" | timechart span=12h count by data.virustotal.malicious`,
           'maliciousEventsOverTimeElement',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'lastScannedFiles',
@@ -130,7 +131,8 @@ define([
           'eventsSummary',
           `${this.filters} | timechart count`,
           'eventsSummary',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new BarChart(
           'alertsPerAgent',

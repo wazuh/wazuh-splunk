@@ -132,20 +132,19 @@
       </div>
     </div>
 
-    <div ng-if="pci || gdpr" class="euiFlexItem flex-50">
+    <div ng-if="pci || gdpr || hipaa || nist" class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
         <h3 class="euiTitle wc-title welcome-card-main-title">Regulatory Compliance</h3>
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card ng-if="pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
-            sub-title="'PCI DSS'" ui-sref='ow-pci' current-tab="'pci'"
-            description="'Global security standard for entities that process, store or transmit payment cardholder data.'">
-          </wz-welcome-card>
-          <wz-welcome-card ng-if="gdpr" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'GDPR'" ui-sref='ow-gdpr'
-            current-tab="'gdpr'"
-            description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'">
-          </wz-welcome-card>
+            sub-title="'PCI DSS'" ui-sref='ow-pci' current-tab="'pci'" description="'Global security standard for entities that process, store or transmit payment cardholder data.'"></wz-welcome-card>
+          <wz-welcome-card ng-if="gdpr" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+            sub-title="'GDPR'" ui-sref='ow-gdpr' current-tab="'gdpr'" description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'"></wz-welcome-card>
+          <wz-welcome-card ng-if="hipaa" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+            sub-title="'HIPAA'" ui-sref='ow-hipaa' current-tab="'hipaa'" description="'Health Insurance Portability and Accountability Act of 1996 (HIPAA) provides data privacy and security provisions for safeguarding medical information.'"></wz-welcome-card>
+          <wz-welcome-card ng-if="nist" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+            sub-title="'NIST 800-53'" ui-sref='ow-nist' current-tab="'nist'" description="'National Institute of Standards and Technology Special Publication 800-53 (NIST 800-53) sets guidelines for federal information systems.'"></wz-welcome-card>
         </div>
       </div>
     </div>

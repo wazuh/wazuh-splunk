@@ -159,7 +159,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart limit=10 count by rule.description`,
           'alertsOverTimeVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new Table(
           'alertsSummaryVizz',

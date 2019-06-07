@@ -105,7 +105,8 @@ define([
             this.filters
           } sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new ColumnChart(
           'topGroupOwnersElement',

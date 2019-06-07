@@ -74,7 +74,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart count by data.aws.source usenull=f`,
           'eventsBySourceVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new ColumnChart(
           'eventsByS3BucketsVizz',
@@ -82,7 +83,8 @@ define([
             this.filters
           } sourcetype=wazuh | timechart count by data.aws.log_info.s3bucket usenull=f`,
           'eventsByS3BucketsVizz',
-          this.scope
+          this.scope,
+          {customAxisTitleX : "Time span"}
         ),
         new PieChart(
           'sourcesVizz',
