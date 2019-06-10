@@ -386,11 +386,12 @@ class report(controllers.BaseController):
                                     if self.getString(rowKeys,labels) in fields:
                                         if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
                                             customTables.append({rowKeys:rowValues})
-                                            nextRow.append("-")
+                                            if len(fields) >= 2:
+                                                nextRow.append("-")
                                         else:
                                             nextRow.append(self.getString(rowValues))
-                            elif type(row) is str:
-                                nextRow.append(row)
+                            else:
+                                nextRow.append(self.getString(row))
                             rows.append(nextRow)
                         if rows and fields and type(rows) is list and rows[0]:
                             newTable[tableKey] = { "fields": fields, "rows": rows}
