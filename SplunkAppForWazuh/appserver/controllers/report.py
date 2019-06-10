@@ -381,12 +381,16 @@ class report(controllers.BaseController):
                         self.setTableRowStyle(pdf)
                         for row in value: # rows
                             nextRow = []
-                            for rowKeys, rowValues in row.iteritems():
-                                if self.getString(rowKeys,labels) in fields:
-                                    if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
-                                        customTables.append({rowKeys:rowValues})
-                                    else:
-                                        nextRow.append(self.getString(rowValues))
+                            if type(row) is dict:
+                                for rowKeys, rowValues in row.iteritems():
+                                    if self.getString(rowKeys,labels) in fields:
+                                        if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
+                                            customTables.append({rowKeys:rowValues})
+                                            nextRow.append("-")
+                                        else:
+                                            nextRow.append(self.getString(rowValues))
+                            elif type(row) is str:
+                                nextRow.append(row)
                             rows.append(nextRow)
                         if rows and fields and type(rows) is list and rows[0]:
                             newTable[tableKey] = { "fields": fields, "rows": rows}
@@ -448,8 +452,6 @@ class report(controllers.BaseController):
                                 valueList.append(self.getString(value,labels))
                         elif type(value) is dict:
                                 customTables.append({key:value})
-                        self.addCustomTable(customTables,pdf,labels,currentSection)
-                        customTables = []
                 elif type(data) is list:
                     for item in data:
                         if type(item) is not list and type(item) is not dict:
@@ -458,10 +460,10 @@ class report(controllers.BaseController):
                         if type(item) is list:
                             for listItem in item:
                                 self.addTable(listItem,pdf,labels)
-                        self.addCustomTable(customTables,pdf,labels,currentSection)
-                        customTables = []
                 if keyList and valueList:
                     self.addKeyValueTable(keyList,valueList,pdf)
+                self.addCustomTable(customTables,pdf,labels,currentSection)
+                customTables = []
 
                             
 
