@@ -173,6 +173,22 @@ define(['../../module', '../../../utils/config-handler'], function(
      * 
      */
     async initReportConfig(){
+
+      this.selectedOptions = {'globalConf' : 1,
+      'communicationConf' : 1,
+      'antiFloodingConf' : 1,
+      'labels' : 1,
+      'pmConf' : 1,
+      'openscapConf' : 1,
+      'ciscatConf' : 1,
+      'osqueryConf' : 1,
+      'inventoryConf' : 1,
+      'activeResponseConf' : 1,
+      'commandsConf' : 1,
+      'dockerListenerConf' : 1,
+      'logCollectionConf' : 1,
+      'integrityMonitoringConf' : 1}
+
       const data = {
         configurations: [
 
@@ -323,7 +339,7 @@ define(['../../module', '../../../utils/config-handler'], function(
       }
 
       if(!this.$scope.loadingReporting)
-        this.reportingService.reportAgentConfiguration(this.id,data,this.api)
+        this.reportingService.reportAgentConfiguration(this.id,this.selectedOptions,this.api)
 
 
     }

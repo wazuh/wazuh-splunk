@@ -501,6 +501,114 @@ class report(controllers.BaseController):
                 pdf.ln(6)
             del currentSection['subtitle']
 
+    def getSelectedConfigurations(self,selectedOptions):
+        selectedConf = [{'title': 'Main configurations', 'sections': [] }]
+        
+        if 'globalConf' in selectedOptions and selectedOptions['globalConf'] == 1:
+            selectedConf[0]['sections'].append({
+                'subtitle': 'Global configuration',
+                'desc': 'Logging settings that apply to the agent',
+                'config': [{ 'component': 'com', 'configuration': 'logging' }]                
+              })
+        if 'communicationConf' in selectedOptions and selectedOptions['communicationConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+
+        if 'antiFloodingConf' in selectedOptions and selectedOptions['antiFloodingConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+
+        if 'labels' in selectedOptions and selectedOptions['labels'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+
+        if 'pmConf' in selectedOptions and selectedOptions['pmConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+
+        if 'openscapConf' in selectedOptions and selectedOptions['openscapConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+
+        if 'ciscatConf' in selectedOptions and selectedOptions['ciscatConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+        if 'osqueryConf' in selectedOptions and selectedOptions['osqueryConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+        if 'inventoryConf' in selectedOptions and selectedOptions['inventoryConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+        if 'activeResponseConf' in selectedOptions and selectedOptions['activeResponseConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+        if 'commandsConf' in selectedOptions and selectedOptions['commandsConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+        if 'dockerListenerConf' in selectedOptions and selectedOptions['dockerListenerConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+        if 'logCollectionConf' in selectedOptions and selectedOptions['logCollectionConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+        if 'integrityMonitoringConf' in selectedOptions and selectedOptions['integrityMonitoringConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+
+        return selectedConf
+
 
     @expose_page(must_login=False, methods=['POST'])
     def generateConfigurationReport(self, **kwargs):
@@ -550,6 +658,7 @@ class report(controllers.BaseController):
             pdf.ln(10)
             pdf.set_draw_color(200,200,200)
             wmodules_conf_data = []
+            data['data']['configurations'] = self.getSelectedConfigurations(data['data'])
             for n in data['data']['configurations']:
                 try:
                     #Set color and print configuration tittle
