@@ -61,7 +61,6 @@ define(['../../module'], function(app) {
      */
     $onInit() {
       try {
-        console.log('this.agent ', this.agent)
         this.scope.confirmingRestart = false
         if (
           this.agent.length &&
