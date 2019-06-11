@@ -577,11 +577,18 @@ define([
           } else {
             method = 'GET'
           }
-          const requestCopy = desiredGroup.requestText.includes(method)
+          let requestCopy = desiredGroup.requestText.includes(method)
             ? desiredGroup.requestText.split(method)[1].trim()
             : desiredGroup.requestText
+
           // Checks for inline parameters
+          let paramsInline = false
+          if (requestCopy.includes('{') && requestCopy.includes('}')) {
+            paramsInline = `{${requestCopy.split('{')[1]}`
+            requestCopy = requestCopy.split('{')[0]
+          }
           const inlineSplit = requestCopy.split('?')
+
           const extra =
             inlineSplit && inlineSplit[1]
               ? queryString.parse(inlineSplit[1])
@@ -595,7 +602,7 @@ define([
 
           let JSONraw = {}
           try {
-            JSONraw = JSON.parse(desiredGroup.requestTextJson)
+            JSONraw = JSON.parse(paramsInline || desiredGroup.requestTextJson)
           } catch (error) {
             JSONraw = {}
           }
@@ -604,17 +611,25 @@ define([
           if (typeof JSONraw.pretty !== 'undefined') delete JSONraw.pretty
 
           let path = ''
-          if (method === 'GET' || method === 'POST') {
+          if (method === 'PUT' || method === 'POST') {
             // Assign inline parameters
             for (const key in extra) JSONraw[key] = extra[key]
             path = req.includes('?') ? req.split('?')[0] : req
           } else {
+            if (extra) {
+              Object.keys(JSONraw).map(k => {
+                if (extra[k]) {
+                  delete JSONraw[k]
+                }
+              })
+            }
             path =
             typeof JSONraw === 'object' && Object.keys(JSONraw).length
               ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(queryString.stringify(JSONraw))}`
-              : req;
+              : req
             JSONraw = {}
           }
+
           //if (typeof JSONraw === 'object') JSONraw.devTools = true
           if (!firstTime) {
             const output = await this.request.apiReq(path, JSONraw, method)
