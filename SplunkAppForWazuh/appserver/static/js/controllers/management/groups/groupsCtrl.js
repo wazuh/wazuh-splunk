@@ -24,7 +24,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $beautifierJson,
       $notificationService,
       $groupHandler,
-      extensions
+      extensions,
+      isAdmin
     ) {
       this.scope = $scope
       this.state = $state
@@ -60,6 +61,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         }
       })
       this.extensions = extensions
+      this.scope.adminMode = isAdmin
       this.scope.addingGroup = false
       this.scope.addingAgents = false
       this.scope.$on('groupsIsReloaded', () => {
@@ -229,8 +231,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
         this.scope.saveGroupAgentConfig = content =>
           this.saveGroupAgentConfig(content)
-
-        this.scope.adminMode = this.extensions['admin'] === 'true'
 
         this.scope.$applyAsync()
       } catch (err) {

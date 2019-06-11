@@ -25,7 +25,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       extensions,
       $fileEditor,
       $restartService,
-      $requestService
+      $requestService,
+      isAdmin
     ) {
       super(
         $scope,
@@ -43,6 +44,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.restartService = $restartService
       this.requestService = $requestService
       this.currentDecoder = currentDecoder
+      this.scope.adminMode = isAdmin
     }
 
     /**
@@ -59,7 +61,6 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
           this.addDetailFilter(name, value)
-        this.scope.adminMode = this.extensions['admin'] === 'true'
         this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
         this.scope.saveDecoderConfig = fileName =>
           this.saveDecoderConfig(fileName)

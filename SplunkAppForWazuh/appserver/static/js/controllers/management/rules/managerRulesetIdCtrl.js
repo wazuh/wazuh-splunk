@@ -26,7 +26,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       extensions,
       $fileEditor,
       $restartService,
-      $requestService
+      $requestService, 
+      isAdmin
     ) {
       super(
         $scope,
@@ -43,6 +44,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.requestService = $requestService
+      this.scope.adminMode = isAdmin
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {
@@ -72,7 +74,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>
         this.addDetailFilter(name, value)
-      this.scope.adminMode = this.extensions['admin'] === 'true'
       this.scope.isLocal = this.scope.ruleInfo.path === 'etc/rules'
       this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
