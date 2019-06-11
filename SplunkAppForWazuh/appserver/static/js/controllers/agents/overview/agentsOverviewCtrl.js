@@ -61,6 +61,7 @@ define(['../../module'], function(app) {
      */
     $onInit() {
       try {
+        console.log('this.agent ', this.agent)
         this.scope.confirmingRestart = false
         if (
           this.agent.length &&
@@ -79,7 +80,6 @@ define(['../../module'], function(app) {
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
                   .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
-
           this.scope.syscheck =
             this.agent.length > 0 &&
             typeof this.agent[1] === 'object' &&
@@ -205,7 +205,10 @@ define(['../../module'], function(app) {
             this.scope.isLinux = this.agent[0].data.data.os.uname.includes(
               'Linux'
             )
+            this.scope.isWindows = this.agent[0].data.data.os.platform === 'windows'
+            this.scope.isMac = this.agent[0].data.data.os.platform === 'darwing'
           }
+
           if (this.scope.agent.status == 'Never connected') {
             this.scope.agent.os = {
               name: 'Unknown',
