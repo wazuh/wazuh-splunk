@@ -856,8 +856,13 @@ kbn-vis .vis-container {
 }
 
 .euiCallOut--warning {
-  border-color: #E5830E;
+  border-color: #E5830E !important;
   background-color: #fcf3e7;
+}
+
+.euiCallOut--success {
+  border-color: #017D73 !important;
+  background-color: #e6f2f1;
 }
 
 .euiCallOut {
