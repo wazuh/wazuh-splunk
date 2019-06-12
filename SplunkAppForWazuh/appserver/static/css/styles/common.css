@@ -440,6 +440,10 @@ div.uil-ring-css {
   margin-bottom: -15px !important;
 }
 
+.wz-margin-bottom--5 {
+  margin-bottom: -5px !important;
+}
+
 .wz-height-35 {
   height: 35px !important;
 }
@@ -1793,4 +1797,51 @@ label.wz-icon-loupe  input {
   cursor: not-allowed;
   opacity: 0.5;
   text-decoration: none;
+}
+
+.ul-extensions {
+  margin: 20px 20px 10px 20px !important;
+}
+
+
+.ul-extensions li{
+  text-align: left;
+  width: 100%;
+  margin: 0 auto !important;
+  padding-bottom: 10px;
+}
+
+.agent-config-popover {
+  width: 220px;
+  z-index: 100;
+  float: right;
+  position: relative;
+  border: 1px solid #d9d9d9;
+  background: white;
+  border-radius: 3px;
+  margin: 18px 5px 0px -500px;
+  height: auto;
+}
+
+.btn-export-agent {
+  float: right;
+  height: 30px;
+  padding-top: 5px;
+  padding-right: 15px;
+  margin: 7px;
+  background: none !important;
+}
+
+.btn-export-agent:hover {
+  background: rgba(0, 107, 180, 0.1) !important;
+}
+
+.btn-agent-report {
+  margin: 10px 15px 20px !important;
+  width: 185px !important;
+}
+
+.select-options {
+  text-align: left;
+  margin-left: 20px;
 }

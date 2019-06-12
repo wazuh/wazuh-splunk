@@ -37,7 +37,7 @@
         </md-card-actions>
         <!-- Export agent config -->
         <md-card-actions layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf" ng-if="agent && agent.id !== '000' && agent.status === 'Active'">
-          <a ng-class="{'link-disabled': loadingReporting}" class="small formatted-color" style="float:right; height:45px; padding-top: 12px; padding-right: 15px;" id="btnDownload" ng-click="initReportConfig()"  ng-disabled="loadingReporting">
+          <button ng-class="{'link-disabled': loadingReporting}" class="btn wz-button-empty btn-export-agent" id="btnDownload" ng-click="showModulesToExport()"  ng-disabled="loadingReporting">
             <div ng-show="!loadingReporting"><svg ng-show="!loadingReporting" class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
               viewBox="0 0 16 16">
               <path
@@ -47,7 +47,21 @@
             <div ng-show="loadingReporting">
             <i ng-show="loadingReporting" class="fa fa-fw fa-spin fa-spinner"
             aria-hidden="true"></i>&nbsp;PDF </div>
-          </a>
+            </button>
+          <div ng-if="exportConfig" class="agent-config-popover">
+              <ul class="noDot ul-extensions">
+                <li ng-repeat="(key, value) in selectedOptions track by $index">
+                  <md-checkbox class="wz-margin-bottom--5"  ng-checked="selectedOptions[key]" ng-model="selectedOptions[key]" aria-label="key">
+                  {{key}}
+                </md-checkbox>
+                </li>
+              </ul>
+              <div class="select-options">
+                <a ng-click="selectAll(true)">Select all</a><br>
+                <a ng-click="selectAll(false)">Unselect all</a>
+              </div>
+              <button ng-disabled="checkAllDisabled()" class="btn wz-button btn-agent-report" ng-click="initReportConfig()" aria-label="Init report">Generate PDF report</button>
+            </div>
         </md-card-actions>
         <md-card-content>
           <!--Main configurations table-->

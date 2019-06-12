@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', '../../../utils/config-handler'], function(
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
@@ -66,7 +66,23 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.isSynchronized =
         data && data.data && data.data.data && data.data.data.synced
 
-      
+      this.$scope.selectedOptions = {
+        'globalConf': true,
+        'communicationConf': true,
+        'antiFloodingConf': true,
+        'labels': true,
+        'pmConf': true,
+        'openscapConf': true,
+        'ciscatConf': true,
+        'osqueryConf': true,
+        'inventoryConf': true,
+        'activeResponseConf': true,
+        'commandsConf': true,
+        'dockerListenerConf': true,
+        'logCollectionConf': true,
+        'integrityMonitoringConf': true
+      }
+
       this.$scope.$on('loadingReporting', (event, data) => {
         this.$scope.loadingReporting = data.status
       })
@@ -78,6 +94,9 @@ define(['../../module', '../../../utils/config-handler'], function(
     $onInit() {
       this.$scope.showingInfo = false
       this.$scope.showInfo = () => this.showInfo()
+      this.$scope.showModulesToExport = () => this.showModulesToExport()
+      this.$scope.selectAll = value => this.selectAll(value)
+      this.$scope.checkAllDisabled = () => this.checkAllDisabled()
       this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -168,26 +187,18 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.$applyAsync()
     }
 
+    /**
+     * Shows the popover to select the modules
+     */
+    showModulesToExport() {
+      this.$scope.exportConfig = !this.$scope.exportConfig
+      this.$scope.$applyAsync()
+    }
 
     /**
-     * 
+     * Initializes the report
      */
-    async initReportConfig(){
-
-      this.selectedOptions = {'globalConf' : 1,
-      'communicationConf' : 1,
-      'antiFloodingConf' : 1,
-      'labels' : 1,
-      'pmConf' : 1,
-      'openscapConf' : 1,
-      'ciscatConf' : 1,
-      'osqueryConf' : 1,
-      'inventoryConf' : 1,
-      'activeResponseConf' : 1,
-      'commandsConf' : 1,
-      'dockerListenerConf' : 1,
-      'logCollectionConf' : 1,
-      'integrityMonitoringConf' : 1}
+    async initReportConfig() {
 
       const data = {
         configurations: [
@@ -199,20 +210,20 @@ define(['../../module', '../../../utils/config-handler'], function(
                 subtitle: 'Global configuration',
                 desc: 'Logging settings that apply to the agent',
                 config: [{ component: 'com', configuration: 'logging' }],
-                
+
               },
               {
                 subtitle: 'Communication',
                 desc: 'Settings related to the connection with the manager',
                 config: [{ component: 'agent', configuration: 'client' }],
-                labels :{
+                labels: {
                 }
               },
               {
                 subtitle: 'Anti-flooding settings',
                 desc: 'Agent bucket parameters to avoid event flooding',
                 config: [{ component: 'agent', configuration: 'buffer' }],
-                labels : {
+                labels: {
                 }
               },
               {
@@ -234,28 +245,28 @@ define(['../../module', '../../../utils/config-handler'], function(
                   { component: 'syscheck', configuration: 'rootcheck' },
                   { component: 'wmodules', configuration: 'wmodules' }
                 ],
-                labels : {
+                labels: {
                 }
               },
-                  {
-                    subtitle: 'Configuration assessment',
-                    desc:
-                      'Configuration Assessment',
-                    wodle : 'sca',
-                    labels : {
-                      enabled: 'Security configuration assessment enabled',
-                      scan_on_start: 'Scan on start',
-                      interval: 'Interval',
-                      policies: 'Policies',
-                      skip_nfs: 'Skip nfs',
-                    }       
-                  },
+              {
+                subtitle: 'Configuration assessment',
+                desc:
+                  'Configuration Assessment',
+                wodle: 'sca',
+                labels: {
+                  enabled: 'Security configuration assessment enabled',
+                  scan_on_start: 'Scan on start',
+                  interval: 'Interval',
+                  policies: 'Policies',
+                  skip_nfs: 'Skip nfs',
+                }
+              },
               {
                 subtitle: 'OpenSCAP',
                 desc:
                   'Configuration assessment and automation of compliance monitoring using SCAP checks',
                 wodle: 'open-scap',
-                labels : {
+                labels: {
                 }
               },
               {
@@ -263,7 +274,7 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Configuration assessment using CIS scanner and SCAP checks',
                 wodle: 'cis-cat',
-                labels : {
+                labels: {
                 }
               }
             ]
@@ -276,7 +287,7 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Expose an operating system as a high-performance relational database',
                 wodle: 'osquery',
-                labels : {
+                labels: {
                 }
               },
               {
@@ -284,21 +295,21 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Gather relevant information about system OS, hardware, networking and packages',
                 wodle: 'syscollector',
-                labels : {
+                labels: {
                 }
               },
               {
                 subtitle: 'Active response',
                 desc: 'Active threat addressing by inmmediate response',
                 config: [{ component: 'com', configuration: 'active-response' }],
-                labels : {
+                labels: {
                 }
               },
               {
                 subtitle: 'Commands',
                 desc: 'Configuration options of the Command wodle',
                 wodle: 'command',
-                labels : {
+                labels: {
                 }
               },
               {
@@ -306,7 +317,7 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Monitor and collect the activity from Docker containers',
                 wodle: 'docker-listener',
-                labels : {
+                labels: {
                 }
               }
             ]
@@ -319,10 +330,10 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Log analysis from text files, Windows events or syslog outputs',
                 config: [
-                  { component: 'logcollector', configuration: 'localfile', filterBy : 'logformat' },
+                  { component: 'logcollector', configuration: 'localfile', filterBy: 'logformat' },
                   { component: 'logcollector', configuration: 'socket' }
                 ],
-                labels : {
+                labels: {
                 }
               },
               {
@@ -330,7 +341,7 @@ define(['../../module', '../../../utils/config-handler'], function(
                 desc:
                   'Identify changes in content, permissions, ownership, and attributes of files',
                 config: [{ component: 'syscheck', configuration: 'syscheck' }],
-                labels : {
+                labels: {
                 }
               }
             ]
@@ -338,11 +349,36 @@ define(['../../module', '../../../utils/config-handler'], function(
         ]
       }
 
-      if(!this.$scope.loadingReporting)
-        this.reportingService.reportAgentConfiguration(this.id,this.selectedOptions,this.api)
-
-
+      if (!this.$scope.loadingReporting)
+        this.reportingService.reportAgentConfiguration(this.id, this.$scope.selectedOptions, this.api)
+      this.$scope.exportConfig = false
     }
+
+    /**
+     * Selects all the modules to export the configuration
+     */
+    selectAll(value) {
+      try {
+        Object.keys(this.$scope.selectedOptions).forEach(key => {
+          this.$scope.selectedOptions[key] = value
+        })
+      } catch (error) {
+        this.$notificationService.showErrorToast('Cannot select the modules')
+      }
+    }
+
+    checkAllDisabled() {
+      try {
+        let result = false
+        Object.keys(this.$scope.selectedOptions).forEach(key => {
+          if (this.$scope.selectedOptions[key]) { result = true }
+        })
+        return !result        
+      } catch (error) {
+        this.$notificationService.showErrorToast('Error checking selected options')
+      }
+    }
+
 
     /**
      * Checks if the agent is synchronized
