@@ -56,8 +56,7 @@
             <ul class="noDot ul-extensions">
               <li>
                 <wz-kbn-switch switch-model="extensions.aws" switch-change="toggleExtension('aws',!extensions.aws)">
-                </wz-kbn-switch><span class="wz-headline-title"><i class="fa fa-fw fa-amazon"
-                    aria-hidden="true"></i>Amazon AWS</span>
+                </wz-kbn-switch><span>Amazon AWS</span>
               </li>
             </ul>
           </div>
@@ -90,12 +89,14 @@
           <div ng-show="extensionsLists.auditing" class="extensions-list">
             <ul class="noDot ul-extensions">
               <li>
-                <wz-kbn-switch switch-model="extensions.oscap" switch-change="toggleExtension('oscap',!extensions.oscap)">
-                </wz-kbn-switch><span class="wz-headline-title"><i class="fa fa-fw fa-search" aria-hidden="true"></i>OpenSCAP</span>
+                <wz-kbn-switch switch-model="extensions.oscap"
+                  switch-change="toggleExtension('oscap',!extensions.oscap)">
+                </wz-kbn-switch><span>OpenSCAP</span>
               </li>
               <li>
-                <wz-kbn-switch switch-model="extensions.ciscat" switch-change="toggleExtension('ciscat',!extensions.ciscat)">
-                </wz-kbn-switch><span class="wz-headline-title"><i class="fa fa-fw fa-rocket" aria-hidden="true"></i>CIS-CAT</span>
+                <wz-kbn-switch switch-model="extensions.ciscat"
+                  switch-change="toggleExtension('ciscat',!extensions.ciscat)">
+                </wz-kbn-switch><span>CIS-CAT</span>
               </li>
             </ul>
           </div>
@@ -141,7 +142,24 @@
           <wz-svg ng-click="showExtensionsLists('threadDetection')" icon="eye" color="#396e3e" class="pull-right">
           </wz-svg>
         </div>
-        <div ng-show="extensionsLists.threadDetection" class="extensions-list"></div>
+        <div ng-show="extensionsLists.threadDetection" class="extensions-list">
+          <ul class="noDot ul-extensions">
+            <li>
+              <wz-kbn-switch switch-model="extensions.virustotal"
+                switch-change="toggleExtension('virustotal',!extensions.virustotal)"></wz-kbn-switch>
+              <span>VirusTotal</span>
+            </li>
+            <li>
+              <wz-kbn-switch switch-model="extensions.osquery"
+                switch-change="toggleExtension('osquery',!extensions.osquery)"></wz-kbn-switch><span>Osquery</span>
+            </li>
+            <li>
+              <wz-kbn-switch switch-model="extensions.docker"
+                switch-change="toggleExtension('docker',!extensions.docker)">
+              </wz-kbn-switch><span>Docker listener</span>
+            </li>
+          </ul>
+        </div>
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
@@ -174,7 +192,18 @@
           <md-tooltip class="wz-tooltip" md-direction="left">Show extensions list</md-tooltip>
           <wz-svg ng-click="showExtensionsLists('regulatory')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
         </div>
-        <div ng-show="extensionsLists.regulatory" class="extensions-list"></div>
+        <div ng-show="extensionsLists.regulatory" class="extensions-list">
+          <ul class="noDot ul-extensions">
+            <li>
+              <wz-kbn-switch switch-model="extensions.hipaa" switch-change="toggleExtension('hipaa',!extensions.hipaa)">
+              </wz-kbn-switch>HIPAA
+            </li>
+            <li>
+              <wz-kbn-switch switch-model="extensions.nist" switch-change="toggleExtension('nist',!extensions.nist)">
+              </wz-kbn-switch><span>NIST 800-53</span>
+            </li>
+          </ul>
+        </div>
         <div class="euiSpacer euiSpacer--m"></div>
         <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
           <wz-welcome-card ng-if="pci" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"

@@ -2227,6 +2227,13 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 }
 
 .ul-extensions {
-  margin: 20px;
-  float: right;
+  margin: 20px 20px 10px 20px !important;
+}
+
+
+.ul-extensions li{
+  text-align: left;
+  width: 100%;
+  margin: 0 auto !important;
+  padding-bottom: 10px;
 }
