@@ -440,6 +440,10 @@ div.uil-ring-css {
   margin-top: -3px;
 }
 
+.wz-margin-top--6 {
+  margin-top: -6px !important;
+}
+
 .wz-margin-top--15{
   margin-top: -15px;
 }
@@ -856,8 +860,13 @@ kbn-vis .vis-container {
 }
 
 .euiCallOut--warning {
-  border-color: #E5830E;
+  border-color: #E5830E !important;
   background-color: #fcf3e7;
+}
+
+.euiCallOut--success {
+  border-color: #017D73 !important;
+  background-color: #e6f2f1;
 }
 
 .euiCallOut {
@@ -2237,3 +2246,8 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   margin: 0 auto !important;
   padding-bottom: 10px;
 }
+
+.no-extensions {
+  transform: translate(1%, 125%);
+}
+
