@@ -22,7 +22,7 @@ define(['../../module'], function (controllers) {
       } catch (error) { } //eslint-disable-line
       try {
         this.extensions = extensions
-        this.scope.extension = this.extensions
+        this.scope.extensions = angular.copy(this.extensions)
         this.api = this.currentApi['_key']
       } catch (error) { } //eslint-disable-line
     }
@@ -71,10 +71,13 @@ define(['../../module'], function (controllers) {
     refreshExtensions() {
       const keys = Object.keys(this.extensions)
       keys.map(key =>
-        this.extensions[key] === 'true'
-          ? (this.scope[key] = key)
-          : (this.scope[key] = null)
+        this.scope.extensions[key] =  this.extensions[key] === 'true'
       )
+      /*
+      keys.map(key =>
+        this.scope.extensions[key] =  this.extensions[key] === 'true'
+      )
+      */
       this.scope.$applyAsync()
     }
   }
