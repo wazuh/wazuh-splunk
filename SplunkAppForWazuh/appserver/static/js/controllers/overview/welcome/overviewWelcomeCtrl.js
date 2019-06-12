@@ -8,8 +8,11 @@ define(['../../module'], function (controllers) {
      * @param {Object} agentsInfo
      * @param {Object} extensions
      */
-    constructor($scope, agentsInfo, extensions) {
+    constructor($scope, agentsInfo, extensions, $notificationService, $currentDataService) {
       this.scope = $scope
+      this.notificationService = $notificationService
+      this.currentDataService = $currentDataService
+      this.currentApi = this.currentDataService.getApi()
       this.scope.extensionsLists = { 'security': false, 'auditing': false, 'threadDetection': false, 'regulatory': false }
       try {
         this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
@@ -17,9 +20,10 @@ define(['../../module'], function (controllers) {
         this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
         this.scope.agentsCountNeverConnected = agentsInfo.data.data['Never Connected']
       } catch (error) { } //eslint-disable-line
-
       try {
         this.extensions = extensions
+        this.scope.extension = this.extensions
+        this.api = this.currentApi['_key']
       } catch (error) { } //eslint-disable-line
     }
 
@@ -27,25 +31,51 @@ define(['../../module'], function (controllers) {
      * On controller loads
      */
     $onInit() {
-      const keys = Object.keys(this.extensions)
-      keys.map(key =>
-        this.extensions[key] === 'true'
-          ? (this.scope[key] = key)
-          : (this.scope[key] = null)
-      )
-
+      this.refreshExtensions()
       this.scope.showExtensionsLists = card => this.showExtensionsLists(card)
+      this.scope.toggleExtension = (extension, state) => this.toggleExtension(extension, state)      
       this.scope.$applyAsync()
     }
+
     /**
-   * Shows the extensions list to enable or disable them
-   */
+    * Shows the extensions list to enable or disable them
+    */
     showExtensionsLists = card => {
       try {
         this.scope.extensionsLists[card] ? this.scope.extensionsLists[card] = false : this.scope.extensionsLists[card] = true
       } catch (error) {
         console.error('Error showing or hiding the extensions list ', error)
       }
+    }
+
+    /**
+     * Enable or disable extension
+     * @param {String} extension 
+     * @param {String} state 
+     */
+    toggleExtension(extension, state) {
+      try {
+        this.extensions[extension] = state.toString()
+        this.currentDataService.setExtensions(this.api, this.extensions)
+        this.extensions = this.currentDataService.getExtensions(this.api)
+        this.refreshExtensions()
+      } catch (error) {
+        console.error(error)
+        this.notificationService.showErrorToast(error)
+      }
+    }
+
+    /**
+     * Refresh the extensions
+     */
+    refreshExtensions() {
+      const keys = Object.keys(this.extensions)
+      keys.map(key =>
+        this.extensions[key] === 'true'
+          ? (this.scope[key] = key)
+          : (this.scope[key] = null)
+      )
+      this.scope.$applyAsync()
     }
   }
   controllers.controller('overviewWelcomeCtrl', OverviewWelcome)
