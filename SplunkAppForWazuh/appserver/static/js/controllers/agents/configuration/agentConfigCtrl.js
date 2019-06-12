@@ -200,155 +200,22 @@ define(['../../module', '../../../utils/config-handler'], function (
      * Initializes the report
      */
     async initReportConfig() {
+      this.selectedOptions = {'globalConf' : 1,
+      'communicationConf' : 1,
+      'antiFloodingConf' : 1,
+      'labels' : 1,
+      'pmConf' : 1,
+      'configAssessment' :1,
+      'openscapConf' : 1,
+      'ciscatConf' : 1,
+      'osqueryConf' : 1,
+      'inventoryConf' : 1,
+      'activeResponseConf' : 1,
+      'commandsConf' : 1,
+      'dockerListenerConf' : 1,
+      'logCollectionConf' : 1,
+      'integrityMonitoringConf' : 1}
 
-      const data = {
-        configurations: [
-
-          {
-            title: 'Main configurations',
-            sections: [
-              {
-                subtitle: 'Global configuration',
-                desc: 'Logging settings that apply to the agent',
-                config: [{ component: 'com', configuration: 'logging' }],
-
-              },
-              {
-                subtitle: 'Communication',
-                desc: 'Settings related to the connection with the manager',
-                config: [{ component: 'agent', configuration: 'client' }],
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Anti-flooding settings',
-                desc: 'Agent bucket parameters to avoid event flooding',
-                config: [{ component: 'agent', configuration: 'buffer' }],
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Labels',
-                desc:
-                  'User-defined information about the agent included in alerts',
-                config: [{ component: 'agent', configuration: 'labels' }]
-              }
-            ]
-          },
-          {
-            title: 'Auditing and policy monitoring',
-            sections: [
-              {
-                subtitle: 'Policy monitoring',
-                desc:
-                  'Configuration to ensure compliance with security policies, standards and hardening guides',
-                config: [
-                  { component: 'syscheck', configuration: 'rootcheck' },
-                  { component: 'wmodules', configuration: 'wmodules' }
-                ],
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Configuration assessment',
-                desc:
-                  'Configuration Assessment',
-                wodle: 'sca',
-                labels: {
-                  enabled: 'Security configuration assessment enabled',
-                  scan_on_start: 'Scan on start',
-                  interval: 'Interval',
-                  policies: 'Policies',
-                  skip_nfs: 'Skip nfs',
-                }
-              },
-              {
-                subtitle: 'OpenSCAP',
-                desc:
-                  'Configuration assessment and automation of compliance monitoring using SCAP checks',
-                wodle: 'open-scap',
-                labels: {
-                }
-              },
-              {
-                subtitle: 'CIS-CAT',
-                desc:
-                  'Configuration assessment using CIS scanner and SCAP checks',
-                wodle: 'cis-cat',
-                labels: {
-                }
-              }
-            ]
-          },
-          {
-            title: 'System threats and incident response',
-            sections: [
-              {
-                subtitle: 'Osquery',
-                desc:
-                  'Expose an operating system as a high-performance relational database',
-                wodle: 'osquery',
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Inventory data',
-                desc:
-                  'Gather relevant information about system OS, hardware, networking and packages',
-                wodle: 'syscollector',
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Active response',
-                desc: 'Active threat addressing by inmmediate response',
-                config: [{ component: 'com', configuration: 'active-response' }],
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Commands',
-                desc: 'Configuration options of the Command wodle',
-                wodle: 'command',
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Docker listener',
-                desc:
-                  'Monitor and collect the activity from Docker containers',
-                wodle: 'docker-listener',
-                labels: {
-                }
-              }
-            ]
-          },
-          {
-            title: 'Log data analysis',
-            sections: [
-              {
-                subtitle: 'Log collection',
-                desc:
-                  'Log analysis from text files, Windows events or syslog outputs',
-                config: [
-                  { component: 'logcollector', configuration: 'localfile', filterBy: 'logformat' },
-                  { component: 'logcollector', configuration: 'socket' }
-                ],
-                labels: {
-                }
-              },
-              {
-                subtitle: 'Integrity monitoring',
-                desc:
-                  'Identify changes in content, permissions, ownership, and attributes of files',
-                config: [{ component: 'syscheck', configuration: 'syscheck' }],
-                labels: {
-                }
-              }
-            ]
-          }
-        ]
-      }
 
       if (!this.$scope.loadingReporting)
         this.reportingService.reportAgentConfiguration(this.id, this.$scope.selectedOptions, this.api)

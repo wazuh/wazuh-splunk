@@ -502,7 +502,7 @@ class report(controllers.BaseController):
             del currentSection['subtitle']
 
     def getSelectedConfigurations(self,selectedOptions):
-        selectedConf = [{'title': 'Main configurations', 'sections': [] }]
+        selectedConf = [{'title': 'Main configurations', 'sections': [] }, {'title': 'Auditing and policy monitoring', 'sections': []},{ 'title': 'System threats and incident response', 'sections': []},{ 'title': 'Log data analysis', 'sections': []} ]
         
         if 'globalConf' in selectedOptions and selectedOptions['globalConf'] == 1:
             selectedConf[0]['sections'].append({
@@ -521,90 +521,117 @@ class report(controllers.BaseController):
         if 'antiFloodingConf' in selectedOptions and selectedOptions['antiFloodingConf'] == 1:
             selectedConf[0]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Anti-flooding settings',
+                'desc': 'Agent bucket parameters to avoid event flooding',
+                'config': [{ 'component': 'agent', 'configuration': 'buffer' }]
               })
 
         if 'labels' in selectedOptions and selectedOptions['labels'] == 1:
             selectedConf[0]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Labels',
+                'desc': 'User-defined information about the agent included in alerts',
+                'config': [{ 'component': 'agent', 'configuration': 'labels' }]
               })
 
         if 'pmConf' in selectedOptions and selectedOptions['pmConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[1]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Policy monitoring',
+                'desc':'Configuration to ensure compliance with security policies, standards and hardening guides',
+                'config': [
+                  { 'component': 'syscheck', 'configuration': 'rootcheck' },
+                  { 'component': 'wmodules', 'configuration': 'wmodules' }
+                ]
               })
-
+        if 'configAssessment' in selectedOptions and selectedOptions['configAssessment'] == 1:
+            selectedConf[1]['sections'].append(
+              {
+                    'subtitle': 'Configuration assessment',
+                    'desc': 'Configuration Assessment',
+                    'wodle' : 'sca',
+                    'labels' : {
+                      'enabled': 'Security configuration assessment enabled',
+                      'scan_on_start': 'Scan on start',
+                      'interval': 'Interval',
+                      'policies': 'Policies',
+                      'skip_nfs': 'Skip nfs',
+                    }       
+                  })
         if 'openscapConf' in selectedOptions and selectedOptions['openscapConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[1]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'OpenSCAP',
+                'desc':
+                  'Configuration assessment and automation of compliance monitoring using SCAP checks',
+                'wodle': 'open-scap',
+                'labels' : {
+                }
               })
-
         if 'ciscatConf' in selectedOptions and selectedOptions['ciscatConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[1]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'CIS-CAT',
+                'desc':
+                  'Configuration assessment using CIS scanner and SCAP checks',
+                'wodle': 'cis-cat'
               })
         if 'osqueryConf' in selectedOptions and selectedOptions['osqueryConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[2]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Osquery',
+                'desc':
+                  'Expose an operating system as a high-performance relational database',
+                'wodle': 'osquery'
               })
         if 'inventoryConf' in selectedOptions and selectedOptions['inventoryConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[2]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Inventory data',
+                'desc':
+                  'Gather relevant information about system OS, hardware, networking and packages',
+                'wodle': 'syscollector'
               })
         if 'activeResponseConf' in selectedOptions and selectedOptions['activeResponseConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[2]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Active response',
+                'desc': 'Active threat addressing by inmmediate response',
+                'config': [{ 'component': 'com', 'configuration': 'active-response' }]
               })
         if 'commandsConf' in selectedOptions and selectedOptions['commandsConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[2]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Commands',
+                'desc': 'Configuration options of the Command wodle',
+                'wodle': 'command'
               })
         if 'dockerListenerConf' in selectedOptions and selectedOptions['dockerListenerConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[2]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Docker listener',
+                'desc':
+                  'Monitor and collect the activity from Docker containers',
+                'wodle': 'docker-listener'
               })
         if 'logCollectionConf' in selectedOptions and selectedOptions['logCollectionConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[3]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Log collection',
+                'desc':
+                  'Log analysis from text files, Windows events or syslog outputs',
+                'config': [
+                  { 'component': 'logcollector', 'configuration': 'localfile', 'filterBy' : 'logformat' },
+                  { 'component': 'logcollector', 'configuration': 'socket' }
+                ]
               })
         if 'integrityMonitoringConf' in selectedOptions and selectedOptions['integrityMonitoringConf'] == 1:
-            selectedConf[0]['sections'].append(
+            selectedConf[3]['sections'].append(
               {
-                'subtitle': 'Communication',
-                'desc': 'Settings related to the connection with the manager',
-                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+                'subtitle': 'Integrity monitoring',
+                'desc':
+                  'Identify changes in content, permissions, ownership, and attributes of files',
+                'config': [{ 'component': 'syscheck', 'configuration': 'syscheck' }]
               })
 
         return selectedConf
@@ -662,19 +689,19 @@ class report(controllers.BaseController):
             for n in data['data']['configurations']:
                 try:
                     #Set color and print configuration tittle
-                    if 'isAgents' in data:
-                        if first_page:
-                            first_page = False
-                        else:
-                            pdf.add_page()
-                            pdf.ln(20)
-                    
-                    pdf.set_margins(10, 0, 10)
-                    pdf.ln(1)
-                    pdf.set_text_color(120,200,222)
-                    pdf.set_font('RobotoLight', '', 24)
-                    pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
-                    pdf.ln(6)
+                    if 'sections' in n and len(n['sections']) > 0:
+                        if 'isAgents' in data:
+                            if first_page:
+                                first_page = False
+                            else:
+                                pdf.add_page()
+                                pdf.ln(20)
+                        pdf.set_margins(10, 0, 10)
+                        pdf.ln(1)
+                        pdf.set_text_color(120,200,222)
+                        pdf.set_font('RobotoLight', '', 24)
+                        pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
+                        pdf.ln(6)
                     for currentSection in n['sections']:
                         customLabels = {} 
                         if self.labels:
