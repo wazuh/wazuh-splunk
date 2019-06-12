@@ -67,20 +67,20 @@ define(['../../module', '../../../utils/config-handler'], function (
         data && data.data && data.data.data && data.data.data.synced
 
       this.$scope.selectedOptions = {
-        'globalConf': true,
-        'communicationConf': true,
-        'antiFloodingConf': true,
-        'labels': true,
-        'pmConf': true,
-        'openscapConf': true,
-        'ciscatConf': true,
-        'osqueryConf': true,
-        'inventoryConf': true,
-        'activeResponseConf': true,
-        'commandsConf': true,
-        'dockerListenerConf': true,
-        'logCollectionConf': true,
-        'integrityMonitoringConf': true
+        globalConf: true,
+        communicationConf: true,
+        antiFloodingConf: true,
+        labels: true,
+        pmConf: true,
+        openscapConf: true,
+        ciscatConf: true,
+        osqueryConf: true,
+        inventoryConf: true,
+        activeResponseConf: true,
+        commandsConf: true,
+        dockerListenerConf: true,
+        logCollectionConf: true,
+        integrityMonitoringConf: true
       }
 
       this.$scope.$on('loadingReporting', (event, data) => {
@@ -97,6 +97,7 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.showModulesToExport = () => this.showModulesToExport()
       this.$scope.selectAll = value => this.selectAll(value)
       this.$scope.checkAllDisabled = () => this.checkAllDisabled()
+      this.$scope.keyEquivalences = key => this.keyEquivalences(key)
       this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -393,6 +394,30 @@ define(['../../module', '../../../utils/config-handler'], function (
         return false
       }
     }
+
+    /**
+     * Get the key equivalences
+     */
+    keyEquivalences(key) {
+      const options = {
+        globalConf: 'Global configuration',
+        communicationConf: 'Communication',
+        antiFloodingConf: 'Anti-flooding settings',
+        labels: 'Labels',
+        pmConf: 'CIS-CAT',
+        openscapConf: 'OpenSCAP',
+        ciscatConf: 'CIS-CAT',
+        osqueryConf: 'Osquery',
+        inventoryConf: 'Inventory data',
+        activeResponseConf: 'Active response',
+        commandsConf: 'Commands',
+        dockerListenerConf: 'Docker listener',
+        logCollectionConf: 'Log collection',
+        integrityMonitoringConf: 'Integrity monitoring'
+      }
+      return options[key] || key
+    }
+
   }
 
   controllers.controller('configurationAgentCtrl', ConfigurationController)

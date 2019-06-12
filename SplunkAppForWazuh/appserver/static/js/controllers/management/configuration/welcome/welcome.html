@@ -52,7 +52,7 @@
               <ul class="noDot ul-extensions">
                 <li ng-repeat="(key, value) in selectedOptions track by $index">
                   <md-checkbox class="wz-margin-bottom--5"  ng-checked="selectedOptions[key]" ng-model="selectedOptions[key]" aria-label="key">
-                  {{key}}
+                  {{keyEquivalences(key)}}
                 </md-checkbox>
                 </li>
               </ul>
