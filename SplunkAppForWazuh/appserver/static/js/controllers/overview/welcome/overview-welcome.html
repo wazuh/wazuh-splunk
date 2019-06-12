@@ -195,6 +195,14 @@
         <div ng-show="extensionsLists.regulatory" class="extensions-list">
           <ul class="noDot ul-extensions">
             <li>
+              <wz-kbn-switch switch-model="extensions.pci" switch-change="toggleExtension('pci',!extensions.pci)">
+              </wz-kbn-switch><span>PCI DSS</span>
+            </li>
+            <li>
+              <wz-kbn-switch switch-model="extensions.gdpr" switch-change="toggleExtension('gdpr',!extensions.gdpr)">
+              </wz-kbn-switch><span>GDPR</span>
+            </li>
+            <li>
               <wz-kbn-switch switch-model="extensions.hipaa" switch-change="toggleExtension('hipaa',!extensions.hipaa)">
               </wz-kbn-switch>HIPAA
             </li>
