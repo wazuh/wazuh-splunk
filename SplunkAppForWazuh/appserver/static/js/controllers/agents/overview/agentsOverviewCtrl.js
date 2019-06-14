@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class AgentsOverview {
@@ -54,6 +54,12 @@ define(['../../module'], function(app) {
       this.groupHandler = $groupHandler
       this.scope.restartInProgress = false
       this.scope.isAdmin = isAdmin
+      this.excludeModulesByOs = {
+        'linux': [],
+        'windows': ['audit', 'oscap', 'vuls', 'docker'],
+        'darwing': ['audit', 'oscap', 'vuls', 'docker'],
+        'other': ['audit', 'oscap', 'vuls', 'docker']
+      }
     }
 
     /**
@@ -62,6 +68,7 @@ define(['../../module'], function(app) {
     $onInit() {
       try {
         this.scope.confirmingRestart = false
+        this.setAgentPlatform()
         if (
           this.agent.length &&
           typeof this.agent[0] === 'object' &&
@@ -72,26 +79,26 @@ define(['../../module'], function(app) {
 
           this.scope.agentOS =
             this.scope.agent &&
-            this.scope.agent.os &&
-            this.scope.agent.os.name &&
-            this.scope.agent.os.codename &&
-            this.scope.agent.os.version
+              this.scope.agent.os &&
+              this.scope.agent.os.name &&
+              this.scope.agent.os.codename &&
+              this.scope.agent.os.version
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                  .codename || '-'} ${this.scope.agent.os.version || '-'}`
+                .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
           this.scope.syscheck =
             this.agent.length > 0 &&
-            typeof this.agent[1] === 'object' &&
-            typeof this.agent[1].data === 'object' &&
-            !this.agent[1].data.error
+              typeof this.agent[1] === 'object' &&
+              typeof this.agent[1].data === 'object' &&
+              !this.agent[1].data.error
               ? this.agent[1].data.data
               : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
           this.scope.id = this.stateParams.id
           this.scope.rootcheck =
             this.agent.length > 1 &&
-            typeof this.agent[2] === 'object' &&
-            typeof this.agent[2].data === 'object' &&
-            !this.agent[2].data.error
+              typeof this.agent[2] === 'object' &&
+              typeof this.agent[2].data === 'object' &&
+              !this.agent[2].data.error
               ? this.agent[2].data.data
               : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
@@ -120,6 +127,8 @@ define(['../../module'], function(app) {
 
             this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
             this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
+
+            this.scope.checkModules = module => this.checkModules(module)
 
             this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
               this.scope.syscheck.start,
@@ -178,7 +187,7 @@ define(['../../module'], function(app) {
                   this.scope.editGroup = false
                   this.notification.showSuccessToast(
                     `Agent ${this.scope.agent.name}(${
-                      this.scope.agent.id
+                    this.scope.agent.id
                     }) has been added to group ${group}.`
                   )
                   this.scope.$applyAsync()
@@ -201,11 +210,6 @@ define(['../../module'], function(app) {
             this.agent[0].data.data.os &&
             this.agent[0].data.data.os.uname
           ) {
-            this.scope.isLinux = this.agent[0].data.data.os.uname.includes(
-              'Linux'
-            )
-            this.scope.isWindows = this.agent[0].data.data.os.platform === 'windows'
-            this.scope.isMac = this.agent[0].data.data.os.platform === 'darwing'
           }
 
           if (this.scope.agent.status == 'Never connected') {
@@ -350,6 +354,25 @@ define(['../../module'], function(app) {
     switchRestart() {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
       this.scope.$applyAsync()
+    }
+
+    setAgentPlatform() {
+      this.scope.agentPlatform = 'other'
+      if (this.agent[0].data.data.os.uname.includes('Linux')) {
+        this.scope.agentPlatform = 'linux'
+      }
+      if (this.agent[0].data.data.os.platform === 'windows') {
+        this.scope.agentPlatform = 'windows'
+      }
+      if (this.agent[0].data.data.os.platform === 'darwing') {
+        this.scope.agentPlatform = 'darwing'
+      }
+    }
+    
+    checkModules(module) {
+      const enable = !this.excludeModulesByOs[this.scope.agentPlatform].includes(module)
+      return enable
+      
     }
   }
 

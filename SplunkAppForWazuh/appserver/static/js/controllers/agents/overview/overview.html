@@ -247,11 +247,11 @@
               current-tab="'conf-assess'" description="'Scan your assets as part of a configuration assessment audit.'">
             </wz-welcome-card>
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-              sub-title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && (!isWindows && !isMac)"
+              sub-title="'System auditing'" ui-sref='ag-audit({id:agent.id})' ng-if="audit && checkModules('audit')"
               current-tab="'audit'"
               description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'">
             </wz-welcome-card>
-            <wz-welcome-card ng-if="oscap && (!isWindows && !isMac)" class="euiFlexItem"
+            <wz-welcome-card ng-if="oscap && checkModules('oscap')" class="euiFlexItem"
               logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'" sub-title="'Open SCAP'"
               ui-sref='ag-os({id:agent.id})' current-tab="'oscap'"
               description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'">
@@ -274,7 +274,7 @@
           <h3 class="euiTitle wc-title">Threat Detection and Response<span style="float:right;"><wz-svg icon="eye"></wz-svg></span></h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card ng-if="!isWindows && !isMac" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
+            <wz-welcome-card ng-if="checkModules('vuls')" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
               sub-title="'Vulnerabilities'" ui-sref='ag-vul({id:agent.id})' current-tab="'vuls'"
               description="'Discover what applications are affected by well-known vulnerabilities'"></wz-welcome-card>
             <wz-welcome-card ng-if="virustotal" class="euiFlexItem"
@@ -287,11 +287,11 @@
               current-tab="'osquery'"
               description="'Osquery allows to expose an operating system as a high-performance relational database.'">
           </wz-welcome-card>
-          <wz-welcome-card ng-if="docker && (!isWindows && !isMac)" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/docker.png'" 
+          <wz-welcome-card ng-if="docker && checkModules('docker')" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/docker.png'" 
             sub-title="'Docker listener'" ui-sref='ag-docker' current-tab="'docker'" 
             description="'Collects events on Docker containers such as starting, stopping or pausing.'">
           </wz-welcome-card>
-            <div ng-if="(isWindows || isMac) && !docker && !osquery && !virustotal" flex class="euiCallOut euiCallOut--success">
+            <div ng-if="(agentPlatform !== 'linux') && !docker && !osquery && !virustotal" flex class="euiCallOut euiCallOut--success">
               <div class="euiCallOutHeader">
                 <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon" aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
