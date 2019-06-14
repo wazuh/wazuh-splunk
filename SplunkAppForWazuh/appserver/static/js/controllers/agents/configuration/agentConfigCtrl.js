@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', '../../../utils/config-handler'], function(
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
@@ -61,6 +61,12 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.selectedItem = 0
       this.$scope.isSynchronized =
         data && data.data && data.data.data && data.data.data.synced
+      this.excludeModulesByOs = {
+        'linux': [],
+        'windows': ['audit', 'oscap', 'vuls', 'docker'],
+        'darwing': ['audit', 'oscap', 'vuls', 'docker'],
+        'other': ['audit', 'oscap', 'vuls', 'docker']
+      }
     }
 
     /**
@@ -68,21 +74,13 @@ define(['../../module', '../../../utils/config-handler'], function(
      */
     $onInit() {
       this.$scope.showingInfo = false
+      this.setAgentPlatform()
       this.$scope.showInfo = () => this.showInfo()
       this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
           : { error: true }
-      if (
-        this.agent.data.data &&
-        this.agent.data.data.os &&
-        this.agent.data.data.os.uname
-      ) {
-        this.$scope.isLinux = this.agent.data.data.os.uname.includes('Linux')
-        this.$scope.isWindows = this.agent.data.data.os.platform === 'windows'
-        this.$scope.isMac = this.agent.data.data.os.platform === 'darwing'
-      }
 
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
@@ -170,6 +168,26 @@ define(['../../module', '../../../utils/config-handler'], function(
         return sync.data.data.synced
       } catch (error) {
         return false
+      }
+    }
+
+    /**
+     * Sets the agent's platform
+     */
+    setAgentPlatform() {
+      try {
+        this.$scope.agentPlatform = 'other'
+        if (this.agent.data.data.os.uname.includes('Linux')) {
+          this.$scope.agentPlatform = 'linux'
+        }
+        if (this.agent.data.data.os.platform === 'windows') {
+          this.$scope.agentPlatform = 'windows'
+        }
+        if (this.agent.data.data.os.platform === 'darwing') {
+          this.$scope.agentPlatform = 'darwing'
+        }
+      } catch (error) {
+        this.errorHandler.showErrorToast('Cannot set OS platform.')
       }
     }
   }

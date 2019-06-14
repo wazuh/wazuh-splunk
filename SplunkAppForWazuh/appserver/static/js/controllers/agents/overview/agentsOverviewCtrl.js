@@ -356,23 +356,34 @@ define(['../../module'], function (app) {
       this.scope.$applyAsync()
     }
 
+    /**
+     * Sets the agent's platform
+     */
     setAgentPlatform() {
-      this.scope.agentPlatform = 'other'
-      if (this.agent[0].data.data.os.uname.includes('Linux')) {
-        this.scope.agentPlatform = 'linux'
-      }
-      if (this.agent[0].data.data.os.platform === 'windows') {
-        this.scope.agentPlatform = 'windows'
-      }
-      if (this.agent[0].data.data.os.platform === 'darwing') {
-        this.scope.agentPlatform = 'darwing'
+      try {
+        this.scope.agentPlatform = 'other'
+        if (this.agent[0].data.data.os.uname.includes('Linux')) {
+          this.scope.agentPlatform = 'linux'
+        }
+        if (this.agent[0].data.data.os.platform === 'windows') {
+          this.scope.agentPlatform = 'windows'
+        }
+        if (this.agent[0].data.data.os.platform === 'darwing') {
+          this.scope.agentPlatform = 'darwing'
+        }
+      } catch (error) {
+        this.notification.showErrorToast('Cannot set OS platform.')
       }
     }
-    
+
+    /**
+     * Checks if the module is enabled
+     * @param {String} module 
+     */
     checkModules(module) {
       const enable = !this.excludeModulesByOs[this.scope.agentPlatform].includes(module)
       return enable
-      
+
     }
   }
 
