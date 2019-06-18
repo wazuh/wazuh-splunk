@@ -11,7 +11,8 @@ define(['./module'], function(module) {
       $state,
       $transitions,
       $navigationService,
-      $currentDataService
+      $currentDataService,
+      $notificationService
     ) {
       //Go to last state or to a specified tab if "currentTab" param is specified in the url
       $navigationService.manageState()
@@ -43,8 +44,12 @@ define(['./module'], function(module) {
             toPrimaryState(state)
           } else {
             $rootScope.$broadcast('loadingMain', { status: false })
-            if (state != 'settings.api')
+            if (state != 'settings.api') {
               $rootScope.$broadcast('stateChanged', 'settings')
+            }
+            if (err.startsWith('Unexpected Wazuh version.')) {
+              $notificationService.showErrorToast(err)
+            }
             $state.go('settings.api')
           }
         }
