@@ -258,15 +258,22 @@ define([
            * @param {String} search
            */
           const query = async (query, search) => {
-            await data.queryData(
-              query,
-              search,
-              instance,
-              $tableFilterService,
-              $scope,
-              fetch,
-              $notificationService
-            )
+            try{
+              await data.queryData(
+                query,
+                search,
+                instance,
+                $tableFilterService,
+                $scope,
+                fetch,
+                $notificationService
+              )
+            }catch(error){
+              $scope.error = `Error while querying API.`
+              $notificationService.showErrorToast(
+                `Error while querying API. ${error.message || error}`
+              )
+            }
             $scope.wazuhTableLoading = false
             $scope.$applyAsync()
           }
