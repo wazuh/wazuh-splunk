@@ -7,10 +7,11 @@ define(['../module'], function(module) {
      */
     const getAllApis = async () => {
       try {
-        const { data } = await $requestService.httpReq(
+        const result  = await $requestService.httpReq(
           `GET`,
           `/manager/get_apis`
         )
+        const data = result.data
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -23,11 +24,12 @@ define(['../module'], function(module) {
      */
     const getApiById = async id => {
       try {
-        const { data } = await $requestService.httpReq(
+        const result = await $requestService.httpReq(
           `GET`,
           `/manager/get_api`,
           { apiId: id }
         )
+        const data = result.data
         const parsed = JSON.parse(data)
         const parsedJson = JSON.parse(parsed)
 
@@ -44,11 +46,12 @@ define(['../module'], function(module) {
      */
     const insert = async payload => {
       try {
-        const { data } = await $requestService.httpReq(
+        const result  = await $requestService.httpReq(
           `POST`,
           `manager/add_api`,
           payload
         )
+        const data = result.data
         return data
       } catch (err) {
         return Promise.reject(err)
@@ -61,11 +64,12 @@ define(['../module'], function(module) {
      */
     const deletes = async key => {
       try {
-        const { data } = await $requestService.httpReq(
+        const result  = await $requestService.httpReq(
           `DELETE`,
           `manager/remove_api`,
           { _key: key }
         )
+        const data = result.data
         if (data.error || data.status === 400) throw new Error(data.error)
         return data
       } catch (err) {
@@ -80,11 +84,12 @@ define(['../module'], function(module) {
      */
     const update = async newRegister => {
       try {
-        const { data } = await $requestService.httpReq(
+        const  result  = await $requestService.httpReq(
           `PUT`,
           `manager/update_api`,
           newRegister
         )
+        const data = result.data
         return data
       } catch (err) {
         return Promise.reject(err)

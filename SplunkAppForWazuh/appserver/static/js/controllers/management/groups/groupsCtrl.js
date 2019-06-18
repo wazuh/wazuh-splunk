@@ -115,9 +115,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
               })
             ])
 
-            const [count, sums] = result.map(
+            const parsedResult  = result.map(
               item => ((item || {}).data || {}).data || false
             )
+
+            const count = parsedResult[0]
+            const sums = parsedResult[1]
+            
+
             const updatedGroup = ((sums || {}).items || []).find(
               item => item.name === parameters.group
             )
@@ -456,9 +461,12 @@ define(['../../module', 'FileSaver'], function(controllers) {
             })
           ])
 
-          const [count, sums] = result.map(
+          const parsedResult = result.map(
             item => ((item || {}).data || {}).data || false
           )
+          const count = parsedResult[0]
+          const sums = parsedResult[1]
+
           const updatedGroup = ((sums || {}).items || []).find(
             item => item.name === parameters.group
           )

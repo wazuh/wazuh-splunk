@@ -98,7 +98,8 @@ define([], function() {
       typeof key === 'object' && key.value && key.value.includes('.')
     if (isComposedString || isComposedObject) {
       const split = isComposedString ? key.split('.') : key.value.split('.')
-      const [first, second] = split
+      const first = split[0]
+      const second = split[1]
       return item[first] && item[first][second] ? item[first][second] : '-'
     } else {
       return checkIfArray(item[key.value || key]) || '-'

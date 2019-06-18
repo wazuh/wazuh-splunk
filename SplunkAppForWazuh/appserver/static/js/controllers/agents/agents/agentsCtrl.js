@@ -63,14 +63,13 @@ define([
         const parsedResult = agentData.map(item =>
           item && item.data && item.data.data ? item.data.data : false
         )
-        let [
-          summary,
-          lastAgent,
-          platforms,
-          versions,
-          nodes,
-          groups
-        ] = parsedResult
+        
+        var summary = parsedResult[0]
+        var lastAgent = parsedResult[1]
+        var platforms = parsedResult[2]
+        var versions = parsedResult[3]
+        var nodes = parsedResult[4]
+        var groups = parsedResult[5]
 
         this.scope.agentsCountActive = summary.Active - 1
         this.scope.lastAgent = lastAgent.items[0]

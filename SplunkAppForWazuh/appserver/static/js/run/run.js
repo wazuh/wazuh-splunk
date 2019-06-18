@@ -18,7 +18,9 @@ define(['./module'], function(module) {
 
       async function checkBeforeTransition(state) {
         try {
-          const { api } = await $currentDataService.checkSelectedApiConnection()
+          const result = await $currentDataService.checkSelectedApiConnection()
+          const api = result.api
+          
           $currentDataService.setApi(api)
           $currentDataService.cleanFilters()
           $navigationService.storeRoute(state)
@@ -35,6 +37,7 @@ define(['./module'], function(module) {
           $rootScope.wazuhNotReadyYet = false
           $rootScope.wazuhCouldNotBeRecovered = false
         } catch (err) {
+          console.log(err)
           if (
             err instanceof Object &&
             err.message &&

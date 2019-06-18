@@ -631,7 +631,7 @@ define(['../module'], function(module) {
                     '/api/gdpr?requirement=all'
                   )
                   if (!data) return []
-                  for (const key in data.data) {
+                  for (var key in data.data) {
                     gdprTabs.push({ title: key, content: data.data[key] })
                   }
                   return gdprTabs
@@ -833,7 +833,7 @@ define(['../module'], function(module) {
                     '/api/pci?requirement=all'
                   )
                   if (!data) return []
-                  for (const key in data.data) {
+                  for (var key in data.data) {
                     pciTabs.push({ title: key, content: data.data[key] })
                   }
                   return pciTabs

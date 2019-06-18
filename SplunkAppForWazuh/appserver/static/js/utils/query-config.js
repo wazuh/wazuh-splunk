@@ -26,7 +26,8 @@ define([], function() {
 
       const result = {}
       for (const section of sections) {
-        const { component, configuration } = section
+        const  component = section.component
+        const configuration  = section.configuration
         if (
           !component ||
           typeof component !== 'string' ||

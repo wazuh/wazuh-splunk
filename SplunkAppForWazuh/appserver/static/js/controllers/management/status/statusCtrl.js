@@ -28,16 +28,16 @@ define(['../../module'], function(controllers) {
       const parsedStatusData = statusData.map(item =>
         item && item.data && item.data.data ? item.data.data : item
       )
-      const [
-        summary,
-        nodeStatus,
-        nodeInfo,
-        rules,
-        decoders,
-        masterNode,
-        nodes,
-        status
-      ] = parsedStatusData
+
+      const summary = parsedStatusData[0]
+      const nodeStatus = parsedStatusData[1]
+      const nodeInfo = parsedStatusData[2]
+      const rules = parsedStatusData[3]
+      const decoders = parsedStatusData[4]
+      const masterNode = parsedStatusData[5]
+      const nodes = parsedStatusData[6]
+      const status = parsedStatusData[7]
+
       this.masterNode = masterNode
       this.nodes = nodes
       this.status = status
@@ -100,7 +100,7 @@ define(['../../module'], function(controllers) {
      */
     objToArr(obj) {
       const arr = []
-      for (const key in obj) arr.push({ key, value: obj[key] })
+      for (var key in obj) arr.push({ key, value: obj[key] })
       return arr
     }
 

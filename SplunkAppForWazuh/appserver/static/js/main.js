@@ -1,38 +1,40 @@
-require.config({
-  baseUrl: `${
-    window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]
-  }/static/app/SplunkAppForWazuh/`,
-  out: 'main-built.js',
+"use strict";
 
+require.config({
+  baseUrl: "".concat(window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0], "/static/app/SplunkAppForWazuh/"),
+  out: 'main-built.js',
   // alias libraries paths.  Must set 'angular'
   paths: {
+    /*
+    es6: 'js/libs/es6',
+    babel: 'js/libs/babel.min',
+    'babel-plugin-module-resolver': 'js/libs/index',
+    */
+    babelHelpers: 'js/libs/babel-helpers',
     angular: 'js/libs/angular',
     ngAnimate: 'js/libs/animate',
     ngAria: 'js/libs/aria',
     ngMessages: 'js/libs/messages',
     ngMaterial: 'js/libs/material',
     ngRoute: 'js/libs/router',
-
     // Angular Chart
     moment: 'js/libs/moment',
     chart: 'js/libs/chart',
     angularChart: 'js/libs/angular-chart',
-
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
-
     // File saver
     FileSaver: 'js/libs/file-saver/file-saver',
-
     // dom-to-image
     domToImg: 'js/libs/required-dom-to-image/src/dom-to-image',
-
     // JqueryUI
     JqueryUI: 'js/libs/jquery-ui'
   },
-
   // Add angular modules that does not support AMD out of the box, put it in a shim
   shim: {
+    babelHelpers : {
+      exports: 'babelHelpers'
+    },
     angular: {
       exports: 'angular'
     },
@@ -61,7 +63,6 @@ require.config({
       deps: ['angular', 'chart']
     }
   },
-
   // kick start application
-  deps: ['angular', 'ngMaterial', 'ngAnimate', 'ngAria', 'js/bootstrap']
-})
+  deps: ['angular', 'ngMaterial', 'ngAnimate', 'ngAria', 'js/bootstrap','babelHelpers']
+});

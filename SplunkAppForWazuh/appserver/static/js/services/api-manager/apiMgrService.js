@@ -269,7 +269,8 @@ define(['../module'], function(module) {
         const parsedResult = results.map(item =>
           item && item.data && item.data.data ? item.data.data : false
         )
-        const [clusterData, managerName] = parsedResult
+        const clusterData = parsedResult[0]
+        const managerName = parsedResult[1]
 
         if (managerName.name) {
           api.managerName = managerName.name

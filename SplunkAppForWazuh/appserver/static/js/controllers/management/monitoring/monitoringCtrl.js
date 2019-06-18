@@ -78,14 +78,13 @@ define([
         item && item.data && item.data.data ? item.data.data : false
       )
 
-      const [
-        status,
-        nodes,
-        configuration,
-        version,
-        agents,
-        health
-      ] = parsedResult
+      const status = parsedResult[0]
+      const nodes = parsedResult[1]
+      const configuration = parsedResult[2]
+      const version = parsedResult[3]
+      const agents = parsedResult[4]
+      const health = parsedResult[5]
+
 
       this.running = status.running
       this.enabled = status.enabled

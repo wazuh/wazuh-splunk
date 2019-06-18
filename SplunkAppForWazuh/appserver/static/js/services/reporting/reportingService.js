@@ -30,9 +30,14 @@ define(['../module', 'jquery'], function(module, $) {
      */
     betweenDates() {
       try {
-        let { earliest_time, latest_time } = JSON.parse(
+        let  earliest_time = JSON.parse(
           localStorage.getItem('searchTimeRange')
-        )
+        ).earliest_time
+        
+        let latest_time  = JSON.parse(
+          localStorage.getItem('searchTimeRange')
+        ).latest_time
+        
         earliest_time = parseFloat(earliest_time)
         latest_time = parseFloat(latest_time)
         if (
@@ -211,6 +216,7 @@ define(['../module', 'jquery'], function(module, $) {
           ])
 
           const agentInfo = agent[0].data.data
+          /*
           const {
             name,
             id,
@@ -222,6 +228,16 @@ define(['../module', 'jquery'], function(module, $) {
             lastKeepAlive,
             group
           } = agentInfo
+          */
+          const name = agentInfo.name
+          const id = agentInfo.id
+          const ip = agentInfo.ip
+          const version = agentInfo.version
+          const manager = agentInfo.manager
+          const os = agentInfo.os
+          const dateAdd = agentInfo.dateAdd
+          const lastKeepAlive = agentInfo.lastKeepAlive
+          const group = agentInfo.group
 
           isAgents = {
             ID: id,

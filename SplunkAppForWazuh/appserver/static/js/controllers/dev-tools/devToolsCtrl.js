@@ -606,7 +606,7 @@ define([
           let path = ''
           if (method === 'GET' || method === 'POST') {
             // Assign inline parameters
-            for (const key in extra) JSONraw[key] = extra[key]
+            for (var key in extra) JSONraw[key] = extra[key]
             path = req.includes('?') ? req.split('?')[0] : req
           } else {
             path =
