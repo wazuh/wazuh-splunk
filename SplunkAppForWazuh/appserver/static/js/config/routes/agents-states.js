@@ -25,6 +25,7 @@ define(['../module'], function (module) {
                   const responseStatus = await $requestService.apiReq(
                     '/cluster/status'
                   )
+                  const response = ((responseStatus || {}).data || {}).data || {}
                   return await Promise.all([
                     $requestService.apiReq('/agents/summary'),
                     $requestService.apiReq('/agents', {
@@ -39,11 +40,8 @@ define(['../module'], function (module) {
                       fields: 'version',
                       select: 'version'
                     }),
-                    responseStatus &&
-                      responseStatus.data &&
-                      responseStatus.data.data &&
-                      responseStatus.data.data.enabled === 'yes' &&
-                      responseStatus.data.data.running === 'yes'
+                      response.enabled === 'yes' &&
+                      response.running === 'yes'
                       ? $requestService.apiReq('/agents/stats/distinct', {
                         fields: 'node_name',
                         select: 'node_name'
@@ -51,7 +49,9 @@ define(['../module'], function (module) {
                       : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
-                } catch (err) { } //eslint-disable-line
+                } catch (err) {
+                  $state.go('settings.api')
+                } 
               }
             ]
           }
@@ -158,6 +158,10 @@ define(['../module'], function (module) {
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
+                  const apiId = $currentDataService.getApi()
+                  const currentApi = apiId['_key']
+                  const output = await $requestService.httpReq('GET', `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`)
+
                   const results = await Promise.all([
                     $requestService.apiReq(`/syscollector/${id}/hardware`),
                     $requestService.apiReq(`/syscollector/${id}/os`),

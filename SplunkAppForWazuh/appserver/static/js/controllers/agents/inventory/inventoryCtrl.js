@@ -66,7 +66,6 @@ define(['../../module', 'FileSaver'], function (module) {
      */
     $onInit() {
       try {
-        console.log("this.data ", this.data)
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
