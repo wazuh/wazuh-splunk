@@ -160,28 +160,11 @@ define(['../module'], function (module) {
                     $state.go('agents')
                   const apiId = $currentDataService.getApi()
                   const currentApi = apiId['_key']
-                  const output = await $requestService.httpReq('GET', `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`)
-
                   const results = await Promise.all([
-                    $requestService.apiReq(`/syscollector/${id}/hardware`),
-                    $requestService.apiReq(`/syscollector/${id}/os`),
-                    $requestService.apiReq(`/syscollector/${id}/ports`, {
-                      limit: 1
-                    }),
-                    $requestService.apiReq(`/syscollector/${id}/packages`, {
-                      limit: 1,
-                      select: 'scan_time'
-                    }),
+                    $requestService.httpReq('GET', `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`),
                     $requestService.apiReq(`/agents/${id}`),
-                    $requestService.apiReq(`/syscollector/${id}/processes`, {
-                      limit: 1,
-                      select: 'scan_time'
-                    }),
-                    $requestService.apiReq(`/syscollector/${id}/netiface`, {}),
-                    $requestService.apiReq(`/syscollector/${id}/netaddr`, {
-                      limit: 1
-                    })
                   ])
+                  
                   return results
                 } catch (err) {
                   $state.go('agents')

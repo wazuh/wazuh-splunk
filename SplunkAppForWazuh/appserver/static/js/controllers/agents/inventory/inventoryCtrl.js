@@ -72,11 +72,11 @@ define(['../../module', 'FileSaver'], function (module) {
 
         this.scope.agent =
           this.data.length &&
-            this.data.length > 4 &&
-            typeof this.data[4] === 'object' &&
-            this.data[4].data &&
-            this.data[4].data.data
-            ? this.data[4].data.data
+            this.data.length > 1 &&
+            typeof this.data[1] === 'object' &&
+            this.data[1].data &&
+            this.data[1].data.data
+            ? this.data[1].data.data
             : { error: true }
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)
@@ -88,31 +88,7 @@ define(['../../module', 'FileSaver'], function (module) {
             ? agentStatus
             : 'Never connected'
         }
-        if (
-          !this.data[0] ||
-          !this.data[0].data ||
-          !this.data[0].data.data ||
-          typeof this.data[0].data.data !== 'object' ||
-          !Object.keys(this.data[0].data.data).length ||
-          !this.data[1] ||
-          !this.data[1].data ||
-          !this.data[1].data.data ||
-          typeof this.data[1].data.data !== 'object' ||
-          !Object.keys(this.data[1].data.data).length
-        ) {
-          this.scope.syscollector = null
-        } else {
-          if (this.data[2] && this.data[2].data && this.data[2].data.data)
-            Object.assign(this.ports, this.data[3].data.data)
-          if (this.data[3] && this.data[3].data && this.data[3].data.data)
-            Object.assign(this.packagesDate, this.data[3].data.data)
-          if (this.data[5] && this.data[5].data && this.data[5].data.data)
-            Object.assign(this.processesDate, this.data[5].data.data)
-          if (this.data[6] && this.data[6].data && this.data[6].data.data)
-            this.netifaceResponse = ((this.data[6] || {}).data || {}).data || false
-          if (this.data[7] && this.data[7].data && this.data[7].data.data)
-            this.netaddrResponse = ((this.data[7] || {}).data || {}).data || false
-        }
+
         this.init()
 
         this.scope.startVis2Png = () =>
@@ -135,22 +111,8 @@ define(['../../module', 'FileSaver'], function (module) {
      */
     async init() {
       try {
-        this.scope.syscollector = {
-          hardware: this.data[0].data.data,
-          os: this.data[1].data.data,
-          netiface: this.netifaceResponse,
-          ports: this.ports,
-          netaddr: this.netaddrResponse,
-          packagesDate:
-            this.packagesDate &&
-              this.packagesDate.items &&
-              this.packagesDate.items.length
-              ? this.packagesDate.items[0].scan_time
-              : 'Unknown',
-          processesDate: ((this.processesDate || {}).items || []).length
-            ? this.processesDate.items[0].scan_time
-            : 'Unknown'
-        }
+        this.scope.syscollector = ((this.data || {})[0] || {}).data || {}
+
         this.scope.$applyAsync()
         return
       } catch (error) {
