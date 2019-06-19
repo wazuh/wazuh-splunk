@@ -79,6 +79,7 @@
         <div flex>OS: <span class="wz-text-bold">{{ syscollector.os.os.name }} {{ syscollector.os.os.version }}</span>
         </div>
         <div flex>CPU: <span class="wz-text-bold">{{ syscollector.hardware.cpu.name }}</span></div>
+        <div flex>Last scan: <span class="wz-text-bold">{{ syscollector.os.scan.time }}</span></div>
       </md-card-content>
     </md-card>
   </div>
@@ -135,11 +136,10 @@
         </table>
       </md-card-content>
     </md-card>
-    <md-card flex class="wz-md-card">
+    <md-card flex class="wz-md-card" ng-if="agent && agent.os && agent.os.platform !== 'darwin'">
       <md-card-content class="wz-text-center wz-margin-bottom-40-inv"
         ng-if="syscollector.ports && !syscollector.ports.items.length">
-        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No ports scan
-          available</span>
+        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No network ports information available</span>
       </md-card-content>
       <md-card-content class="wz-margin-bottom-40-inv" ng-if="syscollector.ports && syscollector.ports.items.length">
         <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network ports</span>
@@ -150,7 +150,7 @@
           path="'/syscollector/' + agent.id + '/ports'" row-sizes="[4]"
           keys="[{value:'process',nosortable:true},{value:'local.ip',nosortable:true}, {value:'local.port',nosortable:true},'state','protocol']">
         </wazuh-table>
-        <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows'"
+        <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows' && agent.os.platform !== 'darwin'"
           path="'/syscollector/' + agent.id + '/ports'" row-sizes="[4]"
           keys="[{value:'local.ip',nosortable:true}, {value:'local.port',nosortable:true},'state','protocol']">
         </wazuh-table>
@@ -164,7 +164,7 @@
       <md-card-content class="wz-text-center"
         ng-if="!syscollector.netaddr || !syscollector.netaddr.items || !syscollector.netaddr.items.length">
         <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No network
-          addresses scan available</span>
+          addresses information available</span>
       </md-card-content>
       <md-card-content class="wz-margin-bottom-40-inv"
         ng-if="syscollector.netaddr && syscollector.netaddr.items.length">
@@ -178,7 +178,7 @@
   </div>
 
   <div layout="row" class="layout-padding wz-padding-top-0"
-    ng-if="agent && agent.status === 'Active' && hasSize(syscollector)">
+    ng-if="agent && agent.status === 'Active' && hasSize(syscollector) && agent.os && agent.os.platform !== 'darwin'">
     <md-card flex class="wz-md-card">
       <md-card-content>
         <span class="wz-headline-title"><i class="fa fa-fw fa-terminal"></i> Processes</span>
@@ -237,9 +237,13 @@
         </div>
 
         <div layout="row" ng-if="agent && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-          <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows'"
+          <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows' && agent.os.platform !== 'darwin'"
             path="'/syscollector/' + agent.id + '/packages'" row-sizes="[10,8,6]" extra-limit="100"
             keys="[{value:'name',size:2},'architecture','version',{value:'vendor',size:2},{value:'description',size:3}]">
+          </wazuh-table>
+          <wazuh-table flex ng-if="agent && agent.os && agent.os.platform === 'darwin'"
+            path="'/syscollector/' + agent.id + '/packages'" row-sizes="[10,8,6]" extra-limit="100"
+            keys="[{value:'name',size:3},'architecture','version',{value:'vendor',size:2}]">
           </wazuh-table>
           <wazuh-table flex ng-if="agent && agent.os && agent.os.platform === 'windows'"
             path="'/syscollector/' + agent.id + '/packages'" row-sizes="[10,8,6]" extra-limit="100"
