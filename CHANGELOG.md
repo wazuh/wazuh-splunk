@@ -2,6 +2,20 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v3.9.3 - Splunk Enterprise v7.3.0 - Revision 28
+
+### Added
+
+- Support for Wazuh v3.9.3
+
+### Fixed
+
+- Fixed agent bar that was not applying filters correctly when refreshing [#743](https://github.com/wazuh/wazuh-splunk/pull/743).
+- Fixed incorrect fields in never connected agents [#750](https://github.com/wazuh/wazuh-splunk/pull/750).
+- Box editors without delimited bottom have been fixed [#750](https://github.com/wazuh/wazuh-splunk/pull/750).
+- Fixed error message when the app detects an unexpected Wazuh version [#750](https://github.com/wazuh/wazuh-splunk/pull/750).
+
+
 ## Wazuh v3.9.2 - Splunk Enterprise v7.3.0 - Revision 27
 
 ### Added
