@@ -70,13 +70,10 @@ define(['../../module', 'FileSaver'], function (module) {
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
 
-        this.scope.agent =
-          this.data.length &&
-            this.data.length > 1 &&
-            typeof this.data[1] === 'object' &&
-            this.data[1].data &&
-            this.data[1].data.data
-            ? this.data[1].data.data
+        const agentData  = (((this.data || {})[1] || {}).data || {}).data
+
+        this.scope.agent = agentData
+            ? agentData
             : { error: true }
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)
