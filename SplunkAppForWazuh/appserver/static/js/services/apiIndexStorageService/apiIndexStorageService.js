@@ -67,8 +67,7 @@ define(['../module'], function(app) {
           return JSON.parse(this.sessionStorage.selectedAPI)
         }
       } catch (err) {
-        console.error('err  getApi() ', err)
-        return null
+        return Promise.reject(err)
       }
     }
 
