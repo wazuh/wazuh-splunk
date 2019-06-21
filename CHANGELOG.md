@@ -16,7 +16,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed error message when the app detects an unexpected Wazuh version [#750](https://github.com/wazuh/wazuh-splunk/pull/750).
 
 
-## Wazuh v3.9.2 - Splunk Enterprise v7.3.0 - Revision 27
+## Wazuh v3.9.2 - Splunk Enterprise v7.3.0 - Revision 28
 
 ### Added
 
