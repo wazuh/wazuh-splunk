@@ -64,7 +64,7 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.excludeModulesByOs = {
         'linux': [],
         'windows': ['audit', 'oscap', 'vuls', 'docker'],
-        'darwing': ['audit', 'oscap', 'vuls', 'docker'],
+        'darwin': ['audit', 'oscap', 'vuls', 'docker'],
         'other': ['audit', 'oscap', 'vuls', 'docker']
       }
     }
@@ -183,8 +183,8 @@ define(['../../module', '../../../utils/config-handler'], function (
         if (this.agent.data.data.os.platform === 'windows') {
           this.$scope.agentPlatform = 'windows'
         }
-        if (this.agent.data.data.os.platform === 'darwing') {
-          this.$scope.agentPlatform = 'darwing'
+        if (this.agent.data.data.os.platform === 'darwin') {
+          this.$scope.agentPlatform = 'darwin'
         }
       } catch (error) {
         this.errorHandler.showErrorToast('Cannot set OS platform.')
