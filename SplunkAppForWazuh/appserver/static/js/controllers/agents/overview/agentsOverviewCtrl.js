@@ -57,7 +57,7 @@ define(['../../module'], function (app) {
       this.excludeModulesByOs = {
         'linux': [],
         'windows': ['audit', 'oscap', 'vuls', 'docker'],
-        'darwing': ['audit', 'oscap', 'vuls', 'docker'],
+        'darwin': ['audit', 'oscap', 'vuls', 'docker'],
         'other': ['audit', 'oscap', 'vuls', 'docker']
       }
     }
@@ -368,8 +368,8 @@ define(['../../module'], function (app) {
         if (this.agent[0].data.data.os.platform === 'windows') {
           this.scope.agentPlatform = 'windows'
         }
-        if (this.agent[0].data.data.os.platform === 'darwing') {
-          this.scope.agentPlatform = 'darwing'
+        if (this.agent[0].data.data.os.platform === 'darwin') {
+          this.scope.agentPlatform = 'darwin'
         }
       } catch (error) {
         this.notification.showErrorToast('Cannot set OS platform.')
