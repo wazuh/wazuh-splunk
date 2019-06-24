@@ -177,13 +177,15 @@ define(['../../module', '../../../utils/config-handler'], function (
     setAgentPlatform() {
       try {
         this.$scope.agentPlatform = 'other'
-        if (this.agent.data.data.os.uname.includes('Linux')) {
+        let agentPlatformLinux = ((((this.agent[0] || []).data || {}).data || {}).os || {}).uname 
+        let agentPlatformOther = ((((this.agent[0] || []).data || {}).data || {}).os || {}).platform 
+        if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.$scope.agentPlatform = 'linux'
         }
-        if (this.agent.data.data.os.platform === 'windows') {
+        if (agentPlatformOther && agentPlatformOther === 'windows') {
           this.$scope.agentPlatform = 'windows'
         }
-        if (this.agent.data.data.os.platform === 'darwin') {
+        if (agentPlatformOther && agentPlatformOther === 'darwin') {
           this.$scope.agentPlatform = 'darwin'
         }
       } catch (error) {
