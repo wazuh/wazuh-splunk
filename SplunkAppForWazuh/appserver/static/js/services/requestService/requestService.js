@@ -98,7 +98,7 @@ define(['../module'], function(module) {
         }
         return result
       } catch (err) {
-        return Promise.reject(err)
+        return Promise.reject('Cannot access to selected API, please check your API configuration.')
       }
     }
 
