@@ -1716,7 +1716,7 @@ input:focus {
 }
 
 .agentField {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 400;
 }
 
@@ -1981,6 +1981,7 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
   border: 1px solid #d9d9d9;
   border-radius: 50px;
   padding: 0 20px;
+  font-weight: 500 !important;
 }
 
 .mini-card {
