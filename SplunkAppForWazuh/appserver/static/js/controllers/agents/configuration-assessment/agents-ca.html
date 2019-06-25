@@ -12,10 +12,11 @@
       <span> / </span>
       <span>Configuration assessment</span>
     </div>
-    <div ng-if="agent.status">
-      <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
-        aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
-    </div>
+    <span ng-if="agent.status">
+        <span class="no-wrap wz-padding-left-8" aria-hidden="false">
+            <p class="round status littleStat teal" ng-class="getAgentStatusClass(agent.status)"></p>&nbsp;&nbsp;
+          </span>{{formatAgentStatus(agent.status)}}
+        </span>
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
