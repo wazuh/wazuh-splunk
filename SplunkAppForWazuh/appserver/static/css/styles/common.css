@@ -765,6 +765,7 @@ kbn-vis .vis-container {
   height: auto;
 }
 
+
 @supports not (-moz-appearance:none) {
   @media (min-width: 1060px) {      
       .wz-logo{        
@@ -792,11 +793,13 @@ kbn-vis .vis-container {
 @supports (-moz-appearance:none) {
   @media (min-width: 1060px) {      
       .wz-logo::after{        
-          content: url("../images/wazuh/png/wazuh_white_full.png");
-          display: flex;
+        content: url("../images/wazuh/png/wazuh_white_full.png");
+        display: flex;
       } 
       .wz-logo-container {
           width: 185px;
+          content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png");
+
           max-width: 185px;
       }
   }
@@ -809,6 +812,8 @@ kbn-vis .vis-container {
       } 
       .wz-logo-container {
               min-width: 20px;
+              content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_iso.png");
+
               max-width: 30px;
               margin-right: 5px;
           }

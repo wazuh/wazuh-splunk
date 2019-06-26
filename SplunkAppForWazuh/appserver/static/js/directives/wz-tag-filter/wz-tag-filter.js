@@ -386,6 +386,11 @@ define(['../module'], function(app) {
           }
         })
         $('#wz-search-filter-bar-input').attr('autocomplete', 'off')
+
+        $scope.$on('reloadSearchFilterBar', () => {
+          buildQuery($scope.groupedTagList)
+        })
+
         load()
       },
       templateUrl:

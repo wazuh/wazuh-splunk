@@ -429,7 +429,7 @@ class api(controllers.BaseController):
                 if not 'apiId' in kwargs:
                     return jsonbak.dumps(pci_requirements.pci)
                 the_id = kwargs['apiId']
-                url,auth,verify = self.get_credentials(the_id)
+                url,auth,verify,cluster_enabled = self.get_credentials(the_id)
                 opt_endpoint = '/rules/pci'
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, auth=auth,
@@ -466,7 +466,7 @@ class api(controllers.BaseController):
                 if not 'apiId' in kwargs:
                     return jsonbak.dumps(gdpr_requirements.gdpr)
                 the_id = kwargs['apiId']
-                url,auth,verify = self.get_credentials(the_id)
+                url,auth,verify,cluster_enabled = self.get_credentials(the_id)
                 opt_endpoint = '/rules/gdpr'
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, auth=auth,
@@ -575,3 +575,90 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error("api: Error getting the configuration on memory: %s" % (e))
             raise e
+
+    """
+    Get basic syscollector information for a given agent.
+    """
+    @expose_page(must_login=False, methods=['GET'])
+    def getSyscollector(self, **kwargs):
+        try:
+            self.logger.info("Request to get basic syscollector information for a given agent")
+            if not 'apiId' in kwargs and not 'agentId' in kwargs:
+                raise Exception('Missing parameters.')
+            syscollectorData = {
+                'hardware' : False,
+                'os': False,
+                'netiface': False,
+                'ports': False,
+                'netaddr': False,
+                'packagesDate': False,
+                'processesDate': False
+            }
+            apiId = kwargs['apiId']
+            agentId = kwargs['agentId']
+            url,auth,verify,cluster_enabled = self.get_credentials(apiId)
+            # Hardware
+            endpoint_hardware = '/syscollector/' +  str(agentId) + '/hardware'
+            hardware_data = self.session.get(
+                    url + endpoint_hardware, params={}, auth=auth,
+                    verify=verify).json()
+            if 'error' in hardware_data and hardware_data['error'] == 0 and 'data' in hardware_data:
+                syscollectorData['hardware'] = hardware_data['data']
+            
+            # OS
+            endpoint_os = '/syscollector/' +  str(agentId) + '/os'
+            os_data = self.session.get(
+                    url + endpoint_os, params={}, auth=auth,
+                    verify=verify).json()
+            if 'error' in os_data and os_data['error'] == 0 and 'data' in os_data:
+                syscollectorData['os'] = os_data['data']
+            
+            # Ports
+            endpoint_ports = '/syscollector/' +  str(agentId) + '/ports'
+            ports_data = self.session.get(
+                    url + endpoint_ports, params={ 'limit' : 1 }, auth=auth,
+                    verify=verify).json()
+            if 'error' in ports_data and ports_data['error'] == 0 and 'data' in ports_data:
+                syscollectorData['ports'] = ports_data['data']
+
+            # Packages
+            endpoint_packages = '/syscollector/' +  str(agentId) + '/packages'
+            packages_data = self.session.get(
+                    url + endpoint_packages, params={ 'limit' : 1, 'select' : 'scan_time'}, auth=auth,
+                    verify=verify).json()
+            if 'error' in packages_data and packages_data['error'] == 0 and 'data' in packages_data:
+                if 'items' in packages_data['data'] and len(packages_data['data']['items']) > 0 and 'scan_time' in packages_data['data']['items'][0]:
+                    syscollectorData['packagesDate'] = packages_data['data']['items'][0]['scan_time']
+                else:
+                    syscollectorData['packagesDate'] = 'Unknown'
+
+            # Processes
+            endpoint_processes = '/syscollector/' +  str(agentId) + '/processes'
+            processes_data = self.session.get(
+                    url + endpoint_processes, params={ 'limit' : 1, 'select' : 'scan_time'}, auth=auth,
+                    verify=verify).json()
+            if 'error' in processes_data and processes_data['error'] == 0 and 'data' in processes_data:
+                if 'items' in processes_data['data'] and len(processes_data['data']['items']) > 0 and 'scan_time' in processes_data['data']['items'][0]:
+                    syscollectorData['processesDate'] = processes_data['data']['items'][0]['scan_time']
+                else:
+                    syscollectorData['processesDate'] = 'Unknown'
+
+            # Netiface
+            endpoint_netiface = '/syscollector/' +  str(agentId) + '/netiface'
+            netiface_data = self.session.get(
+                    url + endpoint_netiface, params={}, auth=auth,
+                    verify=verify).json()
+            if 'error' in netiface_data and netiface_data['error'] == 0 and 'data' in netiface_data:
+                syscollectorData['netiface'] = netiface_data['data']
+
+            # Netaddr
+            endpoint_netaddr = '/syscollector/' +  str(agentId) + '/netaddr'
+            netaddr_data = self.session.get(
+                    url + endpoint_netaddr, params={ 'limit' : 1 }, auth=auth,
+                    verify=verify).json()
+            if 'error' in netaddr_data and netaddr_data['error'] == 0 and 'data' in netaddr_data:
+                syscollectorData['netaddr'] = netaddr_data['data']
+            return jsonbak.dumps(syscollectorData)
+        except Exception as e:
+            self.logger.error("Error getting syscollector information for a given agent: %s" % (str(e)))
+            return jsonbak.dumps({"error": str(e)})

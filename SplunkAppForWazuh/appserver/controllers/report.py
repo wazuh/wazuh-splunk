@@ -119,7 +119,7 @@ class report(controllers.BaseController):
             tables = data['tableResults']
             time_diff = data['timeZone']
             today = datetime.datetime.utcnow() - datetime.timedelta(minutes=time_diff)
-            today = today.strftime('%Y.%m.%d %H:%M')
+            today = today.strftime('%Y.%m.%d %H:%M:%S')
             if metrics:
                 metrics = jsonbak.loads(metrics)
             agent_data = data['isAgents']
@@ -527,7 +527,7 @@ class report(controllers.BaseController):
                         file = {}
                         file['size'] = os.path.getsize(self.path+f)
                         file['name'] = f
-                        file['date'] = time.strftime('%Y.%m.%d %H:%M', time.gmtime(os.path.getmtime(self.path+f)))
+                        file['date'] = time.strftime('%Y.%m.%d %H:%M:%S', time.gmtime(os.path.getmtime(self.path+f)))
                         pdf_files.append(file)
 
             parsed_data = jsonbak.dumps({'data': pdf_files})
