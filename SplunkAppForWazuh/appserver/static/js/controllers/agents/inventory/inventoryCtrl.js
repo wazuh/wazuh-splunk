@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function(module) {
+define(['../../module', 'FileSaver'], function (module) {
   'use strict'
   class Inventory {
     /**
@@ -70,13 +70,10 @@ define(['../../module', 'FileSaver'], function(module) {
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
 
-        this.scope.agent =
-          this.data.length &&
-          this.data.length > 4 &&
-          typeof this.data[4] === 'object' &&
-          this.data[4].data &&
-          this.data[4].data.data
-            ? this.data[4].data.data
+        const agentData  = (((this.data || {})[1] || {}).data || {}).data
+
+        this.scope.agent = agentData
+            ? agentData
             : { error: true }
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)
@@ -88,27 +85,7 @@ define(['../../module', 'FileSaver'], function(module) {
             ? agentStatus
             : 'Never connected'
         }
-        if (
-          !this.data[0] ||
-          !this.data[0].data ||
-          !this.data[0].data.data ||
-          typeof this.data[0].data.data !== 'object' ||
-          !Object.keys(this.data[0].data.data).length ||
-          !this.data[1] ||
-          !this.data[1].data ||
-          !this.data[1].data.data ||
-          typeof this.data[1].data.data !== 'object' ||
-          !Object.keys(this.data[1].data.data).length
-        ) {
-          this.scope.syscollector = null
-        } else {
-          if (this.data[2] && this.data[2].data && this.data[2].data.data)
-            Object.assign(this.ports, this.data[3].data.data)
-          if (this.data[3] && this.data[3].data && this.data[3].data.data)
-            Object.assign(this.packagesDate, this.data[3].data.data)
-          if (this.data[5] && this.data[5].data && this.data[5].data.data)
-            Object.assign(this.processesDate, this.data[5].data.data)
-        }
+
         this.init()
 
         this.scope.startVis2Png = () =>
@@ -136,41 +113,8 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     async init() {
       try {
-        try {
-          const resultNetiface = await this.apiReq(
-            `/syscollector/${this.scope.agent.id}/netiface`,
-            {}
-          )
-          this.netifaceResponse =
-            ((resultNetiface || {}).data || {}).data || false
-        } catch (error) {} // eslint-disable-line
+        this.scope.syscollector = ((this.data || {})[0] || {}).data || {}
 
-        // This API call may fail so we put it out of Promise.all
-        try {
-          const resultNetaddrResponse = await this.apiReq(
-            `/syscollector/${this.scope.agent.id}/netaddr`,
-            { limit: 1 }
-          )
-          this.netaddrResponse =
-            ((resultNetaddrResponse || {}).data || {}).data || false
-        } catch (error) {} // eslint-disable-line
-
-        this.scope.syscollector = {
-          hardware: this.data[0].data.data,
-          os: this.data[1].data.data,
-          netiface: this.netifaceResponse,
-          ports: this.ports,
-          netaddr: this.netaddrResponse,
-          packagesDate:
-            this.packagesDate &&
-            this.packagesDate.items &&
-            this.packagesDate.items.length
-              ? this.packagesDate.items[0].scan_time
-              : 'Unknown',
-          processesDate: ((this.processesDate || {}).items || []).length
-            ? this.processesDate.items[0].scan_time
-            : 'Unknown'
-        }
         this.scope.$applyAsync()
         return
       } catch (error) {

@@ -31,11 +31,21 @@ define(['../module'], function(module) {
 
     setBrowserOffset(d) {
       try {
-        const date = new Date(d)
+        const [day, time] = d.indexOf('T') !== -1 ? d.split('T') : d.split(' ')
+        const splitChar = d.indexOf('-') !== -1 ? '-' : (d.indexOf('.') !== -1 ? '.' : (d.indexOf('/') !== -1 ? '/' : ''))
+        const [year, month, monthDay] = day.split(splitChar)
+        const [hour, minute, seconds] = time.split(':')
+        const date = new Date(
+          year,
+          parseInt(month) - 1,
+          monthDay,
+          hour,
+          minute,
+          seconds ? seconds.split('.')[0] : '0'
+        )
         const offset = new Date().getTimezoneOffset()
         const offsetTime = new Date(date.getTime() - offset * 60000)
-        const result = offsetTime.toLocaleString('en-ZA').replace(',', '')
-        return result
+        return offsetTime.toLocaleString('en-ZA').replace(',', '')
       } catch (error) {
         return Promise.reject(error)
       }

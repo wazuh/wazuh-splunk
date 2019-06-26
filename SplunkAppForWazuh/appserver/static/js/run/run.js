@@ -43,11 +43,11 @@ define(['./module'], function(module) {
             $rootScope.$broadcast('wazuhNotReadyYet', {})
             toPrimaryState(state)
           } else {
-            $rootScope.$broadcast('loadingMain', { status: false })
-            if (state != 'settings.api') {
+            $rootScope.$broadcast('loading', { status: false })
+            if (state != 'settings.api'){
               $rootScope.$broadcast('stateChanged', 'settings')
             }
-            if (err.startsWith('Unexpected Wazuh version.')) {
+            if (typeof err === 'string' && err.startsWith('Unexpected Wazuh version.')) {
               $notificationService.showErrorToast(err)
             }
             $state.go('settings.api')

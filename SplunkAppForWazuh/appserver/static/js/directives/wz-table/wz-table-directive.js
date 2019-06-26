@@ -260,16 +260,26 @@ define([
          * @param {String} query
          * @param {String} search
          */
-        const query = async (query, search) =>
-          data.queryData(
-            query,
-            search,
-            instance,
-            $tableFilterService,
-            $scope,
-            fetch,
-            $notificationService
-          )
+        const query = async (query, search) => {
+          try{
+            await data.queryData(
+              query,
+              search,
+              instance,
+              $tableFilterService,
+              $scope,
+              fetch,
+              $notificationService
+            )
+          }catch(error){
+            $scope.error = `Error while querying API.`
+            $notificationService.showErrorToast(
+              `Error while querying API. ${error.message || error}`
+            )
+          }
+          $scope.wazuhTableLoading = false
+          $scope.$applyAsync()
+        }
 
         /**
          * Filters API results
@@ -409,9 +419,10 @@ define([
           )
         )
 
-        $scope.$on('wazuhQuery', (event, parameters) =>
+        $scope.$on('wazuhQuery', (event, parameters) => {
+          $scope.wazuhTableLoading = true
           listeners.wazuhQuery(parameters, query)
-        )
+        })
 
         $scope.$on('wazuhPlayRealTime', () => {
           realTime = true

@@ -275,7 +275,7 @@ define([
      * Reload list of agents
      */
     reloadList() {
-      this.scope.$broadcast('wazuhSearch', { term: '' })
+      this.scope.$broadcast('reloadSearchFilterBar', {})
     }
   }
   app.controller('agentsCtrl', Agents)
