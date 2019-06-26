@@ -11,8 +11,9 @@
       <span> / </span>
       <span>NIST 800-53</span>
       <span ng-if="agent && agent.status">
-        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
-          aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+        <span class="no-wrap wz-padding-left-8" aria-hidden="false">
+          <p class="round status littleStat teal" ng-class="getAgentStatusClass(agent.status)"></p>&nbsp;&nbsp;
+        </span>{{formatAgentStatus(agent.status)}}
       </span>
     </div>
     <div flex></div>
@@ -89,27 +90,27 @@
         </md-card-content>
       </md-card>
       <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top 5 rules
-              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'topRules')">
-                <wz-svg icon="expand"></wz-svg>
-              </span>
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 rules
+            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'topRules')">
+              <wz-svg icon="expand"></wz-svg>
             </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='topRules'></div>
-          </md-card-content>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='topRules'></div>
+        </md-card-content>
       </md-card>
       <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-            <md-card-content class="wazuh-column">
-              <span class="wz-headline-title">Top 5 NIST 800-53 requirements
-                <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top5nist')">
-                  <wz-svg icon="expand"></wz-svg>
-                </span>
-              </span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div id='top5nist'></div>
-            </md-card-content>
-        </md-card>
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title">Top 5 NIST 800-53 requirements
+            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'top5nist')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='top5nist'></div>
+        </md-card-content>
+      </md-card>
     </div>
 
 

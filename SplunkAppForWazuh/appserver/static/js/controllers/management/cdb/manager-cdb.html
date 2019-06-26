@@ -43,7 +43,7 @@
     <md-card class="wz-md-card no-margin-sides">
       <md-card-actions layout="row" layout-align="end center"
         class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-        <a ng-click="addNewFile()">Add new list</a>
+        <span ng-click="addNewFile()" class="wz-color-text cursor-pointer">Add new list</span>
         <span flex="" class="flex"></span>
       </md-card-actions>
       <md-card-contents>
@@ -155,7 +155,7 @@
                   <td class="td-align-middle">
                     <button class="btn btn-as-i" ng-disabled="!newKey"
                       ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
-                      <wz-svg icon="plus" color="#0079a5"></wz-svg>
+                      <wz-svg icon="plus" color="#396e3e"></wz-svg>
                       <md-tooltip md-direction="left" class="wz-tooltip">
                         Add new entry
                       </md-tooltip>

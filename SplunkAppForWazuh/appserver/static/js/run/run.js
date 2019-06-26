@@ -83,7 +83,6 @@ define(['./module'], function(module) {
         }
         if (
           to != 'settings.about' &&
-          to != 'settings.extensions' &&
           to != 'settings.index' &&
           to != 'settings.logs'
         ) {

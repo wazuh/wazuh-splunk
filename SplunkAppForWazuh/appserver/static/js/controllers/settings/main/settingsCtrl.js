@@ -16,9 +16,6 @@ define(['../../module'], function(controllers) {
         case 'settings.api':
           this.scope.tabName = 'api'
           break
-        case 'settings.extensions':
-          this.scope.tabName = 'extensions'
-          break
         case 'settings.index':
           this.scope.tabName = 'index'
           break

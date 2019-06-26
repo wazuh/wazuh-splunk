@@ -46,14 +46,14 @@
             <td>
               <!-- switch to edit -->
               <div ng-show="!editingKey || editingKey !== key">
-                <wz-svg icon="pencil" color="#0079a5" ng-click="switchEdit(key, val)">
+                <wz-svg icon="pencil" color="#396e3e" ng-click="switchEdit(key, val)">
                   <md-tooltip md-direction="left" class="wz-tooltip">
                     Edit
                   </md-tooltip>
                 </wz-svg>
               </div>
               <div ng-show="editingKey === key">
-                <span style="color: #0079a5">
+                <span style="color: #396e3e">
                   <i ng-click="cancelEdition()" class="fa fa-fw fa-times cursor-pointer">
                     <md-tooltip md-direction="left" class="wz-tooltip">
                       Cancel
