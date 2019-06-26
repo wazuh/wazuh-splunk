@@ -58,7 +58,7 @@
       <div class="agent-details-box">
         <div
           class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
-          <div class="euiFlexItem euiFlexItem">
+          <div class="euiFlexItem euiFlexItem" style="max-width: 80px !important">
             <div class="euiStat euiStat--leftAligned wz-text-align-center">
               <div class="euiText euiText--small euiStat__description">
                 <p class="agentField">{{ agent.id || '-' }}</p>
@@ -82,7 +82,7 @@
               <p class="euiText--small euiStat__description">Version</p>
             </div>
           </div>
-          <div class="euiFlexItem euiFlexItem">
+          <div class="euiFlexItem euiFlexItem wz-width-400" >
             <div class="euiStat euiStat--leftAligned wz-text-align-center">
               <div class="euiText euiText--small euiStat__description">
                 <p class="agentField">{{ agentOS || '-'}}</p>
@@ -104,41 +104,6 @@
                 <p class="agentField">{{offsetTimestamp('', agent.lastKeepAlive) || '-'}}</p>
               </div>
               <p class="euiText--small euiStat__description">Last keep alive</p>
-            </div>
-          </div>
-          <div class="euiFlexItem euiFlexItem">
-            <div class="euiStat euiStat--leftAligned wz-text-align-center">
-              <div class="euiText euiText--small euiStat__description">
-                <p class="agentField">{{offsetTimestamp('', syscheck.end) || '-'}}</p>
-              </div>
-              <p class="euiText--small euiStat__description" ng-if="syscheck.inProgress">Scan
-                in progress</p>
-              <p class="euiText--small euiStat__description" ng-if="!syscheck.inProgress">
-                Last syscheck scan
-                <md-tooltip ng-if="!syscheck.inProgress && syscheck.start && syscheck.end" md-direction="bottom"
-                  class="wz-tooltip">
-                  Start time: {{offsetTimestamp('', syscheck.start) || '-'}} <br>
-                  End time: {{offsetTimestamp('', syscheck.end) || '-'}} <br>
-                  Duration time: {{syscheck.duration +' minutes' || '-'}}
-                </md-tooltip>
-              </p>
-            </div>
-          </div>
-          <div class="euiFlexItem euiFlexItem">
-            <div class="euiStat euiStat--leftAligned wz-text-align-center">
-              <div class="euiText euiText--small euiStat__description">
-                <p class="agentField">{{offsetTimestamp('', rootcheck.end) || '-'}}</p>
-              </div>
-              <p class="euiText--small euiStat__description" ng-if="rootcheck.inProgress">Scan
-                in progress</p>
-              <p class="euiText--small euiStat__description" ng-if="!rootcheck.inProgress">Last rootcheck scan
-                <md-tooltip ng-if="!rootcheck.inProgress && rootcheck.start && rootcheck.end" md-direction="bottom"
-                  class="wz-tooltip">
-                  Start time: {{offsetTimestamp('', rootcheck.start) || '-'}} <br>
-                  End time: {{offsetTimestamp('', rootcheck.end) || '-'}} <br>
-                  Duration time: {{rootcheck.duration + ' minutes' || '-'}}
-                </md-tooltip>
-              </p>
             </div>
           </div>
         </div>

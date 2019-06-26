@@ -524,6 +524,10 @@ div.uil-ring-css {
   max-width: 150px;
 }
 
+.wz-width-400 {
+  min-width: 400px !important;
+}
+
 /* Custom buttons styles */
 
 .wz-button {
