@@ -6,6 +6,7 @@ define(['./module'], function(module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
+    '$notificationService',
     function(
       $rootScope,
       $state,

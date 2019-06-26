@@ -38,9 +38,9 @@ define(['../../module'], function(controllers) {
       this.scope.checkManager = entry => this.checkManager(entry)
       this.scope.editEntry = entry => this.editEntry(entry)
       this.scope.removeManager = entry => this.removeManager(entry)
-      this.scope.updateEntry = () => this.updateEntry()
+      this.scope.updateEntry = (user,pass,url,port) => this.updateEntry(user,pass,url,port)
       this.scope.selectManager = mg => this.selectManager(mg)
-      this.scope.submitApiForm = () => this.submitApiForm()
+      this.scope.submitApiForm = (user,api,url,port) => this.submitApiForm(user,api,url,port)
       this.init()
     }
 
@@ -131,6 +131,7 @@ define(['../../module'], function(controllers) {
     addNewApiClick() {
       this.scope.showForm = !this.scope.showForm
       this.scope.edit = false
+      this.scope.currentEntryKey = false
     }
 
     /**
@@ -139,7 +140,7 @@ define(['../../module'], function(controllers) {
      */
     editEntry(entry) {
       try {
-        this.scope.edit = !this.scope.edit
+        this.scope.edit = this.scope.currentEntryKey === entry['_key'] ? !this.scope.edit : true
         this.scope.showForm = false
         this.scope.currentEntryKey = entry['_key']
         this.scope.url = entry.url
@@ -159,7 +160,7 @@ define(['../../module'], function(controllers) {
      * Edits an entry
      * @param {Object} entry
      */
-    async updateEntry() {
+    async updateEntry(user,pass,url,port) {
       try {
         if (this.savingApi) {
           this.notification.showWarningToast('Please, wait for success message')
@@ -168,10 +169,10 @@ define(['../../module'], function(controllers) {
         this.savingApi = true
         this.scope.edit = !this.scope.edit
         this.scope.showForm = false
-        this.scope.entry.url = this.scope.url
-        this.scope.entry.portapi = this.scope.port
-        this.scope.entry.userapi = this.scope.user
-        this.scope.entry.passapi = this.scope.pass
+        this.scope.entry.url = url
+        this.scope.entry.portapi = port
+        this.scope.entry.userapi = user
+        this.scope.entry.passapi = pass
         this.scope.entry.filterType = this.scope.filterType
         this.scope.entry.filterName = this.scope.filterName
         this.scope.entry.managerName = this.scope.managerName
@@ -228,7 +229,7 @@ define(['../../module'], function(controllers) {
     /**
      * Adds a new API
      */
-    async submitApiForm() {
+    async submitApiForm(user,pass,url,port) {
       try {
         this.scope.validatingError = []
         if (this.savingApi) {
@@ -238,10 +239,10 @@ define(['../../module'], function(controllers) {
         this.savingApi = true
 
         // When the Submit button is clicked, get all the form fields by accessing to the input values
-        const form_url = this.scope.url
-        const form_apiport = this.scope.port
-        const form_apiuser = this.scope.user
-        const form_apipass = this.scope.pass
+        const form_url = url
+        const form_apiport = port
+        const form_apiuser = user
+        const form_apipass = pass
 
         // If values are not valid then throw an error
         if (

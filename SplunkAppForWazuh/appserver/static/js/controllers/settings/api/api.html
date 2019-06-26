@@ -102,9 +102,9 @@
   <!-- API configuration card section -->
   <div layout="row" layout-align="start start">
     <md-card flex class="wz-md-card">
-      <md-card-content>
+      <md-card-content ng-if="apiList.length >= 1">
         <!-- API entries headings section -->
-        <div layout="row" class="wz-padding-bottom-14">
+        <div layout="row">
           <p flex="15" class="wz-text-bold">Cluster</p>
           <p flex="20" class="wz-text-bold">Manager</p>
           <p flex="15" class="wz-text-bold">API URL</p>
@@ -112,12 +112,13 @@
           <p flex="15" class="wz-text-bold">User</p>
           <p flex="20" class="wz-text-bold">Actions</p>
         </div>
+        <md-divider></md-divider>
         <!-- End API entries headings section -->
 
         <!-- API entries list section -->
         <div ng-repeat="entry in apiList">
           <!-- API entry -->
-          <div layout="row" layout-align="space-between center" class="wz-padding-top-10 wz-padding-bottom-14">
+          <div layout="row" layout-align="space-between center" class="wz-padding-top-10">
             <p flex="15">
               <i ng-show="entry.selected" class="fa fa-star wz-color-orange" aria-hidden="true"></i>
               {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
@@ -138,86 +139,180 @@
                     d="M8 2a.86.86 0 0 0-.792.511l-1.33 2.924-3.128.446c-.71.102-1.001.976-.496 1.487l2.313 2.336-.563 3.268A.877.877 0 0 0 4.864 14c.142 0 .289-.036.429-.116L8 12.342l2.707 1.542c.14.08.287.116.43.116a.877.877 0 0 0 .859-1.027l-.563-3.269 2.313-2.336c.505-.511.214-1.385-.496-1.487l-3.128-.446-1.33-2.923A.86.86 0 0 0 8 2m0 1c.073 0 .095.049.104.07l1.267 2.783.162.356.387.055 2.978.425c.017.002.071.01.095.08a.116.116 0 0 1-.029.126l-2.202 2.226-.259.261.063.362.535 3.112c.007.04 0 .07-.023.098a.127.127 0 0 1-.091.046.106.106 0 0 1-.055-.016l-2.578-1.469L8 11.314l-.354.201-2.579 1.469a.103.103 0 0 1-.054.016.127.127 0 0 1-.091-.046c-.023-.028-.03-.058-.024-.098l.536-3.112.063-.362-.259-.261-2.202-2.226a.116.116 0 0 1-.029-.126.108.108 0 0 1 .094-.08l2.98-.425.386-.055.162-.356 1.267-2.786C7.905 3.05 7.927 3 8 3">
                   </path>
                 </svg>
-                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                <md-tooltip md-direction="bottom" class="wz-tooltip wz-margin-left-16">
                   Set as default Manager
                 </md-tooltip>
               </span>
-              <span ng-click="checkManager(entry)" class="cursor-pointer" aria-hidden="true">
+              <span ng-click="checkManager(entry)" class="cursor-pointer wz-margin-left-16" aria-hidden="true">
                 <wz-svg icon="refresh" color="#595d65"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Check API connection
                 </md-tooltip>
               </span>
-              <span ng-click="editEntry(entry)" class="cursor-pointer" aria-hidden="true">
-                <wz-svg icon="pencil" color="#0b3b98"></wz-svg>
-                <md-tooltip md-direction="bottom" class="wz-tooltip">
-                  Edit API
-                </md-tooltip>
-              </span>
-              <span ng-click="removeManager(entry)" class="cursor-pointer" aria-hidden="true">
+              <span ng-click="removeManager(entry)" class="cursor-pointer wz-margin-left-16" aria-hidden="true">
                 <wz-svg icon="trash" color="#da2062"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Remove manager
                 </md-tooltip>
               </span>
+              <div flex></div>
+
+              <span ng-click="editEntry(entry)" class="cursor-pointer wz-margin-right-16" aria-hidden="true">
+                <wz-svg icon="arrow-down" color="#0b3b98"></wz-svg>
+                <md-tooltip md-direction="bottom" class="wz-tooltip">
+                  Edit API
+                </md-tooltip>
+              </span>
             </p>
           </div>
+          <!-- Add API section-->
+          <div layout="row" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key'>
+            <!-- Add API form -->
+            <form flex layout="row" layout-align="start stretch" class="margin-top-30">
+              <!-- Input section -->
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">Username</label>
+                <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder=""
+                  aria-label="username" required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">Password</label>
+                <input class="wz-height-35 wz-input-text" ng-model="pass" type="password" placeholder=""
+                  aria-label="password" required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">URL</label>
+                <input class="wz-height-35 wz-input-text" ng-model="url" type="url" placeholder="http(s)://"
+                  aria-label="full url" required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">Port</label>
+                <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
+                  required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <button ng-if='edit' ng-click='updateEntry(user,pass,url,port)' type="submit" class="btn wz-button"
+                  aria-label="Save API button">
+                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update
+                </button>
+              </md-input-container>
+              <!-- Button and errors section -->
+              <div layout="row" layout-align="center center">
+                <p class="color-f9">{{messageError}}</p>
+              </div>
+              <div ng-if="validatingError" layout="row" layout-align="center center">
+                <ul class="noDot orange">
+                  <li ng-repeat="err in validatingError">{{ err }}</li>
+                </ul>
+              </div>
+            </form>
+            <!-- End add API form -->
+          </div>
+          <md-divider></md-divider>
           <!-- End edit API form -->
         </div>
         <!-- End API entries list section -->
 
         <!-- Add API button section -->
         <div layout="row" layout-align="center center" class="wz-padding-top-10">
-          <button ng-show='!edit && apiList.length > 0' ng-click='addNewApiClick()' class="btn wz-button"
-            aria-label="Add new API button">
+          <button ng-show='!edit && apiList.length > 0 || currentEntryKey' ng-click='addNewApiClick()'
+            class="btn wz-button" aria-label="Add new API button">
             <wz-svg icon="plus"></wz-svg> Add new
           </button>
         </div>
         <!-- End add API button section -->
 
         <!-- Add API section-->
-        <div layout="row" ng-show='(showForm && !edit) || (!showForm && edit) || apiList.length < 1'>
+        <div layout="row"
+          ng-if='((showForm && !edit) || (!showForm && edit)) && !currentEntryKey  && apiList.length >= 1'>
           <!-- Add API form -->
-          <form flex ng-submit="saveSettings()" layout="column" layout-align="start stretch" class="margin-top-30">
+          <form flex layout="row" layout-align="start stretch" class="margin-top-30">
             <!-- Input section -->
-            <md-input-container class="wz-input-container">
-              <label>Username</label>
-              <input ng-model="user" type="text" placeholder="" aria-label="username" required />
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label" class="boldText">Username</label>
+              <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder="" aria-label="username"
+                required />
             </md-input-container>
-            <md-input-container class="wz-input-container">
-              <label>Password</label>
-              <input ng-model="pass" type="password" placeholder="" aria-label="password" required />
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Password</label>
+              <input class="wz-height-35 wz-input-text" ng-model="pass" type="password" placeholder=""
+                aria-label="password" required />
             </md-input-container>
-            <md-input-container class="wz-input-container">
-              <label>URL</label>
-              <input ng-model="url" type="url" placeholder="http(s)://" aria-label="full url" required />
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">URL</label>
+              <input class="wz-height-35 wz-input-text" ng-model="url" type="url" placeholder="http(s)://"
+                aria-label="full url" required />
             </md-input-container>
-            <md-input-container class="wz-input-container">
-              <label>Port</label>
-              <input ng-model="port" type="text" placeholder="" aria-label="port" required />
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Port</label>
+              <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port)' type="button" class="btn wz-button"
+                aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
+              </button>
             </md-input-container>
             <!-- Button and errors section -->
             <div layout="row" layout-align="center center">
               <p class="color-f9">{{messageError}}</p>
             </div>
-            <div layout="column" layout-align="center center">
-              <div ng-if="validatingError" layout="row" layout-align="center center">
-                <ul class="noDot orange">
-                  <li ng-repeat="err in validatingError">{{ err }}</li>
-                </ul>
-              </div>
-              <div layout="row" layout-align="center center">
-                <button ng-if='!edit' ng-click='submitApiForm()' type="submit" class="btn wz-button"
-                  aria-label="Save API button">
-                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
-                </button>
-                <button ng-if='edit' ng-click='updateEntry()' type="submit" class="btn wz-button"
-                  aria-label="Save API button">
-                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update
-                </button>
-              </div>
+            <div class="api-error" ng-if="validatingError" layout="row" layout-align="center center">
+              <ul class="noDot orange">
+                <li ng-repeat="err in validatingError">{{ err }}</li>
+              </ul>
             </div>
           </form>
+          <!-- Add API form -->
+          <!-- End add API form -->
+        </div>
+      </md-card-content>
+
+
+
+      <md-card-content style="height:60px;" ng-if="apiList.length < 1">
+        <div layout="row" ng-if='apiList.length < 1'>
+          <!-- Add API form -->
+          <form flex layout="row" layout-align="start stretch" class="margin-top-30">
+            <!-- Input section -->
+            <md-input-container flex="20" class="wz-input-container wz-margin-left-7">
+              <label class="api-label" class="boldText">Username</label>
+              <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder="" aria-label="username"
+                required />
+            </md-input-container>
+            <md-input-container flex="20"  class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Password</label>
+              <input class="wz-height-35 wz-input-text" ng-model="pass" type="password" placeholder=""
+                aria-label="password" required />
+            </md-input-container>
+            <md-input-container flex="20"  class="wz-input-container wz-margin-left-7">
+              <label class="api-label">URL</label>
+              <input class="wz-height-35 wz-input-text" ng-model="url" type="url" placeholder="http(s)://"
+                aria-label="full url" required />
+            </md-input-container>
+            <md-input-container flex="20"  class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Port</label>
+              <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
+                required />
+            </md-input-container>
+            <md-input-container flex="10"  class="wz-input-container wz-margin-left-7">
+              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port)' type="button" class="btn wz-button"
+                aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
+              </button>
+            </md-input-container>
+            <!-- Button and errors section -->
+            <div layout="row" layout-align="center center">
+              <p class="color-f9">{{messageError}}</p>
+            </div>
+            <div flex="10" class="api-error" ng-if="validatingError" layout="row" layout-align="center center">
+              <ul class="noDot orange">
+                <li ng-repeat="err in validatingError">{{ err }}</li>
+              </ul>
+            </div>
+          </form>
+          <!-- Add API form -->
           <!-- End add API form -->
         </div>
         <!-- End add API section-->
