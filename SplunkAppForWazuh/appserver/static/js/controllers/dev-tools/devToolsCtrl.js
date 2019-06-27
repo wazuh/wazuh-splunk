@@ -49,7 +49,7 @@ define([
      * @param {*} appState
      * @param {*} $notificationService
      * @param {*} $document
-     * @param {Array} extensions the extensions of configurations and admin mode
+     * @param {*} isAdmin
      */
     constructor(
       $scope,
@@ -58,7 +58,7 @@ define([
       $navigationService,
       $notificationService,
       $document,
-      extensions
+      isAdmin
     ) {
       this.$scope = $scope
       this.request = $requestService
@@ -70,11 +70,8 @@ define([
       this.linesWithClass = []
       this.widgets = []
       this.multipleKeyPressed = []
-      try {
-        this.admin = extensions['admin'] === 'true'
-      } catch (err) {
-        this.admin = false
-      }
+      this.admin = isAdmin
+      
     }
 
     /**
