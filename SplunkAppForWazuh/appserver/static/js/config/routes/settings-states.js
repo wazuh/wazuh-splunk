@@ -78,28 +78,6 @@ define(['../module'], function (module) {
             ]
           }
         })
-        .state('settings.extensions', {
-          templateUrl:
-            BASE_URL +
-            '/static/app/SplunkAppForWazuh/js/controllers/settings/extensions/extensions.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('settings.extensions')
-          },
-          controller: 'extensionsCtrl',
-          resolve: {
-            extensions: [
-              '$state',
-              '$currentDataService',
-              async ($state, $currentDataService) => {
-                try {
-                  return await $currentDataService.getCurrentExtensions()
-                } catch (err) {
-                  $state.reload()
-                }
-              }
-            ]
-          }
-        })
         .state('settings.index', {
           templateUrl:
             BASE_URL +

@@ -6,6 +6,7 @@ define(['./module'], function(module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
+    '$notificationService',
     function(
       $rootScope,
       $state,
@@ -83,7 +84,6 @@ define(['./module'], function(module) {
         }
         if (
           to != 'settings.about' &&
-          to != 'settings.extensions' &&
           to != 'settings.index' &&
           to != 'settings.logs'
         ) {

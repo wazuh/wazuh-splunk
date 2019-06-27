@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class AgentsOverview {
@@ -36,7 +36,8 @@ define(['../../module'], function(app) {
       isAdmin,
       $mdDialog,
       $groupHandler,
-      $dateDiffService
+      $dateDiffService,
+      $currentDataService
     ) {
       this.stateParams = $stateParams
       this.scope = $scope
@@ -45,6 +46,7 @@ define(['../../module'], function(app) {
       this.notification = $notificationService
       this.agent = agent
       this.extensions = extensions
+      this.scope.extensions = angular.copy(this.extensions)
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
       this.scope.showRootcheckScan = false
@@ -54,6 +56,10 @@ define(['../../module'], function(app) {
       this.groupHandler = $groupHandler
       this.scope.restartInProgress = false
       this.scope.isAdmin = isAdmin
+      this.currentDataService = $currentDataService
+      this.currentApi = this.currentDataService.getApi()
+      this.api = this.currentApi['_key']
+      this.scope.extensionsLists = { 'security': false, 'auditing': false, 'threadDetection': false, 'regulatory': false }
     }
 
     /**
@@ -75,31 +81,26 @@ define(['../../module'], function(app) {
             this.scope.agent.os.name &&
             this.scope.agent.os.version
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                  .codename || '-'} ${this.scope.agent.os.version || '-'}`
+                .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
 
           this.scope.syscheck =
             this.agent.length > 0 &&
-            typeof this.agent[1] === 'object' &&
-            typeof this.agent[1].data === 'object' &&
-            !this.agent[1].data.error
+              typeof this.agent[1] === 'object' &&
+              typeof this.agent[1].data === 'object' &&
+              !this.agent[1].data.error
               ? this.agent[1].data.data
               : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
           this.scope.id = this.stateParams.id
           this.scope.rootcheck =
             this.agent.length > 1 &&
-            typeof this.agent[2] === 'object' &&
-            typeof this.agent[2].data === 'object' &&
-            !this.agent[2].data.error
+              typeof this.agent[2] === 'object' &&
+              typeof this.agent[2].data === 'object' &&
+              !this.agent[2].data.error
               ? this.agent[2].data.data
               : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
-            const keys = Object.keys(this.extensions)
-            keys.map(key => {
-              this.extensions[key] === 'true'
-                ? (this.scope[key] = key)
-                : (this.scope[key] = null)
-            })
+            this.refreshExtensions()
 
             this.scope.groups = this.groups.data.data.items
               .map(item => item.name)
@@ -161,6 +162,8 @@ define(['../../module'], function(app) {
 
             this.scope.restart = () => this.restartAgent()
             this.scope.switchRestart = () => this.switchRestart()
+            this.scope.showExtensionsLists = card => this.showExtensionsLists(card)
+            this.scope.toggleExtension = (extension, state) => this.toggleExtension(extension, state)
 
             this.scope.confirmAddGroup = group => {
               this.groupHandler
@@ -177,7 +180,7 @@ define(['../../module'], function(app) {
                   this.scope.editGroup = false
                   this.notification.showSuccessToast(
                     `Agent ${this.scope.agent.name}(${
-                      this.scope.agent.id
+                    this.scope.agent.id
                     }) has been added to group ${group}.`
                   )
                   this.scope.$applyAsync()
@@ -249,6 +252,7 @@ define(['../../module'], function(app) {
           }
         }
       } catch (err) {
+        console.error(err)
         this.scope.load = false
         this.notification.showErrorToast('Error loading agent data.')
         this.scope.$applyAsync()
@@ -343,6 +347,50 @@ define(['../../module'], function(app) {
 
     switchRestart() {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
+    }
+
+    /**
+    * Shows the extensions list to enable or disable them
+    */
+    showExtensionsLists = card => {
+      try {
+        this.scope.extensionsLists[card] ? this.scope.extensionsLists[card] = false : this.scope.extensionsLists[card] = true
+      } catch (error) {
+        console.error('Error showing or hiding the extensions list ', error)
+      }
+    }
+
+    /**
+     * Enable or disable extension
+     * @param {String} extension 
+     * @param {String} state 
+     */
+    toggleExtension(extension, state) {
+      try {
+        this.extensions[extension] = state.toString()
+        this.currentDataService.setExtensions(this.api, this.extensions)
+        this.extensions = this.currentDataService.getExtensions(this.api)
+        this.refreshExtensions()
+      } catch (error) {
+        console.error(error)
+        this.notification.showErrorToast(error)
+      }
+    }
+
+    /**
+     * Refresh the extensions
+     */
+    refreshExtensions() {
+      const keys = Object.keys(this.extensions)
+      keys.map(key =>
+        this.scope.extensions[key] = this.extensions[key] === 'true'
+      )
+      /*
+      keys.map(key =>
+        this.scope.extensions[key] =  this.extensions[key] === 'true'
+      )
+      */
       this.scope.$applyAsync()
     }
   }
