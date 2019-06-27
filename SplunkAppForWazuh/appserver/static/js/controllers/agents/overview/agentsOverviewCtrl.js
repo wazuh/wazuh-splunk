@@ -251,11 +251,9 @@ define(['../../module'], function (app) {
             }
           }
         }
-        this.scope.adminMode = this.extensions['admin'] === 'true'
       } catch (err) {
         console.error(err)
         this.scope.load = false
-        this.scope.adminMode = false
         this.notification.showErrorToast('Error loading agent data.')
         this.scope.$applyAsync()
       }

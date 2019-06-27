@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // settings
@@ -141,14 +141,13 @@ define(['../module'], function(module) {
           },
           controller: 'devToolsCtrl',
           resolve: {
-            extensions: [
-              '$state',
+            isAdmin: [
               '$currentDataService',
-              async ($state, $currentDataService) => {
+              async $currentDataService => {
                 try {
-                  return await $currentDataService.getCurrentExtensions()
-                } catch (err) {
-                  $state.go('settings.api')
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
                 }
               }
             ]
