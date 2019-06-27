@@ -501,8 +501,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
         // Delete agents from a group
         if (itemsToSave.deletedIds.length) {
           response = await this.apiReq(
-            `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.deletedIds },
+            `/agents/group/${this.scope.currentGroup.name}?ids=${itemsToSave.deletedIds}`,
+            {},
             'DELETE'
           )
           if (response.data.error !== 0) {
@@ -527,9 +527,16 @@ define(['../../module', 'FileSaver'], function(controllers) {
             } agents`
           )
         } else {
-          this.notification.showSuccessToast(
-            response.data.data.msg || 'Success. Group has been updated'
-          )
+          const responseMsg = (((response || {}).data || {}).data || {}).msg
+          if( responseMsg ){
+            this.notification.showSuccessToast(
+              responseMsg || 'Success. Group has been updated'
+            )
+          }else{
+            this.notification.showWarningToast(
+              'No agents were added or removed'
+            )
+          }
         }
         this.scope.addMultipleAgents(false)
         this.scope.multipleSelectorLoading = false
