@@ -165,8 +165,9 @@
               </span>
             </p>
           </div>
+          <md-divider style="margin-bottom: 10px;" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key' ></md-divider>
           <!-- Add API section-->
-          <div layout="row" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key'>
+          <div layout="row" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key' style="height: 80px;">
             <!-- Add API form -->
             <form flex layout="row" layout-align="start stretch" class="margin-top-30">
               <!-- Input section -->
