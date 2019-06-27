@@ -4,11 +4,8 @@
 [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)
 [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
 [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/wazuh/wazuh-splunk.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wazuh/wazuh-splunk/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/wazuh/wazuh-splunk.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wazuh/wazuh-splunk/context:javascript)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/wazuh/wazuh-splunk.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wazuh/wazuh-splunk/context:python)
 
- Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
+Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 * * *
 ![](https://i.imgur.com/HkMjiwJ.png)
 ### Documentation
