@@ -357,7 +357,7 @@ define(['../../module'], function (app) {
     }
 
     /**
-     * * Shows the extensions list to enable or disable them
+    * Shows the extensions list to enable or disable them
     */
     showExtensionsLists = card => {
       try {
@@ -366,7 +366,6 @@ define(['../../module'], function (app) {
         console.error('Error showing or hiding the extensions list ', error)
       }
     }
-    
 
     /**
      * Enable or disable extension
