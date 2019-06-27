@@ -1,0 +1,9 @@
+path_classifiers:
+  - exclude: SplaunkAppForWazuh/appserver/static/js/libs
+  - exclude: SplaunkAppForWazuh/appserver/bin/PIL
+  - exclude: SplaunkAppForWazuh/appserver/bin/fpdf
+  - exclude: SplaunkAppForWazuh/appserver/bin/jsonbak
+  - exclude: SplaunkAppForWazuh/appserver/bin/requestsbak
+  - exclude: SplaunkAppForWazuh/appserver/bin/requirements
+  - exclude: SplaunkAppForWazuh/appserver/bin/tailer
+  
