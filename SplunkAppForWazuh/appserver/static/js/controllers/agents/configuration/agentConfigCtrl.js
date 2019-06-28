@@ -26,6 +26,7 @@ define(['../../module', '../../../utils/config-handler'], function (
      * @param {*} $currentDataService
      * @param {*} $beautifierJson
      * @param {*} $notificationService
+     * @param {*} $reportingService
      * @param {Object} data
      * @param {Object} agent
      */
@@ -37,9 +38,12 @@ define(['../../module', '../../../utils/config-handler'], function (
       $currentDataService,
       $beautifierJson,
       $notificationService,
+      $reportingService,
       data,
       agent
     ) {
+      this.api = $currentDataService.getApi()
+      this.reportingService = $reportingService
       this.$scope = $scope
       this.agent = agent
       this.$scope.currentAgent = this.agent.data.data
@@ -67,6 +71,27 @@ define(['../../module', '../../../utils/config-handler'], function (
         'darwin': ['audit', 'oscap', 'vuls', 'docker'],
         'other': ['audit', 'oscap', 'vuls', 'docker']
       }
+
+      this.$scope.selectedOptions = {
+        globalConf: true,
+        communicationConf: true,
+        antiFloodingConf: true,
+        labels: true,
+        pmConf: true,
+        openscapConf: true,
+        ciscatConf: true,
+        osqueryConf: true,
+        inventoryConf: true,
+        activeResponseConf: true,
+        commandsConf: true,
+        dockerListenerConf: true,
+        logCollectionConf: true,
+        integrityMonitoringConf: true
+      }
+
+      this.$scope.$on('loadingReporting', (event, data) => {
+        this.$scope.loadingReporting = data.status
+      })
     }
 
     /**
@@ -76,6 +101,11 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.showingInfo = false
       this.setAgentPlatform()
       this.$scope.showInfo = () => this.showInfo()
+      this.$scope.showModulesToExport = () => this.showModulesToExport()
+      this.$scope.selectAll = value => this.selectAll(value)
+      this.$scope.checkAllDisabled = () => this.checkAllDisabled()
+      this.$scope.keyEquivalences = key => this.keyEquivalences(key)
+      this.$scope.showConfigCheck = key => this.showConfigCheck(key)
       this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -123,6 +153,8 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.getIntegration = list =>
         this.configurationHandler.getIntegration(list, this.$scope)
       this.$scope.goGroups = group => this.goGroups(group)
+
+      this.$scope.initReportConfig = () => this.initReportConfig()
     }
 
     /**
@@ -156,6 +188,67 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.showingInfo = !this.$scope.showingInfo
       this.$scope.$applyAsync()
     }
+
+    /**
+     * Shows the popover to select the modules
+     */
+    showModulesToExport() {
+      this.$scope.exportConfig = !this.$scope.exportConfig
+      this.$scope.$applyAsync()
+    }
+
+    /**
+     * Initializes the report
+     */
+    async initReportConfig() {
+      /*
+      this.selectedOptions = {'globalConf' : 1,
+      'communicationConf' : 1,
+      'antiFloodingConf' : 1,
+      'labels' : 1,
+      'pmConf' : 1,
+      'configAssessment' :1,
+      'openscapConf' : 1,
+      'ciscatConf' : 1,
+      'osqueryConf' : 1,
+      'inventoryConf' : 1,
+      'activeResponseConf' : 1,
+      'commandsConf' : 1,
+      'dockerListenerConf' : 1,
+      'logCollectionConf' : 1,
+      'integrityMonitoringConf' : 1}
+*/
+
+      if (!this.$scope.loadingReporting)
+        this.reportingService.reportAgentConfiguration(this.id, this.$scope.selectedOptions, this.api)
+      this.$scope.exportConfig = false
+    }
+
+    /**
+     * Selects all the modules to export the configuration
+     */
+    selectAll(value) {
+      try {
+        Object.keys(this.$scope.selectedOptions).forEach(key => {
+          this.$scope.selectedOptions[key] = value
+        })
+      } catch (error) {
+        this.$notificationService.showErrorToast('Cannot select the modules')
+      }
+    }
+
+    checkAllDisabled() {
+      try {
+        let result = false
+        Object.keys(this.$scope.selectedOptions).forEach(key => {
+          if (this.$scope.selectedOptions[key]) { result = true }
+        })
+        return !result        
+      } catch (error) {
+        this.$notificationService.showErrorToast('Error checking selected options')
+      }
+    }
+
 
     /**
      * Checks if the agent is synchronized
@@ -192,6 +285,47 @@ define(['../../module', '../../../utils/config-handler'], function (
         this.errorHandler.showErrorToast('Cannot set OS platform.')
       }
     }
+
+    /*
+     * Returns true
+     */
+    showConfigCheck(key) {
+      if(key === 'dockerListenerConf' || key === 'openscapConf'){
+        if( this.$scope.agentPlatform === 'linux' ){
+          return true
+        }
+        else{
+          console.log(this.$scope.agentPlatform)
+          return false
+        }
+      }else{
+        return true
+      }
+    }
+
+    /*
+     * Get the key equivalences
+     */
+    keyEquivalences(key) {
+      const options = {
+        globalConf: 'Global configuration',
+        communicationConf: 'Communication',
+        antiFloodingConf: 'Anti-flooding settings',
+        labels: 'Labels',
+        pmConf: 'CIS-CAT',
+        openscapConf: 'OpenSCAP',
+        ciscatConf: 'CIS-CAT',
+        osqueryConf: 'Osquery',
+        inventoryConf: 'Inventory data',
+        activeResponseConf: 'Active response',
+        commandsConf: 'Commands',
+        dockerListenerConf: 'Docker listener',
+        logCollectionConf: 'Log collection',
+        integrityMonitoringConf: 'Integrity monitoring'
+      }
+      return options[key] || key
+    }
+
   }
 
   controllers.controller('configurationAgentCtrl', ConfigurationController)

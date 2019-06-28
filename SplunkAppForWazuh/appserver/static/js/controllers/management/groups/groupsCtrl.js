@@ -12,6 +12,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * @param {*} $requestService
      * @param {*} $beautifierJson
      * @param {*} $notificationService
+     * @param {*} $reportingService
      */
     constructor(
       $scope,
@@ -23,12 +24,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $requestService,
       $beautifierJson,
       $notificationService,
+      $reportingService,
       $groupHandler,
       extensions,
       isAdmin
     ) {
       this.scope = $scope
       this.state = $state
+      this.reportingService = $reportingService
       this.beautifier = $beautifierJson
       this.stateParams = $stateParams
       this.api = $currentDataService.getApi()
@@ -80,6 +83,11 @@ define(['../../module', 'FileSaver'], function(controllers) {
         return this.scope
           .loadGroup(parameters.group)
           .then(() => this.scope.editGroupAgentConfig())
+      })
+
+       
+      this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.loadingReporting = data.status
       })
 
       this.scope.$on('wazuhShowGroup', (event, parameters) => {
@@ -185,6 +193,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           this.loadGroup(group, firstLoad)
         this.scope.toggle = () => (this.scope.lookingGroup = true)
         this.scope.goBackToAgents = () => this.goBackToAgents()
+        this.scope.initReportConfig = () => this.initReportConfig()
         this.scope.goBackFiles = () => this.goBackFiles()
         this.scope.goBackGroups = () => this.goBackGroups()
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
@@ -724,6 +733,41 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.notification.showErrorToast('Error showing file ')
       }
       return
+    }
+
+    async initReportConfig(){
+      console.log(this.scope.currentGroup)
+      const data = {
+        configurations: [
+
+          {
+            title: 'Main group configurations',
+            sections: [
+              {
+                desc: 'agent.conf',
+                groupConfig: true,
+                labels : { }
+              },
+              
+            ]
+          },
+          {
+            title: 'Agents ',
+            sections: [
+              {
+                desc: 'agents',
+                agentList: true,
+                labels : { }
+              },
+              
+            ]
+          },
+        ]
+      }
+
+      if(!this.scope.loadingReporting)
+        this.reportingService.reportGroupConfiguration(this.scope.currentGroup,data,this.api)
+
     }
 
     /**

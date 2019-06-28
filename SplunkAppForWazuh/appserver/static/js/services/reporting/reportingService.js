@@ -336,6 +336,133 @@ define(['../module', 'jquery'], function(module, $) {
         this.notification.showErrorToast('Reporting error')
       }
     }
+    
+    async reportGroupConfiguration(groupName,reportData,apiId) {
+      try{
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        const timeZone = new Date().getTimezoneOffset()
+
+        const data = {
+          images: [],
+          apiId : apiId,
+          timeRange: false,
+          sectionTitle: 'Group ' + groupName.name + ' configuration',
+          queryFilters: '',
+          metrics: {},
+          tableResults : {},
+          pdfName: 'group-conf',
+          timeZone,
+          data: reportData,
+          groupName : groupName
+        }
+
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
+          data: JSON.stringify(data)
+        })
+
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        const reportingUrl = this.navigationService.updateURLParameter(
+          window.location.href,
+          'currentTab',
+          'mg-reporting'
+        )
+        this.notification.showSuccessToast(
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+        )
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Reporting error')
+      }
+    }
+
+    async reportAgentConfiguration(agentId,reportData,apiId) {
+      try{
+        let isAgents
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        try {
+          const agent = await Promise.all([
+            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/syscheck/${agentId}/last_scan`),
+            this.apiReq(`/rootcheck/${agentId}/last_scan`),
+            this.apiReq(`/syscollector/${agentId}/hardware`),
+            this.apiReq(`/syscollector/${agentId}/os`)
+          ])
+
+          const agentInfo = agent[0].data.data
+          const {
+            name,
+            id,
+            ip,
+            version,
+            manager,
+            os,
+            dateAdd,
+            lastKeepAlive,
+            group
+          } = agentInfo
+
+          isAgents = {
+            ID: id,
+            Name: name,
+            IP: ip,
+            Version: version,
+            Manager: manager,
+            OS: `${os.name} ${os.codename} ${os.version}`,
+            dateAdd: dateAdd,
+            lastKeepAlive: lastKeepAlive,
+            group: group.toString()
+          }
+        } catch (error) {
+          isAgents = false
+        }
+
+
+
+
+        const isAgentConf = true
+        const timeZone = new Date().getTimezoneOffset()
+
+        const data = {
+          images: [],
+          isAgentConf,
+          isAgents,
+          apiId : apiId,
+          timeRange: false,
+          sectionTitle: `Agent ${isAgents.ID} configuration`,
+          queryFilters: '',
+          metrics: {},
+          tableResults : {},
+          pdfName: 'agent-conf',
+          timeZone,
+          data: reportData,
+          agentId : agentId
+        }
+
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
+          data: JSON.stringify(data)
+        })
+        
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+
+
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        const reportingUrl = this.navigationService.updateURLParameter(
+          window.location.href,
+          'currentTab',
+          'mg-reporting'
+        )
+        this.notification.showSuccessToast(
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+        )
+        this.$rootScope.$applyAsync()
+
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Reporting error')
+      }
+    }
+
   }
 
   module.service('$reportingService', ReportingService)

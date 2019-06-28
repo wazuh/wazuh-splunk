@@ -11,6 +11,9 @@ the Free Software Foundation; either version 2 of the License, or
 
 Find more information about this on the LICENSE file.
 """
+
+from . import api
+from . import report_vars
 import os
 import time
 import jsonbak
@@ -25,11 +28,17 @@ import math
 
 class PDF(FPDF):
     def header(self):
+        # Add fonts 
+        # Note that RobotoLight and RobotoLight can't be used with 'B'-'I' options
+        self.add_font('RobotoThin','', 'Roboto-Thin.ttf',uni=True)
+        self.add_font('RobotoRegular','', 'Roboto-Regular.ttf',uni=True)
+        self.add_font('RobotoLight','', 'Roboto-Light.ttf',uni=True)
         # Logo
         self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 15)
-        self.set_font('Arial', '', 11)
+        self.set_font('RobotoLight', '', 11)
         self.set_text_color(75, 179, 204)
         #Contact info
+        self.set_y(12)
         self.cell(150) #Move to the right
         self.cell(0, 5, 'info@wazuh.com', 0, 0, 'R')
         self.ln() #Break line
@@ -43,7 +52,7 @@ class PDF(FPDF):
         self.copyright = unicode('Copyright © ' + self.year + ' Wazuh, Inc.', 'utf-8')
         self.set_y(-15)
         self.set_text_color(75, 179, 204)
-        self.set_font('Arial', 'B', 8)
+        self.set_font('RobotoLight', '', 7)
         # Page number
         self.cell(100, 10, self.copyright, 0, 0, 'L')
         self.cell(0, 10, 'Page ' + str(self.page_no()) + ' of {nb}', 0, 0, 'R')
@@ -58,10 +67,12 @@ class report(controllers.BaseController):
 
     def __init__(self):
         """Constructor."""
-        self.logger = log()
         try:
+            self.logger = log()
             self.path = '/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/'
             controllers.BaseController.__init__(self)
+            self.miapi = api.api()
+            self.labels = report_vars.labels
         except Exception as e:
             self.logger.error("report: Error in report module constructor: %s" % (e))
 
@@ -87,6 +98,740 @@ class report(controllers.BaseController):
         self.logger.debug("report: Removing images from disk.")
         for img in images:
             os.remove(img['path'])
+
+
+    def getString(self, value,labels={}):
+        result = ""
+        if type(value) is list:  # transforms a list ['list1', 'list2'] to a string -> list1, list2
+            for i in value:
+                if type(i) == dict:
+                    if 'item' in i:
+                        result+= i['item'] + ", "
+                else:
+                    result += str(i) + ", "
+            result = result[:len(result)-2]
+        elif value or value == 0 or value == " ":
+            if value in labels:
+                result = labels[value]
+            elif value == "":
+                result = "-"
+            else:
+                result = str(value)
+        else:
+            result = " "
+
+        return result
+
+
+    def getDirectoriesChecks(self,row):
+        newRow = []
+        newRow.append(row['dir'])
+        if 'realtime' in row['opts'] and row['opts'].index('realtime'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'whodata' in row['opts'] and row['opts'].index('whodata'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'report_changes' in row['opts'] and row['opts'].index('report_changes'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_sha1sum	' in row['opts'] and row['opts'].index('check_sha1sum'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_md5sum' in row['opts'] and row['opts'].index('check_md5sum'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_sha256sum' in row['opts'] and row['opts'].index('check_sha256sum'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_size' in row['opts'] and row['opts'].index('check_size'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_owner' in row['opts'] and row['opts'].index('check_owner'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_group' in row['opts'] and row['opts'].index('check_group'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_perm' in row['opts'] and row['opts'].index('check_perm') :
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_mtime' in row['opts'] and row['opts'].index('check_mtime') :
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'check_inode' in row['opts'] and row['opts'].index('check_inode') :
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'follow_symbolic_link' in row['opts'] and row['opts'].index('follow_symbolic_link'):
+            newRow.append('yes')
+        else:
+            newRow.append('no')
+        if 'recursion_level' in row:
+            newRow.append(row['recursion_level'])
+        else:
+            newRow.append('-')
+
+        return newRow
+
+    def setTableTitle(self,pdf):
+        pdf.set_font('RobotoLight', '', 10)
+        pdf.set_margins(11, 0, 11)
+        pdf.set_fill_color(255, 255, 255)
+        pdf.set_text_color(11,11,11)
+
+    def setBlueHeaderStyle(self,pdf):
+        pdf.set_font('RobotoLight', '', 8)
+        pdf.set_fill_color(120,200,222)
+        pdf.set_text_color(255,255,255)
+
+    def setTableRowStyle(self,pdf):
+        pdf.set_text_color(55,55,55)
+        pdf.set_draw_color(159, 192, 214)
+        pdf.set_font('RobotoLight', '', 8)
+    
+    def setBlueTableTitle(self,pdf):
+        pdf.set_font('RobotoLight', '', 14)
+        pdf.set_fill_color(255, 255, 255)
+        pdf.set_text_color(120,200,222)
+
+    def addKeyValueTable(self,keyList,valueList,pdf):
+        """ Creates tables with key - value aspect
+            the width of each column is calculated depending on its content size
+            
+            Parameters
+                    ----------
+                    - keyList: array of keys to be printed 
+                    - valueList: array of values to be printed 
+                    - pdf: pdf where the table will be printed
+
+                    eg:
+                    keyList = ['value1','value2']
+                    valueList = ['key1','key2']
+                    
+                    table result:
+                    ------------------
+                    | key1:   value1 |
+                    | key2:   value2 |
+                    ------------------
+        """
+        max_key_width = 20
+        max_value_width = 20
+        for i in keyList:
+            current_width = int((len(i)) *1.5)
+            if current_width > max_key_width:
+                max_key_width = current_width
+        
+        for i in valueList:
+            current_width = int((len(i) ) *1.5)
+            if current_width > max_value_width:
+                max_value_width = current_width
+                
+        self.setTableRowStyle(pdf)
+        totalWidth =  max_value_width + max_key_width
+        if ( totalWidth < 175):
+            for key,value in zip(keyList,valueList):
+                if(pdf.get_y() > 260):
+                    pdf.add_page()
+                    pdf.ln(20)
+                pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
+                pdf.ln(5)
+        else:
+            for key,value in zip(keyList,valueList):
+                if(pdf.get_y() > 260):
+                    pdf.add_page()
+                    pdf.ln(20)
+                key_size =  int(len(key) *1.5)
+                value_size = int(len(value) *1.5)
+                if key_size <= max_key_width and value_size <= max_key_width:
+                    pdf.cell(max_key_width , 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                    pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
+                    pdf.ln(5)
+                else: # create as many as lines as needed
+                    for i in range(0,int(len(value)/(1-max_key_width*1.5))+1):
+                        if(pdf.get_y() > 260):
+                            pdf.add_page()
+                            pdf.ln(20)
+                        if i == 0:
+                            pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                        else:
+                            pdf.cell(max_key_width, 5, txt = " ", border = 'B', align = '', fill = False, link = '')
+                        pdf.cell(0, 5, txt = value[int((i)*(175-max_key_width*1.5)):int((i+1)*(175-max_key_width*1.5))], border = 'B', align = '', fill = False, link = '')
+                        pdf.ln(5)
+
+    def addTables(self,tables,pdf,max_width=190,margin=10):
+        """ Creates tables with multiple fields
+            the width of each column is calculated depending on its content size
+            
+            Parameters
+                    ----------
+                    - tables: array of tables to be printed
+                        each table must be:
+                        { "tableTitle" : {
+                                "fields" : [field1,field2],
+                                "rows"   : [[value1.1, value1.2], [value2.1,value2.2]]
+                            }
+                        }
+                    - max_width - by default: 190 (A4 paper width)
+                        maximum width that the tables have
+                    - margin - by default: 10
+                        margin of table rows
+        """
+        rows_count = 12 # Set row_count with 12 for the agent information size
+        table_keys = tables.keys()
+        for key in table_keys:
+            if tables[key]:
+                if(pdf.get_y() > 225):
+                    pdf.add_page()
+                    pdf.ln(20)
+                table_title = key
+                self.setTableTitle(pdf)
+                #if 'title' in tables and tables['title']:
+                pdf.ln(5)
+                pdf.cell(max_width, 5, txt = table_title, border = '', align = '', fill = False, link = '')
+                pdf.set_margins(12, 0, 12)
+                pdf.ln(5)
+                rows_count = rows_count + 5
+                self.setBlueHeaderStyle(pdf)
+                sizes_field = self.calculate_table_width(pdf, tables[key], max_width)
+                count = 0
+                #Table head - th
+                for field in tables[key]['fields']:
+                    if(pdf.get_y() > 230):
+                        pdf.add_page()
+                        pdf.ln(20)
+                    if field != 'sparkline':
+                        x = 0
+                        w = sizes_field[count]
+                        width = w[0] if isinstance(w, list) else w
+                        pdf.cell(width, 4, (self.getString(field)).capitalize(), 0, 0, 'L', 1)
+                        count = count + 1
+                pdf.ln()
+                self.setTableRowStyle(pdf)
+                #Table rows - tr
+                for row in tables[key]['rows']:
+                    first_field = True
+                    bigger_y = 0
+                    reset_y = False
+                    rh = 4 #Row heigth
+                    count = 0
+                    if(pdf.get_y() > 260):
+                        pdf.add_page()
+                        pdf.ln(20)
+                    for value in row:
+                        if not isinstance(value, list) and count < len(sizes_field):
+                            w = sizes_field[count]
+                            width = w[0] if isinstance(w, list) else w
+                            value = self.split_string(width, value) if isinstance(w, list) else value
+                            if value and isinstance(value, list):
+                                if first_field:
+                                    x = pdf.get_x()
+                                    first_field = False
+                                    y = pdf.get_y()
+                                    reset_y = y
+                                    bigger_y = y
+                                else:
+                                    y = reset_y
+                                rows_count = rows_count + len(value)
+                                for v in value:
+                                    pdf.set_xy(x, y)
+                                    pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
+                                    y = y + rh
+                                x = x + width
+                                bigger_y = y if y > bigger_y else bigger_y
+                            else:
+                                if reset_y:
+                                    pdf.set_xy(pdf.get_x(), reset_y)
+                                pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
+                                y = pdf.get_y()
+                            count = count + 1
+                    rows_count = rows_count + 1
+                    y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
+                    pdf.set_xy(margin, y)
+                    pdf.line(margin, y, max_width+margin, y)
+
+
+    def addCustomTable(self,customTables,pdf,labels,currentSection):
+        if customTables:
+            tables = {}
+            for extraTable in customTables:
+                for key,value in extraTable.iteritems():
+                    pdf.set_text_color(0,0,0)
+                    pdf.set_font('RobotoLight', '', 10)
+                    tableKey = self.getString(key,labels)
+                    newTable  = { tableKey : {} }
+                    fields = []
+                    rows = []
+                    if tableKey == 'Command' and type(value) is list and value:
+                        value = value[0]
+                    if type(value) is list:
+                        keys_amount = len(value[0].keys())
+                        for key in value[0]: #Header
+                            fields.append(self.getString(key,labels))
+                        self.setTableRowStyle(pdf)
+                        for row in value: # rows
+                            nextRow = []
+                            if type(row) is dict:
+                                for rowKeys, rowValues in row.iteritems():
+                                    if self.getString(rowKeys,labels) in fields:
+                                        if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
+                                            customTables.append({rowKeys:rowValues})
+                                            if len(fields) >= 2:
+                                                nextRow.append("-")
+                                        else:
+                                            nextRow.append(self.getString(rowValues))
+                            else:
+                                nextRow.append(self.getString(row))
+                            rows.append(nextRow)
+                        if rows and fields and type(rows) is list and rows[0]:
+                            newTable[tableKey] = { "fields": fields, "rows": rows}
+                            self.addTables(newTable,pdf,185,12)
+                    elif type(value) is dict:
+                        customKeyList = []
+                        customValueList = []
+                        pdf.ln(5)
+                        self.setTableTitle(pdf)
+                        pdf.cell(0, 5, txt = self.getString(key,labels).capitalize(), border = '', align = '', fill = False, link = '')
+                        pdf.set_margins(12, 0, 12)
+                        pdf.ln(5)
+                        for currentTableKey, currentTableValue in value.iteritems():
+                            if type(currentTableValue) is dict:
+                                customTables.append({currentTableKey:currentTableValue})
+                            else:
+                                customKeyList.append(self.getString(currentTableKey,labels))
+                                customValueList.append(self.getString(currentTableValue,labels))
+                        self.addKeyValueTable(customKeyList,customValueList,pdf)
+
+                
+
+
+    def addTable(self, data, pdf, labels,currentSection = {}):
+        try:
+            customTables = []
+            keyList = []
+            valueList = []
+            if not data: # if data is empty
+                pass
+                #df.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+            else:
+                if currentSection:
+                    self.addSubtitle(currentSection,pdf)
+                if type(data) is dict:
+                    for key,value in data.iteritems():
+                        if type(value) is not list and type(value) is not dict:
+                            keyList.append(self.getString(key,labels))
+                            valueList.append(self.getString(value,labels))
+                        elif type(value) is list:
+                            if key == 'directories':
+                                directoriesTable = {}
+                                fields = ['Dir','RT','WD','Changes','SHA-1','MD5','SHA256','Size','Owner','Group','Perm','MT','Inode','SL','RL']
+                                rows = []
+                                for row in value:
+                                    newRow = self.getDirectoriesChecks(row)
+                                    rows.append(newRow)
+                                directoriesTable['Monitored directories'] = { "fields": fields, "rows": rows}
+                                self.addTables(directoriesTable,pdf,185,12)
+                                pdf.set_text_color(75, 179, 204)
+                                pdf.cell(0, 5, txt = "Rt: Real Time | Wd: Who-Data | Per: Permission | Mt: Modification Time | Sl: Symbolic link | Rl: Recursion Level ", border = '',ln=1, align = '', fill = False, link = '')
+                                pdf.ln(5)
+                            elif value and type(value[0]) is dict:
+                                customTables.append({key:value})
+                            elif value and type(value[0]) is list:
+                                self.addTable(value,pdf,labels)
+                            else:
+                                keyList.append(self.getString(key,labels))
+                                valueList.append(self.getString(value,labels))
+                        elif type(value) is dict:
+                                customTables.append({key:value})
+                elif type(data) is list:
+                    for item in data:
+                        if type(item) is not list and type(item) is not dict:
+                            keyList.append(self.getString(key,labels))
+                            valueList.append(self.getString(value,labels))
+                        if type(item) is list:
+                            for listItem in item:
+                                self.addTable(listItem,pdf,labels)
+                if keyList and valueList:
+                    self.addKeyValueTable(keyList,valueList,pdf)
+                self.addCustomTable(customTables,pdf,labels,currentSection)
+                customTables = []
+
+                            
+
+        except Exception as e:
+            self.logger.error("error generating report table " + str(e))
+
+
+    def filterTableByField(self,field,data):
+        result = {}
+        currentFields = []
+
+        for currentData in data:
+            if field in currentData:
+                if currentData[field] in result:
+                    result[currentData[field]].append(currentData)
+                else:
+                    result[currentData[field]] = []
+                    result[currentData[field]].append(currentData)
+
+        return result
+
+    def addSubtitle(self,currentSection,pdf):
+        self.setBlueTableTitle(pdf)
+        if 'subtitle' in currentSection:
+            pdf.set_margins(10, 0, 10)
+            pdf.ln(1)
+            pdf.cell(0, 6, txt = currentSection['subtitle'], border = '', align = 'L', fill = False, link = '')
+            pdf.ln(6)
+            if 'desc' in currentSection:
+                pdf.set_text_color(0,0,0)
+                pdf.set_font('RobotoLight', '', 11)
+                pdf.cell(0, 6, txt = currentSection['desc'], border = '', align = 'L', fill = False, link = '')
+                pdf.set_margins(11, 0, 11)
+                pdf.ln(6)
+            del currentSection['subtitle']
+
+    def getSelectedConfigurations(self,selectedOptions):
+        selectedConf = [{'title': 'Main configurations', 'sections': [] }, {'title': 'Auditing and policy monitoring', 'sections': []},{ 'title': 'System threats and incident response', 'sections': []},{ 'title': 'Log data analysis', 'sections': []} ]
+        
+        if 'globalConf' in selectedOptions and selectedOptions['globalConf'] == 1:
+            selectedConf[0]['sections'].append({
+                'subtitle': 'Global configuration',
+                'desc': 'Logging settings that apply to the agent',
+                'config': [{ 'component': 'com', 'configuration': 'logging' }]                
+              })
+        if 'communicationConf' in selectedOptions and selectedOptions['communicationConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Communication',
+                'desc': 'Settings related to the connection with the manager',
+                'config': [{ 'component': 'agent', 'configuration': 'client' }]
+              })
+
+        if 'antiFloodingConf' in selectedOptions and selectedOptions['antiFloodingConf'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Anti-flooding settings',
+                'desc': 'Agent bucket parameters to avoid event flooding',
+                'config': [{ 'component': 'agent', 'configuration': 'buffer' }]
+              })
+
+        if 'labels' in selectedOptions and selectedOptions['labels'] == 1:
+            selectedConf[0]['sections'].append(
+              {
+                'subtitle': 'Labels',
+                'desc': 'User-defined information about the agent included in alerts',
+                'config': [{ 'component': 'agent', 'configuration': 'labels' }]
+              })
+
+        if 'pmConf' in selectedOptions and selectedOptions['pmConf'] == 1:
+            selectedConf[1]['sections'].append(
+              {
+                'subtitle': 'Policy monitoring',
+                'desc':'Configuration to ensure compliance with security policies, standards and hardening guides',
+                'config': [
+                  { 'component': 'syscheck', 'configuration': 'rootcheck' },
+                  { 'component': 'wmodules', 'configuration': 'wmodules' }
+                ]
+              })
+        if 'configAssessment' in selectedOptions and selectedOptions['configAssessment'] == 1:
+            selectedConf[1]['sections'].append(
+              {
+                    'subtitle': 'Configuration assessment',
+                    'desc': 'Configuration Assessment',
+                    'wodle' : 'sca',
+                    'labels' : {
+                      'enabled': 'Security configuration assessment enabled',
+                      'scan_on_start': 'Scan on start',
+                      'interval': 'Interval',
+                      'policies': 'Policies',
+                      'skip_nfs': 'Skip nfs',
+                    }       
+                  })
+        if 'openscapConf' in selectedOptions and selectedOptions['openscapConf'] == 1:
+            selectedConf[1]['sections'].append(
+              {
+                'subtitle': 'OpenSCAP',
+                'desc':
+                  'Configuration assessment and automation of compliance monitoring using SCAP checks',
+                'wodle': 'open-scap',
+                'labels' : {
+                }
+              })
+        if 'ciscatConf' in selectedOptions and selectedOptions['ciscatConf'] == 1:
+            selectedConf[1]['sections'].append(
+              {
+                'subtitle': 'CIS-CAT',
+                'desc':
+                  'Configuration assessment using CIS scanner and SCAP checks',
+                'wodle': 'cis-cat'
+              })
+        if 'osqueryConf' in selectedOptions and selectedOptions['osqueryConf'] == 1:
+            selectedConf[2]['sections'].append(
+              {
+                'subtitle': 'Osquery',
+                'desc':
+                  'Expose an operating system as a high-performance relational database',
+                'wodle': 'osquery'
+              })
+        if 'inventoryConf' in selectedOptions and selectedOptions['inventoryConf'] == 1:
+            selectedConf[2]['sections'].append(
+              {
+                'subtitle': 'Inventory data',
+                'desc':
+                  'Gather relevant information about system OS, hardware, networking and packages',
+                'wodle': 'syscollector'
+              })
+        if 'activeResponseConf' in selectedOptions and selectedOptions['activeResponseConf'] == 1:
+            selectedConf[2]['sections'].append(
+              {
+                'subtitle': 'Active response',
+                'desc': 'Active threat addressing by inmmediate response',
+                'config': [{ 'component': 'com', 'configuration': 'active-response' }]
+              })
+        if 'commandsConf' in selectedOptions and selectedOptions['commandsConf'] == 1:
+            selectedConf[2]['sections'].append(
+              {
+                'subtitle': 'Commands',
+                'desc': 'Configuration options of the Command wodle',
+                'wodle': 'command'
+              })
+        if 'dockerListenerConf' in selectedOptions and selectedOptions['dockerListenerConf'] == 1:
+            selectedConf[2]['sections'].append(
+              {
+                'subtitle': 'Docker listener',
+                'desc':
+                  'Monitor and collect the activity from Docker containers',
+                'wodle': 'docker-listener'
+              })
+        if 'logCollectionConf' in selectedOptions and selectedOptions['logCollectionConf'] == 1:
+            selectedConf[3]['sections'].append(
+              {
+                'subtitle': 'Log collection',
+                'desc':
+                  'Log analysis from text files, Windows events or syslog outputs',
+                'config': [
+                  { 'component': 'logcollector', 'configuration': 'localfile', 'filterBy' : 'logformat' },
+                  { 'component': 'logcollector', 'configuration': 'socket' }
+                ]
+              })
+        if 'integrityMonitoringConf' in selectedOptions and selectedOptions['integrityMonitoringConf'] == 1:
+            selectedConf[3]['sections'].append(
+              {
+                'subtitle': 'Integrity monitoring',
+                'desc':
+                  'Identify changes in content, permissions, ownership, and attributes of files',
+                'config': [{ 'component': 'syscheck', 'configuration': 'syscheck' }]
+              })
+
+        return selectedConf
+
+
+    @expose_page(must_login=False, methods=['POST'])
+    def generateConfigurationReport(self, **kwargs):
+        """Generate configuration PDF report.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            pdf = PDF('P', 'mm', 'A4')
+            first_page = True
+            self.logger.info("Start generating configuration report ")
+            json_acceptable_string = kwargs['data']
+            data = jsonbak.loads(json_acceptable_string)
+            report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            time_diff = data['timeZone']
+            today = datetime.datetime.utcnow() - datetime.timedelta(minutes=time_diff)
+            today = today.strftime('%Y.%m.%d %H:%M')
+            parsed_data = jsonbak.dumps({'data': 'success'})
+            section_title = data['sectionTitle']
+            # Add title and filters 
+            pdf.alias_nb_pages()
+            pdf.add_page()
+            pdf.ln(20)
+            #Color WazuhBlue
+            pdf.set_text_color(75, 179, 204)
+            # Title pdf
+            pdf.set_font('RobotoLight', '', 25)
+            pdf.cell(0,0, section_title , 0, 0, 'L')
+            #Date
+            pdf.set_font('RobotoLight', '', 12)
+            pdf.cell(0,0, today , 0, 0, 'R')
+            pdf.ln(1)
+            pdf_name = 'configuration-report'
+            # Print agent info
+            if 'isAgents' in data:
+                agent_data = data['isAgents']
+                self.print_agent_info(agent_data, pdf)
+                pdf_name = str(agent_data['Name']) + '-agent-conf'
+            if 'groupName' in data:
+                pdf_name = str(data['groupName']['name']) + '-conf'
+                self.print_group_info(data['groupName'],pdf)
+
+            pdf.ln(10)
+            pdf.set_draw_color(200,200,200)
+            wmodules_conf_data = []
+            data['data']['configurations'] = self.getSelectedConfigurations(data['data'])
+            for n in data['data']['configurations']:
+                try:
+                    #Set color and print configuration tittle
+                    if 'sections' in n and len(n['sections']) > 0:
+                        if 'isAgents' in data:
+                            if first_page:
+                                first_page = False
+                            else:
+                                pdf.add_page()
+                                pdf.ln(20)
+                        pdf.set_margins(10, 0, 10)
+                        pdf.ln(1)
+                        pdf.set_text_color(120,200,222)
+                        pdf.set_font('RobotoLight', '', 24)
+                        pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
+                        pdf.ln(6)
+                    for currentSection in n['sections']:
+                        customLabels = {} 
+                        if self.labels:
+                            customLabels = self.labels
+                        # rows
+                        if 'groupConfig' in currentSection:
+                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
+                            conf_data = self.miapi.exec_request(config_request)
+                            conf_data = jsonbak.loads(conf_data)
+                            if not conf_data or 'data' not in conf_data:
+                                pass
+                            else:
+                                for item in conf_data['data']['items']:
+                                    if first_page:
+                                        first_page = False
+                                    else:
+                                        pdf.add_page()
+                                        pdf.ln(20)
+                                    self.setTableRowStyle(pdf)
+                                    #print the filters 
+                                    if 'filters' in item and item['filters'] and 'config' in item and item['config']:
+                                        filters = " "
+                                        values = []
+                                        for currentFilterKey,currentFilterValue in item['filters'].iteritems():
+                                            filters = filters + str(currentFilterKey) + ": " + str(currentFilterValue) + " |"
+                                            values.append(currentFilterValue)
+                                        filters = filters[:len(filters)-1]
+                                        rows = []
+                                        rows.append(values)
+                                        self.setBlueTableTitle(pdf)
+                                        pdf.multi_cell(0, 5, txt = filters , border = '', align = 'L')
+                                        del item['filters']
+                                    if 'config' in item:
+                                        pdf.set_font('RobotoLight', '', 10)
+                                        pdf.set_margins(12, 0, 12)
+                                        pdf.ln(1)
+                                        self.addTable(item['config'], pdf, customLabels,currentSection)
+                                pdf.add_page()  
+                                pdf.ln(20)
+                        if 'agentList' in currentSection:
+                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
+                            conf_data = self.miapi.exec_request(config_request)
+                            conf_data = jsonbak.loads(conf_data)
+                            if conf_data['data']['totalItems'] > 0 and 'items' in conf_data['data']:
+                                table = { "Agent List" : {} }
+                                fields = ['ID', 'Name', 'IP', 'Version', 'Manager', 'OS']
+                                rows = []
+                                for agent in conf_data['data']['items']:
+                                    currentAgentRow = []
+                                    if 'id' in agent:
+                                        currentAgentRow.append(agent['id'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'name' in agent:
+                                        currentAgentRow.append(agent['name'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'ip' in agent:
+                                        currentAgentRow.append(agent['ip'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'version' in agent:
+                                        currentAgentRow.append(agent['version'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'manager' in agent:
+                                        currentAgentRow.append(agent['manager'])
+                                    else:
+                                        currentAgentRow.append('-')
+
+                                    if 'os' in agent and 'name' in agent['os']:
+                                        currentAgentRow.append(agent['os']['name'])
+                                    else:
+                                        currentAgentRow.append('-')
+                                    rows.append(currentAgentRow)
+                                table["Agent List"] = { "fields" : fields, "rows" : rows , "title": False}
+                                self.addTables(table,pdf,185,12)
+                        if 'config' in currentSection:
+                            for currentConfig in currentSection['config']:
+                                pdf.set_text_color(23,23,23)
+                                configuration = currentConfig['configuration']
+                                component = currentConfig['component']
+                                config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+component+'/'+configuration , 'id':str(data['apiId']['_key'])}
+                                conf_data = self.miapi.exec_request(config_request)
+                                conf_data = jsonbak.loads(conf_data) 
+                                if not conf_data or 'data' not in conf_data or configuration not in conf_data['data']:
+                                    pass
+                                else:
+                                    if 'filterBy' in currentConfig:
+                                        filteredTables = self.filterTableByField(currentConfig['filterBy'], conf_data['data'][configuration])
+                                        self.addTable(filteredTables, pdf, customLabels,currentSection)
+                                    else:
+                                        pdf.set_margins(11, 0, 11)
+                                        self.addTable(conf_data['data'][configuration], pdf, customLabels,currentSection)
+
+                        if 'wodle' in currentSection:
+                            currentWodle = currentSection['wodle']
+                            if not wmodules_conf_data: # ask for all wodles just once
+                                config_request = {'endpoint': '/agents/'+str(data['agentId'])+'/config/'+'wmodules'+'/'+'wmodules' , 'id':str(data['apiId']['_key'])}
+                                conf_data = self.miapi.exec_request(config_request)
+                                wmodules_conf_data = jsonbak.loads(conf_data)
+
+                            currentWodle_data = {}
+                            for tmpWodle in wmodules_conf_data['data']['wmodules']:
+                                if currentWodle in tmpWodle:
+                                    currentWodle_data = tmpWodle
+                            #currentWodle_data = next(item for item in wmodules_conf_data['data']['wmodules'] if currentWodle in item) # finds the current wodle in the list of wodles
+                            if not currentWodle_data and currentWodle not in currentWodle_data:
+                                pass
+                                #pdf.cell(0, 10, txt = "No configuration available" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                            else:
+                                self.addTable(currentWodle_data[currentWodle], pdf, customLabels,currentSection)
+                            pdf.ln(5)
+                        pdf.ln(5) # space between configuration tables
+                except Exception as e:
+                    self.logger.error(e)
+            #Save pdf
+            pdf.output(self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf', 'F')
+            self.logger.info('report agent configuration successful' + self.path+'wazuh-'+pdf_name+'-'+report_id+'.pdf')
+        except Exception as e:
+            self.logger.error("Error generating report: %s" % (e))
+            return jsonbak.dumps({"error": str(e)})
+        return parsed_data
+
 
     @expose_page(must_login=False, methods=['POST'])
     def generate(self, **kwargs):
@@ -132,18 +877,16 @@ class report(controllers.BaseController):
             pdf.ln(20)
             #Color WazuhBlue
             pdf.set_text_color(75, 179, 204)
-            # Title Arial Bold 20
-            pdf.set_font('Arial', '', 25)
+            # Title RobotoLight Bold 20
+            pdf.set_font('RobotoLight', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
             #Date
-            pdf.set_font('Arial', '', 12)
+            pdf.set_font('RobotoLight', '', 12)
             pdf.cell(0,0, today , 0, 0, 'R')
             #Filters and search time range
             if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not print  date range or filters either 
                 pdf.ln(7)
-                pdf.set_fill_color(75, 179, 204)
-                pdf.set_text_color(255,255,255)
-                pdf.set_font('Arial', '', 10)
+                self.setBlueHeaderStyle(pdf)
                 if time_range:
                     pdf.cell(0, 5, ' Search time range: ' + time_range , 0, 0, 'L', 1)
                     pdf.ln(5)
@@ -161,7 +904,7 @@ class report(controllers.BaseController):
                 line_width = 0
                 total_width = 190
                 pdf.ln(10)
-                pdf.set_font('Arial', '', 8)
+                pdf.set_font('RobotoLight', '', 8)
                 for key in metrics.keys():
                     text = (str(key) +': '+ str(metrics[key]))
                     text_w = pdf.get_string_width(text) + w
@@ -188,7 +931,7 @@ class report(controllers.BaseController):
                 n_images = len(saved_images)
                 # Set top margin checking if metrics exist
                 pdf.set_text_color(75, 179, 204)
-                pdf.set_font('Arial', '', 14)
+                pdf.set_font('RobotoLight', '', 14)
                 if metrics_exists:
                     y_img = y_img + 10
                 if agent_data:
@@ -235,88 +978,7 @@ class report(controllers.BaseController):
                 if pdf_name != 'agents-inventory': # If the name of the PDF file is agents-inventory does not add page
                     pdf.add_page()
                     pdf.ln(20)
-                rows_count = 12 # Set row_count with 12 for the agent information size
-                table_keys = tables.keys()
-                for key in table_keys:
-                    if tables[key]:#Check if this table has information, if it has, process it
-                        table_title = key
-                        pdf.ln(10)
-                        #Table title
-                        pdf.set_text_color(75, 179, 204)
-                        pdf.set_font('Arial', '', 14)
-                        if rows_count > 60:
-                            pdf.add_page()
-                            pdf.ln(18)
-                            rows_count = 0
-                        pdf.cell(0 , 5, table_title, 0, 1, 'L')
-                        rows_count = rows_count + 5
-                        pdf.ln()
-                        #Table content
-                        pdf.set_font('Arial', '', 8)
-                        pdf.set_fill_color(75, 179, 204)
-                        pdf.set_text_color(255,255,255)
-                        sizes_field = self.calculate_table_width(pdf, tables[key])
-                        count = 0
-                        #Table head
-                        for field in tables[key]['fields']:
-                            if rows_count > 60:
-                                pdf.add_page()
-                                pdf.ln(15)
-                                rows_count = 0
-                            if field != 'sparkline':
-                                x = 0
-                                #Check if the with is splitted in several rows
-                                w = sizes_field[count]
-                                width = w[0] if isinstance(w, list) else w
-                                pdf.cell(width, 4, str(field), 0, 0, 'L', 1)
-                                count = count + 1
-                        pdf.ln()
-                        pdf.set_text_color(91, 91, 91)
-                        pdf.set_draw_color(75, 179, 204)
-                        #Table rows
-                        for row in tables[key]['rows']:
-                            first_field = True
-                            bigger_y = 0
-                            reset_y = False
-                            rh = 4 # Row heigth
-                            count = 0
-                            if rows_count > 55:
-                                pdf.add_page()
-                                pdf.ln(15)
-                                rows_count = 0
-                            for value in row:
-                                #Check that is not sparkline(sparkline field is an array)
-                                if not isinstance(value, list):
-                                    #Check if the with is splitted in several rows
-                                    w = sizes_field[count]
-                                    width = w[0] if isinstance(w, list) else w
-                                    value = self.split_string(width, value) if isinstance(w, list) else value
-                                    if value and isinstance(value, list):
-                                        if first_field:
-                                            x = pdf.get_x()
-                                            first_field = False
-                                            y = pdf.get_y()
-                                            reset_y = y
-                                            bigger_y = y
-                                        else:
-                                            y = reset_y
-                                        rows_count = rows_count + len(value)
-                                        for v in value:
-                                            pdf.set_xy(x, y)
-                                            pdf.cell(width, rh, str(v), 0, 0, 'L', 0)
-                                            y = y + rh
-                                        x = x + width
-                                        bigger_y = y if y > bigger_y else bigger_y
-                                    else:
-                                        if reset_y:
-                                            pdf.set_xy(pdf.get_x(), reset_y)
-                                        pdf.cell(width, rh, str(value), 0, 0, 'L', 0)
-                                        y = pdf.get_y()
-                                    count = count + 1
-                            rows_count = rows_count + 1
-                            y = (bigger_y if (bigger_y > pdf.get_y()) else (pdf.get_y() + rh))
-                            pdf.set_xy(10, y)
-                            pdf.line(10, y, 200, y)
+                self.addTables(tables,pdf,190,10)
             #Save pdf
             pdf_final_name = 'wazuh-'+pdf_name+'-'+report_id+'.pdf'
             pdf.output(self.path+pdf_final_name, 'F')
@@ -398,27 +1060,28 @@ class report(controllers.BaseController):
         return False
 
     #Calculates the width of the fields
-    def calculate_table_width(self, pdf, table):
+    def calculate_table_width(self, pdf, table, max_width=190):
         self.logger.debug("report: Calculating table widths.")
         sizes = {}
         total_width = 0
         fields = table['fields']
         for field in fields:
             if field != 'sparkline':
-                width = pdf.get_string_width(field) + 1
+                width = pdf.get_string_width(field) + 2
                 sizes[field] = width
         for row in table['rows']:
             count = 0
             for value in row:
                 if not isinstance(value, list):
-                    key = fields[count]
-                    prev_width = sizes[key]
-                    if value: # Check for possible undefined elements
-                        width = pdf.get_string_width(value) + 1
-                    else:
-                         width = 1
-                    if width > prev_width:
-                        sizes[key] = width
+                    if count < len(fields):
+                        key = fields[count]
+                        prev_width = sizes[key]
+                        if value: # Check for possible undefined elements
+                            width = pdf.get_string_width(str(value)) + 2
+                        else:
+                            width = 1
+                        if width > prev_width:
+                            sizes[key] = width
                 count = count + 1
         # This code block resize the table for fill all the width
         for key in sizes.keys():
@@ -426,21 +1089,21 @@ class report(controllers.BaseController):
                 total_width = total_width + sizes[key]
             else:
                 total_width = total_width + 0
-        if total_width < 190:
-            diff = 190 - total_width
+        if total_width < max_width:
+            diff = max_width - total_width
             keys_num = len(sizes.keys())
             diff = diff / keys_num
             for key in sizes.keys(): # Sum the proporcional width difference to the fields
                 sizes[key] = sizes[key] + diff
         # Check if the row is more wide and calculates the width
-        elif total_width > 190:
+        elif total_width > max_width:
             wide_fields = []
             for key in sizes.keys():
                 if sizes[key] > 60:
                     wide_fields.append(key)
             fields_to_sum = self.exclude_fields(wide_fields, sizes)
             total_width_narrow_fields = self.sum_numbers_dic(fields_to_sum)
-            remaining_width = 190 - total_width_narrow_fields
+            remaining_width = max_width - total_width_narrow_fields
             wide_size = remaining_width / len(wide_fields)
             for wf in wide_fields:
                 sizes_arr = []
@@ -453,6 +1116,12 @@ class report(controllers.BaseController):
                 sizes[wf] = sizes_arr
         sizes = self.sort_table_sizes(table['fields'], sizes)
         return sizes
+
+    #Print group info
+    def print_group_info(self, group, pdf):
+        pdf.ln(8)
+        pdf.set_font('RobotoLight','',11)
+        pdf.set_text_color(23,23,23)
     
     #Print agent info
     def print_agent_info(self, agent_info, pdf):
@@ -478,24 +1147,23 @@ class report(controllers.BaseController):
         for key in fields.keys():
             fields[key] = fields[key] + diff
         #Set color and print th
-        pdf.set_font('Arial', '', 8)
-        pdf.set_fill_color(75, 179, 204)
-        pdf.set_text_color(255,255,255)
+        self.setBlueHeaderStyle(pdf)
         for key in sorted_fields:
             pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
         pdf.ln()
         #Change text color and print tr
-        pdf.set_text_color(75, 179, 204)
+        self.setTableRowStyle(pdf)
         for key in sorted_fields:
-            pdf.cell(fields[key], 4, str(agent_info[key]), 0, 0, 'L', 0)
+            pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
         #Print the rest of the agent information
-        pdf.ln(5)
-        pdf.set_text_color(91, 91, 91)
-        pdf.cell(0,6, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
+        pdf.ln(6)
+        pdf.set_font('RobotoLight','',11)
+        pdf.set_text_color(23,23,23)
+        pdf.cell(0,9, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
         pdf.ln()
-        pdf.cell(0,6, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
+        pdf.cell(0,9, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
         pdf.ln()
-        pdf.cell(0,6, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
+        pdf.cell(0,9, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
         pdf.ln(2)
 
     #Sorts the width of the fields
