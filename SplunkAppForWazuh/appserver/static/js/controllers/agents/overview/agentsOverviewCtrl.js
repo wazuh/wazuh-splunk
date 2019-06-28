@@ -60,6 +60,12 @@ define(['../../module'], function (app) {
       this.currentApi = this.currentDataService.getApi()
       this.api = this.currentApi['_key']
       this.scope.extensionsLists = { 'security': false, 'auditing': false, 'threadDetection': false, 'regulatory': false }
+      this.excludeModulesByOs = {
+        'linux': [],
+        'windows': ['audit', 'oscap', 'vuls', 'docker'],
+        'darwin': ['audit', 'oscap', 'vuls', 'docker'],
+        'other': ['audit', 'oscap', 'vuls', 'docker']
+      }
     }
 
     /**
@@ -68,6 +74,7 @@ define(['../../module'], function (app) {
     $onInit() {
       try {
         this.scope.confirmingRestart = false
+        this.setAgentPlatform()
         if (
           this.agent.length &&
           typeof this.agent[0] === 'object' &&
@@ -83,7 +90,6 @@ define(['../../module'], function (app) {
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
                 .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
-
           this.scope.syscheck =
             this.agent.length > 0 &&
               typeof this.agent[1] === 'object' &&
@@ -120,6 +126,8 @@ define(['../../module'], function (app) {
 
             this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
             this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
+
+            this.scope.checkModules = module => this.checkModules(module)
 
             this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
               this.scope.syscheck.start,
@@ -203,10 +211,8 @@ define(['../../module'], function (app) {
             this.agent[0].data.data.os &&
             this.agent[0].data.data.os.uname
           ) {
-            this.scope.isLinux = this.agent[0].data.data.os.uname.includes(
-              'Linux'
-            )
           }
+
           if (this.scope.agent.status == 'Never connected') {
             this.scope.agent.os = {
               name: 'Unknown',
@@ -377,6 +383,29 @@ define(['../../module'], function (app) {
         this.notification.showErrorToast(error)
       }
     }
+    
+    
+    /**
+     * Sets the agent's platform
+     */
+    setAgentPlatform() {
+      try {
+        this.scope.agentPlatform = 'other'
+        let agentPlatformLinux = ((((this.agent[0] || []).data || {}).data || {}).os || {}).uname 
+        let agentPlatformOther = ((((this.agent[0] || []).data || {}).data || {}).os || {}).platform 
+        if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
+          this.scope.agentPlatform = 'linux'
+        }
+        if (agentPlatformOther && agentPlatformOther === 'windows') {
+          this.scope.agentPlatform = 'windows'
+        }
+        if (agentPlatformOther && agentPlatformOther === 'darwin') {
+          this.scope.agentPlatform = 'darwin'
+        }
+      } catch (error) {
+        this.notification.showErrorToast('Cannot set OS platform.')
+      }
+    }
 
     /**
      * Refresh the extensions
@@ -392,6 +421,14 @@ define(['../../module'], function (app) {
       )
       */
       this.scope.$applyAsync()
+    }
+    /**
+     * Checks if the module is enabled
+     * @param {String} module 
+     */
+    checkModules(module) {
+      const enable = !this.excludeModulesByOs[this.scope.agentPlatform].includes(module)
+      return enable
     }
   }
 

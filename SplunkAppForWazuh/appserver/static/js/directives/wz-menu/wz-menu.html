@@ -29,10 +29,10 @@
       </md-button>
   
       <!-- Discover buttom -->
-      <md-button class="wz-menu-button" ng-click="openDiscover()" ng-class="{'wz-menu-active': menuNavItem === 'discover' }" aria-label="Discover">
+      <a class="wz-menu-button md-button md-ink-ripple" ng-click="openDiscover()" ng-class="{'wz-menu-active': menuNavItem === 'discover' }" aria-label="Discover">
           <wz-svg icon="compass"></wz-svg>
           Discover
-        </md-button>
+      </a>
   
       <!-- Dev tools buttom -->
       <md-button class="wz-menu-button" ui-sref="dev-tools" ng-click="select('dev-tools')" ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }" aria-label="Dev Tools tab">
