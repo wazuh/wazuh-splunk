@@ -124,7 +124,7 @@
         <md-card class="wz-md-card no-margin-sides" ng-if="!addingAgents || !lookingGroup">
         <md-card-actions ng-show="!file && lookingGroup && currentGroup && !addingAgents && !editingFile" layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf">
             <a ng-class="{'link-disabled': loadingReporting}" class="small formatted-color" style="float:right; height:45px; padding-top: 12px; padding-right: 15px;" id="btnDownload" ng-click="initReportConfig()"  ng-disabled="loadingReporting">
-              <div ng-show="!loadingReporting"><wz-svg icon="download" ng-show="!loadingReporting">&nbsp;PDF </div>
+              <div ng-show="!loadingReporting"><wz-svg icon="download" ng-show="!loadingReporting"></wz-svg>&nbsp;PDF </div>
               <div ng-show="loadingReporting">
               <i ng-show="loadingReporting" class="fa fa-fw fa-spin fa-spinner"
               aria-hidden="true"></i>&nbsp;PDF </div>

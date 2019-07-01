@@ -680,6 +680,8 @@ class report(controllers.BaseController):
                 agent_data = data['isAgents']
                 self.print_agent_info(agent_data, pdf)
                 pdf_name = str(agent_data['Name']) + '-agent-conf'
+                #Get selected configurations only if we are exporting agent configuration
+                data['data']['configurations'] = self.getSelectedConfigurations(data['data'])
             if 'groupName' in data:
                 pdf_name = str(data['groupName']['name']) + '-conf'
                 self.print_group_info(data['groupName'],pdf)
@@ -687,7 +689,6 @@ class report(controllers.BaseController):
             pdf.ln(10)
             pdf.set_draw_color(200,200,200)
             wmodules_conf_data = []
-            data['data']['configurations'] = self.getSelectedConfigurations(data['data'])
             for n in data['data']['configurations']:
                 try:
                     #Set color and print configuration tittle
@@ -715,6 +716,11 @@ class report(controllers.BaseController):
                             conf_data = jsonbak.loads(conf_data)
                             if not conf_data or 'data' not in conf_data:
                                 pass
+                            elif 'items' in conf_data['data'] and 'filters' in conf_data['data']['items'][0] and not conf_data['data']['items'][0]['filters']:
+                                self.setTableTitle(pdf)
+                                pdf.cell(0, 10, txt = "Group configuration is not available. Click here for more information." , border = 'B', ln = 1, align = 'C', fill = False, link = 'https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
+                                pdf.add_page()  
+                                pdf.ln(20)
                             else:
                                 for item in conf_data['data']['items']:
                                     if first_page:
@@ -747,7 +753,7 @@ class report(controllers.BaseController):
                             config_request = {'endpoint': '/agents/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
                             conf_data = jsonbak.loads(conf_data)
-                            if conf_data['data']['totalItems'] > 0 and 'items' in conf_data['data']:
+                            if conf_data['data']['totalItems'] > 0 and 'items' in conf_data['data'] and conf_data['data']['items']:
                                 table = { "Agent List" : {} }
                                 fields = ['ID', 'Name', 'IP', 'Version', 'Manager', 'OS']
                                 rows = []
@@ -785,6 +791,9 @@ class report(controllers.BaseController):
                                     rows.append(currentAgentRow)
                                 table["Agent List"] = { "fields" : fields, "rows" : rows , "title": False}
                                 self.addTables(table,pdf,185,12)
+                            else:
+                                self.setTableTitle(pdf)
+                                pdf.cell(0, 10, txt = "No agents are assigned to this group" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
                                 pdf.set_text_color(23,23,23)
