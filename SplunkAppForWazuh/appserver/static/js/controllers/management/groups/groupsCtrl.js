@@ -736,7 +736,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
     }
 
     async initReportConfig(){
-      console.log(this.scope.currentGroup)
       const data = {
         configurations: [
 

@@ -111,7 +111,7 @@ define(['../../module', '../../../utils/config-handler'], function (
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
           : { error: true }
-
+          
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = agentStatus => {
@@ -219,6 +219,14 @@ define(['../../module', '../../../utils/config-handler'], function (
       'integrityMonitoringConf' : 1}
 */
 
+      /** 
+       * If it's not Linux, docker and openscape are set to false by default so these configurations are not printed.
+       */
+      if (this.$scope.agentPlatform !== 'linux' ){
+        this.$scope.selectedOptions['dockerListenerConf'] = false
+        this.$scope.selectedOptions['openscapConf'] = false
+      }
+
       if (!this.$scope.loadingReporting)
         this.reportingService.reportAgentConfiguration(this.id, this.$scope.selectedOptions, this.api)
       this.$scope.exportConfig = false
@@ -270,8 +278,8 @@ define(['../../module', '../../../utils/config-handler'], function (
     setAgentPlatform() {
       try {
         this.$scope.agentPlatform = 'other'
-        let agentPlatformLinux = ((((this.agent[0] || []).data || {}).data || {}).os || {}).uname 
-        let agentPlatformOther = ((((this.agent[0] || []).data || {}).data || {}).os || {}).platform 
+        let agentPlatformLinux = ((((this.agent || {}).data || {}).data || {}).os || {}).uname 
+        let agentPlatformOther = ((((this.agent || {}).data || {}).data || {}).os || {}).platform 
         if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.$scope.agentPlatform = 'linux'
         }
@@ -295,7 +303,6 @@ define(['../../module', '../../../utils/config-handler'], function (
           return true
         }
         else{
-          console.log(this.$scope.agentPlatform)
           return false
         }
       }else{
@@ -312,7 +319,7 @@ define(['../../module', '../../../utils/config-handler'], function (
         communicationConf: 'Communication',
         antiFloodingConf: 'Anti-flooding settings',
         labels: 'Labels',
-        pmConf: 'CIS-CAT',
+        pmConf: 'Policy monitoring',
         openscapConf: 'OpenSCAP',
         ciscatConf: 'CIS-CAT',
         osqueryConf: 'Osquery',

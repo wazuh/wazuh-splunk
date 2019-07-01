@@ -408,7 +408,7 @@ define(['../module', 'jquery'], function(module, $) {
             IP: ip,
             Version: version,
             Manager: manager,
-            OS: `${os.name} ${os.codename} ${os.version}`,
+            OS: `${os.name} ${os.version}`,
             dateAdd: dateAdd,
             lastKeepAlive: lastKeepAlive,
             group: group.toString()
