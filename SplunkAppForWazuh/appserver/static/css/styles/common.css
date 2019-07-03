@@ -2060,7 +2060,7 @@ a:hover {
 }
 
 .bubble {
-  background-color: #006BB4;
+  background-color: #396e3e;
   height: 32px;
   width: 32px;
   line-height: 32px;
@@ -2076,7 +2076,7 @@ a:hover {
 }
 
 .bubble-checked {
-  background: #006BB4 !important;
+  background: #396e3e !important;
   color: #FFF !important;
 }
 
@@ -2095,7 +2095,7 @@ a:hover {
 
 .close-register-agent {
   float: right;
-  color: #00445a;
+  color: #294d2d;
   margin-right: 5px;
 }
 
@@ -2108,7 +2108,7 @@ a:hover {
   border-right: none !important;
   border-left: none !important;
   border-image: initial !important;
-  border-bottom: 1px solid rgb(21, 147, 210) !important;
+  border-bottom: 1px solid #3e7a44  !important;
   border-radius: 0px !important;
   margin-bottom: -5px !important;
 }
@@ -2124,7 +2124,7 @@ a:hover {
 
 .reset-register-agent {
   margin: 30px 10px -10px 0px;
-  color: #00445a;
+  color: #2e5732;
   width: 80px;
 }
 
@@ -2138,7 +2138,7 @@ a:hover {
 
 .btn-empty-selected {
   background-color: rgb(228, 242, 245) !important;
-  color: rgb(0, 121, 165) !important;
+  color: #3e7a44 !important;
 }
 
 .power-cmd {
