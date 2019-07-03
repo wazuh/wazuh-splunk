@@ -98,5 +98,13 @@ labels =  {
 'name' : 'Name ',
 'log_format' : 'Log format',
 'audit': 'Audit',
-'repeated_offenders' : 'List of timeouts (in minutes) for repeated offender'
+'repeated_offenders' : 'List of timeouts (in minutes) for repeated offender',
+'check_winaudit': 'Check Windows audit',
+'windows_apps': 'Rootkit trojans database path',
+'check_winmalware' : 'Check Windows apps',
+'check_winapps': 'Check Windows apps',
+'windows_malware' : 'Rootkit trojans database path',
+'windows_audit_interval' : "Interval to check directories' SACLs",
+'registry' : 'Monitored',
+'registry_ignore' : 'Ignored'
 }
