@@ -226,18 +226,23 @@ class report(controllers.BaseController):
                     | key2:   value2 |
                     ------------------
         """
+
+
+        #Get max width of all keys
         max_key_width = 20
         max_value_width = 20
         for i in keyList:
             current_width = int((len(i)) *1.5)
             if current_width > max_key_width:
                 max_key_width = current_width
-        
+
+        #Get max width of all values
         for i in valueList:
             current_width = int((len(i) ) *1.5)
             if current_width > max_value_width:
                 max_value_width = current_width
                 
+        #Print the table
         self.setTableRowStyle(pdf)
         totalWidth =  max_value_width + max_key_width
         if ( totalWidth < 175):
@@ -246,6 +251,8 @@ class report(controllers.BaseController):
                     pdf.add_page()
                     pdf.ln(20)
                 pdf.cell(max_key_width, 5, txt = key, border = 'B', align = '', fill = False, link = '')
+                if not value or value == " ":
+                    value = "-"
                 pdf.cell(0, 5, txt = value, border = 'B', align = '', fill = False, link = '')
                 pdf.ln(5)
         else:
