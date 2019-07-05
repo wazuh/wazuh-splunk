@@ -1,4 +1,5 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'integrity-monitoring'" ng-init="switchConfigurationSubTab('fim-general')">
+<div flex="auto" layout="column" ng-if="configurationTab === 'integrity-monitoring'"
+  ng-init="switchConfigurationSubTab('fim-general')">
 
   <!-- Headline -->
   <div layout="column" layout-padding>
@@ -15,28 +16,32 @@
         && currentConfig['syscheck-syscheck'].syscheck.disabled === 'yes')
         ||
         (currentConfig['syscheck-syscheck']
-        && isString(currentConfig['syscheck-syscheck']))"
-        class="wz-agent-status-indicator small red">Disabled</span>
+        && isString(currentConfig['syscheck-syscheck']))" class="wz-agent-status-indicator small red">Disabled</span>
     </div>
     <span>Identify changes in content, permissions, ownership and attributes of files</span>
   </div>
   <!-- End headline -->
 
   <!-- Integrity monitoring navigation bar -->
-  <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Integrity monitoring navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-general')" name="fim-general">General</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-monitored')" name="fim-monitored">Monitored</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-ignored')" name="fim-ignored">Ignored</md-nav-item>
+  <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab"
+    nav-bar-aria-label="Integrity monitoring navigation links">
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-general')" name="fim-general">General
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-monitored')" name="fim-monitored">
+      Monitored</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-ignored')" name="fim-ignored">Ignored
+    </md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-nodiff')" name="fim-nodiff">No
       diff</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-whodata')" ng-if="!agent || isLinux" name="fim-whodata">Who-data</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-whodata')" ng-if="!agent || isLinux"
+      name="fim-whodata">Who-data</md-nav-item>
   </md-nav-bar>
   <!-- End Integrity monitoring navigation bar -->
 
-<!-- Loading bar -->
-<div class="loader-bar" ng-show="load">
-  <div class="loader"></div>
-</div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="load">
+    <div class="loader"></div>
+  </div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
@@ -57,38 +62,51 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getJSON()">JSON</span>
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
 
-            <wz-config-item label="Integrity monitoring status" value="currentConfig['syscheck-syscheck'].syscheck.disabled === 'no' ? 'enabled' : 'disabled'">
+            <wz-config-item label="Integrity monitoring status"
+              value="currentConfig['syscheck-syscheck'].syscheck.disabled === 'no' ? 'enabled' : 'disabled'">
             </wz-config-item>
-            <wz-config-item label="Interval (in seconds) to run the integrity scan" value="currentConfig['syscheck-syscheck'].syscheck.frequency">
+            <wz-config-item label="Interval (in seconds) to run the integrity scan"
+              value="currentConfig['syscheck-syscheck'].syscheck.frequency">
             </wz-config-item>
-            <wz-config-item label="Time of day to run integrity scans" value="currentConfig['syscheck-syscheck'].syscheck.scan_time || '-'">
+            <wz-config-item label="Time of day to run integrity scans"
+              value="currentConfig['syscheck-syscheck'].syscheck.scan_time || '-'">
             </wz-config-item>
-            <wz-config-item label="Day of the week to run integrity scans" value="currentConfig['syscheck-syscheck'].syscheck.scan_day || '-'">
+            <wz-config-item label="Day of the week to run integrity scans"
+              value="currentConfig['syscheck-syscheck'].syscheck.scan_day || '-'">
             </wz-config-item>
-            <wz-config-item ng-if="!agent || agent.id === '000'" label="Ignore files that change too many times" value="currentConfig['syscheck-syscheck'].syscheck.auto_ignore || 'no'">
+            <wz-config-item ng-if="!agent || agent.id === '000'" label="Ignore files that change too many times"
+              value="currentConfig['syscheck-syscheck'].syscheck.auto_ignore || 'no'">
             </wz-config-item>
-            <wz-config-item ng-if="!agent || agent.id === '000'" label="Alert when new files are created" value="currentConfig['syscheck-syscheck'].syscheck.alert_new_files || 'no'">
+            <wz-config-item ng-if="!agent || agent.id === '000'" label="Alert when new files are created"
+              value="currentConfig['syscheck-syscheck'].syscheck.alert_new_files || 'no'">
             </wz-config-item>
             <wz-config-item label="Scan on start" value="currentConfig['syscheck-syscheck'].syscheck.scan_on_start">
             </wz-config-item>
-            <wz-config-item label="Skip scan on CIFS/NFS mounts" value="currentConfig['syscheck-syscheck'].syscheck.skip_nfs">
+            <wz-config-item label="Skip scan on CIFS/NFS mounts"
+              value="currentConfig['syscheck-syscheck'].syscheck.skip_nfs">
             </wz-config-item>
-            <wz-config-item label="Remove old local snapshots" value="currentConfig['syscheck-syscheck'].syscheck.remove_old_diff || 'yes'">
+            <wz-config-item label="Remove old local snapshots"
+              value="currentConfig['syscheck-syscheck'].syscheck.remove_old_diff || 'yes'">
             </wz-config-item>
-            <wz-config-item label="Restart the Audit daemon" value="currentConfig['syscheck-syscheck'].syscheck.restart_audit">
+            <wz-config-item label="Restart the Audit daemon"
+              value="currentConfig['syscheck-syscheck'].syscheck.restart_audit">
             </wz-config-item>
-            <wz-config-item label="Interval (in seconds) to check directories' SACLs" value="currentConfig['syscheck-syscheck'].syscheck.windows_audit_interval || '300'">
+            <wz-config-item label="Interval (in seconds) to check directories' SACLs"
+              value="currentConfig['syscheck-syscheck'].syscheck.windows_audit_interval || '300'">
             </wz-config-item>
-            <wz-config-item label="Command to prevent prelinking" value="currentConfig['syscheck-syscheck'].syscheck.prefilter_cmd || '-'">
+            <wz-config-item label="Command to prevent prelinking"
+              value="currentConfig['syscheck-syscheck'].syscheck.prefilter_cmd || '-'">
             </wz-config-item>
 
           </div>
@@ -99,13 +117,13 @@
 
 
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" 
-        ng-if="((agent || {}).os || {}).platform !== 'windows' && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck']
-        && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.ignore.length">
+      <wz-no-config flex error="'not-present'" ng-if="((agent || {}).os || {}).platform !== 'windows' && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck']
+        && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck']['syscheck']['ignore'].length">
       </wz-no-config>
       <!-- End no configuration section -->
       <!-- Ignored card -->
-      <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform !== 'windows' && !JSONContent && !XMLContent && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.ignore.length">
+      <md-card class="wz-md-card"
+        ng-if="((agent || {}).os || {}).platform !== 'windows' && !JSONContent && !XMLContent && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck']['syscheck']['ignore'].length ||  currentConfig['syscheck-syscheck']['syscheck']['ignore_regex'].length)">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
@@ -116,9 +134,11 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getJSON()">JSON</span>
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
@@ -156,10 +176,13 @@
       </md-card>
       <!-- End ignored card -->
 
-      <wz-no-config flex error="'not-present'" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.registry && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore"></wz-no-config>
+      <wz-no-config flex error="'not-present'"
+        ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-ignored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.registry && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore_sregex && !currentConfig['syscheck-syscheck']['syscheck']['ignore'].length && !currentConfig['syscheck-syscheck']['syscheck']['ignore_sregex'].length">
+      </wz-no-config>
       <!-- End no configuration section -->
-      
-      <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-ignored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
+
+      <md-card class="wz-md-card"
+        ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-ignored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore_sregex || currentConfig['syscheck-syscheck'].syscheck.registry_ignore || currentConfig['syscheck-syscheck'].syscheck.registry_ignore_sregex)">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
@@ -169,15 +192,16 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getJSON()">JSON</span>
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
-      
+
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-      
             <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Entry</th>
@@ -190,18 +214,65 @@
                 </tr>
               </tbody>
             </table>
-      
+          </div>
+          <!-- End configuration block -->
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10">
+            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left">Entry</th>
+                <th class="wz-text-left">Arch</th>
+              </thead>
+              <tbody class="wz-word-wrap">
+                <tr ng-repeat="registry in currentConfig['syscheck-syscheck'].syscheck.registry_ignore_sregex">
+                  <td>{{registry.entry}}</td>
+                  <td>{{registry.arch}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- End configuration block -->
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10" ng-if="currentConfig['syscheck-syscheck'].syscheck.ignore">
+            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left">Path</th>
+              </thead>
+              <tbody class="wz-word-wrap">
+                <tr ng-repeat="path in currentConfig['syscheck-syscheck'].syscheck.ignore">
+                  <td>{{path}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- End configuration block -->
+
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10" ng-if="currentConfig['syscheck-syscheck'].syscheck.ignore_sregex">
+            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left">Sregex</th>
+              </thead>
+              <tbody class="wz-word-wrap">
+                <tr ng-repeat="sregex in currentConfig['syscheck-syscheck'].syscheck.ignore_sregex">
+                  <td>{{sregex}}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
 
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && !currentConfig['syscheck-syscheck'].syscheck.directories.length"></wz-no-config>
+      <wz-no-config flex error="'not-present'"
+        ng-if="configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && !currentConfig['syscheck-syscheck']['syscheck']['directories'].length">
+      </wz-no-config>
       <!-- End no configuration section -->
 
       <!-- Monitored card -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && currentConfig['syscheck-syscheck'].syscheck.directories.length">
+      <md-card class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.directories && currentConfig['syscheck-syscheck']['syscheck']['directories'].length">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
@@ -211,9 +282,11 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getJSON()">JSON</span>
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
@@ -224,54 +297,75 @@
             <div flex="30" layout="column">
 
               <md-list flex="auto" class="wz-item-list">
-                <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['syscheck-syscheck'].syscheck.directories">{{item.dir}}</md-list-item>
+                <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)"
+                  ng-repeat="item in currentConfig['syscheck-syscheck'].syscheck.directories">{{item.dir}}
+                </md-list-item>
               </md-list>
 
             </div>
             <!-- End list container -->
 
             <!-- Detail container -->
-            <div flex layout="column" ng-if="currentConfig['syscheck-syscheck'].syscheck.directories.length">
+            <div flex layout="column" ng-if="currentConfig['syscheck-syscheck']['syscheck']['directories'].length">
 
               <div flex="auto" class="wz-item-detail">
-                <wz-config-item label="Selected item" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].dir">
+                <wz-config-item label="Selected item"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].dir">
                 </wz-config-item>
-                <wz-config-item label="Enable realtime monitoring" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('realtime') ? 'yes' : 'no'">
+                <wz-config-item label="Enable realtime monitoring"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('realtime') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Enable auditing (who-data)" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_whodata') ? 'yes' : 'no'">
+                <wz-config-item label="Enable auditing (who-data)"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_whodata') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Report file changes" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('report_changes') ? 'yes' : 'no'">
+                <wz-config-item label="Report file changes"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('report_changes') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Perform all checksums" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_all') ? 'yes' : 'no'">
+                <wz-config-item label="Perform all checksums"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_all') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check sums (MD5 & SHA1)" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_sum') ? 'yes' : 'no'">
+                <wz-config-item label="Check sums (MD5 & SHA1)"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_sum') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check MD5 sum" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_md5sum') ? 'yes' : 'no'">
+                <wz-config-item label="Check MD5 sum"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_md5sum') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check SHA1 sum" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_sha1sum') ? 'yes' : 'no'">
+                <wz-config-item label="Check SHA1 sum"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_sha1sum') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check SHA256 sum" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_sha256sum') ? 'yes' : 'no'">
+                <wz-config-item label="Check SHA256 sum"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_sha256sum') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check files size" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_size') ? 'yes' : 'no'">
+                <wz-config-item label="Check files size"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_size') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check files owner" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_owner') ? 'yes' : 'no'">
+                <wz-config-item label="Check files owner"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_owner') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check files groups" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_group') ? 'yes' : 'no'">
+                <wz-config-item label="Check files groups"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_group') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check files permissions" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_perm') ? 'yes' : 'no'">
+                <wz-config-item label="Check files permissions"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_perm') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check files modification time" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_mtime') ? 'yes' : 'no'">
+                <wz-config-item label="Check files modification time"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_mtime') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Check files inodes" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_inode') ? 'yes' : 'no'">
+                <wz-config-item label="Check files inodes"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('check_inode') ? 'yes' : 'no'">
                 </wz-config-item>
-                <wz-config-item label="Restrict to files containing this string" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].restrict">
+                <wz-config-item label="Restrict to files containing this string"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].restrict">
                 </wz-config-item>
-                <wz-config-item label="Custom tags for alerts" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].tags">
+                <wz-config-item label="Custom tags for alerts"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].tags">
                 </wz-config-item>
-                <wz-config-item label="Recursion level" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].recursion_level">
+                <wz-config-item label="Recursion level"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].recursion_level">
                 </wz-config-item>
-                <wz-config-item label="Follow symbolic link" value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('follow_symbolic_link') ? 'yes' : 'no'">
-                  </wz-config-item>
+                <wz-config-item label="Follow symbolic link"
+                  value="currentConfig['syscheck-syscheck'].syscheck.directories[selectedItem].opts.includes('follow_symbolic_link') ? 'yes' : 'no'">
+                </wz-config-item>
               </div>
 
             </div>
@@ -282,11 +376,14 @@
       </md-card>
       <!-- End monitored card -->
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.registry && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore"></wz-no-config>
+      <wz-no-config flex error="'not-present'"
+        ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-monitored' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.registry && !currentConfig['syscheck-syscheck'].syscheck.registry_ignore">
+      </wz-no-config>
       <!-- End no configuration section -->
 
       <!-- Windows card -->
-      <md-card class="wz-md-card" ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-monitored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
+      <md-card class="wz-md-card"
+        ng-if="((agent || {}).os || {}).platform === 'windows' && configurationSubTab === 'fim-monitored' && !JSONContent && !XMLContent && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && (currentConfig['syscheck-syscheck'].syscheck.registry || currentConfig['syscheck-syscheck'].syscheck.registry_ignore)">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
@@ -296,9 +393,11 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getJSON()">JSON</span>
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
@@ -325,11 +424,14 @@
       <!-- End Windows card -->
 
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-nodiff' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.nodiff"></wz-no-config>
+      <wz-no-config flex error="'not-present'"
+        ng-if="configurationSubTab === 'fim-nodiff' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.nodiff">
+      </wz-no-config>
       <!-- End no configuration section -->
 
       <!-- No diff card -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-nodiff' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.nodiff">
+      <md-card class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-nodiff' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.nodiff">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
@@ -339,9 +441,11 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getJSON()">JSON</span>
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
@@ -364,13 +468,16 @@
         </md-card-content>
       </md-card>
       <!-- End no diff card -->
-      
+
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'fim-whodata' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.ignore"></wz-no-config>
+      <wz-no-config flex error="'not-present'"
+        ng-if="configurationSubTab === 'fim-whodata' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && !currentConfig['syscheck-syscheck'].syscheck.ignore">
+      </wz-no-config>
       <!-- End no configuration section -->
 
       <!-- Who-data card -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-whodata' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.ignore">
+      <md-card class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-whodata' && currentConfig && currentConfig['syscheck-syscheck'] && currentConfig['syscheck-syscheck'].syscheck && currentConfig['syscheck-syscheck'].syscheck.ignore">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
@@ -381,22 +488,28 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getJSON()">JSON</span>
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
+              ng-click="getXML()">XML</span>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10" ng-show="currentConfig['syscheck-syscheck'].syscheck.whodata">
-            <wz-config-item label="Restart audit" value="currentConfig['syscheck-syscheck'].syscheck.whodata.restart_audit"></wz-config-item>
-            <wz-config-item label="Startup Healthcheck" value="currentConfig['syscheck-syscheck'].syscheck.whodata.startup_healthcheck"></wz-config-item>
+            <wz-config-item label="Restart audit"
+              value="currentConfig['syscheck-syscheck'].syscheck.whodata.restart_audit"></wz-config-item>
+            <wz-config-item label="Startup Healthcheck"
+              value="currentConfig['syscheck-syscheck'].syscheck.whodata.startup_healthcheck"></wz-config-item>
           </div>
           <div class="wz-padding-top-10" ng-show="!currentConfig['syscheck-syscheck'].syscheck.whodata">
-              <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> No audit keys were found. Visit the documentation on 
-              <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syscheck.html#whodata">this link</a> to enable it.
+            <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> No audit keys were found. Visit the documentation
+            on
+            <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syscheck.html#whodata">this
+              link</a> to enable it.
           </div>
-           <div class="wz-padding-top-10" ng-show="currentConfig['syscheck-syscheck'].syscheck.whodata.audit_key">
+          <div class="wz-padding-top-10" ng-show="currentConfig['syscheck-syscheck'].syscheck.whodata.audit_key">
             <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Keys</th>
@@ -412,7 +525,7 @@
         </md-card-content>
       </md-card>
       <!-- End auditkeys card -->
-      
+
       <!-- JSON && XML card-->
       <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
 
@@ -422,17 +535,19 @@
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
-      aria-label="Link to open app about section">
+    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left"
+      ng-click="showInfo()" aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
     <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/file-integrity/index.html">Integrity
+        <md-list-item target="_blank" class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/file-integrity/index.html">Integrity
           monitoring documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syscheck.html">Syscheck
+        <md-list-item target="_blank" class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syscheck.html">Syscheck
           reference</md-list-item>
       </md-list>
     </md-sidenav>
