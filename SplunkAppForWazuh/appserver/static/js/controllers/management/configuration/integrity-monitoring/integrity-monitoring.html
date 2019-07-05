@@ -123,8 +123,7 @@
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
-          <div class="wz-padding-top-10">
-
+          <div class="wz-padding-top-10" ng-if="currentConfig['syscheck-syscheck'].syscheck.ignore">
             <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Path</th>
@@ -135,9 +134,24 @@
                 </tr>
               </tbody>
             </table>
-
           </div>
           <!-- End configuration block -->
+
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10" ng-if="currentConfig['syscheck-syscheck'].syscheck.ignore_sregex">
+            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+              <thead class="wz-text-bold">
+                <th class="wz-text-left">Sregex</th>
+              </thead>
+              <tbody class="wz-word-wrap">
+                <tr ng-repeat="sregex in currentConfig['syscheck-syscheck'].syscheck.ignore_sregex">
+                  <td>{{sregex}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- End configuration block -->
+
         </md-card-content>
       </md-card>
       <!-- End ignored card -->
