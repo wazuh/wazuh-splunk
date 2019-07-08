@@ -2,7 +2,7 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v3.9.3 - Splunk Enterprise v7.3.0 - Revision 33
+## Wazuh v3.9.3 - Splunk Enterprise v7.3.0 - Revision 34
 
 ### Added
 
@@ -14,8 +14,9 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed incorrect fields in never connected agents [#750](https://github.com/wazuh/wazuh-splunk/pull/750).
 - Box editors without delimited bottom have been fixed [#750](https://github.com/wazuh/wazuh-splunk/pull/750).
 - Fixed error message when the app detects an unexpected Wazuh version [#750](https://github.com/wazuh/wazuh-splunk/pull/750).
-- Fix Agents > Inventory [#745](https://github.com/wazuh/wazuh-splunk/pull/745)
-- Fix Invalid Date message in some browsers dates [e1ccb55](https://github.com/wazuh/wazuh-splunk/commit/e1ccb556c75a807947e3987fbe7a38a0f14ae699)
+- Fix Agents > Inventory [#745](https://github.com/wazuh/wazuh-splunk/pull/745).
+- Fix Invalid Date message in some browsers dates [e1ccb55](https://github.com/wazuh/wazuh-splunk/commit/e1ccb556c75a807947e3987fbe7a38a0f14ae699).
+- Fix ignored in the configuration ondemand [#780](https://github.com/wazuh/wazuh-splunk/pull/780).
 
 ## Wazuh v3.9.2 - Splunk Enterprise v7.3.0 - Revision 28
 
