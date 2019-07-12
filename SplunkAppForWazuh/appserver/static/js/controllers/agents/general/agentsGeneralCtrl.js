@@ -151,11 +151,11 @@ define([
           this.scope
         ),
         new LinearChart(
-          'alertLevelEvoVizz',
+          'alertGroupEvoVizz',
           `${
             this.filters
-          } sourcetype=wazuh rule.level=*| timechart count by rule.level{}  `,
-          'alertLevelEvoVizz',
+          } sourcetype=wazuh rule.level=*| timechart count by rule.groups{}  `,
+          'alertGroupEvoVizz',
           this.scope,
           {customAxisTitleX : "Time span"}
         ),
@@ -286,7 +286,7 @@ define([
               'top5AlertsVizz',
               'top5GroupsVizz',
               'top5PCIreqVizz',
-              'alertLevelEvoVizz',
+              'alertGroupEvoVizz',
               'alertsVizz',
               'agentsSummaryVizz',
               'groupsSummaryVizz'
