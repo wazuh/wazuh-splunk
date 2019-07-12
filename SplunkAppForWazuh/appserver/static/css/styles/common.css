@@ -486,6 +486,10 @@ div.uil-ring-css {
   margin-bottom: -15px !important;
 }
 
+.wz-margin-bottom--5 {
+  margin-bottom: -5px !important;
+}
+
 .wz-height-35 {
   height: 35px !important;
 }
@@ -2056,7 +2060,7 @@ a:hover {
 }
 
 .bubble {
-  background-color: #006BB4;
+  background-color: #396e3e;
   height: 32px;
   width: 32px;
   line-height: 32px;
@@ -2072,7 +2076,7 @@ a:hover {
 }
 
 .bubble-checked {
-  background: #006BB4 !important;
+  background: #396e3e !important;
   color: #FFF !important;
 }
 
@@ -2091,7 +2095,7 @@ a:hover {
 
 .close-register-agent {
   float: right;
-  color: #00445a;
+  color: #294d2d;
   margin-right: 5px;
 }
 
@@ -2104,7 +2108,7 @@ a:hover {
   border-right: none !important;
   border-left: none !important;
   border-image: initial !important;
-  border-bottom: 1px solid rgb(21, 147, 210) !important;
+  border-bottom: 1px solid #3e7a44  !important;
   border-radius: 0px !important;
   margin-bottom: -5px !important;
 }
@@ -2120,7 +2124,7 @@ a:hover {
 
 .reset-register-agent {
   margin: 30px 10px -10px 0px;
-  color: #00445a;
+  color: #2e5732;
   width: 80px;
 }
 
@@ -2134,7 +2138,7 @@ a:hover {
 
 .btn-empty-selected {
   background-color: rgb(228, 242, 245) !important;
-  color: rgb(0, 121, 165) !important;
+  color: #3e7a44 !important;
 }
 
 .power-cmd {
@@ -2229,6 +2233,37 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   margin: 2px 15px 0px -500px;
   height: auto;
 }
+}
+.link-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.ul-extensions {
+  margin: 20px 20px 10px 20px !important;
+}
+
+
+.ul-extensions li{
+  text-align: left;
+  width: 100%;
+  margin: 0 auto !important;
+  padding-bottom: 10px;
+}
+
+.agent-config-popover {
+  width: 220px;
+  z-index: 100;
+  float: right;
+  position: relative;
+  border: 1px solid #d9d9d9;
+  background: white;
+  border-radius: 3px;
+  margin: 18px 5px 0px -500px;
+  height: auto;
+}
+
 
 /*.extensions-list:before {
   content:"" !important;
@@ -2268,4 +2303,27 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 .api-label{
   color: black !important;
   font-size: 18px !important;
+}
+
+.btn-export-agent {
+  float: right;
+  height: 30px;
+  padding-top: 5px;
+  padding-right: 15px;
+  margin: 7px;
+  background: none !important;
+}
+
+.btn-export-agent:hover {
+  background: rgba(0, 107, 180, 0.1) !important;
+}
+
+.btn-agent-report {
+  margin: 10px 15px 20px !important;
+  width: 185px !important;
+}
+
+.select-options {
+  text-align: left;
+  margin-left: 20px;
 }
