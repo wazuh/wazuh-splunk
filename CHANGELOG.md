@@ -8,6 +8,10 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Support for Wazuh v3.9.3
 
+### Changed
+
+ - Extend information for syscollector [#785](https://github.com/wazuh/wazuh-splunk/issues/785)
+
 ### Fixed
 
 - Fixed agent bar that was not applying filters correctly when refreshing [#743](https://github.com/wazuh/wazuh-splunk/pull/743).
