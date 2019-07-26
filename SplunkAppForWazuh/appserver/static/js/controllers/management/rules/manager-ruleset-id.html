@@ -57,10 +57,9 @@
           </div>
           <div flex="35" ng-if="ruleInfo.file" class="wz-text-truncatable">
             File:
-            <span class="wz-text-bold wz-text-link"
-              ng-click="addDetailFilter('file', ruleInfo.file)">{{ ruleInfo.file }}
+            <span class="wz-text-bold wz-text-link" ng-click="editRule(ruleInfo.file)">{{ ruleInfo.file }}
               <md-tooltip md-direction="bottom" class="wz-tooltip">
-                Filter by this file
+                Open this file
               </md-tooltip>
             </span>
           </div>
@@ -249,7 +248,7 @@
           <div layout="row" class="md-padding">
             <wazuh-table custom-columns="true" flex path="'/rules'"
               implicit-filter="[{ name:'file',value: ruleInfo.file}]"
-              keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level']"
+              keys="['id',{value:'file',size:2},{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level',{value:'path',nosortable:true}]"
               allow-click="true">
             </wazuh-table>
           </div>
@@ -274,22 +273,28 @@
             <i class="fa fa-fw fa-close" aria-hidden="true"></i>
             <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
           </button>
-          <span ng-if="adminMode" ng-click="closeEditingFile()" class="btn wz-button-cancel">Cancel</span>
-          <button ng-if="adminMode" ng-disabled="xmlHasErrors || saveIncomplete"
-            ng-click="saveRuleConfig(ruleInfo.file)" class="btn wz-button-empty pull-right wz-margin-left-10">
-            <span ng-show="!xmlHasErrors && adminMode">
-              <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                aria-hidden="true"></i>
-              Save file</span>
-            <span ng-show="xmlHasErrors && adminMode" class="btn-danger"><i aria-hidden="true"
-                class="fa fa-fw fa-exclamation-triangle"></i>
-              XML format error</span>
-          </button>
+          <div ng-if="!readOnly">
+            <span ng-if="adminMode" ng-click="closeEditingFile()" class="btn wz-button-cancel">Cancel</span>
+            <button ng-if="adminMode" ng-disabled="xmlHasErrors || saveIncomplete"
+              ng-click="saveRuleConfig(ruleInfo.file)" class="btn wz-button-empty pull-right wz-margin-left-10">
+              <span ng-show="!xmlHasErrors && adminMode">
+                <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                  aria-hidden="true"></i>
+                Save file</span>
+              <span ng-show="xmlHasErrors && adminMode" class="btn-danger"><i aria-hidden="true"
+                  class="fa fa-fw fa-exclamation-triangle"></i>
+                XML format error</span>
+            </button>
+          </div>
         </div>
+        <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML && !readOnly"></div>
         <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
           <wz-xml-file-editor style="height: inherit;" file-name="rules" data="fetchedXML" target-name="ruleInfo.file"
             valid-fn="xmlIsValid(valid)" close-fn="closeEditingFile()">
           </wz-xml-file-editor>
+        </div>
+        <div class="wzXmlEditorDivContent wz-margin-left-10" ng-show="XMLContent && readOnly">
+          <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true" no-local="fileName" />
         </div>
       </div>
       <!-- End XML editor-->

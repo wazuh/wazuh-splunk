@@ -76,11 +76,11 @@
       </md-chips>
       <div layout="row" layout-padding>
         <wazuh-table custom-columns="true" ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex
-          path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+          path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
           allow-click="true" rows-per-page="14">
         </wazuh-table>
         <wazuh-table custom-columns="true" ng-if="localFilter && !rulesetFiles" implicit-filter="appliedCustomFilters"
-          flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file']"
+          flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
           allow-click="true" rows-per-page="14">
         </wazuh-table>
         <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/decoders/files'" keys="['file']"

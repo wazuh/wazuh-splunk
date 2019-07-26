@@ -135,6 +135,10 @@ define(['../../module', 'FileSaver'], function(app) {
         event.stopPropagation()
         this.restart()
       })
+
+      this.scope.$on('applyFilter', (event, parameters) => {
+        this.scope.search(parameters.filter);
+      });
     }
 
     /**

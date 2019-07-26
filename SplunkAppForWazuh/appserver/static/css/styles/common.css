@@ -1856,3 +1856,13 @@ label.wz-icon-loupe  input {
 .md-sidenav-right {
   background-color: #fafafa !important;
 }
+
+.wz-link {
+  color:#396e3e !important;
+  text-decoration: none;
+  cursor:pointer;  
+}
+
+.wz-link:hover {
+ text-decoration: underline !important;
+} 

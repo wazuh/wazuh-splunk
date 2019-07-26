@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class DecodersId extends Ruleset {
@@ -118,28 +118,71 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
 
     async editDecoder(fileName) {
       try {
-        this.scope.editingFile = true
-        this.scope.fetchedXML = await this.fetchFileContent(fileName)
-        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
-      } catch (error) {
-        this.scope.fetchedXML = null
-        this.notification.showErrorToast(error.message || error)
-      }
-      if (!this.scope.$$phase) this.scope.$digest()
+        const readOnly = !(this.scope.currentDecoder.path === 'etc/decoders')
+        const result = await this.fetchFileContent(fileName, readOnly)
+      } catch (error) { }
       return
     }
 
-    async fetchFileContent(fileName) {
+    /**
+    * Fetches file content
+    * @param {String} file
+    */
+    async fetchFileContent(file, readOnly = false) {
       try {
-        const result = await this.fileEditor.getConfiguration(
-          fileName,
-          'decoders'
-        )
-        return result
+        this.scope.editingFile = true
+        this.scope.readOnly = readOnly
+        if (readOnly) {
+          if (!file.startsWith('ruleset/decoders')) {
+            this.scope.fileName = file
+            file = this.scope.currentDecoder.path + '/' + file
+            this.scope.XMLContent = await this.fileEditor.getConfiguration(
+              file,
+              null,
+              null,
+              readOnly
+            )
+            this.scope.$broadcast('XMLContentReady', {
+              data: this.scope.XMLContent
+            })
+          } else {
+            this.scope.XMLContent = await this.fileEditor.getConfiguration(
+              file,
+              null,
+              null,
+              readOnly
+            )
+            return this.scope.XMLContent
+          }
+        } else {
+          if (file.startsWith('etc/decoders/')) {
+            this.scope.fetchedXML = await this.fileEditor.getConfiguration(
+              file,
+              null,
+              null,
+              readOnly
+            )
+            return this.scope.fetchedXML
+          } else {
+            this.scope.fetchedXML = await this.fileEditor.getConfiguration(
+              file,
+              'decoders',
+              null,
+              readOnly
+            )
+            this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+          }
+
+        }
       } catch (error) {
+        this.scope.fetchedXML = null
+        this.notification.showErrorToast(error.message || error)
         return Promise.reject(error)
       }
+      this.scope.$applyAsync()
+      return
     }
+
   }
   controllers.controller('managerDecodersIdCtrl', DecodersId)
 })
