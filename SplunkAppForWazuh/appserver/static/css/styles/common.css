@@ -1866,3 +1866,7 @@ label.wz-icon-loupe  input {
 .wz-link:hover {
  text-decoration: underline !important;
 } 
+
+.wz-width-350 {
+  width: 350px;
+}

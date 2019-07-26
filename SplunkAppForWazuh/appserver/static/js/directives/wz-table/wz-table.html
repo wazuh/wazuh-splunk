@@ -40,7 +40,7 @@
       </th>
       <th ng-if="(path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode)) "
         class="wz-text-left wz-nowrap" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">Actions</th>
-      <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') && adminMode" class="wz-text-left wz-nowrap">
+      <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') && adminMode" class="wz-text-left wz-nowrap"  ng-style="path !== '/agents' && {'width':'375px'}">
         Actions
       </th>
     </thead>
