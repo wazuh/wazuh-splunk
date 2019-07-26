@@ -101,11 +101,11 @@
       </md-chips>
       <div layout="row" layout-padding>
         <wazuh-table custom-columns="true" ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex
-          path="'/rules'" keys="['id',{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level',{value:'file',size:2}]"
+          path="'/rules'" keys="['id',{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level',{value:'file',size:2},{value:'path',nosortable:true}]"
           allow-click="true" rows-per-page="14">
         </wazuh-table>
         <wazuh-table custom-columns="true" ng-if="localFilter && !rulesetFiles" implicit-filter="appliedCustomFilters"
-          flex path="'/rules'" keys="['id',{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level',{value:'file',size:2}]"
+          flex path="'/rules'" keys="['id',{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},'level',{value:'file',size:2},{value:'path',nosortable:true}]"
           allow-click="true" rows-per-page="14">
         </wazuh-table>
         <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/rules/files'" keys="['file']"

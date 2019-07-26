@@ -228,6 +228,31 @@ define([
             }
           }
 
+          $scope.parseKey = key => {		
+            return key ? key.value || key : key;		
+          };
+  
+          $scope.handleClick = (key, item, ev) => {
+            const value = $scope.parseValue(key, item);
+            let keyTmp = $scope.parseKey(key);
+            const valueTmp = typeof value !== 'string' ? value.toString() : value;
+            const canFilter = (($scope.path === '/rules' && ( keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path' )) || 
+            ($scope.path === '/decoders' && (keyTmp === 'path' || keyTmp === 'file')) )
+            if (canFilter) {
+              if (value !== '-' && keyTmp !== 'file') {
+                const filter = `${keyTmp}:${valueTmp}`;
+                $scope.$emit('applyFilter', { filter });
+              } else if (keyTmp === 'file') {
+                const readOnly = !(
+                  item.path === 'etc/rules' ||
+                  item.path === 'etc/decoders'
+                )
+                $scope.$emit('editFile', { file: item.file, path: item.path, readOnly })
+              }
+              ev.stopPropagation();
+            }
+          }
+
           $scope.sort = async field =>
             sort(field, $scope, instance, fetch, $notificationService)
 

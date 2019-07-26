@@ -63,11 +63,11 @@
           </md-tooltip>
         </td>
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}"
-          ng-if="path === '/rules'" ng-click="key === 'id' && searchRuleId($event,item.id)">
+          ng-if="path === '/rules'" ng-click="handleClick(key,item,$event)">
           <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
             }}</div>
-          <div ng-if="key !== 'id'" class="wz-text-truncatable-container">
+          <div ng-if="key !== 'id'" class="wz-text-truncatable-container" ng-class="{'wz-link': parseKey(key) === 'file'}">
             <span class="wz-text-truncatable">
               {{parseValue(key,item)}}
             </span>
@@ -78,14 +78,14 @@
           </md-tooltip>
         </td>
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}"
-          ng-if="path === '/decoders'" >
+          ng-if="path === '/decoders'" ng-click="handleClick(key,item,$event)" >
           <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
             <div class="table-width-id wz-text-truncatable-container" ng-if="key === 'id'">
               <span class="wz-text-truncatable">
                 {{parseValue(key,item)}}
               </span>
             </div>
-            <div ng-if="key !== 'id'">{{
+            <div ng-if="key !== 'id'" ng-class="{'wz-link': parseKey(key) === 'file'}">{{
               parseValue(key,item)
               }}</div>
           </div>
