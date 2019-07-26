@@ -109,9 +109,9 @@ define([
           this.scope
         ),
         new PieChart(
-          'cisRequirements',
-          `${this.filters} sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
-          'cisRequirements',
+          'ruleDistribution',
+          `${this.filters} sourcetype=wazuh rule.description=* | top rule.description`,
+          'ruleDistribution',
           this.scope
         ),
         new PieChart(
@@ -177,8 +177,7 @@ define([
           this.filters,
           [
             'elementOverTime',
-            'cisRequirements',
-            'topPciDss',
+            'ruleDistribution',
             'eventsPerAgent',
             'alertsSummary'
           ],
