@@ -100,40 +100,56 @@ define([
           $scope.scapepath = $scope.path.split('/').join('')
 
           $scope.updateColumns = key => {
-            const cleanArray = $scope.keys.map(item => item.value || item)
-            if (cleanArray.includes(key)) {
-              const idx = cleanArray.indexOf(key)
-              if (idx > -1) {
-                $scope.keys.splice(idx, 1)
-              }
-            } else {
-              let originalKey = $scope.originalkeys.filter(
-                k => k.key.value === key || k.key === key
-              )
-              originalKey = originalKey[0].key
-
-              const originalIdx = $scope.originalkeys.findIndex(
-                item => item.key === originalKey
-              )
-              if (originalIdx >= 0) {
-                $scope.keys.splice(originalIdx, 0, originalKey)
+            if(!$scope.isLastKey(key)){
+              const cleanArray = $scope.keys.map(item => item.value || item)
+              if (cleanArray.includes(key)) {
+                const idx = cleanArray.indexOf(key)
+                if (idx > -1) {
+                  $scope.keys.splice(idx, 1)
+                }
               } else {
-                let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
-                try {
-                  originalKey = originalKey[0].key
-                  const originalIdx = $scope.originalkeys.findIndex(
-                    item => item.key === originalKey
-                  )
-                  if (originalIdx >= 0) {
-                    $scope.keys.splice(originalIdx, 0, originalKey)
-                  } else {
-                    $scope.keys.push(originalKey)
+                let originalKey = $scope.originalkeys.filter(
+                  k => k.key.value === key || k.key === key
+                )
+                originalKey = originalKey[0].key
+
+                const originalIdx = $scope.originalkeys.findIndex(
+                  item => item.key === originalKey
+                )
+                if (originalIdx >= 0) {
+                  $scope.keys.splice(originalIdx, 0, originalKey)
+                } else {
+                  let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+                  try {
+                    originalKey = originalKey[0].key
+                    const originalIdx = $scope.originalkeys.findIndex(
+                      item => item.key === originalKey
+                    )
+                    if (originalIdx >= 0) {
+                      $scope.keys.splice(originalIdx, 0, originalKey)
+                    } else {
+                      $scope.keys.push(originalKey)
+                    }
+                  } catch (error) {
+                    $notificationService.showWarningToast('Cannot recover column.')
                   }
-                } catch (error) {
-                  $notificationService.showWarningToast('Cannot recover column.')
                 }
               }
             }
+          }
+
+          $scope.exists = key => {
+            const str = key || key.value;
+            for (const k of $scope.keys) if ((k.value || k) === str) return true;
+            return false;
+          };
+
+          $scope.isLastKey = (key) => {
+            const exists = $scope.exists(key);
+            const keysLength = $scope.keys.length === 1;
+            const keyValue = key || key.value;
+            const lastKeyValue = $scope.keys[0].value || $scope.keys[0];
+            return exists && keysLength && keyValue && lastKeyValue;
           }
 
           $scope.setColResizable = () => {
