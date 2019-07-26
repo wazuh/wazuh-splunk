@@ -57,17 +57,17 @@ define([
           this.scope
         ),
         new PieChart(
-          'cisRequirements',
-          `${this.filters} sourcetype=wazuh rule.cis{}=* | top  rule.cis{}`,
-          'cisRequirements',
+          'ruleDistribution',
+          `${this.filters} sourcetype=wazuh rule.level=* | top rule.level`,
+          'ruleDistribution',
           this.scope
         ),
         new PieChart(
-          'topPciDss',
+          'topAgents',
           `${
             this.filters
-          } sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
-          'topPciDss',
+          } sourcetype=wazuh agent.name=* | top agent.name`,
+          'topAgents',
           this.scope
         ),
         new AreaChart(
@@ -129,8 +129,8 @@ define([
             this.filters,
             [
               'elementOverTime',
-              'cisRequirements',
-              'topPciDss',
+              'ruleDistribution',
+              'topAgents',
               'eventsPerAgent',
               'alertsSummary'
             ],
