@@ -1870,3 +1870,9 @@ label.wz-icon-loupe  input {
 .wz-width-350 {
   width: 350px;
 }
+
+.wzTableCellFilter{
+  text-align: right;
+  height: 0;
+  cursor: pointer;
+}
