@@ -244,6 +244,10 @@ define([
             }
           }
 
+          $scope.canFilter = (keyTmp) => {
+            return (($scope.path === '/rules' && ( keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path' )) || 
+            ($scope.path === '/decoders' && (keyTmp === 'path' || keyTmp === 'file')) )
+          }
           $scope.parseKey = key => {		
             return key ? key.value || key : key;		
           };
@@ -252,8 +256,7 @@ define([
             const value = $scope.parseValue(key, item);
             let keyTmp = $scope.parseKey(key);
             const valueTmp = typeof value !== 'string' ? value.toString() : value;
-            const canFilter = (($scope.path === '/rules' && ( keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path' )) || 
-            ($scope.path === '/decoders' && (keyTmp === 'path' || keyTmp === 'file')) )
+            const canFilter = $scope.canFilter(keyTmp)
             if (canFilter) {
               if (value !== '-' && keyTmp !== 'file') {
                 const filter = `${keyTmp}:${valueTmp}`;

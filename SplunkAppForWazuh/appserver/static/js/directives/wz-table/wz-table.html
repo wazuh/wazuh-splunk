@@ -15,10 +15,11 @@
     </div>
   </div>
   <div ng-class="{'showing-checks':showingChecks, 'not-showing-checks':!showingChecks}">
-      <md-tooltip md-direction="left" class="wz-tooltip">
-          Show or hide columns
-        </md-tooltip>
-    <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()"><wz-svg icon="settings"></wz-svg>
+    <md-tooltip md-direction="left" class="wz-tooltip">
+      Show or hide columns
+    </md-tooltip>
+    <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()">
+      <wz-svg icon="settings"></wz-svg>
     </span>
   </div>
 </div>
@@ -27,11 +28,12 @@
 <!-- Table -->
 <div layout="row" ng-show="!error && !wazuhTableLoading && items.length"
   ng-if="!isPolicyMonitoring() && !isSyschecks()">
-  <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed table-striped table-hover"
-    style="table-layout: fixed; " id="table{{scapepath}}">
+  <table ng-class="customColumns ? 'table-resizable' : ''"
+    class="table wz-no-outline table-condensed table-striped table-hover" style="table-layout: fixed; "
+    id="table{{scapepath}}">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left wz-nowrap" ng-class="{'cursor-pointer' : !key.nosortable}"
-        ng-click="!key.nosortable && sort(key)">
+      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left wz-nowrap"
+        ng-class="{'cursor-pointer' : !key.nosortable}" ng-click="!key.nosortable && sort(key)">
         {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
         key] || key.value || key }}
         <i ng-if="!key.nosortable" class="fa wz-theader-sort-icon"
@@ -39,16 +41,20 @@
           aria-hidden="true"></i>
       </th>
       <th ng-if="(path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode)) "
-        class="wz-text-left wz-nowrap" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">Actions</th>
-      <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') && adminMode" class="wz-text-left wz-nowrap"  ng-style="path !== '/agents' && {'width':'375px'}">
+        class="wz-text-left wz-nowrap"
+        ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">
+        Actions</th>
+      <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') && adminMode"
+        class="wz-text-left wz-nowrap" ng-style="path !== '/agents' && {'width':'375px'}">
         Actions
       </th>
     </thead>
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
         ng-repeat="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="clickAction(item)">
-        <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id', 'table-width-filename': key.value === 'filename' }"
-          ng-if="path !== '/decoders' && path !== '/rules'" >
+        <td ng-repeat="key in keys | filter: showKey"
+          ng-class="{'table-width-id': key === 'id', 'table-width-filename': key.value === 'filename' }"
+          ng-if="path !== '/decoders' && path !== '/rules'">
           <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
             }}</div>
@@ -63,14 +69,20 @@
           </md-tooltip>
         </td>
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}"
-          ng-if="path === '/rules'" ng-click="handleClick(key,item,$event)">
-          <div class="table-width-id" ng-if="key === 'id'">{{
+          ng-if="path === '/rules'" ng-click="handleClick(key,item,$event)" ng-mouseover="selectedCell = $index;"
+          ng-mouseleave="selectedCell = false">
+          <div class="wz-text-truncatable-container">
+            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index">
+              <span class="fa fa-search-plus"></span> </span>
+            <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
             }}</div>
-          <div ng-if="key !== 'id'" class="wz-text-truncatable-container" ng-class="{'wz-link': parseKey(key) === 'file'}">
-            <span class="wz-text-truncatable">
-              {{parseValue(key,item)}}
-            </span>
+            <div ng-if="key !== 'id'" class="wz-text-truncatable-container"
+              ng-class="{'wz-link': parseKey(key) === 'file'}">
+              <span class="wz-text-truncatable">
+                {{parseValue(key,item)}}
+              </span>
+            </div>
           </div>
           <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom"
             class="wz-tooltip">
@@ -78,46 +90,55 @@
           </md-tooltip>
         </td>
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'table-width-id': key === 'id'}"
-          ng-if="path === '/decoders'" ng-click="handleClick(key,item,$event)" >
-          <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
-            <div class="table-width-id wz-text-truncatable-container" ng-if="key === 'id'">
-              <span class="wz-text-truncatable">
-                {{parseValue(key,item)}}
-              </span>
-            </div>
-            <div ng-if="key !== 'id'" ng-class="{'wz-link': parseKey(key) === 'file'}">{{
+          ng-if="path === '/decoders'" ng-click="handleClick(key,item,$event)" ng-mouseover="selectedCell = $index;"
+          ng-mouseleave="selectedCell = false">
+          <div class="wz-text-truncatable-container">
+            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index">
+              <span class="fa fa-search-plus"></span> </span>
+            <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
+              <div class="table-width-id wz-text-truncatable-container" ng-if="key === 'id'">
+                <span class="wz-text-truncatable">
+                  {{parseValue(key,item)}}
+                </span>
+              </div>
+              <div ng-if="key !== 'id'" ng-class="{'wz-link': parseKey(key) === 'file'}">{{
               parseValue(key,item)
               }}</div>
+            </div>
+            <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom"
+              class="wz-tooltip">
+              {{ parseValue(key,item) }}
+            </md-tooltip>
           </div>
-          <md-tooltip ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)" md-direction="bottom"
-            class="wz-tooltip">
-            {{ parseValue(key,item) }}
-          </md-tooltip>
         </td>
         <td ng-if="path === '/agents'" ng-click="$event.stopPropagation()" class="cursor-default action-btn-td">
-          <wz-svg icon="compass" ng-click="launchAgentDiscover(item.id); $event.stopPropagation()" svg-tooltip="Open Discover panel for this agent">
+          <wz-svg icon="compass" ng-click="launchAgentDiscover(item.id); $event.stopPropagation()"
+            svg-tooltip="Open Discover panel for this agent">
           </wz-svg>
-          <wz-svg icon="wrench" ng-click="clickAction(item, 'ag-conf'); $event.stopPropagation()" svg-tooltip="Open Configuration for this agent">
-          </wz-svg>          
+          <wz-svg icon="wrench" ng-click="clickAction(item, 'ag-conf'); $event.stopPropagation()"
+            svg-tooltip="Open Configuration for this agent">
+          </wz-svg>
         </td>
         <!-- Remove files -->
         <td ng-if="adminMode && (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')">
           <!-- Edit icon -->
-          <wz-svg ng-if="!removingFile && path !== '/lists/files' && (item.path === 'etc/rules' || item.path === 'etc/decoders')"
-            ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path)"
-            icon="pencil" svg-tooltip="Edit this file" color="#0079a5">
+          <wz-svg
+            ng-if="!removingFile && path !== '/lists/files' && (item.path === 'etc/rules' || item.path === 'etc/decoders')"
+            ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path)" icon="pencil"
+            svg-tooltip="Edit this file" color="#0079a5">
           </wz-svg>
           <!--Remove icon -->
-          <wz-svg ng-if="!removingFile && (item.path === 'etc/rules' || item.path === 'etc/decoders' || path === '/lists/files')"
-            ng-click="showConfirmRemoveFile($event, item.file || item.name); $event.stopPropagation()"
-            icon="trash" color="#0079a5" svg-tooltip="Remove this file">
+          <wz-svg
+            ng-if="!removingFile && (item.path === 'etc/rules' || item.path === 'etc/decoders' || path === '/lists/files')"
+            ng-click="showConfirmRemoveFile($event, item.file || item.name); $event.stopPropagation()" icon="trash"
+            color="#0079a5" svg-tooltip="Remove this file">
           </wz-svg>
           <!--NO icon -->
           <i ng-if="item.path !== 'etc/rules' && item.path !== 'etc/decoders' && path !== '/lists/files'"
             aria-hidden="true" style="color: #0079a5;font-size: 17px;">
             <wz-svg ng-if="item.path !== 'etc/rules' && item.path !== 'etc/decoders' && path !== '/lists/files'"
-              ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path, true)"
-              icon="eye" svg-tooltip="View file content" color="#0079a5">
+              ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path, true)" icon="eye"
+              svg-tooltip="View file content" color="#0079a5">
             </wz-svg>
           </i>
           <div ng-if="(item.file && removingFile === item.file) || (item.name && removingFile === item.name)"
@@ -138,10 +159,10 @@
         <td ng-if="path === '/agents/groups' && adminMode " ng-click="$event.stopPropagation()"
           class="cursor-default action-btn-td" class="wz-text-truncatable">
           <wz-svg ng-if="removingGroup !== item.name && item.name !== 'default'"
-            ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
-            icon="trash" color="#0079a5" svg-tooltip="Remove this group"></wz-svg>
-          <wz-svg ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()"
-            icon="pencil" color="#0079a5" svg-tooltip="Edit this group configuration">
+            ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()" icon="trash" color="#0079a5"
+            svg-tooltip="Remove this group"></wz-svg>
+          <wz-svg ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()" icon="pencil"
+            color="#0079a5" svg-tooltip="Edit this group configuration">
           </wz-svg>
 
           <span class="wz-padding-left-8" ng-if="removingGroup !== item.name && item.name === 'default'">-</span>
@@ -160,8 +181,8 @@
         <td ng-if="isLookingGroup() && adminMode " ng-click="$event.stopPropagation()"
           class="cursor-default action-btn-td">
           <wz-svg ng-if="removingAgent !== item.id && adminMode"
-            ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()"
-            icon="trash" color="#0079a5" svg-tooltip="Remove agent">
+            ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()" icon="trash"
+            color="#0079a5" svg-tooltip="Remove agent">
           </wz-svg>
 
           <div ng-if="removingAgent === item.id" class="confirmEmbedBubble">
@@ -217,8 +238,8 @@
   <table ng-class="customColumns ? 'table-resizable' : ''" class="table wz-no-outline table-condensed"
     style="table-layout: fixed !important" id="table{{scapepath}}">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left wz-nowrap" ng-class="{'cursor-pointer' : !key.nosortable}"
-        ng-click="!key.nosortable && sort(key)">
+      <th ng-repeat="key in keys | filter: showKey" class="wz-text-left wz-nowrap"
+        ng-class="{'cursor-pointer' : !key.nosortable}" ng-click="!key.nosortable && sort(key)">
         {{ path === '/agents/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
         key] || key.value || key }}
         <i ng-if="!key.nosortable" class="fa wz-theader-sort-icon"
@@ -226,7 +247,9 @@
           aria-hidden="true"></i>
       </th>
       <th ng-if="(path === '/agents' || (path === '/agents/groups' && adminMode) || (isLookingGroup() && adminMode)) "
-        class="wz-text-left wz-nowrap" ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}  && getWitdh(key.value || key)">Actions</th>
+        class="wz-text-left wz-nowrap"
+        ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}  && getWitdh(key.value || key)">
+        Actions</th>
     </thead>
     <tbody>
       <tr ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}"
@@ -234,7 +257,8 @@
         ng-click="expandPolicyMonitoringCheck(item)">
         <td ng-repeat="key in keys | filter: showKey" ng-class="{'noBorderBottom':item.expanded}">
           <span ng-show="key === 'result'" class="no-wrap">
-            <p class="round status littleStat" ng-class="item.result ? ((item.result === 'passed') ? 'teal' : 'red') : 'gray'"></p>&nbsp;&nbsp;
+            <p class="round status littleStat"
+              ng-class="item.result ? ((item.result === 'passed') ? 'teal' : 'red') : 'gray'"></p>&nbsp;&nbsp;
           </span>
           <span>
             {{
@@ -249,8 +273,8 @@
         <td colspan="{{keys.length}}" style="border-top: none">
           <md-card>
             <div layout="column" ng-if="!item.result" class="wz-margin-top-10 expandedDiv">
-                <span class="tSize16">Check not applicable due to:</span>
-                <p class="wz-margin-top-10 pExpanded wz-text-sca">{{ item.reason }}</p>
+              <span class="tSize16">Check not applicable due to:</span>
+              <p class="wz-margin-top-10 pExpanded wz-text-sca">{{ item.reason }}</p>
             </div>
             <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
               <span class="tSize16">Rationale</span>
@@ -323,8 +347,8 @@
   <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''"
     class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="table{{scapepath}}">
     <thead class="wz-text-bold">
-      <th ng-repeat="key in keys  | filter: showKey" class="wz-text-left wz-nowrap" ng-class="{'cursor-pointer' : !key.nosortable}"
-        ng-click="!key.nosortable && sort(key)">
+      <th ng-repeat="key in keys  | filter: showKey" class="wz-text-left wz-nowrap"
+        ng-class="{'cursor-pointer' : !key.nosortable}" ng-click="!key.nosortable && sort(key)">
         {{ keyEquivalence[key.value || key] || key.value || key }}
         <i ng-if="!key.nosortable" class="fa wz-theader-sort-icon"
           ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
@@ -334,7 +358,7 @@
     <tbody>
       <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
         ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="expandItem(item)">
-        <td  ng-repeat="key in keys | filter: showKey">
+        <td ng-repeat="key in keys | filter: showKey">
           <span>
             {{
             parseValue(key,item)
@@ -392,8 +416,9 @@
 <div layout="row" ng-if="!error && !wazuhTableLoading && !totalItems">
   <div flex class="euiCallOut euiCallOut--warning">
     <div class="euiCallOutHeader">
-      <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon float_warning-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+      <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon float_warning-icon" aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
+        viewBox="0 0 16 16">
         <defs>
           <path id="help-a"
             d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z">
@@ -409,8 +434,9 @@
 <div layout="row" ng-if="error" class="wz-margin-bottom-45">
   <div flex class="euiCallOut euiCallOut--warning">
     <div class="euiCallOutHeader">
-      <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon float_warning-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+      <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon float_warning-icon" aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
+        viewBox="0 0 16 16">
         <defs>
           <path id="help-a"
             d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z">
