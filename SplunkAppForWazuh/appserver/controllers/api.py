@@ -315,7 +315,7 @@ class api(controllers.BaseController):
             Request parameters
         """
         try:
-            if 'apiId' not in kwargs or 'path' not in kwargs:
+            if 'id' not in kwargs or 'path' not in kwargs:
                 raise Exception("Invalid arguments or missing params.")
             filters = {}
             filters['limit'] = 1000
@@ -332,7 +332,7 @@ class api(controllers.BaseController):
                         parsed_filters.pop(key, None)
                 filters.update(parsed_filters)
 
-            the_id = kwargs['apiId']
+            the_id = kwargs['id']
             api = self.db.get(the_id)
             api = jsonbak.loads(api)
             opt_username = api["data"]["userapi"]
