@@ -7,6 +7,18 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added
 
 - Support for Wazuh v3.9.4
+- Rules and decoders tables now show the path column. [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
+- Make level and path clickable columns, then it adds a filter for the table. (Rules/Decoders) [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
+- Click on filename to open its content (Ruleset). [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
+
+### Changed
+- Overview -> SCA dashboard has been removed. [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
+- Overview/Agents -> Policy monitoring dashboards have been refactored. [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
+
+### Fixed
+- Fixed error when adding a filter with spaces. [#793](https://github.com/wazuh/wazuh-splunk/issues/793)
+- Fixed downloading tables as CSV. [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
+- Fixed flick in CDB lists table when deleting a list. [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
 
 ## Wazuh v3.9.3 - Splunk Enterprise v7.3.0 - Revision 34
 
