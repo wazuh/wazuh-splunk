@@ -19,6 +19,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed error when adding a filter with spaces. [#793](https://github.com/wazuh/wazuh-splunk/issues/793)
 - Fixed downloading tables as CSV. [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
 - Fixed flick in CDB lists table when deleting a list. [#788](https://github.com/wazuh/wazuh-splunk/issues/788)
+- Hide API password from check-connection requests [#792](https://github.com/wazuh/wazuh-splunk/issues/792)
 
 ## Wazuh v3.9.3 - Splunk Enterprise v7.3.0 - Revision 34
 
