@@ -217,7 +217,12 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Getting API list.")
             apis = self.db.all()
-            result = apis
+            parsed_apis = jsonbak.loads(apis)
+            # Remove the password from the list of apis
+            for api in parsed_apis:
+                if "passapi" in api:
+                    del api["passapi"]
+            result = jsonbak.dumps(parsed_apis)
         except Exception as e:
             self.logger.error(jsonbak.dumps({"error": str(e)}))
             return jsonbak.dumps({"error": str(e)})
@@ -393,7 +398,6 @@ class manager(controllers.BaseController):
             opt_id = kwargs["apiId"]
             current_api = self.get_api(apiId=opt_id)
             current_api_json = jsonbak.loads(jsonbak.loads(current_api))
-            self.logger.info(current_api_json)
             opt_username = str(current_api_json["data"]["userapi"])
             opt_password = str(current_api_json["data"]["passapi"])
             opt_base_url = str(current_api_json["data"]["url"])
