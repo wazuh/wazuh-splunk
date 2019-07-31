@@ -250,6 +250,37 @@ define(['../module'], function (module) {
       }
     }
 
+
+     /**
+     * Checks a connection given its ID
+     * @param {Object} api
+     */
+    const checkRawConnectionById = async id => {
+      try {
+          const checkConnectionEndpoint = `/manager/check_connection_by_id?apiId=${id}`
+          const result = await $requestService.httpReq(
+            'GET',
+            checkConnectionEndpoint
+          )
+
+           if (result.data.status === 400 || result.data.error) {
+            if (result.data.error === 3099) {
+              throw 'ERROR3099 - Wazuh not ready yet.'
+            } else {
+              throw result.data.error || 'Unreachable API.'
+            }
+          }
+          return result
+      } catch (err) {
+        if (err.status === 500) {
+          throw new Error(
+            'There was an error connecting to the api. Please check your api configuration.'
+          )
+        }
+        return Promise.reject(err)
+      }
+    }
+
     /**
      * Checks if the API has to change its filters
      * @param {Object} api
@@ -297,8 +328,8 @@ define(['../module'], function (module) {
      */
     const checkApiConnection = async id => {
       try {
-        const api = await select(id) //Before update cluster or not cluster
-        await checkRawConnection(api)
+        const connectionData = await checkRawConnectionById(id)
+        const api = connectionData.data.api.data
         const apiSaved = { ...api } //eslint-disable-line
         const updatedApi = await updateApiFilter(api)
         let equal = true
@@ -353,6 +384,7 @@ define(['../module'], function (module) {
 
     return {
       checkApiConnection: checkApiConnection,
+      checkRawConnectionById: checkRawConnectionById,
       checkPollingState: checkPollingState,
       checkSelectedApiConnection: checkSelectedApiConnection,
       getApiList: getApiList,
