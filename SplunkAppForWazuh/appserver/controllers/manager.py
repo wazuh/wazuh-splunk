@@ -192,7 +192,12 @@ class manager(controllers.BaseController):
         """
         try:
             apis = self.db.all()
-            result = apis
+            parsed_apis = jsonbak.loads(apis)
+            # Remove the password from the list of apis
+            for api in parsed_apis:
+                if "passapi" in api:
+                    del api["passapi"]
+            result = jsonbak.dumps(parsed_apis)
         except Exception as e:
             self.logger.error(jsonbak.dumps({"error": str(e)}))
             return jsonbak.dumps({"error": str(e)})
