@@ -404,6 +404,8 @@ class manager(controllers.BaseController):
             opt_id = kwargs["apiId"]
             current_api = self.get_api(apiId=opt_id)
             current_api_json = jsonbak.loads(jsonbak.loads(current_api))
+            if not "data" in current_api_json:
+                return jsonbak.dumps({"status": "400", "error": "Error when checking API connection."})
             opt_username = str(current_api_json["data"]["userapi"])
             opt_password = str(current_api_json["data"]["passapi"])
             opt_base_url = str(current_api_json["data"]["url"])
@@ -430,10 +432,8 @@ class manager(controllers.BaseController):
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
-            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
-            # Pass the cluster status instead of always False
-            if not daemons_ready:
-                raise Exception("Daemons are not ready yet.")
+            if "error" in request_manager and request_manager["error"] != 0: #Checks if daemons are up and running
+                return jsonbak.dumps({"status": "400", "error": request_manager["message"]})
             output['managerName'] = request_manager['data']
             output['clusterMode'] = request_cluster['data']
             output['clusterName'] = request_cluster_name['data']
