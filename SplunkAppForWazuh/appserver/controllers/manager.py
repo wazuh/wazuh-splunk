@@ -290,6 +290,12 @@ class manager(controllers.BaseController):
             entry = kwargs
             if '_user' in kwargs:
                 del kwargs['_user']
+            if not "passapi" in entry:
+                opt_id = entry["_key"]
+                data_temp = self.db.get(opt_id)
+                current_api = jsonbak.loads(data_temp)
+                current_api = current_api["data"]
+                entry["passapi"] = current_api["passapi"]
             keys_list = ['_key', 'url', 'portapi', 'userapi',
                          'passapi', 'filterName', 'filterType', 'managerName']
             if set(entry.keys()) == set(keys_list):
