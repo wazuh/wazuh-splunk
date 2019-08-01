@@ -33,21 +33,10 @@ define(['../module'], function (module) {
                       sort: '-dateAdd'
                     }),
                     $requestService.apiReq('/agents/stats/distinct', {
-                      fields: 'os.name,os.version,os.platform',
-                      select: 'os.name,os.version,os.platform'
-                    }),
-                    $requestService.apiReq('/agents/stats/distinct', {
-                      fields: 'version',
-                      select: 'version',
+                      fields: 'os.name,os.version,os.platform,version,node_name',
+                      select: 'os.name,os.version,os.platform,version,node_name',
                       sort: 'version'
                     }),
-                      response.enabled === 'yes' &&
-                      response.running === 'yes'
-                      ? $requestService.apiReq('/agents/stats/distinct', {
-                        fields: 'node_name',
-                        select: 'node_name'
-                      })
-                      : Promise.resolve(false),
                     $requestService.apiReq('/agents/groups', {})
                   ])
                 } catch (err) {

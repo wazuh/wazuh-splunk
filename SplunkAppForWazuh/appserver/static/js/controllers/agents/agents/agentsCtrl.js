@@ -66,26 +66,23 @@ define([
         let [
           summary,
           lastAgent,
-          platforms,
-          versions,
-          nodes,
+          dataAgent,
           groups
         ] = parsedResult
-
         this.scope.noAgents = summary.Total - 1 < 1
         this.scope.agentsCountActive = summary.Active - 1
         this.scope.lastAgent = lastAgent.items[0]
           ? lastAgent.items[0]
           : 'Unknown'
-        const os = platforms
-          ? platforms.items.map(item => item.os).filter(item => !!item)
+        const os = dataAgent
+          ? dataAgent.items.map(item => item.os).filter(item => !!item)
           : false
-        versions = versions
-          ? versions.items.map(item => item.version).filter(item => !!item)
+        const versions = dataAgent
+          ? dataAgent.items.map(item => item.version).filter(item => !!item)
           : false
-        nodes =
-          nodes && nodes.items
-            ? nodes.items.map(item => item['node_name']).filter(item => !!item)
+        const nodes =
+        dataAgent && dataAgent.items
+            ? dataAgent.items.map(item => item['node_name']).filter(item => !!item)
             : false
         groups = groups
           ? groups.items.map(item => item.name).filter(item => !!item)
