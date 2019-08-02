@@ -78,9 +78,6 @@ define(['../module'], function (module) {
                     $requestService.apiReq(`/agents/${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
                     $requestService.apiReq(`/rootcheck/${id}/last_scan`),
-                    $requestService.apiReq(`/syscollector/${id}/hardware`),
-                    $requestService.apiReq(`/syscollector/${id}/os`),
-                    $requestService.apiReq(`/agents/${id}/group/is_sync`)
                   ])
 
                   return results
