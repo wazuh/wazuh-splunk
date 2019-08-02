@@ -94,14 +94,25 @@ class CheckQueue():
             method = 'GET'
 
             # Checks if are missing params
-            if 'id' not in req or 'endpoint' not in req:
+            if ('id' not in req and 'apiId' not in req) or 'endpoint' not in req:
                 raise Exception('Missing ID or endpoint')
             if 'method' in req.keys() and req['method'] != 'GET':
                 method = req['method']
                 del req['method']
-
-            api_id = req['id']
-            url, auth, verify = self.get_api_credentials(api_id)
+            
+            api_id = 0
+            if 'id' in req:
+                api_id = req['id']
+            elif 'apiId' in req:
+                api_id = req['apiId']
+            else:
+                raise Exception('Missing API ID')
+            try:
+                url, auth, verify = self.get_api_credentials(api_id)
+            except Exception as e:
+                self.logger.error("bin.check_queue: Error executing the job, job will be deleted from the queue. Reason: {}".format(e))
+                self.remove_job(job['_key'])
+                return 
             endpoint = req['endpoint']
 
             # Checks methods
@@ -172,7 +183,9 @@ class CheckQueue():
             self.logger.debug("bin.check_queue: Getting API credentials.")
             api = self.db.get(api_id, self.auth_key)
             api = jsonbak.loads(api)
-            if api:
+            if "data" in api and "messages" in api["data"] and api["data"]["messages"][0] and "type" in api["data"]["messages"][0] and api["data"]["messages"][0]["type"] == "ERROR":
+                raise Exception('API does not exist')
+            elif api:
                 opt_username = api['data']["userapi"]
                 opt_password = api['data']["passapi"]
                 opt_base_url = api['data']["url"]
