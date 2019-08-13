@@ -100,43 +100,57 @@ define([
         $scope.scapepath = $scope.path.split('/').join('')
 
         $scope.updateColumns = key => {
-          const cleanArray = $scope.keys.map(item => item.value || item)
-          if (cleanArray.includes(key)) {
-            const idx = cleanArray.indexOf(key)
-            if (idx > -1) {
-              $scope.keys.splice(idx, 1)
-            }
-          } else {
-            let originalKey = $scope.originalkeys.filter(
-              k => k.key.value === key || k.key === key
-            )
-            originalKey = originalKey[0].key
-
-            const originalIdx = $scope.originalkeys.findIndex(
-              item => item.key === originalKey
-            )
-            if (originalIdx >= 0) {
-              $scope.keys.splice(originalIdx, 0, originalKey)
+          if(!$scope.isLastKey(key)){
+            const cleanArray = $scope.keys.map(item => item.value || item)
+            if (cleanArray.includes(key)) {
+              const idx = cleanArray.indexOf(key)
+              if (idx > -1) {
+                $scope.keys.splice(idx, 1)
+              }
             } else {
               let originalKey = $scope.originalkeys.filter(
                 k => k.key.value === key || k.key === key
               )
-              try {
-                originalKey = originalKey[0].key
-                const originalIdx = $scope.originalkeys.findIndex(
-                  item => item.key === originalKey
-                )
-                if (originalIdx >= 0) {
-                  $scope.keys.splice(originalIdx, 0, originalKey)
-                } else {
-                  $scope.keys.push(originalKey)
+              originalKey = originalKey[0].key
+
+              const originalIdx = $scope.originalkeys.findIndex(
+                item => item.key === originalKey
+              )
+              if (originalIdx >= 0) {
+                $scope.keys.splice(originalIdx, 0, originalKey)
+              } else {
+                let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+                try {
+                  originalKey = originalKey[0].key
+                  const originalIdx = $scope.originalkeys.findIndex(
+                    item => item.key === originalKey
+                  )
+                  if (originalIdx >= 0) {
+                    $scope.keys.splice(originalIdx, 0, originalKey)
+                  } else {
+                    $scope.keys.push(originalKey)
+                  }
+                } catch (error) {
+                  $notificationService.showWarningToast('Cannot recover column.')
                 }
-              } catch (error) {
-                $notificationService.showWarningToast('Cannot recover column.')
               }
             }
           }
           //updateStoredKeys($scope.keys)
+        }
+
+        $scope.exists = key => {
+          const str = key || key.value;
+          for (const k of $scope.keys) if ((k.value || k) === str) return true;
+          return false;
+        };
+
+         $scope.isLastKey = (key) => {
+          const exists = $scope.exists(key);
+          const keysLength = $scope.keys.length === 1;
+          const keyValue = key || key.value;
+          const lastKeyValue = $scope.keys[0].value || $scope.keys[0];
+          return exists && keysLength && keyValue && lastKeyValue;
         }
 
         $scope.setColResizable = () => {
@@ -230,6 +244,36 @@ define([
             return Promise.reject(error)
           }
         }
+
+        $scope.canFilter = (keyTmp) => {
+          return (($scope.path === '/rules' && ( keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path' )) || 
+          ($scope.path === '/decoders' && (keyTmp === 'path' || keyTmp === 'file')) )
+        }
+
+        $scope.parseKey = key => {		
+          return key ? key.value || key : key;		
+        }
+
+         $scope.handleClick = (key, item, ev) => {
+          const value = $scope.parseValue(key, item);
+          let keyTmp = $scope.parseKey(key);
+          const valueTmp = typeof value !== 'string' ? value.toString() : value;
+          const canFilter = $scope.canFilter(keyTmp)
+          if (canFilter) {
+            if (value !== '-' && keyTmp !== 'file') {
+              const filter = `${keyTmp}:${valueTmp}`;
+              $scope.$emit('applyFilter', { filter });
+            } else if (keyTmp === 'file') {
+              const readOnly = !(
+                item.path === 'etc/rules' ||
+                item.path === 'etc/decoders'
+              )
+              $scope.$emit('editFile', { file: item.file, path: item.path, readOnly })
+            }
+            ev.stopPropagation()
+          }
+        }
+
 
         $scope.sort = async field =>
           sort(field, $scope, instance, fetch, $notificationService)

@@ -102,29 +102,14 @@
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
-            <wz-welcome-card class="euiFlexItem"
-              logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
-              sub-title="'Policy monitoring'" ui-sref='ow-pm' current-tab="'pm'"
-              description="'Verify that your systems are configured according to your security policies baseline.'">
-            </wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_sca.svg'"
-              sub-title="'Security Configuration Assessment'" ui-sref='ow-sca' current-tab="'conf-assess'"
-              description="'Scan your assets as part of a configuration assessment audit.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.audit" class="euiFlexItem"
-              logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'" sub-title="'Audit'"
-              ui-sref='ow-audit' current-tab="'audit'"
-              description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'">
-            </wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.oscap" class="euiFlexItem"
-              logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'" sub-title="'Open SCAP'" ui-sref='ow-os'
-              current-tab="'oscap'"
-              description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'">
-            </wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem"
-              logo="'/static/app/SplunkAppForWazuh/css/images/app_ciscat.svg'" sub-title="'CIS-CAT'" ui-sref='ow-ciscat'
-              current-tab="'oscap'"
-              description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'">
-            </wz-welcome-card>
+            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
+              sub-title="'Policy monitoring'" ui-sref='ow-pm' current-tab="'pm'" description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
+              <wz-welcome-card ng-if="audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
+              sub-title="'Audit'" ui-sref='ow-audit' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
+            <wz-welcome-card ng-if="oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
+              sub-title="'Open SCAP'" ui-sref='ow-os' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
+            <wz-welcome-card ng-if="ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
+              sub-title="'CIS-CAT'" ui-sref='ow-ciscat' current-tab="'oscap'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
           </div>
         </div>
       </div>

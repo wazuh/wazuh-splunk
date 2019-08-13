@@ -140,6 +140,9 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
+      this.scope.$on('applyFilter', (event, parameters) => {
+        this.scope.search(parameters.filter);
+      });
     }
 
     /**

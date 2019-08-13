@@ -48,7 +48,7 @@ define(['./module'], function(module) {
             if (state != 'settings.api'){
               $rootScope.$broadcast('stateChanged', 'settings')
             }
-            if (typeof err === 'string' && err.startsWith('Unexpected Wazuh version.')) {
+            if (typeof err === 'string') {
               $notificationService.showErrorToast(err)
             }
             $state.go('settings.api')
