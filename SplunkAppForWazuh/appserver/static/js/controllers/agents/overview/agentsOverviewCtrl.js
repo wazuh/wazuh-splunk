@@ -359,7 +359,7 @@ define(['../../module'], function (app) {
     /**
     * Shows the extensions list to enable or disable them
     */
-    showExtensionsLists = card => {
+    showExtensionsLists(card){
       try {
         this.scope.extensionsLists[card] ? this.scope.extensionsLists[card] = false : this.scope.extensionsLists[card] = true
       } catch (error) {
