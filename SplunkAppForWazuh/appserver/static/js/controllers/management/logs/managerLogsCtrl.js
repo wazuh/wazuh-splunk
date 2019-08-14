@@ -72,7 +72,8 @@ define(['../../module', 'FileSaver'], function(app) {
           } else {
             this.scope.XMLContent = this.parseLogsToText(params.items)
             this.scope.$broadcast('XMLContentReady', {
-              data: this.scope.XMLContent
+              data: this.scope.XMLContent,
+              logs: true
             })
           }
 
