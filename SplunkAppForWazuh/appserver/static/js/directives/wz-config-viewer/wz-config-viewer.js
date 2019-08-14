@@ -34,6 +34,8 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
     }
 
     controller($scope, $document) {
+      let isLogs = false
+
       const setJsonBox = () => {
         $scope.jsonCodeBox = CodeMirror.fromTextArea(
           $document[0].getElementById('viewer_json_box'),
@@ -106,9 +108,9 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           const editorContainer = $('.wzConfigViewer');
           const windows = $(window).height();
           const offsetTop = getPosition(editorContainer[0]).y;
-          const bottom = $scope.isLogs ? 50 : 20;
+          const bottom = isLogs ? 50 : 20;
           const headerContainer = $('.wzXmlEditorHeader')
-          const headerContainerHeight = headerContainer.height() ? headerContainer.height() + 20 : ($scope.isLogs ? 0 : 70);
+          const headerContainerHeight = headerContainer.height() ? headerContainer.height() + 20 : (isLogs ? 0 : 70);
           editorContainer.height(windows - (offsetTop + bottom));
           $('.wzJsonXmlEditorBody .CodeMirror').height(windows - (offsetTop + bottom + headerContainerHeight));
         }, 1);
@@ -134,8 +136,8 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         }
       }
 
-      const refreshXmlBox = (xml, isLogs) => {
-        $scope.isLogs = isLogs;
+      const refreshXmlBox = (xml, logs) => {
+        isLogs = logs;
         $scope.xmlcontent = xml
         if (!$scope.xmlCodeBox) {
           setXmlBox()
@@ -145,7 +147,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           setTimeout(function() {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
-            $scope.isLogs
+            isLogs
               ? dynamicHeight()
               : window.dispatchEvent(new Event('resize')); // eslint-disable-line
           }, 300)
