@@ -135,24 +135,64 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
     async editRule(fileName) {
       try {
-        this.scope.editingFile = true
-        this.scope.fetchedXML = await this.fetchFileContent(fileName)
-        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
-      } catch (error) {
-        this.scope.fetchedXML = null
-        this.notification.showErrorToast(error.message || error)
-      }
-      this.scope.$applyAsync()
+        const readOnly = ! (this.scope.ruleInfo.path === 'etc/rules')
+        await this.fetchFileContent(fileName,readOnly)
+      } catch (error) {  }
       return
     }
 
-    async fetchFileContent(fileName) {
+    async fetchFileContent(file, readOnly = false) {
       try {
-        const result = await this.fileEditor.getConfiguration(fileName, 'rules')
-        return result
+        this.scope.editingFile = true
+        this.scope.readOnly = readOnly
+        if(readOnly){
+          if(!file.startsWith('ruleset/rules')){
+            this.scope.fileName = file
+            file = this.scope.ruleInfo.path + '/' + file
+            this.scope.XMLContent = await this.fileEditor.getConfiguration(
+              file,
+              null,
+              null,
+              readOnly
+            )
+            this.scope.$broadcast('XMLContentReady', {
+              data: this.scope.XMLContent
+            })
+          }else{
+            this.scope.XMLContent = await this.fileEditor.getConfiguration(
+              file,
+              null,
+              null,
+              readOnly
+            )
+            return this.scope.XMLContent
+          }
+        }else{
+          if(file.startsWith('etc/rules/')){
+            this.scope.fetchedXML = await this.fileEditor.getConfiguration(
+              file,
+              null,
+              null,
+              readOnly
+            )
+            return this.scope.fetchedXML
+          }else{
+            this.scope.fetchedXML = await this.fileEditor.getConfiguration(
+              file,
+              'rules',
+              null,
+              readOnly
+            )
+            this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+          }
+          
+        }
       } catch (error) {
+        this.scope.fetchedXML = null
+        this.notification.showErrorToast(error.message || error)
         return Promise.reject(error)
       }
+      this.scope.$applyAsync()
     }
   }
   controllers.controller('managerRulesetIdCtrl', RulesetId)

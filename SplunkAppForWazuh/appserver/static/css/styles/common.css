@@ -2327,3 +2327,22 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   text-align: left;
   margin-left: 20px;
 }
+.wz-link {
+  color:#396e3e !important;
+  text-decoration: none;
+  cursor:pointer;  
+}
+
+.wz-link:hover {
+ text-decoration: underline !important;
+} 
+
+.wz-width-350 {
+  width: 350px;
+}
+
+.wzTableCellFilter{
+  text-align: right;
+  height: 0;
+  cursor: pointer;
+}

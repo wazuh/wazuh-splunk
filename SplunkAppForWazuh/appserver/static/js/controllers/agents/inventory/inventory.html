@@ -191,13 +191,13 @@
         </div>
         <div layout="row" ng-if="agent && syscollector" class="wz-margin-top-10 wz-margin-bottom-40-inv">
           <wazuh-table flex ng-if="agent && agent.os && agent.os.platform === 'windows'"
-            path="'/syscollector/' + agent.id + '/processes'" row-sizes="[10,8,6]" extra-limit="100"
-            keys="['name','cmd','priority','nlwp']">
-          </wazuh-table>
-          <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows'"
-            path="'/syscollector/' + agent.id + '/processes'" row-sizes="[10,8,6]" extra-limit="100"
-            keys="['name','euser','nice','state']">
-          </wazuh-table>
+          path="'/syscollector/' + agent.id + '/processes'" row-sizes="[10,8,6]" extra-limit="100"
+          keys="['name','pid','ppid','cmd','vm_size','priority','nlwp']">
+        </wazuh-table>
+        <wazuh-table flex ng-if="agent && agent.os && agent.os.platform !== 'windows'"
+          path="'/syscollector/' + agent.id + '/processes'" row-sizes="[10,8,6]" extra-limit="100"
+          keys="['name','euser','egroup','pid','ppid','cmd','argvs','vm_size','size','session','nice','state']">
+        </wazuh-table>
         </div>
       </md-card-content>
       <div layout="row" class="ruleset-csv-formater formatted-div-inventory">

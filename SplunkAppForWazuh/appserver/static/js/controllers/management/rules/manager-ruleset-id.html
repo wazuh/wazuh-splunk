@@ -64,8 +64,7 @@
             </div>
             <div flex="35" ng-if="ruleInfo.file" class="wz-text-truncatable">
               File:
-              <span class="wz-text-bold wz-text-link"
-                ng-click="addDetailFilter('file', ruleInfo.file)">{{ ruleInfo.file }}
+              <span class="wz-text-bold wz-text-link" ng-click="editRule(ruleInfo.file)">{{ ruleInfo.file }}
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Filter by this file
                 </md-tooltip>

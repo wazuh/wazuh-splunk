@@ -251,6 +251,7 @@ define(['../../module'], function(controllers) {
           !this.validUrl(form_url) ||
           !this.validUsername(form_apiuser)
         ) {
+          this.scope.$applyAsync()
           throw new Error('Invalid format. Please check the fields again')
         }
 
@@ -285,6 +286,7 @@ define(['../../module'], function(controllers) {
           err.startsWith('Unexpected Wazuh version')
         ) {
           this.scope.validatingError.push(err)
+          this.scope.$applyAsync()
         } else {
           this.notification.showErrorToast(
             err.message || err || 'Cannot save the API.'
