@@ -417,26 +417,18 @@ class manager(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             try:
-                # Checks in the first request if the credentials are ok
-                request_manager = self.session.get(
-                    url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify)
-                if request_manager.status_code == 401:
-                    self.logger.error("Cannot connect to API; Invalid credentials.")
-                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
-                request_manager = request_manager.json()  
-                request_cluster = self.session.get(
-                    url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
-                request_cluster_name = self.session.get(
-                    url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
+                manager_info =  self.session.get(
+                    url + '/manager/info', auth=auth, timeout=20, verify=verify)
+                manager_info = manager_info.json()
             except ConnectionError as e:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
-            if "error" in request_manager and request_manager["error"] != 0: #Checks if daemons are up and running
-                return jsonbak.dumps({"status": "400", "error": request_manager["message"]})
-            output['managerName'] = request_manager['data']
-            output['clusterMode'] = request_cluster['data']
-            output['clusterName'] = request_cluster_name['data']
+            if "error" in manager_info and manager_info["error"] != 0: #Checks if daemons are up and running
+                return jsonbak.dumps({"status": "400", "error": manager_info["message"]})
+            output['managerName'] = { 'name' : manager_info['data']['name'] }
+            output['clusterMode'] = { "enabled" : manager_info['data']['cluster']['enabled'], "running" : manager_info['data']['cluster']['running'] }
+            output['clusterName'] = { "type" : manager_info['data']['cluster']['node_type'], "cluster" : manager_info['data']['cluster']['name'], "node" : manager_info['data']['cluster']['node_name'] }
             del current_api_json["data"]["passapi"]
             output['api'] = current_api_json
             result = jsonbak.dumps(output)             
