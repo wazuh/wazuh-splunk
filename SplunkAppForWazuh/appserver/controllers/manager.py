@@ -437,7 +437,6 @@ class manager(controllers.BaseController):
             raise e
         return result
 
-
     def check_wazuh_version(self, kwargs):
         """Check Wazuh version
 
