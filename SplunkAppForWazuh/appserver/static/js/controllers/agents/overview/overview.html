@@ -7,46 +7,47 @@
       <span> / </span>
       <span ng-if="!agent.error" class="wz-text-link cursor-pointer">{{agent.name}} ({{agent.id}})</span>
       <span ng-if="agent.error">Unknown agent</span>
-      <span ng-if="agent.status">
+      <span ng-if="agent && agent.status">
         <span class="no-wrap wz-padding-left-8" aria-hidden="false">
           <p class="round status littleStat teal" ng-class="getAgentStatusClass(agent.status)"></p>&nbsp;&nbsp;
         </span>{{formatAgentStatus(agent.status)}}
       </span>
     </div>
+    <div flex></div>
+    <div layout="row" class="wz-no-padding-bottom wz-margin-top-5 wz-margin-right-15">
+        <span flex="" class="flex"></span>
+        <button class="btn wz-button-empty pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
+          tooltip="Discover">
+          <wz-svg icon="compass"></wz-svg>
+          Discover
+        </button>
+        <!-- Restart button -->
+        <div ng-show="confirmingRestart" style="text-align: right;">
+          <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
+          <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
+            class='btn wz-button-cancel pull-right wz-margin-left-10'>
+            <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+          </button>
+          <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
+            class='btn wz-button-empty pull-right wz-margin-left-10'>
+            <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+          </button>
+        </div>
+        <div ng-show="!confirmingRestart">
+          <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
+            class="btn wz-button-empty pull-right ng-scope">
+            <span aria-hidden="false">
+              <wz-svg icon="refresh"></wz-svg>
+              Restart agent
+            </span>
+          </button>
+        </div>
+      </div>
   </div>
   <!-- End breadcrumbs -->
-
+  
   <!-- Headline -->
   <div layout="column" layout-padding class="wz-margin-top--10">
-    <div layout="row" class="wz-no-padding-bottom wz-margin-top--30">
-      <span flex="" class="flex"></span>
-      <button class="btn wz-button-empty pull-right ng-scope wz-margin-right-10" ng-click='openDiscover(agent.id)'
-        tooltip="Discover">
-        <wz-svg icon="compass"></wz-svg>
-        Discover
-      </button>
-      <!-- Restart button -->
-      <div ng-show="confirmingRestart" style="text-align: right;">
-        <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
-        <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
-          class='btn wz-button-cancel pull-right wz-margin-left-10'>
-          <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
-        </button>
-        <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
-          class='btn wz-button-empty pull-right wz-margin-left-10'>
-          <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
-        </button>
-      </div>
-      <div ng-show="!confirmingRestart">
-        <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
-          class="btn wz-button-empty pull-right ng-scope">
-          <span aria-hidden="false">
-            <wz-svg icon="refresh"></wz-svg>
-            Restart agent
-          </span>
-        </button>
-      </div>
-    </div>
 
     <!-- Agent info -->
     <div layout-padding class="wz-no-padding">
