@@ -58,31 +58,25 @@ define([
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
-
       try {
-        const parsedResult = agentData.map(item =>
-          item && item.data && item.data.data ? item.data.data : false
-        )
-        let [
-          summary,
-          lastAgent,
-          dataAgent,
-          groups
-        ] = parsedResult
+        const parsedResult = agentData.data.data
+        
+        let summary = parsedResult.summary
+        let lastAgent = parsedResult.last_registered_agent
+        let groups = parsedResult.groups
+
         this.scope.noAgents = summary.Total - 1 < 1
         this.scope.agentsCountActive = summary.Active - 1
-        this.scope.lastAgent = lastAgent.items[0]
-          ? lastAgent.items[0]
-          : 'Unknown'
-        const os = dataAgent
-          ? dataAgent.items.map(item => item.os).filter(item => !!item)
+        this.scope.lastAgent = lastAgent || 'Unknown'
+        const os = parsedResult.unique_agent_os
+          ? parsedResult.unique_agent_os.items.map(item => item.os).filter(item => !!item)
           : false
-        const versions = dataAgent
-          ? dataAgent.items.map(item => item.version).filter(item => !!item)
+        const versions = parsedResult.unique_agent_version
+          ? parsedResult.unique_agent_version.items.map(item => item.version).filter(item => !!item)
           : false
         const nodes =
-        dataAgent && dataAgent.items
-            ? dataAgent.items.map(item => item['node_name']).filter(item => !!item)
+        parsedResult.unique_node_names && parsedResult.unique_node_names.items
+            ? parsedResult.unique_node_names.items.map(item => item['node_name']).filter(item => !!item)
             : false
         groups = groups
           ? groups.items.map(item => item.name).filter(item => !!item)

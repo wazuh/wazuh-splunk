@@ -21,24 +21,11 @@ define(['../module'], function (module) {
               '$requestService',
               '$state',
               async $requestService => {
-                try {
-                  const responseStatus = await $requestService.apiReq(
-                    '/cluster/status'
+                try {                  
+                  const agentsSummary = await $requestService.apiReq(
+                    '/agents/full_summary'
                   )
-                  const response = ((responseStatus || {}).data || {}).data || {}
-                  return await Promise.all([
-                    $requestService.apiReq('/agents/summary'),
-                    $requestService.apiReq('/agents', {
-                      limit: 1,
-                      sort: '-dateAdd'
-                    }),
-                    $requestService.apiReq('/agents/stats/distinct', {
-                      fields: 'os.name,os.version,os.platform,version,node_name',
-                      select: 'os.name,os.version,os.platform,version,node_name',
-                      sort: 'version'
-                    }),
-                    $requestService.apiReq('/agents/groups', {})
-                  ])
+                  return agentsSummary
                 } catch (err) {
                   $state.go('settings.api')
                 } 
