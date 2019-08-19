@@ -95,13 +95,15 @@ define(['../module'], function(app) {
           let existentApi = false
           for (let i = 0; i < parsedExtensions.length; i++) {
             if (parsedExtensions[i].id === id) {
-              parsedExtensions[i] = { id: id, ...extensions } //eslint-disable-line
+              const extensionsTmp = Object.assign({},extensions) 
+              parsedExtensions[i] = { id: id, extensionsTmp } //eslint-disable-line
               existentApi = true
               break
             }
           }
           if (!existentApi) {
-            parsedExtensions.push({ id: id, ...extensions })
+            const extensionsTmp = Object.assign({},extensions) 
+            parsedExtensions.push({ id: id, extensionsTmp })
           }
           this.sessionStorage.setItem(
             'extensions',
@@ -109,7 +111,8 @@ define(['../module'], function(app) {
           )
         } else if (extensions) {
           const newSet = []
-          newSet.push({ id: id, ...extensions })
+          const extensionsTmp = Object.assign({},extensions) 
+          newSet.push({ id: id, extensionsTmp})
           this.sessionStorage.setItem(
             'extensions',
             JSON.stringify(newSet) || []

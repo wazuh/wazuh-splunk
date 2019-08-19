@@ -442,7 +442,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             await this.scope.loadSelectedAgents()
             this.scope.selectedAgents.offset += 499
           }
-          this.scope.firstSelectedList = [...this.scope.selectedAgents.data]
+          this.scope.firstSelectedList = angular.copy(this.scope.selectedAgents.data)
           await this.scope.loadAllAgents()
           this.scope.multipleSelectorLoading = false
         }
@@ -504,7 +504,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
             throw new Error(response.data.error)
           }
           if (response.data.data.failed_ids) {
-            failedIds.push(...response.data.data.failed_ids)
+            response.data.data.failed_ids.forEach(x=>{
+              failedIds.push(x)
+            })
           }
         }
         // Delete agents from a group
@@ -518,7 +520,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
             throw new Error(response.data.error)
           }
           if (response.data.data.failed_ids) {
-            failedIds.push(...response.data.data.failed_ids)
+            response.data.data.failed_ids.forEach(x=>{
+              failedIds.push(x)
+            })
           }
         }
 
@@ -618,11 +622,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
             this.scope.deletedAgents.push(orig)
           }
         })
-
-        const addedIds = [...new Set(this.scope.addedAgents.map(x => x.key))]
-        const deletedIds = [
-          ...new Set(this.scope.deletedAgents.map(x => x.key))
-        ]
+        const addedSet = new Set(this.scope.addedAgents.map(x => x.key))
+        const addedIds = Array.from(addedSet)
+        const deletedSet = new Set(this.scope.deletedAgents.map(x => x.key))
+        const deletedIds = Array.from(deletedSet)
         return { addedIds, deletedIds }
       } catch (error) {
         throw new Error(error.message || error)
