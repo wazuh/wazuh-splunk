@@ -282,15 +282,14 @@ define(['../module'], function(app) {
             })
 
             if (model) {
-              $scope.autocompleteContent.list = [
-                ...new Set(
-                  model.list.filter(function(x) {
-                    return x
-                      .toUpperCase()
-                      .includes(term[1].trim().toUpperCase())
-                  })
-                )
-              ]
+              const listTmp = new Set(
+                model.list.filter(function(x) {
+                  return x
+                    .toUpperCase()
+                    .includes(term[1].trim().toUpperCase())
+                })
+              )
+              $scope.autocompleteContent.list = Array.from(listTmp)
             }
           }
         }
