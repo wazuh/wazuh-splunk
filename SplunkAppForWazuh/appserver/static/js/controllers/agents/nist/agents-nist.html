@@ -59,20 +59,8 @@
   </div>
   <div ng-show="!loadingVizz">
     <!-- first row  -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-show='nistTabs'>
-        <md-tabs md-selected="selectedNistIndex" class="wz-md-tab" style="min-height:173px;" md-border-bottom>
-          <md-tab ng-repeat="tab in nistTabs" label="{{tab.title}}">
-            <div class="md-padding">
-              <span class="wz-headline-title">NIST 800-53 Requirement: {{tab.title}}</span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div layout="row" class="wz-padding-top-10 wz-line-height">
-                <p>{{tab.content}}</p>
-              </div>
-            </div>
-          </md-tab>
-        </md-tabs>
-      </md-card>
+    <div layout="row">
+      <wazuh-card-slider data="nistTabs"></wazuh-card-slider>
     </div>
 
 

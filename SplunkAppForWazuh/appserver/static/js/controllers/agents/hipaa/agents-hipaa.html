@@ -59,20 +59,8 @@
   </div>
   <div ng-show="!loadingVizz">
     <!-- first row  -->
-    <div layout="row" layout-align="center stretch">
-      <md-card flex class="wz-md-card" ng-show='hipaaTabs'>
-        <md-tabs md-selected="selectedHipaaIndex" class="wz-md-tab" style="min-height:155px;" md-border-bottom>
-          <md-tab ng-repeat="tab in hipaaTabs" label="{{tab.title}}">
-            <div class="md-padding">
-              <span class="wz-headline-title">HIPAA Requirement: {{tab.title}}</span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <div layout="row" class="wz-padding-top-10 wz-line-height">
-                <p>{{tab.content}}</p>
-              </div>
-            </div>
-          </md-tab>
-        </md-tabs>
-      </md-card>
+    <div layout="row">
+      <wazuh-card-slider data="hipaaTabs"></wazuh-card-slider>
     </div>
 
 
