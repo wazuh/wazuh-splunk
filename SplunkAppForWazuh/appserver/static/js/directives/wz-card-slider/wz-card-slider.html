@@ -2,9 +2,9 @@
   <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
       <button ng-if="showLeftButton()" class="euiButtonIcon euiButtonIcon--primary wz-margin-left-10" type="button" aria-label="Previous" ng-click="previousPage()"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiButtonIcon__icon" focusable="false" aria-hidden="true"><defs><path id="arrow_left-a" d="M13.069 5.157L8.384 9.768a.546.546 0 0 1-.768 0L2.93 5.158a.552.552 0 0 0-.771 0 .53.53 0 0 0 0 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 0 0 0-.76.552.552 0 0 0-.771 0z"></path></defs><use fill-rule="nonzero" transform="rotate(90 8 8)" xlink:href="#arrow_left-a"></use></svg></button>
       <div  ng-repeat="tab in data track by $index" class="euiFlexItem" ng-if="canShow($index)">
-        <div class="euiCard euiCard--leftAligned wz-padding-bt-5 reqCard wz-font-weight-500" >
+        <div class="euiCard euiCard--leftAligned wz-padding-bt-5 reqCard" >
           <span class="euiCard__content reqCardScrollable">
-            <span class="euiTitle euiTitle--medium euiCard__title">
+            <span class="euiTitle euiTitle--medium euiCard__title wz-font-weight-500">
               Requirement: {{tab.title}}</span>
             <div class="euiText euiText--small euiCard__description">
               <p>{{tab.content}} </p>
