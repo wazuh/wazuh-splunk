@@ -777,6 +777,39 @@ kbn-vis .vis-container {
 }
 
 
+@supports (-ms-ime-align:auto) {
+    @media (min-width: 1060px) {      
+      .wz-logo:after {        
+          content: url("../images/wazuh/png/wazuh_white_full_edge.png");
+      } 
+      .wz-logo-container:after {
+          content: url("../images/wazuh/png/wazuh_white_full_edge.png");
+          width: 150px;
+          max-width: 150px;
+      }
+      .wz-menu-content {
+        height:50px;
+      }
+      .wz-logo-container {
+        padding-bottom: 15px;
+      }
+  }
+  @media (max-width: 1059px) {    
+      .wz-logo{         
+        content: url("../images/wazuh/png/wazuh_white_iso_edge.png");
+        max-height: 45px;
+        max-width: 28px;
+    } 
+    .wz-logo-container:after {
+          content: url("../images/wazuh/png/wazuh_white_iso_edge.png");
+          min-width: 20px!important;
+          max-width: 30px!important;
+          margin-right: 5px!important;
+      }
+  }
+}
+
+
 @supports not (-moz-appearance:none) {
   @media (min-width: 1060px) {      
       .wz-logo{        
@@ -815,7 +848,7 @@ kbn-vis .vis-container {
       }
   }
   @media (max-width: 1059px) {    
-      .wz-logo::after{         
+      .wz-logo{         
           content: url("../images/wazuh/png/wazuh_white_iso.png") ;
           display: flex;
           max-height: 45px;

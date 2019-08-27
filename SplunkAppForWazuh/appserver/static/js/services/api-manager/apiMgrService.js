@@ -317,8 +317,9 @@ define(['../module'], function(module) {
       try {
         const connectionData = await checkRawConnectionById(id)
         const api = connectionData.data.api.data
-        const apiSaved = { ...api } //eslint-disable-line
-        const updatedApi = await updateApiFilter(connectionData.data)
+        const apiTmp = Object.assign({}, api)
+        const apiSaved = { apiTmp } //eslint-disable-line
+        const updatedApi = await updateApiFilter(api)
         let equal = true
         Object.keys(updatedApi).forEach(key => {
           if (updatedApi[key] !== apiSaved[key]) {
