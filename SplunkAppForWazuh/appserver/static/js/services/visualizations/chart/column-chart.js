@@ -14,9 +14,6 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
      * @param {scope} extraParams
      */
     constructor(id, search, attachedElement, scope,extraParams={}) {
-      var customAxisTitleX = ""
-      if(extraParams.customAxisTitleX)
-        customAxisTitleX = extraParams.customAxisTitleX
       super(
         new ChartElement(
           {
@@ -24,7 +21,9 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
             resizable: true,
             'charting.drilldown': 'none',
             'charting.chart': 'column',
-            "charting.axisTitleX.text": customAxisTitleX,
+            'charting.chart.stackMode' : extraParams.stackMode || "default",
+            "charting.axisTitleX.text": extraParams.customAxisTitleX || "",
+            "charting.chart.orientation" : extraParams.chartOrientation || "y",
             managerid: `${id}Search`,
             el: $(`#${attachedElement}`)
           },

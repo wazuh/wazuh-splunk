@@ -88,59 +88,37 @@ define([
          * Visualizations
          */
         new ColumnChart(
-          'hipaaReqSearchVizz',
+          'requirementsOverTime',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | stats count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
-          'hipaaReqSearchVizz',
-          this.scope
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirement"`,
+          'requirementsOverTime',
+          this.scope,
+          {stackMode : "stacked"}
         ),
         new PieChart(
-          'groupsVizz',
+          'top10Requirements',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.groups{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
-          'groupsVizz',
-          this.scope
-        ),
-        new PieChart(
-          'topRules',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.description | rename count as "Count", rule.hipaa{} as "Requirements"`,
-          'topRules',
-          this.scope
-        ),
-        new PieChart(
-          'top5hipaa',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=5 rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirements"`,
-          'top5hipaa',
-          this.scope
-        ),
-        new PieChart(
-          'ruleLevelDistribution',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by rule.level | rename count as "Count", rule.hipaa{} as "Requirements"`,
-          'ruleLevelDistribution',
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=10 rule.hipaa{} | rename rule.hipaa{} as "Requirement"`,
+          'top10Requirements',
           this.scope
         ),
         new ColumnChart(
-          'reqByAgentsVizz',
+          'requirementsDistributionByLevel',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=*| chart  count(rule.hipaa{}) by rule.hipaa{},agent.name  | rename count as "Count", rule.hipaa{} as "Requirements"`,
-          'reqByAgentsVizz',
-          this.scope
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | chart count(rule.hipaa{}) by rule.level,rule.hipaa{} | rename count as "Count" , rule.level as "Level", rule.hipaa{} as "Requirement"`,
+          'requirementsDistributionByLevel',
+          this.scope,
+          {stackMode : "stacked"}
         ),
         new Table(
-          'alertsSummaryVizz',
+          'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizz',
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
+          'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
@@ -181,13 +159,10 @@ define([
           'HIPAA',
           this.filters,
           [
-            'hipaaReqSearchVizz',
-            'ruleLevelDistribution',
-            'top5hipaa',
-            'groupsVizz',
-            'topRules',
-            'reqByAgentsVizz',
-            'alertsSummaryVizz'
+            'requirementsOverTime',
+            'top10Requirements',
+            'requirementsDistributionByLevel',
+            'alertsSummary'
           ],
           {}, //Metrics,
           this.tableResults,
