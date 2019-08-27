@@ -4,6 +4,8 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
+  '../../../services/visualizations/chart/single-value',
+  '../../../services/visualizations/chart/bar-chart',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
@@ -12,6 +14,8 @@ define([
   ColumnChart,
   PieChart,
   Table,
+  SingleValue,
+  BarChart,
   Dropdown,
   RawTableDataService
 ) {
@@ -86,60 +90,54 @@ define([
         /**
          * Visualizations
          */
-        new ColumnChart(
-          'nistReqSearchVizz',
+        new SingleValue(
+          'maxRuleLevel',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
-          'nistReqSearchVizz',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top rule.level | sort - rule.level`,
+          'maxRuleLevel',
+          this.scope
+        ),
+        new SingleValue(
+          'totalAlerts',
+          `${
+            this.filters
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count`,
+          'totalAlerts',
           this.scope
         ),
         new PieChart(
-          'groupsVizz',
+          'top10Requirements',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.groups{} | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
-          'groupsVizz',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=10 rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as Requirement`,
+          'top10Requirements',
           this.scope
         ),
-        new PieChart(
-          'topRules',
+        new BarChart(
+          'requirementsDistributedByLevel',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.description | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
-          'topRules',
-          this.scope
-        ),
-        new PieChart(
-          'top5nist',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=5 rule.nist_800_53{}  | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
-          'top5nist',
-          this.scope
-        ),
-        new PieChart(
-          'ruleLevelDistribution',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by rule.level  | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
-          'ruleLevelDistribution',
-          this.scope
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | chart count(rule.nist_800_53{}) by rule.level,rule.nist_800_53{} | rename count as "Count" , rule.level as "Level", rule.nist_800_53{} as "Requirement"`,
+          'requirementsDistributedByLevel',
+          this.scope,
+          {stackMode : "stacked"}
         ),
         new ColumnChart(
-          'reqByAgentsVizz',
+          'requirementsOverTime',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=*| chart  count(rule.nist_800_53{}) by rule.nist_800_53{},agent.name | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
-          'reqByAgentsVizz',
-          this.scope
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | timechart count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirement"`,
+          'requirementsOverTime',
+          this.scope,
+          {stackMode : "stacked"}
         ),
         new Table(
-          'alertsSummaryVizz',
+          'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizz',
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{},rule.level,rule.description | rename rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
+          'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
@@ -180,13 +178,12 @@ define([
           'NIST 800-53',
           this.filters,
           [
-            'nistReqSearchVizz',
-            'ruleLevelDistribution',
-            'top5nist',
-            'groupsVizz',
-            'topRules',
-            'reqByAgentsVizz',
-            'alertsSummaryVizz'
+            'maxRuleLevel',
+            'totalAlerts',
+            'top10Requirements',
+            'requirementsDistributedByLevel',
+            'requirementsOverTime',
+            'alertsSummary'
           ],
           {}, //Metrics,
           this.tableResults,
