@@ -88,27 +88,32 @@
           </div>
           <div ng-show="extensionsLists.auditing" class="extensions-list">
             <ul class="noDot ul-extensions">
-              <li>
-                <wz-kbn-switch switch-model="extensions.oscap"
-                  switch-change="toggleExtension('oscap',!extensions.oscap)">
-                </wz-kbn-switch><span>OpenSCAP</span>
-              </li>
-              <li>
-                <wz-kbn-switch switch-model="extensions.ciscat"
-                  switch-change="toggleExtension('ciscat',!extensions.ciscat)">
-                </wz-kbn-switch><span>CIS-CAT</span>
-              </li>
+                <li>
+                  <wz-kbn-switch switch-model="extensions.audit"
+                    switch-change="toggleExtension('audit',!extensions.audit)">
+                  </wz-kbn-switch><span>System auditing</span>
+                </li>
+                <li>
+                  <wz-kbn-switch switch-model="extensions.oscap"
+                    switch-change="toggleExtension('oscap',!extensions.oscap)">
+                  </wz-kbn-switch><span>OpenSCAP</span>
+                </li>
+                <li>
+                  <wz-kbn-switch switch-model="extensions.ciscat"
+                    switch-change="toggleExtension('ciscat',!extensions.ciscat)">
+                  </wz-kbn-switch><span>CIS-CAT</span>
+                </li>
             </ul>
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               sub-title="'Policy monitoring'" ui-sref='ow-pm' current-tab="'pm'" description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
-              <wz-welcome-card ng-if="audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
+              <wz-welcome-card ng-if="extensions.audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
               sub-title="'Audit'" ui-sref='ow-audit' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
+            <wz-welcome-card ng-if="extensions.oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
               sub-title="'Open SCAP'" ui-sref='ow-os' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
+            <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               sub-title="'CIS-CAT'" ui-sref='ow-ciscat' current-tab="'oscap'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
           </div>
         </div>

@@ -213,6 +213,11 @@
           
           <div ng-show="extensionsLists.auditing" class="extensions-list">
             <ul class="noDot ul-extensions">
+              <li>
+                <wz-kbn-switch switch-model="extensions.audit"
+                  switch-change="toggleExtension('audit',!extensions.audit)">
+                </wz-kbn-switch><span>System auditing</span>
+              </li>
               <li ng-if="checkModules('oscap')">
                 <wz-kbn-switch switch-model="extensions.oscap"
                   switch-change="toggleExtension('oscap',!extensions.oscap)">
