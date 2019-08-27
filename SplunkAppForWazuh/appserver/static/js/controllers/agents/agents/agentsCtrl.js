@@ -61,22 +61,22 @@ define([
       try {
         const parsedResult = agentData.data.data
         
-        let summary = parsedResult.summary
+        let summary = parsedResult.agent_status
         let lastAgent = parsedResult.last_registered_agent
         let groups = parsedResult.groups
 
         this.scope.noAgents = summary.Total - 1 < 1
         this.scope.agentsCountActive = summary.Active - 1
         this.scope.lastAgent = lastAgent || 'Unknown'
-        const os = parsedResult.unique_agent_os
-          ? parsedResult.unique_agent_os.items.map(item => item.os).filter(item => !!item)
+        const os = parsedResult.agent_os
+          ? parsedResult.agent_os.items.map(item => item.os).filter(item => !!item)
           : false
-        const versions = parsedResult.unique_agent_version
-          ? parsedResult.unique_agent_version.items.map(item => item.version).filter(item => !!item)
+        const versions = parsedResult.agent_version
+          ? parsedResult.agent_version.items.map(item => item.version).filter(item => !!item)
           : false
         const nodes =
-        parsedResult.unique_node_names && parsedResult.unique_node_names.items
-            ? parsedResult.unique_node_names.items.map(item => item['node_name']).filter(item => !!item)
+        parsedResult.nodes && parsedResult.nodes.items
+            ? parsedResult.nodes.items.map(item => item['node_name']).filter(item => !!item)
             : false
         groups = groups
           ? groups.items.map(item => item.name).filter(item => !!item)
