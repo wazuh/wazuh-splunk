@@ -319,7 +319,7 @@ define(['../module'], function(module) {
         const api = connectionData.data.api.data
         const apiTmp = Object.assign({}, api)
         const apiSaved = { apiTmp } //eslint-disable-line
-        const updatedApi = await updateApiFilter(api)
+        const updatedApi = await updateApiFilter(connectionData.data)
         let equal = true
         Object.keys(updatedApi).forEach(key => {
           if (updatedApi[key] !== apiSaved[key]) {
