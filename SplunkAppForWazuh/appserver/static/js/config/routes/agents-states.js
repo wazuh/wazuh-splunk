@@ -21,35 +21,11 @@ define(['../module'], function (module) {
               '$requestService',
               '$state',
               async $requestService => {
-                try {
-                  const responseStatus = await $requestService.apiReq(
-                    '/cluster/status'
+                try {                  
+                  const agentsSummary = await $requestService.apiReq(
+                    '/summary/agents'
                   )
-                  const response = ((responseStatus || {}).data || {}).data || {}
-                  return await Promise.all([
-                    $requestService.apiReq('/agents/summary'),
-                    $requestService.apiReq('/agents', {
-                      limit: 1,
-                      sort: '-dateAdd'
-                    }),
-                    $requestService.apiReq('/agents/stats/distinct', {
-                      fields: 'os.name,os.version,os.platform',
-                      select: 'os.name,os.version,os.platform'
-                    }),
-                    $requestService.apiReq('/agents/stats/distinct', {
-                      fields: 'version',
-                      select: 'version',
-                      sort: 'version'
-                    }),
-                      response.enabled === 'yes' &&
-                      response.running === 'yes'
-                      ? $requestService.apiReq('/agents/stats/distinct', {
-                        fields: 'node_name',
-                        select: 'node_name'
-                      })
-                      : Promise.resolve(false),
-                    $requestService.apiReq('/agents/groups', {})
-                  ])
+                  return agentsSummary
                 } catch (err) {
                   $state.go('settings.api')
                 } 
@@ -89,9 +65,6 @@ define(['../module'], function (module) {
                     $requestService.apiReq(`/agents/${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
                     $requestService.apiReq(`/rootcheck/${id}/last_scan`),
-                    $requestService.apiReq(`/syscollector/${id}/hardware`),
-                    $requestService.apiReq(`/syscollector/${id}/os`),
-                    $requestService.apiReq(`/agents/${id}/group/is_sync`)
                   ])
 
                   return results
