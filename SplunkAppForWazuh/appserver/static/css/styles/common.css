@@ -2376,3 +2376,7 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   font-size: 12px !important;
   cursor: pointer !important;
 }
+
+.wz-font-weight-500 {
+  font-weight: 500 !important;
+}
