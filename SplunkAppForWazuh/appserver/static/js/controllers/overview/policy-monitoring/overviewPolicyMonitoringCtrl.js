@@ -101,7 +101,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
         ),
@@ -109,7 +109,7 @@ define([
           'alertsSummaryTable',
           `${
             this.filters
-          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          } sourcetype=wazuh |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
