@@ -725,7 +725,7 @@ class report(controllers.BaseController):
                                 pass
                             elif 'items' in conf_data['data'] and 'filters' in conf_data['data']['items'][0] and not conf_data['data']['items'][0]['filters']:
                                 self.setTableTitle(pdf)
-                                pdf.cell(0, 10, txt = "Group configuration is not available. Click here for more information." , border = 'B', ln = 1, align = 'C', fill = False, link = 'https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
+                                pdf.cell(0, 10, txt = "Group configuration is not available." , border = 'B', ln = 1, align = 'C', fill = False, link = 'https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
                                 pdf.add_page()  
                                 pdf.ln(20)
                             else:
@@ -800,7 +800,7 @@ class report(controllers.BaseController):
                                 self.addTables(table,pdf,185,12)
                             else:
                                 self.setTableTitle(pdf)
-                                pdf.cell(0, 10, txt = "No agents are assigned to this group" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                                pdf.cell(0, 10, txt = "No agents have been assigned to this group" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
                                 pdf.set_text_color(23,23,23)
