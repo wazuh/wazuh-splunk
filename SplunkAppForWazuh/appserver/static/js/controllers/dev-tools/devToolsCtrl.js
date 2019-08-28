@@ -578,7 +578,10 @@ define([
               ? 'DELETE'
               : 'GET'
           } else {
-            method = 'GET'
+              if (desiredGroup.requestText.startsWith('GET') )
+                method = 'GET'
+              else
+                return this.apiOutputBox.setValue("3029 - Allowed method: [GET]")
           }
           let requestCopy = desiredGroup.requestText.includes(method)
             ? desiredGroup.requestText.split(method)[1].trim()
