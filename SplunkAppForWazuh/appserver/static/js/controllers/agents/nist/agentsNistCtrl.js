@@ -136,7 +136,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{},rule.level,rule.description | rename rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
+          } sourcetype=wazuh rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{},rule.level,rule.description | sort count DESC |  rename rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
           'alertsSummary',
           this.scope
         ),

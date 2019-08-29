@@ -117,7 +117,7 @@ define([
           'alertsSummary',
           `${
             this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
+          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description |  sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
           'alertsSummary',
           this.scope
         ),
