@@ -73,7 +73,7 @@
         <div flex>OS: <span class="wz-text-bold">{{ syscollector.os.os.name }} {{ syscollector.os.os.version }}</span>
         </div>
         <div flex>CPU: <span class="wz-text-bold">{{ syscollector.hardware.cpu.name }}</span></div>
-        <div flex>Last scan: <span class="wz-text-bold">{{ syscollector.os.scan.time }}</span></div>
+        <div flex>Last scan: <span class="wz-text-bold">{{ setBrowserOffset(syscollector.os.scan.time) }}</span></div>
       </md-card-content>
     </md-card>
   </div>
