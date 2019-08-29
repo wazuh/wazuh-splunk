@@ -92,7 +92,7 @@ define([
           'eventsOcurred',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
+          } sourcetype=wazuh data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
           'eventsOcurred',
           this.scope,
           {customAxisTitleX : "Time span"}
@@ -115,7 +115,7 @@ define([
           'resourceUsage',
           `${
             this.filters
-          } sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
+          } sourcetype=wazuh data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
           'resourceUsage',
           this.scope,
           {customAxisTitleX : "Time span"}
