@@ -57,7 +57,7 @@
 }
 .extraHeaderInfo{
     background: #ecf6fb;
-    border-top: 1px solid #5cc05c29 !important;
+    border-top: 1px solid rgba(92, 192, 92, 0.161) !important;
     color: #396e3e !important;
     padding: 12px 15px;
 } 
