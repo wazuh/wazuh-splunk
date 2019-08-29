@@ -2412,3 +2412,7 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 .wz-font-weight-500 {
   font-weight: 500 !important;
 }
+
+.wz-width-96 {
+  width: 96%;
+}
