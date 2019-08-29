@@ -7,7 +7,8 @@ define(['../module', 'jquery'], function(module, $) {
       $currentDataService,
       $requestService,
       $notificationService,
-      $navigationService
+      $navigationService,
+      $keyEquivalenceService
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
@@ -16,6 +17,7 @@ define(['../module', 'jquery'], function(module, $) {
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
       this.navigationService = $navigationService
+      this.keyEquivalence = $keyEquivalenceService.equivalences()
     }
 
     /**
@@ -286,9 +288,10 @@ define(['../module', 'jquery'], function(module, $) {
         const processes = await this.apiReq(
           `/syscollector/${agentId}/processes`
         )
-        const processesKeys = ['Name', 'Euser', 'Nice', 'State']
+        const processesKeys = ['Name', 'Euser', 'Priority', 'State']
         const processesData = processes.data.data.items.map(n => {
-          n.nice = n.nice ? n.nice.toString() : 'undefined'
+          n.nice = (n.nice || n.nice === 0) ? n.nice.toString() : 'undefined'
+          n.state = this.keyEquivalence[n.state]
           return [n.name, n.euser, n.nice, n.state]
         })
         const processesTable = { fields: processesKeys, rows: processesData }
