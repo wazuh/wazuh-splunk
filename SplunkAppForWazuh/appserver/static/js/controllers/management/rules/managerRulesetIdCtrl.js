@@ -155,7 +155,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast('XMLContentReady', {
+            this.scope.$broadcast('RuleIdContentReady', {
               data: this.scope.XMLContent
             })
           }else{

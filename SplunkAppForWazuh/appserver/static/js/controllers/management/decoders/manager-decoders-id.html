@@ -187,7 +187,7 @@
         </button>
         <span ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</span>
         <div ng-show="!readOnly">
-          <button ng-if="adminMode" ng-disabled='xmlHasErrors || saveIncomplete'
+          <button ng-if="adminMode && fetchedXML" ng-disabled='xmlHasErrors || saveIncomplete'
             ng-click='saveDecoderConfig(currentDecoder.file)' class='btn wz-button-empty pull-right wz-margin-left-10'>
             <span ng-show='!xmlHasErrors && adminMode'>
               <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"

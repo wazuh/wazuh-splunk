@@ -115,6 +115,13 @@ define(['../../module', 'FileSaver'], function(app) {
         event.stopPropagation()
         this.scope.overwrite = false
       })
+      
+      this.scope.$on('RuleIdContentReady', (event,params) => {
+        event.preventDefault()
+        this.scope.$broadcast('XMLContentReady', {
+          data: params.data
+        })
+      })
       this.scope.$on('saveComplete', event => {
         event.stopPropagation()
         this.scope.saveIncomplete = false
