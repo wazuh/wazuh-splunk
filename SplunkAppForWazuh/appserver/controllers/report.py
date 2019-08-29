@@ -187,7 +187,7 @@ class report(controllers.BaseController):
 
     def setTableTitle(self,pdf):
         pdf.set_font('RobotoLight', '', 10)
-        pdf.set_margins(11, 0, 11)
+        pdf.set_margins(10, 0, 10)
         pdf.set_fill_color(255, 255, 255)
         pdf.set_text_color(11,11,11)
 
@@ -305,10 +305,10 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 table_title = key
                 self.setTableTitle(pdf)
+                pdf.set_margins(10, 0, 10)
                 #if 'title' in tables and tables['title']:
                 pdf.ln(5)
                 pdf.cell(max_width, 5, txt = table_title, border = '', align = '', fill = False, link = '')
-                pdf.set_margins(12, 0, 12)
                 pdf.ln(5)
                 rows_count = rows_count + 5
                 self.setBlueHeaderStyle(pdf)
@@ -1180,7 +1180,7 @@ class report(controllers.BaseController):
         pdf.cell(0,9, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
         pdf.ln()
         pdf.cell(0,9, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
-        pdf.ln(2)
+        pdf.ln(10)
 
     #Sorts the width of the fields
     def sort_table_sizes(self, fields, sizes):
