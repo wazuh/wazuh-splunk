@@ -96,7 +96,7 @@ define([
           'alertsPacksOverTime',
           `${
             this.filters
-          } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
+          } sourcetype=wazuh data.osquery.pack="*" | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
           this.scope,
           {customAxisTitleX : "Time span"}
