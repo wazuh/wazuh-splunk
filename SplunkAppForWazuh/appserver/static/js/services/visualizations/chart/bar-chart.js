@@ -12,7 +12,7 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
      * @param {String} attachedElement
      * @param {scope} scope
      */
-    constructor(id, search, attachedElement, scope, extraParams) {
+    constructor(id, search, attachedElement, scope, extraParams={}) {
       super(
         new ChartElement(
           {
