@@ -54,7 +54,7 @@
         <!-- Agent status -->
         <div ng-if="currentAgent.status" style="margin-left: 5px;">
           <span class="no-wrap wz-padding-left-8" aria-hidden="false">
-            <p class="round status littleStat teal" ng-class="getAgentStatusClass(currentAgent.status)"></p>&nbsp;&nbsp;
+              <wz-svg icon="agent-{{currentAgent.status}}"></wz-svg>
           </span>{{formatAgentStatus(currentAgent.status)}}
         </div>
       </div>

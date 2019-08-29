@@ -12,7 +12,7 @@
       <span>Docker listener</span>
     <span ng-if="agent && agent.status">
       <span class="no-wrap wz-padding-left-8" aria-hidden="false">
-        <p class="round status littleStat teal" ng-class="getAgentStatusClass(agent.status)"></p>&nbsp;&nbsp;
+        <wz-svg icon="agent-{{agent.status}}"></wz-svg>
       </span>{{formatAgentStatus(agent.status)}}
     </span>
   </div>
