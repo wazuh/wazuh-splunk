@@ -44,6 +44,15 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.lookingGroup = false
       this.scope.editingFile = false
       this.scope.loadingRing = false
+      this.scope.exportConfig = false
+      this.scope.selectedOptions = {
+        groupConf: true,
+        agentsList: true
+      }
+      this.scope.showModulesToExport = () => this.showModulesToExport()
+      this.scope.keyEquivalences = key => this.keyEquivalences(key)
+      this.scope.selectAll = value => this.selectAll(value)
+      this.scope.checkAllDisabled = () => this.checkAllDisabled()
       this.scope.$watch('lookingGroup', value => {
         this.scope.availableAgents = {
           loaded: false,
@@ -270,6 +279,41 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.notification.showErrorToast('Error downloading CSV')
       }
       return
+    }
+
+    
+    /**
+     * Shows the popover to select the modules
+     */
+    showModulesToExport() {
+      this.scope.exportConfig = !this.scope.exportConfig
+      this.scope.$applyAsync()
+    }
+
+    
+    /**
+     * Selects all the modules to export the configuration
+     */
+    selectAll(value) {
+      try {
+        Object.keys(this.scope.selectedOptions).forEach(key => {
+          this.scope.selectedOptions[key] = value
+        })
+      } catch (error) {
+        this.$notificationService.showErrorToast('Cannot select the modules')
+      }
+    }
+
+    checkAllDisabled() {
+      try {
+        let result = false
+        Object.keys(this.scope.selectedOptions).forEach(key => {
+          if (this.scope.selectedOptions[key]) { result = true }
+        })
+        return !result        
+      } catch (error) {
+        this.$notificationService.showErrorToast('Error checking selected options')
+      }
     }
 
     /**
@@ -566,6 +610,17 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$applyAsync()
       return
     }
+    
+    /*
+     * Get the key equivalences
+     */
+    keyEquivalences(key) {
+      const options = {
+        groupConf: "Configurations",
+        agentsList: "Agents in group"
+      }
+      return options[key] || key
+    }
 
     async editGroupAgentConfig() {
       try {
@@ -739,10 +794,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
     }
 
     async initReportConfig(){
+      
       const data = {
         configurations: [
-
-          {
+          this.scope.selectedOptions.groupConf ? {
             title: 'Main group configurations',
             sections: [
               {
@@ -752,8 +807,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
               },
               
             ]
-          },
-          {
+          } : false,
+          this.scope.selectedOptions.agentsList ? {
             title: 'Agents ',
             sections: [
               {
@@ -763,7 +818,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
               },
               
             ]
-          },
+          } : false,
         ]
       }
 
