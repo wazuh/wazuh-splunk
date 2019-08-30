@@ -2,6 +2,40 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+
+## Wazuh v3.9.4 - Splunk Enterprise v7.3.0 / v7.3.1 - Revision 35
+
+### Added
+
+- Support for Wazuh v3.10.0
+- New design and several UI/UX changes. [#726](https://github.com/wazuh/wazuh-splunk/issues/726)
+- Adapt Wazuh Splunk APP for Microsoft Edge Browser. [#813](https://github.com/wazuh/wazuh-splunk/issues/813)
+- Added an interactive guide for registering agents, things are now easier for the user, guiding it through the steps needed ending in a copy & paste snippet for deploying his agent [#623](https://github.com/wazuh/wazuh-splunk/issues/623)
+- Added new dashboards for the recently added regulatory compliance groups into the Wazuh core. They are HIPAA and NIST-800-53. [#705](https://github.com/wazuh/wazuh-splunk/issues/705)
+- Export all the information of a Wazuh group and its related agents in a PDF document. [#641](https://github.com/wazuh/wazuh-splunk/issues/641)
+- Export the configuration of a certain agent as a PDF document. Supports granularity for exporting just certain sections of the configuration [#640](https://github.com/wazuh/wazuh-splunk/issues/640)
+- Added debug level for app logs [#637](https://github.com/wazuh/wazuh-splunk/issues/637)
+
+### Changed
+- Improved app performance [#798](https://github.com/wazuh/wazuh-splunk/issues/798)
+- APP navigation have been improved using nested states [#669](https://github.com/wazuh/wazuh-splunk/issues/669)
+- Reduced Agents preview load time using the new API endpoint /summary/agents [#798](https://github.com/wazuh/wazuh-splunk/issues/798)
+- Replaced the requirements slider component with a new styled component [805(https://github.com/wazuh/wazuh-splunk/issues/805)
+- Modules are just being shown only when supported by the agent OS. [#753](https://github.com/wazuh/wazuh-splunk/issues/753)
+
+### Fixed
+- API sensitive information is now hidden on every transition [#792](https://github.com/wazuh/wazuh-splunk/issues/792)
+- Fixed NULL labels in visualizations [#783](https://github.com/wazuh/wazuh-splunk/issues/783)
+- Agent data is now being shown correctly when the agent is not active [#748](https://github.com/wazuh/wazuh-splunk/issues/748)
+- Devtools content is now successfully loaded [#734](https://github.com/wazuh/wazuh-splunk/issues/734)
+- Filters are correctly applied in the search bar [#732](https://github.com/wazuh/wazuh-splunk/issues/732)
+- Removed duplicated Log box [#740](https://github.com/wazuh/wazuh-splunk/issues/740)
+- Applied the right sorting order on lists [#721](https://github.com/wazuh/wazuh-splunk/issues/721)
+- Fixed blank page in Management->Cluster [#734](https://github.com/wazuh/wazuh-splunk/issues/734)
+- Cluster is properly validated [#699](https://github.com/wazuh/wazuh-splunk/issues/699)
+- Fixed Agents tab navigation using the breadcrumb [#810](https://github.com/wazuh/wazuh-splunk/issues/810)
+
+
 ## Wazuh v3.9.5 - Splunk Enterprise v7.3.0 - Revision 36
 
 ### Added
