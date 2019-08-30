@@ -295,11 +295,7 @@
         <!-- XML editor for rules -->
         <div ng-show="editingFile">
           <div layout="row" class="md-padding wz-padding-top-0">
-            <button class="md-icon-button" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()">
-              <i class="fa fa-fw fa-close" aria-hidden="true"></i>
-              <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
-            </button>
-            <span ng-if="adminMode" ng-click="closeEditingFile()" class="btn wz-button-cancel">Cancel</span>
+            <span  ng-click="closeEditingFile()" class="btn wz-button-cancel">Cancel</span>
             <button ng-if="adminMode && fetchedXML" ng-disabled="xmlHasErrors || saveIncomplete"
               ng-click="saveRuleConfig(ruleInfo.file)" class="btn wz-button-empty pull-right wz-margin-left-10">
               <span ng-show="!xmlHasErrors && adminMode">

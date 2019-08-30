@@ -67,7 +67,7 @@
         class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
 
       <!-- Show files and button to add a new file -->
-      <a ng-if="rulesetFiles" ng-click="addNewFile()">Add new rules file</a>
+      <a ng-if="rulesetFiles && adminMode" ng-click="addNewFile()">Add new rules file</a>
       <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer">
         Manage rules files
       </span>
@@ -147,8 +147,8 @@
   <!-- XML editor for add new rule file-->
   <div ng-if="addingNewFile">
     <div layout="row" class="md-padding wz-padding-top-0">
-      <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-      <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete'
+      <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
+      <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete'
         ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
         class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='!xmlHasErrors && adminMode'>
@@ -176,8 +176,8 @@
   <!-- XML editor for edit file-->
   <div ng-if="editingRulesetFile">
     <div layout="row" class="md-padding wz-padding-top-0">
-      <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-      <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
+      <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
+      <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
         class='btn wz-button-empty pull-right wz-margin-left-10'>
         <span ng-show='!xmlHasErrors && adminMode'><i
             ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
@@ -199,7 +199,7 @@
 
   <!-- XML viewer -->
   <div ng-show="XMLContent">
-    <button ng-if="adminMode" ng-click='closeEditingFile()'
+    <button ng-click='closeEditingFile()'
       class='btn wz-button-cancel wz-margin-left-10'>Close</button>
     <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true" no-local="fileName" />
   </div>

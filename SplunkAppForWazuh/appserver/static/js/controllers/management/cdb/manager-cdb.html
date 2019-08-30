@@ -43,7 +43,7 @@
     <md-card class="wz-md-card no-margin-sides">
       <md-card-actions layout="row" layout-align="end center"
         class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-        <span ng-click="addNewFile()" class="wz-color-text cursor-pointer">Add new list</span>
+        <span ng-if="adminMode" ng-click="addNewFile()" class="wz-color-text cursor-pointer">Add new list</span>
         <span flex="" class="flex"></span>
       </md-card-actions>
       <md-card-contents>
