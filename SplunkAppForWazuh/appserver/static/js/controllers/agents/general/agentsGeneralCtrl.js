@@ -109,9 +109,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthFailure`,
-          `${
-            this.filters
-          } sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
+          `${this.filters} sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
           '$result.count$',
           'authFailure',
@@ -120,9 +118,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthSuccess`,
-          `${
-            this.filters
-          } sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
+          `${this.filters} sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
           '$result.count$',
           'authSuccess',
@@ -152,41 +148,33 @@ define([
         ),
         new LinearChart(
           'alertGroupEvoVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.level=*| timechart count by rule.groups{}  `,
+          `${this.filters} sourcetype=wazuh rule.level=*| timechart count by rule.groups{}  `,
           'alertGroupEvoVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new ColumnChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
           'alertsVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'agentsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
         ),
         new Table(
           'groupsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
+          `${this.filters} sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
           'groupsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -194,9 +182,7 @@ define([
         ),
         new RawTableDataService(
           'groupsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
+          `${this.filters} sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
           'groupsSummaryTableToken',
           '$result$',
           this.scope,
@@ -219,9 +205,7 @@ define([
           group: this.agent[0].data.data.group,
           lastKeepAlive: this.agent[0].data.data.lastKeepAlive,
           dateAdd: this.agent[0].data.data.dateAdd,
-          agentOS: `${this.agent[0].data.data.os.name} ${
-            this.agent[0].data.data.os.codename
-          } ${this.agent[0].data.data.os.version}`,
+          agentOS: `${this.agent[0].data.data.os.name} ${this.agent[0].data.data.os.codename} ${this.agent[0].data.data.os.version}`,
           syscheck: this.agent[1].data.data,
           rootcheck: this.agent[2].data.data
         }

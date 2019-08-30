@@ -1,4 +1,4 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   const checkAdmin = async $currentDataService => {
@@ -12,7 +12,7 @@ define(['../module'], function (module) {
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function ($stateProvider, BASE_URL) {
+    function($stateProvider, BASE_URL) {
       $stateProvider
         // Manager
         .state('manager', {
@@ -92,7 +92,9 @@ define(['../module'], function (module) {
           resolve: {
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -134,7 +136,9 @@ define(['../module'], function (module) {
             ],
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -151,7 +155,9 @@ define(['../module'], function (module) {
           resolve: {
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -193,7 +199,9 @@ define(['../module'], function (module) {
             ],
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -211,7 +219,9 @@ define(['../module'], function (module) {
           resolve: {
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -229,7 +239,9 @@ define(['../module'], function (module) {
           resolve: {
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ],
             cdbInfo: [
               '$cdbEditor',
@@ -277,7 +289,9 @@ define(['../module'], function (module) {
             ],
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -294,7 +308,9 @@ define(['../module'], function (module) {
           resolve: {
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ],
             clusterInfo: [
               '$requestService',
@@ -340,7 +356,9 @@ define(['../module'], function (module) {
           resolve: {
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ],
             clusterInfo: [
               '$requestService',
@@ -386,7 +404,9 @@ define(['../module'], function (module) {
           resolve: {
             isAdmin: [
               '$currentDataService',
-              async $currentDataService => { return await checkAdmin($currentDataService) }
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ],
             statusData: [
               '$requestService',

@@ -122,58 +122,44 @@ define([
          */
         new PieChart(
           'groupsElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
           'groupsElement',
           this.scope
         ),
         new ColumnChart(
           'agentsElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
           'agentsElement',
           this.scope
         ),
         new PieChart(
           'commandsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
           'commandsVizz',
           this.scope
         ),
         new PieChart(
           'filesElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
           'filesElement',
           this.scope
         ),
         new AreaChart(
           'alertsOverTime',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
           'alertsOverTimeElement',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryElement',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

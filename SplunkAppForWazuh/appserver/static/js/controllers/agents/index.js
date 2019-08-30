@@ -17,5 +17,5 @@ define([
   './vulnerabilities/agentsVulnerabilitiesCtrl',
   './configuration-assessment/agentsConfigurationAssessmentsCtrl',
   './hipaa/agentsHipaaCtrl',
-  './nist/agentsNistCtrl',
+  './nist/agentsNistCtrl'
 ], function() {})

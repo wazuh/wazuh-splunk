@@ -52,16 +52,14 @@ define([
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertSummary',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new LinearChart(
           'alertNodeSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh | timechart span=1h count by cluster.node`,
+          `${this.filters} sourcetype=wazuh | timechart span=1h count by cluster.node`,
           'alertNodeSummary',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'topNodes',
@@ -74,7 +72,7 @@ define([
           `${this.filters} sourcetype=wazuh | timechart span=2h count`,
           'overviewNode',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         )
       ]
       const parsedResult = monitoringInfo.map(item =>
@@ -303,9 +301,7 @@ define([
      */
     launchSearches() {
       this.vizz[3].changeSearch(
-        `${this.filters} cluster.node=${
-          this.scope.currentNode.name
-        } sourcetype=wazuh | timechart span=2h count`
+        `${this.filters} cluster.node=${this.scope.currentNode.name} sourcetype=wazuh | timechart span=2h count`
       )
     }
 

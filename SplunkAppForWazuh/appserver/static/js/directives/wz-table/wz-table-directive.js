@@ -100,7 +100,7 @@ define([
         $scope.scapepath = $scope.path.split('/').join('')
 
         $scope.updateColumns = key => {
-          if(!$scope.isLastKey(key)){
+          if (!$scope.isLastKey(key)) {
             const cleanArray = $scope.keys.map(item => item.value || item)
             if (cleanArray.includes(key)) {
               const idx = cleanArray.indexOf(key)
@@ -119,7 +119,9 @@ define([
               if (originalIdx >= 0) {
                 $scope.keys.splice(originalIdx, 0, originalKey)
               } else {
-                let originalKey = $scope.originalkeys.filter(k => k.key.value === key || k.key === key)
+                let originalKey = $scope.originalkeys.filter(
+                  k => k.key.value === key || k.key === key
+                )
                 try {
                   originalKey = originalKey[0].key
                   const originalIdx = $scope.originalkeys.findIndex(
@@ -131,7 +133,9 @@ define([
                     $scope.keys.push(originalKey)
                   }
                 } catch (error) {
-                  $notificationService.showWarningToast('Cannot recover column.')
+                  $notificationService.showWarningToast(
+                    'Cannot recover column.'
+                  )
                 }
               }
             }
@@ -140,17 +144,17 @@ define([
         }
 
         $scope.exists = key => {
-          const str = key || key.value;
-          for (const k of $scope.keys) if ((k.value || k) === str) return true;
-          return false;
-        };
+          const str = key || key.value
+          for (const k of $scope.keys) if ((k.value || k) === str) return true
+          return false
+        }
 
-         $scope.isLastKey = (key) => {
-          const exists = $scope.exists(key);
-          const keysLength = $scope.keys.length === 1;
-          const keyValue = key || key.value;
-          const lastKeyValue = $scope.keys[0].value || $scope.keys[0];
-          return exists && keysLength && keyValue && lastKeyValue;
+        $scope.isLastKey = key => {
+          const exists = $scope.exists(key)
+          const keysLength = $scope.keys.length === 1
+          const keyValue = key || key.value
+          const lastKeyValue = $scope.keys[0].value || $scope.keys[0]
+          return exists && keysLength && keyValue && lastKeyValue
         }
 
         $scope.setColResizable = () => {
@@ -245,35 +249,41 @@ define([
           }
         }
 
-        $scope.canFilter = (keyTmp) => {
-          return (($scope.path === '/rules' && ( keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path' )) || 
-          ($scope.path === '/decoders' && (keyTmp === 'path' || keyTmp === 'file')) )
+        $scope.canFilter = keyTmp => {
+          return (
+            ($scope.path === '/rules' &&
+              (keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path')) ||
+            ($scope.path === '/decoders' &&
+              (keyTmp === 'path' || keyTmp === 'file'))
+          )
         }
 
-        $scope.parseKey = key => {		
-          return key ? key.value || key : key;		
+        $scope.parseKey = key => {
+          return key ? key.value || key : key
         }
 
-         $scope.handleClick = (key, item, ev) => {
-          const value = $scope.parseValue(key, item);
-          let keyTmp = $scope.parseKey(key);
-          const valueTmp = typeof value !== 'string' ? value.toString() : value;
+        $scope.handleClick = (key, item, ev) => {
+          const value = $scope.parseValue(key, item)
+          let keyTmp = $scope.parseKey(key)
+          const valueTmp = typeof value !== 'string' ? value.toString() : value
           const canFilter = $scope.canFilter(keyTmp)
           if (canFilter) {
             if (value !== '-' && keyTmp !== 'file') {
-              const filter = `${keyTmp}:${valueTmp}`;
-              $scope.$emit('applyFilter', { filter });
+              const filter = `${keyTmp}:${valueTmp}`
+              $scope.$emit('applyFilter', { filter })
             } else if (keyTmp === 'file') {
               const readOnly = !(
-                item.path === 'etc/rules' ||
-                item.path === 'etc/decoders'
+                item.path === 'etc/rules' || item.path === 'etc/decoders'
               )
-              $scope.$emit('editFile', { file: item.file, path: item.path, readOnly })
+              $scope.$emit('editFile', {
+                file: item.file,
+                path: item.path,
+                readOnly
+              })
             }
             ev.stopPropagation()
           }
         }
-
 
         $scope.sort = async field =>
           sort(field, $scope, instance, fetch, $notificationService)
@@ -305,7 +315,7 @@ define([
          * @param {String} search
          */
         const query = async (query, search) => {
-          try{
+          try {
             await data.queryData(
               query,
               search,
@@ -315,7 +325,7 @@ define([
               fetch,
               $notificationService
             )
-          }catch(error){
+          } catch (error) {
             $scope.error = `Error while querying API.`
             $notificationService.showErrorToast(
               `Error while querying API. ${error.message || error}`

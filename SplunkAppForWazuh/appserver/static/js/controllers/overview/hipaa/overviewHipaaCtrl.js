@@ -40,7 +40,7 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      nistExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -55,16 +55,22 @@ define([
       this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.hipaaTabs = hipaaTabs ? hipaaTabs : false
 
-
       this.filters = this.getFilters()
 
-      this.scope.expandArray = [false, false, false, false, false,false,false,false]
+      this.scope.expandArray = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.hipaa{}="*" | stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
+        `${this.filters} sourcetype=wazuh rule.hipaa{}="*" | stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
         'rule.hipaa{}',
         '$form.hipaa$',
         'dropDownInput',
@@ -80,75 +86,57 @@ define([
       this.vizz = [
         new ColumnChart(
           'alertsVolumeByAgent',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$"  | chart count by agent.id,rule.hipaa{} | rename agent.id as "Agent ID", rule.hipaa{} as "Requirement", count as "Count"`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$"  | chart count by agent.id,rule.hipaa{} | rename agent.id as "Agent ID", rule.hipaa{} as "Requirement", count as "Count"`,
           'alertsVolumeByAgent',
           this.scope,
-          {stackMode : "stacked"}
+          { stackMode: 'stacked' }
         ),
         new PieChart(
           'top10Requirements',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="*" | top limit=10 rule.hipaa{} | rename rule.hipaa{} as "Requirement"`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="*" | top limit=10 rule.hipaa{} | rename rule.hipaa{} as "Requirement"`,
           'top10Requirements',
-          this.scope,
+          this.scope
         ),
         new PieChart(
           'mostActiveAgents',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=10 agent.name`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=10 agent.name`,
           'mostActiveAgents',
           this.scope
         ),
         new SingleValue(
           'maxRuleLevel',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top rule.level | sort - rule.level`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | top rule.level | sort - rule.level`,
           'maxRuleLevel',
           this.scope
         ),
         new SingleValue(
           'totalAlerts',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count`,
           'totalAlerts',
           this.scope
         ),
         new ColumnChart(
           'requirementsEvolutionOverTime',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=* | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirement"`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=* | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirement"`,
           'requirementsEvolutionOverTime',
           this.scope,
-          {stackMode : "stacked"}
+          { stackMode: 'stacked' }
         ),
         new ColumnChart(
           'requirementsDistributionByAgent',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=* | chart count(rule.hipaa{}) by agent.name,rule.hipaa{} | rename count as "Count" , agent.name as "Agent name", rule.hipaa{} as "Requirement"`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" agent.name=* | chart count(rule.hipaa{}) by agent.name,rule.hipaa{} | rename count as "Count" , agent.name as "Agent name", rule.hipaa{} as "Requirement"`,
           'requirementsDistributionByAgent',
           this.scope
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by agent.name,rule.hipaa{},rule.level,rule.description | sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count", agent.name as "Agent"`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by agent.name,rule.hipaa{},rule.level,rule.description | sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count", agent.name as "Agent"`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as "Requirements", rule.description as "Rule description", count as Count`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as "Requirements", rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -181,9 +169,6 @@ define([
             {}, //Metrics
             this.tableResults
           )
-
-    
-
       } catch (error) {}
     }
   }

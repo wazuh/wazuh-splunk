@@ -125,34 +125,26 @@ define([
          */
         new AreaChart(
           'alertsSeverityOverTimeVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
+          `${this.filters} sourcetype=wazuh rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
           'alertsSeverityOverTimeVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'commonRules',
-          `${
-            this.filters
-          } rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
+          `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
           'commonRules',
           this.scope
         ),
         new PieChart(
           'commonCves',
-          `${
-            this.filters
-          } rule.groups{}="vulnerability-detector" | top data.vulnerability.cve limit=5`,
+          `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.cve limit=5`,
           'commonCves',
           this.scope
         ),
         new PieChart(
           'severityDistribution',
-          `${
-            this.filters
-          } rule.groups{}="vulnerability-detector" | top data.vulnerability.severity limit=5`,
+          `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.severity limit=5`,
           'severityDistribution',
           this.scope
         ),
@@ -164,17 +156,13 @@ define([
         ),
         new Table(
           'alertsSummaryVizz',
-          `${
-            this.filters
-          } | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
+          `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
+          `${this.filters} | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -182,9 +170,7 @@ define([
         ),
         new RawTableDataService(
           'commonRulesTable',
-          `${
-            this.filters
-          } rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'commonRulesTableToken',
           '$result$',
           this.scope,

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', '../../../utils/config-handler'], function (
+define(['../../module', '../../../utils/config-handler'], function(
   controllers,
   ConfigHandler
 ) {
@@ -66,10 +66,10 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.isSynchronized =
         data && data.data && data.data.data && data.data.data.synced
       this.excludeModulesByOs = {
-        'linux': [],
-        'windows': ['audit', 'oscap', 'vuls', 'docker'],
-        'darwin': ['audit', 'oscap', 'vuls', 'docker'],
-        'other': ['audit', 'oscap', 'vuls', 'docker']
+        linux: [],
+        windows: ['audit', 'oscap', 'vuls', 'docker'],
+        darwin: ['audit', 'oscap', 'vuls', 'docker'],
+        other: ['audit', 'oscap', 'vuls', 'docker']
       }
 
       this.$scope.selectedOptions = {
@@ -111,7 +111,7 @@ define(['../../module', '../../../utils/config-handler'], function (
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
           : { error: true }
-          
+
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = agentStatus => {
@@ -219,16 +219,20 @@ define(['../../module', '../../../utils/config-handler'], function (
       'integrityMonitoringConf' : 1}
 */
 
-      /** 
+      /**
        * If it's not Linux, docker and openscape are set to false by default so these configurations are not printed.
        */
-      if (this.$scope.agentPlatform !== 'linux' ){
+      if (this.$scope.agentPlatform !== 'linux') {
         this.$scope.selectedOptions['dockerListenerConf'] = false
         this.$scope.selectedOptions['openscapConf'] = false
       }
 
       if (!this.$scope.loadingReporting)
-        this.reportingService.reportAgentConfiguration(this.id, this.$scope.selectedOptions, this.api)
+        this.reportingService.reportAgentConfiguration(
+          this.id,
+          this.$scope.selectedOptions,
+          this.api
+        )
       this.$scope.exportConfig = false
     }
 
@@ -249,14 +253,17 @@ define(['../../module', '../../../utils/config-handler'], function (
       try {
         let result = false
         Object.keys(this.$scope.selectedOptions).forEach(key => {
-          if (this.$scope.selectedOptions[key]) { result = true }
+          if (this.$scope.selectedOptions[key]) {
+            result = true
+          }
         })
-        return !result        
+        return !result
       } catch (error) {
-        this.$notificationService.showErrorToast('Error checking selected options')
+        this.$notificationService.showErrorToast(
+          'Error checking selected options'
+        )
       }
     }
-
 
     /**
      * Checks if the agent is synchronized
@@ -278,8 +285,12 @@ define(['../../module', '../../../utils/config-handler'], function (
     setAgentPlatform() {
       try {
         this.$scope.agentPlatform = 'other'
-        let agentPlatformLinux = ((((this.agent || {}).data || {}).data || {}).os || {}).uname 
-        let agentPlatformOther = ((((this.agent || {}).data || {}).data || {}).os || {}).platform 
+        let agentPlatformLinux = (
+          (((this.agent || {}).data || {}).data || {}).os || {}
+        ).uname
+        let agentPlatformOther = (
+          (((this.agent || {}).data || {}).data || {}).os || {}
+        ).platform
         if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.$scope.agentPlatform = 'linux'
         }
@@ -298,14 +309,13 @@ define(['../../module', '../../../utils/config-handler'], function (
      * Returns true
      */
     showConfigCheck(key) {
-      if(key === 'dockerListenerConf' || key === 'openscapConf'){
-        if( this.$scope.agentPlatform === 'linux' ){
+      if (key === 'dockerListenerConf' || key === 'openscapConf') {
+        if (this.$scope.agentPlatform === 'linux') {
           return true
-        }
-        else{
+        } else {
           return false
         }
-      }else{
+      } else {
         return true
       }
     }
@@ -332,7 +342,6 @@ define(['../../module', '../../../utils/config-handler'], function (
       }
       return options[key] || key
     }
-
   }
 
   controllers.controller('configurationAgentCtrl', ConfigurationController)

@@ -1,10 +1,10 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function ($stateProvider, BASE_URL) {
+    function($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
@@ -21,14 +21,14 @@ define(['../module'], function (module) {
               '$requestService',
               '$state',
               async $requestService => {
-                try {                  
+                try {
                   const agentsSummary = await $requestService.apiReq(
                     '/summary/agents'
                   )
                   return agentsSummary
                 } catch (err) {
                   $state.go('settings.api')
-                } 
+                }
               }
             ]
           }
@@ -64,7 +64,7 @@ define(['../module'], function (module) {
                   const results = await Promise.all([
                     $requestService.apiReq(`/agents/${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
-                    $requestService.apiReq(`/rootcheck/${id}/last_scan`),
+                    $requestService.apiReq(`/rootcheck/${id}/last_scan`)
                   ])
 
                   return results
@@ -135,10 +135,13 @@ define(['../module'], function (module) {
                   const apiId = $currentDataService.getApi()
                   const currentApi = apiId['_key']
                   const results = await Promise.all([
-                    $requestService.httpReq('GET', `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`),
-                    $requestService.apiReq(`/agents/${id}`),
+                    $requestService.httpReq(
+                      'GET',
+                      `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`
+                    ),
+                    $requestService.apiReq(`/agents/${id}`)
                   ])
-                  
+
                   return results
                 } catch (err) {
                   $state.go('agents')

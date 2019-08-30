@@ -231,7 +231,9 @@ define(['../module', 'jquery'], function(module, $) {
             IP: ip,
             Version: version,
             Manager: manager,
-            OS: os.codename ? `${os.name} ${os.codename} ${os.version}` : `${os.name} ${os.version}`  ,
+            OS: os.codename
+              ? `${os.name} ${os.codename} ${os.version}`
+              : `${os.name} ${os.version}`,
             dateAdd: dateAdd,
             lastKeepAlive: lastKeepAlive,
             group: group.toString()
@@ -290,7 +292,7 @@ define(['../module', 'jquery'], function(module, $) {
         )
         const processesKeys = ['Name', 'Euser', 'Priority', 'State']
         const processesData = processes.data.data.items.map(n => {
-          n.nice = (n.nice || n.nice === 0) ? n.nice.toString() : 'undefined'
+          n.nice = n.nice || n.nice === 0 ? n.nice.toString() : 'undefined'
           n.state = this.keyEquivalence[n.state]
           return [n.name, n.euser, n.nice, n.state]
         })
@@ -339,24 +341,24 @@ define(['../module', 'jquery'], function(module, $) {
         this.notification.showErrorToast('Reporting error')
       }
     }
-    
-    async reportGroupConfiguration(groupName,reportData,apiId) {
-      try{
+
+    async reportGroupConfiguration(groupName, reportData, apiId) {
+      try {
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         const timeZone = new Date().getTimezoneOffset()
 
         const data = {
           images: [],
-          apiId : apiId,
+          apiId: apiId,
           timeRange: false,
           sectionTitle: 'Group ' + groupName.name + ' configuration',
           queryFilters: '',
           metrics: {},
-          tableResults : {},
+          tableResults: {},
           pdfName: 'group-conf',
           timeZone,
           data: reportData,
-          groupName : groupName
+          groupName: groupName
         }
 
         await this.genericReq('POST', '/report/generateConfigurationReport', {
@@ -379,8 +381,8 @@ define(['../module', 'jquery'], function(module, $) {
       }
     }
 
-    async reportAgentConfiguration(agentId,reportData,apiId) {
-      try{
+    async reportAgentConfiguration(agentId, reportData, apiId) {
+      try {
         let isAgents
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         try {
@@ -420,9 +422,6 @@ define(['../module', 'jquery'], function(module, $) {
           isAgents = false
         }
 
-
-
-
         const isAgentConf = true
         const timeZone = new Date().getTimezoneOffset()
 
@@ -430,24 +429,23 @@ define(['../module', 'jquery'], function(module, $) {
           images: [],
           isAgentConf,
           isAgents,
-          apiId : apiId,
+          apiId: apiId,
           timeRange: false,
           sectionTitle: `Agent ${isAgents.ID} configuration`,
           queryFilters: '',
           metrics: {},
-          tableResults : {},
+          tableResults: {},
           pdfName: 'agent-conf',
           timeZone,
           data: reportData,
-          agentId : agentId
+          agentId: agentId
         }
 
         await this.genericReq('POST', '/report/generateConfigurationReport', {
           data: JSON.stringify(data)
         })
-        
-        this.$rootScope.$broadcast('loadingReporting', { status: false })
 
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         const reportingUrl = this.navigationService.updateURLParameter(
@@ -465,7 +463,6 @@ define(['../module', 'jquery'], function(module, $) {
         this.notification.showErrorToast('Reporting error')
       }
     }
-
   }
 
   module.service('$reportingService', ReportingService)

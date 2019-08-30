@@ -92,9 +92,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.groups{}!="syslog" data.oscap.scan.profile.title=* | stats count by data.oscap.scan.profile.title | sort data.oscap.scan.profile.title ASC|fields - count`,
+        `${this.filters} sourcetype=wazuh rule.groups{}!="syslog" data.oscap.scan.profile.title=* | stats count by data.oscap.scan.profile.title | sort data.oscap.scan.profile.title ASC|fields - count`,
         'data.oscap.scan.profile.title',
         '$form.profile$',
         'dropDownInput',
@@ -115,9 +113,7 @@ define([
          */
         new SearchHandler(
           `lastScapScore`,
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.scan.score=* | stats latest(data.oscap.scan.score)`,
+          `${this.filters} sourcetype=wazuh data.oscap.scan.score=* | stats latest(data.oscap.scan.score)`,
           `latestScapScore`,
           '$result.latest(data.oscap.scan.score)$',
           'scapLastScore',
@@ -126,9 +122,7 @@ define([
         ),
         new SearchHandler(
           `maxScapScore`,
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.scan.score=* | stats max(data.oscap.scan.score)`,
+          `${this.filters} sourcetype=wazuh data.oscap.scan.score=* | stats max(data.oscap.scan.score)`,
           `maxScapScore`,
           '$result.max(data.oscap.scan.score)$',
           'scapHighestScore',
@@ -137,9 +131,7 @@ define([
         ),
         new SearchHandler(
           `scapLowest`,
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.scan.score=* | stats min(data.oscap.scan.score)`,
+          `${this.filters} sourcetype=wazuh data.oscap.scan.score=* | stats min(data.oscap.scan.score)`,
           `minScapScore`,
           '$result.min(data.oscap.scan.score)$',
           'scapLowestScore',
@@ -152,73 +144,55 @@ define([
          */
         new PieChart(
           'top5Scans',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.id`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.id`,
           'top5Scans',
           this.scope
         ),
         new PieChart(
           'profilesVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.profile.title`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.profile.title`,
           'profilesVizz',
           this.scope
         ),
         new BarChart(
           'contentVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.content`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.content`,
           'contentVizz',
           this.scope
         ),
         new PieChart(
           'severityVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.severity`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.severity`,
           'severityVizz',
           this.scope
         ),
         new AreaChart(
           'top5AgentsSHVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.scan.profile.title="$profile$" data.oscap.check.severity="high" | chart count by agent.name`,
+          `${this.filters} sourcetype=wazuh data.oscap.scan.profile.title="$profile$" data.oscap.check.severity="high" | chart count by agent.name`,
           'top5AgentsSHVizz',
           this.scope
         ),
         new PieChart(
           'top5AlertsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}="oscap-result" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}="oscap-result" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
           'top5AlertsVizz',
           this.scope
         ),
         new PieChart(
           'top5HRAlertsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}="oscap-result"  data.oscap.check.severity="high" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" rule.groups{}="oscap-result"  data.oscap.check.severity="high" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
           'top5HRAlertsVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, data.oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, data.oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
+          `${this.filters} sourcetype=wazuh data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

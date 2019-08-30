@@ -75,9 +75,7 @@ define([
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.baseUrl = BASE_URL
-      this.scope.noScansPng = `${
-        this.baseUrl
-      }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
+      this.scope.noScansPng = `${this.baseUrl}/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
@@ -91,9 +89,7 @@ define([
          */
         new GaugeChart(
           'scoreByPolicy',
-          `${
-            this.filters
-          }  | stats values(data.sca.score) by data.sca.policy_id `,
+          `${this.filters}  | stats values(data.sca.score) by data.sca.policy_id `,
           'scoreByPolicy',
           {
             trellisEnabled: true,
@@ -109,25 +105,19 @@ define([
         ),
         new ColumnChart(
           'resultDistributionByPolicy',
-          `${
-            this.filters
-          } | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed  by data.sca.policy`,
+          `${this.filters} | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed  by data.sca.policy`,
           'resultDistributionByPolicy',
           this.scope
         ),
         new PieChart(
           'top5Passed',
-          `${
-            this.filters
-          }  data.sca.check.result="passed"  | top limit=5 data.sca.check.title`,
+          `${this.filters}  data.sca.check.result="passed"  | top limit=5 data.sca.check.title`,
           'top5Passed',
           this.scope
         ),
         new PieChart(
           'top5Failed',
-          `${
-            this.filters
-          }  data.sca.check.result="failed"  | top limit=5 data.sca.check.title`,
+          `${this.filters}  data.sca.check.result="failed"  | top limit=5 data.sca.check.title`,
           'top5Failed',
           this.scope
         ),
@@ -148,13 +138,11 @@ define([
           `${this.filters} | timechart count by data.sca.policy`,
           'overTimePolicy',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
+          `${this.filters} | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
           'alertsSummary',
           this.scope
         )

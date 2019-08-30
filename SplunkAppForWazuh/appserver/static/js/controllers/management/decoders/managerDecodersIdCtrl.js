@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class DecodersId extends Ruleset {
@@ -121,14 +121,14 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       try {
         const readOnly = !(this.scope.currentDecoder.path === 'etc/decoders')
         const result = await this.fetchFileContent(fileName, readOnly)
-      } catch (error) { }
+      } catch (error) {}
       return
     }
 
     /**
-    * Fetches file content
-    * @param {String} file
-    */
+     * Fetches file content
+     * @param {String} file
+     */
     async fetchFileContent(file, readOnly = false) {
       try {
         this.scope.editingFile = true
@@ -171,9 +171,10 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+            this.scope.$broadcast('fetchedFile', {
+              data: this.scope.fetchedXML
+            })
           }
-
         }
       } catch (error) {
         this.scope.fetchedXML = null
@@ -183,7 +184,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.$applyAsync()
       return
     }
-
   }
   controllers.controller('managerDecodersIdCtrl', DecodersId)
 })

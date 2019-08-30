@@ -69,9 +69,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
+        `${this.filters} sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
         'rule.pci_dss{}',
         '$form.pci$',
         'dropDownInput',
@@ -101,65 +99,49 @@ define([
          */
         new ColumnChart(
           'pciReqSearchVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'pciReqSearchVizz',
           this.scope
         ),
         new PieChart(
           'groupsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
         new PieChart(
           'topRules',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'topRules',
           this.scope
         ),
         new PieChart(
           'top5Pcidss',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'top5Pcidss',
           this.scope
         ),
         new PieChart(
           'ruleLevelDistribution',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'ruleLevelDistribution',
           this.scope
         ),
         new ColumnChart(
           'reqByAgentsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'reqByAgentsVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

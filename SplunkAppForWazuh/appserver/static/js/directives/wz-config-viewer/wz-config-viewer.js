@@ -105,16 +105,22 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const dynamicHeight = () => {
         setTimeout(function() {
-          const editorContainer = $('.wzConfigViewer');
-          const windows = $(window).height();
-          const offsetTop = getPosition(editorContainer[0]).y;
-          const bottom = isLogs ? 50 : 20;
+          const editorContainer = $('.wzConfigViewer')
+          const windows = $(window).height()
+          const offsetTop = getPosition(editorContainer[0]).y
+          const bottom = isLogs ? 50 : 20
           const headerContainer = $('.wzXmlEditorHeader')
-          const headerContainerHeight = headerContainer.height() ? headerContainer.height() + 20 : (isLogs ? 0 : 70);
-          editorContainer.height(windows - (offsetTop + bottom));
-          $('.wzJsonXmlEditorBody .CodeMirror').height(windows - (offsetTop + bottom + headerContainerHeight));
-        }, 1);
-      };
+          const headerContainerHeight = headerContainer.height()
+            ? headerContainer.height() + 20
+            : isLogs
+            ? 0
+            : 70
+          editorContainer.height(windows - (offsetTop + bottom))
+          $('.wzJsonXmlEditorBody .CodeMirror').height(
+            windows - (offsetTop + bottom + headerContainerHeight)
+          )
+        }, 1)
+      }
 
       const init = () => {
         $('.wzConfigViewer').height(0)
@@ -137,7 +143,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
       }
 
       const refreshXmlBox = (xml, logs) => {
-        isLogs = logs;
+        isLogs = logs
         $scope.xmlcontent = xml
         if (!$scope.xmlCodeBox) {
           setXmlBox()
@@ -147,9 +153,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
           setTimeout(function() {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
-            isLogs
-              ? dynamicHeight()
-              : window.dispatchEvent(new Event('resize')); // eslint-disable-line
+            isLogs ? dynamicHeight() : window.dispatchEvent(new Event('resize')) // eslint-disable-line
           }, 300)
         }
       }

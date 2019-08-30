@@ -88,7 +88,7 @@ define(['../module'], function(app) {
 
     setExtensions(id, extensions) {
       try {
-        const newExtensions = Object.assign(extensions, {id})
+        const newExtensions = Object.assign(extensions, { id })
         if (extensions.length && this.sessionStorage.getItem('extensions')) {
           let parsedExtensions = JSON.parse(
             this.sessionStorage.getItem('extensions')

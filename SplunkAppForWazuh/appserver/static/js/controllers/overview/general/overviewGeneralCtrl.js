@@ -107,9 +107,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthFailure`,
-          `${
-            this.filters
-          } sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
+          `${this.filters} sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
           '$result.count$',
           'authFailure',
@@ -118,9 +116,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthSuccess`,
-          `${
-            this.filters
-          } sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
+          `${this.filters} sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
           '$result.count$',
           'authSuccess',
@@ -132,25 +128,21 @@ define([
          */
         new LinearChart(
           'alertLevEvoVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.level=*| timechart count by rule.level  `,
+          `${this.filters} sourcetype=wazuh rule.level=*| timechart count by rule.level  `,
           'alertLevEvoVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new LinearChart(
           'alertsVizz',
           `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
           'alertsVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'alertsEvoTop5Agents',
-          `${
-            this.filters
-          } cluster.name=wazuh index=wazuh  sourcetype=wazuh | stats count by agent.name`,
+          `${this.filters} cluster.name=wazuh index=wazuh  sourcetype=wazuh | stats count by agent.name`,
           'alertsEvoTop5Agents',
           this.scope
         ),
@@ -162,17 +154,13 @@ define([
         ),
         new Table(
           'agentsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
         ),
         (this.agentsSummaryTable = new RawTableDataService(
           'agentsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryTableToken',
           '$result$',
           this.scope,
@@ -219,16 +207,12 @@ define([
               this.mngName = this.currentDataService.getFilters()[0][
                 'manager.name'
               ]
-              this.agentsStatusFilter = `manager.name=${
-                this.mngName
-              } index=wazuh-monitoring-3x`
+              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring-3x`
             } else {
               this.clusName = this.currentDataService.getFilters()[0][
                 'cluster.name'
               ]
-              this.agentsStatusFilter = `cluster.name=${
-                this.clusName
-              } index=wazuh-monitoring-3x`
+              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring-3x`
             }
           } catch (error) {} //eslint-disable-line
 
@@ -236,12 +220,10 @@ define([
           this.vizz.push(
             new LinearChart(
               `agentStatusHistory`,
-              `${this.agentsStatusFilter} status=* | timechart span=${
-                this.spanTime
-              } cont=FALSE count by status usenull=f`,
+              `${this.agentsStatusFilter} status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
               `agentStatus`,
               this.scope,
-              {customAxisTitleX : "Time span"}
+              { customAxisTitleX: 'Time span' }
             )
           )
         }

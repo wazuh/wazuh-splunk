@@ -94,7 +94,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
           .then(() => this.scope.editGroupAgentConfig())
       })
 
-       
       this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
@@ -281,7 +280,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
       return
     }
 
-    
     /**
      * Shows the popover to select the modules
      */
@@ -290,7 +288,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$applyAsync()
     }
 
-    
     /**
      * Selects all the modules to export the configuration
      */
@@ -308,11 +305,15 @@ define(['../../module', 'FileSaver'], function(controllers) {
       try {
         let result = false
         Object.keys(this.scope.selectedOptions).forEach(key => {
-          if (this.scope.selectedOptions[key]) { result = true }
+          if (this.scope.selectedOptions[key]) {
+            result = true
+          }
         })
-        return !result        
+        return !result
       } catch (error) {
-        this.$notificationService.showErrorToast('Error checking selected options')
+        this.$notificationService.showErrorToast(
+          'Error checking selected options'
+        )
       }
     }
 
@@ -486,7 +487,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
             await this.scope.loadSelectedAgents()
             this.scope.selectedAgents.offset += 499
           }
-          this.scope.firstSelectedList = angular.copy(this.scope.selectedAgents.data)
+          this.scope.firstSelectedList = angular.copy(
+            this.scope.selectedAgents.data
+          )
           await this.scope.loadAllAgents()
           this.scope.multipleSelectorLoading = false
         }
@@ -548,7 +551,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             throw new Error(response.data.error)
           }
           if (response.data.data.failed_ids) {
-            response.data.data.failed_ids.forEach(x=>{
+            response.data.data.failed_ids.forEach(x => {
               failedIds.push(x)
             })
           }
@@ -564,7 +567,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             throw new Error(response.data.error)
           }
           if (response.data.data.failed_ids) {
-            response.data.data.failed_ids.forEach(x=>{
+            response.data.data.failed_ids.forEach(x => {
               failedIds.push(x)
             })
           }
@@ -579,17 +582,15 @@ define(['../../module', 'FileSaver'], function(controllers) {
             this.groupBy(failedErrors, 'message') || false
           this.scope.errorsEditingGroup = groupedFailedIds
           this.notification.showWarningToast(
-            `Group has been updated but an error has occurred with ${
-              failedIds.length
-            } agents`
+            `Group has been updated but an error has occurred with ${failedIds.length} agents`
           )
         } else {
           const responseMsg = (((response || {}).data || {}).data || {}).msg
-          if( responseMsg ){
+          if (responseMsg) {
             this.notification.showSuccessToast(
               responseMsg || 'Success. Group has been updated'
             )
-          }else{
+          } else {
             this.notification.showWarningToast(
               'No agents were added or removed'
             )
@@ -610,14 +611,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$applyAsync()
       return
     }
-    
+
     /*
      * Get the key equivalences
      */
     keyEquivalences(key) {
       const options = {
-        groupConf: "Configurations",
-        agentsList: "Agents in group"
+        groupConf: 'Configurations',
+        agentsList: 'Agents in group'
       }
       return options[key] || key
     }
@@ -793,38 +794,42 @@ define(['../../module', 'FileSaver'], function(controllers) {
       return
     }
 
-    async initReportConfig(){
-      
+    async initReportConfig() {
       const data = {
         configurations: [
-          this.scope.selectedOptions.groupConf ? {
-            title: 'Main group configurations',
-            sections: [
-              {
-                desc: 'agent.conf',
-                groupConfig: true,
-                labels : { }
-              },
-              
-            ]
-          } : false,
-          this.scope.selectedOptions.agentsList ? {
-            title: 'Agents ',
-            sections: [
-              {
-                desc: 'agents',
-                agentList: true,
-                labels : { }
-              },
-              
-            ]
-          } : false,
+          this.scope.selectedOptions.groupConf
+            ? {
+                title: 'Main group configurations',
+                sections: [
+                  {
+                    desc: 'agent.conf',
+                    groupConfig: true,
+                    labels: {}
+                  }
+                ]
+              }
+            : false,
+          this.scope.selectedOptions.agentsList
+            ? {
+                title: 'Agents ',
+                sections: [
+                  {
+                    desc: 'agents',
+                    agentList: true,
+                    labels: {}
+                  }
+                ]
+              }
+            : false
         ]
       }
 
-      if(!this.scope.loadingReporting)
-        this.reportingService.reportGroupConfiguration(this.scope.currentGroup,data,this.api)
-
+      if (!this.scope.loadingReporting)
+        this.reportingService.reportGroupConfiguration(
+          this.scope.currentGroup,
+          data,
+          this.api
+        )
     }
 
     /**

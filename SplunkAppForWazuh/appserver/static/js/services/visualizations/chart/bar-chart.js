@@ -12,14 +12,14 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
      * @param {String} attachedElement
      * @param {scope} scope
      */
-    constructor(id, search, attachedElement, scope, extraParams={}) {
+    constructor(id, search, attachedElement, scope, extraParams = {}) {
       super(
         new ChartElement(
           {
             id: `${id}`,
             'charting.drilldown': 'none',
             'charting.chart': 'bar',
-            "charting.chart.stackMode" : extraParams.stackMode || "default",
+            'charting.chart.stackMode': extraParams.stackMode || 'default',
             resizable: true,
             managerid: `${id}Search`,
             el: $(`#${attachedElement}`)

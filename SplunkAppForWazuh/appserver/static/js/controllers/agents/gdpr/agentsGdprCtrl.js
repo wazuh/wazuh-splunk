@@ -94,9 +94,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
+        `${this.filters} sourcetype=wazuh rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
         'rule.gdpr{}',
         '$form.gdpr$',
         'dropDownInput',
@@ -118,25 +116,19 @@ define([
          */
         new ColumnChart(
           'gdprRequirementsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}  | rename count as "Count", rule.gdpr{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}  | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'gdprRequirementsVizz',
           this.scope
         ),
         new PieChart(
           'groupsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
         new PieChart(
           'top5GDPR',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements" `,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements" `,
           'top5GDPR',
           this.scope
         ),
@@ -148,33 +140,25 @@ define([
         ),
         new PieChart(
           'agentsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'agentsVizz',
           this.scope
         ),
         new ColumnChart(
           'requirementsByAgentVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
           'requirementsByAgentVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} sourcetype=wazuh rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

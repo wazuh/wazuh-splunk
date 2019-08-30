@@ -88,26 +88,20 @@ define([
         ),
         new AreaChart(
           'maliciousEventsOverTimeElement',
-          `${
-            this.filters
-          } data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives  `,
+          `${this.filters} data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives  `,
           'maliciousEventsOverTimeElement',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'lastFiles',
-          `${
-            this.filters
-          } | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
+          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
           'lastFiles',
           this.scope
         ),
         new RawTableDataService(
           'lastFilesTable',
-          `${
-            this.filters
-          } | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
           'lastFilesToken',
           '$result$',
           this.scope,

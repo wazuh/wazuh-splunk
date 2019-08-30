@@ -101,74 +101,56 @@ define([
          */
         new AreaChart(
           'eventsOverTimeElement',
-          `${
-            this.filters
-          } sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
+          `${this.filters} sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
           'eventsOverTimeElement',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new ColumnChart(
           'topGroupOwnersElement',
-          `${
-            this.filters
-          } sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
+          `${this.filters} sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
           'topGroupOwnersElement',
           this.scope
         ),
         new PieChart(
           'topUserOwnersElement',
-          `${
-            this.filters
-          } sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
+          `${this.filters} sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
           'topUserOwnersElement',
           this.scope
         ),
         new PieChart(
           'topActions',
-          `${
-            this.filters
-          } sourcetype="wazuh" | stats count by "syscheck.event"`,
+          `${this.filters} sourcetype="wazuh" | stats count by "syscheck.event"`,
           'topActions',
           this.scope
         ),
         new PieChart(
           'topFileChangesElement',
-          `${
-            this.filters
-          } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
+          `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
           'topFileChangesElement',
           this.scope
         ),
         new PieChart(
           'rootUserFileChangesElement',
-          `${
-            this.filters
-          } sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
+          `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
           'rootUserFileChangesElement',
           this.scope
         ),
         new PieChart(
           'wordWritableFilesElement',
-          `${
-            this.filters
-          } sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
+          `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
           'wordWritableFilesElement',
           this.scope
         ),
         new Table(
           'eventsSummaryElement',
-          `${
-            this.filters
-          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryElement',
           this.scope
         ),
         new RawTableDataService(
           'eventsSummaryTable',
-          `${
-            this.filters
-          } sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+          `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
           'eventsSummaryTableToken',
           '$result$',
           this.scope,
@@ -176,25 +158,19 @@ define([
         ),
         new PieChart(
           'topNewFiles',
-          `${
-            this.filters
-          } sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topNewFiles',
           this.scope
         ),
         new PieChart(
           'topModifiedFiles',
-          `${
-            this.filters
-          } sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topModifiedFiles',
           this.scope
         ),
         new PieChart(
           'topDeletedFiles',
-          `${
-            this.filters
-          } sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topDeletedFiles',
           this.scope
         )

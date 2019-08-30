@@ -220,11 +220,7 @@ define(['../module'], function(module) {
           const user = encodeURIComponent(api.userapi)
           const pass = encodeURIComponent(api.passapi)
           const clusterEnabled = api.filterType === 'cluster.name'
-          const checkConnectionEndpoint = `/manager/check_connection?ip=${
-            api.url
-          }&port=${
-            api.portapi
-          }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
+          const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
@@ -250,28 +246,26 @@ define(['../module'], function(module) {
       }
     }
 
-
-
     /**
      * Checks a connection given its ID
      * @param {Object} api
      */
     const checkRawConnectionById = async id => {
       try {
-          const checkConnectionEndpoint = `/manager/check_connection_by_id?apiId=${id}`
-          const result = await $requestService.httpReq(
-            'GET',
-            checkConnectionEndpoint
-          )
-          
-          if (result.data.status === 400 || result.data.error) {
-            if (result.data.error === 3099) {
-              throw 'ERROR3099 - Wazuh not ready yet.'
-            } else {
-              throw result.data.error || 'Unreachable API.'
-            }
+        const checkConnectionEndpoint = `/manager/check_connection_by_id?apiId=${id}`
+        const result = await $requestService.httpReq(
+          'GET',
+          checkConnectionEndpoint
+        )
+
+        if (result.data.status === 400 || result.data.error) {
+          if (result.data.error === 3099) {
+            throw 'ERROR3099 - Wazuh not ready yet.'
+          } else {
+            throw result.data.error || 'Unreachable API.'
           }
-          return result
+        }
+        return result
       } catch (err) {
         if (err.status === 500) {
           throw new Error(
