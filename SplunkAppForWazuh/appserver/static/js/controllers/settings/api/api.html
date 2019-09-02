@@ -43,6 +43,14 @@
   <!-- API configuration card section -->
   <div layout="row" layout-align="start start">
     <md-card flex class="wz-md-card">
+      <div layout="row" class="wz-margin-20" layout-padding ng-show="kvStoreInitializing">
+        <div flex class="euiCallOut euiCallOut--warning wz-margin-top-17">
+          <div class="euiCallOutHeader">
+            <wz-svg icon="callOutHeader"></wz-svg>
+            <span class="euiCallOutHeader__title">Kv Store is being initialized please wait some seconds and try again later.</span>
+          </div>
+        </div>
+      </div>
       <md-card-content ng-if="apiList.length >= 1">
         <!-- API entries headings section -->
         <div layout="row">

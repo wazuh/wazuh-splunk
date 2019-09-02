@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class SettingsApi {
@@ -51,27 +51,34 @@ define(['../../module'], function(controllers) {
      */
     async init() {
       try {
-        // If no API, then remove cookie
-        if (Array.isArray(this.apiList) && this.apiList.length === 0) {
-          this.currentDataService.removeCurrentApi()
-          this.scope.$emit('updatedAPI', () => {})
-        }
-        // Get the current selected API
-        let currentApi = this.currentDataService.getApi()
-        // If there is API, then show it as selected
-        if (currentApi) {
-          this.setYellowStar(currentApi['_key'])
-        }
-        this.scope.apiList = this.apiList
-        if (!currentApi && Array.isArray(this.scope.apiList)) {
-          for (const apiEntry of this.scope.apiList) {
-            try {
-              await this.selectManager(apiEntry['_key'])
-              // Set API
-              currentApi = this.currentDataService.getApi()
-              break
-            } catch (error) {
-              continue
+        const kvStoreError = ((this.apiList || {}).messages || [])[0] || {}
+        if (kvStoreError.text){
+          this.notification.showErrorToast(kvStoreError.text)
+          this.scope.kvStoreInitializing = true
+        }else {
+          this.scope.kvStoreInitializing = false
+          // If no API, then remove cookie
+          if (Array.isArray(this.apiList) && this.apiList.length === 0) {
+            this.currentDataService.removeCurrentApi()
+            this.scope.$emit('updatedAPI', () => { })
+          }
+          // Get the current selected API
+          let currentApi = this.currentDataService.getApi()
+          // If there is API, then show it as selected
+          if (currentApi) {
+            this.setYellowStar(currentApi['_key'])
+          }
+          this.scope.apiList = this.apiList
+          if (!currentApi && Array.isArray(this.scope.apiList)) {
+            for (const apiEntry of this.scope.apiList) {
+              try {
+                await this.selectManager(apiEntry['_key'])
+                // Set API
+                currentApi = this.currentDataService.getApi()
+                break
+              } catch (error) {
+                continue
+              }
             }
           }
         }
@@ -95,7 +102,7 @@ define(['../../module'], function(controllers) {
           }
           this.scope.apiList.splice(index, 1)
           this.notification.showSuccessToast('Manager was removed')
-          this.scope.$emit('updatedAPI', () => {})
+          this.scope.$emit('updatedAPI', () => { })
         }
       } catch (err) {
         this.notification.showErrorToast(
@@ -222,7 +229,7 @@ define(['../../module'], function(controllers) {
         await this.currentDataService.chose(key)
         this.setYellowStar(key)
         this.notification.showSuccessToast('API selected')
-        this.scope.$emit('updatedAPI', () => {})
+        this.scope.$emit('updatedAPI', () => { })
         this.scope.$applyAsync()
       } catch (err) {
         this.notification.showErrorToast(err || 'Could not select manager')
