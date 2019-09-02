@@ -121,7 +121,7 @@
         </div>
 
         <!-- Groups table -->
-        <md-card class="wz-md-card no-margin-sides" style="min-height:225px;" ng-if="!addingAgents || !lookingGroup">
+        <md-card class="wz-md-card no-margin-sides" style="min-height:225px;" ng-if="(!addingAgents || !lookingGroup) && !file">
           <!-- Export group config -->
           <md-card-actions layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf"  ng-show="!file && lookingGroup && currentGroup && !addingAgents && !editingFile">
             <button ng-class="{'link-disabled': loadingReporting }"
