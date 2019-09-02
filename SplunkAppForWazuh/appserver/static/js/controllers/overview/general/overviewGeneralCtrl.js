@@ -142,7 +142,7 @@ define([
         ),
         new PieChart(
           'alertsEvoTop5Agents',
-          `${this.filters} cluster.name=wazuh index=wazuh  sourcetype=wazuh | stats count by agent.name`,
+          `${this.filters} index=wazuh  sourcetype=wazuh | stats count by agent.name`,
           'alertsEvoTop5Agents',
           this.scope
         ),
