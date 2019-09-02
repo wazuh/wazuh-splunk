@@ -100,7 +100,7 @@ define(['../module'], function(module) {
           ppid: 'Parent PID',
           argvs: 'Argvs',
           nice: 'Priority',
-          size: 'Size',	
+          size: 'Size',
           inode: 'Inode',
           uid: 'User ID',
           gid: 'Group ID',
@@ -121,10 +121,12 @@ define(['../module'], function(module) {
           D: 'Uninterruptible sleep (usually IO)',
           R: 'Running or runnable (on run queue)',
           S: 'Interruptible sleep (waiting for an event to complete)',
-          T: 'Stopped, either by a job control signal or because it is being traced.',
+          T:
+            'Stopped, either by a job control signal or because it is being traced.',
           W: 'paging (not valid since the 2.6.xx kernel)',
           X: 'Dead (should never be seen)',
-          Z: 'Defunct ("zombie") process, terminated but not reaped by its parent.',
+          Z:
+            'Defunct ("zombie") process, terminated but not reaped by its parent.',
           '<': 'High-priority (not nice to other users)',
           N: 'Low-priority (nice to other users)',
           L: 'Has pages locked into memory (for real-time and custom IO)',

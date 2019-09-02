@@ -40,7 +40,7 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      hipaaExtensionEnabled,
+      hipaaExtensionEnabled
     ) {
       super(
         $scope,
@@ -60,9 +60,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${
-          this.filters
-        } sourcetype=wazuh rule.nist_800_53{}="*"| stats count by "rule.nist_800_53{}" | sort "rule.nist_800_53{}" ASC | fields - count | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
+        `${this.filters} sourcetype=wazuh rule.nist_800_53{}="*"| stats count by "rule.nist_800_53{}" | sort "rule.nist_800_53{}" ASC | fields - count | rename count as "Count", rule.nist_800_53{} as "Requirements"`,
         'rule.nist_800_53{}',
         '$form.nist$',
         'dropDownInput',
@@ -78,76 +76,58 @@ define([
       this.vizz = [
         new PieChart(
           'mostActiveAgents',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=10 agent.name | rename agent.name as "Agent name"`,
+          `${this.filters} sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=10 agent.name | rename agent.name as "Agent name"`,
           'mostActiveAgents',
           this.scope
         ),
         new LinearChart(
           'topRequirementsOverTime',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="*" | timechart count by rule.nist_800_53{}`,
+          `${this.filters} sourcetype=wazuh rule.nist_800_53{}="*" | timechart count by rule.nist_800_53{}`,
           'topRequirementsOverTime',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'top10Requirements',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=10 rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as Requirement`,
+          `${this.filters} sourcetype=wazuh rule.nist_800_53{}="$nist$" | top limit=10 rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as Requirement`,
           'top10Requirements',
           this.scope
         ),
         new ColumnChart(
           'requirementsDistributionByAgent',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=* | chart count(rule.nist_800_53{}) by agent.name,rule.nist_800_53{} | rename count as "Count" , agent.name as "Agent name", rule.nist_800_53{} as "Requirement"`,
+          `${this.filters} sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=* | chart count(rule.nist_800_53{}) by agent.name,rule.nist_800_53{} | rename count as "Count" , agent.name as "Agent name", rule.nist_800_53{} as "Requirement"`,
           'requirementsDistributionByAgent',
           this.scope,
-          {stackMode: "stacked"}
+          { stackMode: 'stacked' }
         ),
         new SingleValue(
           'maxRuleLevel',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | top rule.level | sort - rule.level`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | top rule.level | sort - rule.level`,
           'maxRuleLevel',
           this.scope
         ),
         new SingleValue(
           'totalAlerts',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count`,
+          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count`,
           'totalAlerts',
           this.scope
         ),
         new ColumnChart(
           'alertsVolumeByAgent',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=* | chart count by agent.id,rule.nist_800_53{} | rename agent.id as "Agent ID", rule.nist_800_53{} as "Requirement", count as "Count"`,
+          `${this.filters} sourcetype=wazuh rule.nist_800_53{}="$nist$" agent.name=* | chart count by agent.id,rule.nist_800_53{} | rename agent.id as "Agent ID", rule.nist_800_53{} as "Requirement", count as "Count"`,
           'alertsVolumeByAgent',
           this.scope,
-          {stackMode : "stacked"}
+          { stackMode: 'stacked' }
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by agent.name,rule.nist_800_53{},rule.level,rule.description | sort count DESC | rename agent.name as "Agent", rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
+          `${this.filters} sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by agent.name,rule.nist_800_53{},rule.level,rule.description | sort count DESC | rename agent.name as "Agent", rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by agent.name,rule.nist_800_53{},rule.level,rule.description | sort count DESC | rename agent.name as "Agent", rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
+          `${this.filters} sourcetype=wazuh rule.nist_800_53{}="$nist$" | stats count by agent.name,rule.nist_800_53{},rule.level,rule.description | sort count DESC | rename agent.name as "Agent", rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -182,8 +162,6 @@ define([
           )
       } catch (error) {}
     }
-
-
   }
   app.controller('overviewNistCtrl', Nist)
 })

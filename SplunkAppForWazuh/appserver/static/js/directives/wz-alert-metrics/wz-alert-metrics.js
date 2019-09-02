@@ -19,7 +19,7 @@ define(['../module'], function(directives) {
         totalAlerts: '=',
         levelTwelve: '=',
         authFailure: '=',
-        authSuccess: '=',
+        authSuccess: '='
       },
       controller() {},
       templateUrl:

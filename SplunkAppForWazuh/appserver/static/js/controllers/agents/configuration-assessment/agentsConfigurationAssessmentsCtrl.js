@@ -69,9 +69,7 @@ define(['../../module', '../../../dashboardMain'], function(
 
       this.wzTableFilter = $tableFilterService
       this.baseUrl = BASE_URL
-      this.scope.noScansPng = `${
-        this.baseUrl
-      }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
+      this.scope.noScansPng = `${this.baseUrl}/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )

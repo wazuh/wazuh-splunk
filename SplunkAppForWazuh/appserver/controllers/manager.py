@@ -290,6 +290,12 @@ class manager(controllers.BaseController):
             entry = kwargs
             if '_user' in kwargs:
                 del kwargs['_user']
+            if not "passapi" in entry:
+                opt_id = entry["_key"]
+                data_temp = self.db.get(opt_id)
+                current_api = jsonbak.loads(data_temp)
+                current_api = current_api["data"]
+                entry["passapi"] = current_api["passapi"]
             keys_list = ['_key', 'url', 'portapi', 'userapi',
                          'passapi', 'filterName', 'filterType', 'managerName']
             if set(entry.keys()) == set(keys_list):
@@ -391,11 +397,15 @@ class manager(controllers.BaseController):
         ----------
         kwargs : dict
             The request's parameters
-         """
+
+        """
         try:
+            self.logger.debug("manager: Checking API connection by id.")
             opt_id = kwargs["apiId"]
             current_api = self.get_api(apiId=opt_id)
             current_api_json = jsonbak.loads(jsonbak.loads(current_api))
+            if not "data" in current_api_json:
+                return jsonbak.dumps({"status": "400", "error": "Error when checking API connection."})
             opt_username = str(current_api_json["data"]["userapi"])
             opt_password = str(current_api_json["data"]["passapi"])
             opt_base_url = str(current_api_json["data"]["url"])
@@ -407,28 +417,18 @@ class manager(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             try:
-                # Checks in the first request if the credentials are ok
-                request_manager = self.session.get(
-                    url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify)
-                if request_manager.status_code == 401:
-                    self.logger.error("Cannot connect to API; Invalid credentials.")
-                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
-                request_manager = request_manager.json()  
-                request_cluster = self.session.get(
-                    url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
-                request_cluster_name = self.session.get(
-                    url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
+                manager_info =  self.session.get(
+                    url + '/manager/info', auth=auth, timeout=20, verify=verify)
+                manager_info = manager_info.json()
             except ConnectionError as e:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
-            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
-            # Pass the cluster status instead of always False
-            if not daemons_ready:
-                raise Exception("Daemons are not ready yet.")
-            output['managerName'] = request_manager['data']
-            output['clusterMode'] = request_cluster['data']
-            output['clusterName'] = request_cluster_name['data']
+            if "error" in manager_info and manager_info["error"] != 0: #Checks if daemons are up and running
+                return jsonbak.dumps({"status": "400", "error": manager_info["message"]})
+            output['managerName'] = { 'name' : manager_info['data']['name'] }
+            output['clusterMode'] = { "enabled" : manager_info['data']['cluster']['enabled'], "running" : manager_info['data']['cluster']['running'] }
+            output['clusterName'] = { "type" : manager_info['data']['cluster']['node_type'], "cluster" : manager_info['data']['cluster']['name'], "node" : manager_info['data']['cluster']['node_name'] }
             del current_api_json["data"]["passapi"]
             output['api'] = current_api_json
             result = jsonbak.dumps(output)             

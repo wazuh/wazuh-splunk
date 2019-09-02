@@ -86,7 +86,7 @@
 }
 .wz-search-filter-bar-autocomplete {
   min-width: 200px;
-  background: #000000d9;
+  background: rgba(0, 0, 0, 0.851);
   position: absolute;
   border: 1px solid black;
   border-radius: 5px;

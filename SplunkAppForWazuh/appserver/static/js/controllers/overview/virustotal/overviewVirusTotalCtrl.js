@@ -74,9 +74,7 @@ define([
          */
         new ColumnChart(
           'top10AgentsPositive',
-          `${
-            this.filters
-          }  | stats count(data.virustotal.positives) by agent.name | rename agent.name as "Agent name", count(data.virustotal.positives) as "Positives"`,
+          `${this.filters}  | stats count(data.virustotal.positives) by agent.name | rename agent.name as "Agent name", count(data.virustotal.positives) as "Positives"`,
           'top10AgentsPositive',
           this.scope
         ),
@@ -88,12 +86,10 @@ define([
         ),
         new AreaChart(
           'maliciousEventsOverTimeElement',
-          `${
-            this.filters
-          } data.virustotal.malicious="*" | timechart span=12h count by data.virustotal.malicious`,
+          `${this.filters} data.virustotal.malicious="*" | timechart span=12h count by data.virustotal.malicious`,
           'maliciousEventsOverTimeElement',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'lastScannedFiles',
@@ -103,25 +99,19 @@ define([
         ),
         new Table(
           'top5Rules',
-          `${
-            this.filters
-          } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'top5Rules',
           this.scope
         ),
         new Table(
           'MaliciousFilesPerAgent',
-          `${
-            this.filters
-          }| stats count(data.virustotal.malicious) by agent.name,data.virustotal.source.md5 | rename agent.name as "Agent name", count(data.virustotal.malicious)  as Count, data.virustotal.source.md5 as md5`,
+          `${this.filters}| stats count(data.virustotal.malicious) by agent.name,data.virustotal.source.md5 | rename agent.name as "Agent name", count(data.virustotal.malicious)  as Count, data.virustotal.source.md5 as md5`,
           'MaliciousFilesPerAgent',
           this.scope
         ),
         new RawTableDataService(
           'MaliciousFilesPerAgentTable',
-          `${
-            this.filters
-          }| stats count(data.virustotal.malicious) by agent.name,data.virustotal.source.md5 | rename agent.name as "Agent name", count(data.virustotal.malicious)  as Count, data.virustotal.source.md5 as md5`,
+          `${this.filters}| stats count(data.virustotal.malicious) by agent.name,data.virustotal.source.md5 | rename agent.name as "Agent name", count(data.virustotal.malicious)  as Count, data.virustotal.source.md5 as md5`,
           'MaliciousFilesPerAgentTableToken',
           '$result$',
           this.scope,
@@ -132,7 +122,7 @@ define([
           `${this.filters} | timechart count`,
           'eventsSummary',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new BarChart(
           'alertsPerAgent',
@@ -142,17 +132,13 @@ define([
         ),
         new Table(
           'lastFiles',
-          `${
-            this.filters
-          } | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
+          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
           'lastFiles',
           this.scope
         ),
         new RawTableDataService(
           'lastFilesTable',
-          `${
-            this.filters
-          } | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
           'lastFilesToken',
           '$result$',
           this.scope,
@@ -160,9 +146,7 @@ define([
         ),
         new RawTableDataService(
           'top5RulesTable',
-          `${
-            this.filters
-          } |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} |stats count sparkline by rule.id, rule.description | sort count DESC | head 5 | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'top5RulesTableToken',
           '$result$',
           this.scope,

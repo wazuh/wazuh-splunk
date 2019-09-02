@@ -187,7 +187,7 @@ class report(controllers.BaseController):
 
     def setTableTitle(self,pdf):
         pdf.set_font('RobotoLight', '', 10)
-        pdf.set_margins(11, 0, 11)
+        pdf.set_margins(10, 0, 10)
         pdf.set_fill_color(255, 255, 255)
         pdf.set_text_color(11,11,11)
 
@@ -305,10 +305,10 @@ class report(controllers.BaseController):
                     pdf.ln(20)
                 table_title = key
                 self.setTableTitle(pdf)
+                pdf.set_margins(10, 0, 10)
                 #if 'title' in tables and tables['title']:
                 pdf.ln(5)
                 pdf.cell(max_width, 5, txt = table_title, border = '', align = '', fill = False, link = '')
-                pdf.set_margins(12, 0, 12)
                 pdf.ln(5)
                 rows_count = rows_count + 5
                 self.setBlueHeaderStyle(pdf)
@@ -725,7 +725,7 @@ class report(controllers.BaseController):
                                 pass
                             elif 'items' in conf_data['data'] and 'filters' in conf_data['data']['items'][0] and not conf_data['data']['items'][0]['filters']:
                                 self.setTableTitle(pdf)
-                                pdf.cell(0, 10, txt = "Group configuration is not available. Click here for more information." , border = 'B', ln = 1, align = 'C', fill = False, link = 'https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
+                                pdf.cell(0, 10, txt = "Group configuration is not available." , border = 'B', ln = 1, align = 'C', fill = False, link = 'https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
                                 pdf.add_page()  
                                 pdf.ln(20)
                             else:
@@ -800,7 +800,7 @@ class report(controllers.BaseController):
                                 self.addTables(table,pdf,185,12)
                             else:
                                 self.setTableTitle(pdf)
-                                pdf.cell(0, 10, txt = "No agents are assigned to this group" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
+                                pdf.cell(0, 10, txt = "No agents have been assigned to this group" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
                         if 'config' in currentSection:
                             for currentConfig in currentSection['config']:
                                 pdf.set_text_color(23,23,23)
@@ -1180,7 +1180,7 @@ class report(controllers.BaseController):
         pdf.cell(0,9, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
         pdf.ln()
         pdf.cell(0,9, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
-        pdf.ln(2)
+        pdf.ln(10)
 
     #Sorts the width of the fields
     def sort_table_sizes(self, fields, sizes):

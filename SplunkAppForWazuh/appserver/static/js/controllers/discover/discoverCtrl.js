@@ -88,7 +88,7 @@ define(['../module', 'jquery'], function(app, $) {
           .split('|', 1)
           .toString()
           .trim()
-        const parsedFilter = filtersStr.replace(/=\s+/,'=')
+        const parsedFilter = filtersStr.replace(/=\s+/, '=')
         const filtersArr = parsedFilter.split(' ')
         //Format the filters
         filtersArr.map(fil => {

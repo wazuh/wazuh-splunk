@@ -45,7 +45,7 @@ define(['./module'], function(module) {
             toPrimaryState(state)
           } else {
             $rootScope.$broadcast('loading', { status: false })
-            if (state != 'settings.api'){
+            if (state != 'settings.api') {
               $rootScope.$broadcast('stateChanged', 'settings')
             }
             if (typeof err === 'string') {

@@ -25,7 +25,7 @@ require.config({
     FileSaver: 'js/libs/file-saver/file-saver',
 
     // dom-to-image
-    domToImg: 'js/libs/required-dom-to-image/src/dom-to-image', 
+    domToImg: 'js/libs/required-dom-to-image/src/dom-to-image',
 
     // JqueryUI
     JqueryUI: 'js/libs/jquery-ui'

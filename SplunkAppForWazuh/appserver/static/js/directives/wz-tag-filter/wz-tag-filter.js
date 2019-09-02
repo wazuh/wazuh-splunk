@@ -284,9 +284,7 @@ define(['../module'], function(app) {
             if (model) {
               const listTmp = new Set(
                 model.list.filter(function(x) {
-                  return x
-                    .toUpperCase()
-                    .includes(term[1].trim().toUpperCase())
+                  return x.toUpperCase().includes(term[1].trim().toUpperCase())
                 })
               )
               $scope.autocompleteContent.list = Array.from(listTmp)

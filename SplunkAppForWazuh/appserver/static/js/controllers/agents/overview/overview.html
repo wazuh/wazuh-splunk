@@ -9,7 +9,7 @@
       <span ng-if="agent.error">Unknown agent</span>
       <span ng-if="agent && agent.status">
         <span class="no-wrap wz-padding-left-8" aria-hidden="false">
-          <p class="round status littleStat teal" ng-class="getAgentStatusClass(agent.status)"></p>&nbsp;&nbsp;
+          <wz-svg icon="agent-{{agent.status}}"></wz-svg>
         </span>{{formatAgentStatus(agent.status)}}
       </span>
     </div>
@@ -180,7 +180,7 @@
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">Security Information Management</h3>
           <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'"
               sub-title="'Security events'" ui-sref='ag-general({id:agent.id})' current-tab="'general'"
               description="'Browse through your security alerts, identifying issues and threats in your environment.'">
@@ -213,6 +213,11 @@
           
           <div ng-show="extensionsLists.auditing" class="extensions-list">
             <ul class="noDot ul-extensions">
+              <li>
+                <wz-kbn-switch switch-model="extensions.audit"
+                  switch-change="toggleExtension('audit',!extensions.audit)">
+                </wz-kbn-switch><span>System auditing</span>
+              </li>
               <li ng-if="checkModules('oscap')">
                 <wz-kbn-switch switch-model="extensions.oscap"
                   switch-change="toggleExtension('oscap',!extensions.oscap)">
@@ -226,7 +231,7 @@
             </ul>
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card class="euiFlexItem"
               logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               sub-title="'Policy monitoring'" ui-sref='ag-pm({id:aoc.agent.id})' current-tab="'pm'"
@@ -287,7 +292,7 @@
             </ul>
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card ng-if="checkModules('vuls')" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
               sub-title="'Vulnerabilities'" ui-sref='ag-vul({id:agent.id})' current-tab="'vuls'"
               description="'Discover what applications are affected by well-known vulnerabilities'">
@@ -345,7 +350,7 @@
             </ul>
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves">
+          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card ng-if="extensions.pci" class="euiFlexItem"
               logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'" sub-title="'PCI DSS'"
               ui-sref='ag-pci({id:agent.id})' current-tab="'pci'"

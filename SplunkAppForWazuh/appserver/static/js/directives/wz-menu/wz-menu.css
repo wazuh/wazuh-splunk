@@ -55,7 +55,7 @@
 }
 
 .wz-menu-button:not([disabled]):hover {
-  background-color: #313131b5;
+  background-color: rgba(49, 49, 49, 0.71);
 }
 
 

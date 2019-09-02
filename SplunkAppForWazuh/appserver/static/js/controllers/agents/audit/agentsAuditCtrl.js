@@ -147,34 +147,26 @@ define([
         ),
         new PieChart(
           'filesVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh audit.file.name=* | top audit.file.name`,
+          `${this.filters} sourcetype=wazuh audit.file.name=* | top audit.file.name`,
           'filesVizz',
           this.scope
         ),
         new AreaChart(
           'alertsOverTimeVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | timechart limit=10 count by rule.description`,
+          `${this.filters} sourcetype=wazuh | timechart limit=10 count by rule.description`,
           'alertsOverTimeVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

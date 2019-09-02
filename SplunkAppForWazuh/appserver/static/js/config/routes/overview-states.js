@@ -345,7 +345,7 @@ define(['../module'], function(module) {
                   return false
                 }
               }
-            ],
+            ]
           }
         })
         // Overview - GDPR
@@ -413,7 +413,7 @@ define(['../module'], function(module) {
                   return false
                 }
               }
-            ],
+            ]
           }
         }) // Overview - HIPAA
         .state('ow-hipaa', {

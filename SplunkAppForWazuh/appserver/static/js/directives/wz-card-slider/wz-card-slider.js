@@ -22,13 +22,21 @@ define(['../module'], function(directives) {
         $scope.currentPos = 0
         $scope.maxCards = 4
 
-        $scope.canShow = (index) => {
-          return index >= $scope.currentPos*$scope.maxCards && index < $scope.currentPos*$scope.maxCards+4 
+        $scope.canShow = index => {
+          return (
+            index >= $scope.currentPos * $scope.maxCards &&
+            index < $scope.currentPos * $scope.maxCards + 4
+          )
         }
 
         $scope.showRightButton = () => {
           const maxPages = Math.floor($scope.data.length / 4)
-          return $scope.currentPos < maxPages && !($scope.currentPos === maxPages -1 && $scope.data.length%4 === 0 )
+          return (
+            $scope.currentPos < maxPages &&
+            !(
+              $scope.currentPos === maxPages - 1 && $scope.data.length % 4 === 0
+            )
+          )
         }
 
         $scope.showLeftButton = () => {
@@ -40,13 +48,10 @@ define(['../module'], function(directives) {
           $scope.$applyAsync()
         }
 
-
         $scope.previousPage = () => {
           $scope.currentPos -= 1
           $scope.$applyAsync()
         }
-
-
       },
       templateUrl:
         BASE_URL +

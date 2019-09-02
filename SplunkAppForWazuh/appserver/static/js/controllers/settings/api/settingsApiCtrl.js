@@ -38,9 +38,11 @@ define(['../../module'], function(controllers) {
       this.scope.checkManager = entry => this.checkManager(entry)
       this.scope.editEntry = entry => this.editEntry(entry)
       this.scope.removeManager = entry => this.removeManager(entry)
-      this.scope.updateEntry = (user,pass,url,port) => this.updateEntry(user,pass,url,port)
+      this.scope.updateEntry = (user, pass, url, port) =>
+        this.updateEntry(user, pass, url, port)
       this.scope.selectManager = mg => this.selectManager(mg)
-      this.scope.submitApiForm = (user,api,url,port) => this.submitApiForm(user,api,url,port)
+      this.scope.submitApiForm = (user, api, url, port) =>
+        this.submitApiForm(user, api, url, port)
       this.init()
     }
 
@@ -140,7 +142,8 @@ define(['../../module'], function(controllers) {
      */
     editEntry(entry) {
       try {
-        this.scope.edit = this.scope.currentEntryKey === entry['_key'] ? !this.scope.edit : true
+        this.scope.edit =
+          this.scope.currentEntryKey === entry['_key'] ? !this.scope.edit : true
         this.scope.showForm = false
         this.scope.currentEntryKey = entry['_key']
         this.scope.url = entry.url
@@ -160,7 +163,7 @@ define(['../../module'], function(controllers) {
      * Edits an entry
      * @param {Object} entry
      */
-    async updateEntry(user,pass,url,port) {
+    async updateEntry(user, pass, url, port) {
       try {
         if (this.savingApi) {
           this.notification.showWarningToast('Please, wait for success message')
@@ -229,7 +232,7 @@ define(['../../module'], function(controllers) {
     /**
      * Adds a new API
      */
-    async submitApiForm(user,pass,url,port) {
+    async submitApiForm(user, pass, url, port) {
       try {
         this.scope.validatingError = []
         if (this.savingApi) {

@@ -58,34 +58,31 @@ define([
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
-
       try {
-        const parsedResult = agentData.map(item =>
-          item && item.data && item.data.data ? item.data.data : false
-        )
-        let [
-          summary,
-          lastAgent,
-          platforms,
-          versions,
-          nodes,
-          groups
-        ] = parsedResult
+        const parsedResult = agentData.data.data
+
+        let summary = parsedResult.agent_status
+        let lastAgent = parsedResult.last_registered_agent
+        let groups = parsedResult.groups
 
         this.scope.noAgents = summary.Total - 1 < 1
         this.scope.agentsCountActive = summary.Active - 1
-        this.scope.lastAgent = lastAgent.items[0]
-          ? lastAgent.items[0]
-          : 'Unknown'
-        const os = platforms
-          ? platforms.items.map(item => item.os).filter(item => !!item)
+        this.scope.lastAgent = lastAgent || 'Unknown'
+        const os = parsedResult.agent_os
+          ? parsedResult.agent_os.items
+              .map(item => item.os)
+              .filter(item => !!item)
           : false
-        versions = versions
-          ? versions.items.map(item => item.version).filter(item => !!item)
+        const versions = parsedResult.agent_version
+          ? parsedResult.agent_version.items
+              .map(item => item.version)
+              .filter(item => !!item)
           : false
-        nodes =
-          nodes && nodes.items
-            ? nodes.items.map(item => item['node_name']).filter(item => !!item)
+        const nodes =
+          parsedResult.nodes && parsedResult.nodes.items
+            ? parsedResult.nodes.items
+                .map(item => item['node_name'])
+                .filter(item => !!item)
             : false
         groups = groups
           ? groups.items.map(item => item.name).filter(item => !!item)
@@ -100,11 +97,47 @@ define([
         this.scope.searchBarModel = {
           name: [],
           status: ['Active', 'Disconnected', 'Never connected'],
-          group: groups ? groups.sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : [],
-          version: versions ? versions.sort((a, b) => { return a.toString().localeCompare(b.toString(), undefined, { numeric: true, sensitivity: 'base' }) }) : [],
-          'os.platform': os ? os.map(x => x.platform).sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : [],
-          'os.version': os ? os.map(x => x.version).sort((a, b) => { return a.toString().localeCompare(b.toString(), undefined, { numeric: true, sensitivity: 'base' }) }) : [],
-          'os.name': os ? os.map(x => x.name).sort((a, b) => { return a.toString().localeCompare(b.toString()) }) : []
+          group: groups
+            ? groups.sort((a, b) => {
+                return a.toString().localeCompare(b.toString())
+              })
+            : [],
+          version: versions
+            ? versions.sort((a, b) => {
+                return a
+                  .toString()
+                  .localeCompare(b.toString(), undefined, {
+                    numeric: true,
+                    sensitivity: 'base'
+                  })
+              })
+            : [],
+          'os.platform': os
+            ? os
+                .map(x => x.platform)
+                .sort((a, b) => {
+                  return a.toString().localeCompare(b.toString())
+                })
+            : [],
+          'os.version': os
+            ? os
+                .map(x => x.version)
+                .sort((a, b) => {
+                  return a
+                    .toString()
+                    .localeCompare(b.toString(), undefined, {
+                      numeric: true,
+                      sensitivity: 'base'
+                    })
+                })
+            : [],
+          'os.name': os
+            ? os
+                .map(x => x.name)
+                .sort((a, b) => {
+                  return a.toString().localeCompare(b.toString())
+                })
+            : []
         }
 
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
@@ -129,7 +162,7 @@ define([
     /**
      * On controller loads
      */
-    $onInit() {      
+    $onInit() {
       this.scope.addingAgents = false
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
@@ -269,7 +302,6 @@ define([
       this.scope.addingAgents = false
       this.scope.$applyAsync()
     }
-
 
     /**
      * Reload list of agents

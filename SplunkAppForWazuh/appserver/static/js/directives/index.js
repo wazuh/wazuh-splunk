@@ -20,5 +20,5 @@ define([
   './wz-head-toaster/wz-head-toaster',
   './wz-kbn-switch/wz-kbn-switch',
   './wz-alert-metrics/wz-alert-metrics',
-  './wz-card-slider/wz-card-slider',
+  './wz-card-slider/wz-card-slider'
 ], function() {})

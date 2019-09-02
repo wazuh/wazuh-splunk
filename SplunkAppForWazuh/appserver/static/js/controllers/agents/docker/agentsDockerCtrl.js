@@ -90,12 +90,10 @@ define([
         ),
         new LinearChart(
           'eventsOcurred',
-          `${
-            this.filters
-          } sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
+          `${this.filters} sourcetype=wazuh data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
           'eventsOcurred',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'top5actions',
@@ -105,26 +103,20 @@ define([
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
+          `${this.filters} sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
           'alertsSummary',
           this.scope
         ),
         new LinearChart(
           'resourceUsage',
-          `${
-            this.filters
-          } sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
+          `${this.filters} sourcetype=wazuh data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
           'resourceUsage',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new RawTableDataService(
           'alertsSummaryRawTable',
-          `${
-            this.filters
-          } sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count`,
+          `${this.filters} sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count`,
           'alertsSummaryRawTableToken',
           '$result$',
           this.scope,

@@ -65,9 +65,7 @@ define([
          */
         new SearchHandler(
           `lastNotChecked`,
-          `${
-            this.filters
-          } | search data.cis.notchecked=* | table data.cis.notchecked | head 1`,
+          `${this.filters} | search data.cis.notchecked=* | table data.cis.notchecked | head 1`,
           `filesAddedToken`,
           '$result.data.cis.notchecked$',
           'lastNotChecked',
@@ -76,9 +74,7 @@ define([
         ),
         new SearchHandler(
           `lastPass`,
-          `${
-            this.filters
-          } | search data.cis.pass=* | table data.cis.pass | head 1`,
+          `${this.filters} | search data.cis.pass=* | table data.cis.pass | head 1`,
           `lastPass`,
           '$result.data.cis.pass$',
           'lastPass',
@@ -87,9 +83,7 @@ define([
         ),
         new SearchHandler(
           `lastScanScore`,
-          `${
-            this.filters
-          } | search data.cis.score=* | table data.cis.score | head 1`,
+          `${this.filters} | search data.cis.score=* | table data.cis.score | head 1`,
           `lastScanScore`,
           '$result.data.cis.score$',
           'lastScanScore',
@@ -98,9 +92,7 @@ define([
         ),
         new SearchHandler(
           `lastScanDate`,
-          `${
-            this.filters
-          }  | search data.cis.timestamp=* | table data.cis.timestamp | head 1`,
+          `${this.filters}  | search data.cis.timestamp=* | table data.cis.timestamp | head 1`,
           'lastScanDate',
           '$result.data.cis.timestamp$',
           'lastScanDate',
@@ -109,9 +101,7 @@ define([
         ),
         new SearchHandler(
           `lastErrors`,
-          `${
-            this.filters
-          } | search data.cis.error=* | table data.cis.error | head 1`,
+          `${this.filters} | search data.cis.error=* | table data.cis.error | head 1`,
           'lastErrors',
           '$result.data.cis.error$',
           'lastErrors',
@@ -120,9 +110,7 @@ define([
         ),
         new SearchHandler(
           `lastFails`,
-          `${
-            this.filters
-          } | search data.cis.fail=* | table data.cis.fail | head 1`,
+          `${this.filters} | search data.cis.fail=* | table data.cis.fail | head 1`,
           'lastFails',
           '$result.data.cis.fail$',
           'lastFails',
@@ -131,9 +119,7 @@ define([
         ),
         new SearchHandler(
           `lastUnknown`,
-          `${
-            this.filters
-          } | search data.unknown.fail=* | table data.cis.unknown | head 1`,
+          `${this.filters} | search data.unknown.fail=* | table data.cis.unknown | head 1`,
           'lastUnknown',
           '$result.data.cis.unknown$',
           'lastUnknown',
@@ -142,9 +128,7 @@ define([
         ),
         new SearchHandler(
           `lastScanBenchmark`,
-          `${
-            this.filters
-          } rule.groups{}=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
+          `${this.filters} rule.groups{}=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
           'lastScanBenchmark',
           '$result.data.cis.benchmark$',
           'lastScanBenchmark',
@@ -156,34 +140,26 @@ define([
          */
         new ColumnChart(
           'topCiscatGroups',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
           'topCiscatGroups',
           this.scope
         ),
         new LinearChart(
           'scanResultEvolution',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          }  sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
+          `${this.filters}  sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

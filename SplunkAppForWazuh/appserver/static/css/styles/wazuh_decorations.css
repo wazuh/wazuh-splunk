@@ -498,7 +498,7 @@ table span.badge {
 
 .wz-metric-color {
   margin: 0 !important;
-  background-color: #c8efac7a !important;
-  border: 1px solid #c8efac7a !important;
+  background-color: rgba(200, 239, 172, 0.478) !important;
+  border: 1px solid rgba(200, 239, 172, 0.478) !important;
   box-shadow: none !important;
 }

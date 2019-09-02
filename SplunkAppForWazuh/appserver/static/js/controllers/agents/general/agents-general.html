@@ -12,7 +12,7 @@
       <span>General</span>
       <span ng-if="agentInfo.status">
         <span class="no-wrap wz-padding-left-8" aria-hidden="false">
-          <p class="round status littleStat teal" ng-class="getAgentStatusClass(agentInfo.status)"></p>&nbsp;&nbsp;
+            <wz-svg icon="agent-{{agentInfo.status}}"></wz-svg>
         </span>{{formatAgentStatus(agentInfo.status)}}
       </span>
     </div>

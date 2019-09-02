@@ -10,41 +10,46 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function (directives) {
+define(['../module'], function(directives) {
   'use strict'
-  directives.directive('wzRegisterAgent', function (BASE_URL) {
+  directives.directive('wzRegisterAgent', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {},
-      controller(
-        $scope,
-        $notificationService,
-        $requestService
-      ) {
-
+      controller($scope, $notificationService, $requestService) {
         const apiReq = $requestService.apiReq
-        $scope.config = { osSelected: '', managerIp: '', agentName: '', agentKey: '' }
+        $scope.config = {
+          osSelected: '',
+          managerIp: '',
+          agentName: '',
+          agentKey: ''
+        }
         $scope.newInstall = true
         $scope.registeredAgent = false
         $scope.showNavTab = false
 
         // Functions
-        $scope.selectOs = (os) => {
+        $scope.selectOs = os => {
           $scope.config.osSelected = os
           $scope.$applyAsync()
         }
 
-        $scope.osEquivalence = (os) => {
-          const equivalences = { redhat: 'Red Hat / CentOS', debian: 'Debian / Ubuntu', windows: 'Windows', macos: 'MacOS' }
+        $scope.osEquivalence = os => {
+          const equivalences = {
+            redhat: 'Red Hat / CentOS',
+            debian: 'Debian / Ubuntu',
+            windows: 'Windows',
+            macos: 'MacOS'
+          }
           return equivalences[os] || 'Undefined'
         }
 
-        $scope.selectManagerAddress = (managerAddress) => {
+        $scope.selectManagerAddress = managerAddress => {
           $scope.config.managerIp = managerAddress
           $scope.$applyAsync()
         }
 
-        $scope.selectAgentName = (agentName) => {
+        $scope.selectAgentName = agentName => {
           $scope.config.agentName = agentName
           $scope.registeredAgent = false
           $scope.$applyAsync()
@@ -76,13 +81,19 @@ define(['../module'], function (directives) {
             document.execCommand('copy')
             $notificationService.showSimpleToast('Content has been copied')
           } catch (error) {
-            $notificationService.showErrorToast('Cannot copy the selected content')
+            $notificationService.showErrorToast(
+              'Cannot copy the selected content'
+            )
           }
         }
 
         $scope.addAgent = async () => {
           try {
-            const response = await apiReq(`/agents/${$scope.config.agentName}`, {}, 'PUT')
+            const response = await apiReq(
+              `/agents/${$scope.config.agentName}`,
+              {},
+              'PUT'
+            )
             if (
               response &&
               response.data &&
@@ -93,7 +104,10 @@ define(['../module'], function (directives) {
               $scope.registeredAgent = true
               $scope.$applyAsync()
             } else {
-              const error = response.data.message || response.data.error || 'Cannot add agent'
+              const error =
+                response.data.message ||
+                response.data.error ||
+                'Cannot add agent'
               throw error
             }
           } catch (error) {

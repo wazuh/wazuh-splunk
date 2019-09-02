@@ -26,7 +26,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       extensions,
       $fileEditor,
       $restartService,
-      $requestService, 
+      $requestService,
       isAdmin
     ) {
       super(
@@ -135,9 +135,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
     async editRule(fileName) {
       try {
-        const readOnly = ! (this.scope.ruleInfo.path === 'etc/rules')
-        await this.fetchFileContent(fileName,readOnly)
-      } catch (error) {  }
+        const readOnly = !(this.scope.ruleInfo.path === 'etc/rules')
+        await this.fetchFileContent(fileName, readOnly)
+      } catch (error) {}
       return
     }
 
@@ -145,8 +145,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       try {
         this.scope.editingFile = true
         this.scope.readOnly = readOnly
-        if(readOnly){
-          if(!file.startsWith('ruleset/rules')){
+        if (readOnly) {
+          if (!file.startsWith('ruleset/rules')) {
             this.scope.fileName = file
             file = this.scope.ruleInfo.path + '/' + file
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
@@ -155,10 +155,10 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast('XMLContentReady', {
+            this.scope.$broadcast('RuleIdContentReady', {
               data: this.scope.XMLContent
             })
-          }else{
+          } else {
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
               file,
               null,
@@ -167,8 +167,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
             )
             return this.scope.XMLContent
           }
-        }else{
-          if(file.startsWith('etc/rules/')){
+        } else {
+          if (file.startsWith('etc/rules/')) {
             this.scope.fetchedXML = await this.fileEditor.getConfiguration(
               file,
               null,
@@ -176,16 +176,17 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
               readOnly
             )
             return this.scope.fetchedXML
-          }else{
+          } else {
             this.scope.fetchedXML = await this.fileEditor.getConfiguration(
               file,
               'rules',
               null,
               readOnly
             )
-            this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+            this.scope.$broadcast('fetchedFile', {
+              data: this.scope.fetchedXML
+            })
           }
-          
         }
       } catch (error) {
         this.scope.fetchedXML = null

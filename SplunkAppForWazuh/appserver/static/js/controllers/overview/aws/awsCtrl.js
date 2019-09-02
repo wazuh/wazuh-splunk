@@ -70,21 +70,17 @@ define([
          */
         new AreaChart(
           'eventsBySourceVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | timechart count by data.aws.source usenull=f`,
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.source usenull=f`,
           'eventsBySourceVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new ColumnChart(
           'eventsByS3BucketsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | timechart count by data.aws.log_info.s3bucket usenull=f`,
+          `${this.filters} sourcetype=wazuh | timechart count by data.aws.log_info.s3bucket usenull=f`,
           'eventsByS3BucketsVizz',
           this.scope,
-          {customAxisTitleX : "Time span"}
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'sourcesVizz',
@@ -94,17 +90,13 @@ define([
         ),
         new PieChart(
           'accountsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId`,
+          `${this.filters} sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId`,
           'accountsVizz',
           this.scope
         ),
         new PieChart(
           's3BucketsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count by data.aws.log_info.s3bucket`,
+          `${this.filters} sourcetype=wazuh | stats count by data.aws.log_info.s3bucket`,
           's3BucketsVizz',
           this.scope
         ),
@@ -116,25 +108,19 @@ define([
         ),
         new Table(
           'top5Buckets',
-          `${
-            this.filters
-          } sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
+          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
           'top5Buckets',
           this.scope
         ),
         new Table(
           'top5Rules',
-          `${
-            this.filters
-          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'top5Rules',
           this.scope
         ),
         new RawTableDataService(
           'top5BucketsTable',
-          `${
-            this.filters
-          } sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
+          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
           'top5BucketsTableToken',
           '$result$',
           this.scope,
@@ -142,9 +128,7 @@ define([
         ),
         new RawTableDataService(
           'top5RulesTable',
-          `${
-            this.filters
-          } sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'top5RulesTableToken',
           '$result$',
           this.scope,
@@ -152,9 +136,7 @@ define([
         ),
         new Map(
           'map',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count by data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat, data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon as "lon" | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat as "lat" | geostats count`,
+          `${this.filters} sourcetype=wazuh | stats count by data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat, data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon as "lon" | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat as "lat" | geostats count`,
           'map',
           this.scope
         )

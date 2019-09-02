@@ -203,9 +203,7 @@ define([
                 let msg = null
                 if (params.file === 'ossec.conf') {
                   if (params.node) {
-                    msg = `Succes. Node(${
-                      params.node
-                    }) configuration has been updated.`
+                    msg = `Succes. Node(${params.node}) configuration has been updated.`
                   } else {
                     msg = 'Succes. Manager configuration has been updated.'
                   }
