@@ -73,7 +73,7 @@ define([
         ),
         new LinearChart(
           'eventsOcurred',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count by data.docker.Action`,
+          `${this.filters} sourcetype=wazuh data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
           'eventsOcurred',
           this.scope,
           { customAxisTitleX: 'Time span' }
@@ -92,7 +92,7 @@ define([
         ),
         new LinearChart(
           'resourceUsage',
-          `${this.filters} sourcetype=wazuh  | timechart span=1h count by data.docker.Type`,
+          `${this.filters} sourcetype=wazuh data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
           'resourceUsage',
           this.scope,
           { customAxisTitleX: 'Time span' }
