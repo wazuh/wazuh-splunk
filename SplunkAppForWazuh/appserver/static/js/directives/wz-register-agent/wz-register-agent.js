@@ -19,7 +19,7 @@ define(['../module'], function(directives) {
       controller($scope, $notificationService, $requestService) {
         const apiReq = $requestService.apiReq
         $scope.config = {
-          osSelected: '',
+          osSelected: 'redhat',
           managerIp: '',
           agentName: '',
           agentKey: ''
@@ -87,6 +87,13 @@ define(['../module'], function(directives) {
           }
         }
 
+        $scope.getVersion = async () => {
+          $scope.wazuhVersion = await $requestService.apiReq('/version')
+          $scope.wazuhVersion = ((($scope.wazuhVersion || {}).data || {}).data || {})
+          $scope.wazuhVersion = $scope.wazuhVersion.replace("v","")
+          $scope.$applyAsync()
+        }
+
         $scope.addAgent = async () => {
           try {
             const response = await apiReq(
@@ -114,6 +121,8 @@ define(['../module'], function(directives) {
             $notificationService.showErrorToast(error || 'Cannot add agent')
           }
         }
+
+        $scope.getVersion()
       },
       templateUrl:
         BASE_URL +
