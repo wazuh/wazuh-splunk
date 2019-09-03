@@ -310,6 +310,7 @@ define([
 
         $scope.$on('removeRestartMsg', () => {
           $scope.restartBtn = false
+          dynamicHeight()
           $scope.$applyAsync()
         })
 
