@@ -909,6 +909,13 @@ kbn-vis .vis-container {
   background-color: #fcf3e7;
 }
 
+.euiCallOut--info {
+  border-color: #096317 !important;
+  background-color: #30823869;
+  font-weight: 500;
+  padding: 12px !important;
+}
+
 .euiCallOut--success {
   border-color: #017D73 !important;
   background-color: #e6f2f1;
@@ -923,6 +930,10 @@ kbn-vis .vis-container {
   color: #a9600a;
 }
 
+.euiCallOut--info .euiCallOutHeader__title {
+  color: #1a541f;
+}
+
 .euiCallOutHeader > * + * {
   margin-left: 8px;
 }
@@ -930,6 +941,10 @@ kbn-vis .vis-container {
 .euiCallOut--warning .euiCallOutHeader__icon {
   fill: #a9600a;
 }
+.euiCallOut--info .euiCallOutHeader__icon {
+  fill: #1a541f;
+}
+
 .euiIcon--medium {
   width: 16px;
   height: 16px;

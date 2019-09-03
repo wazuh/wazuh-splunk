@@ -72,7 +72,7 @@
           ng-if="path === '/rules'" ng-click="handleClick(key,item,$event)" ng-mouseover="selectedCell = $index;"
           ng-mouseleave="selectedCell = false">
           <div class="wz-text-truncatable-container">
-            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index">
+            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'file'">
               <span class="fa fa-search-plus"></span> </span>
             <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
@@ -93,7 +93,7 @@
           ng-if="path === '/decoders'" ng-click="handleClick(key,item,$event)" ng-mouseover="selectedCell = $index;"
           ng-mouseleave="selectedCell = false">
           <div class="wz-text-truncatable-container">
-            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index">
+            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'file'">
               <span class="fa fa-search-plus"></span> </span>
             <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
               <div class="table-width-id wz-text-truncatable-container" ng-if="key === 'id'">
