@@ -1,0 +1,19 @@
+
+<div id="dropzone" style="width:100%;">
+    <form action="/upload" class="dropzone needsclick dz-clickable" id="myDropzone">
+
+        <div class="dz-message needsclick">
+        Drop files here or click to upload.<br>
+        <span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
+        </div>
+    
+    </form>
+    
+    <button type="submit" class="btn btn-primary" ng-click="myDropzone.processQueue()">
+        <span>Start upload</span>
+    </button>
+    
+    <button type="submit" class="btn btn-primary" ng-click="myDropzone.removeAllFiles(true)">
+        <span>Reset</span>
+    </button>
+</div>

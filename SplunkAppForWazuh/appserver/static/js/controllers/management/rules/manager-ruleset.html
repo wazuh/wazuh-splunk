@@ -149,14 +149,14 @@
 </div>
 
 
-<div ng-if="uploadingFiles">
+<div ng-show="uploadingFiles">
   <div layout="row" class="md-padding wz-padding-top-0">
     <button ng-click='switchUploadFiles()' class='btn wz-button-cancel'>Cancel</button>
   </div>
   
+  
   <div layout="row" class="md-padding">
-
-    drop zone
+    <wz-upload-files></wz-upload-files>
     </div>
 </div>
 

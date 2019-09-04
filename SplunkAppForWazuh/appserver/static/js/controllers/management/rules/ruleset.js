@@ -108,6 +108,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
       this.scope.switchFiles = () => this.switchFiles()
       this.scope.switchUploadFiles = () => this.switchUploadFiles()
+      
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
@@ -168,6 +169,10 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     switchUploadFiles() {
       this.scope.uploadingFiles = !this.scope.uploadingFiles
+      if(this.scope.uploadingFiles){
+        //this.scope.myDropzone = new Dropzone("#myDropzone", { url: "/file/post", autoProcessQueue: false, addRemoveLinks: true, parallelUploads: 10})
+
+      }
       this.scope.$applyAsync()
     }
 
@@ -193,6 +198,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       return
     }
+
 
     /**
      * Returns the color
