@@ -71,6 +71,7 @@ define(['../../module', 'FileSaver'], function(app) {
       } catch (err) {
         this.filter = []
       }
+      this.scope.uploadingFiles = false
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
       this.scope.isArray = angular.isArray // eslint-disable-line
@@ -106,6 +107,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.enableSave = () => this.enableSave()
 
       this.scope.switchFiles = () => this.switchFiles()
+      this.scope.switchUploadFiles = () => this.switchUploadFiles()
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
@@ -158,6 +160,15 @@ define(['../../module', 'FileSaver'], function(app) {
     switchFiles() {
       this.scope.rulesetFiles = !this.scope.rulesetFiles
       this.removeAllFilters()
+    }
+
+    
+    /**
+     * Open or closes the upload files view
+     */
+    switchUploadFiles() {
+      this.scope.uploadingFiles = !this.scope.uploadingFiles
+      this.scope.$applyAsync()
     }
 
     /**
@@ -244,6 +255,7 @@ define(['../../module', 'FileSaver'], function(app) {
         : (this.scope.currentDecoder = false)
       this.scope.$applyAsync()
     }
+
 
     /**
      * Searches a rule
