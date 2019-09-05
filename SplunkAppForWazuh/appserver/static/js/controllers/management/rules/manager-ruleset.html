@@ -25,7 +25,7 @@
   </div>
 </div>
 <div>
-  <div ng-if="!addingNewFile && !editingRulesetFile && !XMLContent && !uploadingFiles" class="md-padding-h">
+  <div ng-if="!addingNewFile && !editingRulesetFile && !XMLContent" class="md-padding-h">
     <div ng-show="!loading" layout="row" layout-align="start center">
       <div flex>
         <div layout="row">
@@ -62,24 +62,23 @@
         </div>
       </div>
     </div>
-    <md-card class="wz-md-card no-margin-sides">
-      <md-card-actions layout="row" layout-align="end center"
-        class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+    <div flex="auto" layout="row">
+    <div flex="auto" layout="column">
 
-      <!-- Show files and button to add a new file -->
-      <a ng-if="rulesetFiles && adminMode" ng-click="addNewFile()">Add new rules file</a>
-      <span ng-if="!rulesetFiles && !uploadingFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer">
-        Manage rules files
-      </span>
-      &nbsp;&nbsp;
-      <span ng-if="!uploadingFiles" ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer">
-        Upload Files
-      </span>
-      <span flex="" class="flex"></span>
-      <wz-kbn-switch ng-if="rulesetFiles" switch-model="$parent.localFilter" switch-text="Editable files"></wz-kbn-switch>
-      <wz-kbn-switch ng-if="!rulesetFiles" switch-model="$parent.localFilter" switch-text="Only custom rules"></wz-kbn-switch>
-    </md-card-actions>
-    <md-card-contents>
+          <md-card flex="auto" class="wz-md-card">
+            <md-card-actions layout="row" layout-align="end center"
+              class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+
+            <!-- Show files and button to add a new file -->
+            <a ng-if="rulesetFiles && adminMode" ng-click="addNewFile()">Add new rules file</a>
+            <span ng-if="!rulesetFiles " ng-click="switchFiles()" class="wz-color-text cursor-pointer">
+              Manage rules files
+            </span>
+            <span flex="" class="flex"></span>
+            <wz-kbn-switch ng-if="rulesetFiles" switch-model="$parent.localFilter" switch-text="Editable files"></wz-kbn-switch>
+            <wz-kbn-switch ng-if="!rulesetFiles" switch-model="$parent.localFilter" switch-text="Only custom rules"></wz-kbn-switch>
+          </md-card-actions>
+          <md-card-contents>
       <md-chips ng-if="!rulesetFiles" class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
         <md-chip class="wz-chip" ng-show="includesFilter('file')">
           <span>File: {{getFilter('file')}}
@@ -146,19 +145,31 @@
       </div>
     </md-card-contents>
   </md-card>
-</div>
-
-
-<div ng-show="uploadingFiles">
-  <div layout="row" class="md-padding wz-padding-top-0">
-    <button ng-click='switchUploadFiles()' class='btn wz-button-cancel'>Cancel</button>
   </div>
-  
-  
-  <div layout="row" class="md-padding">
-    <wz-upload-files></wz-upload-files>
+
+  <md-sidenav ng-show="uploadingFiles" class="md-sidenav-right" style="width: 300px;" md-is-locked-open="true">
+
+  <div>
+      <div layout="row" class="md-padding wz-padding-top-0">
+        <button ng-click='switchUploadFiles()' class='btn wz-button-cancel'>Cancel</button>
+      </div>
+      
+      
+      <div layout="row" class="md-padding">
+        <wz-upload-files style="width:100%;"></wz-upload-files>
+        </div>
     </div>
+  </md-sidenav>
+    
+    
+  
+  <md-sidenav ng-show="true" class="md-sidenav-right" style="width: 100px;" md-is-locked-open="true">
+      <button ng-click='switchUploadFiles()' class='btn wz-button-cancel'>upload</button>
+  </md-sidenav>
+  
 </div>
+</div>
+
 
 
 

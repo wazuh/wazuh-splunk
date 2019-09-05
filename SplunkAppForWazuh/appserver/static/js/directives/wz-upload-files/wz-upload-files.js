@@ -18,7 +18,27 @@ define(['../module','Dropzone'], function(app,Dropzone) {
       scope: {
       },
       controller($scope) {
-        $scope.myDropzone = new Dropzone("#myDropzone", { url: "/file/post", autoProcessQueue: false, addRemoveLinks: true, parallelUploads: 10})
+        $scope.myDropzone = new Dropzone("#myDropzone",{
+          url: "en-us/custom/SplunkAppForWazuh//manager/upload_file",
+          autoProcessQueue: false,
+          addRemoveLinks: true,
+          parallelUploads: 10,
+          //previewTemplate: document.querySelector('#wz-upload-file-container').innerHTML,
+        })
+
+          $scope.uploadAllFiles = () => {
+            $scope.myDropzone.processQueue()
+          }
+
+          $scope.myDropzone.on("error", function (file, jsonResponse) {
+            var errorMessage = "Could not upload document: ";
+            if (jsonResponse["ValidationMessage"] != null) {
+                errorMessage += jsonResponse["ValidationMessage"];
+            } else {
+                errorMessage += "unknown error";
+            }
+            console.log(errorMessage);
+        });
 
       },
       templateUrl:

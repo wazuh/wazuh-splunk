@@ -79,6 +79,16 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("manager: Error in manager module constructor: %s" % (e))
 
+    @expose_page(must_login=False, methods=['POST'])
+    def upload_file(self, **kwargs):
+        self.logger.debug("manager: Uploading file(s)")
+        try:
+            self.logger.info(kwargs["file"])
+        except Exception as e:
+            self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
+
+
+
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
         """Check agent monitoring status.
