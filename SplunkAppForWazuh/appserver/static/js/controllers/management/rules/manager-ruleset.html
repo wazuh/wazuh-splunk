@@ -8,9 +8,13 @@
                 <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
                 <span> / Rules </span>
               </div>
+              <div flex=""></div>
+              <button class="btn wz-button-empty wz-margin-right-10" style="margin-top:10px;" ng-click="switchLogtest()" aria-label="Open Logtest" md-labeled-by-tooltip="md-tooltip-4">
+                <i class="fa fa-fw fa-play" aria-hidden="true"></i>Test your logs
+              </button>
         </div>
         <div layout="row" style="margin-top:15px; margin-left:-15px;">
-            <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
+            <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-width-100p" md-selected-nav-item="selectedNavTab">
                 <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
                 <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
                 </md-nav-item>
@@ -27,58 +31,122 @@
         </div>
         <div style="width:100%;margin-right: 10px;"> 
           <div ng-if="!addingNewFile && !editingRulesetFile && !XMLContent" class="wz-padding-left-16">
-            <div ng-show="!loading" layout="row" layout-align="start center">
-              <div flex>
-                <div layout="row">
-                  <!-- Show decoders -->
-                  <div ng-show="rulesetFiles">
-                    <button class="btn height-40 wz-button-empty wz-margin-right-10" ng-click="switchFiles()">
-                      <md-tooltip md-direction="right" class="wz-tooltip">
-                        Back to rules
-                      </md-tooltip>
-                      <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                  <div ng-show="rulesetFiles" class="wz-width-100">
-                    <label class="wz-icon-loupe">
-                      <input placeholder="Filter rules files..." ng-model="customSearch" type="text" flex
-                        class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-                    </label>
-                  </div>
-                  <div ng-show="!rulesetFiles" class="wz-width-100">
-                    <label class="wz-icon-loupe">
-                      <input id="search-input-rules" placeholder="Filter rules..." ng-model="customSearch" type="text" flex
-                        class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-                    </label>
-                  </div>
-                  <wz-add-filter-chip ng-if="!rulesetFiles" id-input="search-input-rules" options="[{label: 'File', value: 'file'},
-                  {label: 'Path', value: 'path'}, {label: 'Level', value: 'level'},
-                  {label: 'Group', value: 'group'}, {label: 'PCI control', value: 'pci'},
-                  {label: 'GDPR', value: 'gdpr'},{label: 'HIPAA', value: 'hipaa'},{label: 'NIST 800-53', value: 'nist-800-53'}]">
-                </wz-add-filter-chip>
-                <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
-                  ng-click="search(customSearch)">
-                  <span>Search</span>
-                </button>
-                </div>
-              </div>
-            </div>
+           
             <div layout="row">
               <md-card style="width:100%;" class="wz-md-card no-margin-sides">
-                <md-card-actions layout="row" layout-align="end center"
-                  class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-        
-                <!-- Show files and button to add a new file -->
-                <a ng-if="rulesetFiles && adminMode" ng-click="addNewFile()">Add new rules file</a>
-                <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer">
-                  Manage rules files
-                </span> &nbsp;&nbsp;
-                <span ng-click="switchLogtest()" class="wz-color-text cursor-pointer">
-                  Logtest
-                </span>
-                <span flex="" class="flex"></span>
-                <wz-kbn-switch ng-if="rulesetFiles" switch-model="$parent.localFilter" switch-text="Editable files"></wz-kbn-switch>
-                <wz-kbn-switch ng-if="!rulesetFiles" switch-model="$parent.localFilter" switch-text="Only custom rules"></wz-kbn-switch>
+                <md-card-actions layout="column"
+                  class="wz-card-actions wz-card-actions-top md-actions-ruleset" style="background-color: white; height:110px;">
+                  <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
+                    <span style="font-size: 28px; padding-right: 10px;"> Rules </span> 
+                    <wz-kbn-switch ng-if="rulesetFiles" switch-model="$parent.localFilter" switch-text="Editable files"></wz-kbn-switch>
+                    <wz-kbn-switch ng-if="!rulesetFiles" switch-model="$parent.localFilter" switch-text="Custom rules"></wz-kbn-switch>
+
+                    <span flex="" class="flex"></span>
+
+                    <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer link-table">
+                      <wz-svg icon="submodule"></wz-svg>
+                      Manage rules files
+                    </span> 
+                    <span ng-click="downloadCsv('/rules','rules.csv')" class="wz-color-text cursor-pointer link-table">
+                        <wz-svg icon="import"></wz-svg>
+                      Export formatted
+                    </span>
+                    <span ng-click="switchLogtest()" class="wz-color-text cursor-pointer link-table">
+                        <wz-svg icon="export"></wz-svg>
+                      Import files
+                    </span>
+                  </div>
+
+                  <div class="layout-row" style="padding-top: 15px;">
+                    <div layout="row" class="layout-row" style="width: 100%;">
+                      <!-- Show decoders -->
+                      <div ng-show="rulesetFiles" aria-hidden="true" class="ng-hide">
+                        <button class="btn height-40 wz-button-empty wz-margin-right-10" ng-click="switchFiles()" aria-label="Back to rules" md-labeled-by-tooltip="md-tooltip-4">
+                          
+                          <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div ng-show="rulesetFiles" class="wz-width-100 ng-hide" aria-hidden="true">
+                        <label class="wz-icon-loupe">
+                          <input placeholder="Filter rules files..." ng-model="customSearch" type="text" flex="" class="kuiLocalSearchInput height-40 ng-pristine ng-untouched ng-valid ng-empty flex" aria-invalid="false" wz-enter="search(customSearch)">
+                        </label>
+                      </div>
+                      <div ng-show="!rulesetFiles" class="wz-width-100" aria-hidden="false">
+                        <label class="wz-icon-loupe">
+                          <input id="search-input-rules" placeholder="Filter rules..." ng-model="customSearch" type="text" flex="" class="kuiLocalSearchInput height-40 ng-pristine ng-untouched ng-valid ng-empty flex" aria-invalid="false" wz-enter="search(customSearch)">
+                        </label>
+                      </div>
+                      <wz-add-filter-chip ng-if="!rulesetFiles" id-input="search-input-rules" options="[{label: 'File', value: 'file'},
+                      {label: 'Path', value: 'path'}, {label: 'Level', value: 'level'},
+                      {label: 'Group', value: 'group'}, {label: 'PCI control', value: 'pci'},
+                      {label: 'GDPR', value: 'gdpr'},{label: 'HIPAA', value: 'hipaa'},{label: 'NIST 800-53', value: 'nist-800-53'}]" class="ng-scope ng-isolate-scope"><div class="open-chips">
+                        <i class="btn-as-i cursor-pointer fa filter-icon fa-filter" ng-class="!showDropdown ? 'fa-filter' : 'fa-times'" ng-click="showDropdown = !showDropdown" aria-hidden="true" role="button" tabindex="0" style=""></i>
+                      </div>
+                      <div ng-show="showDropdown" class="chips-dropdown ng-hide" aria-hidden="true" style="">
+                        <ul class="uiSelectChoices--autoWidth ui-select-choices ui-select-choices-content ui-select-dropdown dropdown-menu">
+                          <li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index" style="">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                File
+                              </span>
+                            </div>
+                          </li>
+                          <li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                Path
+                              </span>
+                            </div>
+                          </li>
+                          <li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                Level
+                              </span>
+                            </div>
+                          </li>
+                          <li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                Group
+                              </span>
+                            </div>
+                          </li>
+                          <li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                PCI control
+                              </span>
+                            </div>
+                          </li>
+                          <li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                GDPR
+                              </span>
+                            </div>
+                          </li><li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                HIPAA
+                              </span>
+                            </div>
+                          </li>
+                          <li class="ui-select-choices-group ng-scope" ng-repeat="chip in options track by $index">
+                            <div class="ui-select-choices-row" role="option" ng-click="select(chip)" tabindex="0">
+                              <span class="ui-select-choices-row-inner ng-binding">
+                                NIST 800-53
+                              </span>
+                            </div>
+                          </li>
+                        </ul>
+                      </div></wz-add-filter-chip>
+                      <button ng-click="search(customSearch)"
+                        class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
+                        <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
+                      </button>
+                    </div>
+                  </div>
               </md-card-actions>
               <md-card-contents>
                 <md-chips ng-if="!rulesetFiles" class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
@@ -138,12 +206,6 @@
                   <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/rules/files'"
                     implicit-filter="[{ name:'path',value: 'etc/rules'}]" keys="['file']" rows-per-page="[16,13,11]">
                   </wazuh-table>
-                </div>
-                <div layout="row" class="ruleset-csv-formater">
-                  <span flex></span>
-                  <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/rules','rules.csv')">
-                    <wz-svg icon="download"></wz-svg>&nbsp;Formatted
-                  </a>
                 </div>
               </md-card-contents>
             </md-card>

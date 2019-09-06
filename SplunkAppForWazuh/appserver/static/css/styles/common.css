@@ -2456,3 +2456,17 @@ wazuh-card-slider {
   pointer-events: auto;
   cursor: not-allowed;
 }
+
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
+background-color: white;
+}
+
+.link-table {
+  margin-right:10px;
+  font-size: 16px;
+  padding-left: 10px;
+}
+
+.link-table:hover {
+  text-decoration: underline
+}
