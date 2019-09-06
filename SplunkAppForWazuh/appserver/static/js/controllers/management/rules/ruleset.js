@@ -73,7 +73,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
-      this.scope.showLogtest = false
+      this.scope.showLogtest = window.sessionStorage.showLogtest === "true"
       this.scope.isArray = angular.isArray // eslint-disable-line
       this.initialize()
     }
@@ -387,6 +387,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     switchLogtest() {
       this.scope.showLogtest = !this.scope.showLogtest
+      window.sessionStorage.showLogtest = this.scope.showLogtest
     }
 
     /**
