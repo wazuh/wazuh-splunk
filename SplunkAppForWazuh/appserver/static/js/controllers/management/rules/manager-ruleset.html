@@ -234,7 +234,7 @@
                   ng-change="enableSave()">
           
               </div>
-              <div class="wzXmlEditorDivContent" ng-if="fetchedXML">
+              <div class="wzXmlEditorDivContent wz-width-100p" ng-if="fetchedXML">
                 <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
                   valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
                 </wz-xml-file-editor>
@@ -259,7 +259,7 @@
                 <span class="flex"></span>
           
               </div>
-              <div class="wzXmlEditorDivContent" ng-if="fetchedXML">
+              <div class="wzXmlEditorDivContent wz-width-100p" ng-if="fetchedXML">
                 <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML"
                   target-name="editingRulesetFile.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
                 </wz-xml-file-editor>
