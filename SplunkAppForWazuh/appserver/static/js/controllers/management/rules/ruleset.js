@@ -73,6 +73,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
+      this.scope.showLogtest = false
       this.scope.isArray = angular.isArray // eslint-disable-line
       this.initialize()
     }
@@ -89,6 +90,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.search = term => this.search(term)
       this.scope.includesFilter = filterName => this.includesFilter(filterName)
       this.scope.getFilter = filterName => this.getFilter(filterName)
+      this.scope.switchLogtest = () => this.switchLogtest()
       this.scope.removeFilter = filterName => this.removeFilter(filterName)
       this.scope.colorRuleArg = ruleArg => this.colorRegex(ruleArg)
       this.scope.closeDetailView = clear => this.closeDetailView(clear)
@@ -378,6 +380,13 @@ define(['../../module', 'FileSaver'], function(app) {
         item => item.name === filterName
       )
       return filtered.length ? filtered[0].value : ''
+    }
+
+    /**
+     * Open or closes Logtest 
+     */
+    switchLogtest() {
+      this.scope.showLogtest = !this.scope.showLogtest
     }
 
     /**

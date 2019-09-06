@@ -1,0 +1,17 @@
+<div style="padding:10px 10px 0 10px;">
+    <span style="margin:5px;" class="font-size-25">Logtest</span>
+    <div layout="row" style="margin-top:10px;">
+        <textarea class="euiTextArea euiTextArea--resizeVertical euiTextArea--fullWidth" rows="6" id="rrp4iamu" placeholder="log" style="margin-top: 0px; margin-bottom: 0px; width: 100%; height: 167px;"></textarea>
+    </div>
+    <div layout="row" style="margin: 8px; ">
+        <button class="btn height-40 wz-button-empty wz-margin-right-10" ng-click="switchFiles()">
+            <md-tooltip md-direction="right" class="wz-tooltip">
+            Back to rules
+            </md-tooltip>
+            <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div layout="row">
+            <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="height: calc(100vh - 385px); margin-bottom:0;"><code wz-dynamic="logResult"></code></pre>
+    </div>
+</div>
