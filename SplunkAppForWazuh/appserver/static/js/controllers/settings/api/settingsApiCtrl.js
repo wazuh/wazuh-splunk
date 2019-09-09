@@ -1,4 +1,4 @@
-define(['../../module'], function (controllers) {
+define(['../../module','react','react-dom'], function (controllers,React,ReactDOM) {
   'use strict'
 
   class SettingsApi {
@@ -33,6 +33,10 @@ define(['../../module'], function (controllers) {
      * On controller loads
      */
     $onInit() {
+      ReactDOM.render(
+        React.createElement('p', {}, 'test div'),
+          document.getElementById('react-test')
+      );
       this.scope.init = () => this.init()
       this.scope.addNewApiClick = () => this.addNewApiClick()
       this.scope.checkManager = entry => this.checkManager(entry)

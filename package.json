@@ -10,7 +10,12 @@
     "wazuh",
     "ossec"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@elastic/eui": "^13.8.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "styled-components": "^3.4.10"
+  },
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-match": "^1.1.1",

@@ -21,5 +21,6 @@ define([
   './wz-kbn-switch/wz-kbn-switch',
   './wz-alert-metrics/wz-alert-metrics',
   './wz-card-slider/wz-card-slider',
-  './wz-logtest/wz-logtest'
+  './wz-logtest/wz-logtest',
+  './react-button/react-button'
 ], function() {})

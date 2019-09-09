@@ -12,6 +12,14 @@ require.config({
     ngMessages: 'js/libs/messages',
     ngMaterial: 'js/libs/material',
     ngRoute: 'js/libs/router',
+    
+    text: 'js/libs/text',
+    
+    jsx: 'js/libs/jsx',
+    JSXTransformer: 'js/libs/JSXTransformer',
+
+    'react': 'js/libs/react',
+    'react-dom': 'js/libs/react-dom',
 
     // Angular Chart
     moment: 'js/libs/moment',
