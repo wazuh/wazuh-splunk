@@ -74,6 +74,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
       this.scope.showLogtest = window.sessionStorage.showLogtest === "true"
+      this.scope.fullScreen = false
       this.scope.isArray = angular.isArray // eslint-disable-line
       this.initialize()
     }

@@ -18,7 +18,10 @@ define(['../module'], function(module) {
         .state('manager', {
           templateUrl:
             BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/management/welcome/manager-welcome.html'
+            'static/app/SplunkAppForWazuh/js/controllers/management/welcome/manager-welcome.html',
+            onEnter: () => {
+              window.sessionStorage.showLogtest = false
+            }
         })
         // Manager - Monitoring
         .state('mg-monitoring', {

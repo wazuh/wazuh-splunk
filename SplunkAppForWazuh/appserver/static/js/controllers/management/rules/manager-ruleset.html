@@ -9,10 +9,12 @@
                 <span> / Rules </span>
               </div>
               <div flex=""></div>
-              <button class="btn wz-button-empty wz-margin-right-10" style="margin-top:10px;" ng-click="switchLogtest()" aria-label="Open Logtest" md-labeled-by-tooltip="md-tooltip-4">
-                <i class="fa fa-fw fa-play" aria-hidden="true"></i>Test your logs
-              </button>
-        </div>
+              <div ng-show="!showLogtest">
+                <button class="btn wz-button-empty wz-margin-right-10" style="margin-top:10px;" ng-click="switchLogtest()" aria-label="Open Logtest" md-labeled-by-tooltip="md-tooltip-4">
+                  <i class="fa fa-fw fa-play" aria-hidden="true"></i>Test your logs
+                </button>
+              </div>
+            </div>
         <div layout="row" style="margin-top:15px; margin-left:-15px;">
             <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-width-100p" md-selected-nav-item="selectedNavTab">
                 <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
@@ -277,9 +279,9 @@
 
 
       </div>
-
-      <md-sidenav ng-show="showLogtest" class="md-sidenav-right" style="border-left: 1px solid #D9D9D9 !important; margin-top: 8px; width:30%;max-width: 30%;" md-is-locked-open="true">
-          <wz-logtest></wz-logtest>
+      
+      <md-sidenav ng-show="showLogtest" ng-class="fullScreen ? 'logtest-fullscreen' : ''" class="md-sidenav-right" style="height: calc(100vh - 85px);border-left: 1px solid #D9D9D9 !important; width:30%;max-width: 30%;" md-is-locked-open="true">
+          <wz-logtest full-screen="fullScreen" close-logtest="switchLogtest()"></wz-logtest>
       </md-sidenav>
       
     </div>

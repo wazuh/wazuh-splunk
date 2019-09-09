@@ -87,6 +87,10 @@
   border-color: #396e3e !important;
 }
 
+.agreeBtn:hover {
+  background-color: #43884a !important;
+}
+
 .cancelBtn {
   color: #000000 !important;
   background-color: #d9d9d9 !important;
@@ -2469,4 +2473,44 @@ background-color: white;
 
 .link-table:hover {
   text-decoration: underline
+}
+
+
+.euiTextArea:focus {
+  background-color: rgb(250,250,250);
+  border-bottom: 2px solid rgb(63, 126, 67);
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+.logtest-fullscreen {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  height: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  z-index: 100;
 }
