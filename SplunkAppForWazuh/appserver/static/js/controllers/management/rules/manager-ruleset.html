@@ -25,6 +25,12 @@
             
         </div>
         <div layout="row" style="margin-top:16px;">
+          
+            <div class="wz-popover-wrapper">
+                <div ng-show="uploadingFiles" class="wz-popover-content">
+                    <wz-upload-files upload-title="Upload rules"></wz-upload-files>
+                </div>
+              </div>
           <!-- Loading content -->
         <div ng-show="loadingContent">
           <div class="loader-bar" ng-show="loadingContent">
@@ -53,7 +59,7 @@
                         <wz-svg icon="import"></wz-svg>
                       Export formatted
                     </span>
-                    <span ng-click="switchLogtest()" class="wz-color-text cursor-pointer link-table">
+                    <span ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer link-table">
                         <wz-svg icon="export"></wz-svg>
                       Import files
                     </span>

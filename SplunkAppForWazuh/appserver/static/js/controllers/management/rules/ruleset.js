@@ -71,6 +71,7 @@ define(['../../module', 'FileSaver'], function(app) {
       } catch (err) {
         this.filter = []
       }
+      this.scope.uploadingFiles = false
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
       this.scope.showLogtest = window.sessionStorage.showLogtest === "true"
@@ -109,6 +110,8 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.enableSave = () => this.enableSave()
 
       this.scope.switchFiles = () => this.switchFiles()
+      this.scope.switchUploadFiles = () => this.switchUploadFiles()
+      
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
@@ -163,6 +166,17 @@ define(['../../module', 'FileSaver'], function(app) {
       this.removeAllFilters()
     }
 
+    
+    /**
+     * Open or closes the upload files view
+     */
+    switchUploadFiles() {
+      this.scope.uploadingFiles = !this.scope.uploadingFiles
+      setTimeout(() => {
+        this.scope.$applyAsync()
+      }, 1)
+    }
+
     /**
      * Exports the table in CSV format
      */
@@ -185,6 +199,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       return
     }
+
 
     /**
      * Returns the color
@@ -247,6 +262,7 @@ define(['../../module', 'FileSaver'], function(app) {
         : (this.scope.currentDecoder = false)
       this.scope.$applyAsync()
     }
+
 
     /**
      * Searches a rule
