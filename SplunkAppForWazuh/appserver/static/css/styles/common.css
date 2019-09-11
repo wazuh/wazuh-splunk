@@ -2435,3 +2435,17 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 wazuh-card-slider {
   width: 100% ;
 }
+
+.step-title {
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 5px;
+}
+
+.step-margin {
+  margin: 20px 0px 0px -10px;
+}
+
+.wz-font-size-20 {
+  font-size: 20px
+}

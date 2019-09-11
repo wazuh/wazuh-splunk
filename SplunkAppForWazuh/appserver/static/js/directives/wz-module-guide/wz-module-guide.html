@@ -1,0 +1,42 @@
+<div style="width:100%;">
+  <div layout="column">
+    <div layout="row">
+      <h3 class="wz-font-size-20 wz-margin-top-30">How to configure a module</h3>
+    </div><!--First row -->
+
+    <md-divider class="wz-margin-top-4 wz-margin-bottom-10"></md-divider>
+
+    <div layout="row" style="overflow-y: scroll; height: calc(100vh - 160px);">
+      <div layout="column" style="width: 85%; margin:5px;" class="wz-margin-top-10">
+        <div layout="row">
+          <div class="bubble">1</div>
+          <div class="step-title">Choose your OS</div>
+        </div>
+        <div class="border-to-div wz-margin-top-10"> <!-- Select configuration -->
+          <div class="step-margin">
+            <select ng-options="n.name for n in modulesList" ng-model="currentModule" ng-init="currentModule=modulesList[0]"
+              style="margin-left:5px;" class="input input-dropdown wz-button-empty wz-width-100p" >
+            </select>
+          </div>
+          <div>
+            {{currentModule.description}}
+          </div>
+        </div>
+        <div layout="row" class="wz-margin-top-10"> <!-- Step 2 - Edit your configuration -->
+          <div class="bubble">2</div>
+          <div class="step-title">Sample configuration</div>
+        </div>
+        <div class="border-to-div wz-margin-top-10">
+          <div ng-repeat="currentConfig in currentModule.default_configuration">
+              <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 11px; background-color: rgba(241, 241, 241, 0.56); max-height: fit-content !important; ">{{currentConfig.content}}</pre>
+          </div>
+        </div>
+      </div>
+    </div> <!-- Second row-->
+
+
+
+
+  </div>
+
+</div>
