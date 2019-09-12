@@ -18,6 +18,19 @@ define(['../module'], function(directives) {
       scope: {
       },
       controller($scope) {
+        $scope.showOptionsTab = true
+        $scope.disabled = ""
+        $scope.generateConfig = () => {
+          $scope.configurationGenerated = true
+        }
+        $scope.directories = ""
+        $scope.frequency = ""
+        $scope.test =  `<!-- Policy monitoring -->
+        <rootcheck>
+          <disabled>no</disabled>
+          <directories>/var</disabled>
+          <frequency>1h</frequency>
+        </rootcheck>`
         $scope.modulesList = [
           {"id":"rootcheck",
           "name": "Rootcheck",
@@ -27,26 +40,8 @@ define(['../module'], function(directives) {
              "content" : `<!-- Policy monitoring -->
 <rootcheck>
   <disabled>no</disabled>
-  <check_unixaudit>yes</check_unixaudit>
-  <check_files>yes</check_files>
-  <check_trojans>yes</check_trojans>
-  <check_dev>yes</check_dev>
-  <check_sys>yes</check_sys>
-  <check_pids>yes</check_pids>
-  <check_ports>yes</check_ports>
-  <check_if>yes</check_if>
-           
-  <!-- Frequency that rootcheck is executed - every 12 hours -->
-  <frequency>43200</frequency>
-           
-  <rootkit_files>/var/ossec/etc/shared/rootkit_files.txt</rootkit_files>
-  <rootkit_trojans>/var/ossec/etc/shared/rootkit_trojans.txt</rootkit_trojans>
-           
-  <system_audit>/var/ossec/etc/shared/system_audit_rcl.txt</system_audit>
-  <system_audit>/var/ossec/etc/shared/system_audit_ssh.txt</system_audit>
-  <system_audit>/var/ossec/etc/shared/cis_debian_linux_rcl.txt</system_audit>
-           
-  <skip_nfs>yes</skip_nfs>
+  <directories>/var</disabled>
+  <frequency>1h</frequency>
 </rootcheck>`}
             ],
           "options": [
@@ -72,6 +67,18 @@ define(['../module'], function(directives) {
             ]
           }
         ]
+
+        $scope.showOptions = () => {
+          $scope.showOptionsTab = true
+          $scope.showConfigTab = false
+          $scope.$applyAsync()
+        }
+
+        $scope.showConfig = () => {
+          $scope.showOptionsTab = false
+          $scope.showConfigTab = true
+          $scope.$applyAsync()
+        }
 
         $scope.currentModule = $scope.modulesList[0]
 

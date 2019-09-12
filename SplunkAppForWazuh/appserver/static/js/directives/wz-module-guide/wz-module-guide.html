@@ -24,13 +24,51 @@
         </div>
         <div layout="row" class="wz-margin-top-10"> <!-- Step 2 - Edit your configuration -->
           <div class="bubble">2</div>
-          <div class="step-title">Sample configuration</div>
+          <div class="step-title">Configuration</div>
         </div>
-        <div class="border-to-div wz-margin-top-10">
-          <div ng-repeat="currentConfig in currentModule.default_configuration">
-              <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 11px; background-color: rgba(241, 241, 241, 0.56); max-height: fit-content !important; ">{{currentConfig.content}}</pre>
+        <div ng-show="showConfigTab" class="border-to-div wz-margin-top-10">
+          <div>
+              <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 11px; background-color: rgb(255, 255, 255); max-height: fit-content !important; ">{{modulesList[0].default_configuration[0].content}}</pre>
           </div>
         </div>
+        <div ng-show="showOptionsTab" class="border-to-div wz-margin-top-10">
+          <div layout="column"> <!-- ng repeat -->
+            <div style="margin-top:10px;"></div>
+            <div layout="row">
+              <span style="padding-top:10px;"> Enabled:</span>  <input flex ng-model="enabled" placeholder="Add or remove directories to be monitored."  type="text"
+              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
+              aria-invalid="false">
+            </div>
+            <div layout="row">
+              <span style="padding-top:10px;"> Directories:</span> <input flex ng-model="directories" placeholder="Add or remove directories to be monitored."  type="text"
+              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
+              aria-invalid="false">
+            </div>
+            <div layout="row">
+                <span style="padding-top:10px;"> Frequency:</span> <input flex ng-model="frequency" placeholder="Frequency that the syscheck will be run (in seconds)."  type="text"
+                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
+                aria-invalid="false">
+            </div>
+            <button style="height: 30px;" ng-click="generateConfig()" class='btn wz-button pull-right'>
+            <span>Generate configuration</span>
+          </button>
+          </div>
+        </div>
+
+        <div  ng-show="configurationGenerated"  layout="row" class="wz-margin-top-10"> <!-- Step 3 -  -->
+          <div class="bubble">3</div>
+          <div class="step-title">Configuration block</div>
+        </div>
+
+        <div ng-show="configurationGenerated" class="border-to-div wz-margin-top-10">
+          <div layout="column"> <!-- ng repeat -->
+            <div style="margin-top:10px;"></div>
+            <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 11px; background-color: rgba(255, 255, 255); max-height: fit-content !important; ">{{test}}</pre>
+
+          </div>
+        </div>
+
+        
       </div>
     </div> <!-- Second row-->
 

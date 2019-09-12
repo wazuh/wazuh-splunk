@@ -823,6 +823,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             : false
         ]
       }
+      console.log(data)
 
       if (!this.scope.loadingReporting)
         this.reportingService.reportGroupConfiguration(

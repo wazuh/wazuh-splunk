@@ -36,6 +36,7 @@ define(['../../module'], function(controllers) {
     $onInit() {
       try {
         this.scope.restartInProgress = false
+        this.scope.isShowingSidebar = false
         this.scope.editingNode = false
         this.scope.editNode = nodeName => this.editNode(nodeName)
         this.scope.cancelEditNode = () => this.cancelEditNode()
@@ -44,6 +45,7 @@ define(['../../module'], function(controllers) {
         this.scope.changeNode = node => this.changeNode(node)
         this.scope.restart = node => this.restart(node)
         this.scope.switchRestart = () => this.switchRestart()
+        this.scope.showSidebar = () => this.showSidebar()
         this.scope.closeRestartConfirmation = () =>
           this.closeRestartConfirmation()
 
@@ -147,6 +149,11 @@ define(['../../module'], function(controllers) {
 
     switchRestart() {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
+      this.scope.$applyAsync()
+    }
+
+    showSidebar() {
+      this.scope.isShowingSidebar = !this.scope.isShowingSidebar
       this.scope.$applyAsync()
     }
   }
