@@ -404,14 +404,14 @@ class report(controllers.BaseController):
                             rows.append(nextRow)
                         if rows and fields and type(rows) is list and rows[0]:
                             newTable[tableKey] = { "fields": fields, "rows": rows}
-                            self.addTables(newTable,pdf,185,12)
+                            self.addTables(newTable,pdf,185,10)
                     elif type(value) is dict:
                         customKeyList = []
                         customValueList = []
                         pdf.ln(5)
                         self.setTableTitle(pdf)
                         pdf.cell(0, 5, txt = self.getString(key,labels).capitalize(), border = '', align = '', fill = False, link = '')
-                        pdf.set_margins(12, 0, 12)
+                        pdf.set_margins(10, 0, 10)
                         pdf.ln(5)
                         for currentTableKey, currentTableValue in value.iteritems():
                             if type(currentTableValue) is dict:
@@ -422,7 +422,30 @@ class report(controllers.BaseController):
                         self.addKeyValueTable(customKeyList,customValueList,pdf)
 
                 
+    def addSyscheckTable(self, data, pdf, labels,currentSection = {}):
+        customKeyList = []
+        customValueList = []
+        keySet = set() 
+        #Calculate list of keys, the amount of keys is different on all keys
+        for currentDirectory in data:
+            for currentDirectoryKey in currentDirectory.keys():
+                keySet.add(currentDirectoryKey)
+        customKeyList = list(keySet)
+        pathIndex = customKeyList.index('path')
+        customKeyList[0], customKeyList[pathIndex] = customKeyList[pathIndex], customKeyList[0]
 
+        for currentDirectory in data:
+            rowValue = []
+            for currentKey in customKeyList:
+                if currentKey in currentDirectory:
+                    rowValue.append(currentDirectory[currentKey])
+                else:
+                    rowValue.append('-')
+            customValueList.append(rowValue)
+            
+        directoriesTable = {}
+        directoriesTable['Directories'] = { "fields": customKeyList, "rows": customValueList}
+        self.addTables(directoriesTable,pdf,185,10)
 
     def addTable(self, data, pdf, labels,currentSection = {}):
         try:
@@ -449,7 +472,7 @@ class report(controllers.BaseController):
                                     newRow = self.getDirectoriesChecks(row)
                                     rows.append(newRow)
                                 directoriesTable['Monitored directories'] = { "fields": fields, "rows": rows}
-                                self.addTables(directoriesTable,pdf,185,12)
+                                self.addTables(directoriesTable,pdf,185,10)
                                 pdf.set_text_color(75, 179, 204)
                                 pdf.cell(0, 5, txt = "Rt: Real Time | Wd: Who-Data | Per: Permission | Mt: Modification Time | Sl: Symbolic link | Rl: Recursion Level ", border = '',ln=1, align = '', fill = False, link = '')
                                 pdf.ln(5)
@@ -506,7 +529,7 @@ class report(controllers.BaseController):
                 pdf.set_text_color(0,0,0)
                 pdf.set_font('RobotoLight', '', 11)
                 pdf.cell(0, 6, txt = currentSection['desc'], border = '', align = 'L', fill = False, link = '')
-                pdf.set_margins(11, 0, 11)
+                pdf.set_margins(10, 0, 10)
                 pdf.ln(6)
             del currentSection['subtitle']
 
@@ -723,7 +746,7 @@ class report(controllers.BaseController):
                             conf_data = jsonbak.loads(conf_data)
                             if not conf_data or 'data' not in conf_data:
                                 pass
-                            elif 'items' in conf_data['data'] and 'filters' in conf_data['data']['items'][0] and not conf_data['data']['items'][0]['filters']:
+                            elif 'items' not in conf_data['data']:
                                 self.setTableTitle(pdf)
                                 pdf.cell(0, 10, txt = "Group configuration is not available." , border = 'B', ln = 1, align = 'C', fill = False, link = 'https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
                                 pdf.add_page()  
@@ -751,8 +774,21 @@ class report(controllers.BaseController):
                                         del item['filters']
                                     if 'config' in item:
                                         pdf.set_font('RobotoLight', '', 10)
-                                        pdf.set_margins(12, 0, 12)
+                                        pdf.set_margins(10, 0, 10)
                                         pdf.ln(1)
+                                        if 'syscheck' in item['config']:
+                                            self.setTableTitle(pdf)
+                                            pdf.set_margins(10, 0, 10)
+                                            pdf.ln(5)
+                                            pdf.cell(190, 5, txt = 'Syscheck', border = '', align = '', fill = False, link = '')
+                                            pdf.ln(5)
+                                            syscheck_directories = {}
+                                            if 'directories' in item['config']['syscheck']:
+                                                syscheck_directories = item['config']['syscheck']['directories']
+                                                del(item['config']['syscheck']['directories'])
+                                            self.addTable(item['config']['syscheck'], pdf, customLabels,currentSection)
+                                            self.addSyscheckTable(syscheck_directories, pdf, customLabels,currentSection)
+                                            del(item['config']['syscheck'])
                                         self.addTable(item['config'], pdf, customLabels,currentSection)
                                 pdf.add_page()  
                                 pdf.ln(20)
@@ -797,7 +833,7 @@ class report(controllers.BaseController):
                                         currentAgentRow.append('-')
                                     rows.append(currentAgentRow)
                                 table["Agent List"] = { "fields" : fields, "rows" : rows , "title": False}
-                                self.addTables(table,pdf,185,12)
+                                self.addTables(table,pdf,185,10)
                             else:
                                 self.setTableTitle(pdf)
                                 pdf.cell(0, 10, txt = "No agents have been assigned to this group" , border = 'B', ln = 1, align = 'C', fill = False, link = '')
@@ -816,7 +852,7 @@ class report(controllers.BaseController):
                                         filteredTables = self.filterTableByField(currentConfig['filterBy'], conf_data['data'][configuration])
                                         self.addTable(filteredTables, pdf, customLabels,currentSection)
                                     else:
-                                        pdf.set_margins(11, 0, 11)
+                                        pdf.set_margins(10, 0, 10)
                                         self.addTable(conf_data['data'][configuration], pdf, customLabels,currentSection)
 
                         if 'wodle' in currentSection:
