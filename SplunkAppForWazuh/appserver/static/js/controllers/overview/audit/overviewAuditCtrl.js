@@ -1,24 +1,36 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
+  DashboardMain,
   ColumnChart,
   PieChart,
   AreaChart,
   Table,
-  TimePicker,
   SearchHandler,
   RawTableDataService
 ) {
   'use strict'
-  class Audit {
+  class Audit extends DashboardMain {
     /**
      * Class Audit
      * @param {*} $urlTokenModel
@@ -36,41 +48,18 @@ define([
       reportingEnabled,
       extensions
     ) {
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.state = $state
-      this.tableResults = {}
-      this.reportingService = $reportingService
-      this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.groups{}":"audit", "implicit":true, "onlyShow":true}`
       )
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.filters = this.getFilters()
-      this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        $urlTokenModel.handleValueChange
-      )
-
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      /**
-       * On controller destroy
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
 
       this.scope.expandArray = [
         false,
@@ -85,7 +74,8 @@ define([
         false,
         false
       ]
-      this.scope.expand = (i, id) => this.expand(i, id)
+
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -132,57 +122,44 @@ define([
          */
         new PieChart(
           'groupsElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
           'groupsElement',
           this.scope
         ),
         new ColumnChart(
           'agentsElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
           'agentsElement',
           this.scope
         ),
         new PieChart(
           'commandsVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
           'commandsVizz',
           this.scope
         ),
         new PieChart(
           'filesElement',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
           'filesElement',
           this.scope
         ),
         new AreaChart(
           'alertsOverTime',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
           'alertsOverTimeElement',
-          this.scope
+          this.scope,
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryElement',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -193,7 +170,6 @@ define([
 
     $onInit() {
       try {
-        this.scope.loadingVizz = true
         this.reportMetrics = {
           'New files': this.scope.newFiles,
           'Read files': this.scope.readFiles,
@@ -220,59 +196,7 @@ define([
             this.reportMetrics,
             this.tableResults
           )
-
-        this.scope.$on('loadingReporting', (event, data) => {
-          this.scope.loadingReporting = data.status
-        })
-
-        this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
-            return v.finish === false
-          }).length
-          if (this.vizzReady) {
-            this.scope.loadingVizz = false
-          } else {
-            this.vizz.map(v => {
-              if (v.constructor.name === 'RawTableData') {
-                this.tableResults[v.name] = v.results
-              }
-            })
-            this.scope.loadingVizz = true
-          }
-          if (!this.scope.$$phase) this.scope.$digest()
-        })
       } catch (error) {}
-    }
-
-    /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
     }
   }
   app.controller('overviewAuditCtrl', Audit)

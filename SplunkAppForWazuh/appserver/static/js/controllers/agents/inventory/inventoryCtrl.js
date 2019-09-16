@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function (module) {
+define(['../../module', 'FileSaver'], function(module) {
   'use strict'
   class Inventory {
     /**
@@ -70,11 +70,9 @@ define(['../../module', 'FileSaver'], function (module) {
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
 
-        const agentData  = (((this.data || {})[1] || {}).data || {}).data
+        const agentData = (((this.data || {})[1] || {}).data || {}).data
 
-        this.scope.agent = agentData
-            ? agentData
-            : { error: true }
+        this.scope.agent = agentData ? agentData : { error: true }
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)
         }
@@ -93,6 +91,11 @@ define(['../../module', 'FileSaver'], function (module) {
 
         this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
+        })
+
+        this.scope.$on('loadingContent', (event, data) => {
+          this.scope.loadingContent = data.status
+          event.preventDefault()
         })
 
         this.scope.setBrowserOffset = date => this.setBrowserOffset(date)

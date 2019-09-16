@@ -59,7 +59,7 @@
 md-dialog-actions button {
   color: white !important;
   transition: none !important;
-  background-color: rgb(0, 85, 113) !important;
+  background-color: rgb(63, 126, 67) !important;
 }
 
 .md-chips{
@@ -75,7 +75,7 @@ md-dialog-actions button {
 }
 
 .wz-nav-item button.md-primary {
-  color: rgb(0, 121, 165) !important;
+  color: rgb(28, 58, 31) !important;
 }
 
 .wz-nav-item button.md-unselected {
@@ -83,8 +83,8 @@ md-dialog-actions button {
 }
 
 .wz-nav-bar md-nav-ink-bar {
-  color: rgb(0, 121, 165) !important;
-  background: rgb(0, 121, 165) !important;
+  color: rgb(28, 58, 31) !important;
+  background: rgb(28, 58, 31) !important;
 }
 
 .wz-nav-bar md-nav-ink-bar._md-left,
@@ -114,7 +114,7 @@ md-chip {
   font-family: monospace !important;
   font-size: 12px !important;
   color: white !important;
-  background-color: #0079a5 !important;
+  background-color: #396e3e !important;
   height: 26px !important;
   line-height: 26px !important;
   margin: 0 8px 0 0 !important;
@@ -130,6 +130,13 @@ md-chip {
   -webkit-box-flex: 1;
   -ms-flex-positive: 1;
   flex-grow: 1;
+}
+
+.euiFlexGroup--directionRow {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
 }
 
 .euiFlexGroup--gutterLarge {
@@ -194,10 +201,6 @@ md-chip {
   margin-bottom: 0;
 }
 
-.euiFlexGrid--gutterLarge.euiFlexGrid--halves > .euiFlexItem {
-  -ms-flex-preferred-size: calc(50% - 24px);
-  flex-basis: calc(50% - 24px);
-}
 .euiFlexGrid--gutterLarge > .euiFlexItem {
   margin: 12px;
 }
@@ -208,19 +211,22 @@ md-chip {
   flex-grow: 0;
 }
 
-
 .euiFlexGrid--gutterLarge.euiFlexGrid--halves > .euiFlexItem {
     -ms-flex-preferred-size: calc(50% - 24px);
     flex-basis: calc(50% - 24px);
+    max-width: calc(50% - 24px);
 }
+
 .euiFlexGrid--gutterLarge > .euiFlexItem {
     margin: 12px;
 }
+
 .euiFlexGrid > .euiFlexItem {
     -webkit-box-flex: 0;
     -ms-flex-positive: 0;
     flex-grow: 0;
 }
+
 .euiFlexGroup .euiFlexItem {
     -webkit-box-flex: 1;
     -ms-flex-positive: 1;
@@ -247,7 +253,97 @@ md-chip {
   flex-direction: column;
 }
 
+.euiCard.euiCard--leftAligned, .euiCard.euiCard--isClickable.euiCard--leftAligned {
+  text-align: left;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
 
+.wz-padding-bt-5 {
+  padding-bottom: 5px !important;
+}
+
+.euiCard {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  /* -webkit-box-orient: vertical; */
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding: 16px;
+  min-height: 1px;
+}
+
+.euiCard {
+  -webkit-box-shadow: 0 2px 2px -1px rgba(152, 162, 179, 0.3), 0 1px 5px -2px rgba(152, 162, 179, 0.3);
+  box-shadow: 0 2px 2px -1px rgba(152, 162, 179, 0.3), 0 1px 5px -2px rgba(152, 162, 179, 0.3);
+  background-color: #FFF;
+  border: 1px solid #D3DAE6;
+  border-radius: 4px;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+
+.euiCard .euiCard__top, .euiCard .euiCard__content, .euiCard .euiCard__footer {
+  display: block;
+  width: 100%;
+}
+
+.euiCard__content {
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.euiButtonIcon {
+  font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  letter-spacing: -.005em;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-font-kerning: normal;
+  font-kerning: normal;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+  display: inline-block;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  height: 40px;
+  line-height: 40px;
+  text-decoration: none;
+  border: solid 1px transparent;
+  text-align: center;
+  -webkit-transition: all 250ms cubic-bezier(0.34, 1.61, 0.7, 1);
+  transition: all 250ms cubic-bezier(0.34, 1.61, 0.7, 1);
+  white-space: nowrap;
+  max-width: 100%;
+  vertical-align: middle;
+  border: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  height: auto;
+  min-height: 24px;
+  min-width: 24px;
+  line-height: 0;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.wz-margin-right-10 {
+  margin-right: 10px;
+}
+
+.euiButtonIcon--primary {
+  color: #006BB4;
+}
 
 /*  DEV TOOLS  */
 

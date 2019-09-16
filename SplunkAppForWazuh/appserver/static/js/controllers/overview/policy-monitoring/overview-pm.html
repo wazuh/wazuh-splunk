@@ -34,27 +34,31 @@
       ui-sref="ow-ciscat" name="ciscat">CIS-CAT</md-nav-item>
   </md-nav-bar>
 
-  <wazuh-bar></wazuh-bar>
-  <!-- first row  -->
 
-  <div ng-show="loadingVizz">
-    <div align='center'>
-      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+
+  <div>
+    <!-- Filter bar -->
+    <wazuh-bar></wazuh-bar>
+    <!-- first row  -->
+
+    <div ng-show="loadingVizz">
+      <div align='center'>
+        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      </div>
     </div>
-  </div>
-  <div ng-show="!loadingVizz">
-    <div layout="row" layout-align="center stretch" class="height-390">
-      <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Events over time
-            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'elementOverTime')">
-              <wz-svg icon="expand"></wz-svg>
+    <div ng-show="!loadingVizz">
+      <div layout="row" layout-align="center stretch" class="height-390">
+        <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Events over time
+              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'elementOverTime')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='elementOverTime'></div>
-        </md-card-content>
-      </md-card>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='elementOverTime'></div>
+          </md-card-content>
+        </md-card>
 
       <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
         <md-card-content class="wazuh-column">
@@ -81,32 +85,33 @@
       </md-card>
     </div>
 
-    <div layout="row" layout-align="center stretch" class="height-500">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Events per control type evolution
-            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'eventsPerAgent')">
-              <wz-svg icon="expand"></wz-svg>
+      <div layout="row" layout-align="center stretch" class="height-500">
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Events per control type evolution
+              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'eventsPerAgent')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='eventsPerAgent'></div>
-        </md-card-content>
-      </md-card>
-    </div>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='eventsPerAgent'></div>
+          </md-card-content>
+        </md-card>
+      </div>
 
-    <div layout="row" layout-align="center stretch" class="height-560">
-      <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alerts summary
-            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummary')">
-              <wz-svg icon="expand"></wz-svg>
+      <div layout="row" layout-align="center stretch" class="height-560">
+        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Alerts summary
+              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummary')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertsSummary'></div>
-        </md-card-content>
-      </md-card>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='alertsSummary'></div>
+          </md-card-content>
+        </md-card>
+      </div>
     </div>
   </div>
 </md-content>

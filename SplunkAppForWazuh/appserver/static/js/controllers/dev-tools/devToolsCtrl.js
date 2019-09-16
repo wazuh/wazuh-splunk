@@ -49,7 +49,7 @@ define([
      * @param {*} appState
      * @param {*} $notificationService
      * @param {*} $document
-     * @param {Array} extensions the extensions of configurations and admin mode
+     * @param {*} isAdmin
      */
     constructor(
       $scope,
@@ -58,7 +58,7 @@ define([
       $navigationService,
       $notificationService,
       $document,
-      extensions
+      isAdmin
     ) {
       this.$scope = $scope
       this.request = $requestService
@@ -70,11 +70,7 @@ define([
       this.linesWithClass = []
       this.widgets = []
       this.multipleKeyPressed = []
-      try {
-        this.admin = extensions['admin'] === 'true'
-      } catch (err) {
-        this.admin = false
-      }
+      this.admin = isAdmin
     }
 
     /**
@@ -496,6 +492,11 @@ define([
           'width: calc(70% - 7px); !important'
         )
       }
+
+      setTimeout(x => {
+        this.apiInputBox.refresh()
+        this.apiOutputBox.refresh()
+      }, 1)
     }
 
     /**
@@ -549,7 +550,7 @@ define([
             })
             const currentPlayButton = $('#play_button').offset()
             $('#play_button').offset({
-              top: cords.top + 10,
+              top: cords.top + 35,
               left: currentPlayButton.left
             })
           }
@@ -575,7 +576,9 @@ define([
               ? 'DELETE'
               : 'GET'
           } else {
-            method = 'GET'
+            if (desiredGroup.requestText.startsWith('GET')) method = 'GET'
+            else
+              return this.apiOutputBox.setValue('3029 - Allowed method: [GET]')
           }
           let requestCopy = desiredGroup.requestText.includes(method)
             ? desiredGroup.requestText.split(method)[1].trim()
@@ -624,9 +627,11 @@ define([
               })
             }
             path =
-            typeof JSONraw === 'object' && Object.keys(JSONraw).length
-              ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(queryString.stringify(JSONraw))}`
-              : req
+              typeof JSONraw === 'object' && Object.keys(JSONraw).length
+                ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(
+                    queryString.stringify(JSONraw)
+                  )}`
+                : req
             JSONraw = {}
           }
 

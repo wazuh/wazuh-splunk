@@ -10,8 +10,9 @@
       <span> / </span>
       <span>Osquery</span>
       <span ng-if="agent && agent.status">
-        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
-          aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+        <span class="no-wrap wz-padding-left-8" aria-hidden="false">
+          <wz-svg icon="agent-{{agent.status}}"></wz-svg>
+        </span>{{formatAgentStatus(agent.status)}}
       </span>
     </div>
     <div flex></div>
@@ -46,81 +47,83 @@
       ui-sref="ag-docker" name="docker">Docker listener</md-nav-item>
   </md-nav-bar>
 
-  <!-- Wazuh filters bar -->
-  <wazuh-bar></wazuh-bar>
-  <div ng-show="loadingVizz">
-    <div align='center'>
-      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
-    </div>
-  </div>
-  <div ng-show="!loadingVizz">
-    <!-- first row  -->
-    <div id="row1" layout="row">
-      <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Most common Osquery actions
-            <span class="wz-text-link" style="float:right;" ng-click="expand(2,'mostCommonActions')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='mostCommonActions'></div>
-        </md-card-content>
-      </md-card>
-      <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Evolution of Osquery events per pack over time
-            <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsPacksOverTime')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertsPacksOverTime'></div>
-        </md-card-content>
-      </md-card>
-    </div>
-    <!-- second row  -->
-    <div id="row2" layout="row">
-      <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Most common Osquery packs being used
-            <span class="wz-text-link" style="float:right;" ng-click="expand(0,'mostCommonPacks')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='mostCommonPacks'></div>
-        </md-card-content>
-      </md-card>
-      <!-- first row - first vis -->
-      <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Most common rules
-            <span class="wz-text-link" style="float:right;" ng-click="expand(3,'topRules')">
-              <wz-svg icon="expand"></wz-svg>
-            </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='topRules'></div>
-        </md-card-content>
-      </md-card>
 
+  <div>
+    <!-- Filter bar -->
+    <wazuh-bar></wazuh-bar>
+    <div ng-show="loadingVizz">
+      <div align='center'>
+        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      </div>
     </div>
-    <div id="row3" layout="row">
-      <!-- second row - third vis -->
-      <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">Alerts summary
-            <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummary')">
-              <wz-svg icon="expand"></wz-svg>
+    <div ng-show="!loadingVizz">
+      <!-- first row  -->
+      <div id="row1" layout="row">
+        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Most common Osquery actions
+              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'mostCommonActions')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
             </span>
-          </span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertsSummary'></div>
-        </md-card-content>
-      </md-card>
-      <!-- second row - third vis -->
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='mostCommonActions'></div>
+          </md-card-content>
+        </md-card>
+        <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Evolution of Osquery events per pack over time
+              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsPacksOverTime')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='alertsPacksOverTime'></div>
+          </md-card-content>
+        </md-card>
+      </div>
+      <!-- second row  -->
+      <div id="row2" layout="row">
+        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Most common Osquery packs being used
+              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'mostCommonPacks')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='mostCommonPacks'></div>
+          </md-card-content>
+        </md-card>
+        <!-- first row - first vis -->
+        <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Most common rules
+              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'topRules')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='topRules'></div>
+          </md-card-content>
+        </md-card>
 
+      </div>
+      <div id="row3" layout="row">
+        <!-- second row - third vis -->
+        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">Alerts summary
+              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsSummary')">
+                <wz-svg icon="expand"></wz-svg>
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div id='alertsSummary'></div>
+          </md-card-content>
+        </md-card>
+        <!-- second row - third vis -->
+      </div>
     </div>
   </div>
 </md-content>

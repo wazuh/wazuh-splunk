@@ -44,7 +44,7 @@ define(['../module'], function(module) {
             hideDelay: 6000,
             position: pinTo,
             template:
-              '<md-toast ng-mouseover="overToast = true" ng-mouseleave="overToast = false" style="border-top: 3px solid #23c405;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
+              '<md-toast ng-mouseover="overToast = true" ng-mouseleave="overToast = false" style="border-top: 3px solid #396e3e;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
               '<div class="md-toast-content" style="background-color:white;">' +
               '<p class="wz-padding-top-7 wz-padding-right-15"><i class="fa fa-check"></i>&nbsp;' +
               text +

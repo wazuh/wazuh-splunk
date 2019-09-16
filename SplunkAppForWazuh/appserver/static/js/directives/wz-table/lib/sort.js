@@ -39,7 +39,7 @@ define([], function() {
         }. ${error.message || error}`
       )
     }
-    if (!$scope.$$phase) $scope.$digest()
+    $scope.$applyAsync()
     return
   }
 })

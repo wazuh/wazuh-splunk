@@ -12,15 +12,22 @@
 
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, AreaChart, Table, TimePicker, RawTableDataService) {
+], function(
+  app,
+  DashboardMain,
+  PieChart,
+  AreaChart,
+  Table,
+  RawTableDataService
+) {
   'use strict'
 
-  class OsqueryAgents {
+  class OsqueryAgents extends DashboardMain {
     /**
      * Class Agents Osquery
      * @param {Object} $urlTokenModel
@@ -45,21 +52,21 @@ define([
       reportingEnabled,
       extensions
     ) {
-      this.state = $state
-      this.currentDataService = $currentDataService
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.urlTokenModel = $urlTokenModel
       this.notification = $notificationService
-      this.tableResults = {}
-      this.reportingService = $reportingService
       this.osquery = osquery
       this.currentDataService.addFilter(
         `{"rule.groups{}":"osquery", "implicit":true}`
       )
       this.scope.expandArray = [false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
       this.agent = agent
       if (
         this.agent &&
@@ -70,22 +77,10 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
+
       this.scope.osqueryWodle = null
 
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -99,11 +94,10 @@ define([
         ),
         new AreaChart(
           'alertsPacksOverTime',
-          `${
-            this.filters
-          } sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
+          `${this.filters} sourcetype=wazuh data.osquery.pack="*" | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
-          this.scope
+          this.scope,
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'mostCommonActions',
@@ -113,9 +107,7 @@ define([
         ),
         new Table(
           'topRules',
-          `${
-            this.filters
-          } sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters} sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
         ),
@@ -123,21 +115,18 @@ define([
           'alertsOverTime',
           `${this.filters} sourcetype=wazuh | timechart span=1h count`,
           'alertsOverTime',
-          this.scope
+          this.scope,
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters} sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters} sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -171,51 +160,23 @@ define([
           'Osquery',
           this.filters,
           [
-            'mostCommonActions',
-            'alertsPacksOverTime',
             'mostCommonPacks',
-            'topRules'
+            'alertsPacksOverTime',
+            'mostCommonActions',
+            'topRules',
+            'alertsOverTime',
+            'alertsSummary'
           ],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData
         )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /*
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -239,38 +200,6 @@ define([
           : 'Never connected'
       }
     }
-
-    /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
-    }
   }
-
   app.controller('osqueryAgentCtrl', OsqueryAgents)
 })

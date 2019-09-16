@@ -68,7 +68,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #0079a5 !important;
+  background-color: #396e3e !important;
 }
 
 .btn-ruleset {
@@ -119,7 +119,15 @@
   width: 100% !important;
 }
 
+.wz-width-350 {
+  width: 350px !important;
+}
+
 /* Custom margin styles */
+
+.wz-margin-zero {
+  margin: 0px !important;
+}
 
 .wz-margin-left-5 {
   margin-left: 5px;
@@ -195,7 +203,7 @@
 }
 .wz-text-link {
   cursor: pointer !important;
-  color: #0079a5 !important;
+  color: #396e3e !important;
 }
 
 .wz-text-right {
@@ -411,12 +419,24 @@ table span.badge {
   margin-top: 10px !important;
 }
 
+.wz-margin-top--10 {
+  margin-top: -10px !important;
+}
+
+.wz-margin-top--30 {
+  margin-top: -30px !important;
+}
+
 .wz-margin-top-15 {
   margin-top: 15px !important;
 }
 
 .wz-margin-top-20 {
   margin-top: 20px !important;
+}
+
+.wz-margin-top-30 {
+  margin-top: 30px !important;
 }
 
 .wz-margin-top--15{
@@ -478,7 +498,7 @@ table span.badge {
 
 .wz-metric-color {
   margin: 0 !important;
-  background-color: #ecf6fb !important;
-  border: 1px solid #dfeff8 !important;
+  background-color: rgba(200, 239, 172, 0.478) !important;
+  border: 1px solid rgba(200, 239, 172, 0.478) !important;
   box-shadow: none !important;
 }

@@ -7,7 +7,8 @@ define(['../module', 'jquery'], function(module, $) {
       $currentDataService,
       $requestService,
       $notificationService,
-      $navigationService
+      $navigationService,
+      $keyEquivalenceService
     ) {
       this.$rootScope = $rootScope
       this.vis2png = vis2png
@@ -16,6 +17,7 @@ define(['../module', 'jquery'], function(module, $) {
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
       this.navigationService = $navigationService
+      this.keyEquivalence = $keyEquivalenceService.equivalences()
     }
 
     /**
@@ -115,7 +117,7 @@ define(['../module', 'jquery'], function(module, $) {
           this.notification.showSimpleToast('Report in progress')
           return
         }
-        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        this.$rootScope.$applyAsync()
 
         this.vis2png.clear()
 
@@ -166,7 +168,7 @@ define(['../module', 'jquery'], function(module, $) {
         await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data)
         })
-        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        this.$rootScope.$applyAsync()
         try {
           const reportingUrl = this.navigationService.updateURLParameter(
             window.location.href,
@@ -229,7 +231,9 @@ define(['../module', 'jquery'], function(module, $) {
             IP: ip,
             Version: version,
             Manager: manager,
-            OS: os.codename ? `${os.name} ${os.codename} ${os.version}` : `${os.name} ${os.version}`  ,
+            OS: os.codename
+              ? `${os.name} ${os.codename} ${os.version}`
+              : `${os.name} ${os.version}`,
             dateAdd: dateAdd,
             lastKeepAlive: lastKeepAlive,
             group: group.toString()
@@ -286,9 +290,10 @@ define(['../module', 'jquery'], function(module, $) {
         const processes = await this.apiReq(
           `/syscollector/${agentId}/processes`
         )
-        const processesKeys = ['Name', 'Euser', 'Nice', 'State']
+        const processesKeys = ['Name', 'Euser', 'Priority', 'State']
         const processesData = processes.data.data.items.map(n => {
-          n.nice = n.nice ? n.nice.toString() : 'undefined'
+          n.nice = n.nice || n.nice === 0 ? n.nice.toString() : 'undefined'
+          n.state = this.keyEquivalence[n.state]
           return [n.name, n.euser, n.nice, n.state]
         })
         const processesTable = { fields: processesKeys, rows: processesData }
@@ -321,6 +326,45 @@ define(['../module', 'jquery'], function(module, $) {
           data: JSON.stringify(data)
         })
 
+        this.$rootScope.$applyAsync()
+        const reportingUrl = this.navigationService.updateURLParameter(
+          window.location.href,
+          'currentTab',
+          'mg-reporting'
+        )
+        this.notification.showSuccessToast(
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+        )
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Reporting error')
+      }
+    }
+
+    async reportGroupConfiguration(groupName, reportData, apiId) {
+      try {
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        const timeZone = new Date().getTimezoneOffset()
+
+        const data = {
+          images: [],
+          apiId: apiId,
+          timeRange: false,
+          sectionTitle: 'Group ' + groupName.name + ' configuration',
+          queryFilters: '',
+          metrics: {},
+          tableResults: {},
+          pdfName: 'group-conf',
+          timeZone,
+          data: reportData,
+          groupName: groupName
+        }
+
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
+          data: JSON.stringify(data)
+        })
+
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         const reportingUrl = this.navigationService.updateURLParameter(
           window.location.href,
@@ -331,6 +375,89 @@ define(['../module', 'jquery'], function(module, $) {
           `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
         )
         this.$rootScope.$broadcast('loadingReporting', { status: false })
+        return
+      } catch (error) {
+        this.notification.showErrorToast('Reporting error')
+      }
+    }
+
+    async reportAgentConfiguration(agentId, reportData, apiId) {
+      try {
+        let isAgents
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
+        try {
+          const agent = await Promise.all([
+            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/syscheck/${agentId}/last_scan`),
+            this.apiReq(`/rootcheck/${agentId}/last_scan`),
+            this.apiReq(`/syscollector/${agentId}/hardware`),
+            this.apiReq(`/syscollector/${agentId}/os`)
+          ])
+
+          const agentInfo = agent[0].data.data
+          const {
+            name,
+            id,
+            ip,
+            version,
+            manager,
+            os,
+            dateAdd,
+            lastKeepAlive,
+            group
+          } = agentInfo
+
+          isAgents = {
+            ID: id,
+            Name: name,
+            IP: ip,
+            Version: version,
+            Manager: manager,
+            OS: `${os.name} ${os.version}`,
+            dateAdd: dateAdd,
+            lastKeepAlive: lastKeepAlive,
+            group: group.toString()
+          }
+        } catch (error) {
+          isAgents = false
+        }
+
+        const isAgentConf = true
+        const timeZone = new Date().getTimezoneOffset()
+
+        const data = {
+          images: [],
+          isAgentConf,
+          isAgents,
+          apiId: apiId,
+          timeRange: false,
+          sectionTitle: `Agent ${isAgents.ID} configuration`,
+          queryFilters: '',
+          metrics: {},
+          tableResults: {},
+          pdfName: 'agent-conf',
+          timeZone,
+          data: reportData,
+          agentId: agentId
+        }
+
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
+          data: JSON.stringify(data)
+        })
+
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+
+        if (!this.$rootScope.$$phase) this.$rootScope.$digest()
+        const reportingUrl = this.navigationService.updateURLParameter(
+          window.location.href,
+          'currentTab',
+          'mg-reporting'
+        )
+        this.notification.showSuccessToast(
+          `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
+        )
+        this.$rootScope.$applyAsync()
+
         return
       } catch (error) {
         this.notification.showErrorToast('Reporting error')
