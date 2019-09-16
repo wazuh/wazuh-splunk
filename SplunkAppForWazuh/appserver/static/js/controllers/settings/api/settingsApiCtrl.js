@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class SettingsApi {
@@ -38,9 +38,11 @@ define(['../../module'], function(controllers) {
       this.scope.checkManager = entry => this.checkManager(entry)
       this.scope.editEntry = entry => this.editEntry(entry)
       this.scope.removeManager = entry => this.removeManager(entry)
-      this.scope.updateEntry = () => this.updateEntry()
+      this.scope.updateEntry = (user, pass, url, port) =>
+        this.updateEntry(user, pass, url, port)
       this.scope.selectManager = mg => this.selectManager(mg)
-      this.scope.submitApiForm = () => this.submitApiForm()
+      this.scope.submitApiForm = (user, api, url, port) =>
+        this.submitApiForm(user, api, url, port)
       this.init()
     }
 
@@ -49,27 +51,34 @@ define(['../../module'], function(controllers) {
      */
     async init() {
       try {
-        // If no API, then remove cookie
-        if (Array.isArray(this.apiList) && this.apiList.length === 0) {
-          this.currentDataService.removeCurrentApi()
-          this.scope.$emit('updatedAPI', () => {})
-        }
-        // Get the current selected API
-        let currentApi = this.currentDataService.getApi()
-        // If there is API, then show it as selected
-        if (currentApi) {
-          this.setYellowStar(currentApi['_key'])
-        }
-        this.scope.apiList = this.apiList
-        if (!currentApi && Array.isArray(this.scope.apiList)) {
-          for (const apiEntry of this.scope.apiList) {
-            try {
-              await this.selectManager(apiEntry['_key'])
-              // Set API
-              currentApi = this.currentDataService.getApi()
-              break
-            } catch (error) {
-              continue
+        const kvStoreError = ((this.apiList || {}).messages || [])[0] || {}
+        if (kvStoreError.text){
+          this.notification.showErrorToast(kvStoreError.text)
+          this.scope.kvStoreInitializing = true
+        }else {
+          this.scope.kvStoreInitializing = false
+          // If no API, then remove cookie
+          if (Array.isArray(this.apiList) && this.apiList.length === 0) {
+            this.currentDataService.removeCurrentApi()
+            this.scope.$emit('updatedAPI', () => { })
+          }
+          // Get the current selected API
+          let currentApi = this.currentDataService.getApi()
+          // If there is API, then show it as selected
+          if (currentApi) {
+            this.setYellowStar(currentApi['_key'])
+          }
+          this.scope.apiList = this.apiList
+          if (!currentApi && Array.isArray(this.scope.apiList)) {
+            for (const apiEntry of this.scope.apiList) {
+              try {
+                await this.selectManager(apiEntry['_key'])
+                // Set API
+                currentApi = this.currentDataService.getApi()
+                break
+              } catch (error) {
+                continue
+              }
             }
           }
         }
@@ -93,7 +102,7 @@ define(['../../module'], function(controllers) {
           }
           this.scope.apiList.splice(index, 1)
           this.notification.showSuccessToast('Manager was removed')
-          this.scope.$emit('updatedAPI', () => {})
+          this.scope.$emit('updatedAPI', () => { })
         }
       } catch (err) {
         this.notification.showErrorToast(
@@ -119,7 +128,7 @@ define(['../../module'], function(controllers) {
           }
         }
         this.notification.showSuccessToast('Connection established')
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
       } catch (err) {
         this.notification.showErrorToast(err || 'Unreachable API')
       }
@@ -131,6 +140,7 @@ define(['../../module'], function(controllers) {
     addNewApiClick() {
       this.scope.showForm = !this.scope.showForm
       this.scope.edit = false
+      this.scope.currentEntryKey = false
     }
 
     /**
@@ -139,7 +149,8 @@ define(['../../module'], function(controllers) {
      */
     editEntry(entry) {
       try {
-        this.scope.edit = !this.scope.edit
+        this.scope.edit =
+          this.scope.currentEntryKey === entry['_key'] ? !this.scope.edit : true
         this.scope.showForm = false
         this.scope.currentEntryKey = entry['_key']
         this.scope.url = entry.url
@@ -159,7 +170,7 @@ define(['../../module'], function(controllers) {
      * Edits an entry
      * @param {Object} entry
      */
-    async updateEntry() {
+    async updateEntry(user, pass, url, port) {
       try {
         if (this.savingApi) {
           this.notification.showWarningToast('Please, wait for success message')
@@ -168,10 +179,10 @@ define(['../../module'], function(controllers) {
         this.savingApi = true
         this.scope.edit = !this.scope.edit
         this.scope.showForm = false
-        this.scope.entry.url = this.scope.url
-        this.scope.entry.portapi = this.scope.port
-        this.scope.entry.userapi = this.scope.user
-        this.scope.entry.passapi = this.scope.pass
+        this.scope.entry.url = url
+        this.scope.entry.portapi = port
+        this.scope.entry.userapi = user
+        this.scope.entry.passapi = pass
         this.scope.entry.filterType = this.scope.filterType
         this.scope.entry.filterName = this.scope.filterName
         this.scope.entry.managerName = this.scope.managerName
@@ -189,7 +200,7 @@ define(['../../module'], function(controllers) {
             this.scope.apiList[i] = updatedApi
           }
         }
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
 
         if (
           this.currentDataService.getApi() &&
@@ -218,8 +229,8 @@ define(['../../module'], function(controllers) {
         await this.currentDataService.chose(key)
         this.setYellowStar(key)
         this.notification.showSuccessToast('API selected')
-        this.scope.$emit('updatedAPI', () => {})
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$emit('updatedAPI', () => { })
+        this.scope.$applyAsync()
       } catch (err) {
         this.notification.showErrorToast(err || 'Could not select manager')
       }
@@ -228,7 +239,7 @@ define(['../../module'], function(controllers) {
     /**
      * Adds a new API
      */
-    async submitApiForm() {
+    async submitApiForm(user, pass, url, port) {
       try {
         this.scope.validatingError = []
         if (this.savingApi) {
@@ -238,10 +249,10 @@ define(['../../module'], function(controllers) {
         this.savingApi = true
 
         // When the Submit button is clicked, get all the form fields by accessing to the input values
-        const form_url = this.scope.url
-        const form_apiport = this.scope.port
-        const form_apiuser = this.scope.user
-        const form_apipass = this.scope.pass
+        const form_url = url
+        const form_apiport = port
+        const form_apiuser = user
+        const form_apipass = pass
 
         // If values are not valid then throw an error
         if (
@@ -277,14 +288,19 @@ define(['../../module'], function(controllers) {
         }
 
         this.scope.showForm = false
-        if (!this.scope.$$phase) this.scope.$digest()
+        this.scope.$applyAsync()
         this.notification.showSuccessToast('New API was added')
       } catch (err) {
-        if (typeof err === 'string' && err.startsWith('Unexpected Wazuh version')) {
+        if (
+          typeof err === 'string' &&
+          err.startsWith('Unexpected Wazuh version')
+        ) {
           this.scope.validatingError.push(err)
           this.scope.$applyAsync()
         } else {
-          this.notification.showErrorToast(err.message || err || 'Cannot save the API.')
+          this.notification.showErrorToast(
+            err.message || err || 'Cannot save the API.'
+          )
         }
       }
       this.savingApi = false

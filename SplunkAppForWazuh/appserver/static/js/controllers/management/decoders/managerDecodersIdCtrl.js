@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
   'use strict'
 
   class DecodersId extends Ruleset {
@@ -25,7 +25,8 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       extensions,
       $fileEditor,
       $restartService,
-      $requestService
+      $requestService,
+      isAdmin
     ) {
       super(
         $scope,
@@ -43,6 +44,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.restartService = $restartService
       this.requestService = $requestService
       this.currentDecoder = currentDecoder
+      this.scope.adminMode = isAdmin
     }
 
     /**
@@ -59,7 +61,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
           this.addDetailFilter(name, value)
-        this.scope.adminMode = this.extensions['admin'] === 'true'
         this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
         this.scope.saveDecoderConfig = fileName =>
           this.saveDecoderConfig(fileName)
@@ -120,14 +121,14 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       try {
         const readOnly = !(this.scope.currentDecoder.path === 'etc/decoders')
         const result = await this.fetchFileContent(fileName, readOnly)
-      } catch (error) { }
+      } catch (error) {}
       return
     }
 
     /**
-    * Fetches file content
-    * @param {String} file
-    */
+     * Fetches file content
+     * @param {String} file
+     */
     async fetchFileContent(file, readOnly = false) {
       try {
         this.scope.editingFile = true
@@ -170,9 +171,10 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+            this.scope.$broadcast('fetchedFile', {
+              data: this.scope.fetchedXML
+            })
           }
-
         }
       } catch (error) {
         this.scope.fetchedXML = null
@@ -182,7 +184,6 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.$applyAsync()
       return
     }
-
   }
   controllers.controller('managerDecodersIdCtrl', DecodersId)
 })

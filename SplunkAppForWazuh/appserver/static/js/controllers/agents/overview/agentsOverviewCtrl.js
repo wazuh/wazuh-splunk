@@ -36,7 +36,8 @@ define(['../../module'], function(app) {
       isAdmin,
       $mdDialog,
       $groupHandler,
-      $dateDiffService
+      $dateDiffService,
+      $currentDataService
     ) {
       this.stateParams = $stateParams
       this.scope = $scope
@@ -45,6 +46,7 @@ define(['../../module'], function(app) {
       this.notification = $notificationService
       this.agent = agent
       this.extensions = extensions
+      this.scope.extensions = angular.copy(this.extensions)
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
       this.scope.showRootcheckScan = false
@@ -54,6 +56,21 @@ define(['../../module'], function(app) {
       this.groupHandler = $groupHandler
       this.scope.restartInProgress = false
       this.scope.isAdmin = isAdmin
+      this.currentDataService = $currentDataService
+      this.currentApi = this.currentDataService.getApi()
+      this.api = this.currentApi['_key']
+      this.scope.extensionsLists = {
+        security: false,
+        auditing: false,
+        threadDetection: false,
+        regulatory: false
+      }
+      this.excludeModulesByOs = {
+        linux: [],
+        windows: ['audit', 'oscap', 'vuls', 'docker'],
+        darwin: ['audit', 'oscap', 'vuls', 'docker'],
+        other: ['audit', 'oscap', 'vuls', 'docker']
+      }
     }
 
     /**
@@ -62,6 +79,7 @@ define(['../../module'], function(app) {
     $onInit() {
       try {
         this.scope.confirmingRestart = false
+        this.setAgentPlatform()
         if (
           this.agent.length &&
           typeof this.agent[0] === 'object' &&
@@ -77,7 +95,6 @@ define(['../../module'], function(app) {
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
                   .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
-
           this.scope.syscheck =
             this.agent.length > 0 &&
             typeof this.agent[1] === 'object' &&
@@ -94,12 +111,7 @@ define(['../../module'], function(app) {
               ? this.agent[2].data.data
               : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
-            const keys = Object.keys(this.extensions)
-            keys.map(key => {
-              this.extensions[key] === 'true'
-                ? (this.scope[key] = key)
-                : (this.scope[key] = null)
-            })
+            this.refreshExtensions()
 
             this.scope.groups = this.groups.data.data.items
               .map(item => item.name)
@@ -119,6 +131,8 @@ define(['../../module'], function(app) {
 
             this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
             this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
+
+            this.scope.checkModules = module => this.checkModules(module)
 
             this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
               this.scope.syscheck.start,
@@ -161,6 +175,10 @@ define(['../../module'], function(app) {
 
             this.scope.restart = () => this.restartAgent()
             this.scope.switchRestart = () => this.switchRestart()
+            this.scope.showExtensionsLists = card =>
+              this.showExtensionsLists(card)
+            this.scope.toggleExtension = (extension, state) =>
+              this.toggleExtension(extension, state)
 
             this.scope.confirmAddGroup = group => {
               this.groupHandler
@@ -176,11 +194,9 @@ define(['../../module'], function(app) {
                   this.scope.addingGroupToAgent = false
                   this.scope.editGroup = false
                   this.notification.showSuccessToast(
-                    `Agent ${this.scope.agent.name}(${
-                      this.scope.agent.id
-                    }) has been added to group ${group}.`
+                    `Agent ${this.scope.agent.name}(${this.scope.agent.id}) has been added to group ${group}.`
                   )
-                  if (!this.scope.$$phase) this.scope.$digest()
+                  this.scope.$applyAsync()
                 })
                 .catch(error => {
                   if (!this.scope.agent) {
@@ -200,10 +216,8 @@ define(['../../module'], function(app) {
             this.agent[0].data.data.os &&
             this.agent[0].data.data.os.uname
           ) {
-            this.scope.isLinux = this.agent[0].data.data.os.uname.includes(
-              'Linux'
-            )
           }
+
           if (this.scope.agent.status == 'Never connected') {
             this.scope.agent.os = {
               name: 'Unknown',
@@ -248,10 +262,9 @@ define(['../../module'], function(app) {
             }
           }
         }
-        this.scope.adminMode = this.extensions['admin'] === 'true'
       } catch (err) {
+        console.error(err)
         this.scope.load = false
-        this.scope.adminMode = false
         this.notification.showErrorToast('Error loading agent data.')
         this.scope.$applyAsync()
       }
@@ -311,7 +324,7 @@ define(['../../module'], function(app) {
      */
     switchGroupEdit() {
       this.scope.editGroup = !!!this.scope.editGroup
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -346,6 +359,88 @@ define(['../../module'], function(app) {
     switchRestart() {
       this.scope.confirmingRestart = !this.scope.confirmingRestart
       this.scope.$applyAsync()
+    }
+
+    /**
+     * Shows the extensions list to enable or disable them
+     */
+    showExtensionsLists(card) {
+      try {
+        this.scope.extensionsLists[card]
+          ? (this.scope.extensionsLists[card] = false)
+          : (this.scope.extensionsLists[card] = true)
+      } catch (error) {
+        console.error('Error showing or hiding the extensions list ', error)
+      }
+    }
+
+    /**
+     * Enable or disable extension
+     * @param {String} extension
+     * @param {String} state
+     */
+    toggleExtension(extension, state) {
+      try {
+        this.extensions[extension] = state.toString()
+        this.currentDataService.setExtensions(this.api, this.extensions)
+        this.extensions = this.currentDataService.getExtensions(this.api)
+        this.refreshExtensions()
+      } catch (error) {
+        console.error(error)
+        this.notification.showErrorToast(error)
+      }
+    }
+
+    /**
+     * Sets the agent's platform
+     */
+    setAgentPlatform() {
+      try {
+        this.scope.agentPlatform = 'other'
+        let agentPlatformLinux = (
+          (((this.agent[0] || []).data || {}).data || {}).os || {}
+        ).uname
+        let agentPlatformOther = (
+          (((this.agent[0] || []).data || {}).data || {}).os || {}
+        ).platform
+        if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
+          this.scope.agentPlatform = 'linux'
+        }
+        if (agentPlatformOther && agentPlatformOther === 'windows') {
+          this.scope.agentPlatform = 'windows'
+        }
+        if (agentPlatformOther && agentPlatformOther === 'darwin') {
+          this.scope.agentPlatform = 'darwin'
+        }
+      } catch (error) {
+        this.notification.showErrorToast('Cannot set OS platform.')
+      }
+    }
+
+    /**
+     * Refresh the extensions
+     */
+    refreshExtensions() {
+      const keys = Object.keys(this.extensions)
+      keys.map(
+        key => (this.scope.extensions[key] = this.extensions[key] === 'true')
+      )
+      /*
+      keys.map(key =>
+        this.scope.extensions[key] =  this.extensions[key] === 'true'
+      )
+      */
+      this.scope.$applyAsync()
+    }
+    /**
+     * Checks if the module is enabled
+     * @param {String} module
+     */
+    checkModules(module) {
+      const enable = !this.excludeModulesByOs[
+        this.scope.agentPlatform
+      ].includes(module)
+      return enable
     }
   }
 

@@ -45,7 +45,7 @@ define(['../../module', 'FileSaver'], function(app) {
         '#7F6025',
         '#104C19',
         '7C267F',
-        '#0079A5',
+        '#396e3e',
         '#00A69B',
         '#FF645C',
         '#FFC04A',
@@ -115,6 +115,13 @@ define(['../../module', 'FileSaver'], function(app) {
         event.stopPropagation()
         this.scope.overwrite = false
       })
+
+      this.scope.$on('RuleIdContentReady', (event, params) => {
+        event.preventDefault()
+        this.scope.$broadcast('XMLContentReady', {
+          data: params.data
+        })
+      })
       this.scope.$on('saveComplete', event => {
         event.stopPropagation()
         this.scope.saveIncomplete = false
@@ -136,9 +143,13 @@ define(['../../module', 'FileSaver'], function(app) {
         this.restart()
       })
 
+      this.scope.$on('loadingContent', (event, data) => {
+        this.scope.loadingContent = data.status
+        event.preventDefault()
+      })
       this.scope.$on('applyFilter', (event, parameters) => {
-        this.scope.search(parameters.filter);
-      });
+        this.scope.search(parameters.filter)
+      })
     }
 
     /**
@@ -231,7 +242,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.viewingDetail = false(this.view === 'ruleset')
         ? (this.scope.currentRule = false)
         : (this.scope.currentDecoder = false)
-      if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$applyAsync()
     }
 
     /**
@@ -314,6 +325,33 @@ define(['../../module', 'FileSaver'], function(app) {
         const filter = { name: 'path', value: term.split('path:')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
           item => item.name !== 'path'
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
+      } else if (
+        term &&
+        term.startsWith('hipaa:') &&
+        term.split('hipaa:')[1].trim()
+      ) {
+        this.scope.custom_search = ''
+        const filter = { name: 'hipaa', value: term.split('hipaa:')[1].trim() }
+        this.scope.appliedFilters = this.scope.appliedFilters.filter(
+          item => item.name !== 'hipaa'
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast('wazuhFilter', { filter })
+      } else if (
+        term &&
+        term.startsWith('nist-800-53:') &&
+        term.split('nist-800-53:')[1].trim()
+      ) {
+        this.scope.custom_search = ''
+        const filter = {
+          name: 'nist-800-53',
+          value: term.split('nist-800-53:')[1].trim()
+        }
+        this.scope.appliedFilters = this.scope.appliedFilters.filter(
+          item => item.name !== 'nist-800-53'
         )
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })

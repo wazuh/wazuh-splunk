@@ -17,140 +17,159 @@
   <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists</md-nav-item>
 </md-nav-bar>
 
-<div ng-if="!addingNewFile && !editingRulesetFile && !XMLContent" class="md-padding-h">
-  <div ng-show="!loading" layout="row" layout-align="start center" >
-    <div flex>
-      <div layout="row">
-        <!-- Show rules -->
-        <div ng-show="!rulesetFiles" class="wz-width-100">
-          <label class="wz-icon-loupe">
-            <input id="search-input-rules" flex placeholder="Filter decoders..." ng-model="customSearch"
-            type="text" class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-          </label>
-        </div>
-        <div ng-show="rulesetFiles">
+
+<!-- Loading content -->
+<div ng-show="loadingContent">
+  <div class="loader-bar" ng-show="loadingContent">
+    <div class="loader"></div>
+  </div>
+</div>
+<div>
+  <div ng-if="!addingNewFile && !editingRulesetFile && !XMLContent" class="md-padding-h">
+    <div ng-show="!loading" layout="row" layout-align="start center">
+      <div flex>
+        <div layout="row">
+          <!-- Show rules -->
+          <div ng-show="!rulesetFiles" class="wz-width-100">
+            <label class="wz-icon-loupe">
+              <input id="search-input-rules" flex placeholder="Filter decoders..." ng-model="customSearch" type="text"
+                class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
+            </label>
+          </div>
+          <div ng-show="rulesetFiles">
             <button class="btn height-40 wz-button-empty wz-margin-right-10" ng-click="switchFiles()">
-                <md-tooltip md-direction="right" class="wz-tooltip">
-                  Back to decoders
-                </md-tooltip>
-                <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
-              </button>
+              <md-tooltip md-direction="right" class="wz-tooltip">
+                Back to decoders
+              </md-tooltip>
+              <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div ng-show="rulesetFiles" class="wz-width-100">
+            <label class="wz-icon-loupe">
+              <input flex placeholder="Filter decoders files..." ng-model="customSearch" type="text"
+                class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
+            </label>
+          </div>
+          <wz-add-filter-chip ng-if="!rulesetFiles" id-input="search-input-rules"
+            options="[{label: 'File', value: 'file'}, {label: 'Path', value: 'path'}]"></wz-add-filter-chip>
+          <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
+            ng-click="search(customSearch)">
+            <span>Search</span>
+          </button>
         </div>
-        <div ng-show="rulesetFiles" class="wz-width-100">
-          <label class="wz-icon-loupe">
-            <input   flex placeholder="Filter decoders files..." ng-model="customSearch"
-            type="text" class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-          </label>
-        </div>
-        <wz-add-filter-chip ng-if="!rulesetFiles" id-input="search-input-rules" options="[{label: 'File', value: 'file'}, {label: 'Path', value: 'path'}]"></wz-add-filter-chip>
-        <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
-          ng-click="search(customSearch)">
-          <span>Search</span>
-        </button>
       </div>
     </div>
+    <md-card class="wz-md-card no-margin-sides">
+      <md-card-actions layout="row" layout-align="end center"
+        class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+        <!-- Show files and button to add a new file -->
+        <span ng-if="rulesetFiles && adminMode" ng-click="addNewFile()" class="wz-color-text cursor-pointer">Add new decoders file</span>
+        <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer">
+          Manage decoders files
+        </span>
+        <span flex="" class="flex"></span>
+        <wz-kbn-switch ng-if="!rulesetFiles" switch-model="$parent.localFilter" switch-text="Only custom decoders">
+        </wz-kbn-switch>
+        <wz-kbn-switch ng-if="rulesetFiles" switch-model="$parent.localFilter" switch-text="Editable files">
+        </wz-kbn-switch>
+      </md-card-actions>
+      <md-card-contents>
+        <md-chips ng-if="!rulesetFiles" class="wz-chips wz-margin-left-10" readonly="true"
+          ng-show="appliedFilters.length">
+          <md-chip class="wz-chip" ng-show="includesFilter('file')">
+            <span>File: {{ getFilter('file') }}
+              <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
+            </span>
+          </md-chip>
+          <md-chip class="wz-chip" ng-show="includesFilter('path')">
+            <span>Path: {{ getFilter('path') }}
+              <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('path')"></i>
+            </span>
+          </md-chip>
+        </md-chips>
+        <div layout="row" layout-padding>
+          <wazuh-table custom-columns="true" ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex
+            path="'/decoders'"
+            keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
+            allow-click="true" rows-per-page="14">
+          </wazuh-table>
+          <wazuh-table custom-columns="true" ng-if="localFilter && !rulesetFiles" implicit-filter="appliedCustomFilters"
+            flex path="'/decoders'"
+            keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
+            allow-click="true" rows-per-page="14">
+          </wazuh-table>
+          <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/decoders/files'"
+            keys="['file']" rows-per-page="[16,13,11]">
+          </wazuh-table>
+          <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/decoders/files'"
+            implicit-filter="[{ name:'path',value: 'etc/decoders'}]" keys="['file']" rows-per-page="[16,13,11]">
+          </wazuh-table>
+        </div>
+        <div layout="row" class="ruleset-csv-formater">
+          <span flex></span>
+          <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">
+            <wz-svg icon="download"></wz-svg>&nbsp;Formatted
+          </a>
+        </div>
+      </md-card-contents>
+    </md-card>
   </div>
-  <md-card class="wz-md-card no-margin-sides">
-    <md-card-actions layout="row" layout-align="end center" class="layout-align-end-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-      <!-- Show files and button to add a new file -->
-      <a ng-if="rulesetFiles" ng-click="addNewFile()">Add new decoders file</a>
-      <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer">
-        Manage decoders files
-      </span>
-      <span flex="" class="flex"></span>
-      <wz-kbn-switch ng-if="!rulesetFiles" switch-model="$parent.localFilter" switch-text="Only custom decoders"></wz-kbn-switch>
-      <wz-kbn-switch ng-if="rulesetFiles" switch-model="$parent.localFilter" switch-text="Editable files"></wz-kbn-switch>
-    </md-card-actions>
-    <md-card-contents>
-      <md-chips ng-if="!rulesetFiles" class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
-        <md-chip class="wz-chip" ng-show="includesFilter('file')">
-          <span>File: {{ getFilter('file') }}
-            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
-          </span>
-        </md-chip>
-        <md-chip class="wz-chip" ng-show="includesFilter('path')">
-          <span>Path: {{ getFilter('path') }}
-            <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('path')"></i>
-          </span>
-        </md-chip>
-      </md-chips>
-      <div layout="row" layout-padding>
-        <wazuh-table custom-columns="true" ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex
-          path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
-          allow-click="true" rows-per-page="14">
-        </wazuh-table>
-        <wazuh-table custom-columns="true" ng-if="localFilter && !rulesetFiles" implicit-filter="appliedCustomFilters"
-          flex path="'/decoders'" keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
-          allow-click="true" rows-per-page="14">
-        </wazuh-table>
-        <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/decoders/files'" keys="['file']"
-          rows-per-page="[16,13,11]">
-        </wazuh-table>
-        <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/decoders/files'"
-          implicit-filter="[{ name:'path',value: 'etc/decoders'}]" keys="['file']" rows-per-page="[16,13,11]">
-        </wazuh-table>
-      </div>
-      <div layout="row" class="ruleset-csv-formater">
-        <span flex></span>
-        <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">
-          <wz-svg icon="download"></wz-svg>&nbsp;Formatted
-        </a>
-      </div>
-    </md-card-contents>
-  </md-card>
-</div>
-</div>
-</div>
 
-</div>
+  <!-- XML editor for add new decoder file-->
+  <div ng-if="addingNewFile">
+    <div layout="row" class="md-padding  wz-padding-top-0">
+      <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
+      <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete'
+        ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+        class='btn wz-button-empty pull-right wz-margin-left-10'>
+        <span ng-show='!xmlHasErrors && adminMode'>
+          <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+            aria-hidden='true'></i>
+          Save file</span>
+        <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true'
+            class='fa fa-fw fa-exclamation-triangle'></i>
+          XML format error</span>
+      </button>
 
-<!-- XML editor for add new decoder file-->
-<div ng-if="addingNewFile">
-  <div layout="row" class="md-padding  wz-padding-top-0">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
-      class='btn wz-button-empty pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && adminMode'>
-        <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}" aria-hidden='true'></i>
-        Save file</span>
-      <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-        XML format error</span>
-    </button>
-
-    <input placeholder="New file name..." ng-model="editingFile.file" class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
-      style="margin-left: 10px;" ng-change="enableSave()">
+      <input placeholder="New file name..." ng-model="editingFile.file"
+        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex" style="margin-left: 10px;"
+        ng-change="enableSave()">
+    </div>
+    <div class="wzXmlEditorDivContent" ng-if="fetchedXML">
+      <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
+        valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+      </wz-xml-file-editor>
+    </div>
   </div>
-  <div class="wzXmlEditorDivContent" ng-if="fetchedXML">
-    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
-      valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
-    </wz-xml-file-editor>
+
+  <!-- XML editor for edit file-->
+  <div ng-if="editingRulesetFile">
+    <div layout="row" class="md-padding wz-padding-top-0">
+      <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
+      <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
+        class='btn wz-button-empty pull-right wz-margin-left-10'>
+        <span ng-show='!xmlHasErrors && adminMode'><i
+            ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+            aria-hidden='true'></i>
+          Save file</span>
+        <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true'
+            class='fa fa-fw fa-exclamation-triangle'></i>
+          XML format error</span>
+      </button>
+      <span class="flex"></span>
+
+    </div>
+    <div class="wzXmlEditorDivContent" ng-if="fetchedXML">
+      <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML"
+        target-name="editingRulesetFile.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+      </wz-xml-file-editor>
+    </div>
+  </div>
+
+  <!-- XML viewer -->
+  <div ng-show="XMLContent">
+    <button ng-click='closeEditingFile()'
+      class='btn wz-button-cancel wz-margin-left-10'>Close</button>
+    <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true" no-local="fileName" />
   </div>
 </div>
-
-<!-- XML editor for edit file-->
-<div ng-if="editingRulesetFile">
-  <div layout="row" class="md-padding wz-padding-top-0">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-    <button ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
-      class='btn wz-button-empty pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && adminMode'><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-          aria-hidden='true'></i>
-        Save file</span>
-      <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
-        XML format error</span>
-    </button>
-    <span class="flex"></span>
-
-  </div>
-  <div class="wzXmlEditorDivContent" ng-if="fetchedXML">
-    <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingRulesetFile.file"
-      valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
-    </wz-xml-file-editor>
-  </div>
-</div>
-
-<!-- XML viewer -->
-<div ng-show="XMLContent">
-    <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel wz-margin-left-10'>Close</button>
-    <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true" no-local="fileName"/>
-  </div>

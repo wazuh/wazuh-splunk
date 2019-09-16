@@ -15,6 +15,19 @@ define(['../module'], function(module) {
             'static/app/SplunkAppForWazuh/js/controllers/settings/main/settings.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('settings.api')
+          },
+          controller: 'settingsCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
           }
         })
         // settings -> about
@@ -65,28 +78,6 @@ define(['../module'], function(module) {
             ]
           }
         })
-        .state('settings.extensions', {
-          templateUrl:
-            BASE_URL +
-            '/static/app/SplunkAppForWazuh/js/controllers/settings/extensions/extensions.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('settings.extensions')
-          },
-          controller: 'extensionsCtrl',
-          resolve: {
-            extensions: [
-              '$state',
-              '$currentDataService',
-              async ($state, $currentDataService) => {
-                try {
-                  return await $currentDataService.getCurrentExtensions()
-                } catch (err) {
-                  $state.reload()
-                }
-              }
-            ]
-          }
-        })
         .state('settings.index', {
           templateUrl:
             BASE_URL +
@@ -119,6 +110,28 @@ define(['../module'], function(module) {
             ]
           }
         })
+        .state('settings.configuration', {
+          templateUrl:
+            '/static/app/SplunkAppForWazuh/js/controllers/settings/configuration/configuration.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('settings.configuration')
+          },
+          controller: 'settingsConfigCtrl',
+          controllerAs: 'vm',
+          resolve: {
+            configuration: [
+              '$state',
+              '$currentDataService',
+              async ($state, $currentDataService) => {
+                try {
+                  return await $currentDataService.getCurrentConfiguration()
+                } catch (err) {
+                  $state.reload()
+                }
+              }
+            ]
+          }
+        })
         .state('dev-tools', {
           templateUrl:
             BASE_URL +
@@ -128,14 +141,13 @@ define(['../module'], function(module) {
           },
           controller: 'devToolsCtrl',
           resolve: {
-            extensions: [
-              '$state',
+            isAdmin: [
               '$currentDataService',
-              async ($state, $currentDataService) => {
+              async $currentDataService => {
                 try {
-                  return await $currentDataService.getCurrentExtensions()
-                } catch (err) {
-                  $state.go('settings.api')
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
                 }
               }
             ]

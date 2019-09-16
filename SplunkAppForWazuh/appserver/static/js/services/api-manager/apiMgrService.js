@@ -1,6 +1,6 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
-  module.service('$apiMgrService', function (
+  module.service('$apiMgrService', function(
     $requestService,
     $apiIndexStorageService,
     $splunkStoreService
@@ -220,11 +220,7 @@ define(['../module'], function (module) {
           const user = encodeURIComponent(api.userapi)
           const pass = encodeURIComponent(api.passapi)
           const clusterEnabled = api.filterType === 'cluster.name'
-          const checkConnectionEndpoint = `/manager/check_connection?ip=${
-            api.url
-            }&port=${
-            api.portapi
-            }&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
+          const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
             checkConnectionEndpoint
@@ -250,27 +246,26 @@ define(['../module'], function (module) {
       }
     }
 
-
-     /**
+    /**
      * Checks a connection given its ID
      * @param {Object} api
      */
     const checkRawConnectionById = async id => {
       try {
-          const checkConnectionEndpoint = `/manager/check_connection_by_id?apiId=${id}`
-          const result = await $requestService.httpReq(
-            'GET',
-            checkConnectionEndpoint
-          )
+        const checkConnectionEndpoint = `/manager/check_connection_by_id?apiId=${id}`
+        const result = await $requestService.httpReq(
+          'GET',
+          checkConnectionEndpoint
+        )
 
-           if (result.data.status === 400 || result.data.error) {
-            if (result.data.error === 3099) {
-              throw 'ERROR3099 - Wazuh not ready yet.'
-            } else {
-              throw result.data.error || 'Unreachable API.'
-            }
+        if (result.data.status === 400 || result.data.error) {
+          if (result.data.error === 3099) {
+            throw 'ERROR3099 - Wazuh not ready yet.'
+          } else {
+            throw result.data.error || 'Unreachable API.'
           }
-          return result
+        }
+        return result
       } catch (err) {
         if (err.status === 500) {
           throw new Error(
@@ -283,35 +278,21 @@ define(['../module'], function (module) {
 
     /**
      * Checks if the API has to change its filters
-     * @param {Object} api
+     * @param {Object} connectionData
      */
-    const updateApiFilter = async api => {
+    const updateApiFilter = async connectionData => {
       try {
-        const results = await Promise.all([
-          $requestService.apiReq(`/cluster/status`, {
-            id: api['_key']
-          }),
-          $requestService.apiReq(`/agents/000`, {
-            id: api['_key'],
-            select: 'name'
-          })
-        ])
-
-        const parsedResult = results.map(item =>
-          item && item.data && item.data.data ? item.data.data : false
-        )
-        const [clusterData, managerName] = parsedResult
-
+        const clusterData = connectionData.clusterMode
+        const managerName = connectionData.managerName
+        const clusterName = connectionData.clusterName
+        var api = connectionData.api.data
         if (managerName.name) {
           api.managerName = managerName.name
         }
         // If cluster is disabled, then filter by manager.name
         if (clusterData.enabled === 'yes') {
           api.filterType = 'cluster.name'
-          const clusterName = await $requestService.apiReq(`/cluster/node`, {
-            id: api['_key']
-          })
-          api.filterName = clusterName.data.data.cluster
+          api.filterName = clusterName.cluster
         } else {
           api.filterType = 'manager.name'
           api.filterName = api.managerName
@@ -330,8 +311,9 @@ define(['../module'], function (module) {
       try {
         const connectionData = await checkRawConnectionById(id)
         const api = connectionData.data.api.data
-        const apiSaved = { ...api } //eslint-disable-line
-        const updatedApi = await updateApiFilter(api)
+        const apiTmp = Object.assign({}, api)
+        const apiSaved = { apiTmp } //eslint-disable-line
+        const updatedApi = await updateApiFilter(connectionData.data)
         let equal = true
         Object.keys(updatedApi).forEach(key => {
           if (updatedApi[key] !== apiSaved[key]) {
@@ -349,10 +331,9 @@ define(['../module'], function (module) {
       }
     }
 
-
-    /** 
-    * Checks if the Splunk Version are the same that the Wazuh version
-    */
+    /**
+     * Checks if the Splunk Version are the same that the Wazuh version
+     */
     const checkWazuhVersion = async () => {
       try {
         const wazuhVersion = await $requestService.apiReq('/version')
@@ -374,7 +355,9 @@ define(['../module'], function (module) {
           const appSplit = av.split('.')
 
           if (wazuhSplit[0] !== appSplit[0] || wazuhSplit[1] !== appSplit[1]) {
-            throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
+            throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${
+              appSplit[1]
+            }, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
           }
         }
       } catch (error) {

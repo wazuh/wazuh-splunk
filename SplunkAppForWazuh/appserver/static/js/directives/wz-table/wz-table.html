@@ -72,7 +72,7 @@
           ng-if="path === '/rules'" ng-click="handleClick(key,item,$event)" ng-mouseover="selectedCell = $index;"
           ng-mouseleave="selectedCell = false">
           <div class="wz-text-truncatable-container">
-            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index">
+            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'file'">
               <span class="fa fa-search-plus"></span> </span>
             <div class="table-width-id" ng-if="key === 'id'">{{
             parseValue(key,item)
@@ -93,7 +93,7 @@
           ng-if="path === '/decoders'" ng-click="handleClick(key,item,$event)" ng-mouseover="selectedCell = $index;"
           ng-mouseleave="selectedCell = false">
           <div class="wz-text-truncatable-container">
-            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index">
+            <span class="wzTableCellFilter" ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'file'">
               <span class="fa fa-search-plus"></span> </span>
             <div class="wz-text-left" tooltip="{{ parseValue(key,item) }}" tooltip-placement="bottom">
               <div class="table-width-id wz-text-truncatable-container" ng-if="key === 'id'">
@@ -135,10 +135,10 @@
           </wz-svg>
           <!--NO icon -->
           <i ng-if="item.path !== 'etc/rules' && item.path !== 'etc/decoders' && path !== '/lists/files'"
-            aria-hidden="true" style="color: #0079a5;font-size: 17px;">
+            aria-hidden="true" style="color: #396e3e;font-size: 17px;">
             <wz-svg ng-if="item.path !== 'etc/rules' && item.path !== 'etc/decoders' && path !== '/lists/files'"
               ng-click="$event.stopPropagation();editFile(item.file || item.name, item.path, true)" icon="eye"
-              svg-tooltip="View file content" color="#0079a5">
+              svg-tooltip="View file content" color="#396e3e">
             </wz-svg>
           </i>
           <div ng-if="(item.file && removingFile === item.file) || (item.name && removingFile === item.name)"
@@ -159,10 +159,10 @@
         <td ng-if="path === '/agents/groups' && adminMode " ng-click="$event.stopPropagation()"
           class="cursor-default action-btn-td" class="wz-text-truncatable">
           <wz-svg ng-if="removingGroup !== item.name && item.name !== 'default'"
-            ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()" icon="trash" color="#0079a5"
+            ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()" icon="trash" color="#396e3e"
             svg-tooltip="Remove this group"></wz-svg>
           <wz-svg ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()" icon="pencil"
-            color="#0079a5" svg-tooltip="Edit this group configuration">
+            color="#396e3e" svg-tooltip="Edit this group configuration">
           </wz-svg>
 
           <span class="wz-padding-left-8" ng-if="removingGroup !== item.name && item.name === 'default'">-</span>
@@ -182,7 +182,7 @@
           class="cursor-default action-btn-td">
           <wz-svg ng-if="removingAgent !== item.id && adminMode"
             ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()" icon="trash"
-            color="#0079a5" svg-tooltip="Remove agent">
+            color="#396e3e" svg-tooltip="Remove agent">
           </wz-svg>
 
           <div ng-if="removingAgent === item.id" class="confirmEmbedBubble">
@@ -416,16 +416,7 @@
 <div layout="row" ng-if="!error && !wazuhTableLoading && !totalItems">
   <div flex class="euiCallOut euiCallOut--warning">
     <div class="euiCallOutHeader">
-      <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon float_warning-icon" aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
-        viewBox="0 0 16 16">
-        <defs>
-          <path id="help-a"
-            d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z">
-          </path>
-        </defs>
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#help-a" fill-rule="evenodd"></use>
-      </svg>
+      <wz-svg icon="callOutHeader"></wz-svg>
       <span class="euiCallOutHeader__title">{{customEmptyResults}}</span>
     </div>
   </div>
@@ -434,16 +425,7 @@
 <div layout="row" ng-if="error" class="wz-margin-bottom-45">
   <div flex class="euiCallOut euiCallOut--warning">
     <div class="euiCallOutHeader">
-      <svg class="euiIcon euiIcon--medium euiCallOutHeader__icon float_warning-icon" aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
-        viewBox="0 0 16 16">
-        <defs>
-          <path id="help-a"
-            d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z">
-          </path>
-        </defs>
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#help-a" fill-rule="evenodd"></use>
-      </svg>
+      <wz-svg icon="callOutHeader"></wz-svg>
       <span class="euiCallOutHeader__title">{{error}}</span>
     </div>
   </div>

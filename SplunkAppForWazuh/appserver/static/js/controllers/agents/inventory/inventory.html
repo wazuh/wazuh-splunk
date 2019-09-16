@@ -11,8 +11,9 @@
       <span> / </span>
       <span>Inventory data</span>
       <span ng-if="agent && agent.status">
-        <span class="wz-agent-status-indicator small" ng-class="getAgentStatusClass(agent.status)"
-          aria-label="Agent status indicator">{{formatAgentStatus(agent.status)}}</span>
+        <span class="no-wrap wz-padding-left-8" aria-hidden="false">
+          <wz-svg icon="agent-{{agent.status}}"></wz-svg>
+        </span>{{formatAgentStatus(agent.status)}}
       </span>
     </div>
     <span flex class="flex"></span>
@@ -27,7 +28,7 @@
   </div>
 
   <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>Generating PDF document...<br><i class="fa fa-fw fa-spin fa-spinner"
+  <div align='center' ng-if='loadingReporting'>Generating report...<br><i class="fa fa-fw fa-spin fa-spinner"
       aria-hidden="true"></i></div>
 
 
@@ -40,23 +41,16 @@
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="inventory">Inventory data</md-nav-item>
   </md-nav-bar>
 
-  <div layout="row" class="layout-padding" ng-if="agent && agent.status !== 'Active'">
-    <md-card flex class="wz-md-card" flex>
-      <md-card-content class="wz-text-center">
-        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Agent is not
-          connected.</span>
-      </md-card-content>
-    </md-card>
-  </div>
 
-  <div layout="row" class="layout-padding" ng-if="agent && agent.status === 'Active' && !hasSize(syscollector)">
-    <md-card flex class="wz-md-card" flex>
-      <md-card-content class="wz-text-center">
-        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Could not fetch
-          inventory for this agent.</span>
-      </md-card-content>
-    </md-card>
-  </div>
+  <div>
+    <div layout="row" class="layout-padding" ng-if="agent && agent.status !== 'Active'">
+      <md-card flex class="wz-md-card" flex>
+        <md-card-content class="wz-text-center">
+          <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Agent is not
+            connected.</span>
+        </md-card-content>
+      </md-card>
+    </div>
 
   <div layout="row" class="layout-padding wz-padding-bottom-0"
     ng-if="agent && agent.status === 'Active' && hasSize(syscollector) && (!hasSize(syscollector.hardware) || !hasSize(syscollector.os))">
@@ -79,7 +73,7 @@
         <div flex>OS: <span class="wz-text-bold">{{ syscollector.os.os.name }} {{ syscollector.os.os.version }}</span>
         </div>
         <div flex>CPU: <span class="wz-text-bold">{{ syscollector.hardware.cpu.name }}</span></div>
-        <div flex>Last scan: <span class="wz-text-bold">{{ syscollector.os.scan.time }}</span></div>
+        <div flex>Last scan: <span class="wz-text-bold">{{ setBrowserOffset(syscollector.os.scan.time) }}</span></div>
       </md-card-content>
     </md-card>
   </div>

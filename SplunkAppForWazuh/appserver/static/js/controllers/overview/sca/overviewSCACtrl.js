@@ -12,28 +12,26 @@
 
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/gauge-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
-  '../../../services/rawTableData/rawTableDataService'
+  '../../../services/visualizations/table/table'
 ], function(
   app,
+  DashboardMain,
   ColumnChart,
   GaugeChart,
   PieChart,
   AreaChart,
   LinearChart,
-  Table,
-  TimePicker,
-  RawTableDataService
+  Table
 ) {
   'use strict'
 
-  class overviewSCA {
+  class overviewSCA extends DashboardMain {
     /**
      * Class Overview SCA
      * @param {Object} $urlTokenModel
@@ -61,58 +59,42 @@ define([
       BASE_URL,
       extensions
     ) {
-      this.urlTokenModel = $urlTokenModel
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.rootScope = $rootScope
-      this.scope = $scope
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.apiReq = $requestService.apiReq
-      this.state = $state
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.currentDataService = $currentDataService
-      this.notification = $notificationService
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.baseUrl = BASE_URL
-      this.scope.noScansPng = `${
-        this.baseUrl
-      }/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
+      this.scope.noScansPng = `${this.baseUrl}/static/app/SplunkAppForWazuh/css/images/sca_no_scans.png`
       this.currentDataService.addFilter(
         `{"rule.groups{}":"sca", "implicit":true}`
       )
       this.scope.expandArray = [false, false, false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
 
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
-
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
          * Visualizations
          */
-
         new GaugeChart(
           'scoreByPolicy',
-          `${
-            this.filters
-          }  |  stats values(data.sca.score) as values by data.sca.policy_id | sort - values`,
+          `${this.filters}  | stats values(data.sca.score) by data.sca.policy_id `,
           'scoreByPolicy',
-          { trellisEnabled: true, gaugeType: 'radialGauge' },
+          {
+            trellisEnabled: true,
+            gaugeType: 'radialGauge'
+          },
           this.scope
         ),
         new PieChart(
@@ -123,25 +105,19 @@ define([
         ),
         new ColumnChart(
           'resultDistributionByPolicy',
-          `${
-            this.filters
-          } | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed  by data.sca.policy`,
+          `${this.filters} | stats sum(data.sca.failed) as failed, sum(data.sca.passed) as passed  by data.sca.policy`,
           'resultDistributionByPolicy',
           this.scope
         ),
         new PieChart(
           'top5Passed',
-          `${
-            this.filters
-          }  data.sca.check.result="passed"  | top limit=5 data.sca.check.title`,
+          `${this.filters}  data.sca.check.result="passed"  | top limit=5 data.sca.check.title`,
           'top5Passed',
           this.scope
         ),
         new PieChart(
           'top5Failed',
-          `${
-            this.filters
-          }  data.sca.check.result="failed"  | top limit=5 data.sca.check.title`,
+          `${this.filters}  data.sca.check.result="failed"  | top limit=5 data.sca.check.title`,
           'top5Failed',
           this.scope
         ),
@@ -161,25 +137,14 @@ define([
           'overTimePolicy',
           `${this.filters} | timechart count by data.sca.policy`,
           'overTimePolicy',
-          this.scope
+          this.scope,
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${
-            this.filters
-          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
+          `${this.filters} | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
           'alertsSummary',
           this.scope
-        ),
-        new RawTableDataService(
-          'alertsSummaryTable',
-          `${
-            this.filters
-          } | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
-          'alertsSummaryTable',
-          '$result$',
-          this.scope,
-          'Alerts summary'
         )
       ]
       /**
@@ -195,49 +160,17 @@ define([
             'resultDistribution',
             'alertsOverTime',
             'resultDistributionByPolicy',
-            'top5Agents',
             'top5Failed',
             'top5Passed',
-            'overTimePolicy',
-            'alertLevelEvolution'
+            'alertsSummary'
           ],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData
         )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     $onInit() {
-      this.scope.loadingVizz = true
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
@@ -299,14 +232,6 @@ define([
     }
 
     /**
-     * Gets filters and launches search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    /**
      * Loads policies checks
      */
     async loadPolicyChecks(id, name) {
@@ -314,29 +239,6 @@ define([
       this.scope.policyId = id
       const agentId = this.agent.data.data.id
       this.scope.wzTablePath = `/sca/${agentId}/checks/${id}`
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
     }
   }
   app.controller('overviewSCACtrl', overviewSCA)

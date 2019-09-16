@@ -29,8 +29,7 @@ define(['../module', 'splunkjs/mvc'], function(module) {
         this.path = path
         this.filters = []
         this.sortValue = false
-        this.sortDir = false
-        this.sortValue = false
+        this.sortDir = this.implicitSort !== false
         this.busy = false
         if (this.implicitFilter) this.filters.push(...this.implicitFilter)
         if (this.implicitSort) {

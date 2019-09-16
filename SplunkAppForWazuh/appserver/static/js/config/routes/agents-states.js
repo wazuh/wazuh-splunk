@@ -1,10 +1,10 @@
-define(['../module'], function (module) {
+define(['../module'], function(module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function ($stateProvider, BASE_URL) {
+    function($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
@@ -22,36 +22,13 @@ define(['../module'], function (module) {
               '$state',
               async $requestService => {
                 try {
-                  const responseStatus = await $requestService.apiReq(
-                    '/cluster/status'
+                  const agentsSummary = await $requestService.apiReq(
+                    '/summary/agents'
                   )
-                  const response = ((responseStatus || {}).data || {}).data || {}
-                  return await Promise.all([
-                    $requestService.apiReq('/agents/summary'),
-                    $requestService.apiReq('/agents', {
-                      limit: 1,
-                      sort: '-dateAdd'
-                    }),
-                    $requestService.apiReq('/agents/stats/distinct', {
-                      fields: 'os.name,os.version,os.platform',
-                      select: 'os.name,os.version,os.platform'
-                    }),
-                    $requestService.apiReq('/agents/stats/distinct', {
-                      fields: 'version',
-                      select: 'version'
-                    }),
-                      response.enabled === 'yes' &&
-                      response.running === 'yes'
-                      ? $requestService.apiReq('/agents/stats/distinct', {
-                        fields: 'node_name',
-                        select: 'node_name'
-                      })
-                      : Promise.resolve(false),
-                    $requestService.apiReq('/agents/groups', {})
-                  ])
+                  return agentsSummary
                 } catch (err) {
                   $state.go('settings.api')
-                } 
+                }
               }
             ]
           }
@@ -87,10 +64,7 @@ define(['../module'], function (module) {
                   const results = await Promise.all([
                     $requestService.apiReq(`/agents/${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
-                    $requestService.apiReq(`/rootcheck/${id}/last_scan`),
-                    $requestService.apiReq(`/syscollector/${id}/hardware`),
-                    $requestService.apiReq(`/syscollector/${id}/os`),
-                    $requestService.apiReq(`/agents/${id}/group/is_sync`)
+                    $requestService.apiReq(`/rootcheck/${id}/last_scan`)
                   ])
 
                   return results
@@ -161,10 +135,13 @@ define(['../module'], function (module) {
                   const apiId = $currentDataService.getApi()
                   const currentApi = apiId['_key']
                   const results = await Promise.all([
-                    $requestService.httpReq('GET', `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`),
-                    $requestService.apiReq(`/agents/${id}`),
+                    $requestService.httpReq(
+                      'GET',
+                      `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`
+                    ),
+                    $requestService.apiReq(`/agents/${id}`)
                   ])
-                  
+
                   return results
                 } catch (err) {
                   $state.go('agents')
@@ -646,10 +623,213 @@ define(['../module'], function (module) {
                   return false
                 }
               }
+            ],
+            hipaaExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('hipaa')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            nistExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('nist')
+                } catch (err) {
+                  return false
+                }
+              }
             ]
           }
         })
-
+        // agents - HIPAA
+        .state('ag-hipaa', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/hipaa/agents-hipaa.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-hipaa')
+          },
+          controller: 'agentsHipaaCtrl',
+          params: { id: null },
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            hipaaTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const hipaaTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/hipaa?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    hipaaTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return hipaaTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            nistExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('nist')
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+        // agents - NIST 800-53
+        .state('ag-nist', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/nist/agents-nist.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-nist')
+          },
+          controller: 'agentsNistCtrl',
+          params: { id: null },
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            nistTabs: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const nistTabs = []
+                  const data = await $requestService.httpReq(
+                    'GET',
+                    '/api/nist?requirement=all'
+                  )
+                  if (!data) return []
+                  for (const key in data.data) {
+                    nistTabs.push({ title: key, content: data.data[key] })
+                  }
+                  return nistTabs
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            pciExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('pci')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            gdprExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            hipaaExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('hipaa')
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
         // agents - policy monitoring
         .state('ag-pm', {
           templateUrl:
@@ -844,6 +1024,26 @@ define(['../module'], function (module) {
               async $currentDataService => {
                 try {
                   return await $currentDataService.extensionIsEnabled('gdpr')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            hipaaExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('hipaa')
+                } catch (err) {
+                  return false
+                }
+              }
+            ],
+            nistExtensionEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.extensionIsEnabled('nist')
                 } catch (err) {
                   return false
                 }

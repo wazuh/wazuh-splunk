@@ -1,14 +1,33 @@
+/*
+ * Wazuh app - Agents controller
+ * Copyright (C) 2015-2019 Wazuh, Inc.
+ *
+ * This program is free software you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Find more information about this on the LICENSE file.
+ */
+
 define([
   '../../module',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/rawTableData/rawTableDataService'
-], function(app, PieChart, Table, AreaChart, TimePicker, RawTableDataService) {
+], function(
+  app,
+  DashboardMain,
+  PieChart,
+  Table,
+  AreaChart,
+  RawTableDataService
+) {
   'use strict'
 
-  class AgentsVirusTotal {
+  class AgentsVirusTotal extends DashboardMain {
     /**
      * Class Virus Total
      * @param {Object} $urlTokenModel
@@ -29,11 +48,13 @@ define([
       reportingEnabled,
       extensions
     ) {
-      this.state = $state
-      this.currentDataService = $currentDataService
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       //Add filer for VirusTotal
@@ -42,8 +63,6 @@ define([
       )
       this.agent = agent
       this.scope.expandArray = [false, false, false, false, false]
-      this.scope.expand = (i, id) => this.expand(i, id)
-
       if (
         this.agent &&
         this.agent.data &&
@@ -54,24 +73,7 @@ define([
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
 
-      this.getFilters = this.currentDataService.getSerializedFilters
-      this.urlTokenModel = $urlTokenModel
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
-
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -86,25 +88,20 @@ define([
         ),
         new AreaChart(
           'maliciousEventsOverTimeElement',
-          `${
-            this.filters
-          } data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives`,
+          `${this.filters} data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives  `,
           'maliciousEventsOverTimeElement',
-          this.scope
+          this.scope,
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'lastFiles',
-          `${
-            this.filters
-          } | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
+          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
           'lastFiles',
           this.scope
         ),
         new RawTableDataService(
           'lastFilesTable',
-          `${
-            this.filters
-          } | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
           'lastFilesToken',
           '$result$',
           this.scope,
@@ -142,43 +139,12 @@ define([
           this.tableResults,
           this.agentReportData
         )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-          this.setReportMetrics()
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -193,14 +159,6 @@ define([
     }
 
     /**
-     * Get filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    /**
      * Set report metrics
      */
     setReportMetrics() {
@@ -210,31 +168,6 @@ define([
         'Files deleted': this.scope.filesDeleted
       }
     }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
-    }
   }
   app.controller('agentsVirusTotalCtrl', AgentsVirusTotal)
 })
-
-//data.virustotal.source.file

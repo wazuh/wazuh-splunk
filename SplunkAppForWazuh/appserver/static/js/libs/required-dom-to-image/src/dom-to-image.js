@@ -456,7 +456,7 @@ define(function (require, exports, module) {(function (global) {
                     resolve(image);
                 };
                 image.onerror = reject;
-                image.src = uri;
+                image.src = encodeURI(uri);
             });
         }
 
@@ -548,6 +548,7 @@ define(function (require, exports, module) {(function (global) {
         }
 
         function escapeXhtml(string) {
+            if (/Edge/.test(navigator.userAgent)) { return string; }
             return string.replace(/#/g, '%23').replace(/\n/g, '%0A');
         }
 

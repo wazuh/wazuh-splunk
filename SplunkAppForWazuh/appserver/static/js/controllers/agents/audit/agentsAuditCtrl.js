@@ -12,28 +12,24 @@
 
 define([
   '../../module',
-  '../../../services/visualizations/chart/column-chart',
+  '../../../dashboardMain',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/chart/bar-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
   app,
-  ColumnChart,
+  DashboardMain,
   PieChart,
   AreaChart,
-  BarChart,
   Table,
-  TimePicker,
   SearchHandler,
   RawTableDataService
 ) {
   'use strict'
 
-  class AgentsAudit {
+  class AgentsAudit extends DashboardMain {
     /**
      * Class constructor
      * @param {Object} $urlTokenModel
@@ -54,19 +50,16 @@ define([
       reportingEnabled,
       extensions
     ) {
-      this.state = $state
-      this.currentDataService = $currentDataService
-      this.scope = $scope
+      super(
+        $scope,
+        $reportingService,
+        $state,
+        $currentDataService,
+        $urlTokenModel
+      )
+
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.reportingService = $reportingService
-      this.tableResults = {}
-      this.urlTokenModel = $urlTokenModel
-      this.timePicker = new TimePicker(
-        '#timePicker',
-        this.urlTokenModel.handleValueChange
-      )
-      this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.agent = agent
       this.currentDataService.addFilter(
         `{"rule.groups{}":"audit", "implicit":true}`
@@ -84,7 +77,6 @@ define([
         false,
         false
       ]
-      this.scope.expand = (i, id) => this.expand(i, id)
 
       if (
         this.agent &&
@@ -95,15 +87,8 @@ define([
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
         )
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.scope.$on('deletedFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
-      this.scope.$on('barFilter', event => {
-        event.stopPropagation()
-        this.launchSearches()
-      })
+
+      this.filters = this.getFilters()
 
       this.vizz = [
         /**
@@ -162,33 +147,26 @@ define([
         ),
         new PieChart(
           'filesVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh audit.file.name=* | top audit.file.name`,
+          `${this.filters} sourcetype=wazuh audit.file.name=* | top audit.file.name`,
           'filesVizz',
           this.scope
         ),
         new AreaChart(
           'alertsOverTimeVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | timechart limit=10 count by rule.description`,
+          `${this.filters} sourcetype=wazuh | timechart limit=10 count by rule.description`,
           'alertsOverTimeVizz',
-          this.scope
+          this.scope,
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummaryVizz',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${
-            this.filters
-          } sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -232,43 +210,12 @@ define([
           this.tableResults,
           this.agentReportData
         )
-
-      this.scope.$on('loadingReporting', (event, data) => {
-        this.scope.loadingReporting = data.status
-      })
-
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
-          return v.finish === false
-        }).length
-        if (this.vizzReady) {
-          this.scope.loadingVizz = false
-          this.setReportMetrics()
-        } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
-              this.tableResults[v.name] = v.results
-            }
-          })
-          this.scope.loadingVizz = true
-        }
-        if (!this.scope.$$phase) this.scope.$digest()
-      })
-
-      /**
-       * When controller is destroyed
-       */
-      this.scope.$on('$destroy', () => {
-        this.timePicker.destroy()
-        this.vizz.map(vizz => vizz.destroy())
-      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
@@ -298,14 +245,6 @@ define([
     }
 
     /**
-     * Gets the filters and launches the search
-     */
-    launchSearches() {
-      this.filters = this.currentDataService.getSerializedFilters()
-      this.state.reload()
-    }
-
-    /**
      * Set report metrics
      */
     setReportMetrics() {
@@ -315,29 +254,6 @@ define([
         'Modified files': this.scope.filesModifiedToken,
         'Removed files': this.scope.filesDeleted
       }
-    }
-
-    expand(i, id) {
-      this.scope.expandArray[i] = !this.scope.expandArray[i]
-      let vis = $(
-        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
-      )
-      this.scope.expandArray[i]
-        ? vis.css('height', 'calc(100vh - 200px)')
-        : vis.css('height', '250px')
-
-      let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
-        if (this.scope.expandArray[i]) {
-          this.scope.expandArray[i] = !this.scope.expandArray[i]
-          this.scope.expandArray[i]
-            ? vis.css('height', 'calc(100vh - 200px)')
-            : vis.css('height', '250px')
-          this.scope.$applyAsync()
-        } else {
-          e.preventDefault()
-        }
-      })
     }
   }
   app.controller('agentsAuditCtrl', AgentsAudit)

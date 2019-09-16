@@ -38,7 +38,7 @@ class JobsQueue():
             )
             self.sessionKey = splunk.getSessionKey()
         except Exception as e:
-            self.logger.error("Error in queue module constructor: %s" % (e))
+            self.logger.error("bin.jobs_queu: Error in queue module constructor: %s" % (e))
 
     def insert_job(self, job, session_key=False):
         """Insert a job.
@@ -52,6 +52,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queu: Inserting job.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             job = jsonbak.dumps(job)
@@ -59,8 +60,7 @@ class JobsQueue():
                                        "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
             return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error(
-                'Error inserting a job in JobsQueue module: %s ' % (e))
+            self.logger.error('bin.jobs_queu: Error inserting a job in JobsQueue module: %s ' % (e))
             return jsonbak.dumps({"error": str(e)})
 
     def update_job(self, job, session_key=False):
@@ -73,6 +73,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queue: Updating job.")
             if not '_key' in job:
                 raise Exception('Missing Key')
             id = job['_key']
@@ -87,7 +88,7 @@ class JobsQueue():
             else:
                 raise Exception('Job cannot be updated.')
         except Exception as e:
-            self.logger.error("Error updating in JobsQueue module: %s" % (e))
+            self.logger.error("bin.jobs_queu: Error updating in JobsQueue module: %s" % (e))
             raise e
 
     def remove_job(self, _key, session_key=False):
@@ -100,6 +101,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queue: Removing job.")
             if not _key:
                 raise Exception('Missing ID in remove JobQueue module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
@@ -113,8 +115,7 @@ class JobsQueue():
                 text = msg['messages'][0]['text']
                 raise Exception(text)
         except Exception as e:
-            self.logger.error(
-                "Error removing a Job in JobsQueue module: %s" % (e))
+            self.logger.error("bin.jobs_queu: Error removing a Job in JobsQueue module: %s" % (e))
             raise e
 
     def get_jobs(self, session_key=False):
@@ -127,6 +128,7 @@ class JobsQueue():
 
         """
         try:
+            self.logger.debug("bin.jobs_queue: Getting all jobs.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(kvstoreUri, headers={
@@ -137,6 +139,5 @@ class JobsQueue():
                     result = []
             return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error(
-                'Error getting the jobs queue in JobsQueue module: %s ' % (e))
+            self.logger.error('bin.jobs_queu: Error getting the jobs queue in JobsQueue module: %s ' % (e))
             raise e

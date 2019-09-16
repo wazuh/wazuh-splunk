@@ -1,6 +1,14 @@
 define(['../module'], function(module) {
   'use strict'
 
+  const checkAdmin = async $currentDataService => {
+    try {
+      return await $currentDataService.isAdmin()
+    } catch (error) {
+      return false
+    }
+  }
+
   module.config([
     '$stateProvider',
     'BASE_URL',
@@ -85,11 +93,7 @@ define(['../module'], function(module) {
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
+                return await checkAdmin($currentDataService)
               }
             ]
           }
@@ -129,6 +133,12 @@ define(['../module'], function(module) {
                   return false
                 }
               }
+            ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -146,11 +156,7 @@ define(['../module'], function(module) {
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
+                return await checkAdmin($currentDataService)
               }
             ]
           }
@@ -190,6 +196,12 @@ define(['../module'], function(module) {
                   return false
                 }
               }
+            ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -208,11 +220,7 @@ define(['../module'], function(module) {
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
+                return await checkAdmin($currentDataService)
               }
             ]
           }
@@ -232,11 +240,7 @@ define(['../module'], function(module) {
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
+                return await checkAdmin($currentDataService)
               }
             ],
             cdbInfo: [
@@ -282,6 +286,12 @@ define(['../module'], function(module) {
                   return false
                 }
               }
+            ],
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await checkAdmin($currentDataService)
+              }
             ]
           }
         })
@@ -299,11 +309,7 @@ define(['../module'], function(module) {
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
+                return await checkAdmin($currentDataService)
               }
             ],
             clusterInfo: [
@@ -351,11 +357,7 @@ define(['../module'], function(module) {
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
+                return await checkAdmin($currentDataService)
               }
             ],
             clusterInfo: [
@@ -403,11 +405,7 @@ define(['../module'], function(module) {
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
+                return await checkAdmin($currentDataService)
               }
             ],
             statusData: [

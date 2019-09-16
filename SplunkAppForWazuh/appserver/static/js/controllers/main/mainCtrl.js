@@ -37,10 +37,12 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.$on('loading', (event, data) => {
-        if (data.status) this.scope.loading = true
-        else this.scope.loading = false
-        if (!this.scope.$$phase) this.scope.$digest()
+      this.scope.$on('loadingMain', (event, data) => {
+        data.status
+          ? (this.scope.loadingMain = true)
+          : (this.scope.loadingMain = false)
+        event.preventDefault()
+        this.scope.$applyAsync()
       })
 
       this.dashboardController.onReady(() => {
