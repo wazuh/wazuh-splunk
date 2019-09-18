@@ -1,3 +1,27 @@
 <div flex="auto" layout="column" class="height-50">
-  configuration test
+    <div flex layout="column" class="md-padding" layout-align="start">
+        <div flex layout="column" class="wz-margin-top-10 ">
+          <span class="wz-dev-headline-title wz-dev-title font-size-25">
+            <!-- Back button -->
+           <a ui-sref="tools" class="wz-margin-right-10 wz-back-button">&nbsp;<wz-svg icon="arrow-left">&nbsp;</wz-svg></a>
+           Test your configuration </span> 
+        </div>
+        
+        <div class="wzXmlEditorDivContent" style="margin-top: 35px;border:1px solid rgba(128, 128, 128, 0.247)">
+          <div class='wzXmlEditor'>
+            <div class='wzXmlEditorBody' style="height: calc(100vh - 230px)">
+              <textarea id='config_input'></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div layout="row">
+          <span flex=""></span>
+          <button type="submit" aria-label="Test" class="btn wz-button wz-margin-left-10 wz-margin-top-15"
+          ng-click="testConfig()">
+          <span>Test configuration</span>
+          </button>
+        </div>
+        
+    </div>
 </div>

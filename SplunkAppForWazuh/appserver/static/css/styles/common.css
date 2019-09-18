@@ -536,8 +536,8 @@ div.uil-ring-css {
 .wz-button {
   color: white !important;
   transition: none !important;
-  background-color: rgb(28, 58, 31) !important;
-  border-color: rgb(28, 58, 31) !important;
+  background-color: rgb(38, 83, 43) !important;
+  border-color: rgb(38, 83, 43) !important;
 }
 
 .wz-button-flat {
@@ -2438,4 +2438,14 @@ wazuh-card-slider {
 
 .wz-min-height-40 {
   min-height: 40px !important;
+}
+
+.wz-back-button {
+  color: rgba(33, 126, 33, 0.445);
+  border-radius: 20px;
+}
+
+.wz-back-button:hover {
+  background-color: rgba(0, 128, 0, 0.151);
+  text-decoration: none;
 }

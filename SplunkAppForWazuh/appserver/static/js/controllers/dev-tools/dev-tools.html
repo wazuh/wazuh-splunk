@@ -3,7 +3,11 @@
     <div>
       <div id="wz-dev-left-column" flex layout="column">
 
-        <span class="wz-dev-headline-title wz-dev-title">Console <i ng-click="send()" class="fa fa-play wz-play-dev-color cursor-pointer pull-right fa-fw wz-always-top"
+       
+        <span class="wz-dev-headline-title wz-dev-title">
+          <!-- Back button -->
+         <a ui-sref="tools" class="wz-margin-right-10 wz-back-button"><wz-svg icon="arrow-left"></wz-svg></a>
+          Console <i ng-click="send()" class="fa fa-play wz-play-dev-color cursor-pointer pull-right fa-fw wz-always-top"
             id="play_button" aria-hidden="true"></i></span>
         <textarea flex id="api_input"></textarea>
 

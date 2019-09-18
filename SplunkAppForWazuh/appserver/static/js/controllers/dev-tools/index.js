@@ -1,0 +1,4 @@
+define([
+  './devToolsCtrl',
+  './configToolsCtrl',
+], function() {})

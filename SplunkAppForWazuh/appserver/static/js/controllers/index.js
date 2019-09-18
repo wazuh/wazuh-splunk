@@ -8,7 +8,7 @@ define([
   //Management
   './management/index',
   //Dev-tools
-  './dev-tools/devToolsCtrl',
+  './dev-tools/index',
   // Main
   './main/mainCtrl',
   //Discover
