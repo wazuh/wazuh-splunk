@@ -61,3 +61,56 @@
 .wz-tooltip:hover .tooltiptext {
     visibility: visible;
 }
+
+
+
+/*tooltip Box*/
+.con-wz-tooltip-guide {
+    position: relative;    
+    border-radius: 9px;    
+    display: inline-block;    
+    transition: all 0.3s ease-in-out;
+    cursor: default;
+  
+  }
+  
+  /*tooltip */
+  .wz-tooltip-guide {
+    visibility: hidden;
+    z-index: 101;
+    opacity: .40;
+    width: 180%;
+    min-width:220px;
+    padding: 5px 10px;
+    background: #333;
+    color: rgb(255, 255, 255) !important;
+    position: absolute;
+    top:-140%;
+    left: -25%;
+    border-radius: 9px;
+    font: 15px;
+    transform: translateY(9px);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 3px rgba(56, 54, 54, 0.86);
+  }
+
+  .con-wz-tooltip-guide:hover .wz-tooltip-guide{
+    visibility: visible;
+    transform: translateY(-10px);
+    opacity: 1;
+    transition: .3s linear;
+  }
+  .wz-tooltip-guide:hover{
+      visibility: hidden;
+  }
+
+  /*left*/
+  .left .wz-tooltip-guide{ top:-20%; left:-170%; }
+
+  /*bottom*/
+  .bottom .wz-tooltip-guide { top:115%; left:-20%; } 
+  
+  /*right*/
+  .right .wz-tooltip-guide { top:-20%; left:106%; }
+  
+ 

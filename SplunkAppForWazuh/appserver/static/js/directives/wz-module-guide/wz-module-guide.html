@@ -6,15 +6,15 @@
 
     <md-divider class="wz-margin-top-4 wz-margin-bottom-10"></md-divider>
 
-    <div layout="row" style="overflow-y: scroll; height: calc(100vh - 160px);">
-      <div layout="column" style="width: 85%; margin:5px;" class="wz-margin-top-10">
+    <div layout="row" id="sideNav" style="overflow-y: scroll; height: calc(100vh - 160px);">
+      <div layout="column" style="width: 96%; margin:5px;" class="wz-margin-top-10">
         <div layout="row">
           <div class="bubble">1</div>
-          <div class="step-title">Choose your OS</div>
+          <div class="step-title">Select a  module</div>
         </div>
         <div class="border-to-div wz-margin-top-10"> <!-- Select configuration -->
           <div class="step-margin">
-            <select ng-options="n.name for n in modulesList" ng-model="currentModule" ng-init="currentModule=modulesList[0]"
+            <select ng-options="n.name for n in modulesList" ng-model="currentModule" ng-change="resetOptions()" ng-init="currentModule=modulesList[0]"
               style="margin-left:5px;" class="input input-dropdown wz-button-empty wz-width-100p" >
             </select>
           </div>
@@ -24,34 +24,119 @@
         </div>
         <div layout="row" class="wz-margin-top-10"> <!-- Step 2 - Edit your configuration -->
           <div class="bubble">2</div>
-          <div class="step-title">Configuration</div>
+          <div class="step-title">Configure the module</div>
         </div>
-        <div ng-show="showConfigTab" class="border-to-div wz-margin-top-10">
-          <div>
-              <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 11px; background-color: rgb(255, 255, 255); max-height: fit-content !important; ">{{modulesList[0].default_configuration[0].content}}</pre>
-          </div>
-        </div>
-        <div ng-show="showOptionsTab" class="border-to-div wz-margin-top-10">
-          <div layout="column"> <!-- ng repeat -->
+        <div class="border-to-div wz-margin-top-10">
+          <div layout="column"> 
             <div style="margin-top:10px;"></div>
-            <div layout="row">
-              <span style="padding-top:10px;"> Enabled:</span>  <input flex ng-model="enabled" placeholder="Add or remove directories to be monitored."  type="text"
-              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
-              aria-invalid="false">
+            <div layout="row" style="margin: -20px 0px 20px 0px;">
+            <div ng-repeat="button in getCurrentModuleButtons()"  >
+                <button style="height: 30px; margin-left:10px;"  class='btn wz-button-empty pull-right' ng-class="{'active': showOptions === button.id}" ng-click="switchOptions(button.id)">
+                  <span>{{button.text}}</span>
+                </button>
+              </div>
             </div>
-            <div layout="row">
-              <span style="padding-top:10px;"> Directories:</span> <input flex ng-model="directories" placeholder="Add or remove directories to be monitored."  type="text"
-              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
-              aria-invalid="false">
-            </div>
-            <div layout="row">
-                <span style="padding-top:10px;"> Frequency:</span> <input flex ng-model="frequency" placeholder="Frequency that the syscheck will be run (in seconds)."  type="text"
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
+            <div layout="row" ng-repeat="option in getCurrentModuleOptions()" ng-if="option.required" style="padding-top:10px; ">  <!-- Iterate all options of selected configuration -->
+              <span style="min-width:35%;">  
+                  <!-- Top tooltip-->
+                  <div class="con-wz-tooltip-guide right">
+                    <p> {{option.name}}: </p>
+                    <div class="wz-tooltip-guide ">
+                      <p style="color:white;">{{option.description}}</p>
+                    </div>
+                  </div>
+
+                  <a md-no-ink class="wz-link" ng-click="openExtraAttr(option)" ng-show="option.extraAttr">
+                    <i class="fa fa-fw fa-cog" aria-hidden="true"></i>
+                    <md-tooltip md-direction="left" class="wz-tooltip">
+                      Open attributes list
+                    </md-tooltip>
+                  </a>
+                  <div ng-show="showExtraAttr(option)" style="padding: 15px; min-width:35%; border-radius: 10px; border: 1px solid #c9cbcd; position:absolute; background-color:rgb(255, 255, 255); z-index: 102;">
+                    <div ng-repeat="(key,value) in option.extraAttr"  layout="row" style="height: 25px;" > <!-- Extra attributes-->
+                        <span style="width: 72%;">{{key}}  &nbsp;&nbsp;</span>
+                        <label  class="guide-switch">
+                            <input ng-checked="value.default"  id="{{option.name}}-{{key}}" type="checkbox">
+                            <span class="guide-slider round"></span>
+                        </label>
+                    </div>
+                  </div>
+              </span>
+
+
+              <div ng-if="option.type === 'multiple-value'" style="width:100%;"> <!-- input type -->
+                <input flex  id="{{option.name}}" type="text" ng-model="option.value" placeholder="{{option.default_value}}" wz-enter="addItem(option.name,option.value)"
+                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40" style="width:100%;"
                 aria-invalid="false">
+                <div id="{{option.name}}-list">
+
+                </div>
+              </div>
+
+              <div ng-if="option.type === 'input'" style="width:100%;"> <!-- input type -->
+                <input flex  id="{{option.name}}" type="text" placeholder="{{option.default_value}}"
+              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40" style="width:100%;"
+              aria-invalid="false">
+              </div>
+
+              <div ng-if="option.type === 'select'" style="width:100%;"> <!-- select type -->
+                <select ng-options="n for n in option.values" ng-model="option.value" id="{{option.name}}"
+                style="margin-left:5px;" class="input input-dropdown wz-button-empty wz-width-100p" >
+              </select>
+              </div>
+
+              <div ng-if="option.type === 'switch'"> <!-- Switch type -->
+                <label class="guide-switch">
+                    <input id="{{option.name}}" type="checkbox" ng-checked="{{option.default_value}}">
+                    <span class="guide-slider round"></span>
+                </label>
+              </div>
+              
+              <div ng-if="option.type === 'list'" style="width:100%;"> <!-- Area text type -->
+                <textarea id='{{option.name}}' style="width:100%;" placeholder="One entry per line"></textarea>
+              </div>
+              
             </div>
-            <button style="height: 30px;" ng-click="generateConfig()" class='btn wz-button pull-right'>
-            <span>Generate configuration</span>
-          </button>
+            <div ng-show="showOptions === 'options'" ng-class="{'wz-margin-bottom--15': !showAdvancedOptions}">
+              <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="!showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px;" >Show advanced options</span>
+              <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px;" >Close advanced options</span>
+            </div>
+            <div layout="row" ng-repeat="option in getCurrentModuleOptions()" ng-if="!option.required && showAdvancedOptions" style="padding-top:10px;padding-left:15px; background-color: #80808007;">  <!-- Iterate all options of selected configuration -->
+              <span style="min-width:35%;">  
+                  <!-- Top tooltip-->
+                  <div class="con-wz-tooltip-guide right">
+                    <p> {{option.name}}: </p> 
+                    <div class="wz-tooltip-guide ">
+                      <p style="color:white;">{{option.description}}</p>
+                    </div>
+                  </div>
+              </span>
+              <div ng-if="option.type === 'input'" style="width:100%;"> <!-- input type -->
+                <input flex ng-model="enabled" id="{{option.name}}" type="text" placeholder="{{option.default_value}}"
+              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40" style="width:100%;"
+              aria-invalid="false">
+              </div>
+              <div ng-if="option.type === 'select'" style="width:100%;"> <!-- select type -->
+                <select ng-options="for n in option.values" ng-model="option.value" id="{{option.name}}"
+                style="margin-left:5px;" class="input input-dropdown wz-button-empty wz-width-100p" >
+              </select>
+              </div>
+
+              <div ng-if="option.type === 'switch'"> <!-- Switch type -->
+                <label class="guide-switch">
+                    <input id="{{option.name}}" type="checkbox" ng-checked="{{option.default_value}}">
+                    <span class="guide-slider round"></span>
+                </label>
+              </div>
+              
+              <div ng-if="option.type === 'list'" style="width:100%;"> <!-- Area text type -->
+                <textarea id='{{option.name}}' style="width:100%;" placeholder="One entry per line"></textarea>
+              </div>
+              
+            </div>
+            <button style="height: 30px; margin-top:30px; background-color:rgba(62, 187, 31, 0.247)" ng-click="generateConfig()" class='btn wz-button pull-right'>
+              <span>Generate configuration</span>
+            </button>
           </div>
         </div>
 
@@ -61,13 +146,15 @@
         </div>
 
         <div ng-show="configurationGenerated" class="border-to-div wz-margin-top-10">
-          <div layout="column"> <!-- ng repeat -->
+          <div layout="column"> 
             <div style="margin-top:10px;"></div>
-            <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 11px; background-color: rgba(255, 255, 255); max-height: fit-content !important; ">{{test}}</pre>
+            <pre id="codeBlock" flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 12px; background-color: rgba(255, 255, 255); max-height: fit-content !important; ">{{configurationBlock}}</pre>
 
           </div>
         </div>
+        <div style="margin-bottom:30px;">
 
+        </div>
         
       </div>
     </div> <!-- Second row-->
