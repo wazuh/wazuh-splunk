@@ -63,7 +63,7 @@ define(['./module'], function(module) {
           to !== 'overview' &&
           to !== 'manager' &&
           to !== 'agents' &&
-          to !== 'dev-tools' &&
+          to !== 'tools' &&
           to !== 'discover' &&
           !to.startsWith('settings')
         ) {
@@ -101,7 +101,7 @@ define(['./module'], function(module) {
           from === 'manager' ||
           from === 'settings' ||
           from === 'agents' ||
-          from === 'dev-tools'
+          from === 'tools'
         ) {
           $rootScope.$broadcast('stateChanged', to)
         } else if (to !== 'discover') {

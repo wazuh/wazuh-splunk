@@ -77,8 +77,8 @@ define(['../module'], function(directives) {
               $scope.menuNavItem = 'agents'
             } else if (checkLastState('api.', 'settings')) {
               $scope.menuNavItem = 'settings'
-            } else if (checkLastState('dev-tools', 'dev-tools')) {
-              $scope.menuNavItem = 'dev-tools'
+            } else if (checkLastState('tools', 'tools')) {
+              $scope.menuNavItem = 'tools'
             } else if (checkLastState('discover', 'discover')) {
               $scope.menuNavItem = 'discover'
             }

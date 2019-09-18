@@ -132,14 +132,13 @@ define(['../module'], function(module) {
             ]
           }
         })
-        .state('dev-tools', {
+        .state('tools', {
           templateUrl:
             BASE_URL +
-            '/static/app/SplunkAppForWazuh/js/controllers/dev-tools/dev-tools.html',
+            '/static/app/SplunkAppForWazuh/js/controllers/dev-tools/dev-tools-overview.html',
           onEnter: $navigationService => {
-            $navigationService.storeRoute('dev-tools')
+            $navigationService.storeRoute('tools')
           },
-          controller: 'devToolsCtrl',
           resolve: {
             isAdmin: [
               '$currentDataService',
