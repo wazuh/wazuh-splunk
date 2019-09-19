@@ -123,11 +123,13 @@ define(['../../../module'], function(controllers) {
           `/agents/groups/${groupName}/files/agent.conf`,
           { format: 'xml' }
         )
-        const xml = ((data || {}).data || {}).data || false
-        if (!xml) {
+        const xml = (data || {}).data || {} || false
+        if (!xml.data && xml.error !== 0) {
           throw new Error('Could not fetch agent.conf file')
+        }else if(!xml.data){
+          return " " // Force to print the XML editor
         }
-        return xml
+        return xml.data
       } catch (error) {
         return Promise.reject(error)
       }
