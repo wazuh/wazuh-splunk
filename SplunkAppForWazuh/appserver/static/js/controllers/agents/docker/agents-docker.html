@@ -58,7 +58,11 @@
       </div>
     </div>
     <div ng-show="!loadingVizz">
-      <!-- first row  -->
+      
+      <!-- Module not configured -->
+      <wz-no-module agent-id="agent.id" module-name="'docker-listener'" group-list="agent.group"></wz-no-module>
+
+        <!-- first row  -->
       <div id="row2" layout="row">
         <!-- first row - first vis -->
         <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">

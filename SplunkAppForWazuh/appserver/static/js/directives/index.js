@@ -21,5 +21,6 @@ define([
   './wz-kbn-switch/wz-kbn-switch',
   './wz-alert-metrics/wz-alert-metrics',
   './wz-card-slider/wz-card-slider',
-  './wz-module-guide/wz-module-guide'
+  './wz-module-guide/wz-module-guide',
+  './wz-no-module/wz-no-module',
 ], function() {})

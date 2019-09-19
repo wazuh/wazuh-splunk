@@ -275,7 +275,7 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('mg-groups')
           },
           controller: 'groupsCtrl',
-          params: { group: null },
+          params: { group: null, openConfig: null },
           resolve: {
             extensions: [
               '$currentDataService',

@@ -219,6 +219,14 @@ define(['../../module', 'FileSaver'], function(controllers) {
             this.goBackFiles()
           }
         }
+        if (this.stateParams.openConfig) {
+          console.log(this.stateParams.openConfig)
+          this.loadGroup(this.stateParams.openConfig)
+          this.scope.currentGroup = {}
+          this.scope.currentGroup.name = this.stateParams.openConfig
+          this.goBackFiles()
+          this.fetchFile()
+        }
 
         this.scope.reload = (element, searchTerm, addOffset, start) =>
           this.reloadScope(element, searchTerm, addOffset, start)
@@ -323,6 +331,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
      */
     async loadGroup(group, firstLoad) {
       this.scope.load = true
+      console.log(group)
       try {
         if (!firstLoad) this.scope.lookingGroup = true
         const count = await this.apiReq(`/agents/groups/${group.name}/files`, {
@@ -334,6 +343,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.mainGroup = group
         this.scope.$applyAsync()
       } catch (error) {
+        console.log(error)
         this.notification.showErrorToast('Cannot load group data')
       }
       this.scope.load = false
