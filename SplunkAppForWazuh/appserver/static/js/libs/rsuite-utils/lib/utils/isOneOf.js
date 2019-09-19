@@ -1,0 +1,12 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isOneOf;
+function isOneOf(one, ofTarget) {
+  if (Array.isArray(ofTarget)) {
+    return ofTarget.indexOf(one) >= 0;
+  }
+  return one === ofTarget;
+}

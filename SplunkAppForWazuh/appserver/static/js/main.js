@@ -20,6 +20,7 @@ require.config({
 
     'react': 'js/libs/react',
     'react-dom': 'js/libs/react-dom',
+    'rsuite': 'js/libs/rsuite/dist/rsuite.min',
 
     // Angular Chart
     moment: 'js/libs/moment',

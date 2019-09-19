@@ -1,5 +1,5 @@
-define(['../../module','react','react-dom'], function (controllers,React,ReactDOM) {
-  'use strict'
+define(['../../module','react','react-dom','rsuite'], function (controllers,React,ReactDOM,rsuite) {
+  
 
   class SettingsApi {
     /**
@@ -33,10 +33,31 @@ define(['../../module','react','react-dom'], function (controllers,React,ReactDO
      * On controller loads
      */
     $onInit() {
+      console.log(rsuite)
+      console.log(rsuite.Button)
+      var instance = React.createElement(rsuite.Dropdown, {
+        title: "Default"
+      }, React.createElement(rsuite.Dropdown.Item, null, "New File"), React.createElement(rsuite.Dropdown.Item, null, "New File with Current Profile"), React.createElement(rsuite.Dropdown.Item, null, "Download As..."), React.createElement(rsuite.Dropdown.Item, null, "Export PDF"), React.createElement(rsuite.Dropdown.Item, null, "Export HTML"), React.createElement(rsuite.Dropdown.Item, null, "Settings"), React.createElement(rsuite.Dropdown.Item, null, "About"));
+      
       ReactDOM.render(
-        React.createElement('p', {}, 'test div'),
+        React.createElement(rsuite.Button, {}, 'Button'),
           document.getElementById('react-test')
       );
+
+
+      
+const instance2 = (
+  <div className="icon-example-list">
+    <Icon icon="spinner" spin />
+    <Icon icon="spinner" pulse />
+    <Icon icon="cog" spin />
+  </div>
+);
+
+
+      ReactDOM.render(instance2, document.getElementById('react-test2'));
+      ReactDOM.render(instance, document.getElementById('react-test3'));
+
       this.scope.init = () => this.init()
       this.scope.addNewApiClick = () => this.addNewApiClick()
       this.scope.checkManager = entry => this.checkManager(entry)

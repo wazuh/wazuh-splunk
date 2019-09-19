@@ -1,0 +1,130 @@
+{
+  "_from": "rsuite-utils@^2.0.0",
+  "_id": "rsuite-utils@2.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-OgGPegeMzytuSdicYd1Vjc2pvh4QevlSQ2NMLyFeb24LJOYWGMUTakHAwUwGfgw3IvSKgpTlWWAhAoLH+V86sQ==",
+  "_location": "/rsuite-utils",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "rsuite-utils@^2.0.0",
+    "name": "rsuite-utils",
+    "escapedName": "rsuite-utils",
+    "rawSpec": "^2.0.0",
+    "saveSpec": null,
+    "fetchSpec": "^2.0.0"
+  },
+  "_requiredBy": [
+    "/rsuite"
+  ],
+  "_resolved": "https://registry.npmjs.org/rsuite-utils/-/rsuite-utils-2.0.0.tgz",
+  "_shasum": "a0d1dd56b21a3a9d55a4404be51868cc2ca15929",
+  "_spec": "rsuite-utils@^2.0.0",
+  "_where": "/home/pablotr9/Desktop/Wazuh/wazuh-splunk3.10/wazuh-splunk/node_modules/rsuite",
+  "author": {
+    "name": "Simon Guo",
+    "email": "simonguo.2009@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/rsuite/rsuite-utils/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "dom-lib": "^1.1.0",
+    "lodash": "^4.17.5",
+    "react-lifecycles-compat": "^3.0.4"
+  },
+  "deprecated": false,
+  "description": "RSUITE Utils",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.7.6",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-flow-react-proptypes": "^14.0.3",
+    "babel-plugin-lodash": "^3.3.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-react-flow-handled-props": "^0.1.7",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "brfs": "^1.4.3",
+    "chai": "^3.5.0",
+    "css-loader": "^0.28.4",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-flowtype": "^2.41.0",
+    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.10.0",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "file-loader": "^0.11.2",
+    "flow-bin": "^0.63.1",
+    "gh-pages": "^1.1.0",
+    "html-webpack-plugin": "^2.29.0",
+    "karma": "^1.1.1",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-cli": "^1.0.1",
+    "karma-coverage": "^1.1.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-mocha": "^1.1.1",
+    "karma-mocha-reporter": "^2.0.4",
+    "karma-sinon-chai": "^1.2.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "2.0.3",
+    "less-loader": "^4.0.5",
+    "mocha": "^2.5.3",
+    "react": "^16.4.2",
+    "react-addons-test-utils": "^15.4.0",
+    "react-dom": "^16.4.2",
+    "react-hot-loader": "^3.1.3",
+    "rsuite-theme": "^2.0.10",
+    "sinon": "^4.1.2",
+    "sinon-chai": "^2.8.0",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.3.0"
+  },
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "CHANGELOG.md",
+    "lib",
+    "src"
+  ],
+  "homepage": "https://github.com/rsuite/rsuite-utils#readme",
+  "keywords": [
+    "react",
+    "rsuite",
+    "utils"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "name": "rsuite-utils",
+  "peerDependencies": {
+    "react": "^0.14.9 || >=15.3.0",
+    "react-dom": "^0.14.9 || >=15.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/rsuite/rsuite-utils.git"
+  },
+  "scripts": {
+    "build": "rm -rf lib && npx babel src --out-dir lib ",
+    "dev": "NODE_ENV=development webpack-dev-server  --inline --progress --colors --port 3100 --host 0.0.0.0 ",
+    "docs": "rm -rf assets &&  NODE_ENV=production webpack",
+    "flow": "flow",
+    "lint": "eslint src  *.js",
+    "prepublish": "npm run test && npm run build",
+    "publish-docs": "node docs/gh-pages.js",
+    "tdd": "karma start",
+    "test": "npm run lint &&  karma start --single-run"
+  },
+  "version": "2.0.0"
+}

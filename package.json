@@ -14,6 +14,7 @@
     "@elastic/eui": "^13.8.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "rsuite": "^4.0.0",
     "styled-components": "^3.4.10"
   },
   "devDependencies": {

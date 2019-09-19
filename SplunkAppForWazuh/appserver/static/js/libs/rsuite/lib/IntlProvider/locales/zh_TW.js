@@ -1,0 +1,12 @@
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _zh_CN = _interopRequireDefault(require("./zh_CN"));
+
+var _default = _zh_CN.default;
+exports.default = _default;
+module.exports = exports.default;
