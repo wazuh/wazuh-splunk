@@ -53,7 +53,7 @@ $scope.modulesInfo = {
     {"title" : "Default Unix configuration",
      "content" : "<test> syscheck </test>"}
     ],
-    "buttons" : [{"text": "Add a new directory","id":"add_new_dir"},{"text":"Module configuration", "id":"options"}],
+    //"buttons" : [{"text": "Add a new directory","id":"add_new_dir"},{"text":"Module configuration", "id":"options"}],
     "add_new_dir": [
       { "name" : "directories",
       "description" : `Use this option to add or remove directories to be monitored. The directories must be comma separated.
@@ -87,59 +87,7 @@ $scope.modulesInfo = {
     All files and subdirectories within the noted directories will also be monitored.              
     Drive letters without directories are not valid. At a minimum the ‘.’ should be included (D:\.).
     This is to be set on the system to be monitored (or in the agent.conf, if appropriate).`,
-    "type" : "multiple-value",
-    "value": "",
-    "required" : true,
-    "extraAttr" : {
-      "realtime" : { "default" : false, "type":"switch" },
-      "whodata" :{ "default" : false, "type":"switch"},
-      "report_changes" :{ "default" : false, "type":"switch"},
-      "check_all": { "default" : true },
-      "check_sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_sha1sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_md5sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_sha256sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_size" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_owner" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_group" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_perm" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_mtime" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_inode" :{ "default" : false, "requirement": "check_all", "type":"switch"},
-      "follow_symbolic_link" :{ "default" : false, "type":"switch"},
-    }
-    },
-    { "name" : "directories1",
-    "description" : `Use this option to add or remove directories to be monitored. The directories must be comma separated.
-    All files and subdirectories within the noted directories will also be monitored.              
-    Drive letters without directories are not valid. At a minimum the ‘.’ should be included (D:\.).
-    This is to be set on the system to be monitored (or in the agent.conf, if appropriate).`,
     "type" : "list",
-    "value": "",
-    "required" : true,
-    "extraAttr" : {
-      "realtime" : { "default" : false, "type":"switch" },
-      "whodata" :{ "default" : false, "type":"switch"},
-      "report_changes" :{ "default" : false, "type":"switch"},
-      "check_all": { "default" : true },
-      "check_sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_sha1sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_md5sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_sha256sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_size" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_owner" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_group" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_perm" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_mtime" : { "default" : false, "requirement": "check_all", "type":"switch"},
-      "check_inode" :{ "default" : false, "requirement": "check_all", "type":"switch"},
-      "follow_symbolic_link" :{ "default" : false, "type":"switch"},
-    }
-    },
-    { "name" : "directories2",
-    "description" : `Use this option to add or remove directories to be monitored. The directories must be comma separated.
-    All files and subdirectories within the noted directories will also be monitored.              
-    Drive letters without directories are not valid. At a minimum the ‘.’ should be included (D:\.).
-    This is to be set on the system to be monitored (or in the agent.conf, if appropriate).`,
-    "type" : "input",
     "value": "",
     "required" : true,
     "extraAttr" : {

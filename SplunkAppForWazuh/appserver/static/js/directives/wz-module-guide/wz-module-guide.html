@@ -36,11 +36,11 @@
                 </button>
               </div>
             </div>
-            <div layout="row" ng-repeat="option in getCurrentModuleOptions()" ng-if="option.required" style="padding-top:10px; ">  <!-- Iterate all options of selected configuration -->
-              <span style="min-width:35%;">  
+            <div layout="row" ng-repeat="option in getCurrentModuleOptions()" ng-if="option.required" style="padding-top:10px;">  <!-- Iterate all options of selected configuration -->
+              <span style="min-width:35%; max-width:35%;">  
                   <!-- Top tooltip-->
                   <div class="con-wz-tooltip-guide right">
-                    <p> {{option.name}}: </p>
+                      <p class="font-size-17"> {{option.name}}: &nbsp;</p>
                     <div class="wz-tooltip-guide ">
                       <p style="color:white;">{{option.description}}</p>
                     </div>
@@ -48,30 +48,31 @@
 
                   <a md-no-ink class="wz-link" ng-click="openExtraAttr(option)" ng-show="option.extraAttr">
                     <i class="fa fa-fw fa-cog" aria-hidden="true"></i>
-                    <md-tooltip md-direction="left" class="wz-tooltip">
-                      Open attributes list
-                    </md-tooltip>
                   </a>
-                  <div ng-show="showExtraAttr(option)" style="padding: 15px; min-width:35%; border-radius: 10px; border: 1px solid #c9cbcd; position:absolute; background-color:rgb(255, 255, 255); z-index: 102;">
-                    <div ng-repeat="(key,value) in option.extraAttr"  layout="row" style="height: 25px;" > <!-- Extra attributes-->
-                        <span style="width: 72%;">{{key}}  &nbsp;&nbsp;</span>
-                        <label  class="guide-switch">
-                            <input ng-checked="value.default"  id="{{option.name}}-{{key}}" type="checkbox">
-                            <span class="guide-slider round"></span>
-                        </label>
+                  <div ng-show="showExtraAttr(option)" style="height: 1px !important;">
+                    <div  style="z-index: 110; padding: 15px; min-width:35%; border-radius: 10px; border: 1px solid #c9cbcd; position:relative; background-color:rgb(255, 255, 255);" >
+                      <span><strong>Extra attributes for {{option.name}}:</strong></span>
+                      <span>&nbsp;</span>
+                      <div ng-repeat="(key,value) in option.extraAttr"  layout="row"> <!-- Extra attributes-->
+                          <span style="width: 72%;">{{key}}  &nbsp;&nbsp;</span>
+                          <label  class="guide-switch">
+                              <input ng-checked="value.default"  id="{{option.name}}-{{key}}" type="checkbox">
+                              <span class="guide-slider round"></span>
+                          </label>
+                      </div>
                     </div>
                   </div>
               </span>
 
 
-              <div ng-if="option.type === 'multiple-value'" style="width:100%;"> <!-- input type -->
+              <!-- <div ng-if="option.type === 'multiple-value'" style="width:100%;"> 
                 <input flex  id="{{option.name}}" type="text" ng-model="option.value" placeholder="{{option.default_value}}" wz-enter="addItem(option.name,option.value)"
                 class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40" style="width:100%;"
                 aria-invalid="false">
                 <div id="{{option.name}}-list">
 
                 </div>
-              </div>
+              </div>-->
 
               <div ng-if="option.type === 'input'" style="width:100%;"> <!-- input type -->
                 <input flex  id="{{option.name}}" type="text" placeholder="{{option.default_value}}"
@@ -93,7 +94,7 @@
               </div>
               
               <div ng-if="option.type === 'list'" style="width:100%;"> <!-- Area text type -->
-                <textarea id='{{option.name}}' style="width:100%;" placeholder="One entry per line"></textarea>
+                <textarea id='{{option.name}}' style="width:100%;height:100px;" placeholder="One entry per line"></textarea>
               </div>
               
             </div>
@@ -101,11 +102,11 @@
               <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="!showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px;" >Show advanced options</span>
               <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px;" >Close advanced options</span>
             </div>
-            <div layout="row" ng-repeat="option in getCurrentModuleOptions()" ng-if="!option.required && showAdvancedOptions" style="padding-top:10px;padding-left:15px; background-color: #80808007;">  <!-- Iterate all options of selected configuration -->
+            <div layout="row" ng-repeat="option in getCurrentModuleOptions()" ng-if="!option.required && showAdvancedOptions" style="padding-top:10px">  <!-- Iterate all options of selected configuration -->
               <span style="min-width:35%;">  
                   <!-- Top tooltip-->
                   <div class="con-wz-tooltip-guide right">
-                    <p> {{option.name}}: </p> 
+                    <p class="font-size-17"> {{option.name}}: </p> 
                     <div class="wz-tooltip-guide ">
                       <p style="color:white;">{{option.description}}</p>
                     </div>
@@ -130,7 +131,7 @@
               </div>
               
               <div ng-if="option.type === 'list'" style="width:100%;"> <!-- Area text type -->
-                <textarea id='{{option.name}}' style="width:100%;" placeholder="One entry per line"></textarea>
+                <textarea id='{{option.name}}' style="width:100%;height:100px;" placeholder="One entry per line"></textarea>
               </div>
               
             </div>
