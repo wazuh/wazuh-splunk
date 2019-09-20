@@ -22,8 +22,8 @@ define(['../module'], function(directives) {
       },
       controller($scope, $state) {
 
-        $scope.sendToGroup = (group) => {
-          const groupObject = {name:group}
+        $scope.sendToGroup = (group, moduleName) => {
+          const groupObject = {name:group, moduleName}
           $state.go(`mg-groups`, { openConfig:groupObject })
         }
         

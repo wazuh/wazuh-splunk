@@ -911,7 +911,7 @@ kbn-vis .vis-container {
 
 .euiCallOut--info {
   border-color: #096317 !important;
-  background-color: #30823869;
+  background-color: #3082383b;;
   font-weight: 500;
   padding: 12px !important;
 }
@@ -2535,3 +2535,6 @@ input:checked + .guide-slider:before {
   border-radius: 50%;
 }
 
+.wz-width-60p {
+  width: 60%;
+}

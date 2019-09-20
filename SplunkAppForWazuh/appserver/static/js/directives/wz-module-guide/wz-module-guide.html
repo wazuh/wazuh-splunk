@@ -14,7 +14,7 @@
         </div>
         <div class="border-to-div wz-margin-top-10"> <!-- Select configuration -->
           <div class="step-margin">
-            <select ng-options="n.name for n in modulesList" ng-model="currentModule" ng-change="resetOptions()" ng-init="currentModule=modulesList[0]"
+            <select ng-options="n.name for n in modulesInfo" ng-model="currentModule" ng-change="resetOptions()" ng-init="currentModule= modulesInfo[initialModule] || modulesInfo['syscheck']"
               style="margin-left:5px;" class="input input-dropdown wz-button-empty wz-width-100p" >
             </select>
           </div>

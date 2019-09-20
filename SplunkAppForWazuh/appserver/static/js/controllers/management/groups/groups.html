@@ -1,4 +1,6 @@
-<div flex layout="column" class="mozilla-table-size-85 wz-white-background" ng-class="{'cursor-wait': multipleSelectorLoading}">
+<div layout="row">
+
+  <div flex layout="column" class="mozilla-table-size-85 wz-white-background" ng-class="{'cursor-wait': multipleSelectorLoading}">
   <md-content flex layout="column" class="overflow-hidden wz-white-background">
     <div layout="row" class="layout-row layout-align-end wz-white-background">
       <div class='wz-breadcrumb-margin'>
@@ -65,8 +67,11 @@
             <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
               XML format error</span>
           </button>
+          <span flex=""></span>
+          <button ng-click='switchSideNav()' class='btn wz-button-cancel'>How to configure a module</button>
+
         </div>
-        <div class="wzXmlEditorDivContent" ng-if="fetchedXML">
+        <div class="wzXmlEditorDivContent" ng-class="{'wz-width-100p': isShowingSidebar }" ng-if="fetchedXML">
           <wz-xml-file-editor style="height: inherit;" file-name='agent.conf' data="fetchedXML" target-name="currentGroup.name"
             valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
           </wz-xml-file-editor>
@@ -231,4 +236,7 @@
     </div>
 </div>
 </md-content>
+<md-sidenav ng-show="isShowingSidebar" style="min-width: 40%;" class="md-sidenav-right" md-is-locked-open="true">
+    <wz-module-guide initial-module="moduleName"></wz-module-guide>
+</md-sidenav>
 </div>

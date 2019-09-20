@@ -45,6 +45,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.editingFile = false
       this.scope.loadingRing = false
       this.scope.exportConfig = false
+      this.scope.isShowingSidebar = false
       this.scope.selectedOptions = {
         groupConf: true,
         agentsList: true
@@ -220,12 +221,15 @@ define(['../../module', 'FileSaver'], function(controllers) {
           }
         }
         if (this.stateParams.openConfig) {
-          console.log(this.stateParams.openConfig)
           this.loadGroup(this.stateParams.openConfig)
           this.scope.currentGroup = {}
-          this.scope.currentGroup.name = this.stateParams.openConfig
+          this.scope.currentGroup.name = this.stateParams.openConfig.name
           this.goBackFiles()
-          this.fetchFile()
+          this.editGroupAgentConfig()
+          this.scope.isShowingSidebar = true
+          this.scope.moduleName = this.stateParams.openConfig.moduleName
+          this.scope.$applyAsync() 
+
         }
 
         this.scope.reload = (element, searchTerm, addOffset, start) =>
@@ -240,6 +244,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.addMultipleAgents = toggle => this.addMultipleAgents(toggle)
 
         this.scope.getItemsToSave = () => this.getItemsToSave()
+        this.scope.switchSideNav = () => this.switchSideNav()
 
         this.scope.saveAddAgents = () => this.saveAddAgents()
 
@@ -697,6 +702,11 @@ define(['../../module', 'FileSaver'], function(controllers) {
         throw new Error(error.message || error)
       }
     }
+
+    switchSideNav() {
+      this.scope.isShowingSidebar = !this.scope.isShowingSidebar
+    }
+
 
     checkLimit() {
       if (this.scope.firstSelectedList) {
