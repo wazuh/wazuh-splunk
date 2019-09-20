@@ -2,6 +2,8 @@
   <div layout="column">
     <div layout="row">
       <h3 class="wz-font-size-20 wz-margin-top-30">How to configure a module</h3>
+      <span flex=""></span>
+      <wz-svg class="wz-font-size-20 wz-margin-top-30" style="margin-right:30px;" icon="cross" ng-click="closeSideNav()"></wz-svg>
     </div><!--First row -->
 
     <md-divider class="wz-margin-top-4 wz-margin-bottom-10"></md-divider>
@@ -40,25 +42,32 @@
               <span style="min-width:35%; max-width:35%;">  
                   <!-- Top tooltip-->
                   <div class="con-wz-tooltip-guide right">
-                      <p class="font-size-17"> {{option.name}}: &nbsp;</p>
+                      <p class="font-size-17"> {{option.name}}:</p>
                     <div class="wz-tooltip-guide ">
                       <p style="color:white;">{{option.description}}</p>
                     </div>
                   </div>
 
-                  <a md-no-ink class="wz-link" ng-click="openExtraAttr(option)" ng-show="option.extraAttr">
-                    <i class="fa fa-fw fa-cog" aria-hidden="true"></i>
+                  <a md-no-ink class="wz-link" style="text-decoration: none !important;" ng-click="openExtraAttr(option)" ng-show="option.extraAttr">
+                    &nbsp;&nbsp;<i class="fa fa-fw fa-cog" aria-hidden="true"></i>
                   </a>
                   <div ng-show="showExtraAttr(option)" style="height: 1px !important;">
                     <div  style="z-index: 110; padding: 15px; min-width:35%; border-radius: 10px; border: 1px solid #c9cbcd; position:relative; background-color:rgb(255, 255, 255);" >
                       <span><strong>Extra attributes for {{option.name}}:</strong></span>
                       <span>&nbsp;</span>
                       <div ng-repeat="(key,value) in option.extraAttr"  layout="row"> <!-- Extra attributes-->
-                          <span style="width: 72%;">{{key}}  &nbsp;&nbsp;</span>
+                        <div ng-if="value.type === 'switch'">
                           <label  class="guide-switch">
                               <input ng-checked="value.default"  id="{{option.name}}-{{key}}" type="checkbox">
                               <span class="guide-slider round"></span>
                           </label>
+                          <span style="width: 72%;">{{key}} </span>
+                        </div>
+                        <div layout="row" ng-if="value.type === 'input'">
+                          <input flex  id="{{option.name}}-{{key}}" type="text" placeholder="{{key}}"
+                          style="width:100%;"
+                          aria-invalid="false">
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -147,6 +156,13 @@
         </div>
 
         <div ng-show="configurationGenerated" class="border-to-div wz-margin-top-10">
+
+        <div ng-show="currentModule.extraSteps" flex class="euiCallOut euiCallOut--info">
+            <div class="euiCallOutHeader">
+                <i class="fa fa-fw fa-info-circle"></i>
+              <span class="euiCallOutHeader__title wz-pre-line">{{currentModule.extraSteps}}</span>
+            </div>
+          </div>
           <div layout="column"> 
             <div style="margin-top:10px;"></div>
             <pre id="codeBlock" flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="font-size: 12px; background-color: rgba(255, 255, 255); max-height: fit-content !important; ">{{configurationBlock}}</pre>

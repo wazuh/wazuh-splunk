@@ -2538,3 +2538,7 @@ input:checked + .guide-slider:before {
 .wz-width-60p {
   width: 60%;
 }
+
+.wz-pre-line {
+  white-space: pre-line;
+}

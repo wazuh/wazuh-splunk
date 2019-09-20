@@ -336,7 +336,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
      */
     async loadGroup(group, firstLoad) {
       this.scope.load = true
-      console.log(group)
       try {
         if (!firstLoad) this.scope.lookingGroup = true
         const count = await this.apiReq(`/agents/groups/${group.name}/files`, {
@@ -348,7 +347,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.mainGroup = group
         this.scope.$applyAsync()
       } catch (error) {
-        console.log(error)
         this.notification.showErrorToast('Cannot load group data')
       }
       this.scope.load = false
@@ -730,6 +728,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
 
     closeEditingFile() {
       this.scope.editingFile = false
+      this.scope.isShowingSidebar = false
       this.scope.$applyAsync()
     }
 
@@ -843,7 +842,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
             : false
         ]
       }
-      console.log(data)
 
       if (!this.scope.loadingReporting)
         this.reportingService.reportGroupConfiguration(

@@ -16,7 +16,8 @@ define(['../module'], function(directives) {
     return {
       restrict: 'E',
       scope: {
-        initialModule: '=initialModule'
+        initialModule: '=initialModule',
+        closeSideNav: '&closeSideNav'
       },
       controller($scope) {
         $scope.showOptionsTab = true
@@ -26,25 +27,7 @@ define(['../module'], function(directives) {
         $scope.directories = ""
         $scope.frequency = ""
         $scope.configurationBlock = ""
-/**
-        {"id":"rootcheck",
-        "name": "Rootcheck",
-        "description" : "Configuration options for policy monitoring and anomaly detection.",
-        "default_configuration": [
-          {"title" : "Default Unix configuration",
-           "content" : `<!-- Policy monitoring -->
-<rootcheck>
-<disabled>no</disabled>
-<directories>/var</disabled>
-<frequency>1h</frequency>
-</rootcheck>`}
-          ],
-        "options": [
-          { "name" : "base_directory",
-            "description" : "The base directory that will be prepended to the following options: rootkit_files , rootkit_trojans and system_audit" }
-          ]
-        },
- */
+
 
 $scope.modulesInfo = {
   "syscheck" :  {"id":"syscheck",
@@ -53,34 +36,6 @@ $scope.modulesInfo = {
   "default_configuration": [
     {"title" : "Default Unix configuration",
      "content" : "<test> syscheck </test>"}
-    ],
-    //"buttons" : [{"text": "Add a new directory","id":"add_new_dir"},{"text":"Module configuration", "id":"options"}],
-    "add_new_dir": [
-      { "name" : "directories",
-      "description" : `Use this option to add or remove directories to be monitored. The directories must be comma separated.
-      All files and subdirectories within the noted directories will also be monitored.              
-      Drive letters without directories are not valid. At a minimum the ‘.’ should be included (D:\.).
-      This is to be set on the system to be monitored (or in the agent.conf, if appropriate).`,
-      "type" : "input",
-      "required" : true,
-      "extraAttr" : {
-        "realtime" : { "default" : false, "type":"switch" },
-        "whodata" :{ "default" : false, "type":"switch"},
-        "report_changes" :{ "default" : false, "type":"switch"},
-        "check_all": { "default" : true },
-        "check_sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_sha1sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_md5sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_sha256sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_size" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_owner" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_group" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_perm" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_mtime" : { "default" : false, "requirement": "check_all", "type":"switch"},
-        "check_inode" :{ "default" : false, "requirement": "check_all", "type":"switch"},
-        "follow_symbolic_link" :{ "default" : false, "type":"switch"},
-      }
-      }
     ],
   "options": [
     { "name" : "directories",
@@ -95,7 +50,7 @@ $scope.modulesInfo = {
       "realtime" : { "default" : false, "type":"switch" },
       "whodata" :{ "default" : false, "type":"switch"},
       "report_changes" :{ "default" : false, "type":"switch"},
-      "check_all": { "default" : true },
+      "check_all": { "default" : true ,"type":"switch" },
       "check_sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
       "check_sha1sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
       "check_md5sum" : { "default" : false, "requirement": "check_all", "type":"switch"},
@@ -107,6 +62,9 @@ $scope.modulesInfo = {
       "check_mtime" : { "default" : false, "requirement": "check_all", "type":"switch"},
       "check_inode" :{ "default" : false, "requirement": "check_all", "type":"switch"},
       "follow_symbolic_link" :{ "default" : false, "type":"switch"},
+      "restrict" :{  "type":"input"},
+      "tags" :{ "type":"input"},
+      "recursion_level" :{ "type":"input"},
     }
     },
     { "name" : "ignore",
@@ -199,6 +157,11 @@ $scope.modulesInfo = {
   "wodle_command": {"id":"wodle_command",
   "isWodle" : true,
   "name": "Command wodle",
+  "extraSteps": `Remote commands may be specified in the centralized configuration, however, they are disabled by default due to security reasons.
+  When setting commands in a shared agent configuration, you must enable remote commands for Agent Modules.
+  This is enabled by adding the following line to the file etc/local_internal_options.conf in the agent:
+  
+  wazuh_command.remote_commands=1`,
   "description" : "Configuration options of the Command wodle.",
     "options": [
       { "name" : "disabled",
@@ -250,6 +213,12 @@ $scope.modulesInfo = {
     description: 'Configuration options of the Docker wodle.',
     options: [
       {
+        name: 'disabled',
+        description: `Disable the Docker wodle.`,
+        type: 'switch',
+        required: true
+      },
+      {
         name: 'interval',
         description: `Waiting time to rerun the wodle in case it fails.`,
         type: 'input',
@@ -265,14 +234,8 @@ $scope.modulesInfo = {
         name: 'run_on_start',
         description: `Run command immediately when service is started.`,
         type: 'switch',
-        required: true
+        required: true,
       },
-      {
-        name: 'disabled',
-        description: `Disable the Docker wodle.`,
-        type: 'switch',
-        required: true
-      }
     ]
   },
   osquery: {
@@ -326,17 +289,26 @@ $scope.modulesInfo = {
         type: 'input',
         required: true,
         extraAttr: {
-          name: { value: "custom_pack", type: 'input' }
+          "name" : {  "type":"input" },
         }
       }
     ]
   }
 }
 
+
+        /**
+         *  Hide/Show advanced options
+         * */
         $scope.switchAdvancedOptions = () => {
           $scope.showAdvancedOptions = !$scope.showAdvancedOptions
         }
 
+
+
+        /**
+         *  Show extra attributes popover
+         * */
         $scope.openExtraAttr = (option) => {
           if($scope[option.name]){
             $scope[option.name] = !$scope[option.name]
@@ -349,33 +321,40 @@ $scope.modulesInfo = {
           return $scope[option.name]
         }
 
-        $scope.switchOptions = (buttonId) => {
-          $scope.showOptions = buttonId
-        }
 
-
-        $scope.addItem = (optionName,text) => {
-          const listDOMelement = $(`#${optionName}-list`)
-          listDOMelement.append( `<p>${text}</p>` )
-          $(`#${optionName}`).val('')
-        }
-
+        /**
+         * Closes open popovers and resets the configuration block 
+         */
         $scope.resetOptions = () => {
           $scope.showOptions = "options"
+          $scope.configurationBlock = ""
+          $scope.configurationGenerated = false
         }
 
+        /**
+         *  Returns the object of the current selected module 
+         * */
         $scope.getCurrentModuleOptions = () => {
           return $scope.modulesInfo[$scope.currentModule.id][$scope.showOptions]
         }
         
+
         $scope.getCurrentModuleButtons = () => {
           return $scope.modulesInfo[$scope.currentModule.id].buttons
         }
 
+
+        /**
+         *  Generates the configuration block
+         * */
         $scope.generateConfig = () => {
           
           $scope.configurationGenerated = true
-          var outputBlock = `<${$scope.currentModule.id}>`
+          if($scope.currentModule.isWodle){
+            var outputBlock = `<wodle name="${$scope.currentModule.id}">`
+          }else{
+            var outputBlock = `<${$scope.currentModule.id}>`
+          }
           const moduleOptions = $scope.getCurrentModuleOptions()
           for(var option in moduleOptions){
             const currentOption = moduleOptions[option]
@@ -391,18 +370,7 @@ $scope.modulesInfo = {
             }else if(currentOption.type === "input"){ // Input
               const tmpValue = optionDOMelement.val()
               if (tmpValue){
-                let extraAttributes = ""
-                if(currentOption.extraAttr){ // add extra attributes 
-                  for(var attrKey in currentOption.extraAttr){
-                    const attrDefaultValue = currentOption.extraAttr[attrKey].default
-                    const currentAttrDomElement = $(`#${currentOption.name}-${attrKey}`)
-                    const selectedAttrValue = currentAttrDomElement.is(":checked")
-
-                    if(attrDefaultValue !== selectedAttrValue){ // Add attribute only if its value is different from default value
-                      extraAttributes += ` ${attrKey}="${selectedAttrValue ? 'yes' : 'no'}"`
-                    }
-                  }
-                }
+                let extraAttributes = $scope.getExtraAttr(currentOption)
                 outputBlock += `\n\t<${currentOption.name}${extraAttributes}>${tmpValue}</${currentOption.name}>`
               }
 
@@ -412,18 +380,7 @@ $scope.modulesInfo = {
                 const tmpValuesList = tmpValue.split("\n")
                 for(var i=0; i<tmpValuesList.length; i++){
                   if(tmpValuesList[i]){
-                    let extraAttributes = ""
-                    if(currentOption.extraAttr){ // add extra attributes 
-                      for(var attrKey in currentOption.extraAttr){
-                        const attrDefaultValue = currentOption.extraAttr[attrKey].default
-                        const currentAttrDomElement = $(`#${currentOption.name}-${attrKey}`)
-                        const selectedAttrValue = currentAttrDomElement.is(":checked")
-
-                        if(attrDefaultValue !== selectedAttrValue){ // Add attribute only if its value is different from default value
-                          extraAttributes += ` ${attrKey}="${selectedAttrValue ? 'yes' : 'no'}"`
-                        }
-                      }
-                    }
+                    let extraAttributes = $scope.getExtraAttr(currentOption)
                     outputBlock += `\n\t<${currentOption.name}${extraAttributes}>${tmpValuesList[i]}</${currentOption.name}>`
                   }
                 }
@@ -437,12 +394,15 @@ $scope.modulesInfo = {
             }
 
           }
-          outputBlock += `\n</${$scope.currentModule.id}>`
+          if($scope.currentModule.isWodle){
+            outputBlock += `\n</wodle>`
+          }else{
+            outputBlock += `\n</${$scope.currentModule.id}>`
+          }
           $scope.configurationBlock = outputBlock
           $scope.$applyAsync()
 
-          setTimeout(() => {
-            //var blockHeight = $('#codeBlock').offset().top
+          setTimeout(() => { //scroll current page to bottom (make the configuration block visible when button is clicked)
             $('#sideNav').animate({
                 scrollTop: 9999
             }, 450);
@@ -450,16 +410,35 @@ $scope.modulesInfo = {
           
         }
 
-       
+        $scope.getExtraAttr = (currentOption) => {
+          let extraAttributes = ""
 
-        $scope.showConfig = () => {
-          $scope.showOptionsTab = false
-          $scope.showConfigTab = true
-          $scope.$applyAsync()
+          if(currentOption.extraAttr){ // add extra attributes 
+            for(var attrKey in currentOption.extraAttr){
+              const attrDefaultValue = currentOption.extraAttr[attrKey].default
+              const currentAttrDomElement = $(`#${currentOption.name}-${attrKey}`)
+              let selectedAttrValue = ""
+              if(currentOption.extraAttr[attrKey].type === 'switch')
+                selectedAttrValue = currentAttrDomElement.is(":checked")
+              else if(currentOption.extraAttr[attrKey].type === 'input'){
+                selectedAttrValue = currentAttrDomElement.val()
+              }
+
+              if(attrDefaultValue !== selectedAttrValue && selectedAttrValue !== ""){ // Add attribute only if its value is different from default value
+                if(currentOption.extraAttr[attrKey].type === 'switch'){
+                  extraAttributes += ` ${attrKey}="${selectedAttrValue? 'yes' : 'no'}"` 
+                }
+                else{
+                  extraAttributes += ` ${attrKey}="${selectedAttrValue}"`
+                }
+              }
+            }
+          }
+
+          return extraAttributes
         }
 
         $scope.currentModule = $scope.modulesInfo['syscheck']
-
       },
       templateUrl:
         BASE_URL +

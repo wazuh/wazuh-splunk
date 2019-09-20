@@ -68,8 +68,9 @@
               XML format error</span>
           </button>
           <span flex=""></span>
-          <button ng-click='switchSideNav()' class='btn wz-button-cancel'>How to configure a module</button>
-
+          <span ng-show="!isShowingSidebar">
+            <button ng-click='switchSideNav()' class='btn wz-button-cancel'>How to configure a module</button>
+          </span>
         </div>
         <div class="wzXmlEditorDivContent" ng-class="{'wz-width-100p': isShowingSidebar }" ng-if="fetchedXML">
           <wz-xml-file-editor style="height: inherit;" file-name='agent.conf' data="fetchedXML" target-name="currentGroup.name"
@@ -237,6 +238,6 @@
 </div>
 </md-content>
 <md-sidenav ng-show="isShowingSidebar" style="min-width: 40%;" class="md-sidenav-right" md-is-locked-open="true">
-    <wz-module-guide initial-module="moduleName"></wz-module-guide>
+    <wz-module-guide initial-module="moduleName" close-side-nav="switchSideNav()"></wz-module-guide>
 </md-sidenav>
 </div>
