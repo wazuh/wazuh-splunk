@@ -34,6 +34,7 @@ define(['../module','Dropzone'], function(app,Dropzone) {
           maxFiles: 5,
           previewTemplate: previewTemplate,
           previewsContainer: "#previews",
+          acceptedFiles: '.xml'
         })
 
 
@@ -73,6 +74,9 @@ define(['../module','Dropzone'], function(app,Dropzone) {
                 errorMessage += "unknown error";
             }
         });
+        $scope.myDropzone.on("success", function (file) {
+          console.log(file.previewElement.innerHTML())
+      });
         $scope.myDropzone.on("removedfile", function (file) {
           if($scope.myDropzone.files.length === 0){
             $scope.noFilesAdded = true
