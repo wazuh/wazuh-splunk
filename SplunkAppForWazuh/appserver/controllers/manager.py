@@ -515,6 +515,7 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['POST'])
     def upload_file(self, **kwargs):
+        # Only rules files are uploaded currently
         self.logger.debug("manager: Uploading file(s)")
         try:
             # Get file name and file content
@@ -551,7 +552,12 @@ class manager(controllers.BaseController):
                     return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
                 return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
             else:
-                self.logger.info("no")
+                result = self.session.post(
+                    url + '/manager/files?path=etc/rules/'+file_name, data=file_content, headers= {"Content-type": "application/xml"}, auth=auth, timeout=20, verify=verify)
+                result = jsonbak.loads(result.text)
+                if 'error' in result and result['error'] != 0:
+                    return jsonbak.dumps({"status": "400", "text": "Error addixng file: %s. Cause: %s" % (file_name,result["message"])})
+                return jsonbak.dumps({"status": "200", "text": "File %s was updaxted successfully. " % file_name})
         except Exception as e:
             self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
         return jsonbak.dumps({"status": "200", "error": "File added successfully"})
