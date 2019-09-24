@@ -16,9 +16,11 @@ define(['../module','Dropzone'], function(app,Dropzone) {
     return {
       restrict: 'E',
       scope: {
-        uploadTitle: '@uploadTitle'
+        uploadTitle: '@uploadTitle',
+        allowedExtensions: '=allowedExtensions',
+        refreshList: '&',
       },
-      controller($scope) {
+      controller($scope,$currentDataService) {
         $scope.noFilesAdded = true
         var previewNode = document.querySelector("#template");
         previewNode.id = "";
@@ -27,16 +29,19 @@ define(['../module','Dropzone'], function(app,Dropzone) {
           previewNode.parentNode.innerHTML = ""
         }, 250)
 
+        const apiId = $currentDataService.getApi()
+        const currentApi = apiId['_key']
+
         $scope.myDropzone = new Dropzone("#myDropzone",{
-          url: "en-us/custom/SplunkAppForWazuh//manager/upload_file",
+          url: `en-us/custom/SplunkAppForWazuh//manager/upload_file?apiId=${currentApi}`,
           autoProcessQueue: false,
           parallelUploads: 5,
           maxFiles: 5,
           previewTemplate: previewTemplate,
           previewsContainer: "#previews",
-          acceptedFiles: '.xml'
+          acceptedFiles: $scope.allowedExtensions
         })
-
+        
 
         $scope.removeAllFiles = () => {
           var elem = document.getElementById("uploadProgressBar")
@@ -65,6 +70,34 @@ define(['../module','Dropzone'], function(app,Dropzone) {
               }
             }            
           }
+          $scope.myDropzone.on("success", function (file, message) {
+            message = JSON.parse(message)
+            if (file.previewElement) {
+              file.previewElement.classList.add("dz-error");
+              
+              for (var _iterator7 = file.previewElement.querySelectorAll("[data-dz-errormessage]"), _isArray7 = Array.isArray(_iterator7), _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : _iterator7[Symbol.iterator]();;) {
+                var _ref6;
+  
+                if (_isArray7) {
+                  if (_i7 >= _iterator7.length) break;
+                  _ref6 = _iterator7[_i7++];
+                } else {
+                  _i7 = _iterator7.next();
+                  if (_i7.done) break;
+                  _ref6 = _i7.value;
+                }
+  
+                var node = _ref6;
+                
+                if(message.status === "200"){
+                  node.classList.add("wz-success-message");
+                }else{
+                  node.classList.add("wz-error-message");
+                }
+                node.textContent = message.text || "Unknown error";
+              }
+            }
+        });
 
           $scope.myDropzone.on("error", function (file, jsonResponse) {
             var errorMessage = "Could not upload document: ";
@@ -74,9 +107,7 @@ define(['../module','Dropzone'], function(app,Dropzone) {
                 errorMessage += "unknown error";
             }
         });
-        $scope.myDropzone.on("success", function (file) {
-          console.log(file.previewElement.innerHTML())
-      });
+
         $scope.myDropzone.on("removedfile", function (file) {
           if($scope.myDropzone.files.length === 0){
             $scope.noFilesAdded = true

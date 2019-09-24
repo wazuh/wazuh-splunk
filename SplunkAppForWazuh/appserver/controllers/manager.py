@@ -13,6 +13,7 @@ Find more information about this on the LICENSE file.
 """
 
 
+from . import api
 import jsonbak
 import requestsbak
 import uuid
@@ -74,21 +75,11 @@ class manager(controllers.BaseController):
             self.db = database()
             self.config =  self.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
+            self.wazuh_api = api.api()
             self.session = requestsbak.Session()            
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("manager: Error in manager module constructor: %s" % (e))
-
-    @expose_page(must_login=False, methods=['POST'])
-    def upload_file(self, **kwargs):
-        self.logger.debug("manager: Uploading file(s)")
-        try:
-            ## TODO
-            self.logger.info(kwargs)
-        except Exception as e:
-            self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
-
-
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
@@ -521,6 +512,52 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("manager: Error checking daemons: %s" % (e))
             raise e
+
+    @expose_page(must_login=False, methods=['POST'])
+    def upload_file(self, **kwargs):
+        self.logger.debug("manager: Uploading file(s)")
+        try:
+            # Get file name and file content
+            split_file = str(kwargs["file"]).split('\', \'')
+            file_name = split_file[1]
+            file_content = split_file[2]
+            file_content = file_content[:len(file_content)-2]
+            file_content = file_content.replace('\n','')
+            file_content = file_content.replace('\\n','')
+            # Get current API data
+            opt_id = kwargs["apiId"]
+            current_api_json = self.db.get(opt_id)
+            current_api_json = jsonbak.loads(current_api_json)
+            opt_username = str(current_api_json["data"]["userapi"])
+            opt_password = str(current_api_json["data"]["passapi"])
+            opt_base_url = str(current_api_json["data"]["url"])
+            opt_base_port = str(current_api_json["data"]["portapi"])
+            opt_cluster = False
+            if "filterType" in current_api_json["data"] and current_api_json["data"]["filterType"] == 'cluster.name':
+                opt_cluster = True
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+            url = opt_base_url + ":" + opt_base_port
+
+            if opt_cluster:
+                manager_info =  self.session.get(
+                    url + '/manager/info', auth=auth, timeout=20, verify=verify)
+                manager_info = manager_info.json()
+                node_name =  manager_info['data']['cluster']['node_name']
+                result = self.session.post(
+                    url + '/cluster/' + node_name + '/files?path=etc/rules/'+file_name, data=file_content, headers= {"Content-type": "application/xml"}, auth=auth, timeout=20, verify=verify)
+                result = jsonbak.loads(result.text)
+                if 'error' in result and result['error'] != 0:
+                    return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
+                return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
+            else:
+                self.logger.info("no")
+        except Exception as e:
+            self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
+        return jsonbak.dumps({"status": "200", "error": "File added successfully"})
+
+
+
 
     def get_config_on_memory(self):
         try:

@@ -2573,3 +2573,12 @@ background-color: white;
 .wz-popover-message {
   text-align: center;
 }
+
+
+.wz-success-message {
+  color: rgb(32, 121, 32) !important
+}
+
+.wz-error-message {
+  color: rgb(173, 16, 16) !important
+}
