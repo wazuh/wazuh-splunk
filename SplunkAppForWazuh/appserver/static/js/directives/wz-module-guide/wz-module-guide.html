@@ -58,7 +58,7 @@
                       <div ng-repeat="(key,value) in option.extraAttr"  layout="row"> <!-- Extra attributes-->
                         <div ng-if="value.type === 'switch'">
                           <label  class="guide-switch">
-                              <input ng-checked="value.default"  id="{{option.name}}-{{key}}" type="checkbox">
+                              <input ng-checked="value.default_value"  id="{{option.name}}-{{key}}" type="checkbox">
                               <span class="guide-slider round"></span>
                           </label>
                           <span style="width: 72%;">{{key}} </span>
@@ -108,8 +108,8 @@
               
             </div>
             <div ng-show="showOptions === 'options'" ng-class="{'wz-margin-bottom--15': !showAdvancedOptions}">
-              <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="!showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px;" >Show advanced options</span>
-              <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px;" >Close advanced options</span>
+              <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="!showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px; font-size:17px;" >Show advanced options</span>
+              <span class="wz-link" ng-click="switchAdvancedOptions()" ng-show="showAdvancedOptions" style="margin-top: 20px; margin-bottom: -20px; font-size:17px;" >Close advanced options</span>
             </div>
             <div layout="row" ng-repeat="option in getCurrentModuleOptions()" ng-if="!option.required && showAdvancedOptions" style="padding-top:10px">  <!-- Iterate all options of selected configuration -->
               <span style="min-width:35%;">  
