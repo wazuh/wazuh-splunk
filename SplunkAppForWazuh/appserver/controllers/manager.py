@@ -523,8 +523,12 @@ class manager(controllers.BaseController):
             file_name = split_file[1]
             file_content = split_file[2]
             file_content = file_content[:len(file_content)-2]
-            file_content = file_content.replace('\n','')
-            file_content = file_content.replace('\\n','')
+            file_content2 = file_content
+
+            # Get path 
+            dest_path = kwargs["path"]
+
+
             # Get current API data
             opt_id = kwargs["apiId"]
             current_api_json = self.db.get(opt_id)
@@ -536,33 +540,25 @@ class manager(controllers.BaseController):
             opt_cluster = False
             if "filterType" in current_api_json["data"] and current_api_json["data"]["filterType"] == 'cluster.name':
                 opt_cluster = True
+
+            # API requests auth
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             url = opt_base_url + ":" + opt_base_port
+            
 
-            if opt_cluster:
-                manager_info =  self.session.get(
-                    url + '/manager/info', auth=auth, timeout=20, verify=verify)
-                manager_info = manager_info.json()
-                node_name =  manager_info['data']['cluster']['node_name']
-                result = self.session.post(
-                    url + '/cluster/' + node_name + '/files?path=etc/rules/'+file_name, data=file_content, headers= {"Content-type": "application/xml"}, auth=auth, timeout=20, verify=verify)
-                result = jsonbak.loads(result.text)
-                if 'error' in result and result['error'] != 0:
-                    return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
-                return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
+            if dest_path and dest_path == 'etc/lists/':
+                file_content = file_content.replace('\\n',"\n")
+                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/octet-stream"}, auth=auth, timeout=20, verify=verify)
             else:
-                result = self.session.post(
-                    url + '/manager/files?path=etc/rules/'+file_name, data=file_content, headers= {"Content-type": "application/xml"}, auth=auth, timeout=20, verify=verify)
-                result = jsonbak.loads(result.text)
-                if 'error' in result and result['error'] != 0:
-                    return jsonbak.dumps({"status": "400", "text": "Error addixng file: %s. Cause: %s" % (file_name,result["message"])})
-                return jsonbak.dumps({"status": "200", "text": "File %s was updaxted successfully. " % file_name})
+                file_content = file_content.replace('\\n','')
+                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/xml"}, auth=auth, timeout=20, verify=verify)
+            result = jsonbak.loads(result.text)
+            if 'error' in result and result['error'] != 0:
+                return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
+            return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
         except Exception as e:
             self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
-        return jsonbak.dumps({"status": "200", "error": "File added successfully"})
-
-
 
 
     def get_config_on_memory(self):

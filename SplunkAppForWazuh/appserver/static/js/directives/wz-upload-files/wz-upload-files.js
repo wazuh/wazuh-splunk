@@ -19,6 +19,7 @@ define(['../module','Dropzone'], function(app,Dropzone) {
         uploadTitle: '@uploadTitle',
         allowedExtensions: '=allowedExtensions',
         refreshList: '&',
+        path: '@path'
       },
       controller($scope,$currentDataService) {
         $scope.noFilesAdded = true
@@ -33,7 +34,7 @@ define(['../module','Dropzone'], function(app,Dropzone) {
         const currentApi = apiId['_key']
 
         $scope.myDropzone = new Dropzone("#myDropzone",{
-          url: `en-us/custom/SplunkAppForWazuh//manager/upload_file?apiId=${currentApi}`, //TODO - add destination path (etc/rules, etc/decoders, cdb list... )
+          url: `en-us/custom/SplunkAppForWazuh//manager/upload_file?apiId=${currentApi}&path=${$scope.path}`, 
           autoProcessQueue: false,
           parallelUploads: 5,
           maxFiles: 5,

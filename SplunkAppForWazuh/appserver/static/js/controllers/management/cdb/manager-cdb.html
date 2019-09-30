@@ -9,13 +9,6 @@
                   <span> / CDB Lists </span>
                 </div>
                 <div flex=""></div>
-                <!-- TODO - Open Logtest button -- pending API 
-                <div ng-show="!showLogtest">
-                  <button class="btn wz-button-empty wz-margin-right-10" style="margin-top:10px;" ng-click="switchLogtest()" aria-label="Open Logtest" md-labeled-by-tooltip="md-tooltip-4">
-                    <i class="fa fa-fw fa-play" aria-hidden="true"></i>Test your logs
-                  </button>
-                </div>
-              -->
           </div>
           <div layout="row" style="margin-top:15px; margin-left:-15px;">
               <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-width-100p" md-selected-nav-item="selectedNavTab">
@@ -27,6 +20,12 @@
               
           </div>
           <div layout="row" style="margin-top:16px;">
+
+            <div class="wz-popover-wrapper">
+              <div ng-show="uploadingFiles" class="wz-popover-content">
+                  <wz-upload-files upload-title="Upload rules" path="etc/lists/"></wz-upload-files>
+              </div>
+            </div>
             <!-- Loading content -->
           <div ng-show="loadingContent">
             <div class="loader-bar" ng-show="loadingContent">
@@ -53,11 +52,14 @@
                         <wz-svg icon="import"></wz-svg>
                         Export formatted
                       </span>
-                      <!-- TODO - Import CDB list files 
-                      <span ng-click="switchLogtest()" class="wz-color-text cursor-pointer link-table">
+                      <span ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer link-table">
                           <wz-svg icon="export"></wz-svg>
                         Import files
-                      </span>-->
+                      </span>
+                      <span ng-click="search(customSearch)" class="wz-color-text cursor-pointer link-table">
+                          <wz-svg icon="refresh"></wz-svg>
+                        Refresh
+                      </span>
                     </div>
   
                     <div class="layout-row" style="padding-top: 15px;">
