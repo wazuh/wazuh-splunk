@@ -58,6 +58,9 @@
     </div>
     <div ng-show="!loadingVizz">
 
+      <!-- Module not configured -->
+      <wz-no-module agent-id="agent.id" module-name="'cis-cat'" group-list="agent.group"></wz-no-module>
+
       <!-- Metrics -->
       <div layout="row" ng-if="!agent.error" class="wz-margin-9">
         <md-card flex class="wz-metric-color">

@@ -41,7 +41,8 @@
   <md-nav-bar class="wz-nav-bar wz-margin-10" md-selected-nav-item="'docker'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-vul" name="vulnerabilities">
       Vulnerabilities</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="osquery">Osquery</md-nav-item>
+      <md-nav-item ng-if="extensions.osquery === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+        ui-sref="ag-osquery" name="osquery">Osquery</md-nav-item>
     <md-nav-item ng-if="extensions.virustotal === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
       ui-sref="ag-virustotal" name="virustotal">VirusTotal</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="docker">Docker listener</md-nav-item>

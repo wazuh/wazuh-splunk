@@ -20,13 +20,29 @@ define(['../module'], function(directives) {
         agentId: '=agentId',
         groupList: '=groupList',
       },
-      controller($scope, $state) {
+      controller($scope, $state, $requestService) {
 
+        /**
+         * Check if the current module is enabled or disabled for the current agent
+         */
+        $scope.isActivated = async () => {
+          const currentConfig = await $requestService.apiReq(`/agents/${$scope.agentId}/config/wmodules/wmodules`)
+          const moduleData = (((currentConfig || {}).data || {}).data || {}).wmodules || []
+          $scope.isModuleEnabled = moduleData.some( x =>  x[$scope.moduleName] && x[$scope.moduleName].disabled === 'no' )
+          $scope.$applyAsync()
+        }
+
+
+        /**
+         * Redirect the user to the agent.conf of selected group with the current module guide
+         */
         $scope.sendToGroup = (group, moduleName) => {
           const groupObject = {name:group, moduleName}
           $state.go(`mg-groups`, { openConfig:groupObject })
         }
         
+        $scope.isActivated()
+
       },
       templateUrl:
         BASE_URL +

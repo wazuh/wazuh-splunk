@@ -57,6 +57,10 @@
       </div>
     </div>
     <div ng-show="!loadingVizz">
+
+      <!-- Module not configured -->
+      <wz-no-module agent-id="agent.id" module-name="'osquery'" group-list="agent.group"></wz-no-module>
+
       <!-- first row  -->
       <div id="row1" layout="row">
         <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
