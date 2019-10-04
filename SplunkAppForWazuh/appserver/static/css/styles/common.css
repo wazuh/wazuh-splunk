@@ -2284,7 +2284,7 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   margin: 2px 15px 0px -500px;
   height: auto;
 }
-}
+
 .link-disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -2581,4 +2581,8 @@ background-color: white;
 
 .wz-error-message {
   color: rgb(173, 16, 16) !important
+}
+
+.wz-min-height-40 {
+  min-height: 40px !important;
 }
