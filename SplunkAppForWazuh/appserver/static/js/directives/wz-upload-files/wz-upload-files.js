@@ -45,8 +45,6 @@ define(['../module','Dropzone'], function(app,Dropzone) {
         
 
         $scope.removeAllFiles = () => {
-          var elem = document.getElementById("uploadProgressBar")
-          elem.style.width = '0%'
           $scope.myDropzone.removeAllFiles(true)
           $scope.noFilesAdded = true;
         }
@@ -55,20 +53,6 @@ define(['../module','Dropzone'], function(app,Dropzone) {
             if($scope.myDropzone.files.length > 0){
               $scope.myDropzone.processQueue()
               $scope.noFilesAdded = false
-              var elem = document.getElementById("uploadProgressBar");  
-              if(elem.style.width !== '100%'){
-                var width = 0;
-                var id = setInterval(frame, 10);
-                  function frame() {
-                    if (width >= 100) {
-                      clearInterval(id);
-                    } else {
-                      width+=1; 
-                      elem.style.width = width + '%'; 
-                      elem.innerHTML = width * 1  + '%';
-                    }
-                  }
-              }
             }            
           }
           $scope.myDropzone.on("success", function (file, message) {
@@ -112,8 +96,6 @@ define(['../module','Dropzone'], function(app,Dropzone) {
         $scope.myDropzone.on("removedfile", function (file) {
           if($scope.myDropzone.files.length === 0){
             $scope.noFilesAdded = true
-            var elem = document.getElementById("uploadProgressBar")
-            elem.style.width = '0%'
             $scope.$applyAsync()
           }
         });
