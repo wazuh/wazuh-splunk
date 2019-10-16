@@ -2,6 +2,26 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v3.11.0 - Splunk Enterprise v7.3.0 / v7.3.1 - Revision 45
+
+### Added
+
+- Support for Wazuh v3.11.0
+- Allow upload rules/decoders/CDB-lists files [#828](https://github.com/wazuh/wazuh-splunk/issues/828)
+- Added new field for Log collection configuration section  [#845](https://github.com/wazuh/wazuh-splunk/issues/845)
+
+### Changed
+
+- Changed labels configuration table [#846](https://github.com/wazuh/wazuh-splunk/issues/846)
+
+### Fixed
+
+- Fixed error when opening empty files [#839](https://github.com/wazuh/wazuh-splunk/issues/839)
+- CDB lists section is now showing the correct name of the list [#841](https://github.com/wazuh/wazuh-splunk/issues/841)
+- Fix error when exporting group configuration [#834](https://github.com/wazuh/wazuh-splunk/issues/834)
+
+
+
 ## Wazuh v3.10.2 - Splunk Enterprise v7.3.0 / v7.3.1 - Revision 44
 
 ### Added
