@@ -61,11 +61,12 @@ define(['../module'], function(module) {
         if (
           !result ||
           !result.data ||
-          !result.data.data ||
           result.data.error != 0
         ) {
           throw new Error(`Error fetching ${file} content.`)
         }
+        if(!result.data.data) //Force XML box to be printed when the file is empty
+          return " "
         return result.data.data
       } catch (error) {
         return Promise.reject(error)
