@@ -81,7 +81,7 @@
 
     <!-- Popover export PDF -->
     <div ng-if="!file && lookingGroup && currentGroup && !addingAgents && !editingFile" class="wz-popover-wrapper">
-      <div ng-if="exportConfig" class="wz-popover-content" style="width:215px; padding:0;">
+      <div ng-if="exportConfig" class="wz-popover-content wz-popover-width-160px" style="width:215px; padding:0;">
         <div layout="column">
           <ul class="noDot ul-extensions">
               <li ng-repeat="(key, value) in selectedOptions track by $index">
@@ -120,7 +120,7 @@
             <div ng-if="!currentGroup || !currentGroup.name" layout="row" style="padding-top: 15px;padding-bottom: 4px;height:110px;">
               <div layout="column">
                 <span style="font-size: 28px; padding-right: 10px;"> Groups </span> 
-                <span style="margin-top:5px;">List and check your groups, its agents and files.</span>
+                <span style="margin-top:8px;">List and check your groups, its agents and files.</span>
               </div>
               <span flex="" class="flex"></span>
 
@@ -138,15 +138,20 @@
             <!-- Headline - Groups list -->
             <div ng-if="currentGroup || currentGroup.name" layout="row" style="padding-top: 15px;padding-bottom: 4px;height:110px;">
                 <div layout="column">
-                  <span style="font-size: 28px; padding-right: 10px;"> {{currentGroup.name}} group </span> 
-                  <span style="margin-top:5px;">From here you can list and manage your agents.</span>
+                  <span style="font-size: 28px; padding-right: 10px;"> {{currentGroup.name}} </span> 
+                  <span style="margin-top:8px;">From here you can list and manage your agents.</span>
                 </div>
                 <span flex="" class="flex"></span>
     
                 <div layout="row" ng-if="!addingAgents">
                   <span ng-if="lookingGroup && groupsSelectedTab==='agents' && lookingGroup && currentGroup && adminMode" ng-click='addMultipleAgents(true)' class="wz-color-text cursor-pointer link-table">
-                    <wz-svg icon="plus"></wz-svg>
+                    <wz-svg icon="folder-closed"></wz-svg>
                     Manage agents
+                  </span> 
+
+                  <span ng-if="lookingGroup && groupsSelectedTab==='files' && !file" ng-click="editGroupAgentConfig()" class="wz-color-text cursor-pointer link-table">
+                    <wz-svg icon="pencil"></wz-svg>
+                    Edit group configuration
                   </span> 
                   
                   <span ng-click="showModulesToExport()" class="wz-color-text cursor-pointer link-table">
@@ -232,7 +237,7 @@
                 possible to apply changes of more than 500 additions or deletions</span>
             </div>
 
-            <div layout="row" class="md-padding wz-margin-left-5" ng-if="addingAgents">
+            <div layout="row" class="md-padding wz-margin-left-5  wz-border-none" ng-if="addingAgents">
               <span ng-show='!multipleSelectorLoading' class="wzMultipleSelectorCounter"><span style='color:green'>+{{currentAdding}}</span>&nbsp;<span
                   style='color:red'>-{{currentDeleting}}</span></span>
               <wz-multiple-selector class='wzMultipleSelector wz-border-none' available-items="availableAgents.data" selected-items="selectedAgents.data"

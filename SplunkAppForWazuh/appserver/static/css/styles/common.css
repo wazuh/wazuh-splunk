@@ -2561,6 +2561,11 @@ background-color: white;
   border-top: 1px solid #80808085;
   border-left: 1px solid #80808085;
 }
+
+.wz-popover-width-160px:before {
+  left: 160px !important;
+}
+
 .wz-popover-wrapper .wz-popover-content {
   z-index: 10;
   opacity: 1;
@@ -2585,4 +2590,8 @@ background-color: white;
 
 .wz-min-height-40 {
   min-height: 40px !important;
+}
+
+.wz-border-none .panel {
+  border: none !important;
 }
