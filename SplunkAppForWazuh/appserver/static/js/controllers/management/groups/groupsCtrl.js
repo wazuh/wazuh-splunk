@@ -797,6 +797,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
     }
 
     async initReportConfig() {
+      this.scope.exportConfig = false
       const data = {
         configurations: [
           this.scope.selectedOptions.groupConf
