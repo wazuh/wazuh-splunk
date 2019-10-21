@@ -100,40 +100,6 @@
     </div>
 
   </div>
-
-  <!-- Search bar -->
-  <div ng-if="!loading" layout="row" layout-align="space-between stretch">
-    <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
-    <button type="submit" aria-label="Search" class="btn wz-button-empty wz-margin-left-10 wz-margin-top-15"
-      ng-click="reloadList()">
-      <wz-svg icon="refresh"></wz-svg>
-      <span>Refresh</span>
-    </button>
-  </div>
-
-  <md-card class="wz-md-card no-margin-sides wz-margin-top-15">
-    <!-- Table -->
-
-    <md-card-actions layout="row" layout-align="start center"
-      class="layout-align-start-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-      <a class="cursor-pointer green-href" ng-click="addNewAgent()">Add new agent</a>
-    </md-card-actions>
-    <md-card-contents>
-      <wazuh-table flex path="'/agents'" custom-columns="true"
-        keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
-        allow-click="true" rows-per-page="17">
-      </wazuh-table>
-    </md-card-contents>
-
-
-    <!-- Download CSV -->
-    <div layout="row" class="ruleset-csv-formater">
-      <span flex></span>
-      <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv()">
-        <wz-svg icon="download"></wz-svg>&nbsp;Formatted
-      </a>
-    </div>
-  </md-card>
 </div>
 
 
@@ -146,4 +112,63 @@
     <span ng-if="addingAgents" class="close-register-agent cursor-pointer" ng-click="closeAddAgent()"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;close</span>
   </div>
   <wz-register-agent></wz-register-agent>
+</div>
+
+
+<!-- new table --> 
+
+
+<div ng-if="!noAgents && !addingAgents" style="width:100%;margin-right: 10px;"> 
+  <div class="wz-padding-left-16">
+  
+    <div layout="row">
+      <md-card style="width:100%;" class="wz-md-card no-margin-sides">
+        <md-card-actions layout="column"
+          class="wz-card-actions wz-card-actions-top md-actions-ruleset" style="background-color: white; ">
+          <!-- Headline - Agent list -->
+          <div  layout="row" style="padding-top: 15px;padding-bottom: 4px;height:110px;">
+            <div layout="column">
+              <span style="font-size: 28px; padding-right: 10px;"> Agents </span> 
+            </div>
+            <span flex="" class="flex"></span>
+
+            <span ng-click="downloadCsv()" class="wz-color-text cursor-pointer link-table">
+                <wz-svg icon="download"></wz-svg>
+                Export formatted
+              </span> 
+            <span  ng-click="addNewAgent()" class="wz-color-text cursor-pointer link-table">
+              <wz-svg icon="plus"></wz-svg>
+              Add a new agent
+            </span> 
+          </div>
+          <!-- End headline -->
+
+        
+
+          <!-- Filter files / agents / groups search bar-->
+          <div class="layout-row" style="padding-top: 15px;">
+            <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
+            <button type="submit" aria-label="Search" class="btn wz-button-empty wz-margin-left-10 wz-margin-top-15"
+              ng-click="reloadList()">
+              <wz-svg icon="refresh"></wz-svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+          <!-- End search bar -->
+      </md-card-actions>
+      <md-card-contents  style="margin-top:85px;">
+        <!-- Groups list -->
+          <div layout="row" style="width:100%;" ng-if="!lookingGroup" class="md-padding">
+              <wazuh-table flex path="'/agents'" custom-columns="true"
+                keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
+                allow-click="true" rows-per-page="17">
+              </wazuh-table>
+          </div>
+          
+        </div>
+
+      </md-card-contents>
+  
+  </div>
+</div>
 </div>
