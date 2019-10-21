@@ -20,7 +20,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $csvRequestService,
       $restartService,
       isAdmin,
-      $fileEditor
+      $fileEditor,
+      $state
     ) {
       super(
         $scope,
@@ -36,6 +37,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.typeFilter = 'all'
       this.isAdmin = isAdmin
       this.restartService = $restartService
+      this.$state = $state
     }
 
     /**
@@ -44,6 +46,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
     $onInit() {
       this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
+      this.scope.ruleset_dest = "mg-decoders"
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
@@ -57,6 +60,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
+      this.scope.redirect = (dest) =>
+        this.redirect(dest)
 
       this.scope.$on('loadedTable', event => {
         event.stopPropagation()
@@ -71,6 +76,15 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
           this.notification.showErrorToast('Error applying filter')
         }
       })
+    }
+
+
+     /**
+     * Redirects to a ruleset subtab
+     */
+    redirect(dest) {
+      if(dest !== "mg-decoders")
+        this.$state.go(dest)
     }
 
     /**

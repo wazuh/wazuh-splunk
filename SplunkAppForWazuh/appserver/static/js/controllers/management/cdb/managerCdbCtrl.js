@@ -24,7 +24,8 @@ define([
       $csvRequestService,
       isAdmin,
       $cdbEditor,
-      $restartService
+      $restartService,
+      $state
     ) {
       super(
         $scope,
@@ -41,6 +42,7 @@ define([
       this.isAdmin = isAdmin
       this.cdbEditor = $cdbEditor
       this.restartService = $restartService
+      this.$state = $state
     }
 
     /**
@@ -49,6 +51,7 @@ define([
     $onInit() {
       this.scope.overwrite = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+      this.scope.ruleset_dest = "mg-cdb"
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.selectedNavTab = 'cdbList'
       this.scope.adminMode = this.isAdmin
@@ -68,6 +71,8 @@ define([
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveList = () => this.saveList()
       this.scope.enableSave = () => this.enableSave()
+      this.scope.redirect = (dest) =>
+        this.redirect(dest)
 
       /**
        * Pagination variables and functions
@@ -118,6 +123,16 @@ define([
         }
       })
     }
+
+    
+    /**
+     * Redirects to a ruleset subtab
+     */
+    redirect(dest) {
+      if(dest !== "mg-cdb")
+        this.$state.go(dest)
+    }
+
 
     /**
      * Filters the content of CDB lists

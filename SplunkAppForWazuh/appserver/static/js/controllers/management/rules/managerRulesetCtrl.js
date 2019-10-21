@@ -20,7 +20,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $csvRequestService,
       $restartService,
       isAdmin,
-      $fileEditor
+      $fileEditor,
+      $state
     ) {
       super(
         $scope,
@@ -34,6 +35,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $fileEditor
       )
       this.isAdmin = isAdmin
+      this.$state = $state
     }
 
     /**
@@ -42,11 +44,14 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
     $onInit() {
       this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
+      this.scope.ruleset_dest = "mg-rules"
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveRuleConfig = (fileName, dir, overwrite) =>
         this.saveRuleConfig(fileName, dir, overwrite)
+      this.scope.redirect = (dest) =>
+        this.redirect(dest)
 
       this.scope.selectedNavTab = 'rules'
 
@@ -77,6 +82,14 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       }
       this.scope.addingNewFile = true
       this.scope.fetchedXML = `<!-- Configure your local rules here -->`
+    }
+    
+    /**
+     * Redirects to a ruleset subtab
+     */
+    redirect(dest) {
+      if(dest !== "mg-rules")
+        this.$state.go(dest)
     }
 
     /**

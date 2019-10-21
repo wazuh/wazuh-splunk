@@ -17,15 +17,6 @@
               -->
               </div>
             </div>
-        <div layout="row" style="margin-top:15px; margin-left:-15px;">
-            <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-width-100p" md-selected-nav-item="selectedNavTab">
-                <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="rules">Rules</md-nav-item>
-                <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
-                </md-nav-item>
-                <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists</md-nav-item>
-              </md-nav-bar>
-            
-        </div>
         <div layout="row" style="margin-top:16px;">
           
             <div class="wz-popover-wrapper">
@@ -155,10 +146,13 @@
                           </li>
                         </ul>
                       </div></wz-add-filter-chip>
-                      <button ng-click="search(customSearch)"
-                        class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
-                        <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
-                      </button>
+                      <select class="input input-dropdown wz-margin-left-10 height-40" style="min-width: 100px" ng-model="ruleset_dest"
+                        class="md-no-underline" ng-change="redirect(ruleset_dest)"
+                        aria-label="Ruleset">
+                        <option value="mg-rules">Rules</option>
+                        <option value="mg-decoders">Decoders</option>
+                        <option value="mg-cdb">CDB Lists</option>
+                      </select>
                     </div>
                   </div>
               </md-card-actions>
