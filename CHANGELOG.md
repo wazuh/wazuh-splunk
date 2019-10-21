@@ -2,7 +2,7 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v3.11.0 - Splunk Enterprise v7.3.0 / v7.3.1 - Revision 45
+## Wazuh v3.11.0 - Splunk Enterprise v7.3.2 - Revision 45
 
 ### Added
 
@@ -13,13 +13,14 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Changed
 
 - Changed labels configuration table [#846](https://github.com/wazuh/wazuh-splunk/issues/846)
+- Adapt Vulnerability Configuration section to its new format [#853](https://github.com/wazuh/wazuh-splunk/issues/853)
 
 ### Fixed
 
 - Fixed error when opening empty files [#839](https://github.com/wazuh/wazuh-splunk/issues/839)
 - CDB lists section is now showing the correct name of the list [#841](https://github.com/wazuh/wazuh-splunk/issues/841)
 - Fix error when exporting group configuration [#834](https://github.com/wazuh/wazuh-splunk/issues/834)
-
+- Fix missing custom integrations [#855](https://github.com/wazuh/wazuh-splunk/issues/855)
 
 
 ## Wazuh v3.10.2 - Splunk Enterprise v7.3.0 / v7.3.1 - Revision 44

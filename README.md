@@ -10,7 +10,7 @@
 ![](https://i.imgur.com/HkMjiwJ.png)
 ### Documentation
 
--   [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installing-splunk/index.html)
+- [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installation-guide/installing-splunk/index.html)
 
 ## Branches
 
@@ -56,7 +56,7 @@
 |      7.3.0     |       3.10.0      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.0_7.3.0.tar.gz> |
 |      7.3.0     |       3.10.1      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.1_7.3.0.tar.gz> |
 |      7.3.0     |       3.10.2      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.2_7.3.0.tar.gz> |
-|      7.3.0     |       3.11.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.0_7.3.0.tar.gz> |
+|      7.3.2     |       3.11.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.0_7.3.2.tar.gz> |
 
 
 ## Upgrade
