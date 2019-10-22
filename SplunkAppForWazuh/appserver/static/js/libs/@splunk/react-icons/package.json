@@ -1,0 +1,80 @@
+{
+  "_from": "@splunk/react-icons@^2.6.1",
+  "_id": "@splunk/react-icons@2.6.1",
+  "_inBundle": false,
+  "_integrity": "sha512-P7UZl91u88Txq6FTrGX+l26PpW05igp6br4EqhrzNnP5mFcqeBK9meZgv98o2HQnChka0hCc0nZOeT5FyilmUw==",
+  "_location": "/@splunk/react-icons",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@splunk/react-icons@^2.6.1",
+    "name": "@splunk/react-icons",
+    "escapedName": "@splunk%2freact-icons",
+    "scope": "@splunk",
+    "rawSpec": "^2.6.1",
+    "saveSpec": null,
+    "fetchSpec": "^2.6.1"
+  },
+  "_requiredBy": [
+    "/@splunk/react-ui"
+  ],
+  "_resolved": "https://registry.npmjs.org/@splunk/react-icons/-/react-icons-2.6.1.tgz",
+  "_shasum": "f42f0d11835522af7cd513d8eef23673a7eb5f6e",
+  "_spec": "@splunk/react-icons@^2.6.1",
+  "_where": "/home/pablotr9/Desktop/Wazuh/wazuh-splunk3.10/wazuh-splunk/node_modules/@splunk/react-ui",
+  "author": {
+    "name": "Splunk Inc."
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@splunk/ui-utils": "^1.1.2",
+    "lodash": "^4.17.14",
+    "prop-types": "^15.6.2"
+  },
+  "deprecated": false,
+  "description": "Library of various React icons",
+  "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@splunk/babel-preset": "^2.0.1",
+    "@splunk/eslint-config": "^2.0.1",
+    "@splunk/stylelint-config": "^3.0.1",
+    "@splunk/webpack-configs": "^4.0.1",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-styled-components": "^1.10.6",
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-import-resolver-webpack": "^0.10.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.1",
+    "styled-components": "^4.3.2",
+    "stylelint": "^9.9.0",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-merge": "^4.1.3"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "Apache-2.0",
+  "name": "@splunk/react-icons",
+  "peerDependencies": {
+    "react": "^16",
+    "react-dom": "^16",
+    "styled-components": "^3 || ^4"
+  },
+  "scripts": {
+    "build": "NODE_ENV=production webpack --bail",
+    "eslint": "eslint src --ext \".js,.jsx\"",
+    "eslint:ci": "yarn run eslint -- -f junit -o test-reports/lint-results.xml",
+    "eslint:fix": "eslint src --ext \".js, .jsx\" --fix",
+    "lint": "yarn run eslint && yarn run stylelint",
+    "lint:ci": "yarn run eslint:ci && yarn run stylelint",
+    "start": "NODE_ENV=development webpack --watch",
+    "stylelint": "stylelint \"src/**/*.{js,jsx}\" --config stylelint.config.js"
+  },
+  "version": "2.6.1"
+}

@@ -1,0 +1,62 @@
+{
+  "_from": "@splunk/themes@^0.4.1",
+  "_id": "@splunk/themes@0.4.1",
+  "_inBundle": false,
+  "_integrity": "sha512-RxQ7zMdoMFOucZqdU7fXAMqLC6wQAwnuxn94zSFjuVIGwsnND1h2ZMCXn7VYihbVFNFui2FXE9avNGHTWyXafA==",
+  "_location": "/@splunk/themes",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@splunk/themes@^0.4.1",
+    "name": "@splunk/themes",
+    "escapedName": "@splunk%2fthemes",
+    "scope": "@splunk",
+    "rawSpec": "^0.4.1",
+    "saveSpec": null,
+    "fetchSpec": "^0.4.1"
+  },
+  "_requiredBy": [
+    "/@splunk/react-ui"
+  ],
+  "_resolved": "https://registry.npmjs.org/@splunk/themes/-/themes-0.4.1.tgz",
+  "_shasum": "d610c80ecdb0a913e679912366ce29221d1fea8a",
+  "_spec": "@splunk/themes@^0.4.1",
+  "_where": "/home/pablotr9/Desktop/Wazuh/wazuh-splunk3.10/wazuh-splunk/node_modules/@splunk/react-ui",
+  "author": {
+    "name": "Splunk Inc."
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "tinycolor2": "^1.4.1"
+  },
+  "deprecated": false,
+  "description": "Theme variables and mixins for the Splunk design language",
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@splunk/babel-preset": "^2.0.1",
+    "@splunk/eslint-config": "^2.0.1",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "chai": "^3.5.0",
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.1"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "Apache-2.0",
+  "name": "@splunk/themes",
+  "scripts": {
+    "build": "babel src -d . --ignore src/babel-plugin-base64-png",
+    "lint": "eslint src ",
+    "lint:ci": "yarn run lint -- -f junit -o test-reports/lint-results.xml",
+    "start": "babel src -d . --watch --ignore src/babel-plugin-base64-png"
+  },
+  "version": "0.4.1"
+}

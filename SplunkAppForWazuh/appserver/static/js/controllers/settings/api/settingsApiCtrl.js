@@ -1,4 +1,4 @@
-define(['../../module','react','react-dom','rsuite'], function (controllers,React,ReactDOM,rsuite) {
+define(['../../module','react','react-dom','rsuite', 'splunk-button'], function (controllers,React,ReactDOM,rsuite) {
   
 
   class SettingsApi {
@@ -45,17 +45,6 @@ define(['../../module','react','react-dom','rsuite'], function (controllers,Reac
       );
 
 
-      
-const instance2 = (
-  <div className="icon-example-list">
-    <Icon icon="spinner" spin />
-    <Icon icon="spinner" pulse />
-    <Icon icon="cog" spin />
-  </div>
-);
-
-
-      ReactDOM.render(instance2, document.getElementById('react-test2'));
       ReactDOM.render(instance, document.getElementById('react-test3'));
 
       this.scope.init = () => this.init()

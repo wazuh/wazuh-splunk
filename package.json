@@ -11,7 +11,8 @@
     "ossec"
   ],
   "dependencies": {
-    "@elastic/eui": "^13.8.0",
+    "@splunk/react-ui": "^2.13.1",
+    "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "rsuite": "^4.0.0",

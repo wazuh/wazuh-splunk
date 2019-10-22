@@ -21,6 +21,9 @@ require.config({
     'react': 'js/libs/react',
     'react-dom': 'js/libs/react-dom',
     'rsuite': 'js/libs/rsuite/dist/rsuite.min',
+    'prop-types' : 'js/libs/prop-types/prop-types.min',
+    '@splunk/react-ui/themes' :'js/libs/@splunk/react-ui/themes',
+    'splunk-button': 'js/libs/@splunk/react-ui/Button',
 
     // Angular Chart
     moment: 'js/libs/moment',

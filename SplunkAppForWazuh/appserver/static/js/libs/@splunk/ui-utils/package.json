@@ -1,0 +1,71 @@
+{
+  "_from": "@splunk/ui-utils@^1.1.2",
+  "_id": "@splunk/ui-utils@1.1.2",
+  "_inBundle": false,
+  "_integrity": "sha512-LBbPz2fhW/7FIjBg2EEhvz7hkeXXGi5D+dYP7XX83E0CGJQLV9yq3kNTXyLo7nFPun4GDPObC0M/922HPToIeQ==",
+  "_location": "/@splunk/ui-utils",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@splunk/ui-utils@^1.1.2",
+    "name": "@splunk/ui-utils",
+    "escapedName": "@splunk%2fui-utils",
+    "scope": "@splunk",
+    "rawSpec": "^1.1.2",
+    "saveSpec": null,
+    "fetchSpec": "^1.1.2"
+  },
+  "_requiredBy": [
+    "/@splunk/react-icons",
+    "/@splunk/react-ui"
+  ],
+  "_resolved": "https://registry.npmjs.org/@splunk/ui-utils/-/ui-utils-1.1.2.tgz",
+  "_shasum": "6c019f4d60db977db7776ff742af7efbaf0f5275",
+  "_spec": "@splunk/ui-utils@^1.1.2",
+  "_where": "/home/pablotr9/Desktop/Wazuh/wazuh-splunk3.10/wazuh-splunk/node_modules/@splunk/react-ui",
+  "author": {
+    "name": "Splunk Inc."
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "keycode": "^2.1.9",
+    "lodash": "^4.17.14"
+  },
+  "deprecated": false,
+  "description": "Library of common UI utilities",
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@splunk/babel-preset": "^2.0.1",
+    "@splunk/eslint-config": "^2.0.1",
+    "@splunk/webpack-configs": "^4.0.1",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "chai": "^3.5.0",
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.1",
+    "jest": "^24.8.0",
+    "jest-junit": "^6.4.0"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "Apache-2.0",
+  "name": "@splunk/ui-utils",
+  "scripts": {
+    "build": "babel src -d . --ignore \"**/tests\"",
+    "lint": "eslint src",
+    "lint:ci": "yarn run lint -- -f junit -o test-reports/lint-results.xml",
+    "lint:fix": "eslint src --fix",
+    "start": "babel src -d . --watch --ignore \"**/tests\"",
+    "test": "jest",
+    "test:ci": "JEST_JUNIT_OUTPUT=./test-reports/unit-results.xml JEST_JUNIT_CLASSNAME=unit yarn run test --ci --reporters=default jest-junit --coverage --coverageDirectory=coverage_report/coverage_maps_unit --coverageReporters=json",
+    "test:watch": "jest --watch"
+  },
+  "version": "1.1.2"
+}
