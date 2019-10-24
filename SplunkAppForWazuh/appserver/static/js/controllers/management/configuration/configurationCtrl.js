@@ -102,6 +102,17 @@ define(['../../module', '../../../utils/config-handler'], function(
             this.scope
           )
         }
+
+        this.scope.formatAzureType = type => {
+          if(type === 'log_analytics')
+          return 'Azure Log Analytics'
+          if(type === 'graph')
+          return 'Azure Active Directory Graph'
+          if(type === 'storage')
+          return 'Azure Storage'
+
+          return type // if it's not one of the above then it's a custom tag
+        }
         this.scope.updateSelectedItem = i => (this.scope.selectedItem = i)
         this.scope.getIntegration = list =>
           this.configurationHandler.getIntegration(list, this.scope)
