@@ -123,6 +123,7 @@ class report(controllers.BaseController):
 
 
     def getDirectoriesChecks(self,row):
+        self.logger.debug("report: Getting directories checks")
         newRow = []
         newRow.append(row['dir'])
         if 'realtime' in row['opts'] and row['opts'].index('realtime'):
@@ -185,22 +186,26 @@ class report(controllers.BaseController):
         return newRow
 
     def setTableTitle(self,pdf):
+        self.logger.debug("report: Updating table title")
         pdf.set_font('RobotoLight', '', 10)
         pdf.set_margins(10, 0, 10)
         pdf.set_fill_color(255, 255, 255)
         pdf.set_text_color(11,11,11)
 
     def setBlueHeaderStyle(self,pdf):
+        self.logger.debug("report: Updating blue header style")
         pdf.set_font('RobotoLight', '', 8)
         pdf.set_fill_color(120,200,222)
         pdf.set_text_color(255,255,255)
 
     def setTableRowStyle(self,pdf):
+        self.logger.debug("report: Updating table row style")
         pdf.set_text_color(55,55,55)
         pdf.set_draw_color(159, 192, 214)
         pdf.set_font('RobotoLight', '', 8)
     
     def setBlueTableTitle(self,pdf):
+        self.logger.debug("report: Updating blue table title")
         pdf.set_font('RobotoLight', '', 14)
         pdf.set_fill_color(255, 255, 255)
         pdf.set_text_color(120,200,222)
@@ -226,7 +231,7 @@ class report(controllers.BaseController):
                     ------------------
         """
 
-
+        self.logger.debug("report: Generating key:value table")
         #Get max width of all keys
         max_key_width = 20
         max_value_width = 20
@@ -295,6 +300,7 @@ class report(controllers.BaseController):
                     - margin - by default: 10
                         margin of table rows
         """
+        self.logger.debug("report: Generating table with multiple fields")
         rows_count = 12 # Set row_count with 12 for the agent information size
         table_keys = tables.keys()
         for key in table_keys:
@@ -370,6 +376,7 @@ class report(controllers.BaseController):
 
 
     def addCustomTable(self,customTables,pdf,labels,currentSection):
+        self.logger.debug("report: Adding custom table")
         if customTables:
             tables = {}
             for extraTable in customTables:
@@ -422,6 +429,7 @@ class report(controllers.BaseController):
 
                 
     def addSyscheckTable(self, data, pdf, labels,currentSection = {}):
+        self.logger.debug("report: Generating syscheck table")
         customKeyList = []
         customValueList = []
         keySet = set() 
@@ -447,6 +455,7 @@ class report(controllers.BaseController):
         self.addTables(directoriesTable,pdf,185,10)
 
     def addTable(self, data, pdf, labels,currentSection = {}):
+        self.logger.debug("report: Adding new table")
         try:
             customTables = []
             keyList = []
@@ -518,6 +527,7 @@ class report(controllers.BaseController):
         return result
 
     def addSubtitle(self,currentSection,pdf):
+        self.logger.debug("report: Adding subtitle")
         self.setBlueTableTitle(pdf)
         if 'subtitle' in currentSection:
             pdf.set_margins(10, 0, 10)
@@ -533,6 +543,7 @@ class report(controllers.BaseController):
             del currentSection['subtitle']
 
     def getSelectedConfigurations(self,selectedOptions):
+        self.logger.debug("report: Obtaining selected configurations")
         selectedConf = [{'title': 'Main configurations', 'sections': [] }, {'title': 'Auditing and policy monitoring', 'sections': []},{ 'title': 'System threats and incident response', 'sections': []},{ 'title': 'Log data analysis', 'sections': []} ]
         
         if 'globalConf' in selectedOptions and selectedOptions['globalConf'] == 1:
@@ -682,6 +693,7 @@ class report(controllers.BaseController):
             pdf = PDF('P', 'mm', 'A4')
             first_page = True
             self.logger.info("Start generating configuration report ")
+            self.logger.debug("report: Start generating configuration report. Data " + kwargs['data'])
             json_acceptable_string = kwargs['data']
             data = jsonbak.loads(json_acceptable_string)
             report_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
@@ -1155,6 +1167,7 @@ class report(controllers.BaseController):
 
     #Cut value string
     def cut_value(self, width, value_string):
+        self.logger.debug("report: Cutting value string")
         num_characters = int(math.ceil(width / 1.50))
         value_splitted = list(str(value_string))
         if len(value_splitted) > num_characters:
@@ -1167,6 +1180,7 @@ class report(controllers.BaseController):
     
     #Split the string 
     def split_string(self, width, value_string):
+        self.logger.debug("report: Split string")
         splitted_str = []
         num_characters = int(math.ceil(width / 1.50)) # Number of characters to split the string
         sm = num_characters # Var to sum and advance in the arr indexes
@@ -1195,6 +1209,7 @@ class report(controllers.BaseController):
 
     #Sum arr of numbers
     def sum_numbers_arr(self, arr):
+        self.logger.debug("report: Sum arr of numbers")
         total = 0
         for i in arr:
             total = total + i
@@ -1202,6 +1217,7 @@ class report(controllers.BaseController):
     
     #Sum dic of numbers
     def sum_numbers_dic(self, dic):
+        self.logger.debug("report: Sum dic of numbers")
         total = 0
         for key in dic.keys():
             total = total + dic[key]
@@ -1209,6 +1225,7 @@ class report(controllers.BaseController):
 
     #Excludes fields from dic
     def exclude_fields(self, fields, dic):
+        self.logger.debug("report: Excluding fields from dic")
         dic_to_exclude = dic.copy()
         for f in fields:
             del dic_to_exclude[f]
@@ -1217,6 +1234,7 @@ class report(controllers.BaseController):
 
     #Check if tables are not empties
     def tables_have_info(self, tables):
+        self.logger.debug("report: Checking if table is empty")
         for key in tables.keys():
             if tables[key]:
                 return True
@@ -1279,3 +1297,119 @@ class report(controllers.BaseController):
                 sizes[wf] = sizes_arr
         sizes = self.sort_table_sizes(table['fields'], sizes)
         return sizes
+<<<<<<< HEAD
+=======
+
+    #Print group info
+    def print_group_info(self, group, pdf):
+        self.logger.debug("report: Printing group info")
+        pdf.ln(8)
+        pdf.set_font('RobotoLight','',11)
+        pdf.set_text_color(23,23,23)
+    
+    #Print agent info
+    def print_agent_info(self, agent_info, pdf):
+        self.logger.debug("report: Printing agent info.")
+        pdf.ln(10)
+        sorted_fields = ('ID', 'Name', 'IP', 'Version', 'Manager', 'OS')
+        fields = {'ID':0, 'Name':0, 'IP':0, 'Version':0, 'Manager':0, 'OS':0}
+        total_width = 0
+        for key in fields.keys():
+            #Calculate width
+            width = pdf.get_string_width(agent_info[key])
+            if pdf.get_string_width(agent_info[key]) > width:
+                width = pdf.get_string_width(agent_info[key])
+            width = width + 2
+            total_width = total_width + width
+            fields[key] = width
+        #Calculate the rest of the width to fill the row
+        diff = 0
+        if total_width < 190:
+            diff = 190 - total_width
+            keys_num = len(fields.keys())
+            diff = diff / keys_num
+        for key in fields.keys():
+            fields[key] = fields[key] + diff
+        #Set color and print th
+        self.setBlueHeaderStyle(pdf)
+        for key in sorted_fields:
+            pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
+        pdf.ln()
+        #Change text color and print tr
+        self.setTableRowStyle(pdf)
+        for key in sorted_fields:
+            pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
+        #Print the rest of the agent information
+        pdf.ln(6)
+        pdf.set_font('RobotoLight','',11)
+        pdf.set_text_color(23,23,23)
+        pdf.cell(0,9, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
+        pdf.ln()
+        pdf.cell(0,9, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
+        pdf.ln()
+        pdf.cell(0,9, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
+        pdf.ln(10)
+
+    #Sorts the width of the fields
+    def sort_table_sizes(self, fields, sizes):
+        self.logger.debug("report: Sorting width of fields")
+        sorted_sizes = []
+        for key in fields:
+            if key != 'sparkline':
+                sorted_sizes.append(sizes[key])
+        return sorted_sizes
+    
+    # Returns a list with all PDF files in the bin directory
+    @expose_page(must_login=False, methods=['GET'])
+    def reports(self, **kwargs):
+        """Get the list of reports.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            self.logger.debug("report: Getting generated reports.")
+            pdf_files = []
+            for f in os.listdir(self.path):
+                if os.path.isfile(os.path.join(self.path, f)):
+                    filename, file_extension = os.path.splitext(self.path+f)
+                    if file_extension == '.pdf':
+                        file = {}
+                        file['size'] = os.path.getsize(self.path+f)
+                        file['name'] = f
+                        file['date'] = time.strftime('%Y.%m.%d %H:%M:%S', time.gmtime(os.path.getmtime(self.path+f)))
+                        pdf_files.append(file)
+
+            parsed_data = jsonbak.dumps({'data': pdf_files})
+        except Exception as e:
+            self.logger.error("report: Error getting PDF files: %s" % (e))
+            return jsonbak.dumps({"error": str(e)})
+        return parsed_data
+
+    # Deletes a report from disk
+    @expose_page(must_login=False, methods=['GET'])
+    def remove(self, **kwargs):
+        """Remove a report by name.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            if 'name' not in kwargs:
+                raise Exception('Missing filename')
+            filename = kwargs['name']
+            os.remove(self.path+filename)
+            self.logger.debug("Removing report %s" % kwargs['name'])
+            parsed_data = jsonbak.dumps({"data": "Deleted file"})
+            self.logger.info("report: Report %s deleted." % filename)
+        except Exception as e:
+            self.logger.error("report: Error deleting PDF file: %s" % (e))
+            return jsonbak.dumps({"error": str(e)})
+        return parsed_data
+>>>>>>> 9de5bb38... Add debug logs for reporting module
