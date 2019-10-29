@@ -390,7 +390,7 @@ class api(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             # init csv writer
-            output_file = "TODO library cStringIO"
+            output_file = StringIO()
             # get total items and keys
             request = self.session.get(
                 url + opt_endpoint, params=filters, auth=auth,
