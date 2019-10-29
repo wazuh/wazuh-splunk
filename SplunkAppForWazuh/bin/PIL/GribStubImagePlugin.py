@@ -9,24 +9,29 @@
 # See the README file for information on usage and redistribution.
 #
 
-import Image, ImageFile
+from . import Image, ImageFile
+from ._binary import i8
 
 _handler = None
 
-##
-# Install application-specific GRIB image handler.
-#
-# @param handler Handler object.
 
 def register_handler(handler):
+    """
+    Install application-specific GRIB image handler.
+
+    :param handler: Handler object.
+    """
     global _handler
     _handler = handler
+
 
 # --------------------------------------------------------------------
 # Image adapter
 
+
 def _accept(prefix):
-    return prefix[0:4] == "GRIB" and prefix[7] == chr(1)
+    return prefix[0:4] == b"GRIB" and i8(prefix[7]) == 1
+
 
 class GribStubImageFile(ImageFile.StubImageFile):
 
@@ -44,7 +49,7 @@ class GribStubImageFile(ImageFile.StubImageFile):
 
         # make something up
         self.mode = "F"
-        self.size = 1, 1
+        self._size = 1, 1
 
         loader = self._load()
         if loader:
@@ -52,6 +57,7 @@ class GribStubImageFile(ImageFile.StubImageFile):
 
     def _load(self):
         return _handler
+
 
 def _save(im, fp, filename):
     if _handler is None or not hasattr("_handler", "save"):

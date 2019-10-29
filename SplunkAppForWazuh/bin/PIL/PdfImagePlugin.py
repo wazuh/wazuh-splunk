@@ -20,10 +20,15 @@
 # Image plugin for PDF images (output only).
 ##
 
-__version__ = "0.4"
+import io
+import os
+import time
 
-import Image, ImageFile
-import StringIO
+from . import Image, ImageFile, ImageSequence, PdfParser
+
+# __version__ is deprecated and will be removed in a future version. Use
+# PIL.__version__ instead.
+__version__ = "0.5"
 
 
 #
@@ -36,175 +41,207 @@ import StringIO
 #  4. page
 #  5. page contents
 
-def _obj(fp, obj, **dict):
-    fp.write("%d 0 obj\n" % obj)
-    if dict:
-        fp.write("<<\n")
-        for k, v in dict.items():
-            if v is not None:
-                fp.write("/%s %s\n" % (k, v))
-        fp.write(">>\n")
 
-def _endobj(fp):
-    fp.write("endobj\n")
+def _save_all(im, fp, filename):
+    _save(im, fp, filename, save_all=True)
+
 
 ##
 # (Internal) Image save plugin for the PDF format.
 
-def _save(im, fp, filename):
+
+def _save(im, fp, filename, save_all=False):
+    is_appending = im.encoderinfo.get("append", False)
+    if is_appending:
+        existing_pdf = PdfParser.PdfParser(f=fp, filename=filename, mode="r+b")
+    else:
+        existing_pdf = PdfParser.PdfParser(f=fp, filename=filename, mode="w+b")
+
     resolution = im.encoderinfo.get("resolution", 72.0)
+
+    info = {
+        "title": None
+        if is_appending
+        else os.path.splitext(os.path.basename(filename))[0],
+        "author": None,
+        "subject": None,
+        "keywords": None,
+        "creator": None,
+        "producer": None,
+        "creationDate": None if is_appending else time.gmtime(),
+        "modDate": None if is_appending else time.gmtime(),
+    }
+    for k, default in info.items():
+        v = im.encoderinfo.get(k) if k in im.encoderinfo else default
+        if v:
+            existing_pdf.info[k[0].upper() + k[1:]] = v
 
     #
     # make sure image data is available
     im.load()
 
-    xref = [0]*(5+1) # placeholders
-
-    fp.write("%PDF-1.2\n")
-    fp.write("% created by PIL PDF driver " + __version__ + "\n")
-
-    #
-    # Get image characteristics
-
-    width, height = im.size
-
-    # FIXME: Should replace ASCIIHexDecode with RunLengthDecode (packbits)
-    # or LZWDecode (tiff/lzw compression).  Note that PDF 1.2 also supports
-    # Flatedecode (zip compression).
-
-    bits = 8
-    params = None
-
-    if im.mode == "1":
-        filter = "/ASCIIHexDecode"
-        colorspace = "/DeviceGray"
-        procset = "/ImageB" # grayscale
-        bits = 1
-    elif im.mode == "L":
-        filter = "/DCTDecode"
-        # params = "<< /Predictor 15 /Columns %d >>" % (width-2)
-        colorspace = "/DeviceGray"
-        procset = "/ImageB" # grayscale
-    elif im.mode == "P":
-        filter = "/ASCIIHexDecode"
-        colorspace = "[ /Indexed /DeviceRGB 255 <"
-        palette = im.im.getpalette("RGB")
-        for i in range(256):
-            r = ord(palette[i*3])
-            g = ord(palette[i*3+1])
-            b = ord(palette[i*3+2])
-            colorspace = colorspace + "%02x%02x%02x " % (r, g, b)
-        colorspace = colorspace + "> ]"
-        procset = "/ImageI" # indexed color
-    elif im.mode == "RGB":
-        filter = "/DCTDecode"
-        colorspace = "/DeviceRGB"
-        procset = "/ImageC" # color images
-    elif im.mode == "CMYK":
-        filter = "/DCTDecode"
-        colorspace = "/DeviceCMYK"
-        procset = "/ImageC" # color images
-    else:
-        raise ValueError("cannot save mode %s" % im.mode)
-
-    #
-    # catalogue
-
-    xref[1] = fp.tell()
-    _obj(fp, 1, Type = "/Catalog",
-                Pages = "2 0 R")
-    _endobj(fp)
+    existing_pdf.start_writing()
+    existing_pdf.write_header()
+    existing_pdf.write_comment("created by PIL PDF driver " + __version__)
 
     #
     # pages
-
-    xref[2] = fp.tell()
-    _obj(fp, 2, Type = "/Pages",
-                Count = 1,
-                Kids = "[4 0 R]")
-    _endobj(fp)
-
-    #
-    # image
-
-    op = StringIO.StringIO()
-
-    if filter == "/ASCIIHexDecode":
-        if bits == 1:
-            # FIXME: the hex encoder doesn't support packed 1-bit
-            # images; do things the hard way...
-            data = im.tostring("raw", "1")
-            im = Image.new("L", (len(data), 1), None)
-            im.putdata(data)
-        ImageFile._save(im, op, [("hex", (0,0)+im.size, 0, im.mode)])
-    elif filter == "/DCTDecode":
-        ImageFile._save(im, op, [("jpeg", (0,0)+im.size, 0, im.mode)])
-    elif filter == "/FlateDecode":
-        ImageFile._save(im, op, [("zip", (0,0)+im.size, 0, im.mode)])
-    elif filter == "/RunLengthDecode":
-        ImageFile._save(im, op, [("packbits", (0,0)+im.size, 0, im.mode)])
-    else:
-        raise ValueError("unsupported PDF filter (%s)" % filter)
-
-    xref[3] = fp.tell()
-    _obj(fp, 3, Type = "/XObject",
-                Subtype = "/Image",
-                Width = width, # * 72.0 / resolution,
-                Height = height, # * 72.0 / resolution,
-                Length = len(op.getvalue()),
-                Filter = filter,
-                BitsPerComponent = bits,
-                DecodeParams = params,
-                ColorSpace = colorspace)
-
-    fp.write("stream\n")
-    fp.write(op.getvalue())
-    fp.write("\nendstream\n")
-
-    _endobj(fp)
+    ims = [im]
+    if save_all:
+        append_images = im.encoderinfo.get("append_images", [])
+        for append_im in append_images:
+            append_im.encoderinfo = im.encoderinfo.copy()
+            ims.append(append_im)
+    numberOfPages = 0
+    image_refs = []
+    page_refs = []
+    contents_refs = []
+    for im in ims:
+        im_numberOfPages = 1
+        if save_all:
+            try:
+                im_numberOfPages = im.n_frames
+            except AttributeError:
+                # Image format does not have n_frames.
+                # It is a single frame image
+                pass
+        numberOfPages += im_numberOfPages
+        for i in range(im_numberOfPages):
+            image_refs.append(existing_pdf.next_object_id(0))
+            page_refs.append(existing_pdf.next_object_id(0))
+            contents_refs.append(existing_pdf.next_object_id(0))
+            existing_pdf.pages.append(page_refs[-1])
 
     #
-    # page
+    # catalog and list of pages
+    existing_pdf.write_catalog()
 
-    xref[4] = fp.tell()
-    _obj(fp, 4)
-    fp.write("<<\n/Type /Page\n/Parent 2 0 R\n"\
-             "/Resources <<\n/ProcSet [ /PDF %s ]\n"\
-             "/XObject << /image 3 0 R >>\n>>\n"\
-             "/MediaBox [ 0 0 %d %d ]\n/Contents 5 0 R\n>>\n" %\
-             (procset, int(width * 72.0 /resolution) , int(height * 72.0 / resolution)))
-    _endobj(fp)
+    pageNumber = 0
+    for imSequence in ims:
+        im_pages = ImageSequence.Iterator(imSequence) if save_all else [imSequence]
+        for im in im_pages:
+            # FIXME: Should replace ASCIIHexDecode with RunLengthDecode
+            # (packbits) or LZWDecode (tiff/lzw compression).  Note that
+            # PDF 1.2 also supports Flatedecode (zip compression).
 
-    #
-    # page contents
+            bits = 8
+            params = None
 
-    op = StringIO.StringIO()
+            if im.mode == "1":
+                filter = "ASCIIHexDecode"
+                colorspace = PdfParser.PdfName("DeviceGray")
+                procset = "ImageB"  # grayscale
+                bits = 1
+            elif im.mode == "L":
+                filter = "DCTDecode"
+                # params = "<< /Predictor 15 /Columns %d >>" % (width-2)
+                colorspace = PdfParser.PdfName("DeviceGray")
+                procset = "ImageB"  # grayscale
+            elif im.mode == "P":
+                filter = "ASCIIHexDecode"
+                palette = im.im.getpalette("RGB")
+                colorspace = [
+                    PdfParser.PdfName("Indexed"),
+                    PdfParser.PdfName("DeviceRGB"),
+                    255,
+                    PdfParser.PdfBinary(palette),
+                ]
+                procset = "ImageI"  # indexed color
+            elif im.mode == "RGB":
+                filter = "DCTDecode"
+                colorspace = PdfParser.PdfName("DeviceRGB")
+                procset = "ImageC"  # color images
+            elif im.mode == "CMYK":
+                filter = "DCTDecode"
+                colorspace = PdfParser.PdfName("DeviceCMYK")
+                procset = "ImageC"  # color images
+            else:
+                raise ValueError("cannot save mode %s" % im.mode)
 
-    op.write("q %d 0 0 %d 0 0 cm /image Do Q\n" % (int(width * 72.0 / resolution), int(height * 72.0 / resolution)))
+            #
+            # image
 
-    xref[5] = fp.tell()
-    _obj(fp, 5, Length = len(op.getvalue()))
+            op = io.BytesIO()
 
-    fp.write("stream\n")
-    fp.write(op.getvalue())
-    fp.write("\nendstream\n")
+            if filter == "ASCIIHexDecode":
+                if bits == 1:
+                    # FIXME: the hex encoder doesn't support packed 1-bit
+                    # images; do things the hard way...
+                    data = im.tobytes("raw", "1")
+                    im = Image.new("L", im.size)
+                    im.putdata(data)
+                ImageFile._save(im, op, [("hex", (0, 0) + im.size, 0, im.mode)])
+            elif filter == "DCTDecode":
+                Image.SAVE["JPEG"](im, op, filename)
+            elif filter == "FlateDecode":
+                ImageFile._save(im, op, [("zip", (0, 0) + im.size, 0, im.mode)])
+            elif filter == "RunLengthDecode":
+                ImageFile._save(im, op, [("packbits", (0, 0) + im.size, 0, im.mode)])
+            else:
+                raise ValueError("unsupported PDF filter (%s)" % filter)
 
-    _endobj(fp)
+            #
+            # Get image characteristics
+
+            width, height = im.size
+
+            existing_pdf.write_obj(
+                image_refs[pageNumber],
+                stream=op.getvalue(),
+                Type=PdfParser.PdfName("XObject"),
+                Subtype=PdfParser.PdfName("Image"),
+                Width=width,  # * 72.0 / resolution,
+                Height=height,  # * 72.0 / resolution,
+                Filter=PdfParser.PdfName(filter),
+                BitsPerComponent=bits,
+                DecodeParams=params,
+                ColorSpace=colorspace,
+            )
+
+            #
+            # page
+
+            existing_pdf.write_page(
+                page_refs[pageNumber],
+                Resources=PdfParser.PdfDict(
+                    ProcSet=[PdfParser.PdfName("PDF"), PdfParser.PdfName(procset)],
+                    XObject=PdfParser.PdfDict(image=image_refs[pageNumber]),
+                ),
+                MediaBox=[
+                    0,
+                    0,
+                    int(width * 72.0 / resolution),
+                    int(height * 72.0 / resolution),
+                ],
+                Contents=contents_refs[pageNumber],
+            )
+
+            #
+            # page contents
+
+            page_contents = PdfParser.make_bytes(
+                "q %d 0 0 %d 0 0 cm /image Do Q\n"
+                % (int(width * 72.0 / resolution), int(height * 72.0 / resolution))
+            )
+
+            existing_pdf.write_obj(contents_refs[pageNumber], stream=page_contents)
+
+            pageNumber += 1
 
     #
     # trailer
-    startxref = fp.tell()
-    fp.write("xref\n0 %d\n0000000000 65535 f \n" % len(xref))
-    for x in xref[1:]:
-        fp.write("%010d 00000 n \n" % x)
-    fp.write("trailer\n<<\n/Size %d\n/Root 1 0 R\n>>\n" % len(xref))
-    fp.write("startxref\n%d\n%%%%EOF\n" % startxref)
-    fp.flush()
+    existing_pdf.write_xref_and_trailer()
+    if hasattr(fp, "flush"):
+        fp.flush()
+    existing_pdf.close()
+
 
 #
 # --------------------------------------------------------------------
 
+
 Image.register_save("PDF", _save)
+Image.register_save_all("PDF", _save_all)
 
 Image.register_extension("PDF", ".pdf")
 
