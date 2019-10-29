@@ -23,8 +23,8 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 import base64
-from fpdf import FPDF
 import math
+from fpdf import FPDF
 
 class PDF(FPDF):
     def header(self):
@@ -49,7 +49,7 @@ class PDF(FPDF):
     def footer(self):
         # Position at 1.5 cm from bottom
         self.year = datetime.datetime.now().strftime('%Y')
-        self.copyright = unicode('Copyright © ' + self.year + ' Wazuh, Inc.', 'utf-8')
+        self.copyright = 'Copyright © ' + str(self.year) + ' Wazuh, Inc.'
         self.set_y(-15)
         self.set_text_color(75, 179, 204)
         self.set_font('RobotoLight', '', 7)
@@ -57,7 +57,6 @@ class PDF(FPDF):
         self.cell(100, 10, self.copyright, 0, 0, 'L')
         self.cell(0, 10, 'Page ' + str(self.page_no()) + ' of {nb}', 0, 0, 'R')
         
-
 
 class report(controllers.BaseController):
     """Report class.
@@ -1042,6 +1041,118 @@ class report(controllers.BaseController):
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
+
+    #Print group info
+    def print_group_info(self, group, pdf):
+        pdf.ln(8)
+        pdf.set_font('RobotoLight','',11)
+        pdf.set_text_color(23,23,23)
+    
+    #Print agent info
+    def print_agent_info(self, agent_info, pdf):
+        self.logger.debug("report: Printing agent info.")
+        pdf.ln(10)
+        sorted_fields = ('ID', 'Name', 'IP', 'Version', 'Manager', 'OS')
+        fields = {'ID':0, 'Name':0, 'IP':0, 'Version':0, 'Manager':0, 'OS':0}
+        total_width = 0
+        for key in fields.keys():
+            #Calculate width
+            width = pdf.get_string_width(agent_info[key])
+            if pdf.get_string_width(agent_info[key]) > width:
+                width = pdf.get_string_width(agent_info[key])
+            width = width + 2
+            total_width = total_width + width
+            fields[key] = width
+        #Calculate the rest of the width to fill the row
+        diff = 0
+        if total_width < 190:
+            diff = 190 - total_width
+            keys_num = len(fields.keys())
+            diff = diff / keys_num
+        for key in fields.keys():
+            fields[key] = fields[key] + diff
+        #Set color and print th
+        self.setBlueHeaderStyle(pdf)
+        for key in sorted_fields:
+            pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
+        pdf.ln()
+        #Change text color and print tr
+        self.setTableRowStyle(pdf)
+        for key in sorted_fields:
+            pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
+        #Print the rest of the agent information
+        pdf.ln(6)
+        pdf.set_font('RobotoLight','',11)
+        pdf.set_text_color(23,23,23)
+        pdf.cell(0,9, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
+        pdf.ln()
+        pdf.cell(0,9, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
+        pdf.ln()
+        pdf.cell(0,9, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
+        pdf.ln(10)
+
+    #Sorts the width of the fields
+    def sort_table_sizes(self, fields, sizes):
+        sorted_sizes = []
+        for key in fields:
+            if key != 'sparkline':
+                sorted_sizes.append(sizes[key])
+        return sorted_sizes
+    
+    # Returns a list with all PDF files in the bin directory
+    @expose_page(must_login=False, methods=['GET'])
+    def reports(self, **kwargs):
+        """Get the list of reports.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            self.logger.debug("report: Getting generated reports.")
+            pdf_files = []
+            for f in os.listdir(self.path):
+                if os.path.isfile(os.path.join(self.path, f)):
+                    filename, file_extension = os.path.splitext(self.path+f)
+                    if file_extension == '.pdf':
+                        file = {}
+                        file['size'] = os.path.getsize(self.path+f)
+                        file['name'] = f
+                        file['date'] = time.strftime('%Y.%m.%d %H:%M:%S', time.gmtime(os.path.getmtime(self.path+f)))
+                        pdf_files.append(file)
+
+            parsed_data = jsonbak.dumps({'data': pdf_files})
+        except Exception as e:
+            self.logger.error("report: Error getting PDF files: %s" % (e))
+            return jsonbak.dumps({"error": str(e)})
+        return parsed_data
+
+    # Deletes a report from disk
+    @expose_page(must_login=False, methods=['GET'])
+    def remove(self, **kwargs):
+        """Remove a report by name.
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+
+        """
+        try:
+            if 'name' not in kwargs:
+                raise Exception('Missing filename')
+            filename = kwargs['name']
+            os.remove(self.path+filename)
+            self.logger.debug("Removing report %s" % kwargs['name'])
+            parsed_data = jsonbak.dumps({"data": "Deleted file"})
+            self.logger.info("report: Report %s deleted." % filename)
+        except Exception as e:
+            self.logger.error("report: Error deleting PDF file: %s" % (e))
+            return jsonbak.dumps({"error": str(e)})
+        return parsed_data
+
     #Cut value string
     def cut_value(self, width, value_string):
         num_characters = int(math.ceil(width / 1.50))
@@ -1168,114 +1279,3 @@ class report(controllers.BaseController):
                 sizes[wf] = sizes_arr
         sizes = self.sort_table_sizes(table['fields'], sizes)
         return sizes
-
-    #Print group info
-    def print_group_info(self, group, pdf):
-        pdf.ln(8)
-        pdf.set_font('RobotoLight','',11)
-        pdf.set_text_color(23,23,23)
-    
-    #Print agent info
-    def print_agent_info(self, agent_info, pdf):
-        self.logger.debug("report: Printing agent info.")
-        pdf.ln(10)
-        sorted_fields = ('ID', 'Name', 'IP', 'Version', 'Manager', 'OS')
-        fields = {'ID':0, 'Name':0, 'IP':0, 'Version':0, 'Manager':0, 'OS':0}
-        total_width = 0
-        for key in fields.keys():
-            #Calculate width
-            width = pdf.get_string_width(agent_info[key])
-            if pdf.get_string_width(agent_info[key]) > width:
-                width = pdf.get_string_width(agent_info[key])
-            width = width + 2
-            total_width = total_width + width
-            fields[key] = width
-        #Calculate the rest of the width to fill the row
-        diff = 0
-        if total_width < 190:
-            diff = 190 - total_width
-            keys_num = len(fields.keys())
-            diff = diff / keys_num
-        for key in fields.keys():
-            fields[key] = fields[key] + diff
-        #Set color and print th
-        self.setBlueHeaderStyle(pdf)
-        for key in sorted_fields:
-            pdf.cell(fields[key], 4, str(key), 0, 0, 'L', 1)
-        pdf.ln()
-        #Change text color and print tr
-        self.setTableRowStyle(pdf)
-        for key in sorted_fields:
-            pdf.cell(fields[key], 4, str(agent_info[key]), 'B', 0, 'L', 0)
-        #Print the rest of the agent information
-        pdf.ln(6)
-        pdf.set_font('RobotoLight','',11)
-        pdf.set_text_color(23,23,23)
-        pdf.cell(0,9, "Registration date: " + str(agent_info['dateAdd']), 0, 0, 'L', 0)
-        pdf.ln()
-        pdf.cell(0,9, "Last keep alive: " + str(agent_info['lastKeepAlive']), 0, 0, 'L', 0)
-        pdf.ln()
-        pdf.cell(0,9, "Groups: " + str(agent_info['group']), 0, 0, 'L', 0)
-        pdf.ln(10)
-
-    #Sorts the width of the fields
-    def sort_table_sizes(self, fields, sizes):
-        sorted_sizes = []
-        for key in fields:
-            if key != 'sparkline':
-                sorted_sizes.append(sizes[key])
-        return sorted_sizes
-    
-    # Returns a list with all PDF files in the bin directory
-    @expose_page(must_login=False, methods=['GET'])
-    def reports(self, **kwargs):
-        """Get the list of reports.
-
-        Parameters
-        ----------
-        kwargs : dict
-            The request's parameters
-
-        """
-        try:
-            self.logger.debug("report: Getting generated reports.")
-            pdf_files = []
-            for f in os.listdir(self.path):
-                if os.path.isfile(os.path.join(self.path, f)):
-                    filename, file_extension = os.path.splitext(self.path+f)
-                    if file_extension == '.pdf':
-                        file = {}
-                        file['size'] = os.path.getsize(self.path+f)
-                        file['name'] = f
-                        file['date'] = time.strftime('%Y.%m.%d %H:%M:%S', time.gmtime(os.path.getmtime(self.path+f)))
-                        pdf_files.append(file)
-
-            parsed_data = jsonbak.dumps({'data': pdf_files})
-        except Exception as e:
-            self.logger.error("report: Error getting PDF files: %s" % (e))
-            return jsonbak.dumps({"error": str(e)})
-        return parsed_data
-
-    # Deletes a report from disk
-    @expose_page(must_login=False, methods=['GET'])
-    def remove(self, **kwargs):
-        """Remove a report by name.
-
-        Parameters
-        ----------
-        kwargs : dict
-            The request's parameters
-
-        """
-        try:
-            if 'name' not in kwargs:
-                raise Exception('Missing filename')
-            filename = kwargs['name']
-            os.remove(self.path+filename)
-            self.logger.debug("Removing report %s" % kwargs['name'])
-            parsed_data = jsonbak.dumps({"data": "Deleted file"})
-            self.logger.info("report: Report %s deleted." % filename)
-        except Exception as e:
-            self.logger.error("report: Error deleting PDF file: %s" % (e))
-            return jsonbak.dumps({"error": str(e)})
-        return parsed_data
