@@ -373,7 +373,7 @@ class report(controllers.BaseController):
         if customTables:
             tables = {}
             for extraTable in customTables:
-                for key,value in extraTable.iteritems():
+                for key,value in extraTable.items():
                     pdf.set_text_color(0,0,0)
                     pdf.set_font('RobotoLight', '', 10)
                     tableKey = self.getString(key,labels)
@@ -390,7 +390,7 @@ class report(controllers.BaseController):
                         for row in value: # rows
                             nextRow = []
                             if type(row) is dict:
-                                for rowKeys, rowValues in row.iteritems():
+                                for rowKeys, rowValues in row.items():
                                     if self.getString(rowKeys,labels) in fields:
                                         if rowValues and (type(rowValues) is dict or (type(rowValues) is list and type(rowValues[0]) is dict)):
                                             customTables.append({rowKeys:rowValues})
@@ -412,7 +412,7 @@ class report(controllers.BaseController):
                         pdf.cell(0, 5, txt = self.getString(key,labels).capitalize(), border = '', align = '', fill = False, link = '')
                         pdf.set_margins(10, 0, 10)
                         pdf.ln(5)
-                        for currentTableKey, currentTableValue in value.iteritems():
+                        for currentTableKey, currentTableValue in value.items():
                             if type(currentTableValue) is dict:
                                 customTables.append({currentTableKey:currentTableValue})
                             else:
@@ -458,7 +458,7 @@ class report(controllers.BaseController):
                 if currentSection:
                     self.addSubtitle(currentSection,pdf)
                 if type(data) is dict:
-                    for key,value in data.iteritems():
+                    for key,value in data.items():
                         if type(value) is not list and type(value) is not dict:
                             keyList.append(self.getString(key,labels))
                             valueList.append(self.getString(value,labels))
@@ -762,7 +762,7 @@ class report(controllers.BaseController):
                                     if 'filters' in item and item['filters'] and 'config' in item and item['config']:
                                         filters = " "
                                         values = []
-                                        for currentFilterKey,currentFilterValue in item['filters'].iteritems():
+                                        for currentFilterKey,currentFilterValue in item['filters'].items():
                                             filters = filters + str(currentFilterKey) + ": " + str(currentFilterValue) + " |"
                                             values.append(currentFilterValue)
                                         filters = filters[:len(filters)-1]
