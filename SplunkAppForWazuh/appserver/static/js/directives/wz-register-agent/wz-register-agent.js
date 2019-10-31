@@ -18,9 +18,21 @@ define(['../module'], function(directives) {
       scope: {},
       controller($scope, $notificationService, $requestService) {
         const apiReq = $requestService.apiReq
+
+        /**
+         * Obtain the current selected API from the session storage and removes the "http://" or "https://" from the URL
+         */
+        this.getSelectedApi = () => {
+          var api_url = window.sessionStorage.selectedAPI ? JSON.parse(window.sessionStorage.selectedAPI).url : ''
+          const numToClean = api_url.startsWith('https://') ? 8 : 7;
+          api_url =  api_url.substr(numToClean);
+          $scope.managerAddress = api_url
+          return api_url
+        }
+
         $scope.config = {
           osSelected: 'redhat',
-          managerIp: '',
+          managerIp: this.getSelectedApi(),
           wazuhPassword: '',
           agentName: '',
           agentKey: ''
@@ -92,7 +104,7 @@ define(['../module'], function(directives) {
             )
           }
         }
-
+     
         $scope.getVersion = async () => {
           $scope.wazuhVersion = await $requestService.apiReq('/version')
           $scope.wazuhVersion = ((($scope.wazuhVersion || {}).data || {}).data || {})
