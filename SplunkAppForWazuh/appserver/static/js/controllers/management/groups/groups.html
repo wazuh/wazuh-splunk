@@ -1,4 +1,16 @@
-<div flex layout="column" class="mozilla-table-size-85 wz-white-background" ng-class="{'cursor-wait': multipleSelectorLoading}">
+<!-- Register a new agent component -->
+<div flex ng-if="showRegisterGuide" class="md-padding" layout="column"
+  layout-align="start space-around">
+  <div class="wz-margin-auto title-register-agent" ng-if="!wazuhNotReadyYet">
+    <span class="font-size-20">Deploy a new agent</span>
+    <span class="close-register-agent cursor-pointer" ng-click="showRegisterAgent()"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;close</span>
+  </div>
+  <wz-register-agent></wz-register-agent>
+</div>
+<!-- End Register a new agent component-->
+
+
+<div ng-if="!showRegisterGuide" flex layout="column" class="mozilla-table-size-85 wz-white-background" ng-class="{'cursor-wait': multipleSelectorLoading}">
   <md-content flex layout="column" class="overflow-hidden wz-white-background">
     <div layout="row" class="layout-row layout-align-end wz-white-background">
       <div class='wz-breadcrumb-margin'>
@@ -12,6 +24,17 @@
     <div class="loader-bar" ng-show="loadingRing">
       <div class="loader"></div>
     </div>
+
+      <!-- Show warning when agents count is 0 -->
+    <div ng-if="agentsCountTotal === 0">
+      <div flex class="euiCallOut euiCallOut--warning" style="margin:20px;">
+        <div class="euiCallOutHeader">
+          <wz-svg icon="callOutHeader"></wz-svg>
+          <span class="euiCallOutHeader__title">There are no agents registered to this manager. <a class="cursor-pointer green-href" ng-click="showRegisterAgent()">Deploy a new agent</a></span>
+        </div>
+      </div>
+    </div>
+    <!-- End show warning when agents count is 0-->
 
       <!-- Headline -->
       <div ng-show="!loadingRing" layout="column" layout-padding ng-if="!currentGroup || !currentGroup.name">
@@ -229,6 +252,4 @@
         </wz-multiple-selector>
       </div>
     </div>
-</div>
-</md-content>
 </div>
