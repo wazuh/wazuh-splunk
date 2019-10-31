@@ -21,6 +21,7 @@ define(['../module'], function(directives) {
         $scope.config = {
           osSelected: 'redhat',
           managerIp: '',
+          wazuhPassword: '',
           agentName: '',
           agentKey: ''
         }
@@ -46,6 +47,11 @@ define(['../module'], function(directives) {
 
         $scope.selectManagerAddress = managerAddress => {
           $scope.config.managerIp = managerAddress
+          $scope.$applyAsync()
+        }
+
+        $scope.selectWazuhPassword = wazuhPassword => {
+          $scope.config.wazuhPassword = wazuhPassword
           $scope.$applyAsync()
         }
 
