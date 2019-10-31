@@ -1,8 +1,11 @@
 <div class="wz-margin-auto">
   <md-card class="wz-md-card no-margin-sides wz-margin-top-15 add-agent-card">
-    <md-card-contents>
+    <div class="loader-bar" ng-show="isLoading">
+      <div class="loader"></div>
+    </div>
+    <md-card-contents ng-show="!isLoading">
       <!-- Select the OS-->
-      <div>
+      <div >
         <div class="bubble">1</div>
         <div class="reg-agent-text">Choose your OS</div>
         <div class="border-to-div">
@@ -36,10 +39,21 @@
             ng-change="selectManagerAddress(managerAddress)">
         </div>
       </div>
+
+      <!-- Select the Password -->
+      <div class="wz-margin-top-30" ng-show="passwordNeeded">
+        <div class="bubble">3</div>
+        <div class="wz-padding-top-7"></div>
+        <div class="reg-agent-text wz-padding-0">Wazuh password</div>
+        <div class="div-input-register-agent border-to-div">
+          <input flex placeholder="Wazuh password..." ng-model="wazuhPassword" type="text" class="euiFieldText"
+            ng-change="selectWazuhPassword(wazuhPassword)">
+        </div>
+      </div>
       <div>
 
         <div class="wz-margin-top-30">
-          <div class="bubble">3</div>
+          <div class="bubble">{{passwordNeeded ? 4 : 3}}</div>
           <div class="reg-agent-text">Complete the installation</div>
           <!-- snippet with install steps-->
           <div ng-if="config.osSelected && config.managerIp" class="wz-margin-top-10">
@@ -64,7 +78,12 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  sudo WAZUH_MANAGER_IP='{{config.managerIp}}' yum install https://packages.wazuh.com/3.x/yum/wazuh-agent-{{wazuhVersion}}-1.x86_64.rpm
+                  <span ng-if="passwordNeeded">
+                    sudo WAZUH_MANAGER_IP='{{config.managerIp}}' WAZUH_PASSWORD='{{config.wazuhPassword}}' yum install https://packages.wazuh.com/3.x/yum/wazuh-agent-{{wazuhVersion}}-1.x86_64.rpm
+                  </span>
+                  <span ng-if="!passwordNeeded">
+                    sudo WAZUH_MANAGER_IP='{{config.managerIp}}' yum install https://packages.wazuh.com/3.x/yum/wazuh-agent-{{wazuhVersion}}-1.x86_64.rpm
+                  </span>
                 </div>
               </div>
               <!-- If Debian / Ubuntu -->
@@ -76,7 +95,12 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  curl -so wazuh-agent.deb https://packages.wazuh.com/3.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{{wazuhVersion}}-1_amd64.deb && sudo WAZUH_MANAGER_IP='{{config.managerIp}}' dpkg -i ./wazuh-agent.deb
+                  <span ng-if="passwordNeeded">
+                    curl -so wazuh-agent.deb https://packages.wazuh.com/3.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{{wazuhVersion}}-1_amd64.deb && sudo WAZUH_MANAGER_IP='{{config.managerIp}}' WAZUH_PASSWORD='{{config.wazuhPassword}}' dpkg -i ./wazuh-agent.deb
+                  </span>
+                  <span ng-if="!passwordNeeded">
+                    curl -so wazuh-agent.deb https://packages.wazuh.com/3.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{{wazuhVersion}}-1_amd64.deb && sudo WAZUH_MANAGER_IP='{{config.managerIp}}' dpkg -i ./wazuh-agent.deb
+                  </span>
                 </div>
               </div>
               <!-- If Windows -->
@@ -88,7 +112,12 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  Invoke-WebRequest -Uri https://packages.wazuh.com/3.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi -OutFile wazuh-agent.msi; wazuh-agent.msi /q ADDRESS='{{config.managerIp}}' AUTHD_SERVER='{{config.managerIp}}'
+                  <span ng-if="passwordNeeded">
+                    Invoke-WebRequest -Uri https://packages.wazuh.com/3.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi -OutFile wazuh-agent.msi; wazuh-agent.msi /q ADDRESS='{{config.managerIp}}' AUTHD_SERVER='{{config.managerIp}} PASSWORD='{{config.wazuhPassword}}' '
+                  </span>
+                  <span ng-if="!passwordNeeded">
+                    Invoke-WebRequest -Uri https://packages.wazuh.com/3.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi -OutFile wazuh-agent.msi; wazuh-agent.msi /q ADDRESS='{{config.managerIp}}' AUTHD_SERVER='{{config.managerIp}} '
+                  </span>
                 </div>
                 <div flex class="euiCallOut euiCallOut--info wz-margin-top-17">
                   <div class="euiCallOutHeader">
@@ -106,7 +135,12 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  curl -so wazuh-agent.pkg https://packages.wazuh.com/3.x/osx/wazuh-agent-{{wazuhVersion}}-1.pkg && sudo launchctl setenv WAZUH_MANAGER_IP '{{config.managerIp}}' && sudo installer -pkg ./wazuh-agent.pkg -target /
+                  <span ng-if="passwordNeeded">
+                    curl -so wazuh-agent.pkg https://packages.wazuh.com/3.x/osx/wazuh-agent-{{wazuhVersion}}-1.pkg && sudo launchctl setenv WAZUH_MANAGER_IP '{{config.managerIp}}' setenv WAZUH_PASSWORD '{{config.wazuhPassword}}' && sudo installer -pkg ./wazuh-agent.pkg -target /
+                  </span>
+                  <span ng-if="!passwordNeeded">
+                    curl -so wazuh-agent.pkg https://packages.wazuh.com/3.x/osx/wazuh-agent-{{wazuhVersion}}-1.pkg && sudo launchctl setenv WAZUH_MANAGER_IP '{{config.managerIp}}' && sudo installer -pkg ./wazuh-agent.pkg -target /
+                  </span>
                 </div>
               </div>
             </div>

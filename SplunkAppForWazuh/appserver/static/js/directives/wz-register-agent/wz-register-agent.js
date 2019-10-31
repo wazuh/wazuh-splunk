@@ -18,6 +18,32 @@ define(['../module'], function(directives) {
       scope: {},
       controller($scope, $notificationService, $requestService) {
         const apiReq = $requestService.apiReq
+
+        /**
+         * Obtain the current selected API from the session storage and removes the "http://" or "https://" from the URL
+         */
+        this.getSelectedApi = () => {
+          var api_url = window.sessionStorage.selectedAPI ? JSON.parse(window.sessionStorage.selectedAPI).url : ''
+          const numToClean = api_url.startsWith('https://') ? 8 : 7;
+          api_url =  api_url.substr(numToClean);
+          $scope.managerAddress = api_url
+          return api_url
+        }
+
+        this.isPasswordNeeded = async () => {
+          try{
+            $scope.isLoading = true
+            const result = await $requestService.apiReq('/agents/000/config/auth/auth')
+            const auth = ((result.data || {}).data || {}).auth || {};
+            const usePassword = auth.use_password === 'yes';
+            $scope.passwordNeeded = usePassword;
+          } catch (error) {
+            $scope.passwordNeeded = false;
+          }
+          $scope.isLoading = false
+          $scope.$applyAsync()
+        }
+
         $scope.config = {
           osSelected: 'redhat',
           managerIp: '',
@@ -27,6 +53,7 @@ define(['../module'], function(directives) {
         $scope.newInstall = true
         $scope.registeredAgent = false
         $scope.showNavTab = false
+        this.isPasswordNeeded()
 
         // Functions
         $scope.selectOs = os => {
