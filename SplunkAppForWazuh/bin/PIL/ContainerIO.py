@@ -18,16 +18,18 @@
 # A file object that provides read access to a part of an existing
 # file (for example a TAR file).
 
-class ContainerIO:
+import io
 
-    ##
-    # Create file object.
-    #
-    # @param file Existing file.
-    # @param offset Start of region, in bytes.
-    # @param length Size of region, in bytes.
 
+class ContainerIO(object):
     def __init__(self, file, offset, length):
+        """
+        Create file object.
+
+        :param file: Existing file.
+        :param offset: Start of region, in bytes.
+        :param length: Size of region, in bytes.
+        """
         self.fh = file
         self.pos = 0
         self.offset = offset
@@ -38,17 +40,17 @@ class ContainerIO:
     # Always false.
 
     def isatty(self):
-        return 0
+        return False
 
-    ##
-    # Move file pointer.
-    #
-    # @param offset Offset in bytes.
-    # @param mode Starting position. Use 0 for beginning of region, 1
-    #    for current offset, and 2 for end of region.  You cannot move
-    #    the pointer outside the defined region.
+    def seek(self, offset, mode=io.SEEK_SET):
+        """
+        Move file pointer.
 
-    def seek(self, offset, mode = 0):
+        :param offset: Offset in bytes.
+        :param mode: Starting position. Use 0 for beginning of region, 1
+           for current offset, and 2 for end of region.  You cannot move
+           the pointer outside the defined region.
+        """
         if mode == 1:
             self.pos = self.pos + offset
         elif mode == 2:
@@ -59,40 +61,39 @@ class ContainerIO:
         self.pos = max(0, min(self.pos, self.length))
         self.fh.seek(self.offset + self.pos)
 
-    ##
-    # Get current file pointer.
-    #
-    # @return Offset from start of region, in bytes.
-
     def tell(self):
+        """
+        Get current file pointer.
+
+        :returns: Offset from start of region, in bytes.
+        """
         return self.pos
 
-    ##
-    # Read data.
-    #
-    # @def read(bytes=0)
-    # @param bytes Number of bytes to read.  If omitted or zero,
-    #     read until end of region.
-    # @return An 8-bit string.
+    def read(self, n=0):
+        """
+        Read data.
 
-    def read(self, n = 0):
+        :param n: Number of bytes to read. If omitted or zero,
+            read until end of region.
+        :returns: An 8-bit string.
+        """
         if n:
             n = min(n, self.length - self.pos)
         else:
             n = self.length - self.pos
-        if not n: # EOF
+        if not n:  # EOF
             return ""
         self.pos = self.pos + n
         return self.fh.read(n)
 
-    ##
-    # Read a line of text.
-    #
-    # @return An 8-bit string.
-
     def readline(self):
+        """
+        Read a line of text.
+
+        :returns: An 8-bit string.
+        """
         s = ""
-        while 1:
+        while True:
             c = self.read(1)
             if not c:
                 break
@@ -101,16 +102,16 @@ class ContainerIO:
                 break
         return s
 
-    ##
-    # Read multiple lines of text.
-    #
-    # @return A list of 8-bit strings.
-
     def readlines(self):
-        l = []
-        while 1:
+        """
+        Read multiple lines of text.
+
+        :returns: A list of 8-bit strings.
+        """
+        lines = []
+        while True:
             s = self.readline()
             if not s:
                 break
-            l.append(s)
-        return l
+            lines.append(s)
+        return lines
