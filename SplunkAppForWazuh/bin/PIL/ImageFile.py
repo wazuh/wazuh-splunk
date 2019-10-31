@@ -27,20 +27,27 @@
 # See the README file for information on usage and redistribution.
 #
 
-import Image
-import traceback, string, os
+import io
+import struct
+import sys
+
+from . import Image
+from ._util import isPath
 
 MAXBLOCK = 65536
 
-SAFEBLOCK = 1024*1024
+SAFEBLOCK = 1024 * 1024
+
+LOAD_TRUNCATED_IMAGES = False
 
 ERRORS = {
     -1: "image buffer overrun error",
     -2: "decoding error",
     -3: "unknown error",
     -8: "bad configuration",
-    -9: "out of memory error"
+    -9: "out of memory error",
 }
+
 
 def raise_ioerror(error):
     try:
@@ -51,20 +58,21 @@ def raise_ioerror(error):
         message = "decoder error %d" % error
     raise IOError(message + " when reading image file")
 
+
 #
 # --------------------------------------------------------------------
 # Helpers
 
-def _tilesort(t1, t2):
+
+def _tilesort(t):
     # sort on offset
-    return cmp(t1[2], t2[2])
+    return t[2]
+
 
 #
 # --------------------------------------------------------------------
 # ImageFile base class
 
-##
-# Base class for image file handlers.
 
 class ImageFile(Image.Image):
     "Base class for image file format handlers."
@@ -72,57 +80,67 @@ class ImageFile(Image.Image):
     def __init__(self, fp=None, filename=None):
         Image.Image.__init__(self)
 
+        self._min_frame = 0
+
+        self.custom_mimetype = None
+
         self.tile = None
-        self.readonly = 1 # until we know better
+        self.readonly = 1  # until we know better
 
         self.decoderconfig = ()
         self.decodermaxblock = MAXBLOCK
 
-        if Image.isStringType(fp):
+        if isPath(fp):
             # filename
             self.fp = open(fp, "rb")
             self.filename = fp
+            self._exclusive_fp = True
         else:
             # stream
             self.fp = fp
             self.filename = filename
+            # can be overridden
+            self._exclusive_fp = None
 
         try:
             self._open()
-        except IndexError, v: # end of data
-            if Image.DEBUG > 1:
-                traceback.print_exc()
-            raise SyntaxError, v
-        except TypeError, v: # end of data (ord)
-            if Image.DEBUG > 1:
-                traceback.print_exc()
-            raise SyntaxError, v
-        except KeyError, v: # unsupported mode
-            if Image.DEBUG > 1:
-                traceback.print_exc()
-            raise SyntaxError, v
-        except EOFError, v: # got header but not the first frame
-            if Image.DEBUG > 1:
-                traceback.print_exc()
-            raise SyntaxError, v
+        except (
+            IndexError,  # end of data
+            TypeError,  # end of data (ord)
+            KeyError,  # unsupported mode
+            EOFError,  # got header but not the first frame
+            struct.error,
+        ) as v:
+            # close the file only if we have opened it this constructor
+            if self._exclusive_fp:
+                self.fp.close()
+            raise SyntaxError(v)
 
         if not self.mode or self.size[0] <= 0:
-            raise SyntaxError, "not identified by this driver"
+            raise SyntaxError("not identified by this driver")
 
     def draft(self, mode, size):
-        "Set draft mode"
+        """Set draft mode"""
 
         pass
 
+    def get_format_mimetype(self):
+        if self.custom_mimetype:
+            return self.custom_mimetype
+        if self.format is not None:
+            return Image.MIME.get(self.format.upper())
+
     def verify(self):
-        "Check file integrity"
+        """Check file integrity"""
 
         # raise exception if something's wrong.  must be called
         # directly after open, and closes file when finished.
+        if self._exclusive_fp:
+            self.fp.close()
         self.fp = None
 
     def load(self):
-        "Load image data based on tile list"
+        """Load image data based on tile list"""
 
         pixel = Image.Image.load(self)
 
@@ -132,102 +150,132 @@ class ImageFile(Image.Image):
             return pixel
 
         self.map = None
+        use_mmap = self.filename and len(self.tile) == 1
+        # As of pypy 2.1.0, memory mapping was failing here.
+        use_mmap = use_mmap and not hasattr(sys, "pypy_version_info")
 
         readonly = 0
-
-        if self.filename and len(self.tile) == 1:
-            # try memory mapping
-            d, e, o, a = self.tile[0]
-            if d == "raw" and a[0] == self.mode and a[0] in Image._MAPMODES:
-                try:
-                    if hasattr(Image.core, "map"):
-                        # use built-in mapper
-                        self.map = Image.core.map(self.filename)
-                        self.map.seek(o)
-                        self.im = self.map.readimage(
-                            self.mode, self.size, a[1], a[2]
-                            )
-                    else:
-                        # use mmap, if possible
-                        import mmap
-                        file = open(self.filename, "r+")
-                        size = os.path.getsize(self.filename)
-                        # FIXME: on Unix, use PROT_READ etc
-                        self.map = mmap.mmap(file.fileno(), size)
-                        self.im = Image.core.map_buffer(
-                            self.map, self.size, d, e, o, a
-                            )
-                    readonly = 1
-                except (AttributeError, EnvironmentError, ImportError):
-                    self.map = None
-
-        self.load_prepare()
 
         # look for read/seek overrides
         try:
             read = self.load_read
+            # don't use mmap if there are custom read/seek functions
+            use_mmap = False
         except AttributeError:
             read = self.fp.read
 
         try:
             seek = self.load_seek
+            use_mmap = False
         except AttributeError:
             seek = self.fp.seek
 
-        if not self.map:
+        if use_mmap:
+            # try memory mapping
+            decoder_name, extents, offset, args = self.tile[0]
+            if (
+                decoder_name == "raw"
+                and len(args) >= 3
+                and args[0] == self.mode
+                and args[0] in Image._MAPMODES
+            ):
+                try:
+                    if hasattr(Image.core, "map"):
+                        # use built-in mapper  WIN32 only
+                        self.map = Image.core.map(self.filename)
+                        self.map.seek(offset)
+                        self.im = self.map.readimage(
+                            self.mode, self.size, args[1], args[2]
+                        )
+                    else:
+                        # use mmap, if possible
+                        import mmap
 
+                        with open(self.filename, "r") as fp:
+                            self.map = mmap.mmap(
+                                fp.fileno(), 0, access=mmap.ACCESS_READ
+                            )
+                        self.im = Image.core.map_buffer(
+                            self.map, self.size, decoder_name, extents, offset, args
+                        )
+                    readonly = 1
+                    # After trashing self.im,
+                    # we might need to reload the palette data.
+                    if self.palette:
+                        self.palette.dirty = 1
+                except (AttributeError, EnvironmentError, ImportError):
+                    self.map = None
+
+        self.load_prepare()
+        err_code = -3  # initialize to unknown error
+        if not self.map:
             # sort tiles in file order
-            self.tile.sort(_tilesort)
+            self.tile.sort(key=_tilesort)
 
             try:
                 # FIXME: This is a hack to handle TIFF's JpegTables tag.
                 prefix = self.tile_prefix
             except AttributeError:
-                prefix = ""
+                prefix = b""
 
-            for d, e, o, a in self.tile:
-                d = Image._getdecoder(self.mode, d, a, self.decoderconfig)
-                seek(o)
+            for decoder_name, extents, offset, args in self.tile:
+                decoder = Image._getdecoder(
+                    self.mode, decoder_name, args, self.decoderconfig
+                )
                 try:
-                    d.setimage(self.im, e)
-                except ValueError:
-                    continue
-                b = prefix
-                t = len(b)
-                while 1:
-                    s = read(self.decodermaxblock)
-                    if not s:
-                        self.tile = []
-                        raise IOError("image file is truncated (%d bytes not processed)" % len(b))
-                    b = b + s
-                    n, e = d.decode(b)
-                    if n < 0:
-                        break
-                    b = b[n:]
-                    t = t + n
+                    seek(offset)
+                    decoder.setimage(self.im, extents)
+                    if decoder.pulls_fd:
+                        decoder.setfd(self.fp)
+                        status, err_code = decoder.decode(b"")
+                    else:
+                        b = prefix
+                        while True:
+                            try:
+                                s = read(self.decodermaxblock)
+                            except (IndexError, struct.error):
+                                # truncated png/gif
+                                if LOAD_TRUNCATED_IMAGES:
+                                    break
+                                else:
+                                    raise IOError("image file is truncated")
+
+                            if not s:  # truncated jpeg
+                                if LOAD_TRUNCATED_IMAGES:
+                                    break
+                                else:
+                                    raise IOError(
+                                        "image file is truncated "
+                                        "(%d bytes not processed)" % len(b)
+                                    )
+
+                            b = b + s
+                            n, err_code = decoder.decode(b)
+                            if n < 0:
+                                break
+                            b = b[n:]
+                finally:
+                    # Need to cleanup here to prevent leaks
+                    decoder.cleanup()
 
         self.tile = []
         self.readonly = readonly
 
-        self.fp = None # might be shared
-
-        if not self.map and e < 0:
-            raise_ioerror(e)
-
-        # post processing
-        if hasattr(self, "tile_post_rotate"):
-            # FIXME: This is a hack to handle rotated PCD's
-            self.im = self.im.rotate(self.tile_post_rotate)
-            self.size = self.im.size
-
         self.load_end()
+
+        if self._exclusive_fp and self._close_exclusive_fp_after_loading:
+            self.fp.close()
+        self.fp = None
+
+        if not self.map and not LOAD_TRUNCATED_IMAGES and err_code < 0:
+            # still raised if decoder fails to return anything
+            raise_ioerror(err_code)
 
         return Image.Image.load(self)
 
     def load_prepare(self):
         # create image memory if necessary
-        if not self.im or\
-           self.im.mode != self.mode or self.im.size != self.size:
+        if not self.im or self.im.mode != self.mode or self.im.size != self.size:
             self.im = Image.core.new(self.mode, self.size)
         # create palette (optional)
         if self.mode == "P":
@@ -245,19 +293,31 @@ class ImageFile(Image.Image):
     # def load_read(self, bytes):
     #     pass
 
-##
-# Base class for stub image loaders.
-# <p>
-# A stub loader is an image loader that can identify files of a
-# certain format, but relies on external code to load the file.
+    def _seek_check(self, frame):
+        if (
+            frame < self._min_frame
+            # Only check upper limit on frames if additional seek operations
+            # are not required to do so
+            or (
+                not (hasattr(self, "_n_frames") and self._n_frames is None)
+                and frame >= self.n_frames + self._min_frame
+            )
+        ):
+            raise EOFError("attempt to seek outside sequence")
+
+        return self.tell() != frame
+
 
 class StubImageFile(ImageFile):
-    "Base class for stub image loaders."
+    """
+    Base class for stub image loaders.
+
+    A stub loader is an image loader that can identify files of a
+    certain format, but relies on external code to load the file.
+    """
 
     def _open(self):
-        raise NotImplementedError(
-            "StubImageFile subclass must implement _open"
-            )
+        raise NotImplementedError("StubImageFile subclass must implement _open")
 
     def load(self):
         loader = self._load()
@@ -269,87 +329,39 @@ class StubImageFile(ImageFile):
         self.__class__ = image.__class__
         self.__dict__ = image.__dict__
 
-    ##
-    # (Hook) Find actual image loader.
-
     def _load(self):
-        raise NotImplementedError(
-            "StubImageFile subclass must implement _load"
-            )
+        """(Hook) Find actual image loader."""
+        raise NotImplementedError("StubImageFile subclass must implement _load")
 
-##
-# (Internal) Support class for the <b>Parser</b> file.
 
-class _ParserFile:
-    # parser support class.
-
-    def __init__(self, data):
-        self.data = data
-        self.offset = 0
-
-    def close(self):
-        self.data = self.offset = None
-
-    def tell(self):
-        return self.offset
-
-    def seek(self, offset, whence=0):
-        if whence == 0:
-            self.offset = offset
-        elif whence == 1:
-            self.offset = self.offset + offset
-        else:
-            # force error in Image.open
-            raise IOError("illegal argument to seek")
-
-    def read(self, bytes=0):
-        pos = self.offset
-        if bytes:
-            data = self.data[pos:pos+bytes]
-        else:
-            data = self.data[pos:]
-        self.offset = pos + len(data)
-        return data
-
-    def readline(self):
-        # FIXME: this is slow!
-        s = ""
-        while 1:
-            c = self.read(1)
-            if not c:
-                break
-            s = s + c
-            if c == "\n":
-                break
-        return s
-
-##
-# Incremental image parser.  This class implements the standard
-# feed/close consumer interface.
-
-class Parser:
+class Parser(object):
+    """
+    Incremental image parser.  This class implements the standard
+    feed/close consumer interface.
+    """
 
     incremental = None
     image = None
     data = None
     decoder = None
+    offset = 0
     finished = 0
 
-    ##
-    # (Consumer) Reset the parser.  Note that you can only call this
-    # method immediately after you've created a parser; parser
-    # instances cannot be reused.
-
     def reset(self):
+        """
+        (Consumer) Reset the parser.  Note that you can only call this
+        method immediately after you've created a parser; parser
+        instances cannot be reused.
+        """
         assert self.data is None, "cannot reuse parsers"
 
-    ##
-    # (Consumer) Feed data to the parser.
-    #
-    # @param data A string buffer.
-    # @exception IOError If the parser failed to parse the image file.
-
     def feed(self, data):
+        """
+        (Consumer) Feed data to the parser.
+
+        :param data: A string buffer.
+        :exception IOError: If the parser failed to parse the image file.
+        """
         # collect data
 
         if self.finished:
@@ -397,13 +409,11 @@ class Parser:
 
             # attempt to open this file
             try:
-                try:
-                    fp = _ParserFile(self.data)
+                with io.BytesIO(self.data) as fp:
                     im = Image.open(fp)
-                finally:
-                    fp.close() # explicitly close the virtual file
             except IOError:
-                pass # not enough data
+                # traceback.print_exc()
+                pass  # not enough data
             else:
                 flag = hasattr(im, "load_seek") or hasattr(im, "load_read")
                 if flag or len(im.tile) != 1:
@@ -414,30 +424,36 @@ class Parser:
                     im.load_prepare()
                     d, e, o, a = im.tile[0]
                     im.tile = []
-                    self.decoder = Image._getdecoder(
-                        im.mode, d, a, im.decoderconfig
-                        )
+                    self.decoder = Image._getdecoder(im.mode, d, a, im.decoderconfig)
                     self.decoder.setimage(im.im, e)
 
                     # calculate decoder offset
                     self.offset = o
                     if self.offset <= len(self.data):
-                        self.data = self.data[self.offset:]
+                        self.data = self.data[self.offset :]
                         self.offset = 0
 
                 self.image = im
 
-    ##
-    # (Consumer) Close the stream.
-    #
-    # @return An image object.
-    # @exception IOError If the parser failed to parse the image file.
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
 
     def close(self):
+        """
+        (Consumer) Close the stream.
+
+        :returns: An image object.
+        :exception IOError: If the parser failed to parse the image file either
+                            because it cannot be identified or cannot be
+                            decoded.
+        """
         # finish decoding
         if self.decoder:
             # get rid of what's left in the buffers
-            self.feed("")
+            self.feed(b"")
             self.data = self.decoder = None
             if not self.finished:
                 raise IOError("image was incomplete")
@@ -446,76 +462,91 @@ class Parser:
         if self.data:
             # incremental parsing not possible; reopen the file
             # not that we have all data
-            try:
-                fp = _ParserFile(self.data)
-                self.image = Image.open(fp)
-            finally:
-                self.image.load()
-                fp.close() # explicitly close the virtual file
+            with io.BytesIO(self.data) as fp:
+                try:
+                    self.image = Image.open(fp)
+                finally:
+                    self.image.load()
         return self.image
+
 
 # --------------------------------------------------------------------
 
-##
-# (Helper) Save image body to file.
-#
-# @param im Image object.
-# @param fp File object.
-# @param tile Tile list.
 
-def _save(im, fp, tile):
-    "Helper to save image based on tile list"
+def _save(im, fp, tile, bufsize=0):
+    """Helper to save image based on tile list
+
+    :param im: Image object.
+    :param fp: File object.
+    :param tile: Tile list.
+    :param bufsize: Optional buffer size
+    """
 
     im.load()
     if not hasattr(im, "encoderconfig"):
         im.encoderconfig = ()
-    tile.sort(_tilesort)
+    tile.sort(key=_tilesort)
     # FIXME: make MAXBLOCK a configuration parameter
-    bufsize = max(MAXBLOCK, im.size[0] * 4) # see RawEncode.c
+    # It would be great if we could have the encoder specify what it needs
+    # But, it would need at least the image size in most cases. RawEncode is
+    # a tricky case.
+    bufsize = max(MAXBLOCK, bufsize, im.size[0] * 4)  # see RawEncode.c
+    if fp == sys.stdout:
+        fp.flush()
+        return
     try:
         fh = fp.fileno()
         fp.flush()
-    except AttributeError:
+    except (AttributeError, io.UnsupportedOperation):
         # compress to Python file-compatible object
         for e, b, o, a in tile:
             e = Image._getencoder(im.mode, e, a, im.encoderconfig)
             if o > 0:
-                fp.seek(o, 0)
+                fp.seek(o)
             e.setimage(im.im, b)
-            while 1:
-                l, s, d = e.encode(bufsize)
-                fp.write(d)
-                if s:
-                    break
+            if e.pushes_fd:
+                e.setfd(fp)
+                l, s = e.encode_to_pyfd()
+            else:
+                while True:
+                    l, s, d = e.encode(bufsize)
+                    fp.write(d)
+                    if s:
+                        break
             if s < 0:
                 raise IOError("encoder error %d when writing image file" % s)
+            e.cleanup()
     else:
         # slight speedup: compress to real file object
         for e, b, o, a in tile:
             e = Image._getencoder(im.mode, e, a, im.encoderconfig)
             if o > 0:
-                fp.seek(o, 0)
+                fp.seek(o)
             e.setimage(im.im, b)
-            s = e.encode_to_file(fh, bufsize)
+            if e.pushes_fd:
+                e.setfd(fp)
+                l, s = e.encode_to_pyfd()
+            else:
+                s = e.encode_to_file(fh, bufsize)
             if s < 0:
                 raise IOError("encoder error %d when writing image file" % s)
-    try:
+            e.cleanup()
+    if hasattr(fp, "flush"):
         fp.flush()
-    except: pass
 
-
-##
-# Reads large blocks in a safe way.  Unlike fp.read(n), this function
-# doesn't trust the user.  If the requested size is larger than
-# SAFEBLOCK, the file is read block by block.
-#
-# @param fp File handle.  Must implement a <b>read</b> method.
-# @param size Number of bytes to read.
-# @return A string containing up to <i>size</i> bytes of data.
 
 def _safe_read(fp, size):
+    """
+    Reads large blocks in a safe way.  Unlike fp.read(n), this function
+    doesn't trust the user.  If the requested size is larger than
+    SAFEBLOCK, the file is read block by block.
+
+    :param fp: File handle.  Must implement a <b>read</b> method.
+    :param size: Number of bytes to read.
+    :returns: A string containing up to <i>size</i> bytes of data.
+    """
     if size <= 0:
-        return ""
+        return b""
     if size <= SAFEBLOCK:
         return fp.read(size)
     data = []
@@ -524,5 +555,131 @@ def _safe_read(fp, size):
         if not block:
             break
         data.append(block)
-        size = size - len(block)
-    return string.join(data, "")
+        size -= len(block)
+    return b"".join(data)
+
+
+class PyCodecState(object):
+    def __init__(self):
+        self.xsize = 0
+        self.ysize = 0
+        self.xoff = 0
+        self.yoff = 0
+
+    def extents(self):
+        return (self.xoff, self.yoff, self.xoff + self.xsize, self.yoff + self.ysize)
+
+
+class PyDecoder(object):
+    """
+    Python implementation of a format decoder. Override this class and
+    add the decoding logic in the `decode` method.
+
+    See :ref:`Writing Your Own File Decoder in Python<file-decoders-py>`
+    """
+
+    _pulls_fd = False
+
+    def __init__(self, mode, *args):
+        self.im = None
+        self.state = PyCodecState()
+        self.fd = None
+        self.mode = mode
+        self.init(args)
+
+    def init(self, args):
+        """
+        Override to perform decoder specific initialization
+
+        :param args: Array of args items from the tile entry
+        :returns: None
+        """
+        self.args = args
+
+    @property
+    def pulls_fd(self):
+        return self._pulls_fd
+
+    def decode(self, buffer):
+        """
+        Override to perform the decoding process.
+
+        :param buffer: A bytes object with the data to be decoded.
+        :returns: A tuple of (bytes consumed, errcode).
+            If finished with decoding return <0 for the bytes consumed.
+            Err codes are from `ERRORS`
+        """
+        raise NotImplementedError()
+
+    def cleanup(self):
+        """
+        Override to perform decoder specific cleanup
+
+        :returns: None
+        """
+        pass
+
+    def setfd(self, fd):
+        """
+        Called from ImageFile to set the python file-like object
+
+        :param fd: A python file-like object
+        :returns: None
+        """
+        self.fd = fd
+
+    def setimage(self, im, extents=None):
+        """
+        Called from ImageFile to set the core output image for the decoder
+
+        :param im: A core image object
+        :param extents: a 4 tuple of (x0, y0, x1, y1) defining the rectangle
+            for this tile
+        :returns: None
+        """
+
+        # following c code
+        self.im = im
+
+        if extents:
+            (x0, y0, x1, y1) = extents
+        else:
+            (x0, y0, x1, y1) = (0, 0, 0, 0)
+
+        if x0 == 0 and x1 == 0:
+            self.state.xsize, self.state.ysize = self.im.size
+        else:
+            self.state.xoff = x0
+            self.state.yoff = y0
+            self.state.xsize = x1 - x0
+            self.state.ysize = y1 - y0
+
+        if self.state.xsize <= 0 or self.state.ysize <= 0:
+            raise ValueError("Size cannot be negative")
+
+        if (
+            self.state.xsize + self.state.xoff > self.im.size[0]
+            or self.state.ysize + self.state.yoff > self.im.size[1]
+        ):
+            raise ValueError("Tile cannot extend outside image")
+
+    def set_as_raw(self, data, rawmode=None):
+        """
+        Convenience method to set the internal image from a stream of raw data
+
+        :param data: Bytes to be set
+        :param rawmode: The rawmode to be used for the decoder.
+            If not specified, it will default to the mode of the image
+        :returns: None
+        """
+
+        if not rawmode:
+            rawmode = self.mode
+        d = Image._getdecoder(self.mode, "raw", (rawmode))
+        d.setimage(self.im, self.state.extents())
+        s = d.decode(data)
+
+        if s[0] >= 0:
+            raise ValueError("not enough image data")
+        if s[1] != 0:
+            raise ValueError("cannot decode image data")

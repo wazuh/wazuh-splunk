@@ -2,7 +2,7 @@
 # The Python Imaging Library
 # $Id$
 #
-# screen grabber (windows only)
+# screen grabber (macOS and Windows only)
 #
 # History:
 # 2001-04-26 fl  created
@@ -15,57 +15,78 @@
 # See the README file for information on usage and redistribution.
 #
 
-import Image
+import sys
 
-##
-# (New in 1.1.3)  The <b>ImageGrab</b> module can be used to copy
-# the contents of the screen to a PIL image memory.
-# <p>
-# The current version works on Windows only.</p>
-#
-# @since 1.1.3
-##
+from . import Image
 
-try:
-    # built-in driver (1.1.3 and later)
+if sys.platform == "win32":
     grabber = Image.core.grabscreen
-except AttributeError:
-    # stand-alone driver (pil plus)
-    import _grabscreen
-    grabber = _grabscreen.grab
+elif sys.platform == "darwin":
+    import os
+    import tempfile
+    import subprocess
+else:
+    raise ImportError("ImageGrab is macOS and Windows only")
 
-##
-# (New in 1.1.3) Take a snapshot of the screen.  The pixels inside the
-# bounding box are returned as an "RGB" image.  If the bounding box is
-# omitted, the entire screen is copied.
-#
-# @param bbox What region to copy.  Default is the entire screen.
-# @return An image
-# @since 1.1.3
 
-def grab(bbox=None):
-    size, data = grabber()
-    im = Image.fromstring(
-        "RGB", size, data,
-        # RGB, 32-bit line padding, origo in lower left corner
-        "raw", "BGR", (size[0]*3 + 3) & -4, -1
+def grab(bbox=None, include_layered_windows=False, all_screens=False):
+    if sys.platform == "darwin":
+        fh, filepath = tempfile.mkstemp(".png")
+        os.close(fh)
+        subprocess.call(["screencapture", "-x", filepath])
+        im = Image.open(filepath)
+        im.load()
+        os.unlink(filepath)
+        if bbox:
+            im = im.crop(bbox)
+    else:
+        offset, size, data = grabber(include_layered_windows, all_screens)
+        im = Image.frombytes(
+            "RGB",
+            size,
+            data,
+            # RGB, 32-bit line padding, origin lower left corner
+            "raw",
+            "BGR",
+            (size[0] * 3 + 3) & -4,
+            -1,
         )
-    if bbox:
-        im = im.crop(bbox)
+        if bbox:
+            x0, y0 = offset
+            left, top, right, bottom = bbox
+            im = im.crop((left - x0, top - y0, right - x0, bottom - y0))
     return im
 
-##
-# (New in 1.1.4) Take a snapshot of the clipboard image, if any.
-#
-# @return An image, a list of filenames, or None if the clipboard does
-#     not contain image data or filenames.  Note that if a list is
-#     returned, the filenames may not represent image files.
-# @since 1.1.4
 
 def grabclipboard():
-    debug = 0 # temporary interface
-    data = Image.core.grabclipboard(debug)
-    if Image.isStringType(data):
-        import BmpImagePlugin, StringIO
-        return BmpImagePlugin.DibImageFile(StringIO.StringIO(data))
-    return data
+    if sys.platform == "darwin":
+        fh, filepath = tempfile.mkstemp(".jpg")
+        os.close(fh)
+        commands = [
+            'set theFile to (open for access POSIX file "'
+            + filepath
+            + '" with write permission)',
+            "try",
+            "    write (the clipboard as JPEG picture) to theFile",
+            "end try",
+            "close access theFile",
+        ]
+        script = ["osascript"]
+        for command in commands:
+            script += ["-e", command]
+        subprocess.call(script)
+
+        im = None
+        if os.stat(filepath).st_size != 0:
+            im = Image.open(filepath)
+            im.load()
+        os.unlink(filepath)
+        return im
+    else:
+        data = Image.core.grabclipboard()
+        if isinstance(data, bytes):
+            from . import BmpImagePlugin
+            import io
+
+            return BmpImagePlugin.DibImageFile(io.BytesIO(data))
+        return data

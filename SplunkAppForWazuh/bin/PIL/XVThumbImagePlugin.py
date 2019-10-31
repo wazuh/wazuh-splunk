@@ -17,20 +17,32 @@
 # FIXME: make save work (this requires quantization support)
 #
 
+from . import Image, ImageFile, ImagePalette
+from ._binary import i8, o8
+
+# __version__ is deprecated and will be removed in a future version. Use
+# PIL.__version__ instead.
 __version__ = "0.1"
 
-import string
-import Image, ImageFile, ImagePalette
+_MAGIC = b"P7 332"
 
 # standard color palette for thumbnails (RGB332)
-PALETTE = ""
+PALETTE = b""
 for r in range(8):
     for g in range(8):
         for b in range(4):
-            PALETTE = PALETTE + (chr((r*255)/7)+chr((g*255)/7)+chr((b*255)/3))
+            PALETTE = PALETTE + (
+                o8((r * 255) // 7) + o8((g * 255) // 7) + o8((b * 255) // 3)
+            )
+
+
+def _accept(prefix):
+    return prefix[:6] == _MAGIC
+
 
 ##
 # Image plugin for XV thumbnail images.
+
 
 class XVThumbImageFile(ImageFile.ImageFile):
 
@@ -40,34 +52,31 @@ class XVThumbImageFile(ImageFile.ImageFile):
     def _open(self):
 
         # check magic
-        s = self.fp.read(6)
-        if s != "P7 332":
-            raise SyntaxError, "not an XV thumbnail file"
+        if not _accept(self.fp.read(6)):
+            raise SyntaxError("not an XV thumbnail file")
 
         # Skip to beginning of next line
         self.fp.readline()
 
         # skip info comments
-        while 1:
+        while True:
             s = self.fp.readline()
             if not s:
-                raise SyntaxError, "Unexpected EOF reading XV thumbnail file"
-            if s[0] != '#':
+                raise SyntaxError("Unexpected EOF reading XV thumbnail file")
+            if i8(s[0]) != 35:  # ie. when not a comment: '#'
                 break
 
         # parse header line (already read)
-        s = string.split(s.strip())
+        s = s.strip().split()
 
         self.mode = "P"
-        self.size = int(s[0]), int(s[1])
+        self._size = int(s[0]), int(s[1])
 
         self.palette = ImagePalette.raw("RGB", PALETTE)
 
-        self.tile = [
-            ("raw", (0, 0)+self.size,
-             self.fp.tell(), (self.mode, 0, 1)
-             )]
+        self.tile = [("raw", (0, 0) + self.size, self.fp.tell(), (self.mode, 0, 1))]
+
 
 # --------------------------------------------------------------------
 
-Image.register_open("XVThumb", XVThumbImageFile)
+Image.register_open(XVThumbImageFile.format, XVThumbImageFile, _accept)

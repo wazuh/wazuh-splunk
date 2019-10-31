@@ -23,18 +23,20 @@
 # purposes only.
 
 
+from . import ImageFile, ImagePalette
+from ._binary import i8, i16be as i16, i32be as i32
+
+# __version__ is deprecated and will be removed in a future version. Use
+# PIL.__version__ instead.
 __version__ = "0.1"
 
-import ImageFile, ImagePalette
-
-def i16(c):
-    return ord(c[1]) + (ord(c[0])<<8)
 
 ##
 # Image plugin for the GD uncompressed format.  Note that this format
 # is not supported by the standard <b>Image.open</b> function.  To use
 # this plugin, you have to import the <b>GdImageFile</b> module and
 # use the <b>GdImageFile.open</b> function.
+
 
 class GdImageFile(ImageFile.ImageFile):
 
@@ -44,42 +46,45 @@ class GdImageFile(ImageFile.ImageFile):
     def _open(self):
 
         # Header
-        s = self.fp.read(775)
+        s = self.fp.read(1037)
 
-        self.mode = "L" # FIXME: "P"
-        self.size = i16(s[0:2]), i16(s[2:4])
+        if not i16(s[:2]) in [65534, 65535]:
+            raise SyntaxError("Not a valid GD 2.x .gd file")
+
+        self.mode = "L"  # FIXME: "P"
+        self._size = i16(s[2:4]), i16(s[4:6])
+
+        trueColor = i8(s[6])
+        trueColorOffset = 2 if trueColor else 0
 
         # transparency index
-        tindex = i16(s[5:7])
+        tindex = i32(s[7 + trueColorOffset : 7 + trueColorOffset + 4])
         if tindex < 256:
-            self.info["transparent"] = tindex
+            self.info["transparency"] = tindex
 
-        self.palette = ImagePalette.raw("RGB", s[7:])
+        self.palette = ImagePalette.raw(
+            "XBGR", s[7 + trueColorOffset + 4 : 7 + trueColorOffset + 4 + 256 * 4]
+        )
 
-        self.tile = [("raw", (0,0)+self.size, 775, ("L", 0, -1))]
+        self.tile = [
+            ("raw", (0, 0) + self.size, 7 + trueColorOffset + 4 + 256 * 4, ("L", 0, 1))
+        ]
 
-##
-# Load texture from a GD image file.
-#
-# @param filename GD file name, or an opened file handle.
-# @param mode Optional mode.  In this version, if the mode argument
-#     is given, it must be "r".
-# @return An image instance.
-# @exception IOError If the image could not be read.
 
-def open(fp, mode = "r"):
+def open(fp, mode="r"):
+    """
+    Load texture from a GD image file.
 
+    :param filename: GD file name, or an opened file handle.
+    :param mode: Optional mode.  In this version, if the mode argument
+        is given, it must be "r".
+    :returns: An image instance.
+    :raises IOError: If the image could not be read.
+    """
     if mode != "r":
         raise ValueError("bad mode")
 
-    if type(fp) == type(""):
-        import __builtin__
-        filename = fp
-        fp = __builtin__.open(fp, "rb")
-    else:
-        filename = ""
-
     try:
-        return GdImageFile(fp, filename)
+        return GdImageFile(fp)
     except SyntaxError:
         raise IOError("cannot identify this image file")
