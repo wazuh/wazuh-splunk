@@ -30,6 +30,20 @@ define(['../module'], function(directives) {
           return api_url
         }
 
+        this.isPasswordNeeded = async () => {
+          try{
+            $scope.isLoading = true
+            const result = await $requestService.apiReq('/agents/000/config/auth/auth')
+            const auth = ((result.data || {}).data || {}).auth || {};
+            const usePassword = auth.use_password === 'yes';
+            $scope.passwordNeeded = usePassword;
+          } catch (error) {
+            $scope.passwordNeeded = false;
+          }
+          $scope.isLoading = false
+          $scope.$applyAsync()
+        }
+
         $scope.config = {
           osSelected: 'redhat',
           managerIp: this.getSelectedApi(),
@@ -40,6 +54,7 @@ define(['../module'], function(directives) {
         $scope.newInstall = true
         $scope.registeredAgent = false
         $scope.showNavTab = false
+        this.isPasswordNeeded()
 
         // Functions
         $scope.selectOs = os => {
