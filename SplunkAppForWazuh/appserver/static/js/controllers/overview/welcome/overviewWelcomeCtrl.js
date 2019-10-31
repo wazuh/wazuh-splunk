@@ -25,6 +25,7 @@ define(['../../module'], function(controllers) {
         threadDetection: false,
         regulatory: false
       }
+      this.scope.showRegisterGuide = false
       try {
         this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
         this.scope.agentsCountActive = agentsInfo.data.data.Active - 1
@@ -45,6 +46,7 @@ define(['../../module'], function(controllers) {
     $onInit() {
       this.refreshExtensions()
       this.scope.showExtensionsLists = card => this.showExtensionsLists(card)
+      this.scope.showRegisterAgent = () => this.showRegisterAgent()
       this.scope.toggleExtension = (extension, state) =>
         this.toggleExtension(extension, state)
       this.scope.$applyAsync()
@@ -60,6 +62,17 @@ define(['../../module'], function(controllers) {
           : (this.scope.extensionsLists[card] = true)
       } catch (error) {
         console.error('Error showing or hiding the extensions list ', error)
+      }
+    }
+
+    /**
+     * Shows/hide the register agent guide
+     */
+    showRegisterAgent() {
+      try {
+        this.scope.showRegisterGuide = !this.scope.showRegisterGuide
+      } catch (error) {
+        console.error('Error showing the register agent guide ', error)
       }
     }
 
