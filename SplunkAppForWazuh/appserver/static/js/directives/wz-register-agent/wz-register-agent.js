@@ -46,7 +46,7 @@ define(['../module'], function(directives) {
 
         $scope.config = {
           osSelected: 'redhat',
-          managerIp: '',
+          managerIp: this.getSelectedApi(),
           wazuhPassword: '',
           agentName: '',
           agentKey: ''
@@ -119,7 +119,7 @@ define(['../module'], function(directives) {
             )
           }
         }
-
+     
         $scope.getVersion = async () => {
           $scope.wazuhVersion = await $requestService.apiReq('/version')
           $scope.wazuhVersion = ((($scope.wazuhVersion || {}).data || {}).data || {})
