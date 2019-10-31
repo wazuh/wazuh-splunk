@@ -27,6 +27,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $reportingService,
       $groupHandler,
       extensions,
+      agentsInfo,
       isAdmin
     ) {
       this.scope = $scope
@@ -49,7 +50,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
         groupConf: true,
         agentsList: true
       }
+      this.scope.showRegisterGuide = false
+      this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
       this.scope.showModulesToExport = () => this.showModulesToExport()
+      this.scope.showRegisterAgent = () => this.showRegisterAgent()
       this.scope.keyEquivalences = key => this.keyEquivalences(key)
       this.scope.selectAll = value => this.selectAll(value)
       this.scope.checkAllDisabled = () => this.checkAllDisabled()
@@ -612,6 +616,17 @@ define(['../../module', 'FileSaver'], function(controllers) {
       }
       this.scope.$applyAsync()
       return
+    }
+    
+    /**
+     * Shows/hide the register agent guide
+     */
+    showRegisterAgent() {
+      try {
+        this.scope.showRegisterGuide = !this.scope.showRegisterGuide
+      } catch (error) {
+        console.error('Error showing the register agent guide ', error)
+      }
     }
 
     /*
