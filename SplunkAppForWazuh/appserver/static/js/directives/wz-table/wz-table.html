@@ -269,7 +269,7 @@
           </td>
         </tr>
         <tr class="wz-word-wrap backgroundSky"
-          ng-if="item.expanded && (item.rationale || item.remediation || item.directory || item.compliance.length > 0)"
+          ng-if="item.expanded && (item.rationale || item.remediation || item.directory || item.condition || item.compliance.length > 0)"
           ng-repeat-end="">
           <td colspan="{{keys.length}}" style="border-top: none">
             <md-card>
@@ -280,6 +280,10 @@
               <div layout="column" ng-if="item.rationale" class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Rationale</span>
                 <p class="wz-margin-top-10 pExpanded wz-text-sca">{{item.rationale}}</p>
+              </div>
+              <div layout="column" ng-if="item.condition" class="wz-margin-top-10 expandedDiv">
+                <span class="tSize16">Condition</span>
+                <p class="wz-margin-top-10 pExpanded wz-text-sca">{{item.condition}}</p>
               </div>
               <div layout="column" ng-if="item.remediation" class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Remediation</span>
