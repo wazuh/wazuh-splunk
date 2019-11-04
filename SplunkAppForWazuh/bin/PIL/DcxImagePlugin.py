@@ -21,34 +21,37 @@
 # See the README file for information on usage and redistribution.
 #
 
+from . import Image
+from ._binary import i32le as i32
+from .PcxImagePlugin import PcxImageFile
+
+# __version__ is deprecated and will be removed in a future version. Use
+# PIL.__version__ instead.
 __version__ = "0.2"
 
-import Image
+MAGIC = 0x3ADE68B1  # QUIZ: what's this value, then?
 
-from PcxImagePlugin import PcxImageFile
-
-MAGIC = 0x3ADE68B1 # QUIZ: what's this value, then?
-
-def i32(c):
-    return ord(c[0]) + (ord(c[1])<<8) + (ord(c[2])<<16) + (ord(c[3])<<24)
 
 def _accept(prefix):
-    return i32(prefix) == MAGIC
+    return len(prefix) >= 4 and i32(prefix) == MAGIC
+
 
 ##
 # Image plugin for the Intel DCX format.
+
 
 class DcxImageFile(PcxImageFile):
 
     format = "DCX"
     format_description = "Intel DCX"
+    _close_exclusive_fp_after_loading = False
 
     def _open(self):
 
         # Header
         s = self.fp.read(4)
         if i32(s) != MAGIC:
-            raise SyntaxError, "not a DCX file"
+            raise SyntaxError("not a DCX file")
 
         # Component directory
         self._offset = []
@@ -59,11 +62,20 @@ class DcxImageFile(PcxImageFile):
             self._offset.append(offset)
 
         self.__fp = self.fp
+        self.frame = None
         self.seek(0)
 
+    @property
+    def n_frames(self):
+        return len(self._offset)
+
+    @property
+    def is_animated(self):
+        return len(self._offset) > 1
+
     def seek(self, frame):
-        if frame >= len(self._offset):
-            raise EOFError("attempt to seek outside DCX directory")
+        if not self._seek_check(frame):
+            return
         self.frame = frame
         self.fp = self.__fp
         self.fp.seek(self._offset[frame])
@@ -72,7 +84,16 @@ class DcxImageFile(PcxImageFile):
     def tell(self):
         return self.frame
 
+    def _close__fp(self):
+        try:
+            if self.__fp != self.fp:
+                self.__fp.close()
+        except AttributeError:
+            pass
+        finally:
+            self.__fp = None
 
-Image.register_open("DCX", DcxImageFile, _accept)
 
-Image.register_extension("DCX", ".dcx")
+Image.register_open(DcxImageFile.format, DcxImageFile, _accept)
+
+Image.register_extension(DcxImageFile.format, ".dcx")
