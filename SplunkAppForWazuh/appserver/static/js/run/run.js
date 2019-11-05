@@ -20,6 +20,7 @@ define(['./module'], function(module) {
 
       async function checkBeforeTransition(state) {
         try {
+          $("footer").remove()
           const { api } = await $currentDataService.checkSelectedApiConnection()
           $currentDataService.setApi(api)
           $navigationService.storeRoute(state)

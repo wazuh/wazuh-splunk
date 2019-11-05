@@ -59,6 +59,8 @@
 
 .addGroupInput {
   max-height: 20px !important;
+  min-height: 12px !important;
+  height: 12px;
   max-width: 181px !important;
   padding-right: 0 !important;
 }
@@ -70,6 +72,7 @@
 .min-height-300 {
   min-height: 300px;
 }
+
 
 .btns-separator{
   width: 0px;
@@ -352,6 +355,7 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
 .kuiLocalSearchInput{
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
   border: 1px solid #D9D9D9 !important;
+  min-height: 30px;
 }
 
 .kuiLocalSearchInput:focus {
@@ -2438,4 +2442,21 @@ wazuh-card-slider {
 
 .wz-min-height-40 {
   min-height: 40px !important;
+}
+
+
+
+.btn {
+  background-color: none;
+  background-image: none;
+  box-shadow: none;
+}
+.btn:hover {
+  background-color: none;
+  background-image: none;
+  box-shadow: none;
+}
+
+.md-toast-content {
+  color: black !important;
 }
