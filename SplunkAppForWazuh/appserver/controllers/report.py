@@ -126,55 +126,56 @@ class report(controllers.BaseController):
     def getDirectoriesChecks(self,row):
         newRow = []
         newRow.append(row['dir'])
-        if 'realtime' in row['opts'] and row['opts'].index('realtime'):
+        self.logger.info(row)
+        if 'realtime' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'whodata' in row['opts'] and row['opts'].index('whodata'):
+        if 'whodata' in row['opts'] or ('check_whodata' in row['opts']) :
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'report_changes' in row['opts'] and row['opts'].index('report_changes'):
+        if 'report_changes' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_sha1sum	' in row['opts'] and row['opts'].index('check_sha1sum'):
+        if 'check_sha1sum	' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_md5sum' in row['opts'] and row['opts'].index('check_md5sum'):
+        if 'check_md5sum' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_sha256sum' in row['opts'] and row['opts'].index('check_sha256sum'):
+        if 'check_sha256sum' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_size' in row['opts'] and row['opts'].index('check_size'):
+        if 'check_size' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_owner' in row['opts'] and row['opts'].index('check_owner'):
+        if 'check_owner' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_group' in row['opts'] and row['opts'].index('check_group'):
+        if 'check_group' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_perm' in row['opts'] and row['opts'].index('check_perm') :
+        if 'check_perm' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_mtime' in row['opts'] and row['opts'].index('check_mtime') :
+        if 'check_mtime' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'check_inode' in row['opts'] and row['opts'].index('check_inode') :
+        if 'check_inode' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
-        if 'follow_symbolic_link' in row['opts'] and row['opts'].index('follow_symbolic_link'):
+        if 'follow_symbolic_link' in row['opts']:
             newRow.append('yes')
         else:
             newRow.append('no')
@@ -468,6 +469,7 @@ class report(controllers.BaseController):
                                 directoriesTable = {}
                                 fields = ['Dir','RT','WD','Changes','SHA-1','MD5','SHA256','Size','Owner','Group','Perm','MT','Inode','SL','RL']
                                 rows = []
+                                self.logger.info(value)
                                 for row in value:
                                     newRow = self.getDirectoriesChecks(row)
                                     rows.append(newRow)
