@@ -469,7 +469,6 @@ class report(controllers.BaseController):
                                 directoriesTable = {}
                                 fields = ['Dir','RT','WD','Changes','SHA-1','MD5','SHA256','Size','Owner','Group','Perm','MT','Inode','SL','RL']
                                 rows = []
-                                self.logger.info(value)
                                 for row in value:
                                     newRow = self.getDirectoriesChecks(row)
                                     rows.append(newRow)
