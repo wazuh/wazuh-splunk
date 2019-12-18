@@ -9,7 +9,7 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 
 ---
 
-![](https://i.imgur.com/HkMjiwJ.png)
+![Overview](../SplunkOverview.png)
 
 ### Documentation
 
