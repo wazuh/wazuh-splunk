@@ -49,27 +49,27 @@ define([
       this.vizz = [
         new LinearChart(
           'alertSummary',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count`,
+          `${this.filters}   | timechart span=1h count`,
           'alertSummary',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new LinearChart(
           'alertNodeSummary',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count by cluster.node`,
+          `${this.filters}   | timechart span=1h count by cluster.node`,
           'alertNodeSummary',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'topNodes',
-          `${this.filters} sourcetype=wazuh | top cluster.node`,
+          `${this.filters}   | top cluster.node`,
           'topNodes',
           this.scope
         ),
         new ColumChart(
           'overviewNode',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count`,
+          `${this.filters}   | timechart span=2h count`,
           'overviewNode',
           this.scope,
           { customAxisTitleX: 'Time span' }
@@ -301,7 +301,7 @@ define([
      */
     launchSearches() {
       this.vizz[3].changeSearch(
-        `${this.filters} cluster.node=${this.scope.currentNode.name} sourcetype=wazuh | timechart span=2h count`
+        `${this.filters} cluster.node=${this.scope.currentNode.name}   | timechart span=2h count`
       )
     }
 

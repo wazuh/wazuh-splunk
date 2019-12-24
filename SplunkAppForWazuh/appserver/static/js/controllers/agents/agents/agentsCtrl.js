@@ -147,7 +147,7 @@ define([
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} NOT agent.id=000 | top agent.name`,
+        `${this.filters} NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',

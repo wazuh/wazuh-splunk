@@ -23,7 +23,7 @@ define([
 
       this.dropdown = new Dropdown(
         'inputIndexes',
-        `| metasearch index=* sourcetype=wazuh | stats count by index, sourcetype | fields index`,
+        `| metasearch index=*   | stats count by index, sourcetype | fields index`,
         'index',
         '$form.index$',
         'inputIndexes',

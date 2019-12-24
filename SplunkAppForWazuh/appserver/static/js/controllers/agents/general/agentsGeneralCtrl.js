@@ -100,7 +100,7 @@ define([
         ),
         new SearchHandler(
           `searchLevel12`,
-          `${this.filters} sourcetype=wazuh "rule.level">=12 | chart count`,
+          `${this.filters}   "rule.level">=12 | chart count`,
           `level12token`,
           '$result.count$',
           'levelTwelve',
@@ -109,7 +109,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthFailure`,
-          `${this.filters} sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
+          `${this.filters}   "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
           '$result.count$',
           'authFailure',
@@ -118,7 +118,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthSuccess`,
-          `${this.filters} sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
+          `${this.filters}    "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
           '$result.count$',
           'authSuccess',
@@ -130,51 +130,51 @@ define([
          */
         new PieChart(
           'top5AlertsVizz',
-          `${this.filters} sourcetype=wazuh | top "rule.description" limit=5`,
+          `${this.filters}   | top "rule.description" limit=5`,
           'top5AlertsVizz',
           this.scope
         ),
         new PieChart(
           'top5GroupsVizz',
-          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=5`,
+          `${this.filters}   | top rule.groups{} limit=5`,
           'top5GroupsVizz',
           this.scope
         ),
         new PieChart(
           'top5PCIreqVizz',
-          `${this.filters} sourcetype=wazuh | top rule.pci_dss{} limit=5`,
+          `${this.filters}   | top rule.pci_dss{} limit=5`,
           'top5PCIreqVizz',
           this.scope
         ),
         new LinearChart(
           'alertGroupEvoVizz',
-          `${this.filters} sourcetype=wazuh rule.level=*| timechart count by rule.groups{}  `,
+          `${this.filters}   rule.level=*| timechart count by rule.groups{}  `,
           'alertGroupEvoVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new ColumnChart(
           'alertsVizz',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
+          `${this.filters}   | timechart span=2h count  `,
           'alertsVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'agentsSummaryVizz',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters}   |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
         ),
         new Table(
           'groupsSummaryVizz',
-          `${this.filters} sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
+          `${this.filters}   | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
           'groupsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters}   |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -182,7 +182,7 @@ define([
         ),
         new RawTableDataService(
           'groupsSummaryTable',
-          `${this.filters} sourcetype=wazuh | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
+          `${this.filters}   | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
           'groupsSummaryTableToken',
           '$result$',
           this.scope,

@@ -65,7 +65,7 @@ define(['../module'], function(directives) {
           try {
             const index = $currentDataService.getIndex()
             const api = $currentDataService.getApi()
-            $scope.currentIndex = !index ? 'wazuh' : index.index
+            $scope.currentIndex = !index ? '*' : index.index
             $scope.currentAPI = !api ? '---' : api.managerName
             $scope.theresAPI = $scope.currentAPI === '---' ? false : true
 

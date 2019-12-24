@@ -74,38 +74,38 @@ define([
          */
         new AreaChart(
           'alertsPacksOverTime',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
+          `${this.filters}   | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'topOsqueryAdded',
-          `${this.filters} sourcetype=wazuh data.osquery.action="added"  | top data.osquery.name limit=5`,
+          `${this.filters}   data.osquery.action="added"  | top data.osquery.name limit=5`,
           'topOsqueryAdded',
           this.scope
         ),
         new PieChart(
           'topOsqueryRemoved',
-          `${this.filters} sourcetype=wazuh data.osquery.action="removed"  | top data.osquery.name limit=5`,
+          `${this.filters}   data.osquery.action="removed"  | top data.osquery.name limit=5`,
           'topOsqueryRemoved',
           this.scope
         ),
         new PieChart(
           'mostCommonPacks',
-          `${this.filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
+          `${this.filters}    | top data.osquery.pack limit=5`,
           'mostCommonPacks',
           this.scope
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters}    | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters}    | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -113,14 +113,14 @@ define([
         ),
         new Table(
           'topRules',
-          `${this.filters} sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters}    | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
         ),
 
         new RawTableDataService(
           'topRulesTable',
-          `${this.filters} sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters}    | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRulesTableToken',
           '$result$',
           this.scope,
