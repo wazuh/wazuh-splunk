@@ -87,6 +87,10 @@
   border-color: #396e3e !important;
 }
 
+.agreeBtn:hover {
+  background-color: #43884a !important;
+}
+
 .cancelBtn {
   color: #000000 !important;
   background-color: #d9d9d9 !important;
@@ -2280,7 +2284,7 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   margin: 2px 15px 0px -500px;
   height: auto;
 }
-}
+
 .link-disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -2434,6 +2438,149 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 
 wazuh-card-slider {
   width: 100% ;
+}
+
+.euiButton .euiButton__content {
+  height: 100%;
+  width: 100%;
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.euiButton:disabled .euiButton__content {
+  pointer-events: auto;
+  cursor: not-allowed;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
+background-color: white;
+}
+
+.link-table {
+  margin-right:10px;
+  font-size: 16px;
+  padding-left: 10px;
+}
+
+.link-table:hover {
+  text-decoration: underline
+}
+
+
+.euiTextArea:focus {
+  background-color: rgb(250,250,250);
+  border-bottom: 2px solid rgb(63, 126, 67);
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+.logtest-fullscreen {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  height: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  z-index: 100;
+}
+.dz-filename {
+  padding-top: 18px !important;
+}
+
+.dropzone .dz-preview .dz-progress {
+  margin-top: -18px !important;
+}
+
+.dropzone.dz-clickable {
+  cursor: pointer;
+  background-color: #b4c5b573;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+
+.wz-popover-wrapper {
+  position: relative;
+  top: 55px;
+  right: -92%;
+  display: inline-block;
+  z-index: 100;
+}
+.wz-popover-content {
+  opacity: 0;
+  z-index:100;
+  visibility: hidden;
+  position: absolute;
+  left: -350px;
+  transform: translate(0, 10px);
+  background-color: #ffffff;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 1px 2px 4px 1px rgba(0, 0, 0, 0.76);
+  width: 350px;
+}
+.wz-popover-content:before {
+  content: "";
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: white;
+  transform: rotate(45deg);
+  top: -6px;
+  z-index: 1 !important;
+  left: 326px;
+  border-top: 1px solid #80808085;
+  border-left: 1px solid #80808085;
+}
+.wz-popover-wrapper .wz-popover-content {
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  height:auto;
+  transform: translate(0, 10px);
+}
+
+
+.wz-popover-message {
+  text-align: center;
+}
+
+
+.wz-success-message {
+  color: rgb(32, 121, 32) !important
+}
+
+.wz-error-message {
+  color: rgb(173, 16, 16) !important
 }
 
 .wz-min-height-40 {

@@ -15,7 +15,7 @@ Find more information about this on the LICENSE file.
 import jsonbak
 import requestsbak
 import csv
-import cStringIO
+from io import StringIO
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
@@ -129,7 +129,7 @@ class api(controllers.BaseController):
             if isinstance(arr, list):
                 for item in arr:
                     if isinstance(item, dict):
-                        for key, value in item.iteritems():
+                        for key, value in item.items():
                             if isinstance(value, dict):
                                 item[key] = jsonbak.dumps(value)
                             elif isinstance(value, list):
@@ -370,7 +370,7 @@ class api(controllers.BaseController):
             if 'filters' in kwargs and kwargs['filters'] != '':
                 parsed_filters = jsonbak.loads(kwargs['filters'])
                 keys_to_delete = []
-                for key, value in parsed_filters.iteritems():
+                for key, value in parsed_filters.items():
                     if parsed_filters[key] == "":
                         keys_to_delete.append(key)
                 if len(keys_to_delete) > 0:
@@ -390,7 +390,7 @@ class api(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             # init csv writer
-            output_file = cStringIO.StringIO()
+            output_file = StringIO()
             # get total items and keys
             request = self.session.get(
                 url + opt_endpoint, params=filters, auth=auth,

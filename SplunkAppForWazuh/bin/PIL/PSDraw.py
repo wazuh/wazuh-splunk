@@ -15,75 +15,110 @@
 # See the README file for information on usage and redistribution.
 #
 
-import EpsImagePlugin
-import string
+import sys
+
+from . import EpsImagePlugin
+from ._util import py3
 
 ##
 # Simple Postscript graphics interface.
 
-class PSDraw:
+
+class PSDraw(object):
+    """
+    Sets up printing to the given file. If **fp** is omitted,
+    :py:attr:`sys.stdout` is assumed.
+    """
 
     def __init__(self, fp=None):
         if not fp:
-            import sys
             fp = sys.stdout
         self.fp = fp
 
-    def begin_document(self, id = None):
-        "Write Postscript DSC header"
+    def _fp_write(self, to_write):
+        if not py3 or self.fp == sys.stdout:
+            self.fp.write(to_write)
+        else:
+            self.fp.write(bytes(to_write, "UTF-8"))
+
+    def begin_document(self, id=None):
+        """Set up printing of a document. (Write Postscript DSC header.)"""
         # FIXME: incomplete
-        self.fp.write("%!PS-Adobe-3.0\n"
-                      "save\n"
-                      "/showpage { } def\n"
-                      "%%EndComments\n"
-                      "%%BeginDocument\n")
-        #self.fp.write(ERROR_PS) # debugging!
-        self.fp.write(EDROFF_PS)
-        self.fp.write(VDI_PS)
-        self.fp.write("%%EndProlog\n")
+        self._fp_write(
+            "%!PS-Adobe-3.0\n"
+            "save\n"
+            "/showpage { } def\n"
+            "%%EndComments\n"
+            "%%BeginDocument\n"
+        )
+        # self._fp_write(ERROR_PS)  # debugging!
+        self._fp_write(EDROFF_PS)
+        self._fp_write(VDI_PS)
+        self._fp_write("%%EndProlog\n")
         self.isofont = {}
 
     def end_document(self):
-        "Write Postscript DSC footer"
-        self.fp.write("%%EndDocument\n"
-                      "restore showpage\n"
-                      "%%End\n")
+        """Ends printing. (Write Postscript DSC footer.)"""
+        self._fp_write("%%EndDocument\nrestore showpage\n%%End\n")
         if hasattr(self.fp, "flush"):
             self.fp.flush()
 
     def setfont(self, font, size):
-        if not self.isofont.has_key(font):
+        """
+        Selects which font to use.
+
+        :param font: A Postscript font name
+        :param size: Size in points.
+        """
+        if font not in self.isofont:
             # reencode font
-            self.fp.write("/PSDraw-%s ISOLatin1Encoding /%s E\n" %\
-                          (font, font))
+            self._fp_write("/PSDraw-%s ISOLatin1Encoding /%s E\n" % (font, font))
             self.isofont[font] = 1
         # rough
-        self.fp.write("/F0 %d /PSDraw-%s F\n" % (size, font))
-
-    def setink(self, ink):
-        print "*** NOT YET IMPLEMENTED ***"
+        self._fp_write("/F0 %d /PSDraw-%s F\n" % (size, font))
 
     def line(self, xy0, xy1):
+        """
+        Draws a line between the two points. Coordinates are given in
+        Postscript point coordinates (72 points per inch, (0, 0) is the lower
+        left corner of the page).
+        """
         xy = xy0 + xy1
-        self.fp.write("%d %d %d %d Vl\n" % xy)
+        self._fp_write("%d %d %d %d Vl\n" % xy)
 
     def rectangle(self, box):
-        self.fp.write("%d %d M %d %d 0 Vr\n" % box)
+        """
+        Draws a rectangle.
+
+        :param box: A 4-tuple of integers whose order and function is currently
+                    undocumented.
+
+                    Hint: the tuple is passed into this format string:
+
+                    .. code-block:: python
+
+                        %d %d M %d %d 0 Vr\n
+        """
+        self._fp_write("%d %d M %d %d 0 Vr\n" % box)
 
     def text(self, xy, text):
-        text = string.joinfields(string.splitfields(text, "("), "\\(")
-        text = string.joinfields(string.splitfields(text, ")"), "\\)")
+        """
+        Draws text at the given position. You must use
+        :py:meth:`~PIL.PSDraw.PSDraw.setfont` before calling this method.
+        """
+        text = "\\(".join(text.split("("))
+        text = "\\)".join(text.split(")"))
         xy = xy + (text,)
-        self.fp.write("%d %d M (%s) S\n" % xy)
+        self._fp_write("%d %d M (%s) S\n" % xy)
 
-    def image(self, box, im, dpi = None):
-        "Write an PIL image"
+    def image(self, box, im, dpi=None):
+        """Draw a PIL image, centered in the given box."""
         # default resolution depends on mode
         if not dpi:
             if im.mode == "1":
-                dpi = 200 # fax
+                dpi = 200  # fax
             else:
-                dpi = 100 # greyscale
+                dpi = 100  # greyscale
         # image size (on paper)
         x = float(im.size[0] * 72) / dpi
         y = float(im.size[1] * 72) / dpi
@@ -91,19 +126,22 @@ class PSDraw:
         xmax = float(box[2] - box[0])
         ymax = float(box[3] - box[1])
         if x > xmax:
-            y = y * xmax / x; x = xmax
+            y = y * xmax / x
+            x = xmax
         if y > ymax:
-            x = x * ymax / y; y = ymax
+            x = x * ymax / y
+            y = ymax
         dx = (xmax - x) / 2 + box[0]
         dy = (ymax - y) / 2 + box[1]
-        self.fp.write("gsave\n%f %f translate\n" % (dx, dy))
+        self._fp_write("gsave\n%f %f translate\n" % (dx, dy))
         if (x, y) != im.size:
             # EpsImagePlugin._save prints the image at (0,0,xsize,ysize)
             sx = x / im.size[0]
             sy = y / im.size[1]
-            self.fp.write("%f %f scale\n" % (sx, sy))
+            self._fp_write("%f %f scale\n" % (sx, sy))
         EpsImagePlugin._save(im, self.fp, None, 0)
-        self.fp.write("\ngrestore\n")
+        self._fp_write("\ngrestore\n")
+
 
 # --------------------------------------------------------------------
 # Postscript driver
@@ -116,6 +154,7 @@ class PSDraw:
 #
 # Copyright (c) Fredrik Lundh 1994.
 #
+
 
 EDROFF_PS = """\
 /S { show } bind def
