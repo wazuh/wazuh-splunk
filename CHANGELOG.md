@@ -24,6 +24,12 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fix missing custom integrations [#855](https://github.com/wazuh/wazuh-splunk/issues/855)
 - Fix Monitored directories table in agent report [#888](https://github.com/wazuh/wazuh-splunk/issues/888)
 
+## Wazuh v3.10.2 - Splunk Enterprise v8.0.0 - Revision 45
+
+### Added
+
+- Support for Wazuh v3.10.2
+- Support for Splunk 8.0.0
 
 ## Wazuh v3.10.2 - Splunk Enterprise v7.3.0 / v7.3.1 - Revision 44
 
