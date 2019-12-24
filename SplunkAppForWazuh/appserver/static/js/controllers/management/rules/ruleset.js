@@ -71,8 +71,11 @@ define(['../../module', 'FileSaver'], function(app) {
       } catch (err) {
         this.filter = []
       }
+      this.scope.uploadingFiles = false
       this.scope.searchTerm = ''
       this.scope.viewingDetail = false
+      this.scope.showLogtest = window.sessionStorage.showLogtest === "true"
+      this.scope.fullScreen = false
       this.scope.isArray = angular.isArray // eslint-disable-line
       this.initialize()
     }
@@ -89,6 +92,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.search = term => this.search(term)
       this.scope.includesFilter = filterName => this.includesFilter(filterName)
       this.scope.getFilter = filterName => this.getFilter(filterName)
+      this.scope.switchLogtest = () => this.switchLogtest()
       this.scope.removeFilter = filterName => this.removeFilter(filterName)
       this.scope.colorRuleArg = ruleArg => this.colorRegex(ruleArg)
       this.scope.closeDetailView = clear => this.closeDetailView(clear)
@@ -106,6 +110,8 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.enableSave = () => this.enableSave()
 
       this.scope.switchFiles = () => this.switchFiles()
+      this.scope.switchUploadFiles = () => this.switchUploadFiles()
+      
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
@@ -160,6 +166,17 @@ define(['../../module', 'FileSaver'], function(app) {
       this.removeAllFilters()
     }
 
+    
+    /**
+     * Open or closes the upload files view
+     */
+    switchUploadFiles() {
+      this.scope.uploadingFiles = !this.scope.uploadingFiles
+      setTimeout(() => {
+        this.scope.$applyAsync()
+      }, 1)
+    }
+
     /**
      * Exports the table in CSV format
      */
@@ -182,6 +199,7 @@ define(['../../module', 'FileSaver'], function(app) {
       }
       return
     }
+
 
     /**
      * Returns the color
@@ -244,6 +262,7 @@ define(['../../module', 'FileSaver'], function(app) {
         : (this.scope.currentDecoder = false)
       this.scope.$applyAsync()
     }
+
 
     /**
      * Searches a rule
@@ -378,6 +397,14 @@ define(['../../module', 'FileSaver'], function(app) {
         item => item.name === filterName
       )
       return filtered.length ? filtered[0].value : ''
+    }
+
+    /**
+     * Open or closes Logtest 
+     */
+    switchLogtest() {
+      this.scope.showLogtest = !this.scope.showLogtest
+      window.sessionStorage.showLogtest = this.scope.showLogtest
     }
 
     /**

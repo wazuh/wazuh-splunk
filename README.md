@@ -7,10 +7,10 @@
 
  Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 * * *
-![](https://i.imgur.com/HkMjiwJ.png)
+![Overview](SplunkOverview.png)
 ### Documentation
 
--   [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installing-splunk/index.html)
+- [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installation-guide/installing-splunk/index.html)
 
 ## Branches
 
@@ -56,7 +56,9 @@
 |      7.3.0     |       3.10.0      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.0_7.3.0.tar.gz> |
 |      7.3.0     |       3.10.1      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.1_7.3.0.tar.gz> |
 |      7.3.0     |       3.10.2      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.2_7.3.0.tar.gz> |
-|     8.0.0      |       3.10.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.10.2_8.0.0.tar.gz> |
+|      8.0.0     |       3.10.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.10.2_8.0.0.tar.gz> |
+|      7.3.2     |       3.11.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.0_7.3.2.tar.gz> |
+|      8.0.0     |       3.11.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.0_8.0.0.tar.gz> |
 
 
 ## Upgrade

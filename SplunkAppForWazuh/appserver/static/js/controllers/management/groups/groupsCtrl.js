@@ -346,11 +346,13 @@ define(['../../module', 'FileSaver'], function(controllers) {
           `/agents/groups/${this.scope.currentGroup.name}/files/agent.conf`,
           { format: 'xml' }
         )
-        const xml = ((data || {}).data || {}).data || false
-        if (!xml) {
+        const xml = (data || {}).data || {} || false
+        if (!xml.data && xml.error !== 0) {
           throw new Error('Could not fetch agent.conf file')
+        }else if(!xml.data){
+          xml.data = " " // Force to print the XML editor
         }
-        return xml
+        return xml.data
       } catch (error) {
         return Promise.reject(error)
       }
