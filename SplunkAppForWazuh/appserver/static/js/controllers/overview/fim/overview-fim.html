@@ -26,11 +26,11 @@
 
   <!-- Security information management navbar -->
   <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'fim'">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-general" name="general">Security
-      events</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="fim">Integrity monitoring</md-nav-item>
-    <md-nav-item ng-if="awsExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-aws"
+    <md-nav-item  class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-aws"
       name="aws">Amazon AWS</md-nav-item>
+      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-vul" name="vulnerabilities">
+        Vulnerabilities</md-nav-item>
   </md-nav-bar>
 
 
