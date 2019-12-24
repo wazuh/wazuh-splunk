@@ -26,11 +26,17 @@ define(['../../module'], function(controllers) {
         regulatory: false
       }
       try {
-        this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
-        this.scope.agentsCountActive = agentsInfo.data.data.Active - 1
-        this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
-        this.scope.agentsCountNeverConnected =
-          agentsInfo.data.data['Never Connected']
+        this.scope.agentsCountTotal = agentsInfo.data.data.agent_status.Total - 1
+        this.scope.agentsCountActive = agentsInfo.data.data.agent_status.Active - 1
+        this.scope.agentsCountDisconnected = agentsInfo.data.data.agent_status.Disconnected
+        this.scope.agentsCountNeverConnected = agentsInfo.data.data.agent_status['Never connected']
+
+        this.scope.agentsCoverity = this.scope.agentsCountActive
+          ? (this.scope.agentsCountActive / this.scope.agentsCountActive) * 100
+          : 0
+
+        this.scope.noAgents = this.scope.agentsCountTotal - 1 < 1
+        this.scope.lastAgent = agentsInfo.data.data.last_registered_agent || 'Unknown'
       } catch (error) {} //eslint-disable-line
       try {
         this.extensions = extensions
@@ -48,6 +54,38 @@ define(['../../module'], function(controllers) {
       this.scope.toggleExtension = (extension, state) =>
         this.toggleExtension(extension, state)
       this.scope.$applyAsync()
+      
+      this.scope.loadCharts = id => {
+        setTimeout(() => {
+          const chart = new Chart(document.getElementById(id), {
+            type: 'doughnut',
+            data: {
+              labels: ['Active', 'Disconected', 'Never connected'],
+              datasets: [
+                {
+                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                  data: [
+                    this.scope.agentsCountActive,
+                    this.scope.agentsCountDisconnected,
+                    this.scope.agentsCountNeverConnected
+                  ]
+                }
+              ]
+            },
+            options: {
+              cutoutPercentage: 85,
+              legend: {
+                display: true,
+                position: 'right'
+              },
+              tooltips: {
+                displayColors: false
+              }
+            }
+          })
+          chart.update()
+        }, 250)
+      }
     }
 
     /**

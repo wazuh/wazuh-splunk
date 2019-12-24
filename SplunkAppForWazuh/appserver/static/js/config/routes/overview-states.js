@@ -38,7 +38,7 @@ define(['../module'], function(module) {
               '$state',
               async $requestService => {
                 try {
-                  const result = await $requestService.apiReq('/agents/summary')
+                  const result = await $requestService.apiReq('/summary/agents')
                   return result
                 } catch (err) {} //eslint-disable-line
               }
