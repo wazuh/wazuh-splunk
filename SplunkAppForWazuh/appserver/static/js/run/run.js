@@ -26,11 +26,13 @@ define(['./module'], function(module) {
           $currentDataService.addFilter(
             `{"${api.filterType}":"${api.filterName}", "implicit":true}`
           )
+          /** CUSTOM APP  REMOVE index=wazuh 
           $currentDataService.addFilter(
             `{"index":"${
               $currentDataService.getIndex().index
             }", "implicit":true}`
           )
+          **/
           // If change the primary state and do not receive an error the two below code lines clear the warning message
           window.localStorage.setItem('wazuhIsReady', 'true')
           $rootScope.wazuhNotReadyYet = false
