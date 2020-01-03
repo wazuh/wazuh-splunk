@@ -37,6 +37,7 @@ define(['../../module'], function(controllers) {
 
         this.scope.noAgents = this.scope.agentsCountTotal - 1 < 1
         this.scope.lastAgent = agentsInfo.data.data.last_registered_agent || 'Unknown'
+        this.scope.$applyAsync()
       } catch (error) {} //eslint-disable-line
       try {
         this.extensions = extensions
