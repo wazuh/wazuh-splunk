@@ -2,6 +2,13 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v3.11.2 - Splunk Enterprise v7.3.4 - Revision 49
+
+### Added
+
+- Support for Splunk 7.3.4
+- Support for Wazuh 3.11.2
+
 ## Wazuh v3.11.1 - Splunk Enterprise v7.3.2 - Revision 47
 
 ### Added
