@@ -2,6 +2,21 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+
+## Wazuh v3.12.0 - Splunk Enterprise v8.0.2.1 - Revision 56
+
+### Added
+
+- Support for Wazuh v3.12.0
+- Support for Splunk 8.0.2.1
+- Added azure-logs wodle configuration section [#860](https://github.com/wazuh/wazuh-splunk/issues/860)
+- Added new condition field to SCA tab [#861](https://github.com/wazuh/wazuh-splunk/issues/861)
+
+### Changed
+
+- Changed some ambiguous messages in configuration section [#879](https://github.com/wazuh/wazuh-splunk/issues/879)
+
+
 ## Wazuh v3.11.4 - Splunk Enterprise v8.0.1 - Revision 54
 
 ### Added
