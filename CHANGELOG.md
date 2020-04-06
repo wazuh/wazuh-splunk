@@ -2,6 +2,13 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v3.12.1 - Splunk Enterprise v8.0.2.1 - Revision 58
+
+### Added
+
+- Support for Wazuh v3.12.1
+- Added new FIM settings on configuration on demand. [#912](https://github.com/wazuh/wazuh-splunk/issues/912)
+
 
 ## Wazuh v3.12.0 - Splunk Enterprise v8.0.2.1 - Revision 56
 
