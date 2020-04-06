@@ -35,6 +35,8 @@
       diff</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-whodata')" ng-if="!agent || isLinux"
       name="fim-whodata">Who-data</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('fim-synchronization')"
+      name="fim-synchronization">Synchronization</md-nav-item>
   </md-nav-bar>
   <!-- End Integrity monitoring navigation bar -->
 
@@ -96,6 +98,18 @@
             <wz-config-item label="Skip scan on CIFS/NFS mounts"
               value="currentConfig['syscheck-syscheck'].syscheck.skip_nfs">
             </wz-config-item>
+            <wz-config-item
+                label="Skip scan of /dev directory"
+                value="currentConfig['syscheck-syscheck'].syscheck.skip_dev">
+            </wz-config-item>
+            <wz-config-item
+                label="Skip scan of /sys directory"
+                value="currentConfig['syscheck-syscheck'].syscheck.skip_sys">
+            </wz-config-item>
+            <wz-config-item
+                label="Skip scan of /proc directory"
+                value="currentConfig['syscheck-syscheck'].syscheck.skip_proc">
+            </wz-config-item>
             <wz-config-item label="Remove old local snapshots"
               value="currentConfig['syscheck-syscheck'].syscheck.remove_old_diff || 'yes'">
             </wz-config-item>
@@ -107,6 +121,18 @@
             </wz-config-item>
             <wz-config-item label="Command to prevent prelinking"
               value="currentConfig['syscheck-syscheck'].syscheck.prefilter_cmd || '-'">
+            </wz-config-item>
+            <wz-config-item
+                label="Maximum event reporting throughput"
+                value="currentConfig['syscheck-syscheck'].syscheck.max_eps">
+            </wz-config-item>
+            <wz-config-item
+                label="Process priority"
+                value="currentConfig['syscheck-syscheck'].syscheck.process_priority">
+            </wz-config-item>
+            <wz-config-item
+                label="Database type"
+                value="currentConfig['syscheck-syscheck'].syscheck.database">
             </wz-config-item>
 
           </div>
@@ -525,6 +551,54 @@
         </md-card-content>
       </md-card>
       <!-- End auditkeys card -->
+
+
+      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-synchronization'">
+        <md-card-content>
+            <div layout="row" layout-align="start center">
+                <div>
+                    <span class="font-size-16">Synchronization</span>
+                    <div class="wz-margin-top-10">
+                        <span class="md-subheader small">Database synchronization settings</span>
+                    </div>
+                </div>
+                <span flex></span>
+                <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+                <span class="small">&nbsp;&centerdot;&nbsp;</span>
+                <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            </div>
+            <md-divider class="wz-margin-top-10"></md-divider>
+    
+            <!-- Configuration block -->
+            <div class="wz-padding-top-10">
+                <wz-config-item
+                    label="Synchronization status"
+                    value="currentConfig['syscheck-syscheck'].syscheck.synchronization.enabled === 'yes' ? 'enabled' : 'disabled'">
+                </wz-config-item>
+                <wz-config-item
+                    label="Maximum interval (in seconds) between every sync"
+                    value="currentConfig['syscheck-syscheck'].syscheck.synchronization.max_interval">
+                </wz-config-item>
+                <wz-config-item
+                    label="Interval (in seconds) between every sync"
+                    value="currentConfig['syscheck-syscheck'].syscheck.synchronization.interval">
+                </wz-config-item>
+                <wz-config-item
+                    label="Response timeout (in seconds)"
+                    value="currentConfig['syscheck-syscheck'].syscheck.synchronization.response_timeout">
+                </wz-config-item>
+                <wz-config-item
+                    label="Queue size of the manager responses"
+                    value="currentConfig['syscheck-syscheck'].syscheck.synchronization.queue_size">
+                </wz-config-item>
+                <wz-config-item
+                    label="Maximum message throughput"
+                    value="currentConfig['syscheck-syscheck'].syscheck.synchronization.max_eps">
+                </wz-config-item>
+            </div>
+            <!-- End configuration block -->
+        </md-card-content>
+    </md-card>
 
       <!-- JSON && XML card-->
       <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
