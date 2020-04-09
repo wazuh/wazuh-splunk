@@ -1,8 +1,8 @@
 {
   "name": "wazuh-splunk",
-  "version": "3.12.1",
-  "revision": "57",
-  "code": "57-0",
+  "version": "3.12.2",
+  "revision": "58",
+  "code": "58-0",
   "description": "Splunk app for Wazuh",
   "main": "index.js",
   "keywords": [
