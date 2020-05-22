@@ -15,7 +15,7 @@ Find more information about this on the LICENSE file.
 
 from __future__ import absolute_import
 from __future__ import print_function
-import jsonbak
+import oldjsonbak
 import requestsbak
 import datetime
 from db import database
@@ -33,7 +33,7 @@ def get_apis():
         session_key = getSplunkSessionKey()
         data_temp = db.all(session_key)
     except Exception as e:
-        return jsonbak.dumps({'error': str(e)})
+        return oldjsonbak.dumps({'error': str(e)})
     return data_temp
 
 
@@ -42,7 +42,7 @@ def check_status():
     try:
         logger.debug("bin.get_agents_status: Checking agents status.")
         apis = get_apis()
-        apis = jsonbak.loads(apis) #get_apis() returns a JSON string, it needs to be converted as a dictionary
+        apis = oldjsonbak.loads(apis) #get_apis() returns a JSON string, it needs to be converted as a dictionary
         date = str(datetime.datetime.utcnow())[:-7]
         # obtains
         for api in apis:
@@ -96,7 +96,7 @@ def check_status():
                             item["manager"] = {}
                             item["manager"]["name"] = manager_name
                         item["timestamp"] = date
-                        print(jsonbak.dumps(item))
+                        print(oldjsonbak.dumps(item))
             except Exception as e:
                 logger.error("Error requesting agents status: %s" % str(e))
                 pass
