@@ -2,6 +2,17 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+# Wazuh v3.13.1 - Splunk Enterprise v7.3.5 - Revision 66
+
+### Added
+
+- Support for Wazuh v3.13.1
+- Support for Splunk v7.3.5
+
+### Fixed
+
+- Update references of the field `vulnerability.reference` to `vulnerability.references` [#931](https://github.com/wazuh/wazuh-splunk/pull/931)
+
 
 # Wazuh v3.13.0 - Splunk Enterprise v7.3.5 - Revision 64
 
