@@ -66,6 +66,7 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 |     7.3.2      |     3.11.1     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.1_7.3.2.tar.gz> |
 |     7.3.4      |     3.12.0     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.0_7.3.4.tar.gz> |
 |     7.3.4      |     3.12.1     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.1_7.3.4.tar.gz> |
+|     7.3.5      |     3.13.1     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.1_7.3.5.tar.gz> |
 |     8.0.0      |     3.11.0     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.0_8.0.0.tar.gz> |
 |     8.0.0      |     3.11.1     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.1_8.0.0.tar.gz> |
 |     8.0.1      |     3.11.2     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.2_8.0.1.tar.gz> |
@@ -74,6 +75,8 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 |     8.0.2      |     3.12.0     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.0_8.0.2.tar.gz> |
 |     8.0.2      |     3.12.1     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.1_8.0.2.tar.gz> |
 |     8.0.2      |     3.13.0     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.0_8.0.2.tar.gz> |
+|     8.0.4      |     3.13.1     | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.1_8.0.4.tar.gz> |
+
 
 ## Upgrade
 
