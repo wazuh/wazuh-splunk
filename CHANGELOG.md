@@ -2,6 +2,18 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v3.13.1 - Splunk Enterprise v8.0.4.1 - Revision 65
+
+### Added
+
+- Support for Wazuh v3.13.1
+- Support for Splunk v8.0.4
+
+### Fixed
+
+- Update references of the field `vulnerability.reference` to `vulnerability.references` [#931](https://github.com/wazuh/wazuh-splunk/pull/931)
+- Fixed wazuh-monitoring indices on Splunk 8.0+ version [#927](https://github.com/wazuh/wazuh-splunk/issues/927)
+
 ## Wazuh v3.13.0 - Splunk Enterprise v8.0.2.1 - Revision 63
 
 ### Added
