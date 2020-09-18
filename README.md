@@ -68,6 +68,7 @@
 |      7.3.5     |       3.12.3      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.3_7.3.5.tar.gz> |
 |      7.3.5     |       3.13.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.0_7.3.5.tar.gz> |
 |      7.3.5     |       3.13.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.1_7.3.5.tar.gz> |
+|      7.3.5     |       3.13.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.2_7.3.5.tar.gz> |
 
 
 ## Upgrade
