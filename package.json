@@ -4,7 +4,7 @@
   "revision": "68",
   "code": "68-0",
   "splunk": {
-    "version": "7.3.5"
+    "version": "7.3.1"
   },
   "description": "Splunk app for Wazuh",
   "main": "index.js",
