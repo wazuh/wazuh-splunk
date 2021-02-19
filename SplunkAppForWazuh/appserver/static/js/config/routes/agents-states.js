@@ -23,7 +23,7 @@ define(['../module'], function(module) {
               async $requestService => {
                 try {
                   const agentsSummary = await $requestService.apiReq(
-                    '/summary/agents'
+                    '/overview/agents'
                   )
                   return agentsSummary
                 } catch (err) {

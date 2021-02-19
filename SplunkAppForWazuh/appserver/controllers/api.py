@@ -16,6 +16,7 @@ import jsonbak
 import requestsbak
 import csv
 from io import StringIO
+import json
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
@@ -43,6 +44,18 @@ class api(controllers.BaseController):
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("api: Error in API module constructor: %s" % (e))
+
+    def get_auth_token(self, url, auth):
+        try:
+            verify = False
+
+            wazuh_token = self.session.get(
+            url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
+            token = wazuh_token['data']['token']
+            return token
+        except Exception as e:
+            self.logger.error("Error when get auth Wazuh token: %s" % (e))
+        raise e
 
     def get_credentials(self, the_id):
         try:
@@ -169,31 +182,33 @@ class api(controllers.BaseController):
     def make_request(self, method, url, opt_endpoint, kwargs, auth, verify, counter = 3):
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
+            token = self.get_auth_token(url, auth)
+            self.logger.info(token)
             if method == 'GET':
                 request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
+                    url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {token}'},
                     verify=verify).json()
             if method == 'POST':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmleditor':
-                        headers = {'Content-Type': 'application/xml'} 
+                        headers = {'Content-Type': 'application/xml', 'Authorization': f'Bearer {token}'} 
                     elif kwargs['origin'] == 'json':
-                        headers = {'Content-Type':  'application/json'} 
+                        headers = {'Content-Type':  'application/json', 'Authorization': f'Bearer {token}'} 
                     elif kwargs['origin'] == 'raw':
-                        headers = {'Content-Type':  'application/octet-stream'} 
+                        headers = {'Content-Type':  'application/octet-stream', 'Authorization': f'Bearer {token}'} 
                     kwargs = str(kwargs['content'])
                     request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
                 else:
                     request = self.session.post(
-                        url + opt_endpoint, data=kwargs, auth=auth,
+                        url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {token}'} ,
                         verify=verify).json()
             if method == 'PUT':
                 request = self.session.put(
-                    url + opt_endpoint, data=kwargs, auth=auth,
+                    url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {token}'},
                     verify=verify).json()
             if method == 'DELETE':
                 request = self.session.delete(
-                    url + opt_endpoint, data=kwargs, auth=auth,
+                    url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {token}'},
                     verify=verify).json()
             self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))                    
             if request['error'] and request['error'] in socket_errors:
@@ -250,8 +265,9 @@ class api(controllers.BaseController):
         """
         try:
             self.logger.debug("api: Checking Wazuh daemons.")
+            token = self.get_auth_token(url,auth)
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
+                url + '/cluster/status', headers = {'Authorization': f'Bearer {token}'}, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
@@ -260,10 +276,10 @@ class api(controllers.BaseController):
             cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
-                    url + opt_endpoint, auth=auth,
+                    url + opt_endpoint, headers = {'Authorization': f'Bearer {token}'},
                     verify=verify).json()
             if not daemons_status['error']:
-                d = daemons_status['data']
+                d = daemons_status['data']['affected_items'][0]
                 daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
                 if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
@@ -311,6 +327,7 @@ class api(controllers.BaseController):
         """
         try:
             self.logger.debug("api: Preparing request.")
+            self.logger.info(json.dumps(kwargs))
             if 'apiId' not in kwargs or 'endpoint' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID or endpoint.'})
             if 'method' not in kwargs:

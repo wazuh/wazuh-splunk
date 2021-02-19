@@ -60,7 +60,7 @@ define([
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
         const parsedResult = agentData.data.data
-
+        console.log(parsedResult)
         let summary = parsedResult.agent_status
         let lastAgent = parsedResult.last_registered_agent
         let groups = parsedResult.groups

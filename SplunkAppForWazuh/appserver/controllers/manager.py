@@ -17,6 +17,7 @@ from . import api
 import jsonbak
 import requestsbak
 import uuid
+import json
 # from splunk import AuthorizationFailed as AuthorizationFailed
 from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
@@ -80,6 +81,22 @@ class manager(controllers.BaseController):
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("manager: Error in manager module constructor: %s" % (e))
+
+
+    def get_auth_token(self, opt_username,opt_password,opt_base_url,opt_base_port):
+        try:
+            url = opt_base_url + ":" + opt_base_port
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            verify = False
+
+            wazuh_token = self.session.get(
+            url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
+            token = wazuh_token['data']['token']
+            requests_headers = {'Authorization': f'Bearer {token}'}
+            return requests_headers
+        except Exception as e:
+            self.logger.error("Error when get auth Wazuh token: %s" % (e))
+        raise e
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
@@ -349,21 +366,22 @@ class manager(controllers.BaseController):
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
             opt_cluster = kwargs["cluster"] == "true"
+            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             try:
                 # Checks in the first request if the credentials are ok
                 request_manager = self.session.get(
-                    url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify)
+                    url + '/agents', headers=make_header, timeout=20, verify=verify)
                 if request_manager.status_code == 401:
                     self.logger.error("Cannot connect to API; Invalid credentials.")
                     return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
                 request_manager = request_manager.json()  
                 request_cluster = self.session.get(
-                    url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
+                    url + '/cluster/status', headers=make_header, timeout=20, verify=verify).json()
                 request_cluster_name = self.session.get(
-                    url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
+                    url + '/cluster/nodes', headers=make_header, timeout=20, verify=verify).json()
             except ConnectionError as e:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
@@ -373,13 +391,13 @@ class manager(controllers.BaseController):
             except Exception as e:
                 error = {"status": 400, "error": str(e)}
                 return jsonbak.dumps(error)
-            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
+            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster,kwargs)
             # Pass the cluster status instead of always False
             if not daemons_ready:
                 raise Exception("Daemons are not ready yet.")
-            output['managerName'] = request_manager['data']
+            output['managerName'] = request_manager['data']['affected_items'][0]['name']
             output['clusterMode'] = request_cluster['data']
-            output['clusterName'] = request_cluster_name['data']
+            output['clusterName'] = request_cluster_name['data']['affected_items'][0]['name']
             del kwargs['pass']
             result = jsonbak.dumps(output) 
         except Exception as e:
@@ -413,24 +431,32 @@ class manager(controllers.BaseController):
             opt_base_url = str(current_api_json["data"]["url"])
             opt_base_port = str(current_api_json["data"]["portapi"])
             opt_cluster = False
+            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
             if "cluster" in current_api_json["data"]:
                 opt_cluster = current_api_json["data"]["cluster"] == "true"
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             try:
-                manager_info =  self.session.get(
-                    url + '/manager/info', auth=auth, timeout=20, verify=verify)
-                manager_info = manager_info.json()
+                request_manager = self.session.get(
+                    url + '/agents?q=id=000&select=name', headers=make_header, timeout=20, verify=verify)
+                if request_manager.status_code == 401:
+                    self.logger.error("Cannot connect to API; Invalid credentials.")
+                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
+                request_manager = request_manager.json()  
+                request_cluster = self.session.get(
+                    url + '/cluster/status', headers=make_header, timeout=20, verify=verify).json()
+                request_cluster_name = self.session.get(
+                    url + '/cluster/nodes', headers=make_header, timeout=20, verify=verify).json()
             except ConnectionError as e:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
             output = {}
-            if "error" in manager_info and manager_info["error"] != 0: #Checks if daemons are up and running
-                return jsonbak.dumps({"status": "400", "error": manager_info["message"]})
-            output['managerName'] = { 'name' : manager_info['data']['name'] }
-            output['clusterMode'] = { "enabled" : manager_info['data']['cluster']['enabled'], "running" : manager_info['data']['cluster']['running'] }
-            output['clusterName'] = { "type" : manager_info['data']['cluster']['node_type'], "cluster" : manager_info['data']['cluster']['name'], "node" : manager_info['data']['cluster']['node_name'] }
+            if "error" in request_manager and request_manager["error"] != 0: #Checks if daemons are up and running
+                return jsonbak.dumps({"status": "400", "error": request_manager["message"]})
+            output['managerName'] = { 'name' : request_manager['data']['affected_items'][0]['name']}
+            output['clusterMode'] = { "enabled" : request_cluster['data']['enabled'], "running" : request_cluster['data']['running'] }
+            output['clusterName'] = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['name'], "node" : request_cluster_name['data']['affected_items'][0]['name'] }
             del current_api_json["data"]["passapi"]
             output['api'] = current_api_json
             result = jsonbak.dumps(output)             
@@ -453,13 +479,12 @@ class manager(controllers.BaseController):
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
             url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
+            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
 
             wazuh_version = self.session.get(
-                url + '/version', auth=auth, timeout=20, verify=verify).json()   
-            wazuh_version = wazuh_version['data']
-            wazuh_version = wazuh_version.split('v')[1]
+                url + '/', headers=make_header, timeout=20, verify=verify).json()   
+            wazuh_version = wazuh_version['data']['api_version']
 
             app_version = cli.getConfStanza(
                 'package',
@@ -477,7 +502,7 @@ class manager(controllers.BaseController):
             self.logger.error("Error when checking Wazuh version: %s" % (e))
             raise e
             
-    def check_daemons(self, url, auth, verify, check_cluster):
+    def check_daemons(self, url, auth, verify, check_cluster,kwargs):
         """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
 
         Parameters
@@ -489,8 +514,13 @@ class manager(controllers.BaseController):
         """
         try:
             self.logger.debug("manager: Checking Wazuh daemons.")
+            opt_username = kwargs["user"]
+            opt_password = kwargs["pass"]
+            opt_base_url = kwargs["ip"]
+            opt_base_port = kwargs["port"]
+            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
+                url + '/cluster/status',  headers=make_header, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
@@ -499,10 +529,10 @@ class manager(controllers.BaseController):
             cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
-                    url + opt_endpoint, auth=auth,
+                    url + opt_endpoint, headers=make_header,
                     verify=verify).json()
             if not daemons_status['error']:
-                d = daemons_status['data']
+                d = daemons_status['data']['affected_items'][0]
                 daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
                 if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
