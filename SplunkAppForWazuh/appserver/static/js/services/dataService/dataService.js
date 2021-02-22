@@ -108,7 +108,7 @@ define(['../module', 'splunkjs/mvc'], function(module) {
             return Promise.reject(firstPage.data.message)
           } else {
             this.items = this.items.filter(item => !!item)
-            this.items.push(...firstPage.data.data.items)
+            this.items.push(...firstPage.data.data.affected_items)
 
             const totalItems = firstPage.data.data.totalItems
 

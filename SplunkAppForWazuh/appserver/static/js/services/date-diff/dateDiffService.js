@@ -30,6 +30,11 @@ define(['../module'], function(module) {
     }
 
     setBrowserOffset(d) {
+
+      if(!d){
+        return '';
+      }
+
       try {
         const [day, time] = d.indexOf('T') !== -1 ? d.split('T') : d.split(' ')
         const splitChar =
@@ -45,10 +50,10 @@ define(['../module'], function(module) {
         const date = new Date(
           year,
           parseInt(month) - 1,
-          monthDay,
-          hour,
-          minute,
-          seconds ? seconds.split('.')[0] : '0'
+          parseInt(monthDay),
+          parseInt(hour),
+          parseInt(minute),
+          seconds ? parseInt(seconds.split('.')[0]) : 0
         )
         const offset = new Date().getTimezoneOffset()
         const offsetTime = new Date(date.getTime() - offset * 60000)

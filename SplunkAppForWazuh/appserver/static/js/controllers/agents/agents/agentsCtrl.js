@@ -61,35 +61,36 @@ define([
       try {
         const parsedResult = agentData.data.data
         console.log(parsedResult)
-        let summary = parsedResult.agent_status
-        let lastAgent = parsedResult.last_registered_agent
+
+        let summary = this.formatAgentStatusData(parsedResult.agent_status)
+        let lastAgent = parsedResult.last_registered_agent[0]
         let groups = parsedResult.groups
 
-        this.scope.noAgents = summary.Total - 1 < 1
-        this.scope.agentsCountActive = summary.Active - 1
+        this.scope.noAgents = summary.Total < 1
+        this.scope.agentsCountActive = summary.Active
         this.scope.lastAgent = lastAgent || 'Unknown'
         const os = parsedResult.agent_os
-          ? parsedResult.agent_os.items
+          ? parsedResult.agent_os
               .map(item => item.os)
               .filter(item => !!item)
           : false
         const versions = parsedResult.agent_version
-          ? parsedResult.agent_version.items
+          ? parsedResult.agent_version
               .map(item => item.version)
               .filter(item => !!item)
           : false
         const nodes =
-          parsedResult.nodes && parsedResult.nodes.items
-            ? parsedResult.nodes.items
+          parsedResult.nodes && parsedResult.nodes
+            ? parsedResult.nodes
                 .map(item => item['node_name'])
                 .filter(item => !!item)
             : false
         groups = groups
-          ? groups.items.map(item => item.name).filter(item => !!item)
+          ? groups.map(item => item.name).filter(item => !!item)
           : false
         this.scope.agentsCountDisconnected = summary.Disconnected
-        this.scope.agentsCountNeverConnected = summary['Never connected']
-        const agentsCountTotal = summary.Total - 1
+        this.scope.agentsCountNeverConnected = summary.Never_connected;
+        const agentsCountTotal = summary.Total
         this.scope.agentsCoverity = agentsCountTotal
           ? (this.scope.agentsCountActive / agentsCountTotal) * 100
           : 0
@@ -272,9 +273,9 @@ define([
           ) {
             throw Error('Error fetching agent data')
           }
-          if (agentInfo.data.data.items[0].id !== '000') {
+          if (agentInfo.data.data.affected_items[0].id !== '000') {
             this.state.go(`agent-overview`, {
-              id: agentInfo.data.data.items[0].id
+              id: agentInfo.data.data.affected_items[0].id
             })
           }
         } else {
@@ -309,6 +310,24 @@ define([
     reloadList() {
       this.scope.$broadcast('reloadSearchFilterBar', {})
     }
+
+
+
+    /** Parsed Agent Stats */
+    formatAgentStatusData(status){
+
+      let statusObj = {};
+
+      for(let key of Object.keys(status)){
+
+        statusObj[key.charAt(0).toUpperCase() + key.slice(1)] = status[key];
+
+      }
+
+      return statusObj;
+
+    }
+
   }
   app.controller('agentsCtrl', Agents)
 })

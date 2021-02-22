@@ -86,7 +86,7 @@ define(['../../module'], function(app) {
           this.agent[0].data &&
           typeof this.agent[0].data.data === 'object'
         ) {
-          this.scope.agent = this.agent[0].data.data
+          this.scope.agent = this.agent[0].data.data.affected_items[0]
           this.scope.agentOS =
             this.scope.agent &&
             this.scope.agent.os &&
@@ -113,7 +113,7 @@ define(['../../module'], function(app) {
           if (!this.scope.agent.error) {
             this.refreshExtensions()
 
-            this.scope.groups = this.groups.data.data.items
+            this.scope.groups = this.groups.data.data.affected_items
               .map(item => item.name)
               .filter(
                 item =>
@@ -281,7 +281,7 @@ define(['../../module'], function(app) {
           typeof this.groupInfo.data === 'object' &&
           typeof this.groupInfo.data.data === 'object'
         ) {
-          this.groupData = this.groupInfo.data.data.items.filter(
+          this.groupData = this.groupInfo.data.data.affected_items.filter(
             item => item.name === group
           )
         } else if (
