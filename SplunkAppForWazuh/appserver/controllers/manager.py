@@ -14,6 +14,7 @@ Find more information about this on the LICENSE file.
 
 
 from . import api
+from . import token
 import jsonbak
 import requestsbak
 import uuid
@@ -81,22 +82,6 @@ class manager(controllers.BaseController):
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("manager: Error in manager module constructor: %s" % (e))
-
-
-    def get_auth_token(self, opt_username,opt_password,opt_base_url,opt_base_port):
-        try:
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-
-            wazuh_token = self.session.get(
-            url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
-            token = wazuh_token['data']['token']
-            requests_headers = {'Authorization': f'Bearer {token}'}
-            return requests_headers
-        except Exception as e:
-            self.logger.error("Error when get auth Wazuh token: %s" % (e))
-        raise e
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
@@ -366,22 +351,22 @@ class manager(controllers.BaseController):
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
             opt_cluster = kwargs["cluster"] == "true"
-            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            wazuh_token = token.Token().get_auth_token(url,auth)
             verify = False
             try:
                 # Checks in the first request if the credentials are ok
                 request_manager = self.session.get(
-                    url + '/agents', headers=make_header, timeout=20, verify=verify)
+                    url + '/agents', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
                 if request_manager.status_code == 401:
                     self.logger.error("Cannot connect to API; Invalid credentials.")
                     return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
                 request_manager = request_manager.json()  
                 request_cluster = self.session.get(
-                    url + '/cluster/status', headers=make_header, timeout=20, verify=verify).json()
+                    url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
                 request_cluster_name = self.session.get(
-                    url + '/cluster/nodes', headers=make_header, timeout=20, verify=verify).json()
+                    url + '/cluster/nodes', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
             except ConnectionError as e:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
@@ -431,23 +416,23 @@ class manager(controllers.BaseController):
             opt_base_url = str(current_api_json["data"]["url"])
             opt_base_port = str(current_api_json["data"]["portapi"])
             opt_cluster = False
-            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
             if "cluster" in current_api_json["data"]:
                 opt_cluster = current_api_json["data"]["cluster"] == "true"
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            wazuh_token = token.Token().get_auth_token(url,auth)
             verify = False
             try:
                 request_manager = self.session.get(
-                    url + '/agents?q=id=000&select=name', headers=make_header, timeout=20, verify=verify)
+                    url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
                 if request_manager.status_code == 401:
                     self.logger.error("Cannot connect to API; Invalid credentials.")
                     return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
                 request_manager = request_manager.json()  
                 request_cluster = self.session.get(
-                    url + '/cluster/status', headers=make_header, timeout=20, verify=verify).json()
+                    url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
                 request_cluster_name = self.session.get(
-                    url + '/cluster/nodes', headers=make_header, timeout=20, verify=verify).json()
+                    url + '/cluster/nodes', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
             except ConnectionError as e:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
@@ -480,10 +465,11 @@ class manager(controllers.BaseController):
             opt_base_port = kwargs["port"]
             url = opt_base_url + ":" + opt_base_port
             verify = False
-            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            wazuh_token = token.Token().get_auth_token(url,auth)
 
             wazuh_version = self.session.get(
-                url + '/', headers=make_header, timeout=20, verify=verify).json()   
+                url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()   
             wazuh_version = wazuh_version['data']['api_version']
 
             app_version = cli.getConfStanza(
@@ -518,9 +504,9 @@ class manager(controllers.BaseController):
             opt_password = kwargs["pass"]
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
-            make_header = self.get_auth_token(opt_username,opt_password,opt_base_url,opt_base_port)
+            wazuh_token = token.Token().get_auth_token(url,auth)
             request_cluster = self.session.get(
-                url + '/cluster/status',  headers=make_header, timeout=self.timeout, verify=verify).json()
+                url + '/cluster/status',  headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
@@ -529,7 +515,7 @@ class manager(controllers.BaseController):
             cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
-                    url + opt_endpoint, headers=make_header,
+                    url + opt_endpoint, headers={'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if not daemons_status['error']:
                 d = daemons_status['data']['affected_items'][0]
@@ -575,14 +561,14 @@ class manager(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             url = opt_base_url + ":" + opt_base_port
-            
+            wazuh_token = token.Token().get_auth_token(url,auth)
 
             if dest_path and dest_path == 'etc/lists/':
                 file_content = file_content.replace('\\n',"\n")
-                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/octet-stream"}, auth=auth, timeout=20, verify=verify)
+                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/octet-stream", 'Authorization': f'Bearer {wazuh_token}' }, timeout=20, verify=verify)
             else:
                 file_content = file_content.replace('\\n','')
-                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/xml"}, auth=auth, timeout=20, verify=verify)
+                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/xml", 'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
             result = jsonbak.loads(result.text)
             if 'error' in result and result['error'] != 0:
                 return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
