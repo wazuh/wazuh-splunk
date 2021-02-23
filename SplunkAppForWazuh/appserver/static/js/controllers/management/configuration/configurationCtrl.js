@@ -43,8 +43,8 @@ define(['../../module', '../../../utils/config-handler'], function(
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           if (this.clusterInfo.clusterEnabled) {
-            this.scope.selectedNode = this.clusterInfo.nodes.data.data.items[0].name
-            this.scope.nodes = this.clusterInfo.nodes.data.data.items
+            this.scope.selectedNode = this.clusterInfo.nodes.data.data.affected_items[0].name
+            this.scope.nodes = this.clusterInfo.nodes.data.data.affected_items
           }
           this.changeNode(this.scope.selectedNode)
         } else {

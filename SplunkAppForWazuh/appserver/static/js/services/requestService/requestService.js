@@ -87,6 +87,7 @@ define(['../module'], function(module) {
           Object.assign(payload, opts)
         }
         const backPoint = payload.delay ? '/queue/add_job' : '/api/request'
+        console.log(payload, backPoint)
         const result = await httpReq('POST', backPoint, payload)
         if (
           result &&
@@ -125,15 +126,15 @@ define(['../module'], function(module) {
       try {
         const result = await apiReq(
           `${url}`,
-          { content, origin: 'xmleditor' },
-          'POST'
+          { content, origin: 'raw' },
+          'PUT'
         )
+        console.log(result)
         if (
           !result ||
           !result.data ||
           !result.data.data ||
-          result.data.error !== 0 ||
-          (result.data.data.error && result.data.data.error !== 0)
+          result.data.error !== 0
         ) {
           if (result.data.error === 1905) {
             return result
@@ -155,8 +156,7 @@ define(['../module'], function(module) {
         if (
           !result ||
           !result.data ||
-          result.data.error !== 0 ||
-          (result.data.data.error && result.data.data.error !== 0)
+          result.data.error !== 0
         ) {
           throw new Error('Cannot get file.')
         }     

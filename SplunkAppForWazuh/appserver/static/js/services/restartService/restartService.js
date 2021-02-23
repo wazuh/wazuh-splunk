@@ -55,9 +55,9 @@ define(['../module'], function(module) {
       try {
         const enabled = await clusterIsEnabled()
         if (enabled) {
-          await checkConfig(`/cluster/${node}`)
+          await checkConfig(node,true)
           const result = await $requestService.apiReq(
-            `/cluster/${node}/restart`,
+            `/cluster/restart?nodes_list=${node}`,
             {},
             'PUT'
           )
@@ -86,13 +86,17 @@ define(['../module'], function(module) {
       }
     }
 
-    const checkConfig = async node => {
+    const checkConfig = async (node, specific_node = false) => {
       try {
-        const check = await $requestService.apiReq(
-          `${node}/configuration/validation`
-        )
+          const check = specific_node ? await $requestService.apiReq(
+            `/cluster/configuration/validation?nodes_list=${node}`
+          ):
+          await $requestService.apiReq(
+            `${node}/configuration/validation`
+          )
+          console.log(check)
         if (check && check.data && !check.data.error) {
-          if (check.data.data.status === 'OK') {
+          if (check.data.data.affected_items[0].status === 'OK') {
             return 'OK'
           } else {
             if (Array.isArray(check.data.data.details)) {

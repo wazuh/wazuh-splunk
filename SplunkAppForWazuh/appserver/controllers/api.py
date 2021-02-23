@@ -191,9 +191,19 @@ class api(controllers.BaseController):
                         url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'} ,
                         verify=verify).json()
             if method == 'PUT':
-                request = self.session.put(
-                    url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify).json()
+                if 'origin' in kwargs:
+                    if kwargs['origin'] == 'xmleditor':
+                        headers = {'Content-Type': 'application/xml', 'Authorization': f'Bearer {wazuh_token}'} 
+                    elif kwargs['origin'] == 'json':
+                        headers = {'Content-Type':  'application/json', 'Authorization': f'Bearer {wazuh_token}'} 
+                    elif kwargs['origin'] == 'raw':
+                        headers = {'Content-Type':  'application/octet-stream', 'Authorization': f'Bearer {wazuh_token}'}
+                    kwargs = str(kwargs['content'])
+                    request = self.session.put(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers).json()
+                else:
+                    request = self.session.put(
+                        url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                        verify=verify).json()
             if method == 'DELETE':
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
