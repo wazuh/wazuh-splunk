@@ -119,7 +119,7 @@ define(['../module'], function(module) {
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService.apiReq(
-                    `/rules/${$stateParams.id}`
+                    `/rules?rule_ids=${$stateParams.id}`
                   )
                   return result
                 } catch (err) {
@@ -182,7 +182,7 @@ define(['../module'], function(module) {
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService.apiReq(
-                    `/decoders/${$stateParams.name}`
+                    `/decoders?decoder_names=${$stateParams.name}`
                   )
                   return result
                 } catch (err) {

@@ -44,17 +44,17 @@ define([], function() {
           )
         } else if (!agentId && node) {
           partialResult = await apiReq.apiReq(
-            `/cluster/${node}/config/${component}/${configuration}`
+            `/cluster/${node}/configuration/${component}/${configuration}`
           )
         } else if (!agentId && !node) {
           partialResult = await apiReq.apiReq(
-            `/manager/config/${component}/${configuration}`
+            `/manager/configuration/${component}/${configuration}`
           )
         } else {
           throw new Error('Invalid host instance.')
         }
 
-        result[`${component}-${configuration}`] = partialResult.data.data
+        result[`${component}-${configuration}`] = partialResult.data.data.affected_items[0]
         if (partialResult.data.error) {
           result[`${component}-${configuration}`] = partialResult.data.message
         }

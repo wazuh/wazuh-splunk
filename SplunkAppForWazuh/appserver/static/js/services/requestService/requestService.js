@@ -97,6 +97,7 @@ define(['../module'], function(module) {
         ) {
           throw new Error('ERROR3099 - Wazuh not ready yet.')
         }
+        console.log(result)
         return result
       } catch (err) {
         return Promise.reject(
@@ -129,7 +130,6 @@ define(['../module'], function(module) {
           { content, origin: 'raw' },
           'PUT'
         )
-        console.log(result)
         if (
           !result ||
           !result.data ||

@@ -407,22 +407,24 @@ class api(controllers.BaseController):
             # init csv writer
             output_file = StringIO()
             # get total items and keys
+            self.logger.info(url + opt_endpoint)
             request = self.session.get(
                 url + opt_endpoint, params=filters, headers = {'Authorization': f'Bearer {wazuh_token}'},
                 verify=verify).json()
             self.logger.debug("api: Data obtained for generate CSV file.")
-            if ('items' in request['data'] and
-                    len(request['data']['items']) > 0):
+            self.logger.info(json.dumps(request))
+            if ('affected_items' in request['data'] and
+                    len(request['data']['affected_items']) > 0):
                 if "?path=etc/list" in opt_endpoint:
                     formatted = self.format_cdb_list_content(request)
-                    final_obj = formatted["data"]["items"]
+                    final_obj = formatted["data"]["affected_items"]
                 else :
-                    final_obj = request["data"]["items"]
+                    final_obj = request["data"]["affected_items"]
                 if isinstance(final_obj, list):
                     keys = final_obj[0].keys()
                     self.format_output(keys)
                     final_obj_dict = self.format_output(final_obj)
-                    total_items = request["data"]["totalItems"]
+                    total_items = request["data"]["total_affected_items"]
                     # initializes CSV buffer
                     if total_items > 0:
                         dict_writer = csv.DictWriter(
@@ -444,7 +446,7 @@ class api(controllers.BaseController):
                             req = self.session.get(
                                 url + opt_endpoint, params=filters, headers = {'Authorization': f'Bearer {wazuh_token}'},
                                 verify=verify).json()
-                            paginated_result = req['data']['items']
+                            paginated_result = req['data']['affected_items']
                             format_paginated_results = self.format_output(
                                 paginated_result)
                             dict_writer.writerows(format_paginated_results)

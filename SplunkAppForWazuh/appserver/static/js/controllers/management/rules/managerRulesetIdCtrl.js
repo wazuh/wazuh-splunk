@@ -52,7 +52,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       }
 
       //Check if the rule is overwritted
-      const response = (((ruleInfo || {}).data || {}).data || {}).items || []
+      const response = (((ruleInfo || {}).data || {}).data || {}).affected_items || []
       if (response.length) {
         const result = response.filter(rule => rule.details.overwrite)
         this.scope.ruleInfo = result.length ? result[0] : response[0]

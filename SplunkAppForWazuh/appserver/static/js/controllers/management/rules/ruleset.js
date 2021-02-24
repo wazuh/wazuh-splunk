@@ -475,7 +475,7 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         const path = this.getPathFromState()
         if (path) {
-          this.scope.appliedCustomFilters = [{ name: 'path', value: path }]
+          this.scope.appliedCustomFilters = [{ name: 'relative_dirname', value: path }]
         }
       } catch (error) {
         this.notification.showErrorToast('Cannot initialize custom filters.')

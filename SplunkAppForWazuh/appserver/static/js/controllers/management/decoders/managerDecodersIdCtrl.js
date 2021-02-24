@@ -57,7 +57,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         } catch (error) {
           this.filters = []
         }
-        this.scope.currentDecoder = this.currentDecoder.data.data.items[0]
+        this.scope.currentDecoder = this.currentDecoder.data.data.affected_items[0]
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
           this.addDetailFilter(name, value)
@@ -95,7 +95,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       try {
         //Refresh decoder info
         const result = await this.requestService.apiReq(
-          `/decoders/${this.scope.currentDecoder.name}`
+          `/decoders?decoder_names=${this.scope.currentDecoder.name}`
         )
         if (result.data.data.totalItems === 0) {
           this.state.go('mg-decoders')
