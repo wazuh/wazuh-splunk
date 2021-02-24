@@ -82,14 +82,14 @@
     ng-if="agent && agent.status === 'Active' && hasSize(syscollector)">
     <md-card flex class="wz-md-card">
       <md-card-content class="wz-text-center"
-        ng-if="!syscollector.netiface || !syscollector.netiface.items || !syscollector.netiface.items.length">
+        ng-if="!syscollector.netiface || !syscollector.netiface.affected_items || !syscollector.netiface.affected_items.length">
         <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No interfaces scan
           available</span>
       </md-card-content>
-      <md-card-content ng-if="syscollector.netiface && syscollector.netiface.items.length">
+      <md-card-content ng-if="syscollector.netiface && syscollector.netiface.affected_items.length">
         <span class="wz-headline-title"><i class="fa fa-fw fa-sitemap"></i> Network interfaces</span>
         <span class="color-grey pull-right">Last scan:
-          {{setBrowserOffset(syscollector.netiface.items[0].scan.time)}}</span>
+          {{setBrowserOffset(syscollector.netiface.affected_items[0].scan.time)}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
 
         <table class="table table-striped table-condensed table-layout-fixed">
@@ -101,7 +101,7 @@
             <th class="wz-text-left">Type</th>
           </thead>
           <tbody>
-            <tr class="wz-word-wrap" ng-repeat="interface in syscollector.netiface.items">
+            <tr class="wz-word-wrap" ng-repeat="interface in syscollector.netiface.affected_items">
               <td>{{interface.name}}</td>
               <td>{{interface.mac}}</td>
               <td>
@@ -132,13 +132,13 @@
     </md-card>
     <md-card flex class="wz-md-card" ng-if="agent && agent.os && agent.os.platform !== 'darwin'">
       <md-card-content class="wz-text-center wz-margin-bottom-40-inv"
-        ng-if="syscollector.ports && !syscollector.ports.items.length">
+        ng-if="syscollector.ports && !syscollector.ports.affected_items.length">
         <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No network ports information available</span>
       </md-card-content>
-      <md-card-content class="wz-margin-bottom-40-inv" ng-if="syscollector.ports && syscollector.ports.items.length">
+      <md-card-content class="wz-margin-bottom-40-inv" ng-if="syscollector.ports && syscollector.ports.affected_items.length">
         <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network ports</span>
         <span class="color-grey pull-right">Last scan:
-          {{setBrowserOffset(syscollector.ports.items[0].scan.time)}}</span>
+          {{setBrowserOffset(syscollector.ports.affected_items[0].scan.time)}}</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <wazuh-table flex ng-if="agent && agent.os && agent.os.platform === 'windows'"
           path="'/syscollector/' + agent.id + '/ports'" row-sizes="[4]"
@@ -156,12 +156,12 @@
     ng-if="agent && agent.status === 'Active' && !agent.error && syscollector">
     <md-card flex class="wz-md-card">
       <md-card-content class="wz-text-center"
-        ng-if="!syscollector.netaddr || !syscollector.netaddr.items || !syscollector.netaddr.items.length">
+        ng-if="!syscollector.netaddr || !syscollector.netaddr.affected_items || !syscollector.netaddr.affected_items.length">
         <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No network
           addresses information available</span>
       </md-card-content>
       <md-card-content class="wz-margin-bottom-40-inv"
-        ng-if="syscollector.netaddr && syscollector.netaddr.items.length">
+        ng-if="syscollector.netaddr && syscollector.netaddr.affected_items.length">
         <span class="wz-headline-title"><i class="fa fa-fw fa-exchange"></i> Network settings</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <wazuh-table flex path="'/syscollector/' + agent.id + '/netaddr'" row-sizes="[4]"

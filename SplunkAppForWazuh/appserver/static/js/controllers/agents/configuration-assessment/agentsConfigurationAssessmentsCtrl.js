@@ -82,17 +82,17 @@ define(['../../module', '../../../dashboardMain'], function(
         this.agent.data.data.id
       )
         this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+          `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
 
       if (
         this.configAssess &&
         this.configAssess.data &&
         this.configAssess.data.data &&
-        this.configAssess.data.data.items &&
+        this.configAssess.data.data.affected_items &&
         this.configAssess.data.error === 0
       ) {
-        this.configAssess = this.configAssess.data.data.items
+        this.configAssess = this.configAssess.data.data.affected_items
         this.scope.configAssess = this.configAssess
       }
 
@@ -111,8 +111,15 @@ define(['../../module', '../../../dashboardMain'], function(
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
-          ? this.agent.data.data
+          ? this.agent.data.data.affected_items[0]
           : { error: true }
+
+      // Capitalize Status
+      if(this.scope.agent && this.scope.agent.status){
+        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      }
+        
+      
       this.scope.getAgentStatusClass = agentStatus =>
         this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus =>
@@ -239,7 +246,7 @@ define(['../../module', '../../../dashboardMain'], function(
     async loadPolicyChecks(policy) {
       this.scope.showPolicyChecks = true
       this.scope.policy = policy
-      const agentId = this.agent.data.data.id
+      const agentId = this.agent.data.data.affected_items[0].id
       this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
     }
 

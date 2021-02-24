@@ -514,7 +514,7 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(
-                    `/agents?q=id=${id}/group/is_sync`
+                    `/agents/${id}/group/is_sync`
                   )
                   return result
                 } catch (err) {

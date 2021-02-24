@@ -71,15 +71,17 @@ define([
       this.stateParams = $stateParams
       this.agent = agent
       this.scope.expandArray = [false, false, false, false, false, false, false]
+      this.agentData = this.getAgentInfo();
+
       if (
         this.agent &&
         this.agent.length &&
         this.agent[0].data &&
-        this.agent[0].data.data &&
-        this.agent[0].data.data.id
+        this.agentData &&
+        this.agentData.id
       )
         this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent[0].data.data.id}", "implicit":true}`
+          `{"agent.id":"${this.agentData.id}", "implicit":true}`
         )
       this.dateDiffService = $dateDiffService
 
@@ -197,17 +199,17 @@ define([
     $onInit() {
       try {
         this.agentInfo = {
-          name: this.agent[0].data.data.name,
-          id: this.agent[0].data.data.id,
-          status: this.agent[0].data.data.status,
-          ip: this.agent[0].data.data.ip,
-          version: this.agent[0].data.data.version,
-          group: this.agent[0].data.data.group,
-          lastKeepAlive: this.agent[0].data.data.lastKeepAlive,
-          dateAdd: this.agent[0].data.data.dateAdd,
-          agentOS: `${this.agent[0].data.data.os.name} ${this.agent[0].data.data.os.codename} ${this.agent[0].data.data.os.version}`,
-          syscheck: this.agent[1].data.data,
-          rootcheck: this.agent[2].data.data
+          name: this.agentData.name,
+          id: this.agentData.id,
+          status: this.agentData.status,
+          ip: this.agentData.ip,
+          version: this.agentData.version,
+          group: this.agentData.group,
+          lastKeepAlive: this.agentData.lastKeepAlive,
+          dateAdd: this.agentData.dateAdd,
+          agentOS: `${this.agentData.os.name} ${this.agentData.os.codename} ${this.agentData.os.version}`,
+          syscheck: this.agent[1].data.data.affected_items[0],
+          rootcheck: this.agent[2].data.data || {}
         }
 
         this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(
@@ -215,16 +217,16 @@ define([
           this.agentInfo.syscheck.end
         ).duration
         this.agentInfo.rootcheck.duration = this.dateDiffService.getDateDiff(
-          this.agentInfo.rootcheck.start,
-          this.agentInfo.rootcheck.end
+          this.agentInfo.rootcheck.start || null,
+          this.agentInfo.rootcheck.end || null
         ).duration
         this.agentInfo.syscheck.inProgress = this.dateDiffService.getDateDiff(
           this.agentInfo.syscheck.start,
           this.agentInfo.syscheck.end
         ).inProgress
         this.agentInfo.rootcheck.inProgress = this.dateDiffService.getDateDiff(
-          this.agentInfo.rootcheck.start,
-          this.agentInfo.rootcheck.end
+          this.agentInfo.rootcheck.start || null,
+          this.agentInfo.rootcheck.end || null
         ).inProgress
 
         this.scope.agentInfo = this.agentInfo
@@ -241,7 +243,7 @@ define([
             Name: this.agentInfo.name,
             IP: this.agentInfo.ip,
             Version: this.agentInfo.version,
-            Manager: this.agent[0].data.data.manager,
+            Manager: this.agentData.manager,
             OS: this.agentInfo.agentOS,
             dateAdd: this.agentInfo.dateAdd,
             lastKeepAlive: this.agentInfo.lastKeepAlive,
@@ -286,16 +288,16 @@ define([
           this.agent.length &&
           this.agent[0] &&
           this.agent[0].data &&
-          this.agent[0].data.data
-            ? this.agent[0].data.data.id
+          this.agentData
+            ? this.agentData.id
             : null
         this.agentInfo.name =
           this.agent &&
           this.agent.length &&
           this.agent[0] &&
           this.agent[0].data &&
-          this.agent[0].data.data
-            ? this.agent[0].data.data.name
+          this.agentData
+            ? this.agentData.name
             : null
 
         this.scope.agentInfo = {
@@ -320,7 +322,7 @@ define([
      */
     async goGroups(group) {
       try {
-        this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
+        this.groupInfo = await this.requestService.apiReq(`/groups/`)
         this.groupData = this.groupInfo.data.data.items.filter(
           item => item.name === group
         )
@@ -354,6 +356,27 @@ define([
       return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
         : 'Never connected'
+    }
+
+
+    /**
+     * Returns the Agent Information 
+     */
+    getAgentInfo(){
+
+      if(!this.agent[0].data.data.error){
+        // Capitalize Status
+        if(this.agent[0].data.data.affected_items && this.agent[0].data.data.affected_items[0].status){
+          this.agent[0].data.data.affected_items[0].status = 
+            this.agent[0].data.data.affected_items[0].status.charAt(0).toUpperCase() + this.agent[0].data.data.affected_items[0].status.slice(1)
+        }
+
+        return this.agent[0].data.data.affected_items[0]
+      }
+
+
+
+      return {};
     }
   }
 
