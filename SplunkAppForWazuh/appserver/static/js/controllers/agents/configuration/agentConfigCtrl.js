@@ -163,8 +163,8 @@ define(['../../module', '../../../utils/config-handler'], function(
      */
     async goGroups(group) {
       try {
-        const groupInfo = await this.apiReq.apiReq(`/agents/groups/`)
-        const groupData = groupInfo.data.data.items.filter(
+        const groupInfo = await this.apiReq.apiReq(`/groups/`)
+        const groupData = groupInfo.data.data.affected_items.filter(
           item => item.name === group
         )
         if (

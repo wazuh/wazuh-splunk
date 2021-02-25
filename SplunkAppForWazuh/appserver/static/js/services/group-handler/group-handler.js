@@ -59,7 +59,7 @@ define(['../module'], function(module) {
     async removeGroup(group) {
       try {
         const result = await this.req.apiReq(
-          `/agents/groups/${group}`,
+          `/groups?groups_list=${group}`,
           {},
           'DELETE'
         )
@@ -75,9 +75,9 @@ define(['../module'], function(module) {
     async createGroup(name) {
       try {
         const result = await this.req.apiReq(
-          `/agents/groups/${name}`,
+          `/groups?group_id=${name}`,
           {},
-          'PUT'
+          'POST'
         )
         if (result.data.error != 0) {
           throw new Error(result.data.message)
@@ -91,7 +91,7 @@ define(['../module'], function(module) {
     async sendConfiguration(group, content) {
       try {
         const result = this.req.sendConfiguration(
-          `/agents/groups/${group}/files/agent.conf`,
+          `/groups/${group}/files/agent.conf`,
           content
         )
         return result

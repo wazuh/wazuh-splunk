@@ -35,7 +35,7 @@ define([], function() {
       } else {
         $state.go(state, { id: item.id })
       }
-    } else if (instance.path === '/agents/groups') {
+    } else if (instance.path === '/groups') {
       $scope.$emit('wazuhShowGroup', { group: item })
     } else if (
       new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*\/files$/).test(

@@ -320,8 +320,8 @@ define([
      */
     async goGroups(group) {
       try {
-        this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
-        this.groupData = this.groupInfo.data.data.items.filter(
+        this.groupInfo = await this.requestService.apiReq(`/groups/`)
+        this.groupData = this.groupInfo.data.data.affected_items.filter(
           item => item.name === group
         )
         if (

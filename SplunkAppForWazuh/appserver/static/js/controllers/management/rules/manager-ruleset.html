@@ -232,7 +232,7 @@
               <div layout="row" class="md-padding wz-padding-top-0">
                 <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
                 <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete'
-                  ng-click='saveRuleConfig(editingFile.file, editingFile.dir)'
+                  ng-click='saveRuleConfig(editingFile.filename, editingFile.dir)'
                   class='btn wz-button-empty pull-right wz-margin-left-10'>
                   <span ng-show='!xmlHasErrors && adminMode'>
                     <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
@@ -243,13 +243,13 @@
                       class='fa fa-fw fa-exclamation-triangle'></i>
                     XML format error</span>
                 </button>
-                <input placeholder="New file name..." ng-model="editingFile.file"
+                <input placeholder="New file name..." ng-model="editingFile.filename"
                   class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex" style="margin-left: 10px;"
                   ng-change="enableSave()">
           
               </div>
               <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
-                <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.file"
+                <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML" target-name="editingFile.filename"
                   valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
                 </wz-xml-file-editor>
               </div>
@@ -260,7 +260,7 @@
             <div ng-if="editingRulesetFile">
               <div layout="row" class="md-padding wz-padding-top-0">
                 <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-                <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
+                <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.relative_dirname)'
                   class='btn wz-button-empty pull-right wz-margin-left-10'>
                   <span ng-show='!xmlHasErrors && adminMode'><i
                       ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
@@ -275,7 +275,7 @@
               </div>
               <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
                 <wz-xml-file-editor style="height: inherit;" file-name='rules' data="fetchedXML"
-                  target-name="editingRulesetFile.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+                  target-name="editingRulesetFile.filename" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
                 </wz-xml-file-editor>
               </div>
             </div>

@@ -741,7 +741,7 @@ class report(controllers.BaseController):
                             customLabels = self.labels
                         # rows
                         if 'groupConfig' in currentSection:
-                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
+                            config_request = {'endpoint': '/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
                             conf_data = jsonbak.loads(conf_data)
                             if not conf_data or 'data' not in conf_data:
@@ -793,7 +793,7 @@ class report(controllers.BaseController):
                                 pdf.add_page()  
                                 pdf.ln(20)
                         if 'agentList' in currentSection:
-                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
+                            config_request = {'endpoint': '/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
                             conf_data = jsonbak.loads(conf_data)
                             if conf_data['data']['totalItems'] > 0 and 'items' in conf_data['data'] and conf_data['data']['items']:
