@@ -87,6 +87,12 @@ define(['../../module'], function(app) {
           typeof this.agent[0].data.data === 'object'
         ) {
           this.scope.agent = this.agent[0].data.data.affected_items[0]
+
+          // Capitalize Status
+          if(this.scope.agent && this.scope.agent.status){
+            this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+          }
+
           this.scope.agentOS =
             this.scope.agent &&
             this.scope.agent.os &&
