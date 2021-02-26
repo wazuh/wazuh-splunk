@@ -172,7 +172,6 @@ class api(controllers.BaseController):
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
             wazuh_token = token.Token().get_auth_token(url,auth)
-            self.logger.info(json.dumps(kwargs)) 
             if method == 'GET':
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
@@ -213,8 +212,7 @@ class api(controllers.BaseController):
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
-            self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))
-            self.logger.info(json.dumps(request))                
+            self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))            
             if request['error'] and request['error'] in socket_errors:
                 self.logger.debug("api: Trying the previous request again.")                    
                 if counter > 0:
@@ -384,7 +382,7 @@ class api(controllers.BaseController):
             if 'id' not in kwargs or 'path' not in kwargs:
                 raise Exception("Invalid arguments or missing params.")
             filters = {}
-            filters['limit'] = 1000
+            filters['limit'] = 500
             filters['offset'] = 0
 
             if 'filters' in kwargs and kwargs['filters'] != '':
@@ -413,12 +411,10 @@ class api(controllers.BaseController):
             # init csv writer
             output_file = StringIO()
             # get total items and keys
-            self.logger.info(url + opt_endpoint)
             request = self.session.get(
                 url + opt_endpoint, params=filters, headers = {'Authorization': f'Bearer {wazuh_token}'},
                 verify=verify).json()
             self.logger.debug("api: Data obtained for generate CSV file.")
-            self.logger.info(json.dumps(request))
             if ('affected_items' in request['data'] and
                     len(request['data']['affected_items']) > 0):
                 if "?path=etc/list" in opt_endpoint:
