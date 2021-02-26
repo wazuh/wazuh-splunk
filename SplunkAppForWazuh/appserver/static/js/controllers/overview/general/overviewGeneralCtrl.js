@@ -176,13 +176,13 @@ define([
       try {
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
-          this.apiReq(`/agents/summary`)
+          this.apiReq(`/agents/summary/status`)
             .then(data => {
-              this.scope.agentsCountTotal = data.data.data.Total - 1
-              this.scope.agentsCountActive = data.data.data.Active - 1
-              this.scope.agentsCountDisconnected = data.data.data.Disconnected
+              this.scope.agentsCountTotal = data.data.data.total
+              this.scope.agentsCountActive = data.data.data.active
+              this.scope.agentsCountDisconnected = data.data.data.disconnected
               this.scope.agentsCountNeverConnected =
-                data.data.data['Never connected']
+                data.data.data.never_connected
               this.scope.agentsCoverity = this.scope.agentsCountTotal
                 ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) *
                   100
