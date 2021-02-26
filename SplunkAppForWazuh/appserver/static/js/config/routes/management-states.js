@@ -42,8 +42,8 @@ define(['../module'], function(module) {
                   const result = await Promise.all([
                     $requestService.apiReq('/cluster/status'),
                     $requestService.apiReq('/cluster/nodes'),
-                    $requestService.apiReq('/cluster/config'),
-                    $requestService.apiReq('/version'),
+                    $requestService.apiReq('/cluster/local/config'),
+                    $requestService.apiReq('/'),
                     $requestService.apiReq('/agents', { limit: 1 }),
                     $requestService.apiReq('/cluster/healthcheck')
                   ])

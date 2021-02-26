@@ -94,12 +94,12 @@ define([
         $stateParams.isClusterEnabled || this.enabled === 'yes'
       this.scope.isClusterRunning =
         $stateParams.isClusterRunning || this.running === 'yes'
-      this.nodes = nodes
-      this.nodesCount = nodes.totalItems
-      this.configuration = configuration
-      this.version = version
+      this.nodes = nodes.affected_items[0]
+      this.nodesCount = nodes.total_affected_items
+      this.configuration = configuration.affected_items[0]
+      this.version = version.api_version
       this.agents = agents
-      this.health = health
+      this.health = health.affected_items[0]
     }
 
     /**
@@ -209,7 +209,7 @@ define([
 
       this.scope.version = this.version
 
-      this.scope.agentsCount = this.agents.totalItems - 1
+      this.scope.agentsCount = this.agents.total_affected_items - 1
 
       this.scope.healthCheck = this.health
 

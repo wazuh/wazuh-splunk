@@ -170,12 +170,12 @@ define(['../../module', 'FileSaver'], function(app) {
             nodeList &&
             nodeList.data &&
             nodeList.data.data &&
-            Array.isArray(nodeList.data.data.items)
+            Array.isArray(nodeList.data.data.affected_items)
           ) {
-            this.scope.nodeList = nodeList.data.data.items
+            this.scope.nodeList = nodeList.data.data.affected_items
               .map(item => item.name)
               .reverse()
-            this.scope.selectedNode = nodeList.data.data.items.filter(
+            this.scope.selectedNode = nodeList.data.data.affected_items.filter(
               item => item.type === 'master'
             )[0].name
           }
@@ -208,6 +208,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async changeNode(node) {
       try {
+        console.log("node ",node)
         this.scope.type_log = 'all'
         this.scope.category = 'all'
         this.scope.selectedNode = node
