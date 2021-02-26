@@ -11,14 +11,22 @@ define(['../module'], function(module) {
      * Returns the difference between dates
      */
     getDateDiff(start, end) {
-      this.start = new Date(start)
-      this.end = new Date(end)
+
       const result = {
         duration: 'Unknown',
         inProgress: false,
         end: this.end || 'Unknown',
         start: this.start || 'Unknown'
       }
+
+      if(!start || !end){
+        return result
+      }
+
+
+      this.start = new Date(start)
+      this.end = new Date(end)
+      
       if (this.end && this.start) {
         result.duration = (this.end - this.start) / 1000 / 60
         result.duration = Math.round(result.duration * 100) / 100
