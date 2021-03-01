@@ -214,7 +214,7 @@
                     flex path="'/rules'" keys="['id',{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},{value:'hipaa',nosortable:true},{value:'nist-800-53',nosortable:true},'level',{value:'filename',size:2},{value:'relative_dirname',nosortable:true}]"
                     allow-click="true" rows-per-page="14">
                   </wazuh-table>
-                  <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/rules/files'" keys="['file']"
+                  <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/rules/files'" keys="['filename']"
                     rows-per-page="[16,13,11]">
                   </wazuh-table>
                   <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/rules/files'"
