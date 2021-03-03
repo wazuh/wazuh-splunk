@@ -34,7 +34,7 @@
 
 
     <select class="input input-dropdown " flex id="categoryBox" ng-disabled="realtime" ng-model="category"
-      ng-change="filter({name:'category',value:category})" aria-label="Logs category">
+      ng-change="filter({name:'tag',value:category})" aria-label="Logs category">
       <option value="all">All daemons</option>
       <option ng-repeat="daemon in daemons | orderObjectBy: 'title'" value="{{daemon.title}}">{{daemon.title}}</option>
     </select>

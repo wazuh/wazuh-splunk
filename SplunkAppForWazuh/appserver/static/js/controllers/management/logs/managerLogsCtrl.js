@@ -190,9 +190,10 @@ define(['../../module', 'FileSaver'], function(app) {
               `/cluster/${this.scope.selectedNode}/logs/summary`
             )
           : await this.apiReq('/manager/logs/summary')
-        const daemons = data.data.data
-        this.scope.daemons = Object.keys(daemons).map(item => ({
-          title: item
+        const daemons = data.data.data.affected_items
+
+        this.scope.daemons = daemons.map((item) => ({
+          title: Object.keys(item)[0]
         }))
         this.scope.$applyAsync()
         return
@@ -208,7 +209,6 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async changeNode(node) {
       try {
-        console.log("node ",node)
         this.scope.type_log = 'all'
         this.scope.category = 'all'
         this.scope.selectedNode = node

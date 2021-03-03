@@ -87,7 +87,6 @@ define(['../module'], function(module) {
           Object.assign(payload, opts)
         }
         const backPoint = payload.delay ? '/queue/add_job' : '/api/request'
-        console.log(payload, backPoint)
         const result = await httpReq('POST', backPoint, payload)
         if (
           result &&
@@ -97,7 +96,6 @@ define(['../module'], function(module) {
         ) {
           throw new Error('ERROR3099 - Wazuh not ready yet.')
         }
-        console.log(result)
         return result
       } catch (err) {
         return Promise.reject(
