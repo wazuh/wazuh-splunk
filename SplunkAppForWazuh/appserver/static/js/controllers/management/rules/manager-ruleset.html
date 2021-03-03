@@ -218,7 +218,7 @@
                     rows-per-page="[16,13,11]">
                   </wazuh-table>
                   <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/rules/files'"
-                    implicit-filter="[{ name:'path',value: 'etc/rules'}]" keys="['file']" rows-per-page="[16,13,11]">
+                    implicit-filter="[{ name:'relative_dirname',value: 'etc/rules'}]" keys="['filename']" rows-per-page="[16,13,11]">
                   </wazuh-table>
                 </div>
               </md-card-contents>

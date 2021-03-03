@@ -489,9 +489,9 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         const path = this.getPathFromState()
         if (path) {
-          const filters = [{ name: 'path', value: path }]
+          const filters = [{ name: 'relative_dirname', value: path }]
           const restFilters = this.scope.appliedFilters.filter(
-            item => item.name !== 'path'
+            item => item.name !== 'relative_dirname'
           )
           filters.push(...restFilters)
           this.scope.appliedCustomFilters = filters
