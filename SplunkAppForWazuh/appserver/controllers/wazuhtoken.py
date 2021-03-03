@@ -14,11 +14,12 @@ Find more information about this on the LICENSE file.
 
 import jsonbak
 import requestsbak
+from . import cache
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 
-class Token(controllers.BaseController):
+class WazuhToken(controllers.BaseController):
 
     """Queue class.
 
@@ -37,11 +38,15 @@ class Token(controllers.BaseController):
 
     def get_auth_token(self, url, auth):
         try:
-            verify = False
-            wazuh_token = self.session.get(
-            url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
-            token = wazuh_token['data']['token']
-            return token
+            if cache.Cache.get('token') is None :
+                verify = False
+                wazuh_token = self.session.get(
+                url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
+                token = wazuh_token['data']['token']
+                cache.Cache.set('token', token, 600)
+                return token
+            else :
+                return cache.Cache.get('token')
         except Exception as e:
             self.logger.error("Error when get auth Wazuh token: %s" % (e))
         raise e

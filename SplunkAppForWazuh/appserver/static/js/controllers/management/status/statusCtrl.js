@@ -64,7 +64,7 @@ define(['../../module'], function(controllers) {
       if (this.masterNode && this.masterNode.name) {
         const masterNodeName = this.masterNode.name
         this.scope.nodeId = masterNodeName
-        this.scope.nodes = this.nodes.items.filter(node => node.name)
+        this.scope.nodes = this.nodes.affected_items.filter(node => node.name)
       }
       if (
         this.status &&
@@ -82,10 +82,10 @@ define(['../../module'], function(controllers) {
       this.bindStatus()
 
       if (this.nodeStatus) {
-        this.scope.daemons = this.objToArr(this.nodeStatus)
+        this.scope.daemons = this.objToArr(this.nodeStatus.affected_items[0])
       }
       if (this.nodeInfo) {
-        this.scope.managerInfo = this.nodeInfo
+        this.scope.managerInfo = this.nodeInfo.affected_items[0]
       }
 
       this.scope.$on('loadingContent', (event, data) => {
@@ -151,17 +151,17 @@ define(['../../module'], function(controllers) {
         this.scope.getDaemonStatusClass = daemonStatus =>
           daemonStatus === 'running' ? 'status teal' : 'status red'
         // Once Wazuh core fixes agent 000 issues, this should be adjusted
-        const active = this.summary.Active - 1
-        const total = this.summary.Total - 1
+        const active = this.summary.active
+        const total = this.summary.total
         this.scope.agentsCountActive = active
-        this.scope.agentsCountDisconnected = this.summary.Disconnected
-        this.scope.agentsCountNeverConnected = this.summary['Never connected']
+        this.scope.agentsCountDisconnected = this.summary.disconnected
+        this.scope.agentsCountNeverConnected = this.summary['never_connected']
         this.scope.agentsCountTotal = total
         this.scope.agentsCoverity = (active / total) * 100
 
-        this.scope.totalRules = this.rules.totalItems
-        this.scope.totalDecoders = this.decoders.totalItems
-        this.scope.agentInfo = this.agentInfo
+        this.scope.totalRules = this.rules.total_affected_items
+        this.scope.totalDecoders = this.decoders.total_affected_items
+        this.scope.agentInfo = this.agentInfo.affected_items[0]
       } catch (err) {
         this.notification.showErrorToast(err.message || err)
       }

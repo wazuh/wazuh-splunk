@@ -14,7 +14,7 @@ Find more information about this on the LICENSE file.
 
 
 from . import api
-from . import token
+from . import wazuhtoken
 import jsonbak
 import requestsbak
 import uuid
@@ -353,7 +353,7 @@ class manager(controllers.BaseController):
             opt_cluster = kwargs["cluster"] == "true"
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = token.Token().get_auth_token(url,auth)
+            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
             verify = False
             try:
                 # Checks in the first request if the credentials are ok
@@ -420,7 +420,7 @@ class manager(controllers.BaseController):
                 opt_cluster = current_api_json["data"]["cluster"] == "true"
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = token.Token().get_auth_token(url,auth)
+            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
             verify = False
             try:
                 request_manager = self.session.get(
@@ -466,7 +466,7 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             verify = False
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = token.Token().get_auth_token(url,auth)
+            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
 
             wazuh_version = self.session.get(
                 url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()   
@@ -504,7 +504,7 @@ class manager(controllers.BaseController):
             opt_password = kwargs["pass"]
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
-            wazuh_token = token.Token().get_auth_token(url,auth)
+            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
             request_cluster = self.session.get(
                 url + '/cluster/status',  headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
@@ -561,7 +561,7 @@ class manager(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             url = opt_base_url + ":" + opt_base_port
-            wazuh_token = token.Token().get_auth_token(url,auth)
+            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
 
             if dest_path and dest_path == 'etc/lists/':
                 file_content = file_content.replace('\\n',"\n")

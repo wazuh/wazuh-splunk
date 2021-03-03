@@ -393,7 +393,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
           params.search = searchTerm
         }
         const result = await this.apiReq(
-          `/groups?groups_list=${this.scope.currentGroup.name}`
+          `/groups/${this.scope.currentGroup.name}/agents`
           )
         this.scope.totalSelectedAgents = result.data.data.total_affected_items
         const mapped = result.data.data.affected_items.map(item => {

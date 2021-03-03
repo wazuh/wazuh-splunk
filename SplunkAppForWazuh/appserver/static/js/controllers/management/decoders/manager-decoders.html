@@ -134,10 +134,10 @@
                       allow-click="true" rows-per-page="14">
                     </wazuh-table>
                     <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/decoders/files'"
-                      keys="['file']" rows-per-page="[16,13,11]">
+                      keys="['filename']" rows-per-page="[16,13,11]">
                     </wazuh-table>
                     <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/decoders/files'"
-                      implicit-filter="[{ name:'path',value: 'etc/decoders'}]" keys="['file']" rows-per-page="[16,13,11]">
+                      implicit-filter="[{ name:'relative_dirname',value: 'etc/decoders'}]" keys="['filename']" rows-per-page="[16,13,11]">
                     </wazuh-table>
                   </div>
                 </md-card-contents>

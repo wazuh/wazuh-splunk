@@ -135,7 +135,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
     async editRule(fileName) {
       try {
-        const readOnly = !(this.scope.ruleInfo.path === 'etc/rules')
+        const readOnly = !(this.scope.ruleInfo.relative_dirname === 'etc/rules')
         await this.fetchFileContent(fileName, readOnly)
       } catch (error) {}
       return
@@ -148,7 +148,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         if (readOnly) {
           if (!file.startsWith('ruleset/rules')) {
             this.scope.fileName = file
-            file = this.scope.ruleInfo.path + '/' + file
+            file = this.scope.ruleInfo.relative_dirname + '/' + file
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
               file,
               null,
