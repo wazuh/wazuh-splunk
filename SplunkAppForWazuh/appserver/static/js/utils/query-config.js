@@ -39,6 +39,7 @@ define([], function() {
         // Gets manager, node or agent config
         let partialResult = {}
         if (agentId && !node) {
+          console.log('agents config', component,configuration);
           partialResult = await apiReq.apiReq(
             `/agents/${agentId}/config/${component}/${configuration}`
           )

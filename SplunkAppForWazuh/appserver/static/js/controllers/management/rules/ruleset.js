@@ -337,13 +337,13 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.$broadcast('wazuhFilter', { filter })
       } else if (
         term &&
-        term.startsWith('path:') &&
-        term.split('path:')[1].trim()
+        term.startsWith('relative_dirname:') &&
+        term.split('relative_dirname:')[1].trim()
       ) {
         this.scope.customSearch = ''
-        const filter = { name: 'path', value: term.split('path:')[1].trim() }
+        const filter = { name: 'relative_dirname', value: term.split('"relative_dirname":')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'path'
+          item => item.name !== 'relative_dirname'
         )
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })

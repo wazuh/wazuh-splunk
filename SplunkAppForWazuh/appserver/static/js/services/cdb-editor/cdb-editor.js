@@ -27,14 +27,13 @@ define(['../module'], function(module) {
         const result = await this.apiReq(
           `${url}`,
           { content, origin: 'raw' },
-          'POST'
+          'PUT'
         )
         if (
           !result ||
           !result.data ||
-          !result.data.data ||
           result.data.error !== 0 ||
-          (result.data.data.error && result.data.data.error !== 0)
+          (result.data.error && result.data.error !== 0)
         ) {
           if (result.data.error === 1905) {
             return result
@@ -55,12 +54,11 @@ define(['../module'], function(module) {
         if (
           !result ||
           !result.data ||
-          !result.data.data ||
           result.data.error != 0
         ) {
           throw new Error('Error fetching cdb list content')
         }
-        return result.data.data
+        return result.data.contents
       } catch (error) {
         return Promise.reject(error)
       }

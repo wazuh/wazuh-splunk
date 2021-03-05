@@ -551,7 +551,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
             'PUT'
           )
           if (response.data.error !== 0) {
-            throw new Error(response.data.error)
+            // in this new api exist failed_items, each have error message
+            throw new Error(response.data.message)
           }
           if (response.data.data.failed_ids) {
             response.data.data.failed_ids.forEach(x => {
@@ -567,7 +568,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
             'DELETE'
           )
           if (response.data.error !== 0) {
-            throw new Error(response.data.error)
+            // in this new api exist failed_items, each have error message
+            throw new Error(response.data.message)
           }
           if (response.data.data.failed_ids) {
             response.data.data.failed_ids.forEach(x => {

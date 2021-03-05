@@ -260,7 +260,7 @@
             <div ng-if="editingRulesetFile">
               <div layout="row" class="md-padding wz-padding-top-0">
                 <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-                <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.relative_dirname)'
+                <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.file)'
                   class='btn wz-button-empty pull-right wz-margin-left-10'>
                   <span ng-show='!xmlHasErrors && adminMode'><i
                       ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
