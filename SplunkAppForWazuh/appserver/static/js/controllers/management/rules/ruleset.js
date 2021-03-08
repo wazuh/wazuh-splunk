@@ -572,6 +572,7 @@ define(['../../module', 'FileSaver'], function(app) {
         } else {
           this.scope.editingRulesetFile = {
             file,
+            dir: path,
             path: `${path}/${file}`
           }
           this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
@@ -593,7 +594,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file,
-        dir: path,
+        dir,
         overwrite: true
       })
     }
