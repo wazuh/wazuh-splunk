@@ -173,9 +173,19 @@ class api(controllers.BaseController):
             socket_errors = (1013, 1014, 1017, 1018, 1019)
             wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
             if method == 'GET':
-                request = self.session.get(
-                    url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify).json()
+                if 'origin' in kwargs:
+                    if kwargs['origin'] == 'xml':
+                        request_xml = self.session.get(
+                            url + opt_endpoint, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                            verify=verify).content
+                        json_response = json.dumps({'data': request_xml.decode("utf-8")})
+                        json_load = json.loads(json_response)
+                        request = json_load
+                        return request
+                else:
+                    request = self.session.get(
+                        url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                        verify=verify).json()
             if method == 'POST':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmleditor':
@@ -212,7 +222,7 @@ class api(controllers.BaseController):
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
-            self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))            
+            self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))    
             if request['error'] and request['error'] in socket_errors:
                 self.logger.debug("api: Trying the previous request again.")                    
                 if counter > 0:
@@ -249,6 +259,7 @@ class api(controllers.BaseController):
             if not daemons_ready:
                 return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
+            self.logger.info(request)   
             result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
