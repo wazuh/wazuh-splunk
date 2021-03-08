@@ -24,7 +24,7 @@ define(['../module'], function(module) {
       try {
         let path = dir ? `${dir}/${file}` : file
         path = path.startsWith('etc/') ? path : `etc/${path}`
-        node = node ? node : 'manager'
+        node = node ? node : 'master-node'
         const url = overwrite
           ? `/cluster/${node}/files?path=${path}&overwrite=true`
           : `/cluster/${node}/files?path=${path}`

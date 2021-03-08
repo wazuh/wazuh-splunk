@@ -115,7 +115,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
-      this.scope.saveFile = file => this.saveFile(file)
+      this.scope.saveFile = (file, dir) => this.saveFile(file, dir)
 
       this.scope.$on('configSavedSuccessfully', event => {
         event.stopPropagation()
@@ -589,10 +589,11 @@ define(['../../module', 'FileSaver'], function(app) {
      * Saves the file content
      * @param {String} file
      */
-    saveFile(file) {
+    saveFile(file,dir) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file,
+        dir: path,
         overwrite: true
       })
     }
