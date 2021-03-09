@@ -344,7 +344,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       try {
         const data = await this.apiReq(
           `/groups/${this.scope.currentGroup.name}/files/agent.conf/xml`,
-          {origin:"xml"}
+          {origin:"xmlreader"}
           )
         const xml = (data || {}).data || {} || false
         if (!xml.data && xml.error !== 0) {

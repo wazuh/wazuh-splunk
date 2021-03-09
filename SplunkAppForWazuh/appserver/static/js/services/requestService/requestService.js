@@ -150,6 +150,33 @@ define(['../module'], function(module) {
       }
     }
 
+    const sendGroupConfiguration = async (url, content) => {
+      try {
+        const result = await apiReq(
+          `${url}`,
+          { content, origin: 'xmleditor' },
+          'PUT'
+        )
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0
+        ) {
+          if (result.data.error === 1905) {
+            return result
+          } else {
+            throw new Error(
+              result.data.message || result.data.error || 'Cannot send file.'
+            )
+          }
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
     const getConfiguration = async url => {
       try {
         const result = await apiReq(url)
@@ -172,6 +199,7 @@ define(['../module'], function(module) {
       apiReq: apiReq,
       httpReq: httpReq,
       sendConfiguration: sendConfiguration,
+      sendGroupConfiguration: sendGroupConfiguration,
       getConfiguration: getConfiguration,
       wazuhIsReady: wazuhIsReady
     }

@@ -174,7 +174,7 @@ class api(controllers.BaseController):
             wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
             if method == 'GET':
                 if 'origin' in kwargs:
-                    if kwargs['origin'] == 'xml':
+                    if kwargs['origin'] == 'xmlreader':
                         request_xml = self.session.get(
                             url + opt_endpoint, headers = {'Authorization': f'Bearer {wazuh_token}'},
                             verify=verify).content
