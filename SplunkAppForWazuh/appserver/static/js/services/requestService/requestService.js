@@ -96,8 +96,6 @@ define(['../module'], function(module) {
         ) {
           throw new Error('ERROR3099 - Wazuh not ready yet.')
         }
-        console.log(payload)
-        console.log(result)
         return result
       } catch (err) {
         return Promise.reject(
