@@ -90,8 +90,8 @@ define(['../module'], function(module) {
 
     async sendConfiguration(group, content) {
       try {
-        const result = this.req.sendConfiguration(
-          `/groups/${group}/files/agent.conf`,
+        const result = this.req.sendGroupConfiguration(
+          `/groups/${group}/configuration`,
           content
         )
         return result
