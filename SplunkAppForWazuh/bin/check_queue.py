@@ -13,7 +13,7 @@ Find more information about this on the LICENSE file.
 """
 
 from log import log
-from . import token
+from ..appserver.controllers import wazuhtoken
 import time
 import datetime
 import jsonbak
@@ -115,7 +115,7 @@ class CheckQueue():
                 self.remove_job(job['_key'])
                 return 
             endpoint = req['endpoint']
-            wazuh_token = token.Token().get_auth_token(url,auth)
+            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
             # Checks methods
             if method == 'GET':
                 request = self.session.get(
