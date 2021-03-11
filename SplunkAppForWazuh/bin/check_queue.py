@@ -13,7 +13,7 @@ Find more information about this on the LICENSE file.
 """
 
 from log import log
-from ..appserver.controllers import wazuhtoken
+from wazuhtoken import wazuhtoken
 import time
 import datetime
 import jsonbak

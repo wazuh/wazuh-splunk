@@ -14,7 +14,7 @@ Find more information about this on the LICENSE file.
 
 import jsonbak
 import requestsbak
-from . import wazuhtoken
+from wazuhtoken import wazuhtoken
 import csv
 from io import StringIO
 import json
