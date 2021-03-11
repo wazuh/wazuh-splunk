@@ -553,10 +553,12 @@ define(['../../module', 'FileSaver'], function(controllers) {
           )
           if (response.data.error !== 0) {
             // in this new api exist failed_items, each have error message
-            throw new Error(response.data.message)
+            response.data.data.failed_items.map(item => {
+              throw new Error(item.error.message)
+            })
           }
-          if (response.data.data.failed_ids) {
-            response.data.data.failed_ids.forEach(x => {
+          if (response.data.data.failed_items) {
+            response.data.data.failed_items.forEach(x => {
               failedIds.push(x)
             })
           }
@@ -564,7 +566,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         // Delete agents from a group
         if (itemsToSave.deletedIds.length) {
           response = await this.apiReq(
-            `/agents/group/${this.scope.currentGroup.name}?ids=${itemsToSave.deletedIds}`,
+            `/agents/group?group_id=${this.scope.currentGroup.name}&agents_list=${itemsToSave.deletedIds}`,
             {},
             'DELETE'
           )
@@ -591,7 +593,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             `Group has been updated but an error has occurred with ${failedIds.length} agents`
           )
         } else {
-          const responseMsg = (((response || {}).data || {}).data || {}).msg
+          const responseMsg = ((response || {}).data).message
           if (responseMsg) {
             this.notification.showSuccessToast(
               responseMsg || 'Success. Group has been updated'
