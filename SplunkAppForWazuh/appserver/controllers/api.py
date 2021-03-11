@@ -664,22 +664,22 @@ class api(controllers.BaseController):
             # Packages
             endpoint_packages = '/syscollector/' +  str(agentId) + '/packages'
             packages_data = self.session.get(
-                    url + endpoint_packages, params={ 'limit' : 1, 'select' : 'scan_time'}, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                    url + endpoint_packages, params={ 'limit' : 1}, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in packages_data and packages_data['error'] == 0 and 'data' in packages_data:
-                if 'items' in packages_data['data'] and len(packages_data['data']['items']) > 0 and 'scan_time' in packages_data['data']['items'][0]:
-                    syscollectorData['packagesDate'] = packages_data['data']['items'][0]['scan_time']
+                if 'affected_items' in packages_data['data'] and len(packages_data['data']['affected_items']) > 0 and 'scan' in packages_data['data']['affected_items'][0]:
+                    syscollectorData['packagesDate'] = packages_data['data']['affected_items'][0]['scan']['time']
                 else:
                     syscollectorData['packagesDate'] = 'Unknown'
 
             # Processes
             endpoint_processes = '/syscollector/' +  str(agentId) + '/processes'
             processes_data = self.session.get(
-                    url + endpoint_processes, params={ 'limit' : 1, 'select' : 'scan_time'}, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                    url + endpoint_processes, params={ 'limit' : 1}, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in processes_data and processes_data['error'] == 0 and 'data' in processes_data:
-                if 'items' in processes_data['data'] and len(processes_data['data']['items']) > 0 and 'scan_time' in processes_data['data']['items'][0]:
-                    syscollectorData['processesDate'] = processes_data['data']['items'][0]['scan_time']
+                if 'affected_items' in processes_data['data'] and len(processes_data['data']['affected_items']) > 0 and 'scan' in processes_data['data']['affected_items'][0]:
+                    syscollectorData['processesDate'] = processes_data['data']['affected_items'][0]['scan']['time']
                 else:
                     syscollectorData['processesDate'] = 'Unknown'
 
