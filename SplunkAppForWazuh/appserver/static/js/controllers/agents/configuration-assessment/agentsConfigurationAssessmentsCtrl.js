@@ -215,24 +215,6 @@ define(['../../module', '../../../dashboardMain'], function(
     }
 
     /**
-     * Loads policies checks
-     */
-    async loadPolicyChecks(policy) {
-      this.scope.showPolicyChecks = true
-      this.scope.policy = policy
-      const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
-    }
-
-    /**
-     *
-     * Backs to config assessment
-     */
-    backToConfAssess() {
-      this.scope.showPolicyChecks = false
-    }
-
-    /**
      *
      * Backs to config assessment
      */
@@ -248,14 +230,6 @@ define(['../../module', '../../../dashboardMain'], function(
       this.scope.policy = policy
       const agentId = this.agent.data.data.affected_items[0].id
       this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
-    }
-
-    /**
-     *
-     * Backs to config assessment
-     */
-    backToConfAssess() {
-      this.scope.showPolicyChecks = false
     }
 
     /**
