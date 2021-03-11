@@ -130,9 +130,7 @@ define([
             const data = await this.apiReq(`/cluster/healthcheck`, {
               nodes_list: this.scope.currentNode.name
             })
-
-            console.log(data, this.scope.currentNode.name)
-
+            
             const nodeInfo = data.data.data.affected_items.map(item =>{
               if(item.info.name == this.scope.currentNode.name){
                 return item
