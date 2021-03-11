@@ -39,7 +39,6 @@ define([], function() {
         // Gets manager, node or agent config
         let partialResult = {}
         if (agentId && !node) {
-          console.log('agents config', component,configuration);
           partialResult = await apiReq.apiReq(
             `/agents/${agentId}/config/${component}/${configuration}`
           )
@@ -55,7 +54,10 @@ define([], function() {
           throw new Error('Invalid host instance.')
         }
 
-        result[`${component}-${configuration}`] = partialResult.data.data.affected_items[0]
+        result[`${component}-${configuration}`] =
+            (partialResult.data.data.affected_items && partialResult.data.data.affected_items[0])
+            ? partialResult.data.data.affected_items[0]
+            : partialResult.data.data;
         if (partialResult.data.error) {
           result[`${component}-${configuration}`] = partialResult.data.message
         }
