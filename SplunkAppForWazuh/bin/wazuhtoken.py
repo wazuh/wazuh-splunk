@@ -14,12 +14,12 @@ Find more information about this on the LICENSE file.
 
 import jsonbak
 import requestsbak
-from . import cache
+from cache import cache
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 
-class WazuhToken(controllers.BaseController):
+class wazuhtoken():
 
     """Queue class.
 
@@ -29,13 +29,12 @@ class WazuhToken(controllers.BaseController):
     def __init__(self):
         """Constructor."""
         try:
-            controllers.BaseController.__init__(self)
             self.logger = log()
             self.session = requestsbak.Session()
             self.session.trust_env = False
         except Exception as e:
             self.logger.error("token: Error in token module constructor: %s" % (e))
-
+        
     def get_auth_token(self, url, auth):
         try:
             if cache.Cache.get('token') is None :

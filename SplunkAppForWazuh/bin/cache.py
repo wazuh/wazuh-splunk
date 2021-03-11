@@ -6,7 +6,7 @@
 
 import time
 
-class Cache(object):
+class cache(object):
 
     _cache_ = {}
     VALUE   = 0

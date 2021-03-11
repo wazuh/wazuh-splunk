@@ -14,7 +14,7 @@ Find more information about this on the LICENSE file.
 
 
 from . import api
-from . import wazuhtoken
+from wazuhtoken import wazuhtoken
 import jsonbak
 import requestsbak
 import uuid
@@ -380,6 +380,8 @@ class manager(controllers.BaseController):
             # Pass the cluster status instead of always False
             if not daemons_ready:
                 raise Exception("Daemons are not ready yet.")
+
+            self.logger.error("managerName: %s" % (request_manager))
             output['managerName'] = request_manager['data']['affected_items'][0]['name']
             output['clusterMode'] = request_cluster['data']
             output['clusterName'] = request_cluster_name['data']['affected_items'][0]['name']

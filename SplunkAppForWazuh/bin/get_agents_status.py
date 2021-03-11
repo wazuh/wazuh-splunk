@@ -21,7 +21,7 @@ import datetime
 from db import database
 from log import log
 import sys
-from ..appserver.controllers import wazuhtoken
+from wazuhtoken import wazuhtoken
 
 db = database()
 logger = log()
