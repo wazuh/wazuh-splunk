@@ -128,11 +128,18 @@ define([
             this.scope.currentNode = parameters.node
             this.launchSearches()
             const data = await this.apiReq(`/cluster/healthcheck`, {
-              node: this.scope.currentNode.name
+              nodes_list: this.scope.currentNode.name
             })
 
-            this.scope.currentNode.healthCheck =
-              data.data.data.nodes[this.scope.currentNode.name]
+            console.log(data, this.scope.currentNode.name)
+
+            const nodeInfo = data.data.data.affected_items.map(item =>{
+              if(item.info.name == this.scope.currentNode.name){
+                return item
+              }
+            })
+
+            this.scope.currentNode.healthCheck = nodeInfo
 
             if (
               this.scope.currentNode.healthCheck &&
