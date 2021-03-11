@@ -37,8 +37,8 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.realtime = false
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-      this.scope.type_log = 'all'
-      this.scope.category = 'all'
+      this.scope.type_log = ''
+      this.scope.category = ''
       this.scope.sortFilter = false
       this.api = $currentDataService.getApi()
       this.logs = logs
@@ -209,8 +209,8 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async changeNode(node) {
       try {
-        this.scope.type_log = 'all'
-        this.scope.category = 'all'
+        this.scope.type_log = ''
+        this.scope.category = ''
         this.scope.selectedNode = node
         this.scope.custom_search = null
         this.scope.$broadcast('wazuhUpdateInstancePath', {
