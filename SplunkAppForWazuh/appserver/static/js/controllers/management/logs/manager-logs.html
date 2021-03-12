@@ -35,14 +35,14 @@
 
     <select class="input input-dropdown " flex id="categoryBox" ng-disabled="realtime" ng-model="category"
       ng-change="filter({name:'tag',value:category})" aria-label="Logs category">
-      <option value="all">All daemons</option>
+      <option value="">All daemons</option>
       <option ng-repeat="daemon in daemons | orderObjectBy: 'title'" value="{{daemon.title}}">{{daemon.title}}</option>
     </select>
 
     <select class="input input-dropdown wz-margin-left-10" flex id="levelBox" ng-disabled="realtime" ng-model="type_log"
       placeholder="Log level" class="md-no-underline" ng-change="filter({name:'level',value:type_log})"
       aria-label="Logs level">
-      <option value="all">All log levels</option>
+      <option value="">All log levels</option>
       <option value="info">Info</option>
       <option value="error">Error</option>
       <option value="warning">Warning</option>

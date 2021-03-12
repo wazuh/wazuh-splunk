@@ -185,7 +185,7 @@ define(['../module'], function(module) {
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
                   const result = await $requestService.apiReq(
-                    `/agents?q=id=${id}/config/wmodules/wmodules`
+                    `/agents/${id}/config/wmodules/wmodules`
                   )
                   return result
                 } catch (err) {

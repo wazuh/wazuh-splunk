@@ -282,6 +282,9 @@ define(['../../module'], function (controllers) {
         // Push to te API list
         this.scope.apiList.push(api)
 
+        // Check and refresh data
+        this.checkManager(api)
+        
         // If the only one API in the list, then try to select it
         if (this.scope.apiList.length === 1) {
           this.selectManager(api['_key'])
