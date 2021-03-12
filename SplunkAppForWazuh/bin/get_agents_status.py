@@ -25,7 +25,7 @@ from wazuhtoken import wazuhtoken
 
 db = database()
 logger = log()
-
+wztoken = wazuhtoken()
 
 def get_apis():
     """Obtain the list of APIs."""
@@ -54,7 +54,7 @@ def check_status():
             agent_list = {}
             url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
+            wazuh_token = wztoken.get_auth_token(url,auth)
             verify = False
             agents_url_total_items = url + '/agents?limit=1&q=id!=000'
             try:

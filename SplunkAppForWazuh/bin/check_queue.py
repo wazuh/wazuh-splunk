@@ -28,6 +28,7 @@ class CheckQueue():
     def __init__(self):
         """Constructor."""
         self.logger = log()
+        self.wztoken = wazuhtoken()
         self.now = time.time()  # Get the date in seconds
         self.session = requestsbak.Session()
         self.auth_key = sys.stdin.readline().strip()
@@ -115,7 +116,7 @@ class CheckQueue():
                 self.remove_job(job['_key'])
                 return 
             endpoint = req['endpoint']
-            wazuh_token = wazuhtoken.WazuhToken().get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             # Checks methods
             if method == 'GET':
                 request = self.session.get(
