@@ -88,18 +88,18 @@ define([
         health
       ] = parsedResult
 
-      this.running = status.running
+      this.running = status.runnin
       this.enabled = status.enabled
       this.scope.isClusterEnabled =
         $stateParams.isClusterEnabled || this.enabled === 'yes'
       this.scope.isClusterRunning =
         $stateParams.isClusterRunning || this.running === 'yes'
-      this.nodes = nodes.affected_items[0]
-      this.nodesCount = nodes.total_affected_items
-      this.configuration = configuration.affected_items[0]
+      this.nodes = this.enabled === 'yes' ? nodes.affected_items[0] : []
+      this.nodesCount = this.enabled === 'yes' ? nodes.total_affected_items : 0
+      this.configuration = this.enabled === 'yes' ? configuration.affected_items[0] : false
       this.version = version.api_version
       this.agents = agents
-      this.health = health.affected_items[0]
+      this.health = this.enabled === 'yes' ? health.affected_items[0] : false
     }
 
     /**

@@ -82,7 +82,7 @@ def check_status():
                         timeout=1,
                         verify=verify).json()
                     cluster_status = request_cluster_status["data"]["enabled"]
-                    final_url_cluster_name = url + '/cluster/nodes'
+                    final_url_cluster_name = url + '/cluster/local/info'
                     request_cluster_name = requestsbak.get(
                         final_url_cluster_name,
                         timeout=1,
@@ -92,7 +92,7 @@ def check_status():
                     for item in agent_list:
                         if cluster_status == "yes":
                             item["cluster"] = {}
-                            item["cluster"]["name"] = request_cluster_name["data"]["cluster"]
+                            item["cluster"]["name"] = request_cluster_name['data']['affected_items'][0]['cluster']
                         if 'manager' in item:
                             manager_name = item["manager"]
                             item["manager"] = {}
