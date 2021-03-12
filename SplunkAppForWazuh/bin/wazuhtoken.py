@@ -32,20 +32,21 @@ class wazuhtoken():
             self.logger = log()
             self.session = requestsbak.Session()
             self.session.trust_env = False
+            self.cache = cache()
         except Exception as e:
             self.logger.error("token: Error in token module constructor: %s" % (e))
         
     def get_auth_token(self, url, auth):
         try:
-            if cache.Cache.get('token') is None :
+            if cache..get('token') is None :
                 verify = False
                 wazuh_token = self.session.get(
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
                 token = wazuh_token['data']['token']
-                cache.Cache.set('token', token, 600)
+                cache.set('token', token, 600)
                 return token
             else :
-                return cache.Cache.get('token')
+                return cache.get('token')
         except Exception as e:
             self.logger.error("Error when get auth Wazuh token: %s" % (e))
         raise e
