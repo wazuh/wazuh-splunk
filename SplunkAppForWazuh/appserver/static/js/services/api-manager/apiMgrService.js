@@ -56,7 +56,7 @@ define(['../module'], function(module) {
         const resultRawConnection = await checkRawConnection(record)
         record.managerName = resultRawConnection.data.managerName.name
         if (resultRawConnection.data.clusterMode.enabled === 'yes') {
-          record.filterType = 'cluster.name'
+          record.filterType = 'cluster.node'
           record.filterName = resultRawConnection.data.clusterName.cluster
         } else {
           record.filterType = 'manager.name'
@@ -219,7 +219,7 @@ define(['../module'], function(module) {
           // Encode user and password, this prevent fails with special charsets
           const user = encodeURIComponent(api.userapi)
           const pass = encodeURIComponent(api.passapi)
-          const clusterEnabled = api.filterType === 'cluster.name'
+          const clusterEnabled = api.filterType === 'cluster.node'
           const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
           const result = await $requestService.httpReq(
             'GET',
@@ -291,7 +291,7 @@ define(['../module'], function(module) {
         }
         // If cluster is disabled, then filter by manager.name
         if (clusterData.enabled === 'yes') {
-          api.filterType = 'cluster.name'
+          api.filterType = 'cluster.node'
           api.filterName = clusterName.cluster
         } else {
           api.filterType = 'manager.name'

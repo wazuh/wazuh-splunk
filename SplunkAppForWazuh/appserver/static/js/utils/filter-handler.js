@@ -101,12 +101,12 @@ define([], function() {
 
     managerQuery(manager, isCluster) {
       const result = this.base()
-      result.meta.key = isCluster ? 'cluster.name' : 'manager.name'
+      result.meta.key = isCluster ? 'cluster.node' : 'manager.name'
       result.meta.value = manager
       result.meta.params.query = manager
       result.query.match = isCluster
         ? {
-            'cluster.name': {
+            'cluster.node': {
               query: manager,
               type: 'phrase'
             }
