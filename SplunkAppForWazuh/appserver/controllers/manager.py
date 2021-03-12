@@ -335,6 +335,26 @@ class manager(controllers.BaseController):
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
+    def get_cluster_info(self):
+        """Get info about the cluster.
+
+        """
+            try:
+                output = {}
+                request_manager = self.session.get(
+                    url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
+                if request_manager.status_code == 401:
+                    self.logger.error("Cannot connect to API; Invalid credentials.")
+                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
+                request_manager = request_manager.json()  
+                request_cluster = self.session.get(
+                    url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+                if request_cluster['data']['enabled'] == "yes" and request_cluster['data']['running'] == "yes" : :
+                    request_cluster_name = self.session.get(
+                    url + '/cluster/local/info', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+                    output['clusterName'] = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['cluster'], "node" : request_cluster_name['data']['affected_items'][0]['node'] }
+                else:
+                    output['clusterName'] = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['cluster'], "node" : request_cluster_name['data']['affected_items'][0]['node'] }
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
         """Check API connection.
@@ -426,6 +446,7 @@ class manager(controllers.BaseController):
             wazuh_token = self.wztoken.get_auth_token(url,auth)
             verify = False
             try:
+                output = {}
                 request_manager = self.session.get(
                     url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
                 if request_manager.status_code == 401:
@@ -434,17 +455,19 @@ class manager(controllers.BaseController):
                 request_manager = request_manager.json()  
                 request_cluster = self.session.get(
                     url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-                request_cluster_name = self.session.get(
-                    url + '/cluster/nodes', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+                if request_cluster['data']['enabled'] == "yes" and request_cluster['data']['running'] == "yes" :
+                    request_cluster_name = self.session.get(
+                    url + '/cluster/local/info', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+                    output['clusterName'] = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['cluster'], "node" : request_cluster_name['data']['affected_items'][0]['node'] }
+                else:
+                    output['clusterName'] = { "type" : 'master', "cluster" : 'disabled', "node" : request_manager['data']['affected_items'][0]['name'] }
             except ConnectionError as e:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
                 return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
-            output = {}
             if "error" in request_manager and request_manager["error"] != 0: #Checks if daemons are up and running
                 return jsonbak.dumps({"status": "400", "error": request_manager["message"]})
             output['managerName'] = { 'name' : request_manager['data']['affected_items'][0]['name']}
             output['clusterMode'] = { "enabled" : request_cluster['data']['enabled'], "running" : request_cluster['data']['running'] }
-            output['clusterName'] = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['name'], "node" : request_cluster_name['data']['affected_items'][0]['name'] }
             del current_api_json["data"]["passapi"]
             output['api'] = current_api_json
             result = jsonbak.dumps(output)             
