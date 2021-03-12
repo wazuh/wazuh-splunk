@@ -116,7 +116,7 @@ class CheckQueue():
                 self.remove_job(job['_key'])
                 return 
             endpoint = req['endpoint']
-            wazuh_token = wztoken.get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             # Checks methods
             if method == 'GET':
                 request = self.session.get(

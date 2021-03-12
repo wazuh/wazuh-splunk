@@ -172,7 +172,7 @@ class api(controllers.BaseController):
     def make_request(self, method, url, opt_endpoint, kwargs, auth, verify, counter = 3):
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
-            wazuh_token = wztoken.get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             if method == 'GET':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmlreader':
@@ -279,7 +279,7 @@ class api(controllers.BaseController):
         """
         try:
             self.logger.debug("api: Checking Wazuh daemons.")
-            wazuh_token = wztoken.get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             request_cluster = self.session.get(
                 url + '/cluster/status', headers = {'Authorization': f'Bearer {wazuh_token}'}, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
@@ -419,7 +419,7 @@ class api(controllers.BaseController):
             url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            wazuh_token = wztoken.get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             # init csv writer
             output_file = StringIO()
             # get total items and keys
@@ -491,7 +491,7 @@ class api(controllers.BaseController):
                     return jsonbak.dumps(pci_requirements.pci)
                 the_id = kwargs['apiId']
                 url,auth,verify,cluster_enabled = self.get_credentials(the_id)
-                wazuh_token = wztoken.get_auth_token(url,auth)
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 opt_endpoint = '/rules/pci'
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
@@ -529,7 +529,7 @@ class api(controllers.BaseController):
                     return jsonbak.dumps(gdpr_requirements.gdpr)
                 the_id = kwargs['apiId']
                 url,auth,verify,cluster_enabled = self.get_credentials(the_id)
-                wazuh_token = wztoken.get_auth_token(url,auth)
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 opt_endpoint = '/rules/gdpr'
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
@@ -569,7 +569,7 @@ class api(controllers.BaseController):
                 the_id = kwargs['apiId']
                 url,auth,verify = self.get_credentials(the_id)
                 opt_endpoint = '/rules/hipaa'
-                wazuh_token = wztoken.get_auth_token(url,auth)
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
@@ -606,7 +606,7 @@ class api(controllers.BaseController):
                     return jsonbak.dumps(nist_requirements.nist)
                 the_id = kwargs['apiId']
                 url,auth,verify = self.get_credentials(the_id)
-                wazuh_token = wztoken.get_auth_token(url,auth)
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 opt_endpoint = '/rules/nist-800-53'
                 request = self.session.get(
                     url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
@@ -662,7 +662,7 @@ class api(controllers.BaseController):
             apiId = kwargs['apiId']
             agentId = kwargs['agentId']
             url,auth,verify,cluster_enabled = self.get_credentials(apiId)
-            wazuh_token = wztoken.get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             # Hardware
             endpoint_hardware = '/syscollector/' +  str(agentId) + '/hardware'
             hardware_data = self.session.get(
