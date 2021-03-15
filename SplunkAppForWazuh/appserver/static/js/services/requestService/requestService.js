@@ -43,14 +43,20 @@ define(['../module'], function(module) {
         $http.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         // GET METHOD
-        if (method === 'GET')
+        if (method === 'GET'){
           Object.assign(data, await $http.get(tmpUrl, { params: payload }))
+          console.log("Data en get es: ", data);
+        }
         // PUT METHOD
         else if (method === 'PUT')
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
         // POST METHOD
-        else if (method === 'POST')
+        else if (method === 'POST'){
+          console.log("Payload: ", payload);
+          const a = await $http.post(tmpUrl, { params: payload });
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
+          console.log(a,data);
+        }
         // DELETE METHOD
         else if (method === 'DELETE') {
           Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
