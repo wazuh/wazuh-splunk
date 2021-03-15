@@ -88,7 +88,7 @@ define([
         health
       ] = parsedResult
 
-      this.running = status.runnin
+      this.running = status.running
       this.enabled = status.enabled
       this.scope.isClusterEnabled =
         $stateParams.isClusterEnabled || this.enabled === 'yes'
