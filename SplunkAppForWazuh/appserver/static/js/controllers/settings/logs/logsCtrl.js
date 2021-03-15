@@ -18,6 +18,7 @@ define(['../../module'], function(module) {
       this.logs = logs
       this.httpReq = $requestService.httpReq
       this.root = $rootScope
+      this.scope.logs_path = ''
     }
 
     /**
@@ -31,6 +32,7 @@ define(['../../module'], function(module) {
         if (Array.isArray(this.logs.data.logs)) {
           this.parseLogs(this.logs.data.logs)
         }
+        this.scope.logs_path = this.logs.data.logs_path
       } catch (error) {
         this.scope.logs = [
           {
@@ -39,6 +41,7 @@ define(['../../module'], function(module) {
             message: 'Error when loading Wazuh app logs'
           }
         ]
+        this.scope.logs_path = ''
       }
     }
 
@@ -87,6 +90,7 @@ define(['../../module'], function(module) {
         this.scope.logs = []
         const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
         this.parseLogs(result.data.logs)
+        this.scope.logs_path = result.data.logs_path
         this.scope.refreshing = false
         return
       } catch (error) {
@@ -97,6 +101,7 @@ define(['../../module'], function(module) {
             message: 'Error when loading Wazuh app logs'
           }
         ]
+        this.scope.logs_path = ''
       }
     }
   }
