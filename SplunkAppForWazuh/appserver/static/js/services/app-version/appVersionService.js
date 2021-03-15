@@ -18,14 +18,14 @@ define(['../module'], function (module) {
             documentationAppVersion = [major, minor].join('.');
         }
 
-        const getDocumentacionVersion = () => {
+        const getDocumentationVersion = () => {
             return documentationAppVersion;
         }
 
         const service = {
             getAppVersion: getAppVersion,
             setAppInfo: setAppInfo,
-            getDocumentacionVersion: getDocumentacionVersion
+            getDocumentationVersion: getDocumentationVersion
         }
         return service
     })
