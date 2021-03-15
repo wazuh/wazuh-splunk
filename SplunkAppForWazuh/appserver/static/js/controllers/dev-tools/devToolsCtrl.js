@@ -57,10 +57,12 @@ define([
       $window,
       $navigationService,
       $notificationService,
+      $appVersionService,
       $document,
       isAdmin
     ) {
       this.$scope = $scope
+      this.appDocuVersion = $appVersionService.getDocumentacionVersion()
       this.request = $requestService
       this.$window = $window
       this.appState = $navigationService
@@ -155,7 +157,7 @@ define([
 
         this.$scope.help = () => {
           this.$window.open(
-            'https://documentation.wazuh.com/current/user-manual/api/reference.html'
+            `https://documentation.wazuh.com/${this.appDocuVersion}/user-manual/api/reference.html`
           )
         }
 

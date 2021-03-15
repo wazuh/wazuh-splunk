@@ -9,6 +9,7 @@ define(['../../module', '../../../utils/config-handler'], function(
       $scope,
       $requestService,
       $beautifierJson,
+      $appVersionService,
       $notificationService,
       isAdmin,
       clusterInfo
@@ -18,6 +19,7 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.apiReq = $requestService
       this.scope.load = false
       this.scope.isArray = Array.isArray
+      this.scope.appDocuVersion = $appVersionService.getDocumentacionVersion()
       this.configurationHandler = new ConfigHandler(
         this.apiReq,
         $beautifierJson,
