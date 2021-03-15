@@ -54,11 +54,13 @@ define([], function() {
           throw new Error('Invalid host instance.')
         }
 
-        result[`${component}-${configuration}`] =
-            (partialResult.data.data.affected_items && partialResult.data.data.affected_items[0])
-            ? partialResult.data.data.affected_items[0]
-            : partialResult.data.data;
-        if (partialResult.data.error) {
+        if(partialResult.data.error == 0){
+          result[`${component}-${configuration}`] =
+          (partialResult.data.data.affected_items && partialResult.data.data.affected_items[0])
+          ? partialResult.data.data.affected_items[0]
+          : partialResult.data.data;
+        } 
+        else if (partialResult.data.error) {
           result[`${component}-${configuration}`] = partialResult.data.message
         }
       }
