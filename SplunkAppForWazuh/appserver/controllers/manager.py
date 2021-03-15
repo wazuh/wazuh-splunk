@@ -334,7 +334,7 @@ class manager(controllers.BaseController):
             self.logger.error("manager: Get_log_lines endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
-
+                        
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
         """Check API connection.
@@ -354,42 +354,21 @@ class manager(controllers.BaseController):
             opt_cluster = kwargs["cluster"] == "true"
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(url,auth)
             verify = False
-            try:
-                # Checks in the first request if the credentials are ok
-                request_manager = self.session.get(
-                    url + '/agents', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
-                if request_manager.status_code == 401:
-                    self.logger.error("Cannot connect to API; Invalid credentials.")
-                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
-                request_manager = request_manager.json()  
-                request_cluster = self.session.get(
-                    url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-                request_cluster_name = self.session.get(
-                    url + '/cluster/nodes', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-            except ConnectionError as e:
-                self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
-            output = {}
             try:
                 self.check_wazuh_version(kwargs)
             except Exception as e:
                 error = {"status": 400, "error": str(e)}
                 return jsonbak.dumps(error)
-            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster,kwargs)
+            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster, kwargs)
             # Pass the cluster status instead of always False
             if not daemons_ready:
-                raise Exception("Daemons are not ready yet.")
-
-            self.logger.error("managerName: %s" % (request_manager))
-            output['managerName'] = request_manager['data']['affected_items'][0]['name']
-            output['clusterMode'] = request_cluster['data']
-            output['clusterName'] = request_cluster_name['data']['affected_items'][0]['name']
-            del kwargs['pass']
+                raise Exception("DAEMONS-NOT-READY")
+            output = self.get_cluster_info(opt_username, opt_password, opt_base_url, opt_base_port , opt_cluster)   
+            self.logger.info("output: %s" % (output))         
             result = jsonbak.dumps(output) 
         except Exception as e:
-            if not daemons_ready:
+            if e == "DAEMONS-NOT-READY":
                 self.logger.error("manager: Cannot connect to API; Wazuh not ready yet.")
                 return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             else:
@@ -421,30 +400,7 @@ class manager(controllers.BaseController):
             opt_cluster = False
             if "cluster" in current_api_json["data"]:
                 opt_cluster = current_api_json["data"]["cluster"] == "true"
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(url,auth)
-            verify = False
-            try:
-                request_manager = self.session.get(
-                    url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
-                if request_manager.status_code == 401:
-                    self.logger.error("Cannot connect to API; Invalid credentials.")
-                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
-                request_manager = request_manager.json()  
-                request_cluster = self.session.get(
-                    url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-                request_cluster_name = self.session.get(
-                    url + '/cluster/nodes', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-            except ConnectionError as e:
-                self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
-            output = {}
-            if "error" in request_manager and request_manager["error"] != 0: #Checks if daemons are up and running
-                return jsonbak.dumps({"status": "400", "error": request_manager["message"]})
-            output['managerName'] = { 'name' : request_manager['data']['affected_items'][0]['name']}
-            output['clusterMode'] = { "enabled" : request_cluster['data']['enabled'], "running" : request_cluster['data']['running'] }
-            output['clusterName'] = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['name'], "node" : request_cluster_name['data']['affected_items'][0]['name'] }
+            output = self.get_cluster_info(opt_username, opt_password, opt_base_url, opt_base_port , opt_cluster)
             del current_api_json["data"]["passapi"]
             output['api'] = current_api_json
             result = jsonbak.dumps(output)             
@@ -452,6 +408,37 @@ class manager(controllers.BaseController):
             self.logger.error("Error when checking API connection: %s" % (e))
             raise e
         return result
+    
+    def get_cluster_info(self, opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster):
+        """Get info about the cluster.
+
+        """
+        self.logger.debug("manager: Get cluster info.")
+        url = opt_base_url + ":" + opt_base_port
+        auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+        wazuh_token = self.wztoken.get_auth_token(url,auth)
+        verify = False
+        try:
+            request_manager = self.session.get(
+                url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+            request_cluster = self.session.get(
+                url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+            if request_cluster['data']['enabled'] == "yes" and request_cluster['data']['running'] == "yes" :
+                request_cluster_name = self.session.get(
+                    url + '/cluster/local/info', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+                request_cluster_name = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['cluster'], "node" : request_cluster_name['data']['affected_items'][0]['node'] }                                
+            else:
+                request_cluster_name = { "cluster": False }
+        except ConnectionError as e:
+            self.logger.error("manager: Cannot connect to API : %s" % (e))
+            return Exception("Unreachable API, please check the URL and port.")
+        if "error" in request_manager and request_manager["error"] != 0: #Checks if daemons are up and running
+            raise Exception(request_manager["message"])
+        output = {}
+        output['managerName'] = { 'name': request_manager['data']['affected_items'][0]['name'] }
+        output['clusterMode'] = request_cluster['data']
+        output['clusterName'] = request_cluster_name       
+        return output
 
     def check_wazuh_version(self, kwargs):
         """Check Wazuh version

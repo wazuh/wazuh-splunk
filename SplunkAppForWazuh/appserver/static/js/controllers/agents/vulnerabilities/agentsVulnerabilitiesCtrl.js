@@ -57,6 +57,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
