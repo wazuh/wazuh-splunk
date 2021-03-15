@@ -23,5 +23,6 @@ define([
   './file-editor/file-editor',
   './cdb-editor/cdb-editor',
   './restartService/restartService',
-  './checkDaemons/checkDaemonsService'
+  './checkDaemons/checkDaemonsService',
+  './app-version/appVersionService'
 ], function() {})

@@ -23,6 +23,7 @@ define([
       $scope,
       $currentDataService,
       $requestService,
+      $appVersionService,
       $notificationService,
       monitoringInfo
     ) {
@@ -31,6 +32,7 @@ define([
       this.currentDataService = $currentDataService
 
       this.scope.showConfig = $stateParams.isClusterRunning || false
+      this.scope.appDocuVersion = $appVersionService.getDocumentationVersion()
       this.scope.showNodes = $stateParams.showNodes || false
       this.scope.currentNode = $stateParams.currentNode || null
       this.filters = this.currentDataService.getSerializedFilters()
