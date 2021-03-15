@@ -62,7 +62,7 @@ define([
       isAdmin
     ) {
       this.$scope = $scope
-      this.appDocuVersion = $appVersionService.getDocumentacionVersion()
+      this.appDocuVersion = $appVersionService.getDocumentationVersion()
       this.request = $requestService
       this.$window = $window
       this.appState = $navigationService
