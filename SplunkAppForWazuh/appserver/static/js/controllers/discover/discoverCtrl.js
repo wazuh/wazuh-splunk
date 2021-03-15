@@ -1,3 +1,5 @@
+
+
 define(['../module', 'jquery'], function(app, $) {
   'use strict'
 
@@ -31,15 +33,20 @@ define(['../module', 'jquery'], function(app, $) {
         this.scope.loadingRing = true
         this.loadIframeContent()
         this.scope.backToDashboard = () => this.backToDashboard()
+        this.scope.removeIFrameHeader = () => this.removeIFrameHeader()
       } catch (error) {
         this.notification.showErrorToast('Cannot load discover.')
       }
     }
 
     loadIframeContent() {
+      const url = localStorage.getItem('urlDiscover');
+      this.iframe.attr('src', url);
+    }
+
+    removeIFrameHeader() {
       try {
-        const url = localStorage.getItem('urlDiscover')
-        this.iframe.attr('src', url)
+        console.log("remove header")
         const interval = setInterval(() => {
           if (this.iframe.contents().find('header')) {
             const header = this.iframe.contents().find('header')

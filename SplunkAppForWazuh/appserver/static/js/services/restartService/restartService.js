@@ -94,7 +94,6 @@ define(['../module'], function(module) {
           await $requestService.apiReq(
             `${node}/configuration/validation`
           )
-          console.log(check)
         if (check && check.data && !check.data.error) {
           if (check.data.data.affected_items[0].status === 'OK') {
             return 'OK'
