@@ -57,7 +57,6 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
             const parsedFilter = JSON.parse(window.localStorage.ruleset)
             this.scope.appliedFilters = parsedFilter
             if (this.filter.length > 0) {
-              console.log(this.filter)
               this.scope.$broadcast('wazuhFilter', { filter: this.filter })
             }
           }
