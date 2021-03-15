@@ -23,6 +23,7 @@ import json
 from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
+from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from db import database
 from log import log
 from requestsbak.exceptions import ConnectionError
@@ -329,7 +330,7 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Getting last log lines.")
             lines = self.logger.get_last_log_lines(20)
-            parsed_data = jsonbak.dumps({'logs': lines})
+            parsed_data = jsonbak.dumps({'logs': lines, 'logs_path': make_splunkhome_path(['var', 'log', 'splunk', 'SplunkAppForWazuh.log'])})
         except Exception as e:
             self.logger.error("manager: Get_log_lines endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
