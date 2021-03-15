@@ -93,7 +93,7 @@ def check_status():
                     for item in agent_list:
                         if cluster_status == "yes":
                             item["cluster"] = {}
-                            item["cluster"]["name"] = request_cluster_name["data"]["affected_items"][0]["cluster"]
+                            item["cluster"]["name"] = request_cluster_name['data']['affected_items'][0]['cluster']
                         if 'manager' in item:
                             manager_name = item["manager"]
                             item["manager"] = {}

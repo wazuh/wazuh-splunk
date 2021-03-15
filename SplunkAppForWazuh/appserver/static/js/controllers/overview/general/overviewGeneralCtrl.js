@@ -220,7 +220,7 @@ define([
           this.vizz.push(
             new LinearChart(
               `agentStatusHistory`,
-              `${this.agentsStatusFilter} status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
+              `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
               `agentStatus`,
               this.scope,
               { customAxisTitleX: 'Time span' }
