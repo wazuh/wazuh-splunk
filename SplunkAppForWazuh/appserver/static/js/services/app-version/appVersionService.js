@@ -3,28 +3,25 @@ define(['../module'], function (module) {
 
     module.service('$appVersionService', function (
     ) {
-        let appInfo = {revision:'',version:'',splunk_version:''};
-        let documentationAppVersion='';
+        let appInfo = { revision: '', version: '', splunk_version: '' };
+        let documentationAppVersion = '';
         const getAppVersion = () => {
             return appInfo;
         }
 
         /**
-         * Generates and returns the browser base URL + Splunk Port
+         * Set the info about the app and splunk
          */
         const setAppInfo = (info) => {
             let appInfo = info;
             const [major, minor] = appInfo.version.split('.');
-            documentationAppVersion = [major, minor].join('.'); 
+            documentationAppVersion = [major, minor].join('.');
         }
-        
+
         const getDocumentacionVersion = () => {
             return documentationAppVersion;
         }
 
-        const getDocuUrl = (url) => {
-            return url.replace('/current/',`/${documentationAppVersion}/`)
-        }
         const service = {
             getAppVersion: getAppVersion,
             setAppInfo: setAppInfo,

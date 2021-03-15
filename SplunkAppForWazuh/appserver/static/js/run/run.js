@@ -27,7 +27,6 @@ define(['./module'], function(module) {
             'GET',
             '/manager/app_info'
           )
-          console.log('result',result)
           $appVersionService.setAppInfo(result.data);
           return result;
         } catch (error) {
