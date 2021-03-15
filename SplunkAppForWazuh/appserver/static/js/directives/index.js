@@ -23,4 +23,5 @@ define([
   './wz-card-slider/wz-card-slider',
   './wz-logtest/wz-logtest',
   './wz-upload-files/wz-upload-files',
+  './wz-iframe-onload/wz-iframe-onload',
 ], function() {})
