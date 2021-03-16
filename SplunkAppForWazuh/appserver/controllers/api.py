@@ -170,6 +170,15 @@ class api(controllers.BaseController):
             raise e
 
 
+    def catch_Exceptions(self, request):
+        try:
+            if request.status_code != 200: 
+                raise Exception(request.json())
+            return request.json()
+        except Exception as e:
+            raise e
+
+
     def make_request(self, method, url, opt_endpoint, kwargs, auth, verify, counter = 3):
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
@@ -187,7 +196,9 @@ class api(controllers.BaseController):
                 else:
                     request = self.session.get(
                         url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                        verify=verify).json()
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+
             if method == 'POST':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmleditor':
@@ -197,11 +208,15 @@ class api(controllers.BaseController):
                     elif kwargs['origin'] == 'raw':
                         headers = {'Content-Type':  'application/octet-stream', 'Authorization': f'Bearer {wazuh_token}'} 
                     kwargs = str(kwargs['content'])
-                    request = self.session.post(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers).json()
+                    request = self.session.post(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers)
+                    request = request.json()
                 else:
                     request = self.session.post(
                         url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'} ,
-                        verify=verify).json()
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+
+
             if method == 'PUT':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmleditor':
@@ -211,15 +226,21 @@ class api(controllers.BaseController):
                     elif kwargs['origin'] == 'raw':
                         headers = {'Content-Type':  'application/octet-stream', 'Authorization': f'Bearer {wazuh_token}'}
                     kwargs = str(kwargs['content'])
-                    request = self.session.put(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers).json()
+                    request = self.session.put(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers)
+                    request = self.catch_Exceptions(request)
+
                 elif opt_endpoint == '/agents/group':
                     request = self.session.put(
                         url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                        verify=verify).json()
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+
                 else:
                     request = self.session.put(
                         url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                        verify=verify).json()
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+                    
             if method == 'DELETE':
                 request = self.session.delete(
                     url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
