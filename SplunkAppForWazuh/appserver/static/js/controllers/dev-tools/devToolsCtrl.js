@@ -625,32 +625,54 @@ define([
      */
     calculateWhichGroup(firstTime) {
       try {
-        const selection = this.apiInputBox.getCursor()
-
+        const selection = this.apiInputBox.getCursor();
         const desiredGroup = firstTime
           ? this.groups.filter(item => item.requestText)
           : this.groups.filter(
             item =>
               item.requestText &&
               (item.end >= selection.line && item.start <= selection.line)
-          )
+          );
 
         // Place play button at first line from the selected group
         const cords = this.apiInputBox.cursorCoords({
           line: desiredGroup[0].start,
           ch: 0
-        })
-        if (!$('#play_button').is(':visible')) $('#play_button').show()
-        const currentPlayButton = $('#play_button').offset()
+        });
+        if (!$('#play_button').is(':visible')) $('#play_button').show();
+        if (!$('#wazuh_dev_tools_documentation').is(':visible')) $('#wazuh_dev_tools_documentation').show();
+        const currentPlayButton = $('#play_button').offset();
         $('#play_button').offset({
           top: cords.top,
           left: currentPlayButton.left
-        })
-        if (firstTime) this.highlightGroup(desiredGroup[0])
-        return desiredGroup[0]
+        });
+        $('#wazuh_dev_tools_documentation').offset({
+          top: cords.top
+        });
+        if (firstTime) this.highlightGroup(desiredGroup[0]);
+        if (desiredGroup[0]) {
+          const [inputRequest, inputHttpMethod, inputPath, inputQueryParamsStart, inputQueryParams] = (desiredGroup[0] && desiredGroup[0].requestText && desiredGroup[0].requestText.match(/^(GET|PUT|POST|DELETE) ([^\?]*)(\?)?(\S+)?/)) || [];
+          // Split the input request path as array and lowercase
+          const inputEndpoint = inputPath && inputPath.split('/').filter(item => item).map(item => item.toLowerCase()) || [];
+          // Get all API endpoints with http method in the request
+          const inputHttpMethodEndpoints = (this.apiInputBox.model.find(item => item.method === inputHttpMethod) || {}).endpoints || [];
+          // Find the API endpoint in the request
+          const apiEndpoint = inputHttpMethodEndpoints
+            .map(endpoint => ({ ...endpoint, splitURL: endpoint.name.split('/').filter(item => item) }))
+            .filter(endpoint => endpoint.splitURL.length === inputEndpoint.length)
+            .find(endpoint => endpoint.splitURL.reduce((accum, str, index) => accum && (str.startsWith(':') ? true : str.toLowerCase() === inputEndpoint[index]), true));
+          if (apiEndpoint && apiEndpoint.documentation) {
+            const docuUrl = apiEndpoint.documentation.replace('/current/',`/${this.appDocuVersion}/`)
+            $('#wazuh_dev_tools_documentation').attr('href', docuUrl).show();
+          } else {
+            $('#wazuh_dev_tools_documentation').attr('href', '').hide();
+          }
+        }
+        return desiredGroup[0];
       } catch (error) {
-        $('#play_button').hide()
-        return null
+        $('#play_button').hide();
+        $('#wazuh_dev_tools_documentation').hide();
+        return null;
       }
     }
 
