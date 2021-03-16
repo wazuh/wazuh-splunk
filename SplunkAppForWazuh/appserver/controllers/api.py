@@ -208,7 +208,7 @@ class api(controllers.BaseController):
                         headers = {'Content-Type':  'application/octet-stream', 'Authorization': f'Bearer {wazuh_token}'} 
                     kwargs = str(kwargs['content'])
                     request = self.session.post(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers)
-                    request = request.json()
+                    request = self.catch_Exceptions(request)
                 else:
                     request = self.session.post(
                         url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'} ,
