@@ -60,7 +60,6 @@ define([
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
         const parsedResult = agentData.data.data
-
         let summary = this.formatAgentStatusData(parsedResult.agent_status)
         let lastAgent = parsedResult.last_registered_agent[0]
         let groups = parsedResult.groups
@@ -147,7 +146,7 @@ define([
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} NOT agent.id=000 | top agent.name`,
+        `index=wazuh ${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',
@@ -156,6 +155,7 @@ define([
         true,
         'loadingSearch'
       )
+
       this.scope.$applyAsync()
     }
 
@@ -231,11 +231,17 @@ define([
         this.notification.showSimpleToast(
           'Your download should begin automatically...'
         )
+
+        const filters = this.wzTableFilter.get()
+        filters.push({
+          name: "q",
+          value: "id!=000"
+        })
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           '/agents',
           currentApi,
-          this.wzTableFilter.get()
+          filters
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
         saveAs(blob, 'agents.csv') // eslint-disable-line
