@@ -178,7 +178,6 @@ class api(controllers.BaseController):
         except Exception as e:
             raise e
 
-
     def make_request(self, method, url, opt_endpoint, kwargs, auth, verify, counter = 3):
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
