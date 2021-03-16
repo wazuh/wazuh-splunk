@@ -207,12 +207,12 @@ define([
               this.mngName = this.currentDataService.getFilters()[0][
                 'manager.name'
               ]
-              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring-3x`
+              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
             } else {
               this.clusName = this.currentDataService.getFilters()[0][
                 'cluster.name'
               ]
-              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring-3x`
+              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
             }
           } catch (error) {} //eslint-disable-line
 
