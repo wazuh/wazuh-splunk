@@ -61,7 +61,7 @@ define([], function() {
           : partialResult.data.data;
         } 
         else if (partialResult.data.error) {
-          result[`${component}-${configuration}`] = partialResult.data.message
+          result[`${component}-${configuration}`] = partialResult.data.detail || partialResult.data.message
         }
       }
       return result
