@@ -31,7 +31,6 @@ define(['../module', 'domToImg'], function(app, domToImg) {
           visArray.map(async currentValue => {
             const tmpNode = $('#' + currentValue + ' .panel-body')
             const noResults = $('#' + currentValue + ' .panel-body .alert')
-            console.log('node', currentValue, noResults.length > 0 ? true : false);
             let error = false
             if (noResults.length > 0) {
               error = true
