@@ -377,7 +377,7 @@
 
     <!-- No configuration section -->
     <wz-no-config flex error="currentConfig['csyslog-csyslog']" ng-if="currentConfig['csyslog-csyslog'] && isString(currentConfig['csyslog-csyslog'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog']) || (!currentConfig['csyslog-csyslog'].syslog_output || !currentConfig['csyslog-csyslog'].syslog_output.length)"></wz-no-config>
+    <wz-no-config flex error="'not-present'" ng-if="(currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog'])) && (!currentConfig['csyslog-csyslog'].syslog_output || !currentConfig['csyslog-csyslog'].syslog_output.length)"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
