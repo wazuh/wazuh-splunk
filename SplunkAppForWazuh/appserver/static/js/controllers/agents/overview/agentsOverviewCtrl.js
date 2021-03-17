@@ -282,7 +282,7 @@ define(['../../module'], function(app) {
      */
     async goGroups(group) {
       try {
-        this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
+        this.groupInfo = await this.requestService.apiReq(`/groups`)
         if (
           typeof this.groupInfo.data === 'object' &&
           typeof this.groupInfo.data.data === 'object'
@@ -403,11 +403,12 @@ define(['../../module'], function(app) {
     setAgentPlatform() {
       try {
         this.scope.agentPlatform = 'other'
+        const agentInfo = ((((this.agent[0] || []).data || {}).data || {}).affected_items || [])[0] || {}
         let agentPlatformLinux = (
-          (((this.agent[0] || []).data || {}).data || {}).os || {}
+          (agentInfo || {}).os || {}
         ).uname
         let agentPlatformOther = (
-          (((this.agent[0] || []).data || {}).data || {}).os || {}
+          (agentInfo || {}).os || {}
         ).platform
         if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.scope.agentPlatform = 'linux'
