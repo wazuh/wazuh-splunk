@@ -31,6 +31,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
           visArray.map(async currentValue => {
             const tmpNode = $('#' + currentValue + ' .panel-body')
             const noResults = $('#' + currentValue + ' .panel-body .alert')
+            console.log('node', currentValue, noResults.length > 0 ? true : false);
             let error = false
             if (noResults.length > 0) {
               error = true
@@ -54,11 +55,23 @@ define(['../module', 'domToImg'], function(app, domToImg) {
 
             try {
               if (!classes.includes('table')) {
+                let w = tmpNode.width();
+                let h = tmpNode.height();
+
+                // if viz is hidden witdh and height is 0 get parent width and height
+                if(w === 0){
+                  w = noResults.parent().parent().width();
+                }
+
+                if(h === 0){
+                  h = noResults.parent().parent().height();
+                }
+
                 const tmpResult = await domToImg.toPng(
                   error ? noResults[0] : tmpNode[0],
                   {
-                    width: tmpNode.width(),
-                    height: tmpNode.height()
+                    width: w,
+                    height: h
                   }
                 )
                 if (tmpResult === 'data:,') {
