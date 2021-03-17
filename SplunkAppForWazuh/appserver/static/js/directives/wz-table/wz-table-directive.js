@@ -273,11 +273,11 @@ define([
               $scope.$emit('applyFilter', { filter })
             } else if (keyTmp === 'file') {
               const readOnly = !(
-                item.path === 'etc/rules' || item.path === 'etc/decoders'
+                item.relative_dirname === 'etc/rules' || item.relative_dirname === 'etc/decoders'
               )
               $scope.$emit('editFile', {
-                file: item.file,
-                path: item.path,
+                file: item.filename,
+                path: item.relative_dirname,
                 readOnly
               })
             }
@@ -603,7 +603,7 @@ define([
             $scope.$applyAsync()
           } catch (error) {
             $notificationService.showErrorToast(
-              error || `Cannot delete ${item.file || item.name}`
+              error || `Cannot delete ${item.filename || item.name}`
             )
           }
         }

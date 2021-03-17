@@ -2,3 +2,6 @@ sync.sh
 node_modules
 package-lock.json
 .vscode
+SplunkAppForWazuh/metadata/local.meta
+SplunkAppForWazuh/default/app.conf
+__pycache__/

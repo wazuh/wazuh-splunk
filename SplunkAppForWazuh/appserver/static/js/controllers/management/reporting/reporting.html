@@ -49,7 +49,7 @@
       <span>
         <wz-svg icon="refresh"></wz-svg>
         Refresh</span>
-      <md-tooltip md-direction="left" class="wz-tooltip">
+      <md-tooltip md-direction="bottom" class="wz-tooltip">
         Refresh
       </md-tooltip>
     </md-button>
@@ -73,13 +73,13 @@
                 <td>
                   <a ng-href="/static/app/SplunkAppForWazuh/{{item.name}}" flex class="wz-text-right" target="_blank">
                     <wz-svg icon="download"></wz-svg>
-                    <md-tooltip md-direction="left" class="wz-tooltip">
+                    <md-tooltip md-direction="bottom" class="wz-tooltip">
                       Download report
                     </md-tooltip>
                   </a>
                   <a flex class="wz-text-right cursor-pointer" ng-click="deleteReport(item.name)">
                     <wz-svg icon="trash"></wz-svg>
-                    <md-tooltip md-direction="left" class="wz-tooltip">
+                    <md-tooltip md-direction="bottom" class="wz-tooltip">
                       Delete report
                     </md-tooltip>
                   </a>

@@ -34,7 +34,7 @@
           <md-divider class="wz-margin-top-10"></md-divider>
           <div layout="column" class="wz-padding-top-10">
             <p>The cluster is disabled. Visit the documentation on <a target="_blank"
-                href="https://documentation.wazuh.com/current/user-manual/configuring-cluster/index.html">this link</a> to
+              href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/configuring-cluster/index.html">this link</a> to
               learn about how to enable it.
             </p>
           </div>
@@ -191,7 +191,7 @@
           <!-- Nodes -->
           <div layout="row" class="wz-padding-top-10 cursor-pointer" ng-click="goNodes()">
             <span flex="25" class="wz-text-link">Nodes
-              <md-tooltip md-direction="left" class="wz-tooltip">
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
                 Click to open the list of nodes
               </md-tooltip>
             </span>
@@ -204,7 +204,7 @@
           <!-- Agents -->
           <div layout="row" class="wz-padding-top-10 cursor-pointer" ui-sref='agents'>
             <span flex="25" class="wz-text-link">Agents
-              <md-tooltip md-direction="left" class="wz-tooltip">
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
                 Click to open the list of agents
               </md-tooltip>
             </span>
@@ -257,7 +257,7 @@
       </md-card>
       
     <!-- Cluster configuration card -->
-    <md-card flex="75" class="wz-md-card">
+    <md-card flex="75" class="wz-md-card" ng-show="configuration">
       <md-card-content>
         <i class="fa fa-fw fa-info" aria-hidden="true"></i> <span class="wz-headline-title">Cluster configuration</span>
         <md-divider class="wz-margin-top-10"></md-divider>

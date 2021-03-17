@@ -21,10 +21,11 @@ import datetime
 from db import database
 from log import log
 import sys
+from wazuhtoken import wazuhtoken
 
 db = database()
 logger = log()
-
+wztoken = wazuhtoken()
 
 def get_apis():
     """Obtain the list of APIs."""
@@ -53,14 +54,15 @@ def check_status():
             agent_list = {}
             url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            wazuh_token = wztoken.get_auth_token(url,auth)
             verify = False
             agents_url_total_items = url + '/agents?limit=1&q=id!=000'
             try:
                 request_agents = requestsbak.get(
                     agents_url_total_items,
-                    auth=auth, timeout=1,
+                     headers = {'Authorization': f'Bearer {wazuh_token}'}, timeout=1,
                     verify=verify).json()
-                total_items = request_agents["data"]["totalItems"]
+                total_items = request_agents["data"]["total_affected_items"]
                 limit = 500
                 offset = 0
                 params = {}
@@ -70,27 +72,28 @@ def check_status():
                     agents_url = url + \
                         '/agents?select=id,ip,manager,status&offset='+str(offset)+'&limit='+str(limit)
                     request_agents = requestsbak.get(
-                        agents_url, auth=auth, timeout=1, verify=verify).json()
+                        agents_url, headers = {'Authorization': f'Bearer {wazuh_token}'}, timeout=1, verify=verify).json()
 
-                    agent_list = request_agents["data"]["items"]
+                    agent_list = request_agents["data"]["affected_items"]
                     final_url_cluster = url + '/cluster/status'
                     request_cluster_status = requestsbak.get(
                         final_url_cluster,
-                        auth=auth,
+                        headers = {'Authorization': f'Bearer {wazuh_token}'},
                         timeout=1,
                         verify=verify).json()
                     cluster_status = request_cluster_status["data"]["enabled"]
-                    final_url_cluster_name = url + '/cluster/node'
-                    request_cluster_name = requestsbak.get(
-                        final_url_cluster_name,
-                        timeout=1,
-                        auth=auth,
-                        verify=verify).json()
+                    if request_cluster_status["data"]["enabled"] == "yes":
+                        final_url_cluster_name = url + '/cluster/local/info'
+                        request_cluster_name = requestsbak.get(
+                            final_url_cluster_name,
+                            timeout=1,
+                            headers = {'Authorization': f'Bearer {wazuh_token}'},
+                            verify=verify).json()
                     offset = offset + limit
                     for item in agent_list:
                         if cluster_status == "yes":
                             item["cluster"] = {}
-                            item["cluster"]["name"] = request_cluster_name["data"]["cluster"]
+                            item["cluster"]["name"] = request_cluster_name['data']['affected_items'][0]['cluster']
                         if 'manager' in item:
                             manager_name = item["manager"]
                             item["manager"] = {}

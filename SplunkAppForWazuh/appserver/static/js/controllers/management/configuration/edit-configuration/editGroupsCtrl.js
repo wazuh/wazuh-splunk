@@ -96,7 +96,7 @@ define(['../../../module'], function(controllers) {
       try {
         const result = await this.apiReq.request(
           'POST',
-          `/agents/groups/${this.scope.currentGroup.name}/configuration`,
+          `/groups/${this.scope.currentGroup.name}/configuration`,
           { content, origin: 'xmleditor' }
         )
         if (
@@ -120,7 +120,7 @@ define(['../../../module'], function(controllers) {
       try {
         this.scope.currentGroup = { name: groupName }
         const data = await this.apiReq(
-          `/agents/groups/${groupName}/files/agent.conf`,
+          `/groups/${groupName}/files/agent.conf`,
           { format: 'xml' }
         )
         const xml = (data || {}).data || {} || false

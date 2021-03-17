@@ -24,10 +24,10 @@ define(['../module'], function(module) {
       try {
         let path = dir ? `${dir}/${file}` : file
         path = path.startsWith('etc/') ? path : `etc/${path}`
-        node = node ? `cluster/${node}` : 'manager'
+        const nodeUrl = node ? `cluster/${node}` : 'manager'
         const url = overwrite
-          ? `/${node}/files?path=${path}&overwrite=true`
-          : `/${node}/files?path=${path}`
+          ? `/${nodeUrl}/files?path=${path}&overwrite=true`
+          : `/${nodeUrl}/files?path=${path}`
         const result = await this.sendConfig(url, content)
         if (
           !result ||
@@ -65,9 +65,9 @@ define(['../module'], function(module) {
         ) {
           throw new Error(`Error fetching ${file} content.`)
         }
-        if(!result.data.data) //Force XML box to be printed when the file is empty
+        if(!result.data.contents) //Force XML box to be printed when the file is empty
           return " "
-        return result.data.data
+        return result.data.contents
       } catch (error) {
         return Promise.reject(error)
       }
@@ -75,12 +75,13 @@ define(['../module'], function(module) {
 
     async checkConfiguration(node, path) {
       try {
-        const check = await this.apiReq(`/${node}/configuration/validation`)
+        const url = node ? `/cluster/configuration/validation?nodes_list=${node}` : '/manager/configuration/validation';
+        const check = await this.apiReq(url);
         if (check && check.data && !check.data.error) {
-          if (check.data.data.status !== 'OK') {
+          if (check.data.data.affected_items[0].status !== 'OK') {
             const errObj = {}
             errObj['badConfig'] = true
-            errObj['errMsg'] = [...new Set(check.data.data.details)]
+            errObj['errMsg'] = [...new Set(check.data.data.affected_items.details)]
             return Promise.reject(errObj)
           } else {
             return 'Configuration saved.'
@@ -97,8 +98,8 @@ define(['../module'], function(module) {
 
     async removeFile(item) {
       try {
-        const file = item.file || item.name
-        const filePath = `${item.path}/${file}`
+        const file = item.filename || item.name
+        const filePath = `${item.relative_dirname}/${file}`
         const url = `/manager/files?path=${filePath}`
         const result = await this.apiReq(url, {}, 'DELETE')
         if (result && result.data && !result.data.error) {

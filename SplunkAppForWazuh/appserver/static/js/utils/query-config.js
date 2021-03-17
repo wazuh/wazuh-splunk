@@ -44,19 +44,27 @@ define([], function() {
           )
         } else if (!agentId && node) {
           partialResult = await apiReq.apiReq(
-            `/cluster/${node}/config/${component}/${configuration}`
+            `/cluster/${node}/configuration/${component}/${configuration}`
           )
         } else if (!agentId && !node) {
           partialResult = await apiReq.apiReq(
-            `/manager/config/${component}/${configuration}`
+            `/manager/configuration/${component}/${configuration}`
           )
         } else {
           throw new Error('Invalid host instance.')
         }
 
-        result[`${component}-${configuration}`] = partialResult.data.data
-        if (partialResult.data.error) {
-          result[`${component}-${configuration}`] = partialResult.data.message
+        if(partialResult.data.error == 0){
+          result[`${component}-${configuration}`] =
+          (partialResult.data.data.affected_items && partialResult.data.data.affected_items[0])
+          ? partialResult.data.data.affected_items[0]
+          : partialResult.data.data;
+        } 
+        else if (partialResult.data.error) {
+          if (((partialResult.data.data || {}).failed_items || []).length && partialResult.data.data.failed_items[0].error.code == 1116)
+            result[`${component}-${configuration}`] = 'not-present';
+          else 
+            result[`${component}-${configuration}`] = partialResult.data.detail || partialResult.data.message;
         }
       }
       return result

@@ -150,7 +150,7 @@
           </md-card-actions>
           <md-card-contents>
             <div layout="row" ng-if="!lookingGroup" class="md-padding">
-              <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/agents/groups'"
+              <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/groups'"
                 keys="['name','count','mergedSum']" allow-click="true" row-sizes="[20,15,10]">
               </wazuh-table>
             </div>
@@ -159,7 +159,7 @@
             <!-- CSV Download button section for groups -->
             <div layout="row" class="ruleset-csv-formater" ng-if="!lookingGroup">
               <span flex></span>
-              <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups', groups.csv)">
+              <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/groups', groups.csv)">
                 <wz-svg icon="download"></wz-svg>&nbsp;Formatted
               </a>
             </div>
@@ -168,7 +168,7 @@
             <div ng-if='!addingAgents'>
               <!-- Group agents table -->
               <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='agents' && currentGroup" class="md-padding">
-                <wazuh-table admin-mode='adminMode' flex path="'/agents/groups/' + currentGroup.name" keys="['id','name','ip','status','os.name','os.version','version']"
+                <wazuh-table admin-mode='adminMode' flex path="'/groups/' + currentGroup.name + '/agents'" keys="['id','name','ip','status','os.name','os.version','version']"
                   allow-click="true" row-sizes="[20,15,10]" custom-columns="true" empty-results="'No agents were added to this group.'" />
               </div>
               <!-- End Group agents table -->
@@ -176,7 +176,7 @@
               <!-- CSV Download button section for group agents -->
               <div layout="row" class="ruleset-csv-formater" ng-if="lookingGroup && groupsSelectedTab==='agents'">
                 <span flex></span>
-                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name, groups.csv)">
+                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/groups/' + currentGroup.name + '/agents', groups.csv)">
                   <wz-svg icon="download"></wz-svg>&nbsp;Formatted
                 </a>
               </div>
@@ -184,7 +184,7 @@
               <!-- Group files table -->
               <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='files' && !fileViewer && currentGroup"
                 class="md-padding">
-                <wazuh-table admin-mode='adminMode' extra-limit="100" flex path="'/agents/groups/' + currentGroup.name + '/files'"
+                <wazuh-table admin-mode='adminMode' extra-limit="100" flex path="'/groups/' + currentGroup.name + '/files'"
                   keys="[{value:'filename',size:2},{value:'hash',size:6}]" allow-click="true" row-sizes="[10,8,6,4]">
                 </wazuh-table>
               </div>
@@ -192,7 +192,7 @@
               <!-- CSV Download button section for group files-->
               <div layout="row" class="ruleset-csv-formater" ng-if="lookingGroup && groupsSelectedTab==='files' && !file">
                 <span flex></span>
-                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/agents/groups/' + currentGroup.name + '/files', groups.csv)">
+                <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/groups/' + currentGroup.name + '/files', groups.csv)">
                   <wz-svg icon="download"></wz-svg>&nbsp;Formatted
                 </a>
               </div>

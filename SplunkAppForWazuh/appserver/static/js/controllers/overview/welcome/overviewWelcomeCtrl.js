@@ -26,11 +26,11 @@ define(['../../module'], function(controllers) {
         regulatory: false
       }
       try {
-        this.scope.agentsCountTotal = agentsInfo.data.data.Total - 1
-        this.scope.agentsCountActive = agentsInfo.data.data.Active - 1
-        this.scope.agentsCountDisconnected = agentsInfo.data.data.Disconnected
+        this.scope.agentsCountTotal = agentsInfo.data.data.total
+        this.scope.agentsCountActive = agentsInfo.data.data.active
+        this.scope.agentsCountDisconnected = agentsInfo.data.data.disconnected
         this.scope.agentsCountNeverConnected =
-          agentsInfo.data.data['Never Connected']
+          agentsInfo.data.data.never_connected
       } catch (error) {} //eslint-disable-line
       try {
         this.extensions = extensions

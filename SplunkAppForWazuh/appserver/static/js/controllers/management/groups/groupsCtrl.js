@@ -125,10 +125,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
           event.stopPropagation()
           if (this.scope.currentGroup) {
             const result = await Promise.all([
-              await this.apiReq(`/agents/groups/${parameters.group}`, {
+              await this.apiReq(`/groups?groups_list=${parameters.group}`, {
                 limit: 1
               }),
-              await this.apiReq(`/agents/groups`, {
+              await this.apiReq(`/groups`, {
                 search: parameters.group
               })
             ])
@@ -136,10 +136,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
             const [count, sums] = result.map(
               item => ((item || {}).data || {}).data || false
             )
-            const updatedGroup = ((sums || {}).items || []).find(
+            const updatedGroup = ((sums || {}).affected_items || []).find(
               item => item.name === parameters.group
             )
-            this.scope.currentGroup.count = (count || {}).totalItems || 0
+            this.scope.currentGroup.count = (count || {}).total_affected_items || 0
             if (updatedGroup) {
               this.scope.currentGroup.configSum = updatedGroup.configSum
               this.scope.currentGroup.mergedSum = updatedGroup.mergedSum
@@ -325,10 +325,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.load = true
       try {
         if (!firstLoad) this.scope.lookingGroup = true
-        const count = await this.apiReq(`/agents/groups/${group.name}/files`, {
+        const count = await this.apiReq(`/groups/${group.name}/files`, {
           limit: 1
         })
-        this.scope.totalFiles = count.data.data.totalItems
+        this.scope.totalFiles = count.data.data.total_affected_items
         this.scope.fileViewer = false
         this.scope.currentGroup = group
         this.mainGroup = group
@@ -343,9 +343,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
     async fetchFile() {
       try {
         const data = await this.apiReq(
-          `/agents/groups/${this.scope.currentGroup.name}/files/agent.conf`,
-          { format: 'xml' }
-        )
+          `/groups/${this.scope.currentGroup.name}/files/agent.conf/xml`,
+          {origin:"xmlreader"}
+          )
         const xml = (data || {}).data || {} || false
         if (!xml.data && xml.error !== 0) {
           throw new Error('Could not fetch agent.conf file')
@@ -394,11 +394,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
           params.search = searchTerm
         }
         const result = await this.apiReq(
-          `/agents/groups/${this.scope.currentGroup.name}`,
-          params
-        )
-        this.scope.totalSelectedAgents = result.data.data.totalItems
-        const mapped = result.data.data.items.map(item => {
+          `/groups/${this.scope.currentGroup.name}/agents`
+          )
+        this.scope.totalSelectedAgents = result.data.data.total_affected_items
+        const mapped = result.data.data.affected_items.map(item => {
           return { key: item.id, value: item.name }
         })
         if (searchTerm) {
@@ -427,15 +426,15 @@ define(['../../module', 'FileSaver'], function(controllers) {
         const params = {
           limit: 500,
           offset: !searchTerm ? this.scope.availableAgents.offset : 0,
-          select: ['id', 'name']
+          select: "id,name"
         }
         if (searchTerm) {
           params.search = searchTerm
           this.scope.availableAgents.offset = 0
         }
         const req = await this.apiReq('/agents/', params)
-        this.scope.totalAgents = req.data.data.totalItems
-        const mapped = req.data.data.items
+        this.scope.totalAgents = req.data.data.total_affected_items
+        const mapped = req.data.data.affected_items
           .filter(item => {
             return (
               this.scope.selectedAgents.data.filter(selected => {
@@ -506,10 +505,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
       try {
         if (this.scope.currentGroup) {
           const result = await Promise.all([
-            await this.apiReq(`/agents/groups/${parameters.group}`, {
+            await this.apiReq(`/groups?groups_list=${parameters.group}`, {
               limit: 1
             }),
-            await this.apiReq(`/agents/groups`, {
+            await this.apiReq(`/groups`, {
               search: parameters.group
             })
           ])
@@ -517,11 +516,11 @@ define(['../../module', 'FileSaver'], function(controllers) {
           const [count, sums] = result.map(
             item => ((item || {}).data || {}).data || false
           )
-          const updatedGroup = ((sums || {}).items || []).find(
+          const updatedGroup = ((sums || {}).affected_items || []).find(
             item => item.name === parameters.group
           )
 
-          this.scope.currentGroup.count = (count || {}).totalItems || 0
+          this.scope.currentGroup.count = (count || {}).total_affected_items || 0
           if (updatedGroup) {
             this.scope.currentGroup.configSum = updatedGroup.configSum
             this.scope.currentGroup.mergedSum = updatedGroup.mergedSum
@@ -545,15 +544,21 @@ define(['../../module', 'FileSaver'], function(controllers) {
         // Adds agents to a group
         if (itemsToSave.addedIds.length) {
           response = await this.apiReq(
-            `/agents/group/${this.scope.currentGroup.name}`,
-            { ids: itemsToSave.addedIds },
-            'POST'
+            `/agents/group`,
+            { 
+              agents_list: itemsToSave.addedIds.join(),
+              group_id: this.scope.currentGroup.name
+            },
+            'PUT'
           )
           if (response.data.error !== 0) {
-            throw new Error(response.data.error)
+            // in this new api exist failed_items, each have error message
+            response.data.data.failed_items.map(item => {
+              throw new Error(item.error.message)
+            })
           }
-          if (response.data.data.failed_ids) {
-            response.data.data.failed_ids.forEach(x => {
+          if (response.data.data.failed_items) {
+            response.data.data.failed_items.forEach(x => {
               failedIds.push(x)
             })
           }
@@ -561,12 +566,13 @@ define(['../../module', 'FileSaver'], function(controllers) {
         // Delete agents from a group
         if (itemsToSave.deletedIds.length) {
           response = await this.apiReq(
-            `/agents/group/${this.scope.currentGroup.name}?ids=${itemsToSave.deletedIds}`,
+            `/agents/group?group_id=${this.scope.currentGroup.name}&agents_list=${itemsToSave.deletedIds}`,
             {},
             'DELETE'
           )
           if (response.data.error !== 0) {
-            throw new Error(response.data.error)
+            // in this new api exist failed_items, each have error message
+            throw new Error(response.data.message)
           }
           if (response.data.data.failed_ids) {
             response.data.data.failed_ids.forEach(x => {
@@ -587,7 +593,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
             `Group has been updated but an error has occurred with ${failedIds.length} agents`
           )
         } else {
-          const responseMsg = (((response || {}).data || {}).data || {}).msg
+          const responseMsg = ((response || {}).data).message
           if (responseMsg) {
             this.notification.showSuccessToast(
               responseMsg || 'Success. Group has been updated'
@@ -642,7 +648,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       try {
         const result = await this.apiReq.request(
           'POST',
-          `/agents/groups/${this.scope.currentGroup.name}/configuration`,
+          `/groups/${this.scope.currentGroup.name}/configuration`,
           { content, origin: 'xmleditor' }
         )
         if (
@@ -785,7 +791,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
         if (this.scope.filename) this.scope.filename = ''
         if (fileName === '../ar.conf') fileName = 'ar.conf'
         this.scope.fileViewer = true
-        const tmpName = `/agents/groups/${groupName}/files/${fileName}`
+        const tmpName = `/groups/${groupName}/files/${fileName}`
         const data = await this.apiReq(tmpName)
         this.scope.file = this.beautifier.prettyPrint(data.data.data)
         this.scope.filename = fileName

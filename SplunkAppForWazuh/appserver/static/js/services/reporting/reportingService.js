@@ -205,14 +205,14 @@ define(['../module', 'jquery'], function(module, $) {
         //Get agent info and formating tables
         try {
           const agent = await Promise.all([
-            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/agents?q=id=${agentId}`),
             this.apiReq(`/syscheck/${agentId}/last_scan`),
             this.apiReq(`/rootcheck/${agentId}/last_scan`),
             this.apiReq(`/syscollector/${agentId}/hardware`),
             this.apiReq(`/syscollector/${agentId}/os`)
           ])
 
-          const agentInfo = agent[0].data.data
+          const agentInfo = agent[0].data.data.affected_items[0]
           const {
             name,
             id,
@@ -245,7 +245,7 @@ define(['../module', 'jquery'], function(module, $) {
         //Network interfaces
         const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
         const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
-        const networkInterfaceData = netiface.data.data.items.map(i => {
+        const networkInterfaceData = netiface.data.data.affected_items.map(i => {
           i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
           return [i.name, i.mac, i.state, i.mtu, i.type]
         })
@@ -258,7 +258,7 @@ define(['../module', 'jquery'], function(module, $) {
         //Network ports
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
         const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
-        const networkPortsData = ports.data.data.items.map(p => {
+        const networkPortsData = ports.data.data.affected_items.map(p => {
           p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
           return [p.local.ip, p.local.port, p.state, p.protocol]
         })
@@ -277,7 +277,7 @@ define(['../module', 'jquery'], function(module, $) {
           'Protocol',
           'Broadcast'
         ]
-        const networkAdressessData = netaddr.data.data.items.map(n => {
+        const networkAdressessData = netaddr.data.data.affected_items.map(n => {
           return [n.iface, n.address, n.netmask, n.proto, n.broadcast]
         })
         const networkAdressessTable = {
@@ -291,7 +291,7 @@ define(['../module', 'jquery'], function(module, $) {
           `/syscollector/${agentId}/processes`
         )
         const processesKeys = ['Name', 'Euser', 'Priority', 'State']
-        const processesData = processes.data.data.items.map(n => {
+        const processesData = processes.data.data.affected_items.map(n => {
           n.nice = n.nice || n.nice === 0 ? n.nice.toString() : 'undefined'
           n.state = this.keyEquivalence[n.state]
           return [n.name, n.euser, n.nice, n.state]
@@ -302,7 +302,7 @@ define(['../module', 'jquery'], function(module, $) {
         //Packages
         const packages = await this.apiReq(`/syscollector/${agentId}/packages`)
         const packagesKeys = ['Name', 'Architecture', 'Version', 'Description']
-        const packagesData = packages.data.data.items.map(p => {
+        const packagesData = packages.data.data.affected_items.map(p => {
           return [p.name, p.architecture, p.version, p.description]
         })
         const packagesTable = { fields: packagesKeys, rows: packagesData }
@@ -387,14 +387,14 @@ define(['../module', 'jquery'], function(module, $) {
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         try {
           const agent = await Promise.all([
-            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/agents?q=id=${agentId}`),
             this.apiReq(`/syscheck/${agentId}/last_scan`),
             this.apiReq(`/rootcheck/${agentId}/last_scan`),
             this.apiReq(`/syscollector/${agentId}/hardware`),
             this.apiReq(`/syscollector/${agentId}/os`)
           ])
 
-          const agentInfo = agent[0].data.data
+          const agentInfo = agent[0].data.data.affected_items[0]
           const {
             name,
             id,

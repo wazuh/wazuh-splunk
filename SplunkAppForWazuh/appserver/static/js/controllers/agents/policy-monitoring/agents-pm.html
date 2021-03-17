@@ -22,7 +22,7 @@
       <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
         ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
         <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-        <md-tooltip md-direction="left" class="wz-tooltip">
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
           Generate report
         </md-tooltip>
       </button>
@@ -60,12 +60,6 @@
       </div>
     </div>
     <div ng-show="!loadingVizz">
-      <!-- Launch scan -->
-      <div layout="row" class="sca-switch-div wz-padding-top-0">
-        <span flex></span>
-        <button ng-click="launchRootcheckScan()" class="btn-invisible-sca"><i class="fa fa-fw fa-play"></i> Run
-          scan</button>
-      </div>
       <!-- Alerts visualizations -->
       <div layout="row" layout-align="center stretch" class="height-390">
         <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">

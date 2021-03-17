@@ -42,8 +42,8 @@ define(['../module'], function(module) {
                   const result = await Promise.all([
                     $requestService.apiReq('/cluster/status'),
                     $requestService.apiReq('/cluster/nodes'),
-                    $requestService.apiReq('/cluster/config'),
-                    $requestService.apiReq('/version'),
+                    $requestService.apiReq('/cluster/local/config'),
+                    $requestService.apiReq('/'),
                     $requestService.apiReq('/agents', { limit: 1 }),
                     $requestService.apiReq('/cluster/healthcheck')
                   ])
@@ -119,7 +119,7 @@ define(['../module'], function(module) {
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService.apiReq(
-                    `/rules/${$stateParams.id}`
+                    `/rules?rule_ids=${$stateParams.id}`
                   )
                   return result
                 } catch (err) {
@@ -182,7 +182,7 @@ define(['../module'], function(module) {
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService.apiReq(
-                    `/decoders/${$stateParams.name}`
+                    `/decoders?decoder_names=${$stateParams.name}`
                   )
                   return result
                 } catch (err) {
@@ -431,11 +431,11 @@ define(['../module'], function(module) {
                       responseStatus.data.data.enabled === 'yes' &&
                       responseStatus.data.data.running === 'yes'
                     ) {
-                      const masterNode = nodes.data.data.items.filter(
+                      const masterNode = nodes.data.data.affected_items.filter(
                         item => item.type === 'master'
                       )[0]
                       promises = [
-                        $requestService.apiReq('/agents/summary'),
+                        $requestService.apiReq('/agents/summary/status'),
                         $requestService.apiReq(
                           `/cluster/${masterNode.name}/status`
                         ),
@@ -476,7 +476,7 @@ define(['../module'], function(module) {
                       ]
                     } else {
                       promises = [
-                        $requestService.apiReq('/agents/summary'),
+                        $requestService.apiReq('/agents/summary/status'),
                         $requestService.apiReq(`/manager/status`),
                         $requestService.apiReq(`/manager/info`),
                         $requestService.apiReq('/rules', {
@@ -492,7 +492,7 @@ define(['../module'], function(module) {
                     }
                   } else {
                     promises = [
-                      $requestService.apiReq('/agents/summary'),
+                      $requestService.apiReq('/agents/summary/status'),
                       $requestService.apiReq(`/manager/status`),
                       $requestService.apiReq(`/manager/info`),
                       $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
@@ -520,7 +520,7 @@ define(['../module'], function(module) {
                   })
 
                   const lastAgent = await $requestService.apiReq(
-                    `/agents/${response.data.data.items[0].id}`,
+                    `/agents?agents_list=${response.data.data.affected_items[0].id}`,
                     {}
                   )
                   return lastAgent

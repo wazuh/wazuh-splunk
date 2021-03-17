@@ -741,18 +741,18 @@ class report(controllers.BaseController):
                             customLabels = self.labels
                         # rows
                         if 'groupConfig' in currentSection:
-                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
+                            config_request = {'endpoint': '/groups/'+data['groupName']['name']+'/configuration' , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
                             conf_data = jsonbak.loads(conf_data)
                             if not conf_data or 'data' not in conf_data:
                                 pass
-                            elif 'items' not in conf_data['data']:
+                            elif 'affected_items' not in conf_data['data']:
                                 self.setTableTitle(pdf)
                                 pdf.cell(0, 10, txt = "Group configuration is not available." , border = 'B', ln = 1, align = 'C', fill = False, link = 'https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
                                 pdf.add_page()  
                                 pdf.ln(20)
                             else:
-                                for item in conf_data['data']['items']:
+                                for item in conf_data['data']['affected_items']:
                                     if first_page:
                                         first_page = False
                                     else:
@@ -793,14 +793,14 @@ class report(controllers.BaseController):
                                 pdf.add_page()  
                                 pdf.ln(20)
                         if 'agentList' in currentSection:
-                            config_request = {'endpoint': '/agents/groups/'+data['groupName']['name'] , 'id':str(data['apiId']['_key'])}
+                            config_request = {'endpoint': '/groups/'+data['groupName']['name']+'/agents' , 'id':str(data['apiId']['_key'])}
                             conf_data = self.miapi.exec_request(config_request)
                             conf_data = jsonbak.loads(conf_data)
-                            if conf_data['data']['totalItems'] > 0 and 'items' in conf_data['data'] and conf_data['data']['items']:
+                            if conf_data['data']['total_affected_items'] > 0 and 'affected_items' in conf_data['data'] and conf_data['data']['affected_items']:
                                 table = { "Agent List" : {} }
                                 fields = ['ID', 'Name', 'IP', 'Version', 'Manager', 'OS']
                                 rows = []
-                                for agent in conf_data['data']['items']:
+                                for agent in conf_data['data']['affected_items']:
                                     currentAgentRow = []
                                     if 'id' in agent:
                                         currentAgentRow.append(agent['id'])
