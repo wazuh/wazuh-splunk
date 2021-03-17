@@ -78,8 +78,8 @@ define([
         // Edit cdb lists
         this.scope.currentList = {
           details: {
-            file: this.cdbInfo.filename,
-            path: this.cdbInfo.relative_dirname
+            file: this.cdbInfo.file,
+            path: this.cdbInfo.path
           }
         }
         this.cdbInfo.content = this.stringToObj(this.cdbInfo.content)

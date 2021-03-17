@@ -98,8 +98,8 @@ define(['../module'], function(module) {
 
     async removeFile(item) {
       try {
-        const file = item.file || item.name
-        const filePath = `${item.path}/${file}`
+        const file = item.filename || item.name
+        const filePath = `${item.relative_dirname}/${file}`
         const url = `/manager/files?path=${filePath}`
         const result = await this.apiReq(url, {}, 'DELETE')
         if (result && result.data && !result.data.error) {
