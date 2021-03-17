@@ -54,23 +54,11 @@ define(['../module', 'domToImg'], function(app, domToImg) {
 
             try {
               if (!classes.includes('table')) {
-                let w = tmpNode.width();
-                let h = tmpNode.height();
-
-                // if viz is hidden witdh and height is 0 get parent width and height
-                if(w === 0){
-                  w = noResults.parent().parent().width();
-                }
-
-                if(h === 0){
-                  h = noResults.parent().parent().height();
-                }
-
                 const tmpResult = await domToImg.toPng(
                   error ? noResults[0] : tmpNode[0],
                   {
-                    width: w,
-                    height: h
+                    width: tmpNode.width(),
+                    height: tmpNode.height()
                   }
                 )
                 if (tmpResult === 'data:,') {
