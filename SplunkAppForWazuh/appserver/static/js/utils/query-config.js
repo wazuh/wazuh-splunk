@@ -61,7 +61,10 @@ define([], function() {
           : partialResult.data.data;
         } 
         else if (partialResult.data.error) {
-          result[`${component}-${configuration}`] = partialResult.data.detail || partialResult.data.message
+          if (((partialResult.data.data || {}).failed_items || []).length && partialResult.data.data.failed_items[0].error.code == 1116)
+            result[`${component}-${configuration}`] = 'not-present';
+          else 
+            result[`${component}-${configuration}`] = partialResult.data.detail || partialResult.data.message;
         }
       }
       return result

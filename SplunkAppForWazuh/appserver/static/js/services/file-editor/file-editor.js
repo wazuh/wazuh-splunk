@@ -24,10 +24,10 @@ define(['../module'], function(module) {
       try {
         let path = dir ? `${dir}/${file}` : file
         path = path.startsWith('etc/') ? path : `etc/${path}`
-        node = node ? node : 'master-node'
+        const nodeUrl = node ? `cluster/${node}` : 'manager'
         const url = overwrite
-          ? `/cluster/${node}/files?path=${path}&overwrite=true`
-          : `/cluster/${node}/files?path=${path}`
+          ? `/${nodeUrl}/files?path=${path}&overwrite=true`
+          : `/${nodeUrl}/files?path=${path}`
         const result = await this.sendConfig(url, content)
         if (
           !result ||
@@ -75,7 +75,8 @@ define(['../module'], function(module) {
 
     async checkConfiguration(node, path) {
       try {
-        const check = await this.apiReq(`/cluster/configuration/validation?nodes_list=${node}`)
+        const url = node ? `/cluster/configuration/validation?nodes_list=${node}` : '/manager/configuration/validation';
+        const check = await this.apiReq(url);
         if (check && check.data && !check.data.error) {
           if (check.data.data.affected_items[0].status !== 'OK') {
             const errObj = {}
