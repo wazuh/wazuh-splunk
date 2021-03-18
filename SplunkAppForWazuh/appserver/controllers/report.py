@@ -34,7 +34,7 @@ class PDF(FPDF):
         self.add_font('RobotoRegular','', 'Roboto-Regular.ttf',uni=True)
         self.add_font('RobotoLight','', 'Roboto-Light.ttf',uni=True)
         # Logo
-        self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 15)
+        self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 0)
         self.set_font('RobotoLight', '', 11)
         self.set_text_color(75, 179, 204)
         #Contact info
@@ -993,22 +993,24 @@ class report(controllers.BaseController):
                 images = sorted(saved_images, key=itemgetter('width'))
                 #Insert images
                 for img in images:
-                    #Change width and heigh
+                    #Change width and height
                     if img['width'] == -1:
                         w = 0
                         h = 0
                         x_img = 80
                     elif img['width'] <= 550:
-                        w = 118
                         h = 65
-                        x_img = 40
+                        # Calculate the x_img value to center the image horizontally in the page
+                        x_img = (pdf.w - (img["width"] * h / img["height"]))/2
                     else:
-                        w = 189
                         h = 55
-                        x_img = 12     
+                        # Calculate the x_img value to center the image horizontally in the page
+                        x_img = (pdf.w - (img["width"] * h / img["height"]))/2
+                    
+
                     #Insert image
                     pdf.cell(x , y, img['title'], 0, 1)
-                    pdf.image(img['path'], x_img, y_img, w,h)
+                    pdf.image(img['path'], x_img, y_img, 0, h)
                     pdf.ln(75)
                     y_img = y_img + 85
                     count = count + 1
