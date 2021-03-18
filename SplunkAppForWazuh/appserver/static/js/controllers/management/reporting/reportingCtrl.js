@@ -1,4 +1,8 @@
-define(['../../module'], function(app) {
+define([
+    '../../module',
+    '../../../directives/wz-table/lib/pagination',
+  '../../../directives/wz-table/lib/check-gap',
+], function(app, pagination, checkGap) {
   'use strict'
 
   class Reporting {
@@ -27,6 +31,8 @@ define(['../../module'], function(app) {
       this.scope.gap = 0
       this.items = reportsList.data.data
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
+      this.pagination = pagination
+      this.checkGap = checkGap
     }
 
     /**
@@ -34,11 +40,25 @@ define(['../../module'], function(app) {
      */
     $onInit() {
       this.scope.selectedNavTab = 'reporting'
-      this.scope.setPage = n => this.setPage(n)
-      this.scope.nextPage = n => this.nextPage(n)
-      this.scope.prevPage = () => this.prevPage()
+      this.scope.gap = 0;
+      this.scope.prevPage = () => this.pagination.prevPage(this.scope)
+      this.scope.nextPage = async currentPage =>
+          this.pagination.nextPage(
+              currentPage,
+              this.scope,
+              this.notification,
+              null
+          )
+      this.scope.setPage = n => {
+        this.scope.currentPage = n
+        this.scope.nextPage(n)
+      }
+      this.checkGap(this.scope, this.items)
       this.scope.load = () => this.load()
+      this.scope.range = (size, start, end) =>
+          this.pagination.range(size, start, end, this.scope.gap)
       this.scope.deleteReport = name => this.deleteReport(name)
+      this.scope.changeSorting = column => this.changeSorting(column)
       this.load()
 
       this.scope.offsetTimestamp = time => {
@@ -53,6 +73,13 @@ define(['../../module'], function(app) {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
+
+      this.scope.sort = {
+        column: '',
+        descending: false
+      };
+
+      this.scope.changeSorting('date');
     }
 
     /**
@@ -62,6 +89,17 @@ define(['../../module'], function(app) {
       this.filteredItems = this.items
       this.scope.currentPage = 0
       this.groupToPages()
+    }
+
+    async changeSorting(column) {
+      let sort = this.scope.sort;
+
+      if (sort.column === column) {
+        sort.descending = !sort.descending;
+      } else {
+        sort.column = column;
+        sort.descending = false;
+      }
     }
 
     /**
@@ -99,67 +137,15 @@ define(['../../module'], function(app) {
     }
 
     /**
-     * Calculates the size of the table
-     * @param {Number} size
-     * @param {Number} start
-     * @param {Number} end
-     */
-    range(size, start, end) {
-      const ret = []
-
-      if (size < end) {
-        end = size
-        start = size - this.scope.gap
-      }
-      for (let i = start; i < end; i++) {
-        ret.push(i)
-      }
-
-      return ret
-    }
-
-    /**
-     * Navigates to the previous page
-     */
-    prevPage() {
-      if (this.scope.currentPage > 0) {
-        this.scope.currentPage--
-      }
-    }
-
-    /**
-     * Navigates to the next page
-     * @param {Number} n
-     */
-    nextPage(n) {
-      if (
-        !n &&
-        n !== 0 &&
-        this.scope.currentPage < this.scope.pagedItems.length - 1
-      ) {
-        this.scope.currentPage++
-      }
-    }
-
-    /**
-     * Sets page number
-     * @param {Number} n
-     */
-    setPage(n) {
-      this.scope.currentPage = n
-      this.nextPage(n)
-    }
-
-    /**
      * First load
      */
     async load() {
       try {
         this.loading = true
-        const gap = this.items.length / 15
-        const gapInteger = parseInt(this.items.length / 15)
         const reports = await this.genericReq('GET', '/report/reports')
         this.items = reports.data.data
+        const gap = this.items.length / 15
+        const gapInteger = parseInt(this.items.length / 15)
         this.scope.gap =
           gap - parseInt(this.items.length / 15) > 0
             ? gapInteger + 1
