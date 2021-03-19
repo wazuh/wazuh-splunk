@@ -217,9 +217,9 @@ define(['../../module', 'FileSaver'], function(app) {
           path: `/cluster/${node}/logs`
         })
         const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
-        const daemons = summary.data.data
-        this.scope.daemons = Object.keys(daemons).map(item => ({
-          title: item
+        const daemons = summary.data.data.affected_items
+        this.scope.daemons = daemons.map((item) => ({
+          title: Object.keys(item)[0]
         }))
         this.scope.$applyAsync()
       } catch (error) {
