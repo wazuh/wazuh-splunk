@@ -132,8 +132,8 @@ define(['../../module'], function(controllers) {
             'This cluster is enabled but not running. Please check your cluster health.'
           )
         }
-        this.scope.daemons = this.objToArr(daemonResult[0].data.data)
-        this.scope.managerInfo = daemonResult[1].data.data
+        this.scope.daemons = this.objToArr(daemonResult[0].data.data.affected_items[0])
+        this.scope.managerInfo = daemonResult[1].data.data.affected_items[0]
       } catch (err) {
         this.scope.clusterError = err.message || err
       }
