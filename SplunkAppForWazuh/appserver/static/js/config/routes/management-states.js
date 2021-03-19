@@ -39,14 +39,27 @@ define(['../module'], function(module) {
               '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await Promise.all([
-                    $requestService.apiReq('/cluster/status'),
-                    $requestService.apiReq('/cluster/nodes'),
-                    $requestService.apiReq('/cluster/local/config'),
-                    $requestService.apiReq('/'),
-                    $requestService.apiReq('/agents', { limit: 1 }),
-                    $requestService.apiReq('/cluster/healthcheck')
-                  ])
+                  const checkCluster = await $requestService.apiReq('/cluster/status');
+                  let result = {};
+                   if(checkCluster['data']['data'].enabled === 'no'){
+                    result = await Promise.all([
+                      checkCluster,
+                      false,
+                      false,
+                      $requestService.apiReq('/'),
+                      $requestService.apiReq('/agents', { limit: 1 }),
+                      false
+                    ])
+                   }
+                   else
+                      result = await Promise.all([
+                       checkCluster,
+                       $requestService.apiReq('/cluster/nodes'),
+                       $requestService.apiReq('/cluster/local/config'),
+                       $requestService.apiReq('/'),
+                       $requestService.apiReq('/agents', { limit: 1 }),
+                       $requestService.apiReq('/cluster/healthcheck')
+                     ])
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -421,9 +434,10 @@ define(['../module'], function(module) {
                   )
                   let promises = []
                   if (
-                    !responseStatus ||
+                    (!responseStatus ||
                     !responseStatus.data ||
-                    !responseStatus.data.error
+                    !responseStatus.data.error) &&
+                    responseStatus.data.data.enabled !== 'no'
                   ) {
                     const nodes = await $requestService.apiReq('/cluster/nodes')
                     if (
