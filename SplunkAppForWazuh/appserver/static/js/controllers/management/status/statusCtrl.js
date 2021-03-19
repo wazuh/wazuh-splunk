@@ -117,7 +117,6 @@ define(['../../module'], function(controllers) {
           this.apiReq(`/cluster/${node}/status`),
           this.apiReq(`/cluster/${node}/info`)
         ])
-        console.log(daemonResult)
         if (
           (daemonResult[0] && daemonResult[0].data.error) ||
           (daemonResult[1] && daemonResult[1].data.error)
