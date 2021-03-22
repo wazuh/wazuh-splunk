@@ -24,7 +24,8 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
       submittedTokenModel,
       scope,
       loading,
-      loadingBindedValue
+      loadingBindedValue,
+      notification = null
     ) {
       super(
         new SearchEventHandler({
@@ -47,6 +48,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
       this.token = token
       this.loading = loading
       this.loadingBindedValue = loadingBindedValue
+      this.notification =  notification
 
       this.getSearch().on('search:failed', () => {
         console.error('Failed search')
@@ -79,6 +81,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           this.scope[bindedValue] = result
         } else {
           this.scope[bindedValue] = '0'
+          this.notification && this.notification.showErrorToast('Unable to retrieve results. It may be due to a connection problem with the forwarder')
         }
         this.scope.$applyAsync()
       })
@@ -94,6 +97,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           this.scope[bindedValue] = loadedTokenJS
         } else {
           this.scope[bindedValue] = '0'
+          this.notification && this.notification.showErrorToast('Unable to retrieve results. It may be due to a connection problem with the forwarder')
         }
         this.scope.$applyAsync()
       })
