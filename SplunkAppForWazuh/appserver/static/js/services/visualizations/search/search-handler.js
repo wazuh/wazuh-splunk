@@ -71,7 +71,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         if (this.loading) {
           this.scope[this.loadingBindedValue] = false
         }
-        const result = submittedTokenModel.get(this.token)
+        const result = this.submittedTokenModel.get(this.token)
         if (
           result &&
           result !== value &&
@@ -87,7 +87,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
       })
 
       this.submittedTokenModel.on(`change:${this.token}`, () => {
-        const loadedTokenJS = this.submittedTokenModel.get(token)
+        const loadedTokenJS = this.submittedTokenModel.get(this.token)
         if (
           loadedTokenJS &&
           loadedTokenJS !== value &&
