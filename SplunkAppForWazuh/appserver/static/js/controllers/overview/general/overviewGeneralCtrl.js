@@ -128,7 +128,7 @@ define([
          */
         new LinearChart(
           'alertLevEvoVizz',
-          `${this.filters} sourcetype=wazuh rule.level=*| timechart count by rule.level  `,
+          `${this.filters} sourcetype=wazuh rule.level=*`,
           'alertLevEvoVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
