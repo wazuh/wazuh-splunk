@@ -68,7 +68,7 @@ define(['../module'], function(module) {
     goToLastState() {
       sessionStorage.params
         ? this.$state.go(sessionStorage.params)
-        : this.$state.go('settings.api') // redirects to settings.api if no previous states were visited
+        : this.$state.go('overview') // redirects to settings.api if no previous states were visited
     }
 
     /**
