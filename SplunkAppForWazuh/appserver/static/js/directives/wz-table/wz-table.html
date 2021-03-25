@@ -383,6 +383,13 @@
                   </tr>
                 </tbody>
               </table>
+              <div class="wz-margin-5">
+                <button ng-if="isRegistryValue"
+                  md-no-ink class="btn wz-button-empty wz-button-report button-reg-details"
+                  ng-click="loadRegistryValueDetails(item)" aria-label="View registry details">
+                  <i class="fa fa-fw fa-info" aria-hidden="true"></i>View registry values                  
+                </button>
+              </div>
             </md-card>
           </td>
         </tr>
