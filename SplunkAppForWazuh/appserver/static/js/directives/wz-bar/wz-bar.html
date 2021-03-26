@@ -15,12 +15,12 @@
     <span ng-show="editingChip === $chip">
       {{ $chip }}
       <i class="fa fa-fw fa-times fa-trash cursor-pointer" aria-hidden="true" ng-click="removeFilter($chip)">
-        <md-tooltip md-direction="top" class="wz-tooltip">
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
           Remove filter
         </md-tooltip>
       </i>
       <i class="fa fa-fw fa-times fa-thumb-tack cursor-pointer" ng-class="{'fa-rotate-270' : filterPined($chip)}" aria-hidden="true" ng-click="pinFilter($chip)">
-        <md-tooltip md-direction="top" class="wz-tooltip">
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
           Pin/Unpin filter
         </md-tooltip>
       </i>
