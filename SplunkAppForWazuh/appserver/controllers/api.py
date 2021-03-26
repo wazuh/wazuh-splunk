@@ -152,23 +152,6 @@ class api(controllers.BaseController):
         except Exception as e:
             raise e
 
-    def format_cdb_list_content(self, dic):
-        """Format the response of custom CDB list.
-
-        Parameters
-        ----------
-        dic : dic
-            A dic with the response.
-        """    
-        try:
-            self.logger.debug("api: Formatting CDB list content to generate CSV file.")
-            items = dic["data"]["items"][0]
-            dic["data"]["items"] = [{"items": items}]
-            return dic
-        except Exception as e:
-            self.logger.error("api: Error formating CDB list: %s" % (e))
-            raise e
-
 
     def catch_Exceptions(self, request):
         try:
@@ -445,18 +428,35 @@ class api(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             wazuh_token = self.wztoken.get_auth_token(url,auth)
+            is_list_export_keys_values = "lists/files" in opt_endpoint
+
             # init csv writer
             output_file = StringIO()
             # get total items and keys
             request = self.session.get(
-                url + opt_endpoint, params=filters, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                url + opt_endpoint, params=None if is_list_export_keys_values else filters, headers = {'Authorization': f'Bearer {wazuh_token}'},
                 verify=verify).json()
             self.logger.debug("api: Data obtained for generate CSV file.")
             if ('affected_items' in request['data'] and
                     len(request['data']['affected_items']) > 0):
-                if "?path=etc/list" in opt_endpoint:
-                    formatted = self.format_cdb_list_content(request)
-                    final_obj = formatted["data"]["affected_items"]
+                # Export CSV the CDB List keys and values
+                if is_list_export_keys_values:
+                    items_list = [{"Key": k,"Value": v} for k,v in request["data"]["affected_items"][0].items()]
+
+                    dict_writer = csv.DictWriter(
+                        output_file,
+                        delimiter=',',
+                        fieldnames=items_list[0].keys(),
+                        extrasaction='ignore',
+                        lineterminator='\n',
+                        quotechar='"')
+                    # write CSV header
+                    dict_writer.writeheader()
+                    dict_writer.writerows(items_list)
+                    csv_result = output_file.getvalue()
+                    output_file.close()
+                    self.logger.debug("api: CSV file generated.")
+                    return csv_result 
                 else :
                     final_obj = request["data"]["affected_items"]
                 if isinstance(final_obj, list):
