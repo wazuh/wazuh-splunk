@@ -366,7 +366,6 @@ class manager(controllers.BaseController):
             if not daemons_ready:
                 raise Exception("DAEMONS-NOT-READY")
             output = self.get_cluster_info(opt_username, opt_password, opt_base_url, opt_base_port , opt_cluster)   
-            self.logger.info("output: %s" % (output))         
             result = jsonbak.dumps(output) 
         except Exception as e:
             if e == "DAEMONS-NOT-READY":
@@ -526,15 +525,13 @@ class manager(controllers.BaseController):
         self.logger.debug("manager: Uploading file(s)")
         try:
             # Get file name and file content
-            split_file = str(kwargs["file"]).split('\', \'')
-            file_name = split_file[1]
-            file_content = split_file[2]
-            file_content = file_content[:len(file_content)-2]
-            file_content2 = file_content
-
+           
+            
+            file_info = kwargs["file"].__dict__
+            file_name = file_info['filename']
+            file_content = kwargs['file'].file.read(0)
             # Get path 
-            dest_path = kwargs["path"]
-
+            dest_resource = kwargs["resource"]
 
             # Get current API data
             opt_id = kwargs["apiId"]
@@ -553,20 +550,19 @@ class manager(controllers.BaseController):
             verify = False
             url = opt_base_url + ":" + opt_base_port
             wazuh_token = self.wztoken.get_auth_token(url,auth)
-
-            if dest_path and dest_path == 'etc/lists/':
-                file_content = file_content.replace('\\n',"\n")
-                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/octet-stream", 'Authorization': f'Bearer {wazuh_token}' }, timeout=20, verify=verify)
-            else:
-                file_content = file_content.replace('\\n','')
-                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/xml", 'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify)
-            result = jsonbak.loads(result.text)
+             
+            
+            response = self.session.put(url + '/' + dest_resource + '/files/' + file_name, data=file_content, headers= {"Content-type": "application/octet-stream", 'Authorization': f'Bearer {wazuh_token}' }, timeout=20, verify=verify)
+            
+            result = jsonbak.loads(response.text)       
+                 
             if 'error' in result and result['error'] != 0:
+                self.logger.error("manager: Error trying to upload a file(s): %s" % (result))
                 return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
             return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
         except Exception as e:
             self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
-
+            return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,e)})
 
     def get_config_on_memory(self):
         try:
