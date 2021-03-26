@@ -575,7 +575,6 @@ define(['../../module', 'FileSaver'], function(app) {
           this.scope.editingRulesetFile = {
             file,
             dir: path,
-            // typeFile,
             path: `${path}/${file}`
           }
           this.scope.fetchedXML = await this.fileEditor.getConfiguration(
