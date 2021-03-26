@@ -48,8 +48,8 @@ define(['../module'], function(directives) {
         const checkLastState = (prefix, state) => {
           try {
             const lastState = $navigationService.getLastState()
-            if(lastState)
-              if (
+          if(lastState)    
+            if (
                 (lastState !== '' && lastState.includes(prefix)) ||
                 lastState.includes(state)
               ) {
@@ -57,8 +57,8 @@ define(['../module'], function(directives) {
               } else {
                 return false
               }
-            else
-              return false;
+          else
+            return false;
           } catch (error) {
             throw new Error(error)
           }
@@ -100,8 +100,8 @@ define(['../module'], function(directives) {
         //Listens for changes in states
         $scope.$on('stateChanged', (event, data) => {
           $scope.select(data)
+          update()
         })
-        update()
       },
       templateUrl:
         BASE_URL +
