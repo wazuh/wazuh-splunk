@@ -18,16 +18,23 @@ define(['../module'], function(module) {
       this.sendConfig = $requestService.sendConfiguration
       this.getConfig = $requestService.getConfiguration
       this.apiReq = $requestService.apiReq
+      this.typeFilesByPath = {
+        'ruleset/rules': 'rules',
+        'etc/rules': 'rules',
+        'ruleset/decoders': 'decoders',
+        'etc/decoders': 'decoders',
+        'etc/lists': 'lists',
+      }
     }
 
     async sendConfiguration(file, dir, node, content, overwrite = false) {
       try {
-        let path = dir ? `${dir}/${file}` : file
-        path = path.startsWith('etc/') ? path : `etc/${path}`
-        const nodeUrl = node ? `cluster/${node}` : 'manager'
-        const url = overwrite
-          ? `/${nodeUrl}/files?path=${path}&overwrite=true`
-          : `/${nodeUrl}/files?path=${path}`
+        const typeFile = this.typeFilesByPath[dir]
+        let url = `/${typeFile}/files/${file}?overwrite=${overwrite}`
+        if(file === 'ossec.conf'){
+          const nodeUrl = node ? `cluster/${node}` : 'manager'
+          url = `/${nodeUrl}/configuration`
+        }
         const result = await this.sendConfig(url, content)
         if (
           !result ||
@@ -43,7 +50,7 @@ define(['../module'], function(module) {
             )
           }
         }
-        return await this.checkConfiguration(node, path)
+        return await this.checkConfiguration(node)
       } catch (error) {
         return Promise.reject(error)
       }
@@ -51,29 +58,36 @@ define(['../module'], function(module) {
 
     async getConfiguration(file, dir, node, readOnly = false) {
       try {
+        const typeFile = this.typeFilesByPath[dir]
+        let url = `/${typeFile}/files/${file}?raw=true`
+        if(file === 'ossec.conf'){
+          const nodeUrl = node ? `cluster/${node}` : 'manager'
+          url = `/${nodeUrl}/configuration?raw=true`
+        }
+
         let path = dir ? `${dir}/${file}` : file
         if (!readOnly) {
           path = path.startsWith('etc/') ? path : `etc/${path}`
         }
-        node = node ? `cluster/${node}` : 'manager'
-        const url = `/${node}/files?path=${path}`
-        const result = await this.getConfig(url)
+        const result = await this.apiReq(
+          url,
+          {origin:"xmlreader"}
+        )
         if (
           !result ||
-          !result.data ||
-          result.data.error != 0
+          !result.data
         ) {
           throw new Error(`Error fetching ${file} content.`)
         }
-        if(!result.data.contents) //Force XML box to be printed when the file is empty
+        if(!result.data.data) //Force XML box to be printed when the file is empty
           return " "
-        return result.data.contents
+        return result.data.data
       } catch (error) {
         return Promise.reject(error)
       }
     }
 
-    async checkConfiguration(node, path) {
+    async checkConfiguration(node) {
       try {
         const url = node ? `/cluster/configuration/validation?nodes_list=${node}` : '/manager/configuration/validation';
         const check = await this.apiReq(url);
@@ -99,8 +113,8 @@ define(['../module'], function(module) {
     async removeFile(item) {
       try {
         const file = item.filename || item.name
-        const filePath = `${item.relative_dirname}/${file}`
-        const url = `/manager/files?path=${filePath}`
+        const typeFile = this.typeFilesByPath[item.relative_dirname]
+        const url = `/${typeFile}/files/${file}`
         const result = await this.apiReq(url, {}, 'DELETE')
         if (result && result.data && !result.data.error) {
           return `File ${file} deleted.`

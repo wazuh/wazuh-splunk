@@ -192,6 +192,11 @@ class api(controllers.BaseController):
                         json_load = json.loads(json_response)
                         request = json_load
                         return request
+                    if kwargs['origin'] == 'raw':
+                        response = self.session.get(
+                            url + opt_endpoint, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                            verify=verify)
+                        return json.loads(json.dumps({'data': response.content.decode("utf-8") }))
                 else:
                     request = self.session.get(
                         url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},

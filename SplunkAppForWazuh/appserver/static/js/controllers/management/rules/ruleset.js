@@ -561,8 +561,10 @@ define(['../../module', 'FileSaver'], function(app) {
     async editFile(file, path, readOnly = false) {
       try {
         if (readOnly) {
-          this.scope.XMLContent = await this.fetchFileContent(
-            `${path}/${file}`,
+          this.scope.XMLContent = await this.fileEditor.getConfiguration(
+            file,
+            path,
+            null,
             readOnly
           )
           this.scope.$broadcast('XMLContentReady', {
@@ -573,9 +575,15 @@ define(['../../module', 'FileSaver'], function(app) {
           this.scope.editingRulesetFile = {
             file,
             dir: path,
+            // typeFile,
             path: `${path}/${file}`
           }
-          this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
+          this.scope.fetchedXML = await this.fileEditor.getConfiguration(
+            file,
+            path,
+            null,
+            readOnly
+            )
           this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
         }
       } catch (error) {
@@ -597,24 +605,6 @@ define(['../../module', 'FileSaver'], function(app) {
         dir,
         overwrite: true
       })
-    }
-
-    /**
-     * Fetchs file content
-     * @param {String} file
-     */
-    async fetchFileContent(file, readOnly = false) {
-      try {
-        const result = await this.fileEditor.getConfiguration(
-          file,
-          null,
-          null,
-          readOnly
-        )
-        return result
-      } catch (error) {
-        return Promise.reject(error)
-      }
     }
 
     /**
