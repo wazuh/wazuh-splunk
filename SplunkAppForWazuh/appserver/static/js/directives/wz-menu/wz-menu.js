@@ -57,6 +57,8 @@ define(['../module'], function(directives) {
               } else {
                 return false
               }
+            else
+              return false;
           } catch (error) {
             throw new Error(error)
           }
