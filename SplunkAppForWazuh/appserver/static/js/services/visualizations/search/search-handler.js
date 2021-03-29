@@ -3,7 +3,9 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
   Viz
 ) {
   'use strict'
-
+  
+  const FORWARDER_ERROR = 'Unable to retrieve results. It may be due to a connection problem with the Splunk forwarder,\nplease try restarting this service.';
+  
   return class SearchHandler extends Viz {
     /**
      * Builds a SearchHandler (Metrics) instance
@@ -81,7 +83,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           this.scope[bindedValue] = result
         } else {
           this.scope[bindedValue] = '0'
-          this.notification && this.notification.showErrorToast('Unable to retrieve results. It may be due to a connection problem with the forwarder')
+          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
         }
         this.scope.$applyAsync()
       })
@@ -97,7 +99,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           this.scope[bindedValue] = loadedTokenJS
         } else {
           this.scope[bindedValue] = '0'
-          this.notification && this.notification.showErrorToast('Unable to retrieve results. It may be due to a connection problem with the forwarder')
+          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
         }
         this.scope.$applyAsync()
       })
