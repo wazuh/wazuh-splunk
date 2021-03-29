@@ -28,7 +28,7 @@
             
             <div class="wz-popover-wrapper">
               <div ng-show="uploadingFiles" class="wz-popover-content">
-                  <wz-upload-files upload-title="Upload decoders" path="etc/decoders/" allowed-extensions="'.xml'"></wz-upload-files>
+                  <wz-upload-files upload-title="Upload decoders" resource="decoders" allowed-extensions="'.xml'"></wz-upload-files>
               </div>
             </div>
             <!-- Loading content -->
@@ -179,7 +179,7 @@
               <div ng-if="editingRulesetFile">
                   <div layout="row" class="md-padding wz-padding-top-0">
                     <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-                    <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
+                    <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.file, editingRulesetFile.dir)'
                       class='btn wz-button-empty pull-right wz-margin-left-10'>
                       <span ng-show='!xmlHasErrors && adminMode'><i
                           ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
