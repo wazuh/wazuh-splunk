@@ -120,7 +120,7 @@ define(['../module'], function(app) {
                   .filter(x => x.type === 'filter')
                   .forEach((tag, idx2) => {
                     const value = tag.value.value === 'unknown' ? 'null' : tag.value.value;
-                    queryObj.query += tag.key + '=' + value;
+                    queryObj.query += tag.key + '~' + value;
                     if (idx2 != group.length - 1) {
                       queryObj.query +=
                         $scope.connectors[idx].subgroup[idx2].value
