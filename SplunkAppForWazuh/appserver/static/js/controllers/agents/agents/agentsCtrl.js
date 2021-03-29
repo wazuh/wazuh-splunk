@@ -153,7 +153,8 @@ define([
         this.submittedTokenModel,
         this.scope,
         true,
-        'loadingSearch'
+        'loadingSearch',
+        this.notification
       )
 
       this.scope.$applyAsync()
