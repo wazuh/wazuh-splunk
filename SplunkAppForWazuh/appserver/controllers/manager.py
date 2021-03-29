@@ -529,7 +529,7 @@ class manager(controllers.BaseController):
             
             file_info = kwargs["file"].__dict__
             file_name = file_info['filename']
-            file_content = kwargs['file'].file.read(0)
+            file_content = kwargs['file'].file
             # Get path 
             dest_resource = kwargs["resource"]
 
@@ -558,7 +558,7 @@ class manager(controllers.BaseController):
                  
             if 'error' in result and result['error'] != 0:
                 self.logger.error("manager: Error trying to upload a file(s): %s" % (result))
-                return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
+                return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["detail"])})
             return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
         except Exception as e:
             self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
