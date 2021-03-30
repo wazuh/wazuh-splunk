@@ -32,14 +32,14 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 
 | Splunk version | Wazuh version     | Installation                                                   |
 | :------------: | :---------------: | :--------------------------------------------------------------|
-|      8.1.2     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.1.2.tar.gz>  |
-|      8.1.1     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.1.1.tar.gz>  |
-|      8.1.0     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.1.0.tar.gz>  |
-|      8.0.8     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.0.8.tar.gz>  |
-|      8.0.7     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.0.7.tar.gz>  |
-|      8.0.6     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.0.6.tar.gz>  |
-|      8.0.5     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.0.5.tar.gz>  |
-|      8.0.4     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.0.4.tar.gz>  |
+|      8.1.2     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.1.2-1.tar.gz>  |
+|      8.1.1     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.1.1-1.tar.gz>  |
+|      8.1.0     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.1.0-1.tar.gz>  |
+|      8.0.8     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.8-1.tar.gz>  |
+|      8.0.7     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.7-1.tar.gz>  |
+|      8.0.6     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.6-1.tar.gz>  |
+|      8.0.5     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.5-1.tar.gz>  |
+|      8.0.4     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.4-1.tar.gz>  |
 |      8.0.4     |       3.13.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.2_8.0.4.tar.gz> |
 |      8.0.4     |       3.13.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.1_8.0.4.tar.gz> |
 |      8.0.2     |       3.13.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.0_8.0.2.tar.gz> |
