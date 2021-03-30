@@ -13,6 +13,7 @@ Find more information about this on the LICENSE file.
 """
 
 from log import log
+from wazuhtoken import wazuhtoken
 import time
 import datetime
 import jsonbak
@@ -27,6 +28,7 @@ class CheckQueue():
     def __init__(self):
         """Constructor."""
         self.logger = log()
+        self.wztoken = wazuhtoken()
         self.now = time.time()  # Get the date in seconds
         self.session = requestsbak.Session()
         self.auth_key = sys.stdin.readline().strip()
@@ -114,23 +116,23 @@ class CheckQueue():
                 self.remove_job(job['_key'])
                 return 
             endpoint = req['endpoint']
-
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             # Checks methods
             if method == 'GET':
                 request = self.session.get(
-                    url + endpoint, params=req, auth=auth,
+                    url + endpoint, params=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if method == 'POST':
                 request = self.session.post(
-                    url + endpoint, data=req, auth=auth,
+                    url + endpoint, data=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if method == 'PUT':
                 request = self.session.put(
-                    url + endpoint, data=req, auth=auth,
+                    url + endpoint, data=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if method == 'DELETE':
                 request = self.session.delete(
-                    url + endpoint, data=req, auth=auth,
+                    url + endpoint, data=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
 
             if request['error'] == 0:

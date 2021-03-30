@@ -86,7 +86,13 @@ define(['../../module'], function(app) {
           this.agent[0].data &&
           typeof this.agent[0].data.data === 'object'
         ) {
-          this.scope.agent = this.agent[0].data.data
+          this.scope.agent = this.agent[0].data.data.affected_items[0]
+
+          // Capitalize Status
+          if(this.scope.agent && this.scope.agent.status){
+            this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+          }
+
           this.scope.agentOS =
             this.scope.agent &&
             this.scope.agent.os &&
@@ -113,7 +119,7 @@ define(['../../module'], function(app) {
           if (!this.scope.agent.error) {
             this.refreshExtensions()
 
-            this.scope.groups = this.groups.data.data.items
+            this.scope.groups = this.groups.data.data.affected_items
               .map(item => item.name)
               .filter(
                 item =>
@@ -276,12 +282,12 @@ define(['../../module'], function(app) {
      */
     async goGroups(group) {
       try {
-        this.groupInfo = await this.requestService.apiReq(`/agents/groups/`)
+        this.groupInfo = await this.requestService.apiReq(`/groups`)
         if (
           typeof this.groupInfo.data === 'object' &&
           typeof this.groupInfo.data.data === 'object'
         ) {
-          this.groupData = this.groupInfo.data.data.items.filter(
+          this.groupData = this.groupInfo.data.data.affected_items.filter(
             item => item.name === group
           )
         } else if (
@@ -397,11 +403,12 @@ define(['../../module'], function(app) {
     setAgentPlatform() {
       try {
         this.scope.agentPlatform = 'other'
+        const agentInfo = ((((this.agent[0] || []).data || {}).data || {}).affected_items || [])[0] || {}
         let agentPlatformLinux = (
-          (((this.agent[0] || []).data || {}).data || {}).os || {}
+          (agentInfo || {}).os || {}
         ).uname
         let agentPlatformOther = (
-          (((this.agent[0] || []).data || {}).data || {}).os || {}
+          (agentInfo || {}).os || {}
         ).platform
         if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.scope.agentPlatform = 'linux'

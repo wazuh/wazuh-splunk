@@ -74,8 +74,7 @@ class log():
     def get_last_log_lines(self, lines):
         """Return the last logs messages."""
         try:
-            current_tail = tailer.tail(open(
-                "/opt/splunk/var/log/splunk/SplunkAppForWazuh.log"), lines)
+            current_tail = tailer.tail(open(make_splunkhome_path(['var', 'log', 'splunk', 'SplunkAppForWazuh.log'])), lines)
             result = list(reversed(current_tail))
         except Exception as e:
             self.error('[log.py][get_last_log_lines] %s' % (e))

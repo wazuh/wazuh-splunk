@@ -114,11 +114,11 @@
     <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/index.html">How
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/manual-email-report/index.html">How
           to configure email alerts</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/smtp_authentication.html">How
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/manual-email-report/smtp_authentication.html">How
           to configure authenticated SMTP server</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/email_alerts.html">Email
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/email_alerts.html">Email
           alerts reference</md-list-item>
       </md-list>
     </md-sidenav>
@@ -185,9 +185,9 @@
     <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/getting-started/use-cases.html">Use
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/getting-started/use-cases.html">Use
           cases about alerts generation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/alerts.html">Alerts
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/alerts.html">Alerts
           reference</md-list-item>
       </md-list>
     </md-sidenav>
@@ -259,9 +259,9 @@
     <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/labels.html">Labels
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/labels.html">Labels
           documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/labels.html">Labels
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/labels.html">Labels
           reference</md-list-item>
       </md-list>
     </md-sidenav>
@@ -361,9 +361,9 @@
     <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/automatic-reports.html">How
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/automatic-reports.html">How
           to generate automatic reports</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/reports.html">Reports
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/reports.html">Reports
           reference</md-list-item>
       </md-list>
     </md-sidenav>
@@ -377,7 +377,7 @@
 
     <!-- No configuration section -->
     <wz-no-config flex error="currentConfig['csyslog-csyslog']" ng-if="currentConfig['csyslog-csyslog'] && isString(currentConfig['csyslog-csyslog'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog']) || (!currentConfig['csyslog-csyslog'].syslog_output || !currentConfig['csyslog-csyslog'].syslog_output.length)"></wz-no-config>
+    <wz-no-config flex error="'not-present'" ng-if="(currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog'])) && (!currentConfig['csyslog-csyslog'].syslog_output || !currentConfig['csyslog-csyslog'].syslog_output.length)"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
@@ -449,9 +449,9 @@
     <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/manual-syslog-output.html">How
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/manual-syslog-output.html">How
           to configure the syslog output</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syslog-output.html">Syslog
+        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/syslog-output.html">Syslog
           output reference</md-list-item>
       </md-list>
     </md-sidenav>

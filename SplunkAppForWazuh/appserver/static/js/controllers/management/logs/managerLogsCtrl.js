@@ -37,8 +37,8 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.realtime = false
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-      this.scope.type_log = 'all'
-      this.scope.category = 'all'
+      this.scope.type_log = ''
+      this.scope.category = ''
       this.scope.sortFilter = false
       this.api = $currentDataService.getApi()
       this.logs = logs
@@ -170,12 +170,12 @@ define(['../../module', 'FileSaver'], function(app) {
             nodeList &&
             nodeList.data &&
             nodeList.data.data &&
-            Array.isArray(nodeList.data.data.items)
+            Array.isArray(nodeList.data.data.affected_items)
           ) {
-            this.scope.nodeList = nodeList.data.data.items
+            this.scope.nodeList = nodeList.data.data.affected_items
               .map(item => item.name)
               .reverse()
-            this.scope.selectedNode = nodeList.data.data.items.filter(
+            this.scope.selectedNode = nodeList.data.data.affected_items.filter(
               item => item.type === 'master'
             )[0].name
           }
@@ -190,9 +190,10 @@ define(['../../module', 'FileSaver'], function(app) {
               `/cluster/${this.scope.selectedNode}/logs/summary`
             )
           : await this.apiReq('/manager/logs/summary')
-        const daemons = data.data.data
-        this.scope.daemons = Object.keys(daemons).map(item => ({
-          title: item
+        const daemons = data.data.data.affected_items
+
+        this.scope.daemons = daemons.map((item) => ({
+          title: Object.keys(item)[0]
         }))
         this.scope.$applyAsync()
         return
@@ -208,17 +209,17 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async changeNode(node) {
       try {
-        this.scope.type_log = 'all'
-        this.scope.category = 'all'
+        this.scope.type_log = ''
+        this.scope.category = ''
         this.scope.selectedNode = node
         this.scope.custom_search = null
         this.scope.$broadcast('wazuhUpdateInstancePath', {
           path: `/cluster/${node}/logs`
         })
         const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
-        const daemons = summary.data.data
-        this.scope.daemons = Object.keys(daemons).map(item => ({
-          title: item
+        const daemons = summary.data.data.affected_items
+        this.scope.daemons = daemons.map((item) => ({
+          title: Object.keys(item)[0]
         }))
         this.scope.$applyAsync()
       } catch (error) {

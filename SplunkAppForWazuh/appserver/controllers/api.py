@@ -14,8 +14,10 @@ Find more information about this on the LICENSE file.
 
 import jsonbak
 import requestsbak
+from wazuhtoken import wazuhtoken
 import csv
 from io import StringIO
+import json
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from db import database
@@ -23,6 +25,7 @@ from log import log
 from splunk.clilib import cli_common as cli
 from requirements import pci_requirements,gdpr_requirements,hipaa_requirements,nist_requirements
 import time
+import api_info
 
 class api(controllers.BaseController):
     
@@ -35,6 +38,7 @@ class api(controllers.BaseController):
         """Constructor."""
         try:
             self.logger = log()
+            self.wztoken = wazuhtoken()
             self.config =  self.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
             self.db = database()
@@ -148,54 +152,87 @@ class api(controllers.BaseController):
         except Exception as e:
             raise e
 
-    def format_cdb_list_content(self, dic):
-        """Format the response of custom CDB list.
 
-        Parameters
-        ----------
-        dic : dic
-            A dic with the response.
-        """    
+    def catch_Exceptions(self, request):
         try:
-            self.logger.debug("api: Formatting CDB list content to generate CSV file.")
-            items = dic["data"]["items"][0]
-            dic["data"]["items"] = [{"items": items}]
-            return dic
+            if request.status_code != 200: 
+                raise Exception(request.json())
+            return request.json()
         except Exception as e:
-            self.logger.error("api: Error formating CDB list: %s" % (e))
             raise e
-
 
     def make_request(self, method, url, opt_endpoint, kwargs, auth, verify, counter = 3):
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             if method == 'GET':
-                request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
-                    verify=verify).json()
+                if 'origin' in kwargs:
+                    if kwargs['origin'] == 'xmlreader':
+                        request_xml = self.session.get(
+                            url + opt_endpoint, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                            verify=verify).content
+                        json_response = json.dumps({'data': request_xml.decode("utf-8")})
+                        json_load = json.loads(json_response)
+                        request = json_load
+                        return request
+                    if kwargs['origin'] == 'raw':
+                        response = self.session.get(
+                            url + opt_endpoint, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                            verify=verify)
+                        return json.loads(json.dumps({'data': response.content.decode("utf-8") }))
+                else:
+                    request = self.session.get(
+                        url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+
             if method == 'POST':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmleditor':
-                        headers = {'Content-Type': 'application/xml'} 
+                        headers = {'Content-Type': 'application/xml', 'Authorization': f'Bearer {wazuh_token}'} 
                     elif kwargs['origin'] == 'json':
-                        headers = {'Content-Type':  'application/json'} 
+                        headers = {'Content-Type':  'application/json', 'Authorization': f'Bearer {wazuh_token}'} 
                     elif kwargs['origin'] == 'raw':
-                        headers = {'Content-Type':  'application/octet-stream'} 
+                        headers = {'Content-Type':  'application/octet-stream', 'Authorization': f'Bearer {wazuh_token}'} 
                     kwargs = str(kwargs['content'])
-                    request = self.session.post(url + opt_endpoint, data=kwargs, auth=auth,verify=verify, headers=headers).json()
+                    request = self.session.post(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers)
+                    request = self.catch_Exceptions(request)
                 else:
                     request = self.session.post(
-                        url + opt_endpoint, data=kwargs, auth=auth,
-                        verify=verify).json()
+                        url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'} ,
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+
+
             if method == 'PUT':
-                request = self.session.put(
-                    url + opt_endpoint, data=kwargs, auth=auth,
-                    verify=verify).json()
+                if 'origin' in kwargs:
+                    if kwargs['origin'] == 'xmleditor':
+                        headers = {'Content-Type': 'application/xml', 'Authorization': f'Bearer {wazuh_token}'} 
+                    elif kwargs['origin'] == 'json':
+                        headers = {'Content-Type':  'application/json', 'Authorization': f'Bearer {wazuh_token}'} 
+                    elif kwargs['origin'] == 'raw':
+                        headers = {'Content-Type':  'application/octet-stream', 'Authorization': f'Bearer {wazuh_token}'}
+                    kwargs = str(kwargs['content'])
+                    request = self.session.put(url + opt_endpoint, data=kwargs ,verify=verify, headers=headers)
+                    request = self.catch_Exceptions(request)
+
+                elif opt_endpoint == '/agents/group':
+                    request = self.session.put(
+                        url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+
+                else:
+                    request = self.session.put(
+                        url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
+                        verify=verify)
+                    request = self.catch_Exceptions(request)
+                    
             if method == 'DELETE':
                 request = self.session.delete(
-                    url + opt_endpoint, data=kwargs, auth=auth,
+                    url + opt_endpoint, data=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
-            self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))                    
+            self.logger.debug("api: %s: %s%s - %s" % (method, url, opt_endpoint, kwargs))    
             if request['error'] and request['error'] in socket_errors:
                 self.logger.debug("api: Trying the previous request again.")                    
                 if counter > 0:
@@ -232,6 +269,7 @@ class api(controllers.BaseController):
             if not daemons_ready:
                 return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             request = self.make_request(method, url, opt_endpoint, kwargs, auth, verify)
+            self.logger.info(request)   
             result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
@@ -250,8 +288,9 @@ class api(controllers.BaseController):
         """
         try:
             self.logger.debug("api: Checking Wazuh daemons.")
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
+                url + '/cluster/status', headers = {'Authorization': f'Bearer {wazuh_token}'}, timeout=self.timeout, verify=verify).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
@@ -260,10 +299,10 @@ class api(controllers.BaseController):
             cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
-                    url + opt_endpoint, auth=auth,
+                    url + opt_endpoint, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if not daemons_status['error']:
-                d = daemons_status['data']
+                d = daemons_status['data']['affected_items'][0]
                 daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
                 if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
@@ -343,11 +382,10 @@ class api(controllers.BaseController):
     def autocomplete(self, **kwargs):
         """Provisional method for returning the full list of Wazuh API endpoints."""
         try:
-            self.logger.debug("Returning autocomplet for devtools.")
-            parsed_json = jsonbak.dumps([{"method":'PUT',"endpoints":[{"name":'/active-response/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/:agent_id/restart',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_custom',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/restart',"args":[]},{"name":'/cluster/:node_id/restart',"args":[{"name":':node_id'}]},{"name":'/cluster/restart',"args":[]},{"name":'/manager/restart',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'DELETE',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/group/:group_id',"args":[{"name":':agent_id'},{"name":':group_id'}]},{"name":'/agents/group/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/cache',"args":[]},{"name":'/cache',"args":[]},{"name":'/rootcheck',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]}]},{"method":'GET',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/config/:component/:configuration',"args":[{"name":':agent_id'},{"name":':component'},{"name":':configuration'}]},{"name":'/agents/:agent_id/group/is_sync',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/key',"args":[{"name":':agent_id'}]},{"name":'/agents/:agent_id/upgrade_result',"args":[{"name":':agent_id'}]},{"name":'/agents/groups',"args":[]},{"name":'/agents/groups/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:filename',"args":[{"name":':group_id'},{"name":':filename'}]},{"name":'/agents/name/:agent_name',"args":[{"name":':agent_name'}]},{"name":'/agents/no_group',"args":[]},{"name":'/agents/outdated',"args":[]},{"name":'/agents/stats/distinct',"args":[]},{"name":'/agents/summary',"args":[]},{"name":'/agents/summary/os',"args":[]},{"name":'/cache',"args":[]},{"name":'/cache/config',"args":[]},{"name":'/ciscat/:agent_id/results',"args":[{"name":':agent_id'}]},{"name":'/cluster/:node_id/configuration',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/configuration/validation',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/files',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/info',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/logs/summary',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/analysisd',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/hourly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/remoted',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/stats/weekly',"args":[{"name":':node_id'}]},{"name":'/cluster/:node_id/status',"args":[{"name":':node_id'}]},{"name":'/cluster/config',"args":[]},{"name":'/cluster/configuration/validation',"args":[]},{"name":'/cluster/healthcheck',"args":[]},{"name":'/cluster/node',"args":[]},{"name":'/cluster/nodes',"args":[]},{"name":'/cluster/nodes/:node_name',"args":[{"name":':node_name'}]},{"name":'/cluster/status',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/sca/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/sca/:agent_id/checks/:id',"args":[{"name":':agent_id'},{"name":':id'}]},{"name":'/decoders',"args":[]},{"name":'/decoders/:decoder_name',"args":[{"name":':decoder_name'}]},{"name":'/decoders/files',"args":[]},{"name":'/decoders/parents',"args":[]},{"name":'/lists',"args":[]},{"name":'/lists/files',"args":[]},{"name":'/manager/configuration',"args":[]},{"name":'/manager/configuration/validation',"args":[]},{"name":'/manager/files',"args":[]},{"name":'/manager/info',"args":[]},{"name":'/manager/logs',"args":[]},{"name":'/manager/logs/summary',"args":[]},{"name":'/manager/stats',"args":[]},{"name":'/manager/stats/analysisd',"args":[]},{"name":'/manager/stats/hourly',"args":[]},{"name":'/manager/stats/remoted',"args":[]},{"name":'/manager/stats/weekly',"args":[]},{"name":'/manager/status',"args":[]},{"name":'/rootcheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/cis',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/rootcheck/:agent_id/pci',"args":[{"name":':agent_id'}]},{"name":'/rules',"args":[]},{"name":'/rules/:rule_id',"args":[{"name":':rule_id'}]},{"name":'/rules/files',"args":[]},{"name":'/rules/gdpr',"args":[]},{"name":'/rules/nist-800-53',"args":[]},{"name":'/rules/hipaa',"args":[]},{"name":'/rules/groups',"args":[]},{"name":'/rules/pci',"args":[]},{"name":'/syscheck/:agent_id',"args":[{"name":':agent_id'}]},{"name":'/syscheck/:agent_id/last_scan',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/hardware',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netaddr',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netiface',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/netproto',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/os',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/packages',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/ports',"args":[{"name":':agent_id'}]},{"name":'/syscollector/:agent_id/processes',"args":[{"name":':agent_id'}]}]},{"method":'POST',"endpoints":[{"name":'/agents',"args":[]},{"name":'/agents/group/:group_id',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/configuration',"args":[{"name":':group_id'}]},{"name":'/agents/groups/:group_id/files/:file_name',"args":[{"name":':group_id'},{"name":':file_name'}]},{"name":'/agents/insert',"args":[]},{"name":'/agents/restart',"args":[]},{"name":'/cluster/:node_id/files',"args":[{"name":':node_id'}]},{"name":'/manager/files',"args":[]}]}])
+            self.logger.debug("Returning autocomplete for devtools.")
+            return api_info.get_api_endpoints()
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
-        return parsed_json
     
     # POST /api/csv : Generates a CSV file with the returned data from API
     @expose_page(must_login=False, methods=['POST'])
@@ -364,7 +402,7 @@ class api(controllers.BaseController):
             if 'id' not in kwargs or 'path' not in kwargs:
                 raise Exception("Invalid arguments or missing params.")
             filters = {}
-            filters['limit'] = 1000
+            filters['limit'] = 500
             filters['offset'] = 0
 
             if 'filters' in kwargs and kwargs['filters'] != '':
@@ -389,25 +427,43 @@ class api(controllers.BaseController):
             url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
+            is_list_export_keys_values = "lists/files" in opt_endpoint
+
             # init csv writer
             output_file = StringIO()
             # get total items and keys
             request = self.session.get(
-                url + opt_endpoint, params=filters, auth=auth,
+                url + opt_endpoint, params=None if is_list_export_keys_values else filters, headers = {'Authorization': f'Bearer {wazuh_token}'},
                 verify=verify).json()
             self.logger.debug("api: Data obtained for generate CSV file.")
-            if ('items' in request['data'] and
-                    len(request['data']['items']) > 0):
-                if "?path=etc/list" in opt_endpoint:
-                    formatted = self.format_cdb_list_content(request)
-                    final_obj = formatted["data"]["items"]
+            if ('affected_items' in request['data'] and
+                    len(request['data']['affected_items']) > 0):
+                # Export CSV the CDB List keys and values
+                if is_list_export_keys_values:
+                    items_list = [{"Key": k,"Value": v} for k,v in request["data"]["affected_items"][0].items()]
+
+                    dict_writer = csv.DictWriter(
+                        output_file,
+                        delimiter=',',
+                        fieldnames=items_list[0].keys(),
+                        extrasaction='ignore',
+                        lineterminator='\n',
+                        quotechar='"')
+                    # write CSV header
+                    dict_writer.writeheader()
+                    dict_writer.writerows(items_list)
+                    csv_result = output_file.getvalue()
+                    output_file.close()
+                    self.logger.debug("api: CSV file generated.")
+                    return csv_result 
                 else :
-                    final_obj = request["data"]["items"]
+                    final_obj = request["data"]["affected_items"]
                 if isinstance(final_obj, list):
                     keys = final_obj[0].keys()
                     self.format_output(keys)
                     final_obj_dict = self.format_output(final_obj)
-                    total_items = request["data"]["totalItems"]
+                    total_items = request["data"]["total_affected_items"]
                     # initializes CSV buffer
                     if total_items > 0:
                         dict_writer = csv.DictWriter(
@@ -427,9 +483,9 @@ class api(controllers.BaseController):
                             offset += filters['limit']
                             filters['offset'] = offset
                             req = self.session.get(
-                                url + opt_endpoint, params=filters, auth=auth,
+                                url + opt_endpoint, params=filters, headers = {'Authorization': f'Bearer {wazuh_token}'},
                                 verify=verify).json()
-                            paginated_result = req['data']['items']
+                            paginated_result = req['data']['affected_items']
                             format_paginated_results = self.format_output(
                                 paginated_result)
                             dict_writer.writerows(format_paginated_results)
@@ -460,9 +516,10 @@ class api(controllers.BaseController):
                     return jsonbak.dumps(pci_requirements.pci)
                 the_id = kwargs['apiId']
                 url,auth,verify,cluster_enabled = self.get_credentials(the_id)
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 opt_endpoint = '/rules/pci'
                 request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
+                    url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
                 if request['error'] != 0:
                     return jsonbak.dumps({'error':request['error']})
@@ -497,9 +554,10 @@ class api(controllers.BaseController):
                     return jsonbak.dumps(gdpr_requirements.gdpr)
                 the_id = kwargs['apiId']
                 url,auth,verify,cluster_enabled = self.get_credentials(the_id)
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 opt_endpoint = '/rules/gdpr'
                 request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
+                    url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
                 if request['error'] != 0:
                     return jsonbak.dumps({'error':request['error']})
@@ -536,8 +594,9 @@ class api(controllers.BaseController):
                 the_id = kwargs['apiId']
                 url,auth,verify = self.get_credentials(the_id)
                 opt_endpoint = '/rules/hipaa'
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
+                    url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
                 if request['error'] != 0:
                     return jsonbak.dumps({'error':request['error']})
@@ -572,9 +631,10 @@ class api(controllers.BaseController):
                     return jsonbak.dumps(nist_requirements.nist)
                 the_id = kwargs['apiId']
                 url,auth,verify = self.get_credentials(the_id)
+                wazuh_token = self.wztoken.get_auth_token(url,auth)
                 opt_endpoint = '/rules/nist-800-53'
                 request = self.session.get(
-                    url + opt_endpoint, params=kwargs, auth=auth,
+                    url + opt_endpoint, params=kwargs, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
                 if request['error'] != 0:
                     return jsonbak.dumps({'error':request['error']})
@@ -627,10 +687,11 @@ class api(controllers.BaseController):
             apiId = kwargs['apiId']
             agentId = kwargs['agentId']
             url,auth,verify,cluster_enabled = self.get_credentials(apiId)
+            wazuh_token = self.wztoken.get_auth_token(url,auth)
             # Hardware
             endpoint_hardware = '/syscollector/' +  str(agentId) + '/hardware'
             hardware_data = self.session.get(
-                    url + endpoint_hardware, params={}, auth=auth,
+                    url + endpoint_hardware, params={}, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in hardware_data and hardware_data['error'] == 0 and 'data' in hardware_data:
                 syscollectorData['hardware'] = hardware_data['data']
@@ -638,7 +699,7 @@ class api(controllers.BaseController):
             # OS
             endpoint_os = '/syscollector/' +  str(agentId) + '/os'
             os_data = self.session.get(
-                    url + endpoint_os, params={}, auth=auth,
+                    url + endpoint_os, params={}, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in os_data and os_data['error'] == 0 and 'data' in os_data:
                 syscollectorData['os'] = os_data['data']
@@ -646,7 +707,7 @@ class api(controllers.BaseController):
             # Ports
             endpoint_ports = '/syscollector/' +  str(agentId) + '/ports'
             ports_data = self.session.get(
-                    url + endpoint_ports, params={ 'limit' : 1 }, auth=auth,
+                    url + endpoint_ports, params={ 'limit' : 1 }, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in ports_data and ports_data['error'] == 0 and 'data' in ports_data:
                 syscollectorData['ports'] = ports_data['data']
@@ -654,29 +715,29 @@ class api(controllers.BaseController):
             # Packages
             endpoint_packages = '/syscollector/' +  str(agentId) + '/packages'
             packages_data = self.session.get(
-                    url + endpoint_packages, params={ 'limit' : 1, 'select' : 'scan_time'}, auth=auth,
+                    url + endpoint_packages, params={ 'limit' : 1}, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in packages_data and packages_data['error'] == 0 and 'data' in packages_data:
-                if 'items' in packages_data['data'] and len(packages_data['data']['items']) > 0 and 'scan_time' in packages_data['data']['items'][0]:
-                    syscollectorData['packagesDate'] = packages_data['data']['items'][0]['scan_time']
+                if 'affected_items' in packages_data['data'] and len(packages_data['data']['affected_items']) > 0 and 'scan' in packages_data['data']['affected_items'][0]:
+                    syscollectorData['packagesDate'] = packages_data['data']['affected_items'][0]['scan']['time']
                 else:
                     syscollectorData['packagesDate'] = 'Unknown'
 
             # Processes
             endpoint_processes = '/syscollector/' +  str(agentId) + '/processes'
             processes_data = self.session.get(
-                    url + endpoint_processes, params={ 'limit' : 1, 'select' : 'scan_time'}, auth=auth,
+                    url + endpoint_processes, params={ 'limit' : 1}, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in processes_data and processes_data['error'] == 0 and 'data' in processes_data:
-                if 'items' in processes_data['data'] and len(processes_data['data']['items']) > 0 and 'scan_time' in processes_data['data']['items'][0]:
-                    syscollectorData['processesDate'] = processes_data['data']['items'][0]['scan_time']
+                if 'affected_items' in processes_data['data'] and len(processes_data['data']['affected_items']) > 0 and 'scan' in processes_data['data']['affected_items'][0]:
+                    syscollectorData['processesDate'] = processes_data['data']['affected_items'][0]['scan']['time']
                 else:
                     syscollectorData['processesDate'] = 'Unknown'
 
             # Netiface
             endpoint_netiface = '/syscollector/' +  str(agentId) + '/netiface'
             netiface_data = self.session.get(
-                    url + endpoint_netiface, params={}, auth=auth,
+                    url + endpoint_netiface, params={}, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in netiface_data and netiface_data['error'] == 0 and 'data' in netiface_data:
                 syscollectorData['netiface'] = netiface_data['data']
@@ -684,7 +745,7 @@ class api(controllers.BaseController):
             # Netaddr
             endpoint_netaddr = '/syscollector/' +  str(agentId) + '/netaddr'
             netaddr_data = self.session.get(
-                    url + endpoint_netaddr, params={ 'limit' : 1 }, auth=auth,
+                    url + endpoint_netaddr, params={ 'limit' : 1 }, headers = {'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify).json()
             if 'error' in netaddr_data and netaddr_data['error'] == 0 and 'data' in netaddr_data:
                 syscollectorData['netaddr'] = netaddr_data['data']

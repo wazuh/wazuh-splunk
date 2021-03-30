@@ -115,7 +115,7 @@ define(['../../module', 'FileSaver'], function(app) {
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
-      this.scope.saveFile = file => this.saveFile(file)
+      this.scope.saveFile = (file, dir) => this.saveFile(file, dir)
 
       this.scope.$on('configSavedSuccessfully', event => {
         event.stopPropagation()
@@ -337,13 +337,13 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.$broadcast('wazuhFilter', { filter })
       } else if (
         term &&
-        term.startsWith('path:') &&
-        term.split('path:')[1].trim()
+        term.startsWith('relative_dirname:') &&
+        term.split('relative_dirname:')[1].trim()
       ) {
         this.scope.customSearch = ''
-        const filter = { name: 'path', value: term.split('path:')[1].trim() }
+        const filter = { name: 'relative_dirname', value: term.split('"relative_dirname":')[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'path'
+          item => item.name !== 'relative_dirname'
         )
         this.scope.appliedFilters.push(filter)
         this.scope.$broadcast('wazuhFilter', { filter })
@@ -475,7 +475,7 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         const path = this.getPathFromState()
         if (path) {
-          this.scope.appliedCustomFilters = [{ name: 'path', value: path }]
+          this.scope.appliedCustomFilters = [{ name: 'relative_dirname', value: path }]
         }
       } catch (error) {
         this.notification.showErrorToast('Cannot initialize custom filters.')
@@ -489,9 +489,9 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         const path = this.getPathFromState()
         if (path) {
-          const filters = [{ name: 'path', value: path }]
+          const filters = [{ name: 'relative_dirname', value: path }]
           const restFilters = this.scope.appliedFilters.filter(
-            item => item.name !== 'path'
+            item => item.name !== 'relative_dirname'
           )
           filters.push(...restFilters)
           this.scope.appliedCustomFilters = filters
@@ -561,8 +561,10 @@ define(['../../module', 'FileSaver'], function(app) {
     async editFile(file, path, readOnly = false) {
       try {
         if (readOnly) {
-          this.scope.XMLContent = await this.fetchFileContent(
-            `${path}/${file}`,
+          this.scope.XMLContent = await this.fileEditor.getConfiguration(
+            file,
+            path,
+            null,
             readOnly
           )
           this.scope.$broadcast('XMLContentReady', {
@@ -572,9 +574,15 @@ define(['../../module', 'FileSaver'], function(app) {
         } else {
           this.scope.editingRulesetFile = {
             file,
+            dir: path,
             path: `${path}/${file}`
           }
-          this.scope.fetchedXML = await this.fetchFileContent(`${path}/${file}`)
+          this.scope.fetchedXML = await this.fileEditor.getConfiguration(
+            file,
+            path,
+            null,
+            readOnly
+            )
           this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
         }
       } catch (error) {
@@ -589,30 +597,13 @@ define(['../../module', 'FileSaver'], function(app) {
      * Saves the file content
      * @param {String} file
      */
-    saveFile(file) {
+    saveFile(file,dir) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file,
+        dir,
         overwrite: true
       })
-    }
-
-    /**
-     * Fetchs file content
-     * @param {String} file
-     */
-    async fetchFileContent(file, readOnly = false) {
-      try {
-        const result = await this.fileEditor.getConfiguration(
-          file,
-          null,
-          null,
-          readOnly
-        )
-        return result
-      } catch (error) {
-        return Promise.reject(error)
-      }
     }
 
     /**

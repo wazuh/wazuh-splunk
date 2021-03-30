@@ -77,10 +77,10 @@ define([
         this.agent &&
         this.agent.data &&
         this.agent.data.data &&
-        this.agent.data.data.id
+        this.agent.data.data.affected_items[0].id
       )
         this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+          `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
       this.filters = this.currentDataService.getSerializedFilters()
 
@@ -139,15 +139,15 @@ define([
       // Set agent info
       try {
         this.agentReportData = {
-          ID: this.agent.data.data.id,
-          Name: this.agent.data.data.name,
-          IP: this.agent.data.data.ip,
-          Version: this.agent.data.data.version,
-          Manager: this.agent.data.data.manager,
-          OS: this.agent.data.data.os.name,
-          dateAdd: this.agent.data.data.dateAdd,
-          lastKeepAlive: this.agent.data.data.lastKeepAlive,
-          group: this.agent.data.data.group.toString()
+          ID: this.agent.data.data.affected_items[0].id,
+          Name: this.agent.data.data.affected_items[0].name,
+          IP: this.agent.data.data.affected_items[0].ip,
+          Version: this.agent.data.data.affected_items[0].version,
+          Manager: this.agent.data.data.affected_items[0].manager,
+          OS: this.agent.data.data.affected_items[0].os.name,
+          dateAdd: this.agent.data.data.affected_items[0].dateAdd,
+          lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
+          group: this.agent.data.data.affected_items[0].group.toString()
         }
       } catch (error) {
         this.agentReportData = false
@@ -203,8 +203,14 @@ define([
       this.scope.loadingVizz = true
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
-          ? this.agent.data.data
+          ? this.agent.data.data.affected_items[0]
           : { error: true }
+    
+      // Capitalize Status
+      if(this.scope.agent && this.scope.agent.status){
+        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      }
+      
       this.scope.getAgentStatusClass = agentStatus =>
         this.getAgentStatusClass(agentStatus)
       this.scope.formatAgentStatus = agentStatus =>

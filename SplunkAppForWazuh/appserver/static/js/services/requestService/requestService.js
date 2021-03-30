@@ -125,15 +125,41 @@ define(['../module'], function(module) {
       try {
         const result = await apiReq(
           `${url}`,
-          { content, origin: 'xmleditor' },
-          'POST'
+          { content, origin: 'raw' },
+          'PUT'
         )
         if (
           !result ||
           !result.data ||
           !result.data.data ||
-          result.data.error !== 0 ||
-          (result.data.data.error && result.data.data.error !== 0)
+          result.data.error !== 0
+        ) {
+          if (result.data.error === 1905) {
+            return result
+          } else {
+            throw new Error(
+              result.data.message || result.data.error || 'Cannot send file.'
+            )
+          }
+        }
+        return result
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    }
+
+    const sendGroupConfiguration = async (url, content) => {
+      try {
+        const result = await apiReq(
+          `${url}`,
+          { content, origin: 'xmleditor' },
+          'PUT'
+        )
+        if (
+          !result ||
+          !result.data ||
+          !result.data.data ||
+          result.data.error !== 0
         ) {
           if (result.data.error === 1905) {
             return result
@@ -155,8 +181,7 @@ define(['../module'], function(module) {
         if (
           !result ||
           !result.data ||
-          result.data.error !== 0 ||
-          (result.data.data.error && result.data.data.error !== 0)
+          result.data.error !== 0
         ) {
           throw new Error('Cannot get file.')
         }     
@@ -172,6 +197,7 @@ define(['../module'], function(module) {
       apiReq: apiReq,
       httpReq: httpReq,
       sendConfiguration: sendConfiguration,
+      sendGroupConfiguration: sendGroupConfiguration,
       getConfiguration: getConfiguration,
       wazuhIsReady: wazuhIsReady
     }

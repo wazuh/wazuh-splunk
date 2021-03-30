@@ -60,43 +60,42 @@ define([
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
         const parsedResult = agentData.data.data
-
-        let summary = parsedResult.agent_status
-        let lastAgent = parsedResult.last_registered_agent
+        let summary = this.formatAgentStatusData(parsedResult.agent_status)
+        let lastAgent = parsedResult.last_registered_agent[0]
         let groups = parsedResult.groups
 
-        this.scope.noAgents = summary.Total - 1 < 1
-        this.scope.agentsCountActive = summary.Active - 1
+        this.scope.noAgents = summary.Total < 1
+        this.scope.agentsCountActive = summary.Active
         this.scope.lastAgent = lastAgent || 'Unknown'
         const os = parsedResult.agent_os
-          ? parsedResult.agent_os.items
+          ? parsedResult.agent_os
               .map(item => item.os)
               .filter(item => !!item)
           : false
         const versions = parsedResult.agent_version
-          ? parsedResult.agent_version.items
+          ? parsedResult.agent_version
               .map(item => item.version)
               .filter(item => !!item)
           : false
         const nodes =
-          parsedResult.nodes && parsedResult.nodes.items
-            ? parsedResult.nodes.items
+          parsedResult.nodes && parsedResult.nodes
+            ? parsedResult.nodes
                 .map(item => item['node_name'])
                 .filter(item => !!item)
             : false
         groups = groups
-          ? groups.items.map(item => item.name).filter(item => !!item)
+          ? groups.map(item => item.name).filter(item => !!item)
           : false
         this.scope.agentsCountDisconnected = summary.Disconnected
-        this.scope.agentsCountNeverConnected = summary['Never connected']
-        const agentsCountTotal = summary.Total - 1
+        this.scope.agentsCountNeverConnected = summary.Never_connected;
+        const agentsCountTotal = summary.Total
         this.scope.agentsCoverity = agentsCountTotal
           ? (this.scope.agentsCountActive / agentsCountTotal) * 100
           : 0
 
         this.scope.searchBarModel = {
           name: [],
-          status: ['Active', 'Disconnected', 'Never connected'],
+          status: ['active', 'disconnect', 'never_connected'],
           group: groups
             ? groups.sort((a, b) => {
                 return a.toString().localeCompare(b.toString())
@@ -147,7 +146,7 @@ define([
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} NOT agent.id=000 | top agent.name`,
+        `index=wazuh ${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',
@@ -156,6 +155,7 @@ define([
         true,
         'loadingSearch'
       )
+
       this.scope.$applyAsync()
     }
 
@@ -231,11 +231,17 @@ define([
         this.notification.showSimpleToast(
           'Your download should begin automatically...'
         )
+
+        const filters = this.wzTableFilter.get()
+        filters.push({
+          name: "q",
+          value: "id!=000"
+        })
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           '/agents',
           currentApi,
-          this.wzTableFilter.get()
+          filters
         )
         const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
         saveAs(blob, 'agents.csv') // eslint-disable-line
@@ -272,9 +278,9 @@ define([
           ) {
             throw Error('Error fetching agent data')
           }
-          if (agentInfo.data.data.items[0].id !== '000') {
+          if (agentInfo.data.data.affected_items[0].id !== '000') {
             this.state.go(`agent-overview`, {
-              id: agentInfo.data.data.items[0].id
+              id: agentInfo.data.data.affected_items[0].id
             })
           }
         } else {
@@ -309,6 +315,24 @@ define([
     reloadList() {
       this.scope.$broadcast('reloadSearchFilterBar', {})
     }
+
+
+
+    /** Parsed Agent Stats */
+    formatAgentStatusData(status){
+
+      let statusObj = {};
+
+      for(let key of Object.keys(status)){
+
+        statusObj[key.charAt(0).toUpperCase() + key.slice(1)] = status[key];
+
+      }
+
+      return statusObj;
+
+    }
+
   }
   app.controller('agentsCtrl', Agents)
 })

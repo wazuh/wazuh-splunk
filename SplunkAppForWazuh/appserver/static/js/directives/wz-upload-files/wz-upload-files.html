@@ -44,7 +44,10 @@
                     <span class="dz-upload" data-dz-uploadprogress=""></span>
                 </div>  
                 <div class="dz-error-message">
-                    <span data-dz-errormessage="">
+                    <span ng-if="errorMessage">
+                        {errorMessage}
+                    </span>
+                    <span  ng-if="!errorMessage" data-dz-errormessage="">
 
                     </span>
                 </div>  

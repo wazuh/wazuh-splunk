@@ -365,6 +365,36 @@ define(['../module'], function(module) {
       }
     }
 
+    const resolveCurrentApi = async () => {
+
+      let [currentApi, apiList] = await Promise.all([
+        getApi(),
+        getApiList()
+      ]);
+
+      if (Array.isArray(apiList) && apiList.length === 0) {
+        return Promise.reject();
+      }
+
+      if (!currentApi && Array.isArray(apiList)) {
+        for (const apiEntry of apiList) {
+          try {
+            // checking if the api is up
+            await checkApiConnection(apiEntry._key);
+            // Selecting API
+            await chose(apiEntry._key);
+            // Set API
+            currentApi = getApi();
+            break;
+          } catch (error) {
+            continue;
+          }
+        }
+      } 
+
+      return Promise.resolve(currentApi);
+    }
+
     return {
       checkApiConnection: checkApiConnection,
       checkRawConnectionById: checkRawConnectionById,
@@ -384,7 +414,8 @@ define(['../module'], function(module) {
       getApi: getApi,
       setApi: setApi,
       addApi: addApi,
-      checkWazuhVersion: checkWazuhVersion
+      checkWazuhVersion: checkWazuhVersion,
+      resolveCurrentApi: resolveCurrentApi,
     }
   })
 })

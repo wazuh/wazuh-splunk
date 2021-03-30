@@ -21,20 +21,17 @@ define(['../module'], function(module) {
 
     async sendConfiguration(file, path, content, overwrite = false) {
       try {
-        const url = overwrite
-          ? `/manager/files?path=${path}/${file}&overwrite=true`
-          : `/manager/files?path=${path}/${file}`
+        const url = `/lists/files/${file}?overwrite=${overwrite}`
         const result = await this.apiReq(
           `${url}`,
           { content, origin: 'raw' },
-          'POST'
+          'PUT'
         )
         if (
           !result ||
           !result.data ||
-          !result.data.data ||
           result.data.error !== 0 ||
-          (result.data.data.error && result.data.data.error !== 0)
+          (result.data.error && result.data.error !== 0)
         ) {
           if (result.data.error === 1905) {
             return result
@@ -50,13 +47,14 @@ define(['../module'], function(module) {
 
     async getConfiguration(file, path) {
       try {
-        const url = `/manager/files?path=${path}/${file}`
-        const result = await this.getConfig(url)
+        const url = `/lists/files/${file}?raw=true`
+        const result = await this.apiReq(
+          url,
+          { origin:"raw" }
+        )
         if (
           !result ||
-          !result.data ||
-          !result.data.data ||
-          result.data.error != 0
+          !result.data
         ) {
           throw new Error('Error fetching cdb list content')
         }

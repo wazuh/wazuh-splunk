@@ -176,13 +176,13 @@ define([
       try {
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
-          this.apiReq(`/agents/summary`)
+          this.apiReq(`/agents/summary/status`)
             .then(data => {
-              this.scope.agentsCountTotal = data.data.data.Total - 1
-              this.scope.agentsCountActive = data.data.data.Active - 1
-              this.scope.agentsCountDisconnected = data.data.data.Disconnected
+              this.scope.agentsCountTotal = data.data.data.total
+              this.scope.agentsCountActive = data.data.data.active
+              this.scope.agentsCountDisconnected = data.data.data.disconnected
               this.scope.agentsCountNeverConnected =
-                data.data.data['Never connected']
+                data.data.data.never_connected
               this.scope.agentsCoverity = this.scope.agentsCountTotal
                 ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) *
                   100
@@ -207,12 +207,12 @@ define([
               this.mngName = this.currentDataService.getFilters()[0][
                 'manager.name'
               ]
-              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring-3x`
+              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
             } else {
               this.clusName = this.currentDataService.getFilters()[0][
                 'cluster.name'
               ]
-              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring-3x`
+              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
             }
           } catch (error) {} //eslint-disable-line
 
@@ -220,7 +220,7 @@ define([
           this.vizz.push(
             new LinearChart(
               `agentStatusHistory`,
-              `${this.agentsStatusFilter} status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
+              `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
               `agentStatus`,
               this.scope,
               { customAxisTitleX: 'Time span' }
