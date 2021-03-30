@@ -28,7 +28,7 @@
             
             <div class="wz-popover-wrapper">
               <div ng-show="uploadingFiles" class="wz-popover-content">
-                  <wz-upload-files upload-title="Upload decoders" path="etc/decoders/" allowed-extensions="'.xml'"></wz-upload-files>
+                  <wz-upload-files upload-title="Upload decoders" resource="decoders" allowed-extensions="'.xml'"></wz-upload-files>
               </div>
             </div>
             <!-- Loading content -->
@@ -99,7 +99,7 @@
                             </label>
                           </div>
                           <wz-add-filter-chip ng-if="!rulesetFiles" id-input="search-input-rules"
-                            options="[{label: 'File', value: 'file'}, {label: 'Path', value: 'path'}]"></wz-add-filter-chip>
+                            options="[{label: 'File', value: 'filename'}, {label: 'Path', value: 'relative_dirname'}]"></wz-add-filter-chip>
                           <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
                             ng-click="search(customSearch)">
                             <span>Search</span>
@@ -125,19 +125,19 @@
                   <div layout="row" layout-padding>
                     <wazuh-table custom-columns="true" ng-if="!localFilter && !rulesetFiles" implicit-filter="appliedFilters" flex
                       path="'/decoders'"
-                      keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
+                      keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'filename',{value:'relative_dirname',nosortable:true}]"
                       allow-click="true" rows-per-page="14">
                     </wazuh-table>
                     <wazuh-table custom-columns="true" ng-if="localFilter && !rulesetFiles" implicit-filter="appliedCustomFilters"
                       flex path="'/decoders'"
-                      keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'file',{value:'path',nosortable:true}]"
+                      keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'filename',{value:'relative_dirname',nosortable:true}]"
                       allow-click="true" rows-per-page="14">
                     </wazuh-table>
                     <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/decoders/files'"
-                      keys="['file']" rows-per-page="[16,13,11]">
+                      keys="['filename']" rows-per-page="[16,13,11]">
                     </wazuh-table>
                     <wazuh-table admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/decoders/files'"
-                      implicit-filter="[{ name:'path',value: 'etc/decoders'}]" keys="['file']" rows-per-page="[16,13,11]">
+                      implicit-filter="[{ name:'relative_dirname',value: 'etc/decoders'}]" keys="['filename']" rows-per-page="[16,13,11]">
                     </wazuh-table>
                   </div>
                 </md-card-contents>
@@ -179,7 +179,7 @@
               <div ng-if="editingRulesetFile">
                   <div layout="row" class="md-padding wz-padding-top-0">
                     <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-                    <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.path)'
+                    <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.file, editingRulesetFile.dir)'
                       class='btn wz-button-empty pull-right wz-margin-left-10'>
                       <span ng-show='!xmlHasErrors && adminMode'><i
                           ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"

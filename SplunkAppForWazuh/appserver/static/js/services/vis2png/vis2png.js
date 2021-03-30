@@ -42,14 +42,11 @@ define(['../module', 'domToImg'], function(app, domToImg) {
               //Try to fetch the title of the visualization
               title = document
                 .getElementById(currentValue)
-                .parentElement.getElementsByTagName('span')[0].innerHTML
+                .parentElement.getElementsByTagName('span')[0].innerText
 
-              if (title.search('<span')) {
-                title = title.substring(0, title.search('<span'))
-                classes = document
-                  .getElementById(currentValue)
-                  .className.split(' ')
-              }
+              classes = document
+                .getElementById(currentValue)
+                .className.split(' ')
             } catch (error) {} // eslint-disable-line
 
             try {

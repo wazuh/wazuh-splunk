@@ -70,9 +70,15 @@ define(['../../module', 'FileSaver'], function(module) {
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length
 
-        const agentData = (((this.data || {})[1] || {}).data || {}).data
+        const agentData = (((this.data || {})[1] || {}).data || {}).data.affected_items[0]
 
         this.scope.agent = agentData ? agentData : { error: true }
+
+        // Capitalize Status
+        if(this.scope.agent && this.scope.agent.status){
+          this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+        }
+
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)
         }
@@ -111,7 +117,13 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     async init() {
       try {
-        this.scope.syscollector = ((this.data || {})[0] || {}).data || {}
+        const syscollector = ((this.data || {})[0] || {}).data || {}
+
+        this.scope.syscollector = {
+          ...syscollector,
+          hardware: syscollector.hardware.affected_items[0] || {},
+          os: syscollector.os.affected_items[0] || {},
+        }
 
         this.scope.$applyAsync()
         return

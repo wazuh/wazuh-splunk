@@ -88,8 +88,8 @@ define(['../module'], function(directives) {
         }
 
         $scope.getVersion = async () => {
-          $scope.wazuhVersion = await $requestService.apiReq('/version')
-          $scope.wazuhVersion = ((($scope.wazuhVersion || {}).data || {}).data || {})
+          $scope.wazuhVersion = await $requestService.apiReq('/manager/info');
+          $scope.wazuhVersion = (((($scope.wazuhVersion || {}).data || {}).data || {}).affected_items[0] || {}).version || {}
           $scope.wazuhVersion = $scope.wazuhVersion.replace("v","")
           $scope.$applyAsync()
         }

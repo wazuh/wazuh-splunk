@@ -23,6 +23,7 @@ define([
       $scope,
       $currentDataService,
       $requestService,
+      $appVersionService,
       $notificationService,
       monitoringInfo
     ) {
@@ -31,6 +32,7 @@ define([
       this.currentDataService = $currentDataService
 
       this.scope.showConfig = $stateParams.isClusterRunning || false
+      this.scope.appDocuVersion = $appVersionService.getDocumentationVersion()
       this.scope.showNodes = $stateParams.showNodes || false
       this.scope.currentNode = $stateParams.currentNode || null
       this.filters = this.currentDataService.getSerializedFilters()
@@ -94,12 +96,12 @@ define([
         $stateParams.isClusterEnabled || this.enabled === 'yes'
       this.scope.isClusterRunning =
         $stateParams.isClusterRunning || this.running === 'yes'
-      this.nodes = nodes
-      this.nodesCount = nodes.totalItems
-      this.configuration = configuration
-      this.version = version
+      this.nodes = this.enabled === 'yes' ? nodes.affected_items[0] : []
+      this.nodesCount = this.enabled === 'yes' ? nodes.total_affected_items : 0
+      this.configuration = this.enabled === 'yes' ? configuration.affected_items[0] : false
+      this.version = version.api_version
       this.agents = agents
-      this.health = health
+      this.health = this.enabled === 'yes' ? health.affected_items[0] : false
     }
 
     /**
@@ -128,11 +130,16 @@ define([
             this.scope.currentNode = parameters.node
             this.launchSearches()
             const data = await this.apiReq(`/cluster/healthcheck`, {
-              node: this.scope.currentNode.name
+              nodes_list: this.scope.currentNode.name
+            })
+            
+            const nodeInfo = data.data.data.affected_items.map(item =>{
+              if(item.info.name == this.scope.currentNode.name){
+                return item
+              }
             })
 
-            this.scope.currentNode.healthCheck =
-              data.data.data.nodes[this.scope.currentNode.name]
+            this.scope.currentNode.healthCheck = nodeInfo
 
             if (
               this.scope.currentNode.healthCheck &&
@@ -209,7 +216,7 @@ define([
 
       this.scope.version = this.version
 
-      this.scope.agentsCount = this.agents.totalItems - 1
+      this.scope.agentsCount = this.agents.total_affected_items - 1
 
       this.scope.healthCheck = this.health
 

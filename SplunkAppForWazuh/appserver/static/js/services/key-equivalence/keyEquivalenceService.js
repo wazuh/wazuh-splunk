@@ -9,6 +9,8 @@ define(['../module'], function(module) {
           timestamp: 'Timestamp',
           url: 'URL',
           version: 'Version',
+          'value.name': 'Value name',
+          'value.type': 'Value type',
           'os.name': 'OS name',
           'os.version': 'OS version',
           status: 'Status',

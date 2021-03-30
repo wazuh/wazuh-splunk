@@ -6,6 +6,8 @@ define(['./module'], function(module) {
     '$transitions',
     '$navigationService',
     '$currentDataService',
+    '$requestService',
+    '$appVersionService',
     '$notificationService',
     function(
       $rootScope,
@@ -13,11 +15,25 @@ define(['./module'], function(module) {
       $transitions,
       $navigationService,
       $currentDataService,
+      $requestService,
+      $appVersionService,
       $notificationService
     ) {
       //Go to last state or to a specified tab if "currentTab" param is specified in the url
       $navigationService.manageState()
-
+      async function getAppVersion(){
+        try {
+          const result = await $requestService.httpReq(
+            'GET',
+            '/manager/app_info'
+          )
+          $appVersionService.setAppInfo(result.data);
+          return result;
+        } catch (error) {
+          $state.go('settings.api')
+        }
+      }
+      getAppVersion();
       async function checkBeforeTransition(state) {
         try {
           const { api } = await $currentDataService.checkSelectedApiConnection()

@@ -35,7 +35,7 @@ define([], function() {
       } else {
         $state.go(state, { id: item.id })
       }
-    } else if (instance.path === '/agents/groups') {
+    } else if (instance.path === '/groups') {
       $scope.$emit('wazuhShowGroup', { group: item })
     } else if (
       new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*\/files$/).test(
@@ -52,7 +52,7 @@ define([], function() {
     } else if (instance.path === '/decoders') {
       $state.go('mg-decoders-id', { file: item.file, name: item.name })
     } else if (instance.path === '/lists/files') {
-      $state.go('mg-cdb-id', { name: item.name, path: item.path })
+      $state.go('mg-cdb-id', { name: item.filename, path: item.relative_dirname })
     } else if (instance.path === '/cluster/nodes') {
       $scope.$emit('wazuhShowClusterNode', { node: item })
     }

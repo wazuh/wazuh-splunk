@@ -39,14 +39,27 @@ define(['../module'], function(module) {
               '$state',
               async ($requestService, $state) => {
                 try {
-                  const result = await Promise.all([
-                    $requestService.apiReq('/cluster/status'),
-                    $requestService.apiReq('/cluster/nodes'),
-                    $requestService.apiReq('/cluster/config'),
-                    $requestService.apiReq('/version'),
-                    $requestService.apiReq('/agents', { limit: 1 }),
-                    $requestService.apiReq('/cluster/healthcheck')
-                  ])
+                  const checkCluster = await $requestService.apiReq('/cluster/status');
+                  let result = {};
+                   if(checkCluster['data']['data'].enabled === 'no'){
+                    result = await Promise.all([
+                      checkCluster,
+                      false,
+                      false,
+                      $requestService.apiReq('/'),
+                      $requestService.apiReq('/agents', { limit: 1 }),
+                      false
+                    ])
+                   }
+                   else
+                      result = await Promise.all([
+                       checkCluster,
+                       $requestService.apiReq('/cluster/nodes'),
+                       $requestService.apiReq('/cluster/local/config'),
+                       $requestService.apiReq('/'),
+                       $requestService.apiReq('/agents', { limit: 1 }),
+                       $requestService.apiReq('/cluster/healthcheck')
+                     ])
                   return result
                 } catch (err) {
                   $state.go('settings.api')
@@ -119,7 +132,7 @@ define(['../module'], function(module) {
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService.apiReq(
-                    `/rules/${$stateParams.id}`
+                    `/rules?rule_ids=${$stateParams.id}`
                   )
                   return result
                 } catch (err) {
@@ -182,7 +195,7 @@ define(['../module'], function(module) {
               async ($requestService, $stateParams, $state) => {
                 try {
                   const result = await $requestService.apiReq(
-                    `/decoders/${$stateParams.name}`
+                    `/decoders?decoder_names=${$stateParams.name}`
                   )
                   return result
                 } catch (err) {
@@ -421,9 +434,10 @@ define(['../module'], function(module) {
                   )
                   let promises = []
                   if (
-                    !responseStatus ||
+                    (!responseStatus ||
                     !responseStatus.data ||
-                    !responseStatus.data.error
+                    !responseStatus.data.error) &&
+                    responseStatus.data.data.enabled !== 'no'
                   ) {
                     const nodes = await $requestService.apiReq('/cluster/nodes')
                     if (
@@ -431,11 +445,11 @@ define(['../module'], function(module) {
                       responseStatus.data.data.enabled === 'yes' &&
                       responseStatus.data.data.running === 'yes'
                     ) {
-                      const masterNode = nodes.data.data.items.filter(
+                      const masterNode = nodes.data.data.affected_items.filter(
                         item => item.type === 'master'
                       )[0]
                       promises = [
-                        $requestService.apiReq('/agents/summary'),
+                        $requestService.apiReq('/agents/summary/status'),
                         $requestService.apiReq(
                           `/cluster/${masterNode.name}/status`
                         ),
@@ -476,7 +490,7 @@ define(['../module'], function(module) {
                       ]
                     } else {
                       promises = [
-                        $requestService.apiReq('/agents/summary'),
+                        $requestService.apiReq('/agents/summary/status'),
                         $requestService.apiReq(`/manager/status`),
                         $requestService.apiReq(`/manager/info`),
                         $requestService.apiReq('/rules', {
@@ -492,7 +506,7 @@ define(['../module'], function(module) {
                     }
                   } else {
                     promises = [
-                      $requestService.apiReq('/agents/summary'),
+                      $requestService.apiReq('/agents/summary/status'),
                       $requestService.apiReq(`/manager/status`),
                       $requestService.apiReq(`/manager/info`),
                       $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
@@ -520,7 +534,7 @@ define(['../module'], function(module) {
                   })
 
                   const lastAgent = await $requestService.apiReq(
-                    `/agents/${response.data.data.items[0].id}`,
+                    `/agents?agents_list=${response.data.data.affected_items[0].id}`,
                     {}
                   )
                   return lastAgent

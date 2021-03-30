@@ -27,7 +27,7 @@
       ng-focus='showAutocomplete(true)' ng-blur='showAutocomplete(false)' placeholder='Add filter or search' ng-keyup='!autocompleteEnter && $event.keyCode == 13 ? addTag(true) : addSearchKey($event)' />
     <span ng-show="groupedTagList.length" class='wz-tag-remove-button wz-padding-top-5 remove-filters cursor-pointer' ng-click='removeAll()'><i class="fa fa-times"
         aria-hidden="true"></i>
-      <md-tooltip md-direction="left" class="wz-tooltip">
+      <md-tooltip md-direction="bottom" class="wz-tooltip">
         Remove all filters
       </md-tooltip>
     </span>

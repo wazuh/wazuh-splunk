@@ -19,7 +19,7 @@ define(['../module','Dropzone'], function(app,Dropzone) {
         uploadTitle: '@uploadTitle',
         allowedExtensions: '=allowedExtensions',
         refreshList: '&',
-        path: '@path'
+        resource: '@resource'
       },
       controller($scope,$currentDataService) {
         $scope.noFilesAdded = true
@@ -34,13 +34,14 @@ define(['../module','Dropzone'], function(app,Dropzone) {
         const currentApi = apiId['_key']
 
         $scope.myDropzone = new Dropzone("#myDropzone",{
-          url: `en-us/custom/SplunkAppForWazuh//manager/upload_file?apiId=${currentApi}&path=${$scope.path}`, 
+          url: `en-us/custom/SplunkAppForWazuh/manager/upload_file?apiId=${currentApi}&resource=${$scope.resource}`, 
           autoProcessQueue: false,
           parallelUploads: 5,
           maxFiles: 5,
           previewTemplate: previewTemplate,
           previewsContainer: "#previews",
-          acceptedFiles: $scope.allowedExtensions
+          acceptedFiles: $scope.allowedExtensions,
+          method: 'POST'
         })
         
 
@@ -55,6 +56,7 @@ define(['../module','Dropzone'], function(app,Dropzone) {
               $scope.noFilesAdded = false
             }            
           }
+
           $scope.myDropzone.on("success", function (file, message) {
             message = JSON.parse(message)
             if (file.previewElement) {
@@ -87,10 +89,11 @@ define(['../module','Dropzone'], function(app,Dropzone) {
           $scope.myDropzone.on("error", function (file, jsonResponse) {
             var errorMessage = "Could not upload document: ";
             if (jsonResponse["ValidationMessage"] != null) {
-                errorMessage += jsonResponse["ValidationMessage"];
+                $scope.errorMessage += jsonResponse["ValidationMessage"];
             } else {
-                errorMessage += "unknown error";
+                $scope.errorMessage += "unknown error";
             }
+            
         });
 
         $scope.myDropzone.on("removedfile", function (file) {

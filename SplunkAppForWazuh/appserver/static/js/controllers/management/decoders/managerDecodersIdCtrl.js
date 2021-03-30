@@ -57,11 +57,11 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         } catch (error) {
           this.filters = []
         }
-        this.scope.currentDecoder = this.currentDecoder.data.data.items[0]
+        this.scope.currentDecoder = this.currentDecoder.data.data.affected_items[0]
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
           this.addDetailFilter(name, value)
-        this.scope.isLocal = this.scope.currentDecoder.path === 'etc/decoders'
+        this.scope.isLocal = this.scope.currentDecoder.relative_dirname === 'etc/decoders'
         this.scope.saveDecoderConfig = fileName =>
           this.saveDecoderConfig(fileName)
         this.scope.closeEditingFile = () => this.closeEditingFile()
@@ -95,7 +95,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       try {
         //Refresh decoder info
         const result = await this.requestService.apiReq(
-          `/decoders/${this.scope.currentDecoder.name}`
+          `/decoders?decoder_names=${this.scope.currentDecoder.name}`
         )
         if (result.data.data.totalItems === 0) {
           this.state.go('mg-decoders')
@@ -119,8 +119,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
 
     async editDecoder(fileName) {
       try {
-        const readOnly = !(this.scope.currentDecoder.path === 'etc/decoders')
-        const result = await this.fetchFileContent(fileName, readOnly)
+        const readOnly = !(this.scope.currentDecoder.relative_dirname === 'etc/decoders')
+        const result = await this.fetchFileContent(fileName, this.scope.currentDecoder.relative_dirname, readOnly)
       } catch (error) {}
       return
     }
@@ -129,17 +129,16 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * Fetches file content
      * @param {String} file
      */
-    async fetchFileContent(file, readOnly = false) {
+    async fetchFileContent(file, path, readOnly = false) {
       try {
         this.scope.editingFile = true
         this.scope.readOnly = readOnly
         if (readOnly) {
           if (!file.startsWith('ruleset/decoders')) {
             this.scope.fileName = file
-            file = this.scope.currentDecoder.path + '/' + file
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
               file,
-              null,
+              path,
               null,
               readOnly
             )
@@ -149,7 +148,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
           } else {
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
               file,
-              null,
+              path,
               null,
               readOnly
             )
@@ -159,7 +158,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
           if (file.startsWith('etc/decoders/')) {
             this.scope.fetchedXML = await this.fileEditor.getConfiguration(
               file,
-              null,
+              path,
               null,
               readOnly
             )
@@ -167,7 +166,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
           } else {
             this.scope.fetchedXML = await this.fileEditor.getConfiguration(
               file,
-              'decoders',
+              path,
               null,
               readOnly
             )

@@ -46,7 +46,7 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.reportingService = $reportingService
       this.$scope = $scope
       this.agent = agent
-      this.$scope.currentAgent = this.agent.data.data
+      this.$scope.currentAgent = this.agent.data.data.affected_items[0]
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.state = $state
@@ -64,7 +64,8 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
       this.$scope.isSynchronized =
-        data && data.data && data.data.data && data.data.data.synced
+        data && data.data && data.data.data && data.data.data.affected_items && 
+        data.data.data.affected_items.length && data.data.data.affected_items[0].synced
       this.excludeModulesByOs = {
         linux: [],
         windows: ['audit', 'oscap', 'docker'],
@@ -109,8 +110,13 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
-          ? this.agent.data.data
+          ? this.agent.data.data.affected_items[0]
           : { error: true }
+
+      // Capitalize Status
+      if(this.$scope.agent && this.$scope.agent.status){
+        this.$scope.agent.status = this.$scope.agent.status.charAt(0).toUpperCase() + this.$scope.agent.status.slice(1)
+      }
 
       this.$scope.getAgentStatusClass = agentStatus =>
         agentStatus === 'Active' ? 'teal' : 'red'
@@ -163,8 +169,8 @@ define(['../../module', '../../../utils/config-handler'], function(
      */
     async goGroups(group) {
       try {
-        const groupInfo = await this.apiReq.apiReq(`/agents/groups/`)
-        const groupData = groupInfo.data.data.items.filter(
+        const groupInfo = await this.apiReq.apiReq(`/groups/`)
+        const groupData = groupInfo.data.data.affected_items.filter(
           item => item.name === group
         )
         if (
@@ -273,7 +279,7 @@ define(['../../module', '../../../utils/config-handler'], function(
         const sync = await this.apiReq.apiReq(
           `/agents/${this.$scope.agent.id}/group/is_sync`
         )
-        return sync.data.data.synced
+        return sync.data.data.affected_items[0].synced
       } catch (error) {
         return false
       }
@@ -286,10 +292,10 @@ define(['../../module', '../../../utils/config-handler'], function(
       try {
         this.$scope.agentPlatform = 'other'
         let agentPlatformLinux = (
-          (((this.agent || {}).data || {}).data || {}).os || {}
+          ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {}).os || {}
         ).uname
         let agentPlatformOther = (
-          (((this.agent || {}).data || {}).data || {}).os || {}
+          ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {}).os || {}
         ).platform
         if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.$scope.agentPlatform = 'linux'

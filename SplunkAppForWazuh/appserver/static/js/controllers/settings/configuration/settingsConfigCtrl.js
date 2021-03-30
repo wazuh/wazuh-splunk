@@ -44,9 +44,9 @@ define(['../../module'], function(controllers) {
       try {
         const description = {
           'log.level':
-            'Set the app loggin level, allowed values are info and debug.',
+            'Set the app logging level, allowed values are info and debug.',
           timeout:
-            'Define the maximun time in seconds the app will wait for an API reponse when making request to it.'
+            'Define the maximum time in seconds the app will wait for an API response when making a request to it.'
         }
         return description[key]
       } catch (error) {
