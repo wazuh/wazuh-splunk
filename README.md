@@ -80,7 +80,7 @@
 |      8.0.2     |       3.13.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.0_8.0.2.tar.gz> |
 |      8.0.4     |       3.13.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.1_8.0.4.tar.gz> |
 |      8.0.4     |       3.13.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.2_8.0.4.tar.gz> |
-|      8.1.2     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.1.2.tar.gz>  |
+|      8.0.4 to 8.1.2     |       4.1.4       | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-4.1.4_8.1.2.tar.gz>  |
 
 
 ## Upgrade
