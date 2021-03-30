@@ -93,7 +93,7 @@
               ng-if="!isArray(value)">
               <span flex="20">{{key}}</span>
               <span class="wz-text-right color-grey" ng-if="key !== 'regex' && key !== 'order'">{{value}}</span>
-              <span class="wz-text-right color-grey" ng-if="key == 'regex'" ng-bind-html="colorRegex(value)"></span>
+              <span class="wz-text-right color-grey" ng-if="key == 'regex'" ng-bind-html="colorRegex(value.pattern || value)"></span>
               <span class="wz-text-right color-grey" ng-if="key == 'order'" ng-bind-html="colorOrder(value)"></span>
 
             </div>
