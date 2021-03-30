@@ -671,7 +671,7 @@ define([
                 <wazuh-table
                   flex
                   path="'/syscheck/${$scope.agentId}'"
-                  implicit-filter="[{name:'type',value:'registry_value'},{name:'file',value:'${item.file}'}]"
+                  implicit-filter="[{name:'type',value:'registry_value'},{name:'file',value:'${item.file.replaceAll('\\','\\\\')}'}]"
                   row-sizes="[6,6,6]"
                   extra-limit="true"
                   keys="['date','value.name','value.type','sha1']"
