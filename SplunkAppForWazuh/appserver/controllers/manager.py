@@ -406,7 +406,7 @@ class manager(controllers.BaseController):
             result = jsonbak.dumps(output)             
         except Exception as e:
             self.logger.error("Error when checking API connection: %s" % (e))
-            raise e
+            return jsonbak.dumps({"status": "500", "error": "Error when checking API connection: %s" % (e)})
         return result
     
     def get_cluster_info(self, opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster):
