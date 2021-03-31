@@ -9,6 +9,22 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Support for Wazuh v4.1.4
 - Support for Splunk v8.1.2
 
+### Changed
+
+**Adapt for Wazuh 4.0**
+- Support Wazuh API JWT authentication and authorization
+- Adapt for deprecated Wazuh API endpoints in 4.0 - #950
+- Adapt for Manager endpoints
+- Several cosmetic fixes
+
+**Adapt for Wazuh 4.1**
+- Adapt for new Manager and Cluster Configuration endpoints
+- Adapt for new Ruleset files endpoints
+- Adapt for new `syscheck` registry types
+- Added registry values for registry key inventory in FIM
+- Fixed regex field in Decoder detail
+- Fixed search bar on Agents table
+
 ## Wazuh v3.13.2 - Splunk Enterprise v8.0.4.1 - Revision 67
 
 ### Added
