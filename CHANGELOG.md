@@ -2,6 +2,12 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
+
+### Fixed
+
+- Fixed the dynamic columns width for agents PDF report [#1042](https://github.com/wazuh/wazuh-splunk/pull/1042).
+
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
 
 ### Added
