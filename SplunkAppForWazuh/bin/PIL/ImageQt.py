@@ -141,10 +141,10 @@ def _toqclass_helper(im):
     # handle filename, if given instead of image name
     if hasattr(im, "toUtf8"):
         # FIXME - is this really the best way to do this?
-        if py3:
-            im = str(im.toUtf8(), "utf-8")
-        else:
-            im = unicode(im.toUtf8(), "utf-8")  # noqa: F821
+        # if py3:# REMOVE PYTHON2 COMPAT
+        im = str(im.toUtf8(), "utf-8")
+        # else:
+        #     im = unicode(im.toUtf8(), "utf-8")  # noqa: F821
     if isPath(im):
         im = Image.open(im)
 

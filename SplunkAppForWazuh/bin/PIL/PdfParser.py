@@ -14,17 +14,17 @@ try:
 except ImportError:
     UserDict = collections.UserDict  # Python 3.x
 
+# REMOVE PYTHON2 COMPAT
+# if py3:  # Python 3.x
 
-if py3:  # Python 3.x
-
-    def make_bytes(s):
-        return s.encode("us-ascii")
+def make_bytes(s):
+    return s.encode("us-ascii")
 
 
-else:  # Python 2.x
+# else:  # Python 2.x
 
-    def make_bytes(s):  # pragma: no cover
-        return s  # pragma: no cover
+#     def make_bytes(s):  # pragma: no cover
+#         return s  # pragma: no cover
 
 
 # see 7.9.2.2 Text String Type on page 86 and D.3 PDFDocEncoding Character Set
@@ -81,10 +81,11 @@ PDFDocEncoding = {
 def decode_text(b):
     if b[: len(codecs.BOM_UTF16_BE)] == codecs.BOM_UTF16_BE:
         return b[len(codecs.BOM_UTF16_BE) :].decode("utf_16_be")
-    elif py3:  # Python 3.x
+    else
+    # elif py3:  # Python 3.x
         return "".join(PDFDocEncoding.get(byte, chr(byte)) for byte in b)
-    else:  # Python 2.x
-        return u"".join(PDFDocEncoding.get(ord(byte), byte) for byte in b)
+    # else:  # Python 2.x # REMOVE PYTHON2 COMPAT
+    #     return u"".join(PDFDocEncoding.get(ord(byte), byte) for byte in b)
 
 
 class PdfFormatError(RuntimeError):
@@ -252,16 +253,16 @@ class PdfName:
     def __bytes__(self):
         result = bytearray(b"/")
         for b in self.name:
-            if py3:  # Python 3.x
-                if b in self.allowed_chars:
-                    result.append(b)
-                else:
-                    result.extend(make_bytes("#%02X" % b))
-            else:  # Python 2.x
-                if ord(b) in self.allowed_chars:
-                    result.append(b)
-                else:
-                    result.extend(b"#%02X" % ord(b))
+            # if py3:  # Python 3.x
+            if b in self.allowed_chars:
+                result.append(b)
+            else:
+                result.extend(make_bytes("#%02X" % b))
+            # else:  # Python 2.x # REMOVE PYTHON2 COMPAT
+            #     if ord(b) in self.allowed_chars:
+            #         result.append(b)
+            #     else:
+            #         result.extend(b"#%02X" % ord(b))
         return bytes(result)
 
     __str__ = __bytes__
@@ -324,23 +325,23 @@ class PdfDict(UserDict):
         out.extend(b"\n>>")
         return bytes(out)
 
-    if not py3:
-        __str__ = __bytes__
+    # if not py3: # REMOVE PYTHON2 COMPAT
+    #     __str__ = __bytes__
 
 
 class PdfBinary:
     def __init__(self, data):
         self.data = data
+# REMOVE PYTHON2 COMPAT
+    # if py3:  # Python 3.x
 
-    if py3:  # Python 3.x
+    def __bytes__(self):
+        return make_bytes("<%s>" % "".join("%02X" % b for b in self.data))
 
-        def __bytes__(self):
-            return make_bytes("<%s>" % "".join("%02X" % b for b in self.data))
+    # else:  # Python 2.x
 
-    else:  # Python 2.x
-
-        def __str__(self):
-            return "<%s>" % "".join("%02X" % ord(b) for b in self.data)
+    #     def __str__(self):
+    #         return "<%s>" % "".join("%02X" % ord(b) for b in self.data)
 
 
 class PdfStream:

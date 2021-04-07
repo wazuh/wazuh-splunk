@@ -49,12 +49,12 @@ except ImportError:
     builtins = __builtin__
 
 
-try:
+# try:
     # Python 3
-    from collections.abc import Callable, MutableMapping
-except ImportError:
-    # Python 2.7
-    from collections import Callable, MutableMapping
+from collections.abc import Callable, MutableMapping
+# except ImportError:# REMOVE PYTHON2 COMPAT
+#     # Python 2.7
+#     from collections import Callable, MutableMapping
 
 
 # Silence warning
@@ -624,10 +624,10 @@ class Image(object):
         # object is gone.
         self.im = deferred_error(ValueError("Operation on closed image"))
 
-    if sys.version_info.major >= 3:
+    # if sys.version_info.major >= 3:# REMOVE PYTHON2 COMPAT
 
-        def __del__(self):
-            self.__exit__()
+    def __del__(self):
+        self.__exit__()
 
     def _copy(self):
         self.load()
@@ -1350,10 +1350,10 @@ class Image(object):
 
         self.load()
         try:
-            if py3:
-                return list(self.im.getpalette())
-            else:
-                return [i8(c) for c in self.im.getpalette()]
+            # if py3:# REMOVE PYTHON2 COMPAT
+            return list(self.im.getpalette())
+            # else:
+            #     return [i8(c) for c in self.im.getpalette()]
         except ValueError:
             return None  # no palette
 
@@ -1704,10 +1704,10 @@ class Image(object):
             palette = ImagePalette.raw(data.rawmode, data.palette)
         else:
             if not isinstance(data, bytes):
-                if py3:
-                    data = bytes(data)
-                else:
-                    data = "".join(chr(x) for x in data)
+                # if py3:# REMOVE PYTHON2 COMPAT
+                data = bytes(data)
+                # else:
+                #     data = "".join(chr(x) for x in data)
             palette = ImagePalette.raw(rawmode, data)
         self.mode = "PA" if "A" in self.mode else "P"
         self.palette = palette
@@ -3321,10 +3321,10 @@ class Exif(MutableMapping):
     def __contains__(self, tag):
         return tag in self._data or (self._info is not None and tag in self._info)
 
-    if not py3:
+    # if not py3:# REMOVE PYTHON2 COMPAT
 
-        def has_key(self, tag):
-            return tag in self
+    #     def has_key(self, tag):
+    #         return tag in self
 
     def __setitem__(self, tag, value):
         if self._info is not None and tag in self._info:

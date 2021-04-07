@@ -531,18 +531,17 @@ class ImageFileDirectory_v2(MutableMapping):
     def __contains__(self, tag):
         return tag in self._tags_v2 or tag in self._tagdata
 
-    if not py3:
-
-        def has_key(self, tag):
-            return tag in self
+    # if not py3: # REMOVE PYTHON2 COMPAT
+    #     def has_key(self, tag):
+    #         return tag in self
 
     def __setitem__(self, tag, value):
         self._setitem(tag, value, self.legacy_api)
 
     def _setitem(self, tag, value, legacy_api):
         basetypes = (Number, bytes, str)
-        if not py3:
-            basetypes += (unicode,)  # noqa: F821
+        # if not py3: # REMOVE PYTHON2 COMPAT
+        #     basetypes += (unicode,)  # noqa: F821
 
         info = TiffTags.lookup(tag)
         values = [value] if isinstance(value, basetypes) else value
@@ -689,8 +688,8 @@ class ImageFileDirectory_v2(MutableMapping):
     @_register_writer(2)
     def write_string(self, value):
         # remerge of https://github.com/python-pillow/Pillow/pull/1416
-        if sys.version_info.major == 2:
-            value = value.decode("ascii", "replace")
+        # if sys.version_info.major == 2:# REMOVE PYTHON2 COMPAT
+        #     value = value.decode("ascii", "replace")
         return b"" + value.encode("ascii", "replace") + b"\0"
 
     @_register_loader(5, 8)

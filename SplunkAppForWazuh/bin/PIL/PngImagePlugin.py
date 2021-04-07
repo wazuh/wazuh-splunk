@@ -450,9 +450,9 @@ class PngStream(ChunkStream):
             k = s
             v = b""
         if k:
-            if py3:
-                k = k.decode("latin-1", "strict")
-                v = v.decode("latin-1", "replace")
+            # if py3:# REMOVE PYTHON2 COMPAT
+            k = k.decode("latin-1", "strict")
+            v = v.decode("latin-1", "replace")
 
             self.im_info[k] = self.im_text[k] = v
             self.check_text_memory(len(v))
@@ -487,9 +487,9 @@ class PngStream(ChunkStream):
             v = b""
 
         if k:
-            if py3:
-                k = k.decode("latin-1", "strict")
-                v = v.decode("latin-1", "replace")
+            # if py3: # REMOVE PYTHON2 COMPAT
+            k = k.decode("latin-1", "strict")
+            v = v.decode("latin-1", "replace")
 
             self.im_info[k] = self.im_text[k] = v
             self.check_text_memory(len(v))

@@ -64,10 +64,10 @@ class TarIO(ContainerIO.ContainerIO):
     def __exit__(self, *args):
         self.close()
 
-    if sys.version_info.major >= 3:
+    # if sys.version_info.major >= 3:# REMOVE PYTHON2 COMPAT
 
-        def __del__(self):
-            self.close()
+    def __del__(self):
+        self.close()
 
     def close(self):
         self.fh.close()

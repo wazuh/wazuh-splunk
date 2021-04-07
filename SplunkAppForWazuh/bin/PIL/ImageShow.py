@@ -21,10 +21,10 @@ import tempfile
 
 from PIL import Image
 
-if sys.version_info.major >= 3:
-    from shlex import quote
-else:
-    from pipes import quote
+# if sys.version_info.major >= 3:
+from shlex import quote
+# else:# REMOVE PYTHON2 COMPAT
+#     from pipes import quote
 
 _viewers = []
 
