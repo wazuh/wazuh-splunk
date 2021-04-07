@@ -171,7 +171,6 @@ define(['../module'], function (module) {
         }
         return result
       } catch (error) {
-        console.error(error);
         return Promise.reject(error)
       }
     }
