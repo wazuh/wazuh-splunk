@@ -159,7 +159,6 @@ define(['../module'], function (module) {
         if (
           !result ||
           !result.data ||
-          // !result.data.data ||
           result.data.error !== 0
         ) {
           if (result.data.error === 1905) {
