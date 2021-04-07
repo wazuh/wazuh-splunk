@@ -4,6 +4,10 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
 
+### Fixed
+- Apply Wazuh tools name changing to the wazuh-splunk [#944](https://github.com/wazuh/wazuh-splunk/issues/944)
+- Apply Wazuh daemons name changing to wazuh-splunk [#945](https://github.com/wazuh/wazuh-splunk/issues/945)
+
 ### Added
 
 - Support for Wazuh v4.1.4
