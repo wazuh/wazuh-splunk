@@ -3865,7 +3865,7 @@
         {
           "name": "/groups/:group_id/configuration",
           "documentation": "https://documentation.wazuh.com/current/user-manual/api/reference.html#operation/api.controllers.agents_controller.get_group_config",
-          "description": "Return the group configuration defined in the `agent.conf` file",
+          "description": "Return the group configuration defined in the `shared.conf` file",
           "summary": "Get group configuration",
           "tags": [
             "Groups"
