@@ -68,6 +68,7 @@ define(['./module'], function(module) {
               $notificationService.showErrorToast(err)
             }
             $state.go('settings.api')
+            $rootScope.$broadcast('changeSettingsTab', { tabName: 'api' })
           }
         }
       }
@@ -142,9 +143,15 @@ define(['./module'], function(module) {
         } else if (to.startsWith('settings')) {
           $rootScope.$broadcast('stateChanged', 'settings')
         }
+        // This selects "api" tab when there some state transition error.
+        // It solves that another setting tab could appear as selected when show the view of "api" tab.
+        if (to === 'settings.api') {
+          $rootScope.$broadcast('changeSettingsTab', { tabName: 'api' })
+        }
       })
 
       $transitions.onError({}, async trans => {
+        $rootScope.$broadcast('loadingMain', { status: false })
         const err = trans.error()
         if (
           trans.to().name != 'settings.api' &&

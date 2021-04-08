@@ -6,6 +6,10 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ### Fixed
 
+- Apply Wazuh tools name changing to the wazuh-splunk [#944](https://github.com/wazuh/wazuh-splunk/issues/944)
+- Apply Wazuh daemons name changing to wazuh-splunk [#945](https://github.com/wazuh/wazuh-splunk/issues/945)
+- Fixed the dynamic columns width for agents PDF report [#1042](https://github.com/wazuh/wazuh-splunk/pull/1042)
+- Fixed blocked app when there isn't connection with the API [#1045](https://github.com/wazuh/wazuh-splunk/pull/1045)
 - Fixed success message with error toast saving agent configuration file [#1046](https://github.com/wazuh/wazuh-splunk/pull/1046)
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
