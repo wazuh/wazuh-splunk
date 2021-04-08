@@ -12,8 +12,7 @@ import pickle
 
 from urllib.request import urlopen
 
-try:
-    from io import BytesIO
+from io import BytesIO
 
 
 try:
