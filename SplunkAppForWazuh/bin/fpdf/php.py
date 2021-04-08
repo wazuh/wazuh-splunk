@@ -27,7 +27,6 @@ def UTF8ToUTF16BE(instr, setbom=True):
         instr = instr.decode('UTF-8')
     outstr += instr.encode('UTF-16BE')
     # convert bytes back to fake unicode string until PEP461-like is implemented
-    # if PY3K:# REMOVE PYTHON2 COMPAT
     outstr = outstr.decode("latin1")
     return outstr
 

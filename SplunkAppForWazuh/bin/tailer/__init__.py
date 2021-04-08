@@ -2,8 +2,6 @@ import re
 import sys
 import time
 
-# if sys.version_info < (3,):# REMOVE PYTHON2 COMPAT
-#     range = xrange
 
 class Tailer(object):
     """\

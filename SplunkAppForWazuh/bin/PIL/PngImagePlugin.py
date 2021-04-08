@@ -450,7 +450,6 @@ class PngStream(ChunkStream):
             k = s
             v = b""
         if k:
-            # if py3:# REMOVE PYTHON2 COMPAT
             k = k.decode("latin-1", "strict")
             v = v.decode("latin-1", "replace")
 
@@ -487,7 +486,6 @@ class PngStream(ChunkStream):
             v = b""
 
         if k:
-            # if py3: # REMOVE PYTHON2 COMPAT
             k = k.decode("latin-1", "strict")
             v = v.decode("latin-1", "replace")
 

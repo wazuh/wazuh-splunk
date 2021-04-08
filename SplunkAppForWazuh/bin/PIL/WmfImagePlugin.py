@@ -31,7 +31,6 @@ __version__ = "0.2"
 
 _handler = None
 
-# if py3: # REMOVE PYTHON2 COMPAT
 long = int
 
 

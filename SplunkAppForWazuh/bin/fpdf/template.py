@@ -43,9 +43,7 @@ class Template:
             'align','text','priority', 'multiline')
         self.elements = []
         self.pg_no = 0
-        # if not PY3K:# REMOVE PYTHON2 COMPAT
-        #     f = open(infile, 'rb')
-        # else:
+        
         f = open(infile)
         with f:
             for row in csv.reader(f, delimiter=delimiter):
