@@ -35,7 +35,7 @@ define(['../module'], function(module) {
     let showErrorToast = text => showSimpleToast(text, 2)
     let showWarningToast = text => showSimpleToast(text, 3)
 
-    let showSimpleToast = (text, type) => {
+    let showSimpleToast = (text, type) => {   
       if (!wazuhIsNotReady(text)) {
         let pinTo = getToastPosition()
         if (type === 1) {
