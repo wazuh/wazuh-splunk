@@ -2,6 +2,12 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
+
+### Fixed
+
+- Fixed success message with error toast saving agent configuration file [#1046](https://github.com/wazuh/wazuh-splunk/pull/1046)
+
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
 
 ### Added
