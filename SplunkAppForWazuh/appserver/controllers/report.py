@@ -1069,14 +1069,11 @@ class report(controllers.BaseController):
             width = width + 2
             total_width = total_width + width
             fields[key] = width
-        #Calculate the rest of the width to fill the row
-        diff = 0
-        if total_width < 190:
-            diff = 190 - total_width
-            keys_num = len(fields.keys())
-            diff = diff / keys_num
+        #Calculate the proportional width of each column
+        diff = 190 / total_width
+        keys_num = len(fields.keys())
         for key in fields.keys():
-            fields[key] = fields[key] + diff
+            fields[key] = fields[key] * diff
         #Set color and print th
         self.setBlueHeaderStyle(pdf)
         for key in sorted_fields:

@@ -406,7 +406,7 @@ class manager(controllers.BaseController):
             result = jsonbak.dumps(output)             
         except Exception as e:
             self.logger.error("Error when checking API connection: %s" % (e))
-            raise e
+            return jsonbak.dumps({"status": "500", "error": "Error when checking API connection: %s" % (e)})
         return result
     
     def get_cluster_info(self, opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster):
@@ -509,7 +509,7 @@ class manager(controllers.BaseController):
                     verify=verify).json()
             if not daemons_status['error']:
                 d = daemons_status['data']['affected_items'][0]
-                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                daemons = {"execd": d['wazuh-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
                 if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
