@@ -71,6 +71,10 @@
   background-color: #396e3e !important;
 }
 
+a.btn-primary:hover {
+  color: #fff !important;
+}
+
 .btn-ruleset {
   width: auto !important;
   height: 30px !important;
