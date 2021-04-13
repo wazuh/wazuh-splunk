@@ -8,6 +8,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Added forwarder connection error toast in search handler [#2021](https://github.com/wazuh/wazuh-splunk/pull/1021)
 - Changed query to show alert evolution on discover [#1024](https://github.com/wazuh/wazuh-splunk/pull/1024)
+- Added link to agent view in Group Agents table [#1066](https://github.com/wazuh/wazuh-splunk/pull/1066)
 
 ### Fixed
 
