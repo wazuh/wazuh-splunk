@@ -168,7 +168,7 @@
             <div ng-if='!addingAgents'>
               <!-- Group agents table -->
               <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='agents' && currentGroup" class="md-padding">
-                <wazuh-table admin-mode='adminMode' flex path="'/agents'" keys="['id','name','ip','status','os.name','os.version','version']"
+                <wazuh-table admin-mode='adminMode' flex path="'/groups/' + currentGroup.name + '/agents'" keys="['id','name','ip','status','os.name','os.version','version']"
                   allow-click="true" row-sizes="[20,15,10]" custom-columns="true" empty-results="'No agents were added to this group.'" />
               </div>
               <!-- End Group agents table -->
