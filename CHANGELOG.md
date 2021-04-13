@@ -20,6 +20,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed Python3 compatibility, deleted deprecated Python2 [#1052](https://github.com/wazuh/wazuh-splunk/pull/1052)
 - Applied latest Wazuh API changes to create group request [#1058](https://github.com/wazuh/wazuh-splunk/pull/1058)
 - Minor style fixes [#1059](https://github.com/wazuh/wazuh-splunk/pull/1059)
+- Added new error handle to Alerts Configuration views [#1063](https://github.com/wazuh/wazuh-splunk/pull/1063)
 
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
