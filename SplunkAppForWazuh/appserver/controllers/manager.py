@@ -359,7 +359,7 @@ class manager(controllers.BaseController):
             try:
                 self.check_wazuh_version(kwargs)
             except Exception as e:
-                error = {"status": 400, "error": str(e)}
+                error = {"status": 400, "error": str(e), "message": "Cannot connect to the API"}
                 return jsonbak.dumps(error)
             daemons_ready = self.check_daemons(url, auth, verify, opt_cluster, kwargs)
             # Pass the cluster status instead of always False
