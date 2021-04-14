@@ -57,14 +57,22 @@
   margin-right: 5px !important;
 }
 
-.addGroupInput {
-  max-height: 20px !important;
+input.addGroupInput {
+  height: 30px;
   max-width: 181px !important;
   padding-right: 0 !important;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-.addGroupBtn {
-  background-color: #396e3e !important
+input.addGroupInput:focus {
+  border-left: 1px solid transparent !important;
+  border-top: 1px solid transparent !important;
+}
+
+button.addGroupBtn {
+  background-color: #396e3e !important;
+  box-shadow: 0 2px 2px -1px rgb(0 0 0 / 10%);
 }
 
 .min-height-300 {
