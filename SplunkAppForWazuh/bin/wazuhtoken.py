@@ -49,4 +49,6 @@ class wazuhtoken():
                 return self.cache.get('token')
         except Exception as e:
             self.logger.error("Error when get auth Wazuh token: %s" % (e))
+            error = {"status": 500, "error": "Error when get auth Wazuh token: "+str(e)}
+            return jsonbak.dumps(error)
         raise e
