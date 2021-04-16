@@ -92,9 +92,8 @@ define(['../module', 'splunkjs/mvc'], function(module) {
           if (this.busy) return { items: this.items, time: 0 }
           this.busy = true
           const start = new Date()
-
-          // If offset is not given, it means we need to start again
-          if (!options.offset) this.items = []
+          
+          this.items = []
           const offset = options.offset || 0
           const limit = options.limit || 500
           const parameters = { limit, offset }
@@ -107,26 +106,26 @@ define(['../module', 'splunkjs/mvc'], function(module) {
             this.busy = false
             return Promise.reject(firstPage.data.message)
           } else {
-            this.items = this.items.filter(item => !!item)
+            // this.items = this.items.filter(item => !!item)
             this.items.push(...firstPage.data.data.affected_items)
 
-            const totalItems = firstPage.data.data.totalItems
+            const totalItems = firstPage.data.data.totalItems !== undefined ? firstPage.data.data.totalItems : firstPage.data.data.total_affected_items
 
-            const remaining =
-              this.items.length === totalItems
-                ? 0
-                : totalItems - this.items.length
+            // const remaining =
+            //   this.items.length === totalItems
+            //     ? 0
+            //     : totalItems - this.items.length
 
             // Ignore manager as an agent, once the team solves this issue, review this line
             if (this.path === '/agents')
               this.items = this.items.filter(item => item.id !== '000')
 
-            if (remaining > 0) this.items.push(...Array(remaining).fill(null))
+            // if (remaining > 0) this.items.push(...Array(remaining).fill(null))
 
             const end = new Date()
             const elapsed = (end - start) / 1000
             this.busy = false
-            return { items: this.items, time: elapsed }
+            return { totalItems, items: this.items, time: elapsed }
           }
         } catch (error) {
           this.busy = false

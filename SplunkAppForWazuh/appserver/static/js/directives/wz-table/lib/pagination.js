@@ -12,36 +12,17 @@
 define([], function() {
   'use strict'
   return {
-    nextPage: async (currentPage, $scope, errorHandler, fetch, last) => {
+    nextPage: async ($scope, errorHandler, fetch) => {
       try {
         $scope.error = false
-        if (
-          !currentPage &&
-          currentPage !== 0 &&
-          $scope.currentPage < $scope.pagedItems.length - 1
-        ) {
-          $scope.currentPage++
-        }
-        if (
-          ($scope.pagedItems[currentPage || $scope.currentPage] || []).includes(
-            null
-          )
-        ) {
-          const copy = $scope.currentPage
-          $scope.wazuhTableLoading = true
-          let currentNonNull = $scope.items.filter(item => !!item)
-          if (!last) {
-            await fetch({ offset: currentNonNull.length })
-          } else {
-            while (currentNonNull.length < $scope.items.length) {
-              await fetch({ offset: currentNonNull.length })
-              currentNonNull = $scope.items.filter(item => !!item)
-            }
-          }
-          $scope.wazuhTableLoading = false
-          $scope.currentPage = copy
-          $scope.$applyAsync()
-        }
+               
+        $scope.wazuhTableLoading = true
+        const offset = $scope.itemsPerPage * $scope.currentPage;
+
+        await fetch({ offset, limit: $scope.itemsPerPage })
+        $scope.wazuhTableLoading = false
+        $scope.$applyAsync()
+
       } catch (error) {
         $scope.wazuhTableLoading = false
         $scope.error = `Error paginating table - ${error.message || error}.`
@@ -64,20 +45,6 @@ define([], function() {
       return ret
     },
 
-    groupToPages: $scope => {
-      $scope.pagedItems = []
-      for (let i = 0; i < $scope.filteredItems.length; i++) {
-        if (i % $scope.itemsPerPage === 0) {
-          $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [
-            $scope.filteredItems[i]
-          ]
-        } else {
-          $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push(
-            $scope.filteredItems[i]
-          )
-        }
-      }
-    },
 
     prevPage: $scope => {
       if ($scope.currentPage > 0) {
@@ -85,11 +52,5 @@ define([], function() {
       }
     },
 
-    searchTable: ($scope, items) => {
-      $scope.filteredItems = items
-      $scope.currentPage = 0
-      // now group by pages
-      $scope.groupToPages()
-    }
   }
 })

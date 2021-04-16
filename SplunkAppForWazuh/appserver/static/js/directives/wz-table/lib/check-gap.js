@@ -17,7 +17,7 @@ define([], function() {
    * @param {Array} items
    */
   return function checkGap($scope, items) {
-    const gap = items.length / $scope.itemsPerPage
+    const gap = $scope.totalItems / $scope.itemsPerPage
     const gapInteger = parseInt(gap)
     $scope.gap = gap - gapInteger > 0 ? gapInteger + 1 : gapInteger
     if ($scope.gap > 5) $scope.gap = 5

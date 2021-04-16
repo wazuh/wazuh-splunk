@@ -231,13 +231,12 @@ define([
                 $scope.emptyResults || 'Empty results for this table.'
             }
             const result = await instance.fetch(options)
-            items = result.items
             $scope.time = result.time
-            $scope.totalItems = items.length
-            $scope.items = items
-            checkGap($scope, items)
-            $scope.searchTable()
-            $scope.$emit('wazuhFetched', { items })
+            $scope.totalItems = result.totalItems
+            $scope.items = result.items
+            checkGap($scope, $scope.items)
+            // $scope.searchTable()
+            $scope.$emit('wazuhFetched', { items:$scope.items })
             return
           } catch (error) {
             if (
@@ -392,7 +391,7 @@ define([
         const init = async () => {
           try {
             $scope.error = false
-            await fetch()
+            await fetch({limit: $scope.itemsPerPage})
             //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
@@ -417,30 +416,28 @@ define([
         $scope.itemsPerPage = $scope.rowsPerPage || 10
         $scope.pagedItems = []
         $scope.currentPage = 0
-        let items = []
         $scope.gap = 0
-        $scope.searchTable = () => pagination.searchTable($scope, items)
-        $scope.groupToPages = () => pagination.groupToPages($scope)
         $scope.range = (size, start, end) =>
           pagination.range(size, start, end, $scope.gap)
-        $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async (currentPage, last) =>
+        // $scope.prevPage = () => pagination.prevPage($scope)
+        $scope.nextPage = async ( last) =>
           pagination.nextPage(
-            currentPage,
             $scope,
             $notificationService,
-            fetch,
-            last
+            fetch
           )
-        $scope.setPage = function(page = false, last = false, first = false) {
-          $scope.currentPage = page || this.n
-          if (!first) {
-            $scope.nextPage(this.n, last)
-          }
+        $scope.setPage = function(page = false) {
+          $scope.currentPage = typeof page == 'number'? page : this.n
+          $scope.nextPage($scope.currentPage)
         }
-        $scope.firstPage = () => {
-          $scope.setPage(1, false, true)
-          $scope.prevPage()
+        $scope.getFirstPage = () => {
+          $scope.setPage(0)
+          // $scope.prevPage()
+        }
+        $scope.getLastPage = () => {
+          const lastPage = Math.floor($scope.totalItems/$scope.itemsPerPage)
+          $scope.setPage(lastPage)
+          // $scope.prevPage()
         }
 
         /**
