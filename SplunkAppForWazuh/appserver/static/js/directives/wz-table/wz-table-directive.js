@@ -221,7 +221,7 @@ define([
          * Fetchs data from API
          * @param {Object} options
          */
-        const fetch = async (options = {}) => {
+        const fetch = async (options = { offset:0, limit: $scope.itemsPerPage }) => {
           try {
             if ((instance.filters || []).length) {
               $scope.customEmptyResults =
@@ -233,9 +233,9 @@ define([
             const result = await instance.fetch(options)
             $scope.time = result.time
             $scope.totalItems = result.totalItems
+            $scope.totalPages = Math.floor($scope.totalItems/$scope.itemsPerPage)
             $scope.items = result.items
             checkGap($scope, $scope.items)
-            // $scope.searchTable()
             $scope.$emit('wazuhFetched', { items:$scope.items })
             return
           } catch (error) {
@@ -385,13 +385,37 @@ define([
             $dateDiffService
           )
 
+        
+        /**
+         * Pagination variables and functions
+         */
+        $scope.itemsPerPage = $scope.rowsPerPage || 10
+        $scope.pagedItems = []
+        $scope.currentPage = 0
+        $scope.gap = 0
+        
+        $scope.prevPage = async() => pagination.prevPage($scope, $notificationService, fetch)
+        $scope.nextPage = async () => pagination.nextPage($scope, $notificationService, fetch)
+        $scope.setPage = function(page = false) {
+          $scope.currentPage = typeof page == 'number'? page : this.n
+          pagination.setPage($scope, $notificationService, fetch)
+        }
+        $scope.getFirstPage = () => {
+          $scope.setPage(0)
+        }
+        $scope.getLastPage = () => {
+          const lastPage = $scope.totalPages
+          $scope.setPage(lastPage)
+        }
+
         /**
          * Initializes table
          */
-        const init = async () => {
+         const init = async () => {
           try {
             $scope.error = false
-            await fetch({limit: $scope.itemsPerPage})
+            // await fetch({limit: $scope.itemsPerPage})
+            $scope.setPage(0)
             //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
@@ -408,36 +432,6 @@ define([
             )
           }
           return
-        }
-
-        /**
-         * Pagination variables and functions
-         */
-        $scope.itemsPerPage = $scope.rowsPerPage || 10
-        $scope.pagedItems = []
-        $scope.currentPage = 0
-        $scope.gap = 0
-        $scope.range = (size, start, end) =>
-          pagination.range(size, start, end, $scope.gap)
-        // $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async ( last) =>
-          pagination.nextPage(
-            $scope,
-            $notificationService,
-            fetch
-          )
-        $scope.setPage = function(page = false) {
-          $scope.currentPage = typeof page == 'number'? page : this.n
-          $scope.nextPage($scope.currentPage)
-        }
-        $scope.getFirstPage = () => {
-          $scope.setPage(0)
-          // $scope.prevPage()
-        }
-        $scope.getLastPage = () => {
-          const lastPage = Math.floor($scope.totalItems/$scope.itemsPerPage)
-          $scope.setPage(lastPage)
-          // $scope.prevPage()
         }
 
         /**

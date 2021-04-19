@@ -12,7 +12,7 @@
 define([], function() {
   'use strict'
   return {
-    nextPage: async ($scope, errorHandler, fetch) => {
+    setPage: async function($scope, errorHandler, fetch) {
       try {
         $scope.error = false
                
@@ -21,6 +21,7 @@ define([], function() {
 
         await fetch({ offset, limit: $scope.itemsPerPage })
         $scope.wazuhTableLoading = false
+        $scope.range = this.range($scope.totalPages, $scope.currentPage, $scope.currentPage + $scope.gap, $scope.gap)
         $scope.$applyAsync()
 
       } catch (error) {
@@ -30,7 +31,12 @@ define([], function() {
           `Error paginating table due to ${error.message || error}`
         )
       }
-      return
+    },
+    nextPage: async function($scope, errorHandler, fetch) {
+      if ($scope.currentPage < $scope.totalPages) {
+        $scope.currentPage++
+      }
+      await this.setPage($scope, errorHandler, fetch)
     },
 
     range: (size, start, end, gap) => {
@@ -39,17 +45,18 @@ define([], function() {
         end = size
         start = size - gap
       }
-      for (let i = start; i < end; i++) {
+      for (let i = start; i <= end; i++) {
         ret.push(i)
       }
       return ret
     },
 
 
-    prevPage: $scope => {
+    prevPage: async function($scope, errorHandler, fetch) {
       if ($scope.currentPage > 0) {
         $scope.currentPage--
       }
+      await this.setPage($scope, errorHandler, fetch)
     },
 
   }
