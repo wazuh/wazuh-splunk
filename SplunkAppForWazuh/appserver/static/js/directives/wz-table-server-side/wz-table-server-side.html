@@ -52,7 +52,7 @@
       </thead>
       <tbody>
         <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
-          ng-repeat="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="clickAction(item)">
+          ng-repeat="item in items | filter:{item:'!'}" ng-click="clickAction(item)">
           <td ng-repeat="key in keys | filter: showKey"
             ng-class="{'table-width-id': key === 'id', 'table-width-filename': key.value === 'filename' }"
             ng-if="path !== '/decoders' && path !== '/rules'">
@@ -208,23 +208,23 @@
           colspan="{{ (path === '/agents' || (path === '/groups' && adminMode) || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
             seconds)</span>
-          <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+          <div ng-show="totalItems > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
             <ul layout="row">
               <li ng-show="currentPage > 0" class="md-padding">
-                <a href ng-click="firstPage()">First</a>
+                <a href ng-click="getFirstPage()">First</a>
               </li>
               <li ng-show="currentPage" class="md-padding">
                 <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
               </li>
-              <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+              <li ng-repeat="n in range"
                 ng-class="{'wz-text-active': n == currentPage}" ng-click="setPage()" class="md-padding">
                 <a href ng-bind="n + 1">1</a>
               </li>
-              <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
+              <li ng-show="(totalPages - currentPage) > 0" class="md-padding">
                 <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
               </li>
-              <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-                <a href ng-click="setPage(pagedItems.length - 1,  true)">Last</a>
+              <li ng-show="(totalPages - currentPage) > 5" class="md-padding">
+                <a href ng-click="getLastPage()">Last</a>
               </li>
             </ul>
           </div>
@@ -254,7 +254,7 @@
       </thead>
       <tbody>
         <tr ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}"
-          class="wz-word-wrap" ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
+          class="wz-word-wrap" ng-repeat-start="item in items | filter:{item:'!'}"
           ng-click="expandPolicyMonitoringCheck(item)">
           <td ng-repeat="key in keys | filter: showKey" ng-class="{'noBorderBottom':item.expanded}">
             <span ng-show="key === 'result'" class="no-wrap">
@@ -319,25 +319,25 @@
           colspan="{{ (path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
             seconds)</span>
-          <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+          <div ng-show="totalItems > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
             <ul layout="row">
               <li ng-show="currentPage > 0" class="md-padding">
-                <a href ng-click="firstPage()">First</a>
+                <a href ng-click="getFirstPage()">First</a>
               </li>
               <li ng-show="currentPage" class="md-padding">
                 <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
               </li>
 
-              <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+              <li ng-repeat="n in range"
                 ng-class="{'wz-text-active': n == currentPage}" ng-click="setPage()" class="md-padding">
                 <a href ng-bind="n + 1">1</a>
               </li>
 
-              <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
+              <li ng-show="(totalPages - currentPage) > 1" class="md-padding">
                 <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
               </li>
-              <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-                <a href ng-click="setPage(pagedItems.length - 1,  true)">Last</a>
+              <li ng-show="(totalPages - currentPage) > 5" class="md-padding">
+                <a href ng-click="getLastPage()">Last</a>
               </li>
             </ul>
           </div>
@@ -362,7 +362,7 @@
       </thead>
       <tbody>
         <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
-          ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}" ng-click="expandItem(item)">
+          ng-repeat-start="item in items | filter:{item:'!'}" ng-click="expandItem(item)">
           <td ng-repeat="key in keys | filter: showKey">
             <span>
               {{
@@ -399,25 +399,25 @@
           colspan="{{ (path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
             seconds)</span>
-          <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+          <div ng-show="totalItems > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
             <ul layout="row">
               <li ng-show="currentPage > 0" class="md-padding">
-                <a href ng-click="firstPage()">First</a>
+                <a href ng-click="getFirstPage()">First</a>
               </li>
               <li ng-show="currentPage" class="md-padding">
                 <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
               </li>
 
-              <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+              <li ng-repeat="n in range"
                 ng-class="{'wz-text-active': n == currentPage}" ng-click="setPage()" class="md-padding">
                 <a href ng-bind="n + 1">1</a>
               </li>
 
-              <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
+              <li ng-show="(totalPages - currentPage) > 1" class="md-padding">
                 <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
               </li>
-              <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-                <a href ng-click="setPage(pagedItems.length - 1,  true)">Last</a>
+              <li ng-show="(totalPages - currentPage) > 5" class="md-padding">
+                <a href ng-click="getLastPage()">Last</a>
               </li>
             </ul>
           </div>

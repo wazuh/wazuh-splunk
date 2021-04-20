@@ -22,7 +22,8 @@ define(['../module', 'splunkjs/mvc'], function(module) {
        * @param {String} path
        * @param {Object} implicitFilter
        */
-      constructor(path, implicitFilter, implicitSort) {
+      constructor(path, implicitFilter, implicitSort, isServerSidePagination) {
+        this.isServerSidePagination = isServerSidePagination || false
         this.implicitFilter = implicitFilter || false
         this.implicitSort = implicitSort || false
         this.items = []
@@ -93,7 +94,10 @@ define(['../module', 'splunkjs/mvc'], function(module) {
           this.busy = true
           const start = new Date()
           
-          this.items = []
+          
+          // If it has server-side pagination or If offset is not given, it means we need to start again
+          if (this.isServerSidePagination || !options.offset) this.items = []
+
           const offset = options.offset || 0
           const limit = options.limit || 500
           const parameters = { limit, offset }
@@ -106,21 +110,24 @@ define(['../module', 'splunkjs/mvc'], function(module) {
             this.busy = false
             return Promise.reject(firstPage.data.message)
           } else {
-            // this.items = this.items.filter(item => !!item)
+
+            if(!this.isServerSidePagination)
+              this.items = this.items.filter(item => !!item)
+
             this.items.push(...firstPage.data.data.affected_items)
 
             const totalItems = firstPage.data.data.totalItems !== undefined ? firstPage.data.data.totalItems : firstPage.data.data.total_affected_items
 
-            // const remaining =
-            //   this.items.length === totalItems
-            //     ? 0
-            //     : totalItems - this.items.length
+            const remaining =
+              this.items.length === totalItems
+                ? 0
+                : totalItems - this.items.length
 
             // Ignore manager as an agent, once the team solves this issue, review this line
             if (this.path === '/agents')
               this.items = this.items.filter(item => item.id !== '000')
 
-            // if (remaining > 0) this.items.push(...Array(remaining).fill(null))
+            if (!this.isServerSidePagination && remaining > 0) this.items.push(...Array(remaining).fill(null))
 
             const end = new Date()
             const elapsed = (end - start) / 1000

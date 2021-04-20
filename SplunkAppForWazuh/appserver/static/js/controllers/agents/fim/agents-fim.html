@@ -195,9 +195,9 @@
                 </button>
               </div>
               <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-                <wazuh-table is-registry-value="true" agent-id="agent.id" flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry_key'}]"
+                <wazuh-table-server-side is-registry-value="true" agent-id="agent.id" flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry_key'}]"
                   row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
-                </wazuh-table>
+                </wazuh-table-server-side>
                 </div>
               <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
                 <span flex></span>
@@ -228,10 +228,10 @@
                 </button>
               </div>
               <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-                <wazuh-table flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]"
+                <wazuh-table-server-side flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]"
                   row-sizes="[6,6,6]" extra-limit="true"
                   keys="['file', 'size', 'uname', 'perm','sha256','uid','mtime']">
-                </wazuh-table>
+                </wazuh-table-server-side>
               </div>
               <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
                 <span flex></span>
@@ -261,9 +261,9 @@
                 </button>
               </div>
               <div layout="row" ng-if="agent" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-                <wazuh-table custom-columns="true" flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]"
+                <wazuh-table-server-side custom-columns="true" flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]"
                   extra-limit="true" keys="['file','size','gname','uname','perm','sha256','uid','gid','mtime']">
-                </wazuh-table>
+                </wazuh-table-server-side>
               </div>
               <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
                 <span flex></span>

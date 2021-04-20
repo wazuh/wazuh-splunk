@@ -12,18 +12,36 @@
 define([], function() {
   'use strict'
   return {
-    setPage: async function($scope, errorHandler, fetch) {
+    nextPage: async (currentPage, $scope, errorHandler, fetch, last) => {
       try {
         $scope.error = false
-               
-        $scope.wazuhTableLoading = true
-        const offset = $scope.itemsPerPage * $scope.currentPage;
-
-        await fetch({ offset, limit: $scope.itemsPerPage })
-        $scope.wazuhTableLoading = false
-        $scope.range = this.range($scope.totalPages, $scope.currentPage, $scope.currentPage + $scope.gap, $scope.gap)
-        $scope.$applyAsync()
-
+        if (
+          !currentPage &&
+          currentPage !== 0 &&
+          $scope.currentPage < $scope.pagedItems.length - 1
+        ) {
+          $scope.currentPage++
+        }
+        if (
+          ($scope.pagedItems[currentPage || $scope.currentPage] || []).includes(
+            null
+          )
+        ) {
+          const copy = $scope.currentPage
+          $scope.wazuhTableLoading = true
+          let currentNonNull = $scope.items.filter(item => !!item)
+          if (!last) {
+            await fetch({ offset: currentNonNull.length })
+          } else {
+            while (currentNonNull.length < $scope.items.length) {
+              await fetch({ offset: currentNonNull.length })
+              currentNonNull = $scope.items.filter(item => !!item)
+            }
+          }
+          $scope.wazuhTableLoading = false
+          $scope.currentPage = copy
+          $scope.$applyAsync()
+        }
       } catch (error) {
         $scope.wazuhTableLoading = false
         $scope.error = `Error paginating table - ${error.message || error}.`
@@ -31,12 +49,7 @@ define([], function() {
           `Error paginating table due to ${error.message || error}`
         )
       }
-    },
-    nextPage: async function($scope, errorHandler, fetch) {
-      if ($scope.currentPage < $scope.totalPages) {
-        $scope.currentPage++
-      }
-      await this.setPage($scope, errorHandler, fetch)
+      return
     },
 
     range: (size, start, end, gap) => {
@@ -45,19 +58,38 @@ define([], function() {
         end = size
         start = size - gap
       }
-      for (let i = start; i <= end; i++) {
+      for (let i = start; i < end; i++) {
         ret.push(i)
       }
       return ret
     },
 
+    groupToPages: $scope => {
+      $scope.pagedItems = []
+      for (let i = 0; i < $scope.filteredItems.length; i++) {
+        if (i % $scope.itemsPerPage === 0) {
+          $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [
+            $scope.filteredItems[i]
+          ]
+        } else {
+          $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push(
+            $scope.filteredItems[i]
+          )
+        }
+      }
+    },
 
-    prevPage: async function($scope, errorHandler, fetch) {
+    prevPage: $scope => {
       if ($scope.currentPage > 0) {
         $scope.currentPage--
       }
-      await this.setPage($scope, errorHandler, fetch)
     },
 
+    searchTable: ($scope, items) => {
+      $scope.filteredItems = items
+      $scope.currentPage = 0
+      // now group by pages
+      $scope.groupToPages()
+    }
   }
 })

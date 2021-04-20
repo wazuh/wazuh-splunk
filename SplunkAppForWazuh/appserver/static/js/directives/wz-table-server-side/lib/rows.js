@@ -12,14 +12,14 @@
 define([], function() {
   'use strict'
   /**
-   * Checks the gap of results
-   * @param {*} $scope
-   * @param {Array} items
+   * Calculates the number of rows
+   * @param {Number} windowHeight
+   * @param {Number} sizes
    */
-  return function checkGap($scope, items) {
-    const gap = items.length / $scope.itemsPerPage
-    const gapInteger = parseInt(gap)
-    $scope.gap = gap - gapInteger > 0 ? gapInteger + 1 : gapInteger
-    if ($scope.gap > 5) $scope.gap = 5
+  return function calcTableRows(windowHeight, sizes) {
+    if (windowHeight >= 950) return sizes[0]
+    if (windowHeight >= 850 && windowHeight < 950) return sizes[1]
+    if (windowHeight >= 750 && windowHeight < 850) return sizes[2]
+    return sizes.length === 4 ? sizes[3] : 8
   }
 })
