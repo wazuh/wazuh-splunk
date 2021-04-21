@@ -53,7 +53,6 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
-      awsExtensionEnabled
     ) {
       super(
         $scope,
@@ -64,7 +63,6 @@ define([
       )
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
-      this.scope.awsExtensionEnabled = awsExtensionEnabled
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
 
