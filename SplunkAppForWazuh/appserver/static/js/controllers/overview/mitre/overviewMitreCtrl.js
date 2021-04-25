@@ -15,17 +15,13 @@ define([
   '../../../dashboardMain',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
+  '../../../services/visualizations/chart/column-chart',
 ], function(
   app,
   DashboardMain,
   LinearChart,
   PieChart,
-  Table,
-  SearchHandler,
-  RawTableDataService
+  ColumnChart,
 ) {
   'use strict'
 
@@ -82,100 +78,41 @@ define([
       this.filters = this.getFilters()
 
       this.vizz = [
-        /**
-         * Metrics
-         */
-        new SearchHandler(
-          `totalAlerts`,
-          `${this.filters} | stats count`,
-          `totalAlertsToken`,
-          '$result.count$',
-          'totalAlerts',
-          this.submittedTokenModel,
-          this.scope,
-          undefined,
-          undefined,
-          this.notification
-        ),
-        new SearchHandler(
-          `searchLevel12`,
-          `${this.filters} sourcetype=wazuh "rule.level">=12 | chart count`,
-          `level12token`,
-          '$result.count$',
-          'levelTwelve',
-          this.submittedTokenModel,
-          this.scope,
-          undefined,
-          undefined,
-          this.notification
-        ),
-        new SearchHandler(
-          `searchAuthFailure`,
-          `${this.filters} sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
-          `authFailureToken`,
-          '$result.count$',
-          'authFailure',
-          this.submittedTokenModel,
-          this.scope,
-          undefined,
-          undefined,
-          this.notification
-        ),
-        new SearchHandler(
-          `searchAuthSuccess`,
-          `${this.filters} sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
-          `authSuccessToken`,
-          '$result.count$',
-          'authSuccess',
-          this.submittedTokenModel,
-          this.scope,
-          undefined,
-          undefined,
-          this.notification
-        ),
+        
         /**
          * Visualizations
          */
         new LinearChart(
-          'alertLevEvoVizz',
-          `${this.filters} sourcetype=wazuh rule.level=*`,
-          'alertLevEvoVizz',
-          this.scope,
-          { customAxisTitleX: 'Time span' }
-        ),
-        new LinearChart(
-          'alertsVizz',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
-          'alertsVizz',
+          'alertTecEvoVizz',
+          `${this.filters} sourcetype=wazuh rule.mitre.technique{}=* | timechart count`,
+          'alertTecEvoVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
-          'alertsEvoTop5Agents',
-          `${this.filters} index=wazuh  sourcetype=wazuh | stats count by agent.name`,
-          'alertsEvoTop5Agents',
+          'alertsTop10Tactic',
+          `${this.filters} index=wazuh  sourcetype=wazuh | stats count by rule.mitre.tactic{}`,
+          'alertsTop10Tactic',
           this.scope
         ),
-        new PieChart(
-          'top5ruleGroups',
-          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=5`,
-          'top5ruleGroups',
+        new ColumnChart(
+          'alertsTechnique',
+          `${this.filters} index=wazuh  sourcetype=wazuh | chart count over rule.mitre.tactic{} by rule.mitre.technique{}`,
+          'alertsTechnique',
           this.scope
         ),
-        new Table(
-          'agentsSummaryVizz',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'agentsSummaryVizz',
+        new ColumnChart(
+          'topTacticsByAgent',
+          `${this.filters} sourcetype=wazuh | chart count over rule.mitre.tactic{} by agent.name limit=10`,
+          'topTacticsByAgent',
           this.scope
         ),
-        (this.agentsSummaryTable = new RawTableDataService(
-          'agentsSummaryTable',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'agentsSummaryTableToken',
-          '$result$',
-          this.scope,
-          'Agents Summary'
-        ))
+        new ColumnChart(
+          'techniquesByAgent',
+          `${this.filters} sourcetype=wazuh | chart count over rule.mitre.technique{} by agent.name limit=10`,
+          'techniquesByAgent',
+          this.scope
+        )
       ]
     }
 
@@ -227,21 +164,21 @@ define([
           } catch (error) {} //eslint-disable-line
 
           this.spanTime = '15m'
-          this.vizz.push(
-            new LinearChart(
-              `agentStatusHistory`,
-              `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
-              `agentStatus`,
-              this.scope,
-              { customAxisTitleX: 'Time span' }
-            )
-          )
+          // this.vizz.push(
+          //   new LinearChart(
+          //     `agentStatusHistory`,
+          //     `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
+          //     `agentStatus`,
+          //     this.scope,
+          //     { customAxisTitleX: 'Time span' }
+          //   )
+          // )
         }
 
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-general',
-            'Security events',
+            'overview-mitre',
+            'MITRE ATT&CK',
             this.filters,
             [
               'alertLevEvoVizz',

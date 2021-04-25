@@ -44,32 +44,32 @@
     <div ng-show="!loadingVizz">
       <!-- first row  -->
       
-      <wz-alert-metrics total-alerts="totalAlerts" level-twelve="levelTwelve" auth-failure="authFailure" auth-success="authSuccess"></wz-alert-metrics>
+      <!-- <wz-alert-metrics total-alerts="totalAlerts" level-twelve="levelTwelve" auth-failure="authFailure" auth-success="authSuccess"></wz-alert-metrics> -->
 
       <!-- second row  -->
       <div id="row2" layout="row">
         <!-- second row - first vis -->
-        <md-card flex="40" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Alert level evolution
-              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'alertLevEvoVizz')">
+            <span class="wz-headline-title">Alerts evolution
+              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'alertTecEvoVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
               <md-divider class="wz-margin-top-10"></md-divider>
             </span>
-            <div id='alertLevEvoVizz'></div>
+            <div id='alertTecEvoVizz'></div>
           </md-card-content>
         </md-card>
         <!-- second row - second vis -->
-        <md-card flex="60" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Alerts
-              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsVizz')">
+            <span class="wz-headline-title">Top tactics
+              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsTop10Tactic')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='alertsVizz'></div>
+            <div id='alertsTop10Tactic'></div>
           </md-card-content>
         </md-card>
       </div>
@@ -79,73 +79,43 @@
         <!-- third row - first vis -->
         <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top 5 agents
-              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertsEvoTop5Agents')">
+            <span class="wz-headline-title">Attacks by technique
+              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertsTechnique')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='alertsEvoTop5Agents'></div>
+            <div id='alertsTechnique'></div>
           </md-card-content>
         </md-card>
         <!-- third row - second vis -->
         <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top 5 rule groups
-              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'top5ruleGroups')">
+            <span class="wz-headline-title">Top tactics by agent
+              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'topTacticsByAgent')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='top5ruleGroups'></div>
+            <div id='topTacticsByAgent'></div>
           </md-card-content>
         </md-card>
         <!-- third row - third vis -->
         <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
           <md-card-content class="wazuh-column" ng-show="wzMonitoringEnabled">
-            <span class="wz-headline-title">Agents status
-              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'agentStatus')">
+            <span class="wz-headline-title">Mitre techniques by agent
+              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'techniquesByAgent')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='agentStatus'></div>
-          </md-card-content>
-          <md-card-content class="wazuh-column" ng-show="!wzMonitoringEnabled">
-            <span class="wz-headline-title">Agents status</span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div layout="row">
-              <div flex layout="column">
-                <div layout="row" class="wz-padding-top-10"></div>
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50" class="wz-text-bold">Total</p>
-                  <p class="wz-text-right color-grey wz-text-bold">{{agentsCountTotal}}</p>
-                </div>
-                <div layout="row" class="wz-padding-top-10"></div>
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Active</p>
-                  <p class="wz-text-right color-grey">{{agentsCountActive}}</p>
-                </div>
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Disconnected</p>
-                  <p class="wz-text-right color-grey">{{agentsCountDisconnected}}</p>
-                </div>
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Never connected</p>
-                  <p class="wz-text-right color-grey">{{agentsCountNeverConnected}}</p>
-                </div>
-                <div layout="row" class="wz-padding-top-10">
-                  <p flex="50">Agents coverage</p>
-                  <p class="wz-text-right color-grey">{{(agentsCoverity | number:2)}}%</p>
-                </div>
-              </div>
-            </div>
+            <div id='techniquesByAgent'></div>
           </md-card-content>
         </md-card>
       </div>
 
       <!-- fourth row  -->
-      <div id="row5" layout='row'>
+      <!-- <div id="row5" layout='row'>
 
         <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
           <md-card-content class="wazuh-column">
@@ -159,7 +129,7 @@
           </md-card-content>
         </md-card>
 
-      </div>
+      </div> -->
     </div>
   </div>
 
