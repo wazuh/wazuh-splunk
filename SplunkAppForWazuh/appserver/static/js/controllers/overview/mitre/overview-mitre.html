@@ -102,7 +102,7 @@
         </md-card>
         <!-- third row - third vis -->
         <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-          <md-card-content class="wazuh-column" ng-show="wzMonitoringEnabled">
+          <md-card-content class="wazuh-column" >
             <span class="wz-headline-title">Mitre techniques by agent
               <span class="wz-text-link" style="float:right;" ng-click="expand(4,'techniquesByAgent')">
                 <wz-svg icon="expand"></wz-svg>
@@ -114,22 +114,6 @@
         </md-card>
       </div>
 
-      <!-- fourth row  -->
-      <!-- <div id="row5" layout='row'>
-
-        <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Agents summary
-              <span class="wz-text-link" style="float:right;" ng-click="expand(5,'agentsSummaryVizz')">
-                <wz-svg icon="expand"></wz-svg>
-              </span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='agentsSummaryVizz'></div>
-          </md-card-content>
-        </md-card>
-
-      </div> -->
     </div>
   </div>
 

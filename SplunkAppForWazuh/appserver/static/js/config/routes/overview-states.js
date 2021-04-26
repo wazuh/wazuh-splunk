@@ -691,21 +691,6 @@ define(['../module'], function(module) {
           },
           controller: 'overviewMitreCtrl',
           resolve: {
-            pollingState: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
-                try {
-                  const result = await $requestService.httpReq(
-                    `GET`,
-                    `/manager/polling_state`
-                  )
-                  return result
-                } catch (err) {
-                  $state.go('settings.api')
-                }
-              }
-            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
