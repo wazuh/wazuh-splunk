@@ -23,13 +23,18 @@
   <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
       aria-hidden="true"></i></div>
 
-  <!-- Security information management navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'general'">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="general">MITRE ATT&amp;CK</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-fim" name="fim">Integrity monitoring
+  <!-- Threat Detection and Response navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'mitre'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="vulnerabilities">Vulnerabilities
     </md-nav-item>
-    <md-nav-item ng-if="awsExtensionEnabled" class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-aws"
-      name="aws">Amazon AWS</md-nav-item>
+    <md-nav-item ng-if="extensions.osquery === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-osquery" name="osquery">Osquery</md-nav-item>
+    <md-nav-item ng-if="extensions.virustotal === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-virustotal" name="virustotal">VirusTotal</md-nav-item>
+    <md-nav-item ng-if="extensions.docker === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-docker" name="docker">Docker listener</md-nav-item>
+    <md-nav-item ng-if="extensions.mitre === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-mitre" name="mitre">MITRE ATT&CK</md-nav-item>
   </md-nav-bar>
 
 

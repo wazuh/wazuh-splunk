@@ -45,6 +45,7 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
+      extensions
     ) {
       super(
         $scope,
@@ -55,6 +56,7 @@ define([
       )
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.extensions = extensions
       this.notification = $notificationService
 
       this.scope.expandArray = [false, false, false, false, false]
