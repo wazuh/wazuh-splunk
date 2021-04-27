@@ -83,10 +83,10 @@ define([
         ),
         new ColumnChart(
           'alertsTechnique',
-          `${this.filters} index=wazuh sourcetype=wazuh rule.mitre.technique{}=* rule.mitre.tactic{}=* | sort count DESC | chart count(rule.mitre.technique{}) by rule.mitre.tactic{} | rename count as "Count", count(rule.mitre.technique{}) as "Count Techniques", rule.mitre.tactic{} as "Tactics"`,
+          `${this.filters} index=wazuh sourcetype=wazuh rule.mitre.technique{}=* rule.mitre.tactic{}=* | chart count over rule.mitre.technique{} by rule.mitre.tactic{} | rename rule.mitre.tactic{} as "Tactic", rule.mitre.technique{} as "Technique"`,
           'alertsTechnique',
           this.scope,
-          {stackMode: 'default'}
+          {stackMode: 'stacked'}
         ),
         new ColumnChart(
           'topTacticsByAgent',
