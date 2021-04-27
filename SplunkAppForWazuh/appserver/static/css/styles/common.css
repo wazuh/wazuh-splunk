@@ -278,6 +278,11 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   color: #396e3e;
 }
 
+.action-show-hide-columns{
+  right: 10px;
+  position: absolute;
+}  
+
 .error-notify {
   font-size: 20px;
   color: black;
@@ -331,6 +336,10 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
 /* Custom JSON viewer settings */
 .wz-word-wrap {
   word-wrap: break-word;
+}
+
+.wz-break-word{
+  word-break: break-all;
 }
 
 .wz-pre {
