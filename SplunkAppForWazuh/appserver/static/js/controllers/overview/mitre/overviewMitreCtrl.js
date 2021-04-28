@@ -110,7 +110,6 @@ define([
      */
     $onInit() {
       try {
-
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
             'overview-mitre',

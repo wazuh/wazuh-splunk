@@ -34,8 +34,8 @@
     <md-nav-item ng-if="extensions.docker === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
       ui-sref="ow-docker" name="docker">Docker listener</md-nav-item>
     <md-nav-item ng-if="extensions.mitre === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
-      name="mitre">MITRE ATT&CK</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ow-mitre" name="mitre">MITRE ATT&CK</md-nav-item>
+    <md-nav-item ng-if="extensions.mitre === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
       name="mitre-ids">MITRE ATT&CK IDs</md-nav-item>
   </md-nav-bar>
 
@@ -45,7 +45,7 @@
     <wazuh-bar></wazuh-bar>
     <div ng-show="loadingVizz">
       <div align='center'>
-        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+        Fetching data..................<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
       </div>
     </div>
     <div ng-show="!loadingVizz">
@@ -65,58 +65,6 @@
               <md-divider class="wz-margin-top-10"></md-divider>
             </span>
             <div id='alertTecEvoVizz'></div>
-          </md-card-content>
-        </md-card>
-        <!-- second row - second vis -->
-        <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top tactics
-              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'alertsTop10Tactic')">
-                <wz-svg icon="expand"></wz-svg>
-              </span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='alertsTop10Tactic'></div>
-          </md-card-content>
-        </md-card>
-      </div>
-
-      <!-- third row  -->
-      <div id="row3" layout='row'>
-        <!-- third row - first vis -->
-        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Attacks by technique
-              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'alertsTechnique')">
-                <wz-svg icon="expand"></wz-svg>
-              </span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='alertsTechnique'></div>
-          </md-card-content>
-        </md-card>
-        <!-- third row - second vis -->
-        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
-          <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top tactics by agent
-              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'topTacticsByAgent')">
-                <wz-svg icon="expand"></wz-svg>
-              </span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='topTacticsByAgent'></div>
-          </md-card-content>
-        </md-card>
-        <!-- third row - third vis -->
-        <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
-          <md-card-content class="wazuh-column" >
-            <span class="wz-headline-title">Mitre techniques by agent
-              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'techniquesByAgent')">
-                <wz-svg icon="expand"></wz-svg>
-              </span>
-            </span>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='techniquesByAgent'></div>
           </md-card-content>
         </md-card>
       </div>

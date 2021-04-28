@@ -709,6 +709,33 @@ define(['../module'], function(module) {
             ]
           }
         })
+        .state('ow-mitre-ids', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/mitre/overview-mitre-ids.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-mitre-ids')
+          },
+          controller: 'overviewMitreIdsCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
     }
   ])
 })

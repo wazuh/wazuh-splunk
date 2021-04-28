@@ -75,33 +75,33 @@ define([
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
-        new PieChart(
-          'alertsTop10Tactic',
-          `${this.filters} index=wazuh sourcetype=wazuh | stats count by rule.mitre.tactic{} | rename count as "Count" rule.mitre.tactic{} as "Tactics"`,
-          'alertsTop10Tactic',
-          this.scope
-        ),
-        new ColumnChart(
-          'alertsTechnique',
-          `${this.filters} index=wazuh sourcetype=wazuh rule.mitre.technique{}=* rule.mitre.tactic{}=* | sort count DESC | chart count(rule.mitre.technique{}) by rule.mitre.tactic{} | rename count as "Count", count(rule.mitre.technique{}) as "Count Techniques", rule.mitre.tactic{} as "Tactics"`,
-          'alertsTechnique',
-          this.scope,
-          {stackMode: 'default'}
-        ),
-        new ColumnChart(
-          'topTacticsByAgent',
-          `${this.filters} sourcetype=wazuh rule.mitre.tactic{}=* agent.name=* | chart count(rule.mitre.tactic{}) by agent.name,rule.mitre.tactic{} | rename count as "Count", agent.name as "Agent name", rule.mitre.tactic{} as "Tactics" | sort count DESC limit=10`,
-          'topTacticsByAgent',
-          this.scope,
-          {stackMode: 'stacked'}
-        ),
-        new ColumnChart(
-          'techniquesByAgent',
-          `${this.filters} sourcetype=wazuh rule.mitre.technique{}=* agent.name=* | chart count(rule.mitre.technique{}) by agent.name,rule.mitre.technique{} | rename count as "Count", agent.name as "Agent name", rule.mitre.technique{} as "Techniques" | sort count DESC limit=10`,
-          'techniquesByAgent',
-          this.scope,
-          {stackMode: 'stacked100'}
-        )
+        // new PieChart(
+        //   'alertsTop10Tactic',
+        //   `${this.filters} index=wazuh sourcetype=wazuh | stats count by rule.mitre.tactic{} | rename count as "Count" rule.mitre.tactic{} as "Tactics"`,
+        //   'alertsTop10Tactic',
+        //   this.scope
+        // ),
+        // new ColumnChart(
+        //   'alertsTechnique',
+        //   `${this.filters} index=wazuh sourcetype=wazuh rule.mitre.technique{}=* rule.mitre.tactic{}=* | sort count DESC | chart count(rule.mitre.technique{}) by rule.mitre.tactic{} | rename count as "Count", count(rule.mitre.technique{}) as "Count Techniques", rule.mitre.tactic{} as "Tactics"`,
+        //   'alertsTechnique',
+        //   this.scope,
+        //   {stackMode: 'default'}
+        // ),
+        // new ColumnChart(
+        //   'topTacticsByAgent',
+        //   `${this.filters} sourcetype=wazuh rule.mitre.tactic{}=* agent.name=* | chart count(rule.mitre.tactic{}) by agent.name,rule.mitre.tactic{} | rename count as "Count", agent.name as "Agent name", rule.mitre.tactic{} as "Tactics" | sort count DESC limit=10`,
+        //   'topTacticsByAgent',
+        //   this.scope,
+        //   {stackMode: 'stacked'}
+        // ),
+        // new ColumnChart(
+        //   'techniquesByAgent',
+        //   `${this.filters} sourcetype=wazuh rule.mitre.technique{}=* agent.name=* | chart count(rule.mitre.technique{}) by agent.name,rule.mitre.technique{} | rename count as "Count", agent.name as "Agent name", rule.mitre.technique{} as "Techniques" | sort count DESC limit=10`,
+        //   'techniquesByAgent',
+        //   this.scope,
+        //   {stackMode: 'stacked100'}
+        // )
       ]
     }
 
@@ -118,10 +118,10 @@ define([
             this.filters,
             [
               'alertTecEvoVizz',
-              'alertsTop10Tactic',
-              'alertsTechnique',
-              'topTacticsByAgent',
-              'techniquesByAgent'
+              // 'alertsTop10Tactic',
+              // 'alertsTechnique',
+              // 'topTacticsByAgent',
+              // 'techniquesByAgent'
             ]
           )
       } catch (error) {
