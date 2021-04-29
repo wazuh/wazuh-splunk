@@ -278,7 +278,7 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   color: #396e3e;
 }
 
-#agents-fim-table .action-show-hide-columns{
+.agents-fim-table .action-show-hide-columns{
   right: 10px;
   position: absolute;
 }  
