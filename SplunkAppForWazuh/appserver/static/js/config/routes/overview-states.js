@@ -712,7 +712,7 @@ define(['../module'], function(module) {
         .state('ow-mitre-ids', {
           templateUrl:
             BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/overview/mitre/overview-mitre-ids.html',
+            'static/app/SplunkAppForWazuh/js/controllers/overview/mitre-ids/overview-mitre-ids.html',
           onEnter: $navigationService => {
             $navigationService.storeRoute('ow-mitre-ids')
           },
