@@ -1,5 +1,5 @@
 const metadataApp = {
-  "version": "4.4.0",
+  "version": "4.2.0",
   "revision": "4201"
 }
 
