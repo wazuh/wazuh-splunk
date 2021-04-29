@@ -2,6 +2,12 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4202
+
+### Fixed
+
+- Tables without server side pagination [#1074](https://github.com/wazuh/wazuh-splunk/pull/1074)
+
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
 
 ### Added
