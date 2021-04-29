@@ -2,6 +2,12 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4202
+
+### Fixed
+
+- Cannot pin search filters on Edge - Chip style collapses [#1070](https://github.com/wazuh/wazuh-splunk/pull/1070)
+
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
 
 ### Added
