@@ -43,7 +43,7 @@ define([
   checkGap
 ) {
   'use strict'
-  app.directive('wazuhTable', function(BASE_URL) {
+  app.directive('wazuhTableServerSide', function(BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -88,7 +88,8 @@ define([
         const instance = new $dataService(
           $scope.path,
           $scope.implicitFilter,
-          $scope.implicitSort
+          $scope.implicitSort,
+          true // server-side pagination
         )
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.totalItems = 0
@@ -221,7 +222,7 @@ define([
          * Fetchs data from API
          * @param {Object} options
          */
-        const fetch = async (options = {}) => {
+        const fetch = async (options = { offset:0, limit: $scope.itemsPerPage }) => {
           try {
             if ((instance.filters || []).length) {
               $scope.customEmptyResults =
@@ -231,13 +232,13 @@ define([
                 $scope.emptyResults || 'Empty results for this table.'
             }
             const result = await instance.fetch(options)
-            items = result.items
             $scope.time = result.time
-            $scope.totalItems = items.length
-            $scope.items = items
-            checkGap($scope, items)
-            $scope.searchTable()
-            $scope.$emit('wazuhFetched', { items })
+            $scope.totalItems = result.totalItems
+            $scope.totalPages = Math.floor($scope.totalItems/$scope.itemsPerPage)
+            $scope.items = result.items
+            checkGap($scope)
+            $scope.range = pagination.range($scope.totalPages, $scope.currentPage, $scope.currentPage + $scope.gap, $scope.gap)
+            $scope.$emit('wazuhFetched', { items:$scope.items })
             return
           } catch (error) {
             if (
@@ -386,14 +387,36 @@ define([
             $dateDiffService
           )
 
+        
+        /**
+         * Pagination variables and functions
+         */
+        $scope.itemsPerPage = $scope.rowsPerPage || 10
+        $scope.pagedItems = []
+        $scope.currentPage = 0
+        $scope.gap = 0
+        
+        $scope.prevPage = async() => pagination.prevPage($scope, $notificationService, fetch)
+        $scope.nextPage = async () => pagination.nextPage($scope, $notificationService, fetch)
+        $scope.setPage = function(page = false) {
+          $scope.currentPage = typeof page == 'number'? page : this.n
+          pagination.setPage($scope, $notificationService, fetch)
+        }
+        $scope.getFirstPage = () => {
+          $scope.setPage(0)
+        }
+        $scope.getLastPage = () => {
+          const lastPage = $scope.totalPages
+          $scope.setPage(lastPage)
+        }
+
         /**
          * Initializes table
          */
-        const init = async () => {
+         const init = async () => {
           try {
             $scope.error = false
-            await fetch()
-            //getStoredKeys()
+            $scope.setPage(0)
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
@@ -409,38 +432,6 @@ define([
             )
           }
           return
-        }
-
-        /**
-         * Pagination variables and functions
-         */
-        $scope.itemsPerPage = $scope.rowsPerPage || 10
-        $scope.pagedItems = []
-        $scope.currentPage = 0
-        let items = []
-        $scope.gap = 0
-        $scope.searchTable = () => pagination.searchTable($scope, items)
-        $scope.groupToPages = () => pagination.groupToPages($scope)
-        $scope.range = (size, start, end) =>
-          pagination.range(size, start, end, $scope.gap)
-        $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async (currentPage, last) =>
-          pagination.nextPage(
-            currentPage,
-            $scope,
-            $notificationService,
-            fetch,
-            last
-          )
-        $scope.setPage = function(page = false, last = false, first = false) {
-          $scope.currentPage = page || this.n
-          if (!first) {
-            $scope.nextPage(this.n, last)
-          }
-        }
-        $scope.firstPage = () => {
-          $scope.setPage(1, false, true)
-          $scope.prevPage()
         }
 
         /**
@@ -744,7 +735,7 @@ define([
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-table-server-side/wz-table-server-side.html'
     }
   })
 })
