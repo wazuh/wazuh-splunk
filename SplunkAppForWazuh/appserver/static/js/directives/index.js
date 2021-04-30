@@ -1,6 +1,7 @@
 define([
   './wz-menu/wz-menu',
   './wz-table/index',
+  './wz-table-server-side/index',
   './wz-data-table/wz-data-table',
   './wz-enter/wz-enter',
   './wz-dynamic/wz-dynamic',
