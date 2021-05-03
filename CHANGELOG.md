@@ -8,6 +8,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Cannot pin search filters on Edge - Chip style collapses [#1070](https://github.com/wazuh/wazuh-splunk/pull/1070)
 - Tables without server side pagination [#1074](https://github.com/wazuh/wazuh-splunk/pull/1074)
+- Fixed gear icon in fim table [#1077](https://github.com/wazuh/wazuh-splunk/pull/1077)
 
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
 
@@ -32,7 +33,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Minor style fixes [#1059](https://github.com/wazuh/wazuh-splunk/pull/1059)
 - Added new error handler to Alerts Configuration views [#1063](https://github.com/wazuh/wazuh-splunk/pull/1063)
 - Fixed uncontrolled message error when add api fails [#1069](https://github.com/wazuh/wazuh-splunk/pull/1069)
-- Fixed gear icon in fim table [#1077](https://github.com/wazuh/wazuh-splunk/pull/1077)
+
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
 
