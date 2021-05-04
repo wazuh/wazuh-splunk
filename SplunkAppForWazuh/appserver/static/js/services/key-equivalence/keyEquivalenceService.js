@@ -6,6 +6,7 @@ define(['../module'], function(module) {
       equivalences: () => {
         return {
           id: 'ID',
+          created: 'Created',
           timestamp: 'Timestamp',
           url: 'URL',
           version: 'Version',
