@@ -6,7 +6,11 @@ define(['../module'], function(module) {
       equivalences: () => {
         return {
           id: 'ID',
-          created: 'Created',
+          'phase_name': 'Phase name',
+          'platform_name': 'Platforms',
+          'json.created': 'Created',
+          'json.name': 'Name',
+          'json.x_mitre_version': 'Version',
           timestamp: 'Timestamp',
           url: 'URL',
           version: 'Version',

@@ -59,7 +59,7 @@
             <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Mitre IDs</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
-              <label class="wz-icon-loupe">
+              <!-- <label class="wz-icon-loupe">
                 <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
                   class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
                   aria-invalid="false" wz-enter="search(filesSearch)">
@@ -67,24 +67,21 @@
               <button type="submit" aria-label="Search"
                 class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch)">
                 <span>Search</span>
-              </button>
+              </button> -->
             </div>
             <!-- Table content -->
-            <div layout="row" ng-if="mitre" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-              <!-- <wazuh-table custom-columns="true" flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]" -->
-              <wazuh-table custom-columns="true" flex path="/mitre" row-sizes="[6,6,6]"
-                extra-limit="true" keys="['id', 'created', 'created']">
-                <!-- extra-limit="true" keys="['file','size','gname','uname','perm','sha256','uid','gid','mtime']"> -->
-              </wazuh-table>
+            <div layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv">
+              <wazuh-table flex path="'/mitre?select=phase_name'" row-sizes="[6,6]" extra-limit="true" keys="['id', 'phase_name']"></wazuh-table>
+              <!-- <wazuh-table flex path="'/mitre'" row-sizes="[6,6,6]" extra-limit="true" keys="['id', 'json.name', 'platform_name' ,'json.created', 'json.x_mitre_version']"></wazuh-table> -->
             </div>
 
             <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
-              <span flex></span>
+              <!-- <span flex></span>
               <a class="small formatted-color" id="btnDownload"
                 ng-click="downloadCsv('/syscheck/' + agent.id, 'fim-files.csv')">
                 <wz-svg icon="download"></wz-svg>
                 &nbsp;Formatted
-              </a>
+              </a> -->
             </div>
           </md-card-content>
         </md-card>
@@ -94,8 +91,8 @@
 
 
 
-      </div>
     </div>
+  </div>
   </div>
 
   <!-- end document  -->

@@ -718,45 +718,19 @@ define(['../module'], function(module) {
           },
           controller: 'overviewMitreIdsCtrl',
           resolve: {
-
-            agent: [
+            mitreData: [
               '$requestService',
-              '$stateParams',
-              '$currentDataService',
               '$state',
               async (
                 $requestService,
                 $state
               ) => {
                 try {
-                  const result = await $requestService.apiReq(`/agents?q=id=1087`)
-                  return result
+                  const results = await $requestService.apiReq(`/mitre`)
+                  return results
                 } catch (err) {
                   $state.go('overview')
                 }
-              }
-            ],
-            mitre: [
-              '$requestService',
-              '$stateParams',
-              '$currentDataService',
-              '$state',
-              async (
-                $requestService,
-                $state
-              ) => {
-                try {
-                  const result = await $requestService.apiReq(`/mitre`)
-                  return result
-                } catch (err) {
-                  $state.go('overview')
-                }
-              }
-            ],
-            reportingEnabled: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await $currentDataService.getReportingStatus()
               }
             ],
             extensions: [
@@ -769,26 +743,6 @@ define(['../module'], function(module) {
                 }
               }
             ]
-
-
-            // reportingEnabled: [
-            //   '$currentDataService',
-            //   async $currentDataService => {
-            //     return await $currentDataService.getReportingStatus()
-            //   }
-            // ],
-            // awsExtensionEnabled: [
-            //   '$currentDataService',
-            //   async $currentDataService => {
-            //     try {
-            //       return await $currentDataService.extensionIsEnabled('aws')
-            //     } catch (err) {
-            //       return false
-            //     }
-            //   }
-            // ]
-
-
           }
         })
     }
