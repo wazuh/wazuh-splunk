@@ -30,7 +30,9 @@
     "pretty": "prettier --single-quote --semi=false --write SplunkAppForWazuh/**/*.js !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
     "lint": "eslint . --ext .js -c .eslintrc.json",
     "test": "mocha tests/manager.js",
-    "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../.."
+    "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../..",
+    "prebuild": "node scripts/generate-build-version",
+    "build": "tar -czf SplunkAppForWazuh.tar.gz ./SplunkAppForWazuh"
   },
   "repository": {
     "type": "git",
