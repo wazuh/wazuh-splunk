@@ -19,7 +19,7 @@ fs.readFile('./SplunkAppForWazuh/appserver/static/js/services/app-version/appVer
   // file content
   let appVersionServiceFile = data;
   // new metadata version and revision
-  let newMetadata = 'const metaApp = ' + jsonContent + '\n\n';
+  let newMetadata = 'const metadataApp = ' + jsonContent + '\n\n';
   // get content without const version and revision
   let definePos = data.indexOf('define(');
   let fileWithOutMeta = appVersionServiceFile.substring(definePos, appVersionServiceFile.length);
