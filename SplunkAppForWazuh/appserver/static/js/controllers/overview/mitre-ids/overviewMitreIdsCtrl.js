@@ -12,8 +12,9 @@
 define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
+  './lib/mitre_techniques',
   'FileSaver'
-], function(app, SearchHandler) {
+], function(app, SearchHandler, mitre_techniques) {
   'use strict'
 
   class OverviewMitreIds {
@@ -37,7 +38,7 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
-      mitreData,
+      mitre_tactics,
       $mdDialog,
       $groupHandler,
       $dateDiffService
@@ -58,81 +59,84 @@ define([
       this.groupHandler = $groupHandler
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
-        const parsedResult = mitreData.data.data
-        let summary = this.formatAgentStatusData(parsedResult.agent_status)
+        // const parsedResult = mitreData.data.data
+        // let summary = this.formatAgentStatusData(parsedResult.agent_status)
+        
+        this.scope.tactics = mitre_tactics
+        this.scope.techniques = Object.entries(mitre_techniques)
 
+        // const os = parsedResult.agent_os
+        //   ? parsedResult.agent_os
+        //       .map(item => item.os)
+        //       .filter(item => !!item)
+        //   : false
+        // const versions = parsedResult.agent_version
+        //   ? parsedResult.agent_version
+        //       .map(item => item.version)
+        //       .filter(item => !!item)
+        //   : false
+        // const nodes =
+        //   parsedResult.nodes && parsedResult.nodes
+        //     ? parsedResult.nodes
+        //         .map(item => item['node_name'])
+        //         .filter(item => !!item)
+        //     : false
+        // groups = groups
+        //   ? groups.map(item => item.name).filter(item => !!item)
+        //   : false
+        // this.scope.agentsCountDisconnected = summary.Disconnected
 
-        const os = parsedResult.agent_os
-          ? parsedResult.agent_os
-              .map(item => item.os)
-              .filter(item => !!item)
-          : false
-        const versions = parsedResult.agent_version
-          ? parsedResult.agent_version
-              .map(item => item.version)
-              .filter(item => !!item)
-          : false
-        const nodes =
-          parsedResult.nodes && parsedResult.nodes
-            ? parsedResult.nodes
-                .map(item => item['node_name'])
-                .filter(item => !!item)
-            : false
-        groups = groups
-          ? groups.map(item => item.name).filter(item => !!item)
-          : false
-        this.scope.agentsCountDisconnected = summary.Disconnected
-        this.scope.agentsCountNeverConnected = summary.Never_connected;
-        const agentsCountTotal = summary.Total
-        this.scope.agentsCoverity = agentsCountTotal
-          ? (this.scope.agentsCountActive / agentsCountTotal) * 100
-          : 0
+        // this.scope.agentsCountNeverConnected = summary.Never_connected;
+        // const agentsCountTotal = summary.Total
+        // this.scope.agentsCoverity = agentsCountTotal
+        //   ? (this.scope.agentsCountActive / agentsCountTotal) * 100
+        //   : 0
 
-        this.scope.searchBarModel = {
-          name: [],
-          status: ['active', 'disconnect', 'never_connected'],
-          group: groups
-            ? groups.sort((a, b) => {
-                return a.toString().localeCompare(b.toString())
-              })
-            : [],
-          version: versions
-            ? versions.sort((a, b) => {
-                return a
-                  .toString()
-                  .localeCompare(b.toString(), undefined, {
-                    numeric: true,
-                    sensitivity: 'base'
-                  })
-              })
-            : [],
-          'os.platform': os
-            ? os
-                .map(x => x.platform)
-                .sort((a, b) => {
-                  return a.toString().localeCompare(b.toString())
-                })
-            : [],
-          'os.version': os
-            ? os
-                .map(x => x.version)
-                .sort((a, b) => {
-                  return a
-                    .toString()
-                    .localeCompare(b.toString(), undefined, {
-                      numeric: true,
-                      sensitivity: 'base'
-                    })
-                })
-            : [],
-          'os.name': os
-            ? os
-                .map(x => x.name)
-                .sort((a, b) => {
-                  return a.toString().localeCompare(b.toString())
-                })
-            : []
-        }
+        // this.scope.searchBarModel = {
+        //   name: [],
+        //   status: ['active', 'disconnect', 'never_connected'],
+        //   group: groups
+        //     ? groups.sort((a, b) => {
+        //         return a.toString().localeCompare(b.toString())
+        //       })
+        //     : [],
+        //   version: versions
+        //     ? versions.sort((a, b) => {
+        //         return a
+        //           .toString()
+        //           .localeCompare(b.toString(), undefined, {
+        //             numeric: true,
+        //             sensitivity: 'base'
+        //           })
+        //       })
+        //     : [],
+        //   'os.platform': os
+        //     ? os
+        //         .map(x => x.platform)
+        //         .sort((a, b) => {
+        //           return a.toString().localeCompare(b.toString())
+        //         })
+        //     : [],
+        //   'os.version': os
+        //     ? os
+        //         .map(x => x.version)
+        //         .sort((a, b) => {
+        //           return a
+        //             .toString()
+        //             .localeCompare(b.toString(), undefined, {
+        //               numeric: true,
+        //               sensitivity: 'base'
+        //             })
+        //         })
+        //     : [],
+        //   'os.name': os
+        //     ? os
+        //         .map(x => x.name)
+        //         .sort((a, b) => {
+        //           return a.toString().localeCompare(b.toString())
+        //         })
+        //     : []
+        // }
 
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
@@ -159,11 +163,13 @@ define([
      * On controller loads
      */
     $onInit() {
+
+      console.log();
+
       this.scope.addingAgents = false
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
-      this.scope.isClusterEnabled =
-        this.clusterInfo && this.clusterInfo.status === 'enabled'
+      this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
       this.scope.version = 'all'

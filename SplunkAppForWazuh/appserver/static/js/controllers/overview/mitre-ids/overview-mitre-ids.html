@@ -53,10 +53,22 @@
 
 
       <!-- <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'"> -->
-      <div layout="row" class="wz-padding-top-0">
-        <md-card flex="" class="wz-md-card _md flex">
+      <div layout="row" style="overflow-y: scroll;" class="wz-padding-top-0">
+        <md-card flex="15" class="wz-md-card _md flex">
           <md-card-content>
-            <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Mitre IDs</span>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Tactics</span>          
+            <md-divider class="wz-margin-top-10"></md-divider>
+
+            <table>
+              <tr ng-repeat="tactic in tactics"><td>{{tactic}}</td></tr>
+            </table>
+
+          </md-card-content>
+        </md-card>
+
+        <md-card flex="85" class="wz-md-card _md flex">
+          <md-card-content>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Techniques</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
               <!-- <label class="wz-icon-loupe">
@@ -70,9 +82,12 @@
               </button> -->
             </div>
             <!-- Table content -->
-            <div layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv">
-              <wazuh-table flex path="'/mitre?select=phase_name'" row-sizes="[6,6]" extra-limit="true" keys="['id', 'phase_name']"></wazuh-table>
+            <div style="overflow-y: scroll;" layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv techniques-wraper height-530">
+              <!-- <wazuh-table flex path="'/mitre?select=phase_name'" row-sizes="[6,6]" extra-limit="true" keys="['id', 'phase_name']"></wazuh-table> -->
               <!-- <wazuh-table flex path="'/mitre'" row-sizes="[6,6,6]" extra-limit="true" keys="['id', 'json.name', 'platform_name' ,'json.created', 'json.x_mitre_version']"></wazuh-table> -->
+              <ul class="euiFlexGrid" > 
+                <li ng-repeat="technique in techniques" class="noDot ng-binding ng-scope wz-padding-4 wz-width-30 ">{{technique[0]}} -- {{technique[1].name}}</li>
+              </ul>
             </div>
 
             <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
@@ -86,9 +101,6 @@
           </md-card-content>
         </md-card>
       </div>
-
-
-
 
 
     </div>
