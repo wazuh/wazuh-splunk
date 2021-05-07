@@ -71,22 +71,12 @@
             <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Techniques</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
-              <!-- <label class="wz-icon-loupe">
-                <input flex placeholder="Filter files..." ng-model="filesSearch" type="text"
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
-                  aria-invalid="false" wz-enter="search(filesSearch)">
-              </label>
-              <button type="submit" aria-label="Search"
-                class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr" ng-click="search(filesSearch)">
-                <span>Search</span>
-              </button> -->
             </div>
             <!-- Table content -->
-            <div style="overflow-y: scroll;" layout="row" class="wz-margin-top-10 wz-margin-bottom-40-inv techniques-wraper height-530">
-              <!-- <wazuh-table flex path="'/mitre?select=phase_name'" row-sizes="[6,6]" extra-limit="true" keys="['id', 'phase_name']"></wazuh-table> -->
-              <!-- <wazuh-table flex path="'/mitre'" row-sizes="[6,6,6]" extra-limit="true" keys="['id', 'json.name', 'platform_name' ,'json.created', 'json.x_mitre_version']"></wazuh-table> -->
+            <div style="overflow-y: scroll;" layout="row" class=" {'fullscreen': expandArray[1]} wz-margin-top-10 wz-margin-bottom-40-inv techniques-wraper height-530">
               <ul class="euiFlexGrid" > 
-                <li ng-repeat="technique in techniques" class="noDot ng-binding ng-scope wz-padding-4 wz-width-30 ">{{technique[0]}} -- {{technique[1].name}}</li>
+                <li ng-click="loadRegistryValueDetails(technique)" ng-repeat="technique in techniques" class="cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 ">{{technique[0]}} -- {{technique[1].name}}</li>
+                <!-- <li ng-click="expand(1,'agentsElement')" ng-repeat="technique in techniques" class="cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 ">{{technique[0]}} -- {{technique[1].name}}</li> -->
               </ul>
             </div>
 

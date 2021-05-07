@@ -11,10 +11,11 @@
  */
 define([
   '../../module',
-  '../../../services/visualizations/search/search-handler',
+  // '../../../services/visualizations/search/search-handler',
   './lib/mitre_techniques',
-  'FileSaver'
-], function(app, SearchHandler, mitre_techniques) {
+  "splunkjs/mvc/searchmanager",
+  'FileSaver',
+], function(app, /*SearchHandler,*/ mitre_techniques, SearchManager) {
   'use strict'
 
   class OverviewMitreIds {
@@ -59,102 +60,28 @@ define([
       this.groupHandler = $groupHandler
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
-        // const parsedResult = mitreData.data.data
-        // let summary = this.formatAgentStatusData(parsedResult.agent_status)
         
         this.scope.tactics = mitre_tactics
         this.scope.techniques = Object.entries(mitre_techniques)
 
-        // const os = parsedResult.agent_os
-        //   ? parsedResult.agent_os
-        //       .map(item => item.os)
-        //       .filter(item => !!item)
-        //   : false
-        // const versions = parsedResult.agent_version
-        //   ? parsedResult.agent_version
-        //       .map(item => item.version)
-        //       .filter(item => !!item)
-        //   : false
-        // const nodes =
-        //   parsedResult.nodes && parsedResult.nodes
-        //     ? parsedResult.nodes
-        //         .map(item => item['node_name'])
-        //         .filter(item => !!item)
-        //     : false
-        // groups = groups
-        //   ? groups.map(item => item.name).filter(item => !!item)
-        //   : false
-        // this.scope.agentsCountDisconnected = summary.Disconnected
-
-        // this.scope.agentsCountNeverConnected = summary.Never_connected;
-        // const agentsCountTotal = summary.Total
-        // this.scope.agentsCoverity = agentsCountTotal
-        //   ? (this.scope.agentsCountActive / agentsCountTotal) * 100
-        //   : 0
-
-        // this.scope.searchBarModel = {
-        //   name: [],
-        //   status: ['active', 'disconnect', 'never_connected'],
-        //   group: groups
-        //     ? groups.sort((a, b) => {
-        //         return a.toString().localeCompare(b.toString())
-        //       })
-        //     : [],
-        //   version: versions
-        //     ? versions.sort((a, b) => {
-        //         return a
-        //           .toString()
-        //           .localeCompare(b.toString(), undefined, {
-        //             numeric: true,
-        //             sensitivity: 'base'
-        //           })
-        //       })
-        //     : [],
-        //   'os.platform': os
-        //     ? os
-        //         .map(x => x.platform)
-        //         .sort((a, b) => {
-        //           return a.toString().localeCompare(b.toString())
-        //         })
-        //     : [],
-        //   'os.version': os
-        //     ? os
-        //         .map(x => x.version)
-        //         .sort((a, b) => {
-        //           return a
-        //             .toString()
-        //             .localeCompare(b.toString(), undefined, {
-        //               numeric: true,
-        //               sensitivity: 'base'
-        //             })
-        //         })
-        //     : [],
-        //   'os.name': os
-        //     ? os
-        //         .map(x => x.name)
-        //         .sort((a, b) => {
-        //           return a.toString().localeCompare(b.toString())
-        //         })
-        //     : []
-        // }
-
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
-      } catch (error) {} //eslint-disable-line
+      } catch (error) { } //eslint-disable-line
 
-      this.topAgent = new SearchHandler(
-        'searchTopAgent',
-        `index=wazuh ${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
-        'activeAgentToken',
-        '$result.agent.name$',
-        'mostActiveAgent',
-        this.submittedTokenModel,
-        this.scope,
-        true,
-        'loadingSearch',
-        this.notification
-      )
+      const mysearch = new SearchManager({
+        id: "search1",
+        preview: true,
+        cache: false,
+        status_buckets: 300,
+        search: `index=wazuh ${this.filters} rule.mitre.tactic{}=* | stats count by rule.mitre.tactic{}`
+      });
+      const myResults = mysearch.data("preview", {});
+      myResults.on("data", () => {
+        if (myResults.hasData())
+          this.scope.countTactics = myResults.collection().raw.rows;
+          console.log(this.scope.countTactics);
+      });
 
       this.scope.$applyAsync()
     }
@@ -162,13 +89,11 @@ define([
     /**
      * On controller loads
      */
-    $onInit() {
-
-      console.log();
-
+    $onInit() {      
       this.scope.addingAgents = false
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
+      this.scope.loadRegistryValueDetails = item => this.loadRegistryValueDetails(item)
       this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
@@ -176,6 +101,7 @@ define([
       this.scope.node_name = 'all'
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
+      this.scope.showMitreTechniqueModal = (technique) => this.showMitreTechniqueModal(technique)
       this.scope.$on('$destroy', () => {
         this.topAgent.destroy()
       })
@@ -197,6 +123,42 @@ define([
     /**
      * Exports the table in CSV format
      */
+    showMitreTechniqueModal(technique) {
+      console.log(technique)
+    }
+
+    loadRegistryValueDetails = async (item) => {
+      console.log(item);
+      var parentEl = angular.element(document.body);
+      this.$mdDialog.show({
+        parent: parentEl,
+        template:
+          `<md-dialog aria-label="List dialog">
+          <h3 class="wz-headline-title boldText">Technique ${item[1].name}</h3>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <md-dialog-content>
+            
+           
+          </md-dialog-content>
+          <md-dialog-actions>
+            <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
+              Close
+            </md-button>
+          </md-dialog-actions>
+        </md-dialog>;`,
+        locals: {
+          items: item
+        },
+        controller: DialogController,
+        controllerAs: 'ctrl'
+     })
+     function DialogController($mdDialog) {
+       this.closeDialog = function() {
+         $mdDialog.hide()
+       }
+     }
+    }
+
     async downloadCsv() {
       try {
         this.notification.showSimpleToast(
@@ -249,7 +211,7 @@ define([
       //     ) {
       //       throw Error('Error fetching agent data')
       //     }
-         
+
       //   } else {
       //     throw Error('Cannot fetch agent name')
       //   }
