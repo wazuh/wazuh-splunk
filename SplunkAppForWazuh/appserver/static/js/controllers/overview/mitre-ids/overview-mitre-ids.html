@@ -60,7 +60,10 @@
             <md-divider class="wz-margin-top-10"></md-divider>
 
             <table>
-              <tr ng-repeat="tactic in tactics"><td>{{tactic}}</td></tr>
+              <!-- <tr ng-repeat="key in tactics"> -->
+              <tr *ngFor="let item of tactics">
+                <td>{{tactics}} </td>
+              </tr>
             </table>
 
           </md-card-content>

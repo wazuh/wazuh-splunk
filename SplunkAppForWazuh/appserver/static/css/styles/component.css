@@ -120,6 +120,13 @@ md-chip {
   margin: 0 8px 0 0 !important;
 }
 
+.modalFlexData {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  padding-right: 5%;
+}
+
 .euiFlexGroup {
   display: -webkit-box;
   display: -ms-flexbox;

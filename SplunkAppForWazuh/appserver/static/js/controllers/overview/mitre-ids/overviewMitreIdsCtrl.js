@@ -60,28 +60,44 @@ define([
       this.groupHandler = $groupHandler
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
-        
-        this.scope.tactics = mitre_tactics
+        // this.scope.tactics = mitre_tactics
         this.scope.techniques = Object.entries(mitre_techniques)
+
+        const mysearch = new SearchManager({
+          id: "search1",
+          preview: true,
+          cache: false,
+          status_buckets: 300,
+          search: `index=wazuh ${this.filters} rule.mitre.tactic{}=* | stats count by rule.mitre.tactic{}`
+        });
+        const myResults = mysearch.data("preview", {});
+        myResults.on("data", () => {
+          if (myResults.hasData())
+            this.scope.countTactics = myResults.collection().raw.rows;
+
+            var tacticsCount = []
+            //set every counter to zero
+            mitre_tactics.map((item) => {
+              var tacticsContent = {};                  
+              tacticsContent['name'] = item;
+              tacticsContent['count'] = '0';
+              tacticsCount.push(tacticsContent)
+            });
+
+            //set number of tactics for each tactic
+            tacticsCount.map((item)=>{              
+              if(mitre_tactics.includes(item.name)) {
+                tacticsCount[item.name] = item.count
+              }
+            })
+            this.scope.tactics = tacticsCount
+
+        });
 
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) { } //eslint-disable-line
-
-      const mysearch = new SearchManager({
-        id: "search1",
-        preview: true,
-        cache: false,
-        status_buckets: 300,
-        search: `index=wazuh ${this.filters} rule.mitre.tactic{}=* | stats count by rule.mitre.tactic{}`
-      });
-      const myResults = mysearch.data("preview", {});
-      myResults.on("data", () => {
-        if (myResults.hasData())
-          this.scope.countTactics = myResults.collection().raw.rows;
-          console.log(this.scope.countTactics);
-      });
 
       this.scope.$applyAsync()
     }
@@ -89,7 +105,7 @@ define([
     /**
      * On controller loads
      */
-    $onInit() {      
+    $onInit() {            
       this.scope.addingAgents = false
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
@@ -101,7 +117,6 @@ define([
       this.scope.node_name = 'all'
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.showMitreTechniqueModal = (technique) => this.showMitreTechniqueModal(technique)
       this.scope.$on('$destroy', () => {
         this.topAgent.destroy()
       })
@@ -120,43 +135,731 @@ define([
 
     }
 
-    /**
-     * Exports the table in CSV format
-     */
-    showMitreTechniqueModal(technique) {
-      console.log(technique)
-    }
-
     loadRegistryValueDetails = async (item) => {
-      console.log(item);
-      var parentEl = angular.element(document.body);
-      this.$mdDialog.show({
-        parent: parentEl,
-        template:
-          `<md-dialog aria-label="List dialog">
-          <h3 class="wz-headline-title boldText">Technique ${item[1].name}</h3>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <md-dialog-content>
+      try {           
+        const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${item[0]}` })
+        const mitreData = newRequestMitre.data.data.affected_items[0];
+
+        console.log(mitreData);
+
+        var parentEl = angular.element(document.body);
+        this.$mdDialog.show({
+          parent: parentEl,
+          template:
+          `<md-dialog aria-label="List dialog" style="max-width: 75%;">
+            <h3 class="wz-headline-title boldText">Technique ${item[1].name}</h3>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
+              <div class="modalFlexData">            
+                <p><b>Id: </b>${mitreData.id}</p>  
+                <p><b>Tactic: </b>${mitreData.phase_name}</p>
+              </div>
+              <div class="modalFlexData">
+                <p><b>Platform: </b>${mitreData.platform_name}</p>  
+                <p><b>Version: </b>${mitreData.json.x_mitre_version}</p>
+              </div>
+              
+              <p><b>Data sources: </b>${mitreData.json.x_mitre_data_sources}</p>
+
+              <p><b>Description: </b>${mitreData.json.x_mitre_detection}</p>
+
+              <table>
+                <tr>
+                  <th>Time</th>
+                  <th>Agent</th>
+                  <th>Agent name</th>
+                  <th>Technique(s)</th>
+                  <th>Tactic(s)</th>
+                  <th>Level</th>
+                  <th>Rule ID</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+                <tr>
+                  <td>May 10, 2021 @ 17:03:12.919</td>
+                  <td>005</td>
+                  <td>RHEL7</td>
+                  <td>T1110</td>
+                  <td>Credential Access</td>
+                  <td>10</td>
+                  <td>5720</td>
+                  <td>	
+                  syslog: User missed the password more than one time</td>          
+                </tr>
+              
+
+              </table>
+
             
-           
-          </md-dialog-content>
-          <md-dialog-actions>
-            <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
-              Close
-            </md-button>
-          </md-dialog-actions>
-        </md-dialog>;`,
-        locals: {
-          items: item
-        },
-        controller: DialogController,
-        controllerAs: 'ctrl'
-     })
-     function DialogController($mdDialog) {
-       this.closeDialog = function() {
-         $mdDialog.hide()
-       }
-     }
+            </md-dialog-content>
+            <md-dialog-actions>
+              <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
+                Close
+              </md-button>
+            </md-dialog-actions>
+          </md-dialog>;`,
+          locals: {
+            items: item
+          },
+          controller: DialogController,
+          controllerAs: 'ctrl'
+        })
+        function DialogController($mdDialog) {
+          this.closeDialog = function() {
+            $mdDialog.hide()
+          }
+        }
+      }catch (err) {
+        console.error(err);
+      }
     }
 
     async downloadCsv() {
