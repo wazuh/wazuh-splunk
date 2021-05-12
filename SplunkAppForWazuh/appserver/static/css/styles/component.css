@@ -139,6 +139,42 @@ md-chip {
   flex-grow: 1;
 }
 
+.wz-tactics-list li{
+  padding: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wz-hover-underline:hover{
+  text-decoration: underline;
+}
+.wz-flex-list{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  margin-right: 1%;
+}
+.wz-flex-list{}
+.wz-green-badge{
+  font-family: monospace ;
+  font-size: 12px;
+  color: white;
+  background-color: #396e3e;
+  height: 25px;
+  line-height: 26px;
+  cursor: default;
+  border-radius: 16px;
+  padding: 0 8px;
+  text-align: center;
+}
+
 .euiFlexGroup--directionRow {
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;

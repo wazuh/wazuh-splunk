@@ -59,13 +59,10 @@
             <span class="wz-headline-title"><i class="fa fa-fw fa-file-o"></i> Tactics</span>          
             <md-divider class="wz-margin-top-10"></md-divider>
 
-            <table>
-              <!-- <tr ng-repeat="key in tactics"> -->
-              <tr *ngFor="let item of tactics">
-                <td>{{tactics}} </td>
-              </tr>
-            </table>
-
+            <ul class="wz-tactics-list cursor-pointer noDot">
+              <li ng-repeat="tactic in sortedTactics" class="wz-hover-underline"><span class="euiFlexItem ">{{tactic[0]}}</span><span
+                  class="euiFlexItem wz-green-badge">{{tactic[1]}}</span></li>
+            </ul>
           </md-card-content>
         </md-card>
 
@@ -76,10 +73,13 @@
             <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
             </div>
             <!-- Table content -->
-            <div style="overflow-y: scroll;" layout="row" class=" {'fullscreen': expandArray[1]} wz-margin-top-10 wz-margin-bottom-40-inv techniques-wraper height-530">
-              <ul class="euiFlexGrid" > 
-                <li ng-click="loadRegistryValueDetails(technique)" ng-repeat="technique in techniques" class="cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 ">{{technique[0]}} -- {{technique[1].name}}</li>
-                <!-- <li ng-click="expand(1,'agentsElement')" ng-repeat="technique in techniques" class="cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 ">{{technique[0]}} -- {{technique[1].name}}</li> -->
+            <div style="overflow-y: scroll;" layout="row"
+              class=" {'fullscreen': expandArray[1]} wz-margin-top-10 wz-margin-bottom-40-inv techniques-wraper height-530">
+              <ul class="euiFlexGrid">
+                <li ng-click="loadRegistryValueDetails(technique)" ng-repeat="technique in sortedTechniques"
+                  class="wz-flex-list cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 wz-hover-underline"><span
+                    class="euiFlexItem">{{technique[0]}} -- {{technique[1].name}}</span><span
+                    class="euiFlexItem wz-green-badge">{{technique[1].count||0}}</span></li>
               </ul>
             </div>
 

@@ -730,42 +730,18 @@ define(['../module'], function(module) {
                   const data = results.data.data.affected_items
                   
                   const tactics = data.reduce((parsed, item)=>{
-                    parsed[item.phase_name[0]]=(!parsed[item.phase_name[0]]?1:++parsed[item.phase_name[0]])
-                    return parsed
+                    parsed[item.phase_name[0]]=0;
+                    return parsed;
                   },{})
 
-                  // const techniques = data.map(item => {
-                  //   return {
-                  //     id: item.id, 
-                  //     name: item.json.name
-                  //   }
-                  // })
-
-                  // return {tactics: Object.keys(tactics), techniques}
-
-                  return Object.keys(tactics)
+                  // return Object.keys(tactics)
+                  return tactics
 
                 } catch (err) {
                   $state.go('overview')
                 }
               }
             ],
-            // mitre: [
-            //   '$requestService',
-            //   '$state',
-            //   async (
-            //     $requestService,
-            //     $state
-            //   ) => {
-            //     try {
-            //       const results = await $requestService.apiReq(`/mitre`)
-            //       console.log(results.data.data.affected_items);
-            //       return results.data.data.affected_items
-            //     } catch (err) {
-            //       $state.go('overview')
-            //     }
-            //   }
-            // ],
             extensions: [
               '$currentDataService',
               async $currentDataService => {
