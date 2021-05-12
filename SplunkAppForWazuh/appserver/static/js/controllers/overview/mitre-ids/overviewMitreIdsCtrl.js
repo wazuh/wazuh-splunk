@@ -68,8 +68,10 @@ define([
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
+      this.onDataModalEvents = this.onDataModalEvents.bind(this)
       try {
 
+        this.scope.modalData = []
         this.scope.tactics = { ...mitre_tactics }
         this.scope.sortedTactics = Object.entries(this.scope.tactics)
         this.scope.techniques = { ...mitre_techniques }
@@ -106,8 +108,89 @@ define([
       this.scope.$applyAsync();
     }
     
-    onDataModalEvents(rows) {
-      this.scope.onDataModalEvents = rows;
+    async onDataModalEvents(rows) {
+      const modalData = rows.map((value) => {
+        return JSON.parse(value[3])
+      });
+      const modalSearch = this.modalSearch;
+
+      const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${this.scope.selectedItem[0]}` })
+      const mitreData = newRequestMitre.data.data.affected_items[0];
+
+      var parentEl = angular.element(document.body);
+
+      console.log(modalData);
+
+
+      this.$mdDialog.show({
+
+        parent: parentEl,
+        template:
+          `<md-dialog aria-label="List dialog" style="max-width: 75%;">
+          <h3 class="wz-headline-title boldText">Technique ${this.scope.selectedItem[1].name}</h3>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
+            <div class="modalFlexData">            
+              <p><b>Id: </b>${mitreData.id}</p>  
+              <p><b>Tactic: </b>${mitreData.phase_name}</p>
+            </div>
+            <div class="modalFlexData">
+              <p><b>Platform: </b>${mitreData.platform_name}</p>  
+              <p><b>Version: </b>${mitreData.json.x_mitre_version}</p>
+            </div>
+            
+            <p><b>Data sources: </b>${mitreData.json.x_mitre_data_sources}</p>
+
+            <p><b>Description: </b>${mitreData.json.description}</p>
+
+            <table>
+                           
+              <tr>                             
+                <th>Time</th>
+                <th>Agent</th>
+                <th>Agent name</th>
+                <th>Technique(s)</th>
+                <th>Tactic(s)</th>
+                <th>Level</th>
+                <th>Rule ID</th>
+                <th>Description</th>
+              </tr>   
+              <tr ng-repeat="(index, row) in ctrl.rows">                             
+                <td>{{row.timestamp}}</td>
+                <td>{{row.agent.id}}</td>
+                <td>{{row.agent.name}}</td>
+                <td>{{row.rule.mitre.id.toString()}}</td>
+                <td>{{row.rule.mitre.tactic.toString()}}</td>
+                <td>{{row.rule.level}}</td>
+                <td>{{row.rule.id}}</td>
+                <td>{{row.rule.description}}</td>
+              </tr>   
+
+            </table>
+
+          </md-dialog-content>
+          <md-dialog-actions>
+            <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
+              Close
+            </md-button>
+          </md-dialog-actions>
+        </md-dialog>;`,
+        locals: {
+          items: this.scope.selectedItem
+        },
+        controller: DialogController,
+        controllerAs: 'ctrl'
+      })
+      function DialogController($mdDialog) {
+
+        this.rows = modalData
+
+        this.closeDialog = () => {
+          modalSearch.destroy()
+          $mdDialog.hide()
+        }
+      }
+
       this.scope.$applyAsync();
     }
 
@@ -150,86 +233,90 @@ define([
     destroy() {
       this.tacticsSearch.destroy()
       this.techniquesSearch.destroy()
-      this.modalSearch.destroy()
     }
 
     loadRegistryValueDetails = async (item) => {
-      try {
 
-        const modalSearch = new SearchHelper({
+      this.scope.selectedItem = item;
+
+      try {
+        this.modalSearch = new SearchHelper({
           id: 'tacticsCountTable',
-          search: `index=wazuh ${this.filters} "rule.mitre.id{}"="${item[0]}" | fields + rule.description, rule.mitre.id{}, rule.mitre.tactic{}, rule.mitre.technique{}`,
+          // search: `index=wazuh ${this.filters} "rule.mitre.id{}"="${item[0]}" | fields + rule.description, rule.mitre.id{}, rule.mitre.tactic{}, rule.mitre.technique{}, timestamp`,
+          search: `index=wazuh ${this.filters} "rule.mitre.id{}"="${item[0]}"`,
           onData: this.onDataModalEvents,
           scope: this.scope
         })
 
-        const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${item[0]}` })
-        const mitreData = newRequestMitre.data.data.affected_items[0];
+        console.log(this.scope.modalData);
 
-        var parentEl = angular.element(document.body);
-        this.$mdDialog.show({
-          parent: parentEl,
-          template:
-            `<md-dialog aria-label="List dialog" style="max-width: 75%;">
-            <h3 class="wz-headline-title boldText">Technique ${item[1].name}</h3>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
-              <div class="modalFlexData">            
-                <p><b>Id: </b>${mitreData.id}</p>  
-                <p><b>Tactic: </b>${mitreData.phase_name}</p>
-              </div>
-              <div class="modalFlexData">
-                <p><b>Platform: </b>${mitreData.platform_name}</p>  
-                <p><b>Version: </b>${mitreData.json.x_mitre_version}</p>
-              </div>
+        // const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${item[0]}` })
+        // const mitreData = newRequestMitre.data.data.affected_items[0];
+
+        // var parentEl = angular.element(document.body);
+        // this.$mdDialog.show({
+        //   parent: parentEl,
+        //   template:
+        //     `<md-dialog aria-label="List dialog" style="max-width: 75%;">
+        //     <h3 class="wz-headline-title boldText">Technique ${item[1].name}</h3>
+        //     <md-divider class="wz-margin-top-10"></md-divider>
+        //     <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
+        //       <div class="modalFlexData">            
+        //         <p><b>Id: </b>${mitreData.id}</p>  
+        //         <p><b>Tactic: </b>${mitreData.phase_name}</p>
+        //       </div>
+        //       <div class="modalFlexData">
+        //         <p><b>Platform: </b>${mitreData.platform_name}</p>  
+        //         <p><b>Version: </b>${mitreData.json.x_mitre_version}</p>
+        //       </div>
               
-              <p><b>Data sources: </b>${mitreData.json.x_mitre_data_sources}</p>
+        //       <p><b>Data sources: </b>${mitreData.json.x_mitre_data_sources}</p>
 
-              <p><b>Description: </b>${mitreData.json.description}</p>
+        //       <p><b>Description: </b>${mitreData.json.description}</p>
 
-              <table>
-                <tr>
-                  <th>Time</th>
-                  <th>Agent</th>
-                  <th>Agent name</th>
-                  <th>Technique(s)</th>
-                  <th>Tactic(s)</th>
-                  <th>Level</th>
-                  <th>Rule ID</th>
-                  <th>Description</th>
-                </tr>
-                <tr>
-                  <td>May 10, 2021 @ 17:03:12.919</td>
-                  <td>005</td>
-                  <td>RHEL7</td>
-                  <td>T1110</td>
-                  <td>Credential Access</td>
-                  <td>10</td>
-                  <td>5720</td>
-                  <td>	
-                  syslog: User missed the password more than one time</td>          
-                </tr>                             
-              </table>
+        //       <table>
+        //         <tr>
+        //           <th>Time</th>
+        //           <th>Agent</th>
+        //           <th>Agent name</th>
+        //           <th>Technique(s)</th>
+        //           <th>Tactic(s)</th>
+        //           <th>Level</th>
+        //           <th>Rule ID</th>
+        //           <th>Description</th>
+        //         </tr>
+        //         <tr>
+        //           <td>May 10, 2021 @ 17:03:12.919</td>
+        //           <td>005</td>
+        //           <td>RHEL7</td>
+        //           <td>T1110</td>
+        //           <td>Credential Access</td>
+        //           <td>10</td>
+        //           <td>5720</td>
+        //           <td>	
+        //           syslog: User missed the password more than one time</td>          
+        //         </tr>                             
+        //       </table>
 
-            </md-dialog-content>
-            <md-dialog-actions>
-              <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
-                Close
-              </md-button>
-            </md-dialog-actions>
-          </md-dialog>;`,
-          locals: {
-            items: item
-          },
-          controller: DialogController,
-          controllerAs: 'ctrl'
-        })
-        function DialogController($mdDialog) {
-          this.closeDialog = () => {
-            modalSearch.destroy()
-            $mdDialog.hide()
-          }
-        }
+        //     </md-dialog-content>
+        //     <md-dialog-actions>
+        //       <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
+        //         Close
+        //       </md-button>
+        //     </md-dialog-actions>
+        //   </md-dialog>;`,
+        //   locals: {
+        //     items: item
+        //   },
+        //   controller: DialogController,
+        //   controllerAs: 'ctrl'
+        // })
+        // function DialogController($mdDialog) {
+        //   this.closeDialog = () => {
+        //     modalSearch.destroy()
+        //     $mdDialog.hide()
+        //   }
+        // }
       } catch (err) {
         console.error(err);
       }
