@@ -20,8 +20,7 @@
   </div>
 
   <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
-      aria-hidden="true"></i></div>
+  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"aria-hidden="true"></i></div>
 
   <!-- Threat Detection and Response navbar -->
   <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'mitre-ids'">
@@ -51,6 +50,11 @@
     </div>
     <div ng-show="!loadingVizz">
 
+      <div ng-show="loadingModalData">
+        <div align='center'>
+          Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+        </div>
+      </div>
 
       <!-- <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'"> -->
       <div layout="row" style="overflow-y: scroll;" class="wz-padding-top-0">

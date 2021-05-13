@@ -15,8 +15,9 @@ define([
   '../../../dashboardMain',
   './lib/mitre-techniques',
   './lib/discover-search-helper',
+  '../../../services/visualizations/table/table',
   'FileSaver',
-], function (app, DashboardMain, mitre_techniques, SearchHelper) {
+], function (app, DashboardMain, mitre_techniques, SearchHelper, Table) {
   'use strict'
 
   class OverviewMitreIds extends DashboardMain {
@@ -72,6 +73,7 @@ define([
       try {
 
         this.scope.modalData = []
+        this.scope.loadingModalData = false
         this.scope.tactics = { ...mitre_tactics }
         this.scope.sortedTactics = Object.entries(this.scope.tactics)
         this.scope.techniques = { ...mitre_techniques }
@@ -82,6 +84,16 @@ define([
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) { } //eslint-disable-line
+
+      //Splunk table
+      this.vizz = [
+        new Table(
+          'agentsSummaryVizz',
+          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'agentsSummaryVizz',
+          this.scope
+        ),
+      ];
 
       this.tacticsSearch = new SearchHelper({
         id: 'tacticsCount',
@@ -108,7 +120,7 @@ define([
       this.scope.$applyAsync();
     }
     
-    async onDataModalEvents(rows) {
+    async onDataModalEvents(rows) {      
       const modalData = rows.map((value) => {
         return JSON.parse(value[3])
       });
@@ -119,8 +131,8 @@ define([
 
       var parentEl = angular.element(document.body);
 
-      console.log(modalData);
-
+      //hide spinner when the informations has been loaded
+      this.scope.loadingModalData = false;
 
       this.$mdDialog.show({
 
@@ -143,31 +155,13 @@ define([
 
             <p><b>Description: </b>${mitreData.json.description}</p>
 
-            <table>
-                           
-              <tr>                             
-                <th>Time</th>
-                <th>Agent</th>
-                <th>Agent name</th>
-                <th>Technique(s)</th>
-                <th>Tactic(s)</th>
-                <th>Level</th>
-                <th>Rule ID</th>
-                <th>Description</th>
-              </tr>   
-              <tr ng-repeat="(index, row) in ctrl.rows">                             
-                <td>{{row.timestamp}}</td>
-                <td>{{row.agent.id}}</td>
-                <td>{{row.agent.name}}</td>
-                <td>{{row.rule.mitre.id.toString()}}</td>
-                <td>{{row.rule.mitre.tactic.toString()}}</td>
-                <td>{{row.rule.level}}</td>
-                <td>{{row.rule.id}}</td>
-                <td>{{row.rule.description}}</td>
-              </tr>   
-
-            </table>
-
+            <md-card flex="100" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+              <md-card-content class="wazuh-column">
+                <span class="wz-headline-title">Events</span>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <div id='agentsSummaryVizz'></div>
+              </md-card-content>
+            </md-card>
           </md-dialog-content>
           <md-dialog-actions>
             <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
@@ -178,6 +172,30 @@ define([
         locals: {
           items: this.scope.selectedItem
         },
+      //   <table>
+                           
+      //   <tr>                             
+      //     <th>Time</th>
+      //     <th>Agent</th>
+      //     <th>Agent name</th>
+      //     <th>Technique(s)</th>
+      //     <th>Tactic(s)</th>
+      //     <th>Level</th>
+      //     <th>Rule ID</th>
+      //     <th>Description</th>
+      //   </tr>   
+      //   <tr ng-repeat="(index, row) in ctrl.rows">                             
+      //     <td>{{row.timestamp}}</td>
+      //     <td>{{row.agent.id}}</td>
+      //     <td>{{row.agent.name}}</td>
+      //     <td>{{row.rule.mitre.id.toString()}}</td>
+      //     <td>{{row.rule.mitre.tactic.toString()}}</td>
+      //     <td>{{row.rule.level}}</td>
+      //     <td>{{row.rule.id}}</td>
+      //     <td>{{row.rule.description}}</td>
+      //   </tr>   
+
+      // </table>
         controller: DialogController,
         controllerAs: 'ctrl'
       })
@@ -228,6 +246,17 @@ define([
           return ''
         }
       }        
+      this.scope.startVis2Png = () =>
+      this.reportingService.startVis2Png(
+        'overview-general',
+        'Security events',
+        this.filters,
+        [
+          'agentsSummaryVizz'
+        ],
+        this.reportMetrics,
+        this.tableResults
+      )
     }
 
     destroy() {
@@ -236,6 +265,8 @@ define([
     }
 
     loadRegistryValueDetails = async (item) => {
+      //display loading spinner while information is loading
+      this.scope.loadingModalData = true;
 
       this.scope.selectedItem = item;
 
