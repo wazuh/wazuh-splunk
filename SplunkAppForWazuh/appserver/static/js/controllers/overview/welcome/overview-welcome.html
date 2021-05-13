@@ -148,11 +148,6 @@
                 switch-change="toggleExtension('docker',!extensions.docker)">
               </wz-kbn-switch><span>Docker listener</span>
             </li>
-            <li>
-              <wz-kbn-switch switch-model="extensions.mitre"
-                switch-change="toggleExtension('mitre',!extensions.mitre)">
-              </wz-kbn-switch><span>MITRE ATT&amp;CK</span>
-            </li>
           </ul>
         </div>
         <div class="euiSpacer euiSpacer--m"></div>
@@ -160,6 +155,11 @@
           <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
             sub-title="'Vulnerabilities'" ui-sref='ow-vul' current-tab="'vuls'"
             description="'Discover what applications in your environment are affected by well-known vulnerabilities.'">
+          </wz-welcome-card>
+          <wz-welcome-card class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/mitre.svg'" sub-title="'MITRE ATT&amp;CK'" ui-sref='ow-mitre'
+            current-tab="'mitre'"
+            description="'Security events from the knowledge base of adversary tactics and techniques based on real-world observations.'">
           </wz-welcome-card>
           <wz-welcome-card ng-if="extensions.virustotal" class="euiFlexItem"
             logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'" sub-title="'VirusTotal'"
@@ -170,11 +170,6 @@
             logo="'/static/app/SplunkAppForWazuh/css/images/osquery.svg'" sub-title="'Osquery'" ui-sref='ow-osquery'
             current-tab="'osquery'"
             description="'Osquery allows to expose an operating system as a high-performance relational database.'">
-          </wz-welcome-card>
-          <wz-welcome-card ng-if="extensions.mitre" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/mitre.svg'" sub-title="'MITRE ATT&amp;CK'" ui-sref='ow-mitre'
-            current-tab="'mitre'"
-            description="'Security events from the knowledge base of adversary tactics and techniques based on real-world observations.'">
           </wz-welcome-card>
           <wz-welcome-card ng-if="extensions.docker" class="euiFlexItem"
           logo="'/static/app/SplunkAppForWazuh/css/images/docker.svg'" sub-title="'Docker listener'"

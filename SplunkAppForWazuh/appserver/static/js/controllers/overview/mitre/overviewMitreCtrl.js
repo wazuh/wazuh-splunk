@@ -58,7 +58,9 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.notification = $notificationService
-
+      this.currentDataService.addFilter(
+        `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
+      )
       this.scope.expandArray = [false, false, false, false, false]
 
       this.filters = this.getFilters()
