@@ -30,6 +30,7 @@ define([
      * @param {Object} $notificationService
      * @param {Object} $requestService
      * @param {Object} agentData
+     * @param {*} $reportingService
      */
 
     constructor(
