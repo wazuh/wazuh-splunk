@@ -71,6 +71,10 @@
   min-height: 300px;
 }
 
+.height-80-percent {
+  height: 80%;
+}
+
 .btns-separator{
   width: 0px;
   height: 40px;

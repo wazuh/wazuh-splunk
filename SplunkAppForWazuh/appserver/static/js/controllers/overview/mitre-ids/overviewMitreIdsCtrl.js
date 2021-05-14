@@ -41,12 +41,11 @@ define([
       $notificationService,
       $reportingService,
       $requestService,
-      $csvRequestService,
       $tableFilterService,
       mitre_tactics,
       $mdDialog,
-      $groupHandler,
-      $dateDiffService
+      $dateDiffService,
+      extensions
     ) {
       super(
         $scope,
@@ -56,6 +55,7 @@ define([
         $urlTokenModel
       )
       this.scope = $scope
+      this.scope.extensions = extensions
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
@@ -66,12 +66,9 @@ define([
       this.notification = $notificationService
       this.currentClusterInfo = this.currentDataService.getClusterInfo()
       this.filters = this.currentDataService.getSerializedFilters()
-      this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.$mdDialog = $mdDialog
-      this.groupHandler = $groupHandler
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
-      this.onDataModalEvents = this.onDataModalEvents.bind(this)
       this.vizz = []
 
       try {
@@ -112,15 +109,6 @@ define([
         return (b[1] || 0) - (a[1] || 0);
       });
       this.scope.$applyAsync();
-    }
-
-    async onDataModalEvents(rows) {
-      const modalData = rows.map((value) => {
-        return JSON.parse(value[3])
-      });
-      const modalSearch = this.modalSearch;
-
-
     }
 
     onDataTechniques(rows) {
@@ -254,10 +242,6 @@ define([
       } catch (err) {
         console.error(err);
       }
-    }
-
-    async downloadCsv() {
-      return
     }
 
     /**
