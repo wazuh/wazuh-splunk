@@ -11,27 +11,32 @@
  */
 define([
   "splunkjs/mvc/searchmanager",
+  'splunkjs/mvc/utils',
   'splunkjs/mvc',
-], function (SearchManager, mvc) {
+], function (SearchManager, utils, mvc) {
   'use strict'
-
   return class DiscoverSearchHelper {
-
-    constructor({ id, search, onData, scope }) {
+    constructor({ id, search, onData, scope, earliest_time, latest_time }) {
       this.id = id;
       this.scope = scope;
+      this.sanitizeTime({ earliest_time, latest_time })
       this.onData = typeof onData === 'function' ? onData : function () { };
       this.manager = new SearchManager({
         id: this.id,
         preview: true,
-        cache: false,
-        status_buckets: 300,
-        search: search
+        cache: 30,
+        status_buckets: 0,
+        search: search,
+        cancelOnUnload: true,
+        app: utils.getCurrentApp(),
+        auto_cancel: 90,
+        // runWhenTimeIsUndefined: false,
+        earliest_time: this.earliest_time,
+        latest_time: this.latest_time
       });
       this.manager.on('search:done', () => {
         this.scope.loadingVizz = false;
         this.scope.$applyAsync();
-
         this.data = this.manager.data("results", {});
         this.data.on("data", () => {
           if (this.data.hasData()) {
@@ -40,6 +45,18 @@ define([
           }
         });
       })
+    }
+    sanitizeTime({ earliest_time, latest_time }) {
+      if (typeof earliest_time === 'undefined')// || earliest_time === '')
+        this.earliest_time = '0'
+      else
+        this.earliest_time = earliest_time
+      if (typeof latest_time === 'undefined' || latest_time === ''){
+      //   this.latest_time = ''
+      // else if (latest_time === '')
+        this.latest_time = 'now'}
+      else
+        this.latest_time = latest_time
     }
     destroy() {
       try {
@@ -50,5 +67,4 @@ define([
       }
     }
   }
-
 })

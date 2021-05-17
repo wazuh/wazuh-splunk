@@ -12,15 +12,15 @@
  */
 define([
   '../../module',
-  '../../../dashboardMain',
   './lib/mitre-techniques',
   './lib/discover-search-helper',
   '../../../services/visualizations/table/table',
+  '../../../services/visualizations/inputs/time-picker',
   'FileSaver',
-], function (app, DashboardMain, mitre_techniques, SearchHelper, Table) {
+], function (app, mitre_techniques, SearchHelper, Table, TimePicker) {
   'use strict'
 
-  class OverviewMitreIds extends DashboardMain {
+  class OverviewMitreIds {
     /**
      * Class constructor
      * @param {Object} $urlTokenModel
@@ -34,50 +34,54 @@ define([
      */
 
     constructor(
-      $urlTokenModel,
       $scope,
       $currentDataService,
       $state,
       $notificationService,
-      $reportingService,
       $requestService,
-      $tableFilterService,
       mitre_tactics,
       $mdDialog,
       $dateDiffService,
-      extensions
+      $urlTokenModel
     ) {
-      super(
-        $scope,
-        $reportingService,
-        $state,
-        $currentDataService,
-        $urlTokenModel
-      )
       this.scope = $scope
-      this.scope.extensions = extensions
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
       )
+      this.modalOpen = false
       this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
       this.state = $state
       this.notification = $notificationService
       this.currentClusterInfo = this.currentDataService.getClusterInfo()
       this.filters = this.currentDataService.getSerializedFilters()
-      this.wzTableFilter = $tableFilterService
+      this.mitre_tactics = mitre_tactics
+      this.mitre_techniques = mitre_techniques
       this.$mdDialog = $mdDialog
+      this.urlTokenModel = $urlTokenModel
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
+      this.reloadFilters = this.reloadFilters.bind(this)
       this.vizz = []
 
       try {
         this.scope.loadingModalData = false
-        this.scope.tactics = { ...mitre_tactics }
-        this.scope.sortedTactics = Object.entries(this.scope.tactics)
-        this.scope.techniques = { ...mitre_techniques }
-        this.scope.sortedTechniques = Object.entries(this.scope.techniques)
-        this.filters = this.getFilters();
+        // Initialize time tokens to default
+        if (
+          !this.urlTokenModel.has('earliest') &&
+          !this.urlTokenModel.has('latest')
+        ) {
+          this.urlTokenModel.set({ earliest: '0', latest: '' })
+        }
+        this.timePicker = new TimePicker(
+          '#timePicker',
+          this.reloadFilters
+        )
+        // this.scope.tactics = { ...mitre_tactics }
+        // this.scope.sortedTactics = Object.entries(this.scope.tactics)
+        // this.scope.techniques = { ...mitre_techniques }
+        // this.scope.sortedTechniques = Object.entries(this.scope.techniques)
+        // this.filters = this.getFilters();
 
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
@@ -86,19 +90,19 @@ define([
 
 
 
-      this.tacticsSearch = new SearchHelper({
-        id: 'tacticsCount',
-        search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
-        onData: this.onDataTactics,
-        scope: this.scope
-      })
+      // this.tacticsSearch = new SearchHelper({
+      //   id: 'tacticsCount',
+      //   search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
+      //   onData: this.onDataTactics,
+      //   scope: this.scope
+      // })
 
-      this.techniquesSearch = new SearchHelper({
-        id: 'techniquesCount',
-        search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
-        onData: this.onDataTechniques,
-        scope: this.scope
-      })
+      // this.techniquesSearch = new SearchHelper({
+      //   id: 'techniquesCount',
+      //   search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
+      //   onData: this.onDataTechniques,
+      //   scope: this.scope
+      // })
       this.scope.$applyAsync()
     }
     onDataTactics(rows) {
@@ -121,6 +125,54 @@ define([
       this.scope.$applyAsync();
     }
 
+    loadModalEventsTable() {
+      this.vizz.push(
+        new Table(
+          'mitre-technique-details-vizz',
+          `index=wazuh ${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'mitre-technique-details-vizz',
+          this.scope
+        )
+      )
+      this.scope.loadingModalData = false
+    }
+    /**
+     * Loas Main Tactics and Techniques
+     */
+    loadTacticsTechniques(earliest_time, latest_time) {
+      this.scope.loadingVizz = true
+      this.scope.tactics = { ...this.mitre_tactics }
+      this.scope.sortedTactics = Object.entries(this.scope.tactics)
+      this.scope.techniques = { ...this.mitre_techniques }
+      this.scope.sortedTechniques = Object.entries(this.scope.techniques)
+      this.tacticsSearch = new SearchHelper({
+        id: 'tacticsCount',
+        search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
+        onData: this.onDataTactics,
+        scope: this.scope,
+        earliest_time, 
+        latest_time
+      })
+
+      this.techniquesSearch = new SearchHelper({
+        id: 'techniquesCount',
+        search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
+        onData: this.onDataTechniques,
+        scope: this.scope,
+        earliest_time, 
+        latest_time
+      })
+    }
+    reloadFilters(input, newValue) {
+      console.log(input)
+      const {earliest_time, latest_time} = newValue;
+      this.filters = this.currentDataService.getSerializedFilters()
+      this.destroy()
+      this.loadTacticsTechniques(earliest_time, latest_time)
+      if (this.modalOpen) {
+        this.loadModalEventsTable()
+      }
+    }
     /**
      * On controller loads
      */
@@ -136,8 +188,28 @@ define([
       this.scope.node_name = 'all'
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.$on('$destroy', () => { this.destroy() })
+      this.scope.$on('$destroy', () => {
+        this.destroy()
+        this.timePicker.destroy()
+      })
       this.scope.reloadList = () => this.reloadList()
+      this.loadTacticsTechniques()
+
+      // Listeners
+      this.scope.$on('deletedFilter', event => {
+        event.stopPropagation()
+        this.filters = this.currentDataService.getSerializedFilters()
+        this.destroy()
+        this.loadTacticsTechniques()
+        if (this.modalOpen) {
+          this.loadModalEventsTable()
+        }
+      })
+
+      this.scope.$on('barFilter', event => {
+        event.stopPropagation()
+        this.reloadFilters()
+      })
       this.scope.offsetTimestamp = (text, time) => {
         try {
           return text + this.setBrowserOffset(time)
@@ -145,22 +217,16 @@ define([
           return ''
         }
       }
-      this.scope.startVis2Png = () =>
-        this.reportingService.startVis2Png(
-          'overview-general',
-          'Security events',
-          this.filters,
-          [
-            'agentsSummaryVizz'
-          ],
-          this.reportMetrics,
-          this.tableResults
-        )
     }
 
     destroy() {
       this.tacticsSearch.destroy()
       this.techniquesSearch.destroy()
+      this.vizz.forEach(vizz => {
+        angular.element(vizz.element.el).empty()
+        vizz.destroy()
+      })
+      this.vizz = []
     }
 
     loadRegistryValueDetails = async (item) => {
@@ -215,14 +281,8 @@ define([
             items: this.scope.selectedItem
           },
           onComplete: () => {
-            this.vizz.push(
-              new Table(
-                'mitre-technique-details-vizz',
-                `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-                'mitre-technique-details-vizz',
-                this.scope
-              )
-            )
+            this.modalOpen = true
+            this.loadModalEventsTable()
           },
           controller: DialogController,
           controllerAs: 'ctrl'
@@ -231,8 +291,9 @@ define([
 
           this.$scope = $scope
           this.closeDialog = () => {
+            ParentCtrl.modalOpen = false
             ParentCtrl.vizz.map(vizz => vizz.destroy())
-            ParentCtrl.vizz.pop()
+            ParentCtrl.vizz = []
             $mdDialog.hide()
           }
         }
@@ -243,24 +304,6 @@ define([
         console.error(err);
       }
     }
-
-    /**
-     * Launches the query
-     * @param {String} query
-     * @param {String} search
-     */
-    query(query, search) {
-      this.scope.$broadcast('wazuhQuery', { query, search })
-    }
-
-    /**
-     * Reload list of agents
-     */
-    reloadList() {
-      this.scope.$broadcast('reloadSearchFilterBar', {})
-    }
-
-
   }
   app.controller('overviewMitreIdsCtrl', OverviewMitreIds)
 })
