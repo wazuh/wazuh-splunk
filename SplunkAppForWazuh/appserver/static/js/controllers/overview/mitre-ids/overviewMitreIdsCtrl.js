@@ -109,17 +109,28 @@ define([
       });
       this.scope.$applyAsync();
     }
+    cleanModalTable(){
+      this.vizz.forEach(vizz => {
+        angular.element(vizz.element.el).empty()
+        vizz.destroy()
+      })
+      this.vizz = []
+    }
 
     loadModalEventsTable() {
-      this.vizz.push(
-        new Table(
-          'mitre-technique-details-vizz',
-          `index=wazuh ${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'mitre-technique-details-vizz',
-          this.scope
+      if(!this.scope.loadingModalData){
+        this.scope.loadingModalData = true
+        this.cleanModalTable()
+        this.vizz.push(
+          new Table(
+            'mitre-technique-details-vizz',
+            `index=wazuh ${this.filters} sourcetype=wazuh rule.mitre.id{}=${this.scope.selectedItem[0]} | stats count by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+            'mitre-technique-details-vizz',
+            this.scope
+          )
         )
-      )
-      this.scope.loadingModalData = false
+        this.scope.loadingModalData = false
+      }
     }
     /**
      * Loas Main Tactics and Techniques
@@ -133,8 +144,8 @@ define([
       for (let id in this.scope.techniques)
         this.scope.techniques[id].count = 0
       if (typeof earliest_time == 'undefined' && typeof latest_time == 'undefined') {
-        earliest_time = this.urlTokenModel.has('form.when.earliest')
-        latest_time = this.urlTokenModel.has('form.when.latest')
+        earliest_time = this.urlTokenModel.get('form.when.earliest')
+        latest_time = this.urlTokenModel.get('form.when.latest')
       }
       this.scope.sortedTechniques = Object.entries(this.scope.techniques)
       this.tacticsSearch = new SearchHelper({
@@ -155,8 +166,9 @@ define([
         latest_time
       })
     }
+
     reloadFilters(input) {
-      const { earliest_time, latest_time } = input.settings.attributes;
+      const { earliest_time, latest_time } = typeof input == 'object' ? input.settings.attributes : this.timePicker.input.settings.attributes;
       this.filters = this.currentDataService.getSerializedFilters()
       this.destroy()
       this.loadTacticsTechniques(earliest_time, latest_time)
@@ -169,6 +181,7 @@ define([
      */
     $onInit() {
       this.scope.addingAgents = false
+      this.scope.hideEmptyRows = false
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
       this.scope.loadRegistryValueDetails = item => this.loadRegistryValueDetails(item)
@@ -199,6 +212,7 @@ define([
 
       this.scope.$on('barFilter', event => {
         event.stopPropagation()
+        event.currentScope.custom_search = "";
         this.reloadFilters()
       })
       this.scope.offsetTimestamp = (text, time) => {
@@ -213,11 +227,7 @@ define([
     destroy() {
       this.tacticsSearch.destroy()
       this.techniquesSearch.destroy()
-      this.vizz.forEach(vizz => {
-        angular.element(vizz.element.el).empty()
-        vizz.destroy()
-      })
-      this.vizz = []
+      this.cleanModalTable()
     }
 
     loadRegistryValueDetails = async (item) => {
@@ -235,7 +245,6 @@ define([
         this.scope.loadingModalData = false;
 
         this.$mdDialog.show({
-
           parent: parentEl,
           scope: this.scope,
           preserveScope: true,
@@ -257,6 +266,7 @@ define([
 
             <p><b>Description: </b>${mitreData.json.description}</p>
               <h6 class="wz-headline-title">Events</h6>
+              <div style="margin-right:7px;" id='timePickerModal'></div>
               <md-divider class="wz-margin-top-10"></md-divider>
               <wazuh-bar></wazuh-bar>
               <md-divider class="wz-margin-top-10"></md-divider>
@@ -272,6 +282,10 @@ define([
             items: this.scope.selectedItem
           },
           onComplete: () => {
+            this.timePicker = new TimePicker(
+              '#timePickerModal',
+              this.reloadFilters
+            )
             this.modalOpen = true
             this.loadModalEventsTable()
           },

@@ -501,6 +501,10 @@ div.uil-ring-css {
   margin-bottom: -5px !important;
 }
 
+.wz-height-30 {
+  height: 30px !important;
+}
+
 .wz-height-35 {
   height: 35px !important;
 }
@@ -2105,6 +2109,10 @@ a:hover {
 
 .wz-margin-auto {
   margin: auto !important;
+}
+
+.wz-align-flex-start {
+  align-content: flex-start;
 }
 
 .add-agent-card {
