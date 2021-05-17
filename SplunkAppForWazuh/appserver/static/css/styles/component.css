@@ -145,9 +145,6 @@ md-chip {
   justify-content: space-between;
   align-items: center;
 }
-.wz-hover-underline:hover{
-  text-decoration: underline;
-}
 .wz-flex-list{
   display: -webkit-box;
   display: -ms-flexbox;
@@ -161,7 +158,10 @@ md-chip {
   border-bottom: 1px solid rgba(0,0,0,0.15);
   margin-right: 1%;
 }
-.wz-flex-list{}
+.wz-flex-list.wz-hover-underline:hover span:first-child {
+  text-decoration: underline;
+}
+
 .wz-green-badge{
   font-family: monospace ;
   font-size: 12px;

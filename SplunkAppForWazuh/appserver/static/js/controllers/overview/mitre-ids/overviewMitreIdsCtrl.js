@@ -77,32 +77,17 @@ define([
           '#timePicker',
           this.reloadFilters
         )
-        // this.scope.tactics = { ...mitre_tactics }
-        // this.scope.sortedTactics = Object.entries(this.scope.tactics)
-        // this.scope.techniques = { ...mitre_techniques }
-        // this.scope.sortedTechniques = Object.entries(this.scope.techniques)
-        // this.filters = this.getFilters();
-
+        if (
+          !this.urlTokenModel.has('form.when.earliest') &&
+          !this.urlTokenModel.has('form.when.latest')
+        ) {
+          this.urlTokenModel.set({ 'form.when.earliest': '0', 'form.when.latest': '' })
+        }
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) { } //eslint-disable-line
 
-
-
-      // this.tacticsSearch = new SearchHelper({
-      //   id: 'tacticsCount',
-      //   search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
-      //   onData: this.onDataTactics,
-      //   scope: this.scope
-      // })
-
-      // this.techniquesSearch = new SearchHelper({
-      //   id: 'techniquesCount',
-      //   search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
-      //   onData: this.onDataTechniques,
-      //   scope: this.scope
-      // })
       this.scope.$applyAsync()
     }
     onDataTactics(rows) {
@@ -141,16 +126,23 @@ define([
      */
     loadTacticsTechniques(earliest_time, latest_time) {
       this.scope.loadingVizz = true
-      this.scope.tactics = { ...this.mitre_tactics }
+      this.scope.loadingVizz = true
+      this.scope.tactics = Object.assign({}, this.mitre_tactics)
       this.scope.sortedTactics = Object.entries(this.scope.tactics)
-      this.scope.techniques = { ...this.mitre_techniques }
+      this.scope.techniques = Object.assign({}, this.mitre_techniques)
+      for (let id in this.scope.techniques)
+        this.scope.techniques[id].count = 0
+      if (typeof earliest_time == 'undefined' && typeof latest_time == 'undefined') {
+        earliest_time = this.urlTokenModel.has('form.when.earliest')
+        latest_time = this.urlTokenModel.has('form.when.latest')
+      }
       this.scope.sortedTechniques = Object.entries(this.scope.techniques)
       this.tacticsSearch = new SearchHelper({
         id: 'tacticsCount',
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
         onData: this.onDataTactics,
         scope: this.scope,
-        earliest_time, 
+        earliest_time,
         latest_time
       })
 
@@ -159,13 +151,12 @@ define([
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
         onData: this.onDataTechniques,
         scope: this.scope,
-        earliest_time, 
+        earliest_time,
         latest_time
       })
     }
-    reloadFilters(input, newValue) {
-      console.log(input)
-      const {earliest_time, latest_time} = newValue;
+    reloadFilters(input) {
+      const { earliest_time, latest_time } = input.settings.attributes;
       this.filters = this.currentDataService.getSerializedFilters()
       this.destroy()
       this.loadTacticsTechniques(earliest_time, latest_time)

@@ -60,11 +60,11 @@
       <div layout="row" style="overflow-y: scroll;" class="wz-padding-top-0 80-percent-height">
         <md-card flex="15" class="wz-md-card _md flex" style="height: 70vh;">
           <md-card-content>
-            <span class="wz-headline-title"><i class="fa fa-fw fa-tasks"></i> Tactics</span>          
+            <span class="wz-headline-title"><i class="fa fa-fw fa-th-list"></i> Tactics</span>          
             <md-divider class="wz-margin-top-10"></md-divider>
 
-            <ul class="wz-tactics-list cursor-pointer noDot">
-              <li ng-repeat="tactic in sortedTactics" class="wz-hover-underline"><span class="euiFlexItem ">{{tactic[0]}}</span><span
+            <ul class="wz-tactics-list noDot">
+              <li ng-repeat="tactic in sortedTactics"><span class="euiFlexItem ">{{tactic[0]}}</span><span
                   class="euiFlexItem wz-green-badge">{{tactic[1]}}</span></li>
             </ul>
           </md-card-content>
@@ -72,13 +72,13 @@
 
         <md-card flex="85" class="wz-md-card _md flex" style="height: 70vh;">
           <md-card-content>
-            <span class="wz-headline-title"><i class="fa fa-fw fa-folder-open"></i> Techniques</span>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-th"></i> Techniques</span>
             <md-divider class="wz-margin-top-10"></md-divider>
             <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
             </div>
             <!-- Table content -->
             <div style="overflow-y: scroll;" layout="row"
-              class=" {'fullscreen': expandArray[1]} wz-margin-top-10 wz-margin-bottom-40-inv techniques-wraper height-570">
+              class=" {'fullscreen': expandArray[1]} wz-margin-top-10 wz-margin-bottom-40-inv- height-570">
               <ul class="euiFlexGrid">
                 <li ng-click="loadRegistryValueDetails(technique)" ng-repeat="technique in sortedTechniques"
                   class="wz-flex-list cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 wz-hover-underline"><span

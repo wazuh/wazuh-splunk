@@ -30,7 +30,6 @@ define([
         cancelOnUnload: true,
         app: utils.getCurrentApp(),
         auto_cancel: 90,
-        // runWhenTimeIsUndefined: false,
         earliest_time: this.earliest_time,
         latest_time: this.latest_time
       });
@@ -47,14 +46,12 @@ define([
       })
     }
     sanitizeTime({ earliest_time, latest_time }) {
-      if (typeof earliest_time === 'undefined')// || earliest_time === '')
+      if (typeof earliest_time === 'undefined' || earliest_time === '')
         this.earliest_time = '0'
       else
         this.earliest_time = earliest_time
-      if (typeof latest_time === 'undefined' || latest_time === ''){
-      //   this.latest_time = ''
-      // else if (latest_time === '')
-        this.latest_time = 'now'}
+      if (typeof latest_time === 'undefined' || latest_time === '')
+        this.latest_time = 'now'
       else
         this.latest_time = latest_time
     }
