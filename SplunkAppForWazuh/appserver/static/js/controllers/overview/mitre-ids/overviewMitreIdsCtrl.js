@@ -109,7 +109,7 @@ define([
       });
       this.scope.$applyAsync();
     }
-    cleanModalTable(){
+    cleanModalTable() {
       this.vizz.forEach(vizz => {
         angular.element(vizz.element.el).empty()
         vizz.destroy()
@@ -118,25 +118,27 @@ define([
     }
 
     loadModalEventsTable() {
-      if(!this.scope.loadingModalData){
+      if (!this.scope.loadingModalData) {
         this.scope.loadingModalData = true
         this.cleanModalTable()
-        this.vizz.push(
-          new Table(
-            'mitre-technique-details-vizz',
-            `index=wazuh ${this.filters} sourcetype=wazuh rule.mitre.id{}=${this.scope.selectedItem[0]} | stats count by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-            'mitre-technique-details-vizz',
-            this.scope
-          )
+        const table = new Table(
+          'mitre-technique-details-vizz',
+          `index=wazuh ${this.filters} sourcetype=wazuh rule.mitre.id{}=${this.scope.selectedItem[0]} | stats count by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          'mitre-technique-details-vizz',
+          this.scope
         )
-        this.scope.loadingModalData = false
+        table.search.on('search:done', () => {
+          this.scope.loadingModalData = false
+        })
+        this.vizz.push(
+          table
+        )
       }
     }
     /**
      * Loas Main Tactics and Techniques
      */
     loadTacticsTechniques(earliest_time, latest_time) {
-      this.scope.loadingVizz = true
       this.scope.loadingVizz = true
       this.scope.tactics = Object.assign({}, this.mitre_tactics)
       this.scope.sortedTactics = Object.entries(this.scope.tactics)
@@ -194,6 +196,7 @@ define([
       this.scope.downloadCsv = () => this.downloadCsv()
       this.scope.$on('$destroy', () => {
         this.destroy()
+        this.cleanModalTable()
         this.timePicker.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
@@ -202,12 +205,7 @@ define([
       // Listeners
       this.scope.$on('deletedFilter', event => {
         event.stopPropagation()
-        this.filters = this.currentDataService.getSerializedFilters()
-        this.destroy()
-        this.loadTacticsTechniques()
-        if (this.modalOpen) {
-          this.loadModalEventsTable()
-        }
+        this.reloadFilters()
       })
 
       this.scope.$on('barFilter', event => {
@@ -227,7 +225,6 @@ define([
     destroy() {
       this.tacticsSearch.destroy()
       this.techniquesSearch.destroy()
-      this.cleanModalTable()
     }
 
     loadRegistryValueDetails = async (item) => {
@@ -266,9 +263,11 @@ define([
 
             <p><b>Description: </b>${mitreData.json.description}</p>
               <h6 class="wz-headline-title">Events</h6>
-              <div style="margin-right:7px;" id='timePickerModal'></div>
               <md-divider class="wz-margin-top-10"></md-divider>
-              <wazuh-bar></wazuh-bar>
+              <div style="display:flex;" >
+                <wazuh-bar flex></wazuh-bar>
+                <div style="flex:0" id='timePickerModal'></div>
+              </div>
               <md-divider class="wz-margin-top-10"></md-divider>
               <div id='mitre-technique-details-vizz'></div>
           </md-dialog-content>
@@ -287,7 +286,6 @@ define([
               this.reloadFilters
             )
             this.modalOpen = true
-            this.loadModalEventsTable()
           },
           controller: DialogController,
           controllerAs: 'ctrl'
@@ -297,8 +295,7 @@ define([
           this.$scope = $scope
           this.closeDialog = () => {
             ParentCtrl.modalOpen = false
-            ParentCtrl.vizz.map(vizz => vizz.destroy())
-            ParentCtrl.vizz = []
+            ParentCtrl.cleanModalTable()
             $mdDialog.hide()
           }
         }

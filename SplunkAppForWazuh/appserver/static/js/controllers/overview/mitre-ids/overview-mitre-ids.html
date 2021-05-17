@@ -83,7 +83,7 @@
             <!-- Table content -->
             <div style="overflow-y: scroll;" layout="row"
               class=" {'fullscreen': expandArray[1]} wz-margin-top-10 wz-margin-bottom-40-inv- height-570">
-              <ul class="wz-align-flex-start euiFlexGrid">
+              <ul flex class="wz-align-flex-start euiFlexGrid">
                 <li ng-click="loadRegistryValueDetails(technique)" ng-repeat="technique in sortedTechniques"
                   ng-if="!hideEmptyRows||technique[1].count"
                   class="wz-flex-list cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 wz-height-30 wz-hover-underline">
