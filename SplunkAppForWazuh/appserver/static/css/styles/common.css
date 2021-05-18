@@ -184,6 +184,10 @@ md-backdrop.md-opaque.ng-leave {
   transform: none!important;
 }
 
+.pos-rel {
+  position: relative;
+}
+
 .md-dialog-body{
   top: 0!important;
   width: 100vw!important;
