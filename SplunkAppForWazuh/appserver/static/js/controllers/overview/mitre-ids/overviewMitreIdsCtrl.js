@@ -55,7 +55,7 @@ define([
       this.state = $state
       this.notification = $notificationService
       this.currentClusterInfo = this.currentDataService.getClusterInfo()
-      this.filters = this.currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters(false)
       this.mitre_tactics = mitre_tactics
       this.mitre_techniques = mitre_techniques
       this.$mdDialog = $mdDialog
@@ -172,7 +172,7 @@ define([
 
     reloadFilters(input) {
       const { earliest_time, latest_time } = typeof input == 'object' ? input.settings.attributes : this.timePicker.input.settings.attributes;
-      this.filters = this.currentDataService.getSerializedFilters()
+      this.filters = this.currentDataService.getSerializedFilters(false)
       this.destroy()
       this.loadTacticsTechniques(earliest_time, latest_time)
       if (this.modalOpen) {
