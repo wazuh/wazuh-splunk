@@ -66,6 +66,7 @@ define([
 
       try {
         this.scope.loadingModalData = false
+        this.scope.$applyAsync();
         // Initialize time tokens to default
         if (
           !this.urlTokenModel.has('earliest') &&
@@ -120,6 +121,7 @@ define([
     loadModalEventsTable() {
       if (!this.scope.loadingModalData) {
         this.scope.loadingModalData = true
+        this.scope.$applyAsync();
         this.cleanModalTable()
         const table = new Table(
           'mitre-technique-details-vizz',
@@ -129,6 +131,7 @@ define([
         )
         table.search.on('search:done', () => {
           this.scope.loadingModalData = false
+          this.scope.$applyAsync();
         })
         this.vizz.push(
           table
@@ -233,6 +236,7 @@ define([
       this.scope.loadingModalData = true;
 
       this.scope.selectedItem = item;
+      this.scope.$applyAsync();
 
       try {
         const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${this.scope.selectedItem[0]}` })
@@ -246,7 +250,7 @@ define([
           scope: this.scope,
           preserveScope: true,
           template:
-            `<md-dialog aria-label="List dialog" style="min-height:80%;max-width: 75%;">
+          `<md-dialog aria-label="List dialog" style="min-height:80%;max-width: 75%;">
           <h3 class="wz-headline-title boldText">Technique ${this.scope.selectedItem[1].name}</h3>
           <md-divider class="wz-margin-top-10"></md-divider>
           <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
@@ -260,7 +264,7 @@ define([
             </div>
             
             <p><b>Data sources: </b>${mitreData.json.x_mitre_data_sources}</p>
-
+          
             <p><b>Description: </b>${mitreData.json.description}</p>
               <h6 class="wz-headline-title">Events</h6>
               <div style="position: relative;">
@@ -270,22 +274,25 @@ define([
                   <div style="flex:0" id='timePickerModal'></div>
                 </div>
                 <md-divider class="wz-margin-top-10"></md-divider>
-                <div id='mitre-technique-details-vizz'></div>
-                <div ng-show="loadingModalData" class="wz-bg-loader">
-                <div class="wz-loader">
-                  <div align='center'>
-                    Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
-                  </div>
-                </div>
+                <div id='mitre-technique-details-vizz'></div>               
+              </div>
+          
+          
+          
+            <div ng-show="loadingModalData" class="wz-bg-loader">
+              <div class="wz-loader">
+                <div align='center'> Fetching data...<br /><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
               </div>
             </div>
+          
+          
           </md-dialog-content>
           <md-dialog-actions>
             <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
               Close
             </md-button>
           </md-dialog-actions>
-        </md-dialog>`,
+          </md-dialog>`,
           locals: {
             items: this.scope.selectedItem,
             loadingModalData: this.scope.loadingModalData
@@ -293,6 +300,7 @@ define([
           onComplete: () => {
             //hide spinner when the informations has been loaded
             this.scope.loadingModalData = false;
+            
             this.timePicker = new TimePicker(
               '#timePickerModal',
               this.reloadFilters
