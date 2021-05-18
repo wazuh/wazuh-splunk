@@ -73,7 +73,7 @@ define(['../module'], function(module) {
             const key = Object.keys(filter)[0]
             filterStr += key
             filterStr += '='
-            filterStr += filter[key]
+            filterStr += filter[key].includes(' ') ? `"${filter[key]}"` : filter[key] // If phrase, use quotes
             filterStr += ' '
           } else {
             filterStr += filter + ' '
