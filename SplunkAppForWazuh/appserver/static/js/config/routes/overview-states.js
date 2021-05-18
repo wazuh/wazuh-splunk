@@ -734,7 +734,6 @@ define(['../module'], function(module) {
                     return parsed;
                   },{})
 
-                  // return Object.keys(tactics)
                   return tactics
 
                 } catch (err) {
