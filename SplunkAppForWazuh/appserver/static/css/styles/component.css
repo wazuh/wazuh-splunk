@@ -142,6 +142,10 @@ md-chip {
   margin: 0 8px 0 0 !important;
 }
 
+md-chip-template.wz-chip[ng-mouseover="editChip($chip)"]{
+  display: block;
+}
+
 .modalFlexData {
   display: flex;
   flex-direction:row;
