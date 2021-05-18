@@ -34,7 +34,7 @@ define([
         latest_time: this.latest_time
       });
       this.manager.on('search:done', () => {
-        this.scope.loadingVizz = false;
+        this.scope.loadingVizz = false
         this.scope.$applyAsync();
         this.data = this.manager.data("results", {});
         this.data.on("data", () => {

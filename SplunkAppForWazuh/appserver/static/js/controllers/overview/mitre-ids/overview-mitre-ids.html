@@ -18,11 +18,11 @@
     </div>
     <div style="margin-right:7px;" id='timePicker'></div>
   </div>
-​
+  ​
   <!-- Loading report-->
   <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
       aria-hidden="true"></i></div>
-​
+  ​
   <!-- Threat Detection and Response navbar -->
   <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'mitre-ids'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-vul" name="vulnerabilities">
@@ -38,31 +38,18 @@
     </md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="mitre-ids">MITRE ATT&CK IDs</md-nav-item>
   </md-nav-bar>
-​
-  <div>
+  ​
+  <div style="position: relative;">
     <!-- Filter bar -->
     <wazuh-bar></wazuh-bar>
-​
-    <div ng-show="loadingVizz">
-      <div align='center'>
-        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
-      </div>
-    </div>
-    <div ng-show="!loadingVizz">
-​
-      <div ng-show="loadingModalData">
-        <div align='center'>
-          Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
-        </div>
-      </div>
-​
-      <!-- <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'"> -->
+    <div>​
+      ​
       <div layout="row" style="overflow-y: scroll;" class="wz-padding-top-0 80-percent-height">
         <md-card flex="15" class="wz-md-card _md flex" style="height: 70vh;">
           <md-card-content>
             <span class="wz-headline-title"><i class="fa fa-fw fa-th-list"></i> Tactics</span>
             <md-divider class="wz-margin-top-10"></md-divider>
-​
+            ​
             <ul class="wz-tactics-list noDot">
               <li ng-repeat="tactic in sortedTactics" ng-if="!hideEmptyRows||tactic[1]"><span
                   class="euiFlexItem ">{{tactic[0]}}</span><span class="euiFlexItem wz-green-badge">{{tactic[1]}}</span>
@@ -70,7 +57,7 @@
             </ul>
           </md-card-content>
         </md-card>
-​
+        ​
         <md-card flex="85" class="wz-md-card _md flex" style="height: 70vh;">
           <md-card-content>
             <div class="euiFlexGrid">
@@ -88,17 +75,22 @@
                   ng-if="!hideEmptyRows||technique[1].count"
                   class="wz-flex-list cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 wz-height-30 wz-hover-underline">
                   <span class="euiFlexItem">{{technique[0]}} -- {{technique[1].name}}</span><span
-                    class="euiFlexItem wz-green-badge">{{technique[1].count||0}}</span></li>
+                    class="euiFlexItem wz-green-badge">{{technique[1].count||0}}</span>
+                </li>
               </ul>
-            </div>
-​          </md-card-content>
+            </div> ​
+          </md-card-content>
         </md-card>
       </div>
-​
-​
+    </div>
+    ​<div ng-show="loadingVizz" class="wz-bg-loader">
+      <div class="wz-loader">
+        <div align='center'>
+          Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+        </div>
+      </div>
     </div>
   </div>
-  </div>
-​
+  ​
   <!-- end document  -->
 </md-content>
