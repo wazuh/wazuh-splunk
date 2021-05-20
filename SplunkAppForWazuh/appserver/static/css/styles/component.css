@@ -193,6 +193,16 @@ md-chip-template.wz-chip[ng-mouseover="editChip($chip)"]{
   text-decoration: underline;
 }
 
+.wz-tactics-list li.disabled span:first-child,
+.wz-flex-list.disabled span:first-child {
+  opacity: 0.7;
+}
+
+.wz-tactics-list li.disabled .wz-green-badge,
+.wz-flex-list.disabled .wz-green-badge{
+  background-color: #AAA;
+}
+
 .wz-green-badge{
   font-family: monospace ;
   font-size: 12px;

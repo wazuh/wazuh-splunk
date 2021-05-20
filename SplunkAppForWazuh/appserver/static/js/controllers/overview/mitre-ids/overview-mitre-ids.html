@@ -7,22 +7,10 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-      <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
-        ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
-        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Generate report
-        </md-tooltip>
-      </button>
       <wz-discover breadcrumbs="{section: 'Overview', subSection: 'General', ref: 'overview'}"></wz-discover>
     </div>
     <div style="margin-right:7px;" id='timePicker'></div>
   </div>
-  ​
-  <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
-      aria-hidden="true"></i></div>
-  ​
   <!-- Threat Detection and Response navbar -->
   <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'mitre-ids'">
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-vul" name="vulnerabilities">
@@ -38,12 +26,10 @@
     </md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="mitre-ids">MITRE ATT&CK IDs</md-nav-item>
   </md-nav-bar>
-  ​
   <div style="position: relative;">
     <!-- Filter bar -->
     <wazuh-bar></wazuh-bar>
     <div>​
-      ​
       <div layout="row" style="overflow-y: scroll;" class="wz-padding-top-0 80-percent-height">
         <md-card flex="15" class="wz-md-card _md flex" style="height: 70vh;">
           <md-card-content>
@@ -51,7 +37,7 @@
             <md-divider class="wz-margin-top-10"></md-divider>
             ​
             <ul class="wz-tactics-list noDot">
-              <li ng-repeat="tactic in sortedTactics" ng-if="!hideEmptyRows||tactic[1]"><span
+              <li ng-repeat="tactic in sortedTactics" ng-if="!hideEmptyRows||tactic[1]" ng-class="{disabled:!tactic[1]}"><span
                   class="euiFlexItem ">{{tactic[0]}}</span><span class="euiFlexItem wz-green-badge">{{tactic[1]}}</span>
               </li>
             </ul>
@@ -72,7 +58,7 @@
               class=" {'fullscreen': expandArray[1]} wz-margin-top-10 wz-margin-bottom-40-inv- height-570">
               <ul flex class="wz-align-flex-start euiFlexGrid">
                 <li ng-click="loadRegistryValueDetails(technique)" ng-repeat="technique in sortedTechniques"
-                  ng-if="!hideEmptyRows||technique[1].count"
+                  ng-if="!hideEmptyRows||technique[1].count"  ng-class="{disabled:!technique[1].count}"
                   class="wz-flex-list cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 wz-height-30 wz-hover-underline">
                   <span class="euiFlexItem">{{technique[0]}} -- {{technique[1].name}}</span><span
                     class="euiFlexItem wz-green-badge">{{technique[1].count||0}}</span>
