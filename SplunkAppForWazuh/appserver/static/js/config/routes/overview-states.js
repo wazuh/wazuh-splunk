@@ -681,6 +681,34 @@ define(['../module'], function(module) {
             ]
           }
         })
+        // =========== MITRE ATT&CK =========== //
+        .state('ow-mitre', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/mitre/overview-mitre.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-mitre')
+          },
+          controller: 'overviewMitreCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
     }
   ])
 })
