@@ -34,6 +34,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Minor style fixes [#1059](https://github.com/wazuh/wazuh-splunk/pull/1059)
 - Added new error handler to Alerts Configuration views [#1063](https://github.com/wazuh/wazuh-splunk/pull/1063)
 - Fixed uncontrolled message error when add api fails [#1069](https://github.com/wazuh/wazuh-splunk/pull/1069)
+- Fixed error where tables unset their loading state before finishing API calls [#1084](https://github.com/wazuh/wazuh-splunk/pull/1084)
 
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
