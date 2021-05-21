@@ -1,12 +1,16 @@
 <md-content flex layout="column" layout-align="end">
-  <div layout="row" class="wz-height-35">
+  <div layout="row" class="">
     <div class='wz-breadcrumb-margin'>
       <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
       <span>/ Mitre </span>
     </div>
     <div flex></div>
+    <!-- <div style="display:flex;" class="wz-margin-top-5">
+      <button class="btn wz-button-empty md-ink-ripple" type="button" ng-click="goToInventory()"><i aria-hidden="true"
+        class="fa fa-fw fa-arrow-right ng-scope"></i><span>&nbsp;Mitre Inventory</span></button>
+      </div> -->
     <!-- Report button -->
-    <div style="display:flex; padding-right: 10px;">
+    <div style="display:flex; padding: 0 10px 0 5px;">
       <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
         ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
         <i class="fa fa-fw fa-print" aria-hidden="true"></i>
@@ -35,8 +39,6 @@
       ui-sref="ow-docker" name="docker">Docker listener</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()"
       name="mitre">MITRE ATT&CK</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()"
-      ui-sref="ow-mitre-ids" name="mitre-ids">MITRE ATT&CK IDs</md-nav-item>
   </md-nav-bar>
 
 
@@ -51,8 +53,10 @@
     <div ng-show="!loadingVizz">
       <!-- first row  -->
       
-      <!-- <wz-alert-metrics total-alerts="totalAlerts" level-twelve="levelTwelve" auth-failure="authFailure" auth-success="authSuccess"></wz-alert-metrics> -->
-
+      <div class="wz-margin-right-15 wz-text-align-right">
+        <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;
+        <span class='wz-text-link' ng-click='goToInventory()'>Show Alerts</span>
+      </div>
       <!-- second row  -->
       <div id="row2" layout="row">
         <!-- second row - first vis -->

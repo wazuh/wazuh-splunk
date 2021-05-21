@@ -42,7 +42,8 @@ define([
       mitre_tactics,
       $mdDialog,
       $dateDiffService,
-      $urlTokenModel
+      $urlTokenModel,
+      extensions
     ) {
       this.scope = $scope
       this.currentDataService = $currentDataService
@@ -54,6 +55,7 @@ define([
       this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
       this.state = $state
+      this.scope.extensions = extensions
       this.notification = $notificationService
       this.currentClusterInfo = this.currentDataService.getClusterInfo()
       this.filters = this.currentDataService.getSerializedFilters(false)
@@ -193,6 +195,7 @@ define([
       this.scope.hideEmptyRows = false
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = agent => this.showAgent(agent)
+      this.scope.goToDashboard = () => this.goToDashboard()
       this.scope.loadRegistryValueDetails = item => this.loadRegistryValueDetails(item)
       this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
@@ -328,6 +331,13 @@ define([
       } catch (err) {
         console.error(err);
       }
+    }
+
+    /**
+     * Link to Mitre Dashboard
+     */
+    goToDashboard(){
+      this.state.go('ow-mitre', { })
     }
   }
   app.controller('overviewMitreIdsCtrl', OverviewMitreIds)

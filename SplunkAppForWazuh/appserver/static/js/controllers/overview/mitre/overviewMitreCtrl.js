@@ -55,6 +55,7 @@ define([
         $urlTokenModel
       )
       this.rootScope = $rootScope
+      this.state = $state
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.notification = $notificationService
@@ -110,6 +111,7 @@ define([
      */
     $onInit() {
       try {
+        this.scope.goToInventory = () => { this.goToInventory() }
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
             'overview-mitre',
@@ -126,6 +128,13 @@ define([
       } catch (error) {
         console.error('error on init ', error)
       }
+    }
+
+    /**
+     * Link to Mitre Inventory
+     */
+     goToInventory(){
+      this.state.go('ow-mitre-ids', { })
     }
   }
 
