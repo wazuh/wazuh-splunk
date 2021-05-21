@@ -2,7 +2,12 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4202
+
+## Wazuh v4.2.0 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4202
+
+### Added 
+
+- Adapt for Splunk 8.1.3
 
 ### Fixed
 
@@ -10,6 +15,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Tables without server side pagination [#1074](https://github.com/wazuh/wazuh-splunk/pull/1074)
 - Fixed gear icon in fim table [#1077](https://github.com/wazuh/wazuh-splunk/pull/1077)
 - Added cache control [#1078](https://github.com/wazuh/wazuh-splunk/pull/1078)
+- Fixed error where tables unset their loading state before finishing API calls [#1084](https://github.com/wazuh/wazuh-splunk/pull/1084)
 
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
 
@@ -34,7 +40,6 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Minor style fixes [#1059](https://github.com/wazuh/wazuh-splunk/pull/1059)
 - Added new error handler to Alerts Configuration views [#1063](https://github.com/wazuh/wazuh-splunk/pull/1063)
 - Fixed uncontrolled message error when add api fails [#1069](https://github.com/wazuh/wazuh-splunk/pull/1069)
-- Fixed error where tables unset their loading state before finishing API calls [#1084](https://github.com/wazuh/wazuh-splunk/pull/1084)
 
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
