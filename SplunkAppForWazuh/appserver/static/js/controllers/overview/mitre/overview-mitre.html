@@ -1,12 +1,12 @@
 <md-content flex layout="column" layout-align="end">
-  <div layout="row" class="wz-height-35">
+  <div layout="row">
     <div class='wz-breadcrumb-margin'>
       <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
       <span>/ Mitre </span>
     </div>
     <div flex></div>
     <!-- Report button -->
-    <div style="display:flex; padding-right: 10px;">
+    <div style="display:flex; padding: 0 10px 0 5px;">
       <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
         ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
         <i class="fa fa-fw fa-print" aria-hidden="true"></i>
@@ -47,6 +47,10 @@
       </div>
     </div>
     <div ng-show="!loadingVizz">
+      <div class="wz-margin-right-15 wz-text-align-right">
+        <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;
+        <span class='wz-text-link' ng-click='goToInventory()'>Show Alerts</span>
+      </div>
       <!-- first row  -->
       <div layout="row">
         <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
