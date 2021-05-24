@@ -69,7 +69,7 @@ define([
 
       try {
         this.scope.loadingModalData = false
-        this.scope.$applyAsync();
+        this.scope.$applyAsync()
         // Initialize time tokens to default
         if (
           !this.urlTokenModel.has('earliest') &&
@@ -90,28 +90,30 @@ define([
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
-      } catch (error) { } //eslint-disable-line
+      } catch (error) {
+        console.error(error)
+      }
 
       this.scope.$applyAsync()
     }
     onDataTactics(rows) {
       rows.forEach(row => {
-        this.scope.tactics[row[0]] = parseInt(row[1]);
-      });
+        this.scope.tactics[row[0]] = parseInt(row[1])
+      })
       this.scope.sortedTactics = Object.entries(this.scope.tactics).sort((a, b) => {
-        return (b[1] || 0) - (a[1] || 0);
-      });
-      this.scope.$applyAsync();
+        return (b[1] || 0) - (a[1] || 0)
+      })
+      this.scope.$applyAsync()
     }
 
     onDataTechniques(rows) {
       rows.forEach(row => {
-        this.scope.techniques[row[0]].count = parseInt(row[1]);
-      });
+        this.scope.techniques[row[0]].count = parseInt(row[1])
+      })
       this.scope.sortedTechniques = Object.entries(this.scope.techniques).sort((a, b) => {
-        return (b[1].count || 0) - (a[1].count || 0);
-      });
-      this.scope.$applyAsync();
+        return (b[1].count || 0) - (a[1].count || 0)
+      })
+      this.scope.$applyAsync()
     }
     cleanModalTable() {
       this.vizz.forEach(vizz => {
@@ -124,7 +126,7 @@ define([
     loadModalEventsTable() {
       if (!this.scope.loadingModalData || !this.modalInitialized) {
         this.scope.loadingModalData = true
-        this.scope.$applyAsync();
+        this.scope.$applyAsync()
         this.cleanModalTable()
         const table = new Table(
           'mitre-technique-details-vizz',
@@ -136,7 +138,7 @@ define([
           this.scope.loadingModalData = false
           if(this.modalOpen)
             this.modalInitialized = true
-          this.scope.$applyAsync();
+          this.scope.$applyAsync()
         })
         this.vizz.push(
           table
@@ -179,7 +181,8 @@ define([
     }
 
     reloadFilters(input) {
-      const { earliest_time, latest_time } = typeof input == 'object' ? input.settings.attributes : this.timePicker.input.settings.attributes;
+      const { earliest_time, latest_time } = typeof input == 'object' ? input.settings.attributes : this.timePicker.input.settings.attributes
+
       this.filters = this.currentDataService.getSerializedFilters(false)
       this.destroy()
       this.loadTacticsTechniques(earliest_time, latest_time)
@@ -220,7 +223,7 @@ define([
 
       this.scope.$on('barFilter', event => {
         event.stopPropagation()
-        event.currentScope.custom_search = "";
+        event.currentScope.custom_search = ""
         this.reloadFilters()
       })
       this.scope.offsetTimestamp = (text, time) => {
@@ -239,16 +242,16 @@ define([
 
     loadRegistryValueDetails = async (item) => {
       //display loading spinner while information is loading
-      this.scope.loadingModalData = true;
+      this.scope.loadingModalData = true
 
-      this.scope.selectedItem = item;
-      this.scope.$applyAsync();
+      this.scope.selectedItem = item
+      this.scope.$applyAsync()
 
       try {
         const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${this.scope.selectedItem[0]}` })
-        const mitreData = newRequestMitre.data.data.affected_items[0];
-        var parentEl = angular.element(document.body);
-        const ParentCtrl = this;
+        const mitreData = newRequestMitre.data.data.affected_items[0]
+        var parentEl = angular.element(document.body)
+        const ParentCtrl = this
 
 
         this.$mdDialog.show({
@@ -326,10 +329,10 @@ define([
           }
         }
 
-        this.scope.$applyAsync();
+        this.scope.$applyAsync()
 
       } catch (err) {
-        console.error(err);
+        console.error(err)
       }
     }
 
