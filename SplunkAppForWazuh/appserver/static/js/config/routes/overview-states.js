@@ -709,6 +709,7 @@ define(['../module'], function(module) {
             ]
           }
         })
+        // =========== MITRE ATT&CK Framework =========== //
         .state('ow-mitre-ids', {
           templateUrl:
             BASE_URL +

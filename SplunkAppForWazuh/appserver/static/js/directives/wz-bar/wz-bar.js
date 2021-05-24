@@ -102,10 +102,11 @@ define(['../module'], function(directives) {
          * Change chip showing pin and trash icons
          * @param {Object | String} chip
          */
-        $scope.editChip = chip => {
+         $scope.editChip = chip => {
           const chipIsStatic = filterStatic(chip)
           if (!chipIsStatic) {
             $scope.editingChip = chip
+            if($scope.finishChipTimer) clearTimeout($scope.finishChipTimer);
           }
         }
 
@@ -114,7 +115,11 @@ define(['../module'], function(directives) {
          * @param {Object | String} chip
          */
         $scope.finishChipEdition = () => {
-          $scope.editingChip = false
+          $scope.finishChipTimer = setTimeout(function(){
+            $scope.editingChip = false;
+            clearTimeout($scope.finishChipTimer);
+            $scope.$applyAsync()
+          },500)
         }
 
         /**

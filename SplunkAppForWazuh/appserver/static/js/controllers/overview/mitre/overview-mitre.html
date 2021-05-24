@@ -47,15 +47,12 @@
       </div>
     </div>
     <div ng-show="!loadingVizz">
-      <!-- first row  -->
-      
       <div class="wz-margin-right-15 wz-text-align-right">
         <i class="fa fa-fw fa-database formatted-color"></i>&nbsp;
         <span class='wz-text-link' ng-click='goToInventory()'>Show Alerts</span>
       </div>
-      <!-- second row  -->
-      <div id="row2" layout="row">
-        <!-- second row - first vis -->
+      <!-- first row  -->
+      <div layout="row">
         <md-card flex="70" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Alerts evolution
@@ -67,7 +64,6 @@
             <div id='alertTecEvoVizz'></div>
           </md-card-content>
         </md-card>
-        <!-- second row - second vis -->
         <md-card flex="30" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Top tactics
@@ -81,9 +77,9 @@
         </md-card>
       </div>
 
-      <!-- third row  -->
-      <div id="row3" layout='row'>
-        <!-- third row - first vis -->
+
+      <!-- second row  -->
+      <div layout='row'>
         <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Attacks by technique
@@ -95,7 +91,6 @@
             <div id='alertsTechnique'></div>
           </md-card-content>
         </md-card>
-        <!-- third row - second vis -->
         <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title">Top tactics by agent
@@ -107,7 +102,6 @@
             <div id='topTacticsByAgent'></div>
           </md-card-content>
         </md-card>
-        <!-- third row - third vis -->
         <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
           <md-card-content class="wazuh-column" >
             <span class="wz-headline-title">Mitre techniques by agent

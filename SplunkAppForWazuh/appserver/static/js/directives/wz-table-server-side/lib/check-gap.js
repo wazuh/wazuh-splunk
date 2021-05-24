@@ -12,14 +12,12 @@
 define([], function() {
   'use strict'
   /**
-   * Checks the gap of results
+   * Checks the gap of results in order to render valid page numbers
    * @param {*} $scope
    * @param {Array} items
    */
-  return function checkGap($scope, items) {
-    const gap = items.length / $scope.itemsPerPage
-    const gapInteger = parseInt(gap)
-    $scope.gap = gap - gapInteger > 0 ? gapInteger + 1 : gapInteger
-    if ($scope.gap > 5) $scope.gap = 5
+  return function checkGap($scope) {
+    $scope.gap = $scope.totalPages
+    if ($scope.gap > 4) $scope.gap = 4
   }
 })
