@@ -731,8 +731,8 @@ define(['../module'], function(module) {
                   const data = results.data.data.affected_items
                   
                   const tactics = data.reduce((parsed, item)=>{
-                    parsed[item.phase_name[0]]=0;
-                    return parsed;
+                    parsed[item.phase_name[0]]=0
+                    return parsed
                   },{})
 
                   return tactics
