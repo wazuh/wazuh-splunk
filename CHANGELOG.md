@@ -8,6 +8,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added 
 
 - Adapt for Splunk 8.1.3
+- Added MITRE ATT&CK Framework integration [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
+- Added MITRE ATT&CK Dashboard integration [#1076](https://github.com/wazuh/wazuh-splunk/pull/1076)
 
 ### Fixed
 
@@ -16,6 +18,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed gear icon in fim table [#1077](https://github.com/wazuh/wazuh-splunk/pull/1077)
 - Added cache control [#1078](https://github.com/wazuh/wazuh-splunk/pull/1078)
 - Fixed error where tables unset their loading state before finishing API calls [#1084](https://github.com/wazuh/wazuh-splunk/pull/1084)
+- Fixed search bar queries with spaces  [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
+- Fixed pinned fields ending with curly brackets [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
 
@@ -24,7 +28,6 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added error toast in search handler when the connection with forwarder fails [#1021](https://github.com/wazuh/wazuh-splunk/pull/1021)
 - Changed query to show alert evolution on discover [#1024](https://github.com/wazuh/wazuh-splunk/pull/1024)
 - Added link to agent view in Group Agents table [#1066](https://github.com/wazuh/wazuh-splunk/pull/1066)
-- Added MITRE ATT&CK Dashboard integration [#1076](https://github.com/wazuh/wazuh-splunk/pull/1076)
 
 ### Changed
 

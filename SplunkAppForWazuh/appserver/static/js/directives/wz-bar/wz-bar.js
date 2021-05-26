@@ -132,7 +132,7 @@ define(['../module'], function(directives) {
             .getFilters()
             .filter(item => !!item.pined)
           const isIncluded = staticTrue.filter(
-            item => typeof item[key] !== 'undefined'
+            item => typeof item[getUnformatedFilterKey(key)] !== 'undefined'
           )
           return !!isIncluded.length
         }
@@ -148,11 +148,11 @@ define(['../module'], function(directives) {
             const value = filter.split(':')[1]
             if (filterPined(filter)) {
               $currentDataService.pinFilter(
-                `{"${key}":"${value}", "pined":true}`
+                `{"${getUnformatedFilterKey(key)}":"${value}", "pined":true}`
               )
             } else {
               $currentDataService.pinFilter(
-                `{"${key}":"${value}", "pined":false}`
+                `{"${getUnformatedFilterKey(key)}":"${value}", "pined":false}`
               )
             }
             $scope.filters = getPrettyFilters()
@@ -161,6 +161,17 @@ define(['../module'], function(directives) {
             $notificationService.showErrorToast(err.message || err)
           }
         }
+
+        /**
+         * Searchs the filter key with '{}' at the end of the key in filtered fields. If found returns the unformated key, otherwise returns the original key 
+         * @param {String} key 
+         * @returns {String}
+         */
+        const getUnformatedFilterKey = (key) => {
+          const unformatedKey = $currentDataService.getFilters().some(item => item[`${key}{}`] !== undefined) ? `${key}{}` : key
+          return unformatedKey
+        }
+
       },
       templateUrl:
         BASE_URL +

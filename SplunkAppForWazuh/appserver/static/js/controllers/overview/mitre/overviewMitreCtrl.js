@@ -59,6 +59,7 @@ define([
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.notification = $notificationService
+
       this.currentDataService.addFilter(
         `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
       )
@@ -132,12 +133,12 @@ define([
       }
     }
 
-      /**
-       * Link to Mitre Inventory
-       */
-       goToInventory(){
-        this.state.go('ow-mitre-ids', { })
-      }
+    /**
+     * Link to Mitre Inventory
+     */
+     goToInventory(){
+      this.state.go('ow-mitre-ids', { })
+    }
   }
 
   app.controller('overviewMitreCtrl', OverviewMitre)
