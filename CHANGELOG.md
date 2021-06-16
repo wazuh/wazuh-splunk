@@ -7,7 +7,6 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ### Added 
 
-- Adapt for Splunk 8.1.3
 - Added MITRE ATT&CK Framework integration [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 - Added MITRE ATT&CK Dashboard integration [#1076](https://github.com/wazuh/wazuh-splunk/pull/1076)
 
@@ -45,6 +44,13 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added new error handler to Alerts Configuration views [#1063](https://github.com/wazuh/wazuh-splunk/pull/1063)
 - Fixed uncontrolled message error when add api fails [#1069](https://github.com/wazuh/wazuh-splunk/pull/1069)
 
+## Wazuh v4.1.5 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 69
+
+### Added
+
+- Support for Wazuh v4.1.5
+- Support for Splunk v8.1.2
+- Support for Splunk v8.1.3
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
 
