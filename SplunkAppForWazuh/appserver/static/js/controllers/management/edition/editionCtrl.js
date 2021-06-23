@@ -75,7 +75,7 @@ define(['../../module'], function(controllers) {
 
     async editNode(nodeName = 'manager') {
       try {
-        const file = 'ossec.conf'
+        const file = 'manager.conf'
         const dir = false
         const content = !this.clusterInfo.clusterEnabled
           ? await this.fileEditor.getConfiguration(file, dir)
@@ -98,7 +98,7 @@ define(['../../module'], function(controllers) {
         this.scope.editingNode === 'manager' ? false : this.scope.editingNode
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
-        file: 'ossec.conf',
+        file: 'manager.conf',
         dir: false,
         node: node,
         overwrite: true

@@ -201,7 +201,7 @@ define([
                 $scope.$emit('configSavedSuccessfully', {})
                 $scope.restartBtn = true
                 let msg = null
-                if (params.file === 'ossec.conf') {
+                if (params.file === 'manager.conf') {
                   if (params.node) {
                     msg = `Success. Node(${params.node}) configuration has been updated.`
                   } else {

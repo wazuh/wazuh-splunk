@@ -120,12 +120,12 @@ define(['../../../module'], function(controllers) {
       try {
         this.scope.currentGroup = { name: groupName }
         const data = await this.apiReq(
-          `/groups/${groupName}/files/agent.conf`,
+          `/groups/${groupName}/files/shared.conf`,
           { format: 'xml' }
         )
         const xml = (data || {}).data || {} || false
         if (!xml.data && xml.error !== 0) {
-          throw new Error('Could not fetch agent.conf file')
+          throw new Error('Could not fetch shared.conf file')
         }else if(!xml.data){
           return " " // Force to print the XML editor
         }

@@ -112,7 +112,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
         event.stopPropagation()
         if (
-          ((parameters || {}).fileName || '').includes('agent.conf') &&
+          ((parameters || {}).fileName || '').includes('shared.conf') &&
           this.scope.adminMode
         ) {
           return this.scope.editGroupAgentConfig()
@@ -343,12 +343,12 @@ define(['../../module', 'FileSaver'], function(controllers) {
     async fetchFile() {
       try {
         const data = await this.apiReq(
-          `/groups/${this.scope.currentGroup.name}/files/agent.conf/xml`,
+          `/groups/${this.scope.currentGroup.name}/files/shared.conf/xml`,
           {origin:"xmlreader"}
           )
         const xml = (data || {}).data || {} || false
         if (!xml.data && xml.error !== 0) {
-          throw new Error('Could not fetch agent.conf file')
+          throw new Error('Could not fetch shared.conf file')
         }else if(!xml.data){
           xml.data = " " // Force to print the XML editor
         }
@@ -810,7 +810,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
                 title: 'Main group configurations',
                 sections: [
                   {
-                    desc: 'agent.conf',
+                    desc: 'shared.conf',
                     groupConfig: true,
                     labels: {}
                   }

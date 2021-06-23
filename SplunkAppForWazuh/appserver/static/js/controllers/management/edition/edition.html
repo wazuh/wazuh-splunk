@@ -27,7 +27,7 @@
   <span ng-if="!clusterEnabled" class="font-size-21 text-black"> Manager configuration</span>
   <span ng-if="clusterEnabled" class="font-size-21 text-black"> Cluster configuration</span>
 </div>
-<!-- XML editor for ossec.conf -->
+<!-- XML editor for manager.conf -->
 <div ng-show="editingNode">
   <div layout="row" class="wz-margin-left-10">
     <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
@@ -88,7 +88,7 @@
   </div>
 
   <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
-    <wz-xml-file-editor style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode"
+    <wz-xml-file-editor style="height: inherit;" file-name='manager.conf' data="fetchedXML" target-name="editingNode"
       valid-fn='xmlIsValid(valid)'>
       <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
         ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="isAdmin && clusterEnabled"
