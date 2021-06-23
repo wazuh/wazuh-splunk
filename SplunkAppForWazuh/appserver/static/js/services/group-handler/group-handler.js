@@ -74,9 +74,10 @@ define(['../module'], function(module) {
 
     async createGroup(name) {
       try {
+        const content = JSON.stringify({group_id:name});
         const result = await this.req.apiReq(
-          `/groups?group_id=${name}`,
-          {},
+          `/groups`,
+          {content, origin:'json'},
           'POST'
         )
         if (result.data.error != 0) {

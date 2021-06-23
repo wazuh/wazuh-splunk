@@ -974,20 +974,18 @@ class report(controllers.BaseController):
                 # Default sizes and margins values
                 x = 30
                 y = 10
-                y_img = 80
                 w = 100
                 h = 50
                 x_img = 50
+                # Limits
+                min_x_img = 10
+                min_h = 10
                 # Count images for page break
                 count = 0
                 n_images = len(saved_images)
                 # Set top margin checking if metrics exist
                 pdf.set_text_color(75, 179, 204)
                 pdf.set_font('RobotoLight', '', 14)
-                if metrics_exists:
-                    y_img = y_img + 10
-                if agent_data:
-                    y_img = y_img + 20
                 pdf.ln(10)
                 #Sort images by width size
                 images = sorted(saved_images, key=itemgetter('width'))
@@ -1006,25 +1004,30 @@ class report(controllers.BaseController):
                         h = 55
                         # Calculate the x_img value to center the image horizontally in the page
                         x_img = (pdf.w - (img["width"] * h / img["height"]))/2
-                    
+
+                    # Resize the fixed image height in pdf if x_image is lower than min_x_img.
+                    # This prevents the image from exceeding the horizontal limit of the page.
+                    if x_img < min_x_img:
+                        for tmp_h in range(h, min_h, -1):
+                            x_img = (pdf.w - (img["width"] * tmp_h / img["height"]))/2
+                            if x_img > min_x_img:
+                                h = tmp_h
+                                break
 
                     #Insert image
                     pdf.cell(x , y, img['title'], 0, 1)
-                    pdf.image(img['path'], x_img, y_img, 0, h)
+                    pdf.image(img['path'], x_img, pdf.get_y(), 0, h)
                     pdf.ln(75)
-                    y_img = y_img + 85
                     count = count + 1
                     n_images = n_images - 1
                     if count == 2 and n_images >= 1 and first_page:
                         pdf.add_page()
                         pdf.ln(15)
-                        y_img = 45
                         count = 0
                         first_page = False
                     if count == 3 and n_images >= 1:
                         pdf.add_page()
                         pdf.ln(15)
-                        y_img = 45
                         count = 0
             #Add tables
             if self.tables_have_info(tables): #Check if any table has information, if not, prevent break page and not iterate in empties tables
@@ -1066,14 +1069,11 @@ class report(controllers.BaseController):
             width = width + 2
             total_width = total_width + width
             fields[key] = width
-        #Calculate the rest of the width to fill the row
-        diff = 0
-        if total_width < 190:
-            diff = 190 - total_width
-            keys_num = len(fields.keys())
-            diff = diff / keys_num
+        #Calculate the proportional width of each column
+        diff = 190 / total_width
+        keys_num = len(fields.keys())
         for key in fields.keys():
-            fields[key] = fields[key] + diff
+            fields[key] = fields[key] * diff
         #Set color and print th
         self.setBlueHeaderStyle(pdf)
         for key in sorted_fields:

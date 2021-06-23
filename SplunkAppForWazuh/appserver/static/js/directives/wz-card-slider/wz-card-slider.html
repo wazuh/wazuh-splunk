@@ -7,7 +7,7 @@
             <span class="euiTitle euiTitle--medium euiCard__title wz-font-weight-500">
               Requirement: {{tab.title}}</span>
             <div class="euiText euiText--small euiCard__description">
-              <p>{{tab.content}} </p>
+              <p ng-bind-html="tab.content"></p>
             </div>
           </span>
           <span class="euiCard__footer">

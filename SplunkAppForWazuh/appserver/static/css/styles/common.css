@@ -71,6 +71,10 @@
   min-height: 300px;
 }
 
+.height-80-percent {
+  height: 80%;
+}
+
 .btns-separator{
   width: 0px;
   height: 40px;
@@ -126,6 +130,10 @@
   padding-bottom: 14px;
 } 
 
+.wz-padding-4 {
+  padding: 4px
+}
+
 .wz-padding-16 {
   padding: 16px
 }
@@ -176,6 +184,10 @@ md-backdrop.md-opaque.ng-leave {
   transform: none!important;
 }
 
+.pos-rel {
+  position: relative;
+}
+
 .md-dialog-body{
   top: 0!important;
   width: 100vw!important;
@@ -209,12 +221,12 @@ md-dialog .md-dialog-content {
 }
 
 md-dialog{
-  animation: 350ms cubic-bezier(0.34, 1.61, 0.7, 1)!important;
+  animation: 1350ms cubic-bezier(0.34, 1.61, 0.7, 1)!important;
   border: 1px solid #D9D9D9;
   border-color: #c4cace;
   border-top-color: #e2e5e7;
   border-bottom-color: #a7b0b6;
-  min-width: 400px;
+  min-width: 600px;
   max-width: 768px;
   padding: 15px;
   box-shadow: 0 40px 64px 0 rgba(59, 79, 93, 0.1), 
@@ -278,6 +290,11 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
   color: #396e3e;
 }
 
+.agents-fim-table .action-show-hide-columns{
+  right: 10px;
+  position: absolute;
+}  
+
 .error-notify {
   font-size: 20px;
   color: black;
@@ -331,6 +348,10 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
 /* Custom JSON viewer settings */
 .wz-word-wrap {
   word-wrap: break-word;
+}
+
+.wz-break-word{
+  word-break: break-all;
 }
 
 .wz-pre {
@@ -491,6 +512,10 @@ div.uil-ring-css {
 
 .wz-margin-bottom--5 {
   margin-bottom: -5px !important;
+}
+
+.wz-height-30 {
+  height: 30px !important;
 }
 
 .wz-height-35 {
@@ -2097,6 +2122,10 @@ a:hover {
 
 .wz-margin-auto {
   margin: auto !important;
+}
+
+.wz-align-flex-start {
+  align-content: flex-start;
 }
 
 .add-agent-card {

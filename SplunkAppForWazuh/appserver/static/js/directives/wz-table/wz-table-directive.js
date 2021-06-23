@@ -57,7 +57,9 @@ define([
         emptyResults: '=emptyResults',
         customColumns: '=customColumns',
         implicitSort: '=implicitSort',
-        wzConfigViewer: '=wzConfigViewer'
+        wzConfigViewer: '=wzConfigViewer',
+        isRegistryValue: '=isRegistryValue',
+        agentId: '=agentId'
       },
       controller(
         $rootScope,
@@ -74,7 +76,8 @@ define([
         $groupHandler,
         $sce,
         $fileEditor,
-        $dateDiffService
+        $dateDiffService,
+        $mdDialog
       ) {
         /**
          * Init variables
@@ -652,6 +655,45 @@ define([
             )
             item.expanded = true
           }
+        }
+
+       
+        $scope.loadRegistryValueDetails = async (item) => {
+          var parentEl = angular.element(document.body);
+          $mdDialog.show({
+            parent: parentEl,
+            template:
+              `<md-dialog aria-label="List dialog">
+              <h3 class="wz-headline-title boldText">Registry values</h3>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <md-dialog-content>
+                <span class="wz-lh-32">File: ${item.file}</span>
+                <wazuh-table
+                  flex
+                  path="'/syscheck/${$scope.agentId}'"
+                  implicit-filter="[{name:'type',value:'registry_value'},{name:'file',value:'${item.file.replaceAll('\\','\\\\')}'}]"
+                  row-sizes="[6,6,6]"
+                  extra-limit="true"
+                  keys="['date','value.name','value.type','sha1']"
+                ></wazuh-table>
+              </md-dialog-content>
+              <md-dialog-actions>
+                <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
+                  Close
+                </md-button>
+              </md-dialog-actions>
+            </md-dialog>;`,
+            locals: {
+              items: item
+            },
+            controller: DialogController,
+            controllerAs: 'ctrl'
+         })
+         function DialogController($mdDialog) {
+           this.closeDialog = function() {
+             $mdDialog.hide()
+           }
+         }
         }
 
         /**
