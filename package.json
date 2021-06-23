@@ -1,10 +1,10 @@
 {
   "name": "wazuh-splunk",
-  "version": "4.2.1",
-  "revision": "4202",
-  "code": "4201-0",
+  "version": "5.0.0",
+  "revision": "5001",
+  "code": "5001-0",
   "kibana": {
-    "version": "8.1.4"
+    "version": "8.2.0"
   },
   "description": "Splunk app for Wazuh",
   "main": "index.js",
