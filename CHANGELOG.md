@@ -10,6 +10,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Tables without server side pagination [#1074](https://github.com/wazuh/wazuh-splunk/pull/1074)
 - Fixed gear icon in fim table [#1077](https://github.com/wazuh/wazuh-splunk/pull/1077)
 - Added cache control [#1078](https://github.com/wazuh/wazuh-splunk/pull/1078)
+- Fixed issues for Splunk Cloud compatibility [#1099](https://github.com/wazuh/wazuh-splunk/pull/1099)
 
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2 - Revision 4201
 
