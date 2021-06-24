@@ -32,7 +32,7 @@
     "test": "mocha tests/manager.js",
     "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../..",
     "prebuild": "node scripts/generate-build-version",
-    "build": "tar -czfp SplunkAppForWazuh.tar.gz ./SplunkAppForWazuh"
+    "build": "tar -czf SplunkAppForWazuh.tar.gz ./SplunkAppForWazuh"
   },
   "repository": {
     "type": "git",
