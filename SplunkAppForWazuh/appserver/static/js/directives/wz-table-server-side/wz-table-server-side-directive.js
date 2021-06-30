@@ -418,7 +418,6 @@ define([
             $scope.error = false
             $scope.setPage(0)
             $tableFilterService.set(instance.filters)
-            $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
             $scope.$applyAsync()
             setTimeout(() => {
