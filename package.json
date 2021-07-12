@@ -4,7 +4,7 @@
   "revision": "69",
   "code": "69-1",
   "kibana": {
-    "version": "8.1.3"
+    "version": "8.0.6"
   },
   "description": "Splunk app for Wazuh",
   "main": "index.js",
