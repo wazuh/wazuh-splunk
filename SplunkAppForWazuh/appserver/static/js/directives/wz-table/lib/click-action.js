@@ -22,7 +22,8 @@ define([], function() {
   ) {
     if (
       instance.path === '/agents' ||
-      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path) // eslint-disable-line
+      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path) ||
+      new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/).test(instance.path)// eslint-disable-line
     ) {
       // Go to and store an agent details
       $currentDataService.setCurrentAgent(item.id)

@@ -1,7 +1,7 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
-  module.service('$requestService', function(
+  module.service('$requestService', function (
     $http,
     $apiIndexStorageService,
     $q
@@ -155,10 +155,10 @@ define(['../module'], function(module) {
           { content, origin: 'xmleditor' },
           'PUT'
         )
+
         if (
           !result ||
           !result.data ||
-          !result.data.data ||
           result.data.error !== 0
         ) {
           if (result.data.error === 1905) {
@@ -184,7 +184,7 @@ define(['../module'], function(module) {
           result.data.error !== 0
         ) {
           throw new Error('Cannot get file.')
-        }     
+        }
         return result
       } catch (error) {
         return Promise.reject(error)

@@ -2,6 +2,31 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.2.0 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4201
+
+### Added
+
+- Added error toast in search handler when the connection with forwarder fails [#2021](https://github.com/wazuh/wazuh-splunk/pull/1021)
+- Changed query to show alert evolution on discover [#1024](https://github.com/wazuh/wazuh-splunk/pull/1024)
+- Added link to agent view in Group Agents table [#1066](https://github.com/wazuh/wazuh-splunk/pull/1066)
+- Support for Splunk 8.1.3
+
+### Changed
+
+- Support for Python3 compatibility, deleted deprecated Python2 [#1052](https://github.com/wazuh/wazuh-splunk/pull/1052)
+- Applied latest Wazuh API changes to create group request [#1058](https://github.com/wazuh/wazuh-splunk/pull/1058)
+### Fixed
+
+- Apply Wazuh tools name changing to the wazuh-splunk [#944](https://github.com/wazuh/wazuh-splunk/issues/944)
+- Apply Wazuh daemons name changing to wazuh-splunk [#945](https://github.com/wazuh/wazuh-splunk/issues/945)
+- Fixed token cache duration [#1020](https://github.com/wazuh/wazuh-splunk/pull/1020)
+- Fixed issue with dynamic columns width for agents PDF report [#1042](https://github.com/wazuh/wazuh-splunk/pull/1042)
+- Fixed blocked app when there isn't connection with the API [#1045](https://github.com/wazuh/wazuh-splunk/pull/1045)
+- Fixed success toast saving agent configuration file with bad style [#1046](https://github.com/wazuh/wazuh-splunk/pull/1046)
+- Minor style fixes [#1059](https://github.com/wazuh/wazuh-splunk/pull/1059)
+- Added new error handler to Alerts Configuration views [#1063](https://github.com/wazuh/wazuh-splunk/pull/1063)
+- Fixed uncontrolled message error when add api fails [#1069](https://github.com/wazuh/wazuh-splunk/pull/1069)
+
 ## Wazuh v4.1.5 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 69
 
 ### Added
