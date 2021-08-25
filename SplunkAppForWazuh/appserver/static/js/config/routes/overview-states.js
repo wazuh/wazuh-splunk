@@ -681,6 +681,79 @@ define(['../module'], function(module) {
             ]
           }
         })
+        // =========== MITRE ATT&CK =========== //
+        .state('ow-mitre', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/mitre/overview-mitre.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-mitre')
+          },
+          controller: 'overviewMitreCtrl',
+          resolve: {
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+        // =========== MITRE ATT&CK Framework =========== //
+        .state('ow-mitre-ids', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/overview/mitre-ids/overview-mitre-ids.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-mitre-ids')
+          },
+          controller: 'overviewMitreIdsCtrl',
+          resolve: {
+            mitre_tactics: [
+              '$requestService',
+              '$state',
+              async (
+                $requestService,
+                $state
+              ) => {
+                try {
+                  const results = await $requestService.apiReq(`/mitre?select=phase_name`)
+                  const data = results.data.data.affected_items
+                  
+                  const tactics = data.reduce((parsed, item)=>{
+                    parsed[item.phase_name[0]]=0
+                    return parsed
+                  },{})
+
+                  return tactics
+
+                } catch (err) {
+                  $state.go('overview')
+                }
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
     }
   ])
 })

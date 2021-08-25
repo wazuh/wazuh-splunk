@@ -21,6 +21,7 @@ define(['./module'], function(module) {
     ) {
       //Go to last state or to a specified tab if "currentTab" param is specified in the url
       $navigationService.manageState()
+
       async function getAppVersion(){
         try {
           const result = await $requestService.httpReq(
@@ -28,12 +29,18 @@ define(['./module'], function(module) {
             '/manager/app_info'
           )
           $appVersionService.setAppInfo(result.data);
+          //compare app and backend versions
+          if ($appVersionService.getDiffAppVersions()){
+            $rootScope.$broadcast('showAppVersionsDiff', { hasDiffVersions: true });
+          }
           return result;
         } catch (error) {
           $state.go('settings.api')
         }
       }
       getAppVersion();
+      
+
       async function checkBeforeTransition(state) {
         try {
           const { api } = await $currentDataService.checkSelectedApiConnection()
@@ -110,6 +117,7 @@ define(['./module'], function(module) {
 
       $transitions.onSuccess({}, async trans => {
         $rootScope.$broadcast('loadingMain', { status: false })
+
         const to = trans.to().name
         const from = trans.from().name
         //Select primary states
