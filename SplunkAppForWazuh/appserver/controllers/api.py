@@ -303,7 +303,7 @@ class api(controllers.BaseController):
                     verify=verify).json()
             if not daemons_status['error']:
                 d = daemons_status['data']['affected_items'][0]
-                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                daemons = {"execd": d['wazuh-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
                 if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())

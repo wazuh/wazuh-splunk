@@ -43,10 +43,8 @@ class Template:
             'align','text','priority', 'multiline')
         self.elements = []
         self.pg_no = 0
-        if not PY3K:
-            f = open(infile, 'rb')
-        else:
-            f = open(infile)
+        
+        f = open(infile)
         with f:
             for row in csv.reader(f, delimiter=delimiter):
                 kargs = {}

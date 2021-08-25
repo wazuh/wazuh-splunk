@@ -358,8 +358,9 @@ class manager(controllers.BaseController):
             verify = False
             try:
                 self.check_wazuh_version(kwargs)
-            except Exception as e:
-                error = {"status": 400, "error": str(e)}
+            except Exception as ex:
+                self.logger.error("%s" % (ex))
+                error = {"status": 400, "error": "Cannot connect to the API"}
                 return jsonbak.dumps(error)
             daemons_ready = self.check_daemons(url, auth, verify, opt_cluster, kwargs)
             # Pass the cluster status instead of always False
@@ -406,7 +407,7 @@ class manager(controllers.BaseController):
             result = jsonbak.dumps(output)             
         except Exception as e:
             self.logger.error("Error when checking API connection: %s" % (e))
-            raise e
+            return jsonbak.dumps({"status": "500", "error": "Error when checking API connection: %s" % (e)})
         return result
     
     def get_cluster_info(self, opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster):
@@ -474,9 +475,9 @@ class manager(controllers.BaseController):
             app_version = str(a_split[0]+"."+a_split[1])
             if wazuh_version != app_version:
                 raise Exception("Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (app_version, wazuh_version))
-        except Exception as e:
-            self.logger.error("Error when checking Wazuh version: %s" % (e))
-            raise e
+        except Exception as ex:
+            self.logger.error("Error when checking Wazuh version: %s" % (ex))
+            raise ex
             
     def check_daemons(self, url, auth, verify, check_cluster,kwargs):
         """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
@@ -509,7 +510,7 @@ class manager(controllers.BaseController):
                     verify=verify).json()
             if not daemons_status['error']:
                 d = daemons_status['data']['affected_items'][0]
-                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                daemons = {"execd": d['wazuh-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
                 if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
