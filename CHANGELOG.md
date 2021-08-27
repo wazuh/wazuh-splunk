@@ -10,6 +10,11 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Support for Splunk v8.1.2
 - Support for Splunk v8.1.3
 
+### Fixed 
+
+- Fixed missing node name for agent overview [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
+- Fixed missing columns for some tables in reports [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
+
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
 
 ### Added
