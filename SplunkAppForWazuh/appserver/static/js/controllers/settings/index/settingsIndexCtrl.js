@@ -32,29 +32,64 @@ define([
         '2017-03-14T10:0:0',
         'now'
       )
+
+    this.dropdownSourceType = new Dropdown(
+        'inputSourcetype',
+        `| metasearch index=* sourcetype=wazuh | stats count by index, sourcetype | fields index`,
+        'sourcetype',
+        '$form.sourcetype$',
+        'inputSourcetype',
+        this.scope,
+        'wazuh',
+        '2017-03-14T10:0:0',
+        'now'
+    )
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
-        try {
-          if (newValue && this.dropdownInstance) {
-            this.currentDataService.setIndex(newValue)
-            this.scope.$emit('updatedAPI', {})
-            this.urlTokenModel.handleValueChange(this.dropdownInstance)
-          }
-        } catch (error) {
-          this.notification.showErrorToast(error)
-        }
-      })
-
+      this.onChangeDropdownIndex();
+      this.onChangeDropdownSourcetype();
       this.scope.$on('$destroy', () => {
         this.dropdown.destroy()
       })
     }
+
+      onChangeDropdownIndex() {
+          this.dropdownInstance = this.dropdown.getElement()
+          this.dropdownInstance.on('change', newValue => {
+              try {
+                  if (newValue && this.dropdownInstance) {
+                      this.currentDataService.setIndex(newValue)
+                      this.scope.$emit('updatedAPI', {})
+                      this.urlTokenModel.handleValueChange(this.dropdownInstance)
+                      console.log('Cambios desde index')
+                  }
+              } catch (error) {
+                  this.notification.showErrorToast(error)
+              }
+          })
+      }
+
+      onChangeDropdownSourcetype() {
+          this.dropdownInstanceSourcetype = this.dropdownSourceType.getElement()
+          this.dropdownInstanceSourcetype.on('change', newValue => {
+              try {
+                  if (newValue && this.dropdownInstanceSourcetype) {
+                      this.currentDataService.setSourceType(newValue)
+                      //this.scope.$emit('updatedAPI', {})
+                      //this.urlTokenModel.handleValueChange(this.dropdownInstanceSourcetype)
+                      console.log('Cambios desde sourcetype')
+
+                  }
+              } catch (error) {
+                  this.notification.showErrorToast(error)
+              }
+          })
+      }
+
   }
 
   app.controller('settingsIndexCtrl', SettingIndex)

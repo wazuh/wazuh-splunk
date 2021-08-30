@@ -24,5 +24,6 @@ define([
   './cdb-editor/cdb-editor',
   './restartService/restartService',
   './checkDaemons/checkDaemonsService',
-  './app-version/appVersionService'
+  './app-version/appVersionService',
+  './sourceTypeStorageService/sourceTypeStorageService'
 ], function() {})
