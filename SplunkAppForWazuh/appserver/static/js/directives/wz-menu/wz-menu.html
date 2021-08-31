@@ -66,8 +66,16 @@
       <!-- Case 2b - There's pattern and there's only one-->
       <span ng-if="theresAPI" class="small">
         {{currentIndex}}
+        <span>&nbsp;&ndash;&nbsp;</span>
         <md-tooltip md-direction="bottom" class="wz-tooltip">
           Selected index
+        </md-tooltip>
+      </span>
+
+      <span ng-if="theresAPI" class="small">
+        {{currentSourceType}}
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
+          Selected source type
         </md-tooltip>
       </span>
   

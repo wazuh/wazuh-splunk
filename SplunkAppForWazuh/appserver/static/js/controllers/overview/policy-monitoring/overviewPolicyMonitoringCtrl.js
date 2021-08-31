@@ -67,39 +67,39 @@ define([
          */
         new AreaChart(
           'elementOverTime',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.description=* | timechart span=1h count by rule.description`,
+          `${this.filters} rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'ruleDistribution',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.level=* | top rule.level`,
+          `${this.filters} rule.level=* | top rule.level`,
           'ruleDistribution',
           this.scope
         ),
         new PieChart(
           'topAgents',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} agent.name=* | top agent.name`,
+          `${this.filters} agent.name=* | top agent.name`,
           'topAgents',
           this.scope
         ),
         new AreaChart(
           'eventsPerAgent',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | timechart span=2h count by data.title`,
+          `${this.filters} | timechart span=2h count by data.title`,
           'eventsPerAgent',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          `${this.filters} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          `${this.filters} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

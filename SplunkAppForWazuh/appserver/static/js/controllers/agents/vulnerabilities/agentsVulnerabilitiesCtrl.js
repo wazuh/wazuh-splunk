@@ -126,7 +126,7 @@ define([
          */
         new AreaChart(
           'alertsSeverityOverTimeVizz',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
+          `${this.filters} rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
           'alertsSeverityOverTimeVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }

@@ -98,7 +98,7 @@ define([
         ),
         new SearchHandler(
           `searchLevel12`,
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} "rule.level">=12 | chart count`,
+          `${this.filters} "rule.level">=12 | chart count`,
           `level12token`,
           '$result.count$',
           'levelTwelve',
@@ -107,7 +107,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthFailure`,
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} "rule.groups{}"="authentication_fail*" | stats count`,
+          `${this.filters} "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
           '$result.count$',
           'authFailure',
@@ -116,7 +116,7 @@ define([
         ),
         new SearchHandler(
           `searchAuthSuccess`,
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  "rule.groups{}"="authentication_success" | stats count`,
+          `${this.filters}  "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
           '$result.count$',
           'authSuccess',
@@ -128,39 +128,39 @@ define([
          */
         new LinearChart(
           'alertLevEvoVizz',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.level=*| timechart count by rule.level  `,
+          `${this.filters} rule.level=*| timechart count by rule.level  `,
           'alertLevEvoVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new LinearChart(
           'alertsVizz',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | timechart span=2h count  `,
+          `${this.filters} | timechart span=2h count  `,
           'alertsVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'alertsEvoTop5Agents',
-          `${this.filters} index=wazuh  sourcetype=${this.currentDataService.getSourceType().sourceType} | stats count by agent.name`,
+          `${this.filters} index=wazuh  | stats count by agent.name`,
           'alertsEvoTop5Agents',
           this.scope
         ),
         new PieChart(
           'top5ruleGroups',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | top rule.groups{} limit=5`,
+          `${this.filters} | top rule.groups{} limit=5`,
           'top5ruleGroups',
           this.scope
         ),
         new Table(
           'agentsSummaryVizz',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
         ),
         (this.agentsSummaryTable = new RawTableDataService(
           'agentsSummaryTable',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryTableToken',
           '$result$',
           this.scope,

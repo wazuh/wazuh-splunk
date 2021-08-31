@@ -67,8 +67,10 @@ define(['../module'], function(directives) {
         const update = () => {
           try {
             const index = $currentDataService.getIndex()
+            const sourceType = $currentDataService.getSourceType()
             const api = $currentDataService.getApi()
             $scope.currentIndex = !index ? 'wazuh' : index.index
+            $scope.currentSourceType = !sourceType ? '*' : sourceType.sourceType
             $scope.currentAPI = !api ? '---' : api.managerName
             $scope.theresAPI = $scope.currentAPI === '---' ? false : true
 

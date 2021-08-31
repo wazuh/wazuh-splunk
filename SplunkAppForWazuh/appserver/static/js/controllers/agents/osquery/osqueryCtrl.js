@@ -88,45 +88,45 @@ define([
          */
         new PieChart(
           'mostCommonPacks',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | top data.osquery.pack limit=5`,
+          `${this.filters}  | top data.osquery.pack limit=5`,
           'mostCommonPacks',
           this.scope
         ),
         new AreaChart(
           'alertsPacksOverTime',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} data.osquery.pack="*" | timechart span=1h count by data.osquery.pack`,
+          `${this.filters} data.osquery.pack="*" | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'mostCommonActions',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | top data.osquery.action limit=5`,
+          `${this.filters}  | top data.osquery.action limit=5`,
           'mostCommonActions',
           this.scope
         ),
         new Table(
           'topRules',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters}  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
         ),
         new AreaChart(
           'alertsOverTime',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | timechart span=1h count`,
+          `${this.filters} | timechart span=1h count`,
           'alertsOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
