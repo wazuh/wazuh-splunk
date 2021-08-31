@@ -128,7 +128,7 @@ define([
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.nist_800_53{}="$nist$" | stats count sparkline by agent.name, rule.nist_800_53{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.nist_800_53{} as "Requirements", rule.description as "Rule description", count as Count`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{},rule.level,rule.description | sort count DESC |  rename rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

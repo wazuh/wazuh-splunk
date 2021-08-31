@@ -159,7 +159,7 @@ define([
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters}  sourcetype=${this.currentDataService.getSourceType().sourceType} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

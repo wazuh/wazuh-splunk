@@ -163,7 +163,7 @@ define([
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} | stats count sparkline by data.vulnerability.title | rename data.vulnerability.title as Title, count as Count, sparkline as Sparkline`,
+          `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

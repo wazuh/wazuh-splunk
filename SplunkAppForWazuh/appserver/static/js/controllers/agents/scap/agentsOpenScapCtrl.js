@@ -192,7 +192,7 @@ define([
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, data.oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
