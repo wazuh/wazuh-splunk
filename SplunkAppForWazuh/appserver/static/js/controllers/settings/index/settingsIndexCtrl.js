@@ -20,31 +20,38 @@ define([
       this.currentDataService = $currentDataService
       this.urlTokenModel = $urlTokenModel
       this.notification = $notificationService
+      this.selectedIndex = 'wazuh'
 
       this.dropdown = new Dropdown(
         'inputIndexes',
-        `| metasearch index=* sourcetype=wazuh | stats count by index, sourcetype | fields index`,
+        `| metasearch index=* sourcetype=*wazuh* | stats count by index, sourcetype | fields index`,
         'index',
         '$form.index$',
         'inputIndexes',
         this.scope,
-        'wazuh',
+        this.selectedIndex,
         '2017-03-14T10:0:0',
         'now'
       )
 
+
+    this.getSourceTypeQuery = () => {
+        return `| metasearch index=${this.selectedIndex} sourcetype=* | stats count by index, sourcetype | fields sourcetype`;
+    };
+
     this.dropdownSourceType = new Dropdown(
         'inputSourcetype',
-        `| metasearch index=* sourcetype=wazuh | stats count by index, sourcetype | fields index`,
+        this.getSourceTypeQuery(),
         'sourcetype',
         '$form.sourcetype$',
         'inputSourcetype',
         this.scope,
-        'wazuh',
+        '*',
         '2017-03-14T10:0:0',
         'now'
     )
     }
+
 
     /**
      * On controller loads
@@ -53,11 +60,12 @@ define([
       this.onChangeDropdownIndex();
       this.onChangeDropdownSourcetype();
       this.scope.$on('$destroy', () => {
-        this.dropdown.destroy()
+        this.dropdown.destroy();
+        this.dropdownSourceType.destroy();
       })
     }
 
-      onChangeDropdownIndex() {
+      onChangeDropdownIndex() {          
           this.dropdownInstance = this.dropdown.getElement()
           this.dropdownInstance.on('change', newValue => {
               try {
@@ -65,7 +73,8 @@ define([
                       this.currentDataService.setIndex(newValue)
                       this.scope.$emit('updatedAPI', {})
                       this.urlTokenModel.handleValueChange(this.dropdownInstance)
-                      console.log('Cambios desde index')
+                      this.selectedIndex = newValue;                      
+                      this.dropdownSourceType.changeSearch(this.getSourceTypeQuery());
                   }
               } catch (error) {
                   this.notification.showErrorToast(error)
@@ -79,10 +88,8 @@ define([
               try {
                   if (newValue && this.dropdownInstanceSourcetype) {
                       this.currentDataService.setSourceType(newValue)
-                      //this.scope.$emit('updatedAPI', {})
-                      //this.urlTokenModel.handleValueChange(this.dropdownInstanceSourcetype)
-                      console.log('Cambios desde sourcetype')
-
+                      this.scope.$emit('updatedAPI', {})
+                      this.urlTokenModel.handleValueChange(this.dropdownInstanceSourcetype)
                   }
               } catch (error) {
                   this.notification.showErrorToast(error)

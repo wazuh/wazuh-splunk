@@ -49,7 +49,7 @@ define(['../module'], function(module) {
         }
       } catch (err) {
         this.notification.showErrorToast(
-          'Incorrent format. Please use key:value syntax'
+          'Incorrect format. Please use key:value syntax'
         )
       }
     }

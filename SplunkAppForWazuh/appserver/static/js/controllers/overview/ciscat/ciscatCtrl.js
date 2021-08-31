@@ -140,26 +140,26 @@ define([
          */
         new ColumnChart(
           'topCiscatGroups',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.groups{}="ciscat" | top data.cis.group`,
           'topCiscatGroups',
           this.scope
         ),
         new LinearChart(
           'scanResultEvolution',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters}  sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
+          `${this.filters}  sourcetype=${this.currentDataService.getSourceType().sourceType} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

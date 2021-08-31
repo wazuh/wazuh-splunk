@@ -28,7 +28,7 @@ define(['../module'], function(app) {
         getSourceType() {
             if (this.sessionStorage.selectedSourceType) {
                 return JSON.parse(this.sessionStorage.selectedSourceType)
-            } else return { sourceType: 'wazuh' }
+            } else return { sourceType: '*' }
         }
 
     }

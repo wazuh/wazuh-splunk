@@ -96,7 +96,7 @@ define([
          */
         new SearchHandler(
           `filesAddedSearch`,
-          `${this.filters} sourcetype=wazuh rule.id=80790 | stats count`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.id=80790 | stats count`,
           `filesAddedToken`,
           '$result.count$',
           'newFiles',
@@ -105,7 +105,7 @@ define([
         ),
         new SearchHandler(
           `readFilesSearch`,
-          `${this.filters} sourcetype=wazuh rule.id=80784 | stats count`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.id=80784 | stats count`,
           `readFilesToken`,
           '$result.count$',
           'readFiles',
@@ -114,7 +114,7 @@ define([
         ),
         new SearchHandler(
           `modifiedFiles`,
-          `${this.filters} sourcetype=wazuh rule.id=80781 | stats count`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.id=80781 | stats count`,
           `filesModifiedToken`,
           '$result.count$',
           'filesModifiedToken',
@@ -123,7 +123,7 @@ define([
         ),
         new SearchHandler(
           `deletedFiles`,
-          `${this.filters} sourcetype=wazuh rule.id=80791 | stats count`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} rule.id=80791 | stats count`,
           'filesDeletedToken',
           '$result.count$',
           'filesDeleted',
@@ -135,38 +135,38 @@ define([
          */
         new PieChart(
           'groupsVizz',
-          `${this.filters} sourcetype=wazuh | top rule.groups{}`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | top rule.groups{}`,
           'groupsVizz',
           this.scope
         ),
         new PieChart(
           'commandsVizz',
-          `${this.filters} sourcetype=wazuh | top limit=5 data.audit.command`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | top limit=5 data.audit.command`,
           'commandsVizz',
           this.scope
         ),
         new PieChart(
           'filesVizz',
-          `${this.filters} sourcetype=wazuh audit.file.name=* | top audit.file.name`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} audit.file.name=* | top audit.file.name`,
           'filesVizz',
           this.scope
         ),
         new AreaChart(
           'alertsOverTimeVizz',
-          `${this.filters} sourcetype=wazuh | timechart limit=10 count by rule.description`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | timechart limit=10 count by rule.description`,
           'alertsOverTimeVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummaryVizz',
-          `${this.filters} sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
