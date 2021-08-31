@@ -7,13 +7,6 @@ define(['../module'], function(app) {
         }
 
         /**
-         * Removes the selected SourceType
-         */
-        removeSourceType() {
-            delete this.sessionStorage.selectedSourceType
-        }
-
-        /**
          * Select an SourceType by name
          * @param {String} sourceType
          */
@@ -26,11 +19,16 @@ define(['../module'], function(app) {
          * @param {String} sourceType
          */
         getSourceType() {
-            if (this.sessionStorage.selectedSourceType) {
-                return JSON.parse(this.sessionStorage.selectedSourceType)
-            } else return { sourceType: '*' }
+            try {
+                if (this.sessionStorage.selectedSourceType) {
+                    return JSON.parse(this.sessionStorage.selectedSourceType)
+                } else {
+                    return {sourceType: '*'}
+                }
+            } catch (e) {
+                return {sourceType: '*'}
+            }
         }
-
     }
     app.service('$sourceTypeStorageService', SourceTypeStorageService)
 })
