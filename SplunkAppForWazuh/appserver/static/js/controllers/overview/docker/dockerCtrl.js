@@ -67,39 +67,39 @@ define([
          */
         new PieChart(
           'top5images',
-          `${this.filters} sourcetype=wazuh | stats count by data.docker.id`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} | stats count by data.docker.id`,
           'top5images',
           this.scope
         ),
         new LinearChart(
           'eventsOcurred',
-          `${this.filters} sourcetype=wazuh data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
           'eventsOcurred',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'top5actions',
-          `${this.filters} sourcetype=wazuh  | top data.docker.Action limit=5`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | top data.docker.Action limit=5`,
           'top5actions',
           this.scope
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
           'alertsSummary',
           this.scope
         ),
         new LinearChart(
           'resourceUsage',
-          `${this.filters} sourcetype=wazuh data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
           'resourceUsage',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new RawTableDataService(
           'alertsSummaryRawTable',
-          `${this.filters} sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
+          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType}  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
           'alertsSummaryRawTableToken',
           '$result$',
           this.scope,

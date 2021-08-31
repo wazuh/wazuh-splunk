@@ -98,6 +98,14 @@ define(['../module'], function(module) {
       return $apiMgrService.setIndex(index)
     }
 
+    const getSourceType = () => {
+      return $apiMgrService.getSourceType()
+    }
+
+    const setSourceType = sourceType => {
+      return $apiMgrService.setSourceType(sourceType)
+    }
+
     const setApi = api => {
       return $apiMgrService.setApi(api)
     }
@@ -276,7 +284,9 @@ define(['../module'], function(module) {
       addApi: addApi,
       isAdmin: isAdmin,
       getReportingStatus: getReportingStatus,
-      checkWazuhVersion: checkWazuhVersion
+      checkWazuhVersion: checkWazuhVersion,
+      getSourceType: getSourceType,
+      setSourceType: setSourceType,
     }
   })
 })

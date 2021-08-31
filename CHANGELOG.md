@@ -9,6 +9,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Support for Wazuh v4.1.5
 - Support for Splunk v8.1.2
 - Support for Splunk v8.1.3
+- Added new source type selector to customize the queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
+
 
 ### Fixed 
 
