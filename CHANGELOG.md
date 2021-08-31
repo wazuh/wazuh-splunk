@@ -2,14 +2,15 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v4.1.5 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 69
+## Wazuh v4.1.5 - Splunk Enterprise v8.1.2, v8.1.3, v8.1.4 - Revision 70
 
 ### Added
 
 - Support for Wazuh v4.1.5
 - Support for Splunk v8.1.2
 - Support for Splunk v8.1.3
-- Added new source type selector to customize the queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
+- Support for Splunk v8.1.4
+- Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
 
 
 ### Fixed 
