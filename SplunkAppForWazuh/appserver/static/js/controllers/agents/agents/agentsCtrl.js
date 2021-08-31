@@ -39,6 +39,7 @@ define([
       $csvRequestService,
       $tableFilterService,
       agentData,
+      clusterInfo,
       $mdDialog,
       $groupHandler,
       $dateDiffService
@@ -51,7 +52,7 @@ define([
       this.apiReq = $requestService.apiReq
       this.state = $state
       this.notification = $notificationService
-      this.currentClusterInfo = this.currentDataService.getClusterInfo()
+      this.clusterInfo = clusterInfo;
       this.filters = this.currentDataService.getSerializedFilters()
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
@@ -139,7 +140,10 @@ define([
             : []
         }
 
-        if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
+        if (this.clusterInfo && 
+            this.clusterInfo.enabled === 'yes' && 
+            this.clusterInfo.running === 'yes'
+          ) {
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) {} //eslint-disable-line

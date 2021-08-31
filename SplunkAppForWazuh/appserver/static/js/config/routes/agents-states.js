@@ -30,6 +30,20 @@ define(['../module'], function(module) {
                   $state.go('settings.api')
                 }
               }
+            ],
+            clusterInfo: [
+              '$requestService',
+              '$state',
+              async $requestService => {
+                try {
+                  const clusterData = await $requestService.apiReq(
+                    '/cluster/status'
+                  )
+                  return clusterData.data.data;
+                } catch (err) {
+                  $state.go('settings.api');
+                }
+              }
             ]
           }
         })

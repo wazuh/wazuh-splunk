@@ -94,6 +94,14 @@
           <div class="euiFlexItem euiFlexItem">
             <div class="euiStat euiStat--leftAligned wz-text-align-center">
               <div class="euiText euiText--small euiStat__description">
+                <p class="agentField">{{ agent.node_name || '-'}}</p>
+              </div>
+              <p class="euiText--small euiStat__description">Cluster node</p>
+            </div>
+          </div>
+          <div class="euiFlexItem euiFlexItem">
+            <div class="euiStat euiStat--leftAligned wz-text-align-center">
+              <div class="euiText euiText--small euiStat__description">
                 <p class="agentField">{{offsetTimestamp('', agent.dateAdd) || '-'}}</p>
               </div>
               <p class="euiText--small euiStat__description">Registration date</p>
