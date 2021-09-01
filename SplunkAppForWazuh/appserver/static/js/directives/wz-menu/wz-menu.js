@@ -18,7 +18,8 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
         $currentDataService,
         $navigationService,
         $state,
-        apiList
+        apiList,
+        $notificationService
       ) {
         $scope.logoUrl =
           BASE_URL +
@@ -64,37 +65,37 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
           { tokens: false}
         ).render()     
         
+        const onChangeDropdownAPI = () => {          
+          const dropdownInstance = dropdownAPI.getElement()
+          dropdownInstance.on('change', newValue => {
+            try {
+              if (newValue && dropdownInstance) {
+                selectAPI(newValue)
+              }
+            } catch (error) {
+              $notificationService.showErrorToast(error)
+            }
+          })
+        }
+
         const init = () => {
-          this.onChangeDropdownIndex();
+          onChangeDropdownAPI();
           $scope.$on('$destroy', () => {
             dropdownAPI.destroy();
           })
-        }
-    
-        const onChangeDropdownAPI = () => {          
-            this.dropdownInstance = dropdownAPI.getElement()
-            this.dropdownInstance.on('change', newValue => {
-                try {
-                    if (newValue && this.dropdownInstance) {
-                        selectAPI(newValue)
-                    }
-                } catch (error) {
-                    this.notification.showErrorToast(error)
-                }
-            })
         }
 
         const selectAPI = async (key) => {
           try {
             // checking if the api is up
-            await this.currentDataService.checkApiConnection(key)
+            await $currentDataService.checkApiConnection(key)
             // Selecting API
-            await this.currentDataService.chose(key)            
-            this.notification.showSuccessToast('API selected')
-            this.scope.$emit('updatedAPI', () => { })
-            this.scope.$applyAsync()
+            await $currentDataService.chose(key)            
+            $notificationService.showSuccessToast('API selected')
+            $scope.$emit('updatedAPI', () => { })
+            $scope.$applyAsync()
           } catch (err) {
-            this.notification.showErrorToast(err || 'Could not select API')
+            $notificationService.showErrorToast(err || 'Could not select API')
           }
         }
 
