@@ -79,7 +79,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
             try {
               if (newValue && dropdownInstance) {
                 $currentDataService.setIndex(newValue)
-                $scope.$emit('updatedAPI', {})
                 $urlTokenModel.handleValueChange(dropdownInstance)
                 $scope.currentIndex = newValue;            
                 $notificationService.showSuccessToast('Index selected')          
@@ -97,7 +96,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
               try {
                   if (newValue && dropdownInstance) {
                     $currentDataService.setSourceType(newValue)
-                    $scope.$emit('updatedAPI', {})
                     $notificationService.showSuccessToast('Source Type selected')
                     $scope.currentSourceType = newValue       
                     $urlTokenModel.handleValueChange(dropdownInstance)
@@ -111,6 +109,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
         const renderDropdownAPI = () => {
           if (dropdownAPI){
             mvc.Components.revokeInstance(dropdownAPI.id);
+            $(`#menuSelectAPI`).html('');
           }
 
           dropdownAPI = new Dropdown(
@@ -119,15 +118,17 @@ function(directives, Dropdown, DropdownViz, mvc) {
               choices: $scope.apiList.map((item)=> ({ label:item.managerName, value:item._key })),
               value: $scope.currentAPI._key,
               selectFirstChoice: false,                    
-              el: $(`#selectAPI`)
+              el: $(`#menuSelectAPI`)
             },
             { tokens: false}
           ).render()
         }
 
         const renderDropdownIndex = () => {
-          if (dropdownIndex)
+          if (dropdownIndex){
             dropdownIndex.destroy();
+            $(`#menuSelectIndex`).html('');
+          }
 
           dropdownIndex = new DropdownViz(
             'inputIndexes',
@@ -143,8 +144,10 @@ function(directives, Dropdown, DropdownViz, mvc) {
         }
 
         const renderDropdownSourceType = () => {
-          if (dropdownSourceType)
+          if (dropdownSourceType){
             dropdownSourceType.destroy();
+            $(`#menuSelectSourceType`).html('');
+          }
           dropdownSourceType = new DropdownViz(
             'inputSourcetype',
             getSourceTypeQuery(),
@@ -159,9 +162,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
         }
 
         const init = async() => {
-          $scope.apiList = await $currentDataService.getApiList();
           update();
-          
           $scope.$on('$destroy', () => {
             dropdownAPI.destroy();
             dropdownIndex.destroy();
@@ -176,7 +177,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
             // Selecting API
             await $currentDataService.chose(key)            
             $notificationService.showSuccessToast('API selected')
-            $scope.$emit('updatedAPI', () => { })
             $scope.$applyAsync()
           } catch (err) {
             $notificationService.showErrorToast(err || 'Could not select API')
@@ -202,8 +202,9 @@ function(directives, Dropdown, DropdownViz, mvc) {
           }
         }
 
-        const update = () => {
+        const update = async() => {
           try {
+            $scope.apiList = await $currentDataService.getApiList();
             const index = $currentDataService.getIndex()
             const sourceType = $currentDataService.getSourceType()
             const api = $currentDataService.getApi()
@@ -222,7 +223,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
               $scope.menuNavItem = 'settings'
             } else if (checkLastState('dev-tools', 'dev-tools')) {
               $scope.menuNavItem = 'dev-tools'
-            } else if (checkLastState('discover', 'discover')) {
+            } else if (checkLastState('discover', 'discover')) { 
               $scope.menuNavItem = 'discover'
             }
 

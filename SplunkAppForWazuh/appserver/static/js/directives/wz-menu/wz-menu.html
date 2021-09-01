@@ -86,14 +86,11 @@
           <div role="group" aria-labelledby="label-views-shared-controls-controlgroup-view63"
             class="controls controls-join ">
             <!-- Case more than 1 API -->
-            <div ng-show="theresAPI&&apiList.length>1" style="background: white !important;" class="input-dropdown"
-              id="selectAPI" ng-title="currentAPI.managerName"></div>
+            <div ng-show="theresAPI&&apiList.length>1" style="background: white !important;" class="input-dropdown" id="menuSelectAPI" ng-title="currentAPI.managerName"></div>
             <!-- Case just 1 API -->
             <span ng-show="theresAPI&&apiList.length==1" class="small">
               <i class="fa fa-star fa-fw wz-color-orange" aria-hidden="true"></i>{{currentAPI.managerName}}
             </span>
-            
-            <!---Wazuh API Selector--->
           </div>
         </div>
         <!---Index Selector--->
