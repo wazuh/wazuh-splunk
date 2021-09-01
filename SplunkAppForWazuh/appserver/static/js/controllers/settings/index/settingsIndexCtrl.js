@@ -70,7 +70,7 @@ define([
           this.dropdownInstance = this.dropdown.getElement()
           this.dropdownInstance.on('change', newValue => {
               try {
-                  if (newValue && this.dropdownInstance) {
+                  if (newValue && newValue != this.selectedIndex && this.dropdownInstance) {
                       this.currentDataService.setIndex(newValue)
                       this.scope.$emit('updatedAPI', {})
                       this.urlTokenModel.handleValueChange(this.dropdownInstance)
@@ -87,9 +87,10 @@ define([
           this.dropdownInstanceSourcetype = this.dropdownSourceType.getElement()
           this.dropdownInstanceSourcetype.on('change', newValue => {
               try {
-                  if (newValue && this.dropdownInstanceSourcetype) {
+                  if (newValue && newValue != this.selectedSourceType && this.dropdownInstanceSourcetype) {
                       this.currentDataService.setSourceType(newValue)
                       this.scope.$emit('updatedAPI', {})
+                      this.selectedSourceType = newValue                      
                       this.urlTokenModel.handleValueChange(this.dropdownInstanceSourcetype)
                   }
               } catch (error) {

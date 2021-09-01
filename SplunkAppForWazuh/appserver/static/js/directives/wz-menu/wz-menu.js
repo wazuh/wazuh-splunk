@@ -203,6 +203,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
 
         const update = async() => {
           try {
+            clearListeners()
             $scope.apiList = await $currentDataService.getApiList();
             const index = $currentDataService.getIndex()
             const sourceType = $currentDataService.getSourceType()
@@ -225,8 +226,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
             } else if (checkLastState('discover', 'discover')) { 
               $scope.menuNavItem = 'discover'
             }
-
-            clearListeners()
 
             if ($scope.theresAPI && $scope.apiList.length > 1) {
               renderDropdownAPI();
