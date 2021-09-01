@@ -48,11 +48,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
           $scope.openDiscover(data)
         })
 
-        $scope.onChangeSelectedAPI = (newValue) => {
-          selectAPI(newValue)
-        }
-
-      
         let dropdownAPI;
         let dropdownIndex;
         let dropdownSourceType;
@@ -81,7 +76,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
                 $currentDataService.setIndex(newValue)
                 $urlTokenModel.handleValueChange(dropdownInstance)
                 $scope.currentIndex = newValue;            
-                $notificationService.showSuccessToast('Index selected')          
                 dropdownSourceType.changeSearch(getSourceTypeQuery());
               }
             } catch (error) {
@@ -96,7 +90,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
               try {
                   if (newValue && dropdownInstance) {
                     $currentDataService.setSourceType(newValue)
-                    $notificationService.showSuccessToast('Source Type selected')
                     $scope.currentSourceType = newValue       
                     $urlTokenModel.handleValueChange(dropdownInstance)
                   }
@@ -176,7 +169,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
             await $currentDataService.checkApiConnection(key)
             // Selecting API
             await $currentDataService.chose(key)            
-            $notificationService.showSuccessToast('API selected')
             $scope.$applyAsync()
           } catch (err) {
             $notificationService.showErrorToast(err || 'Could not select API')

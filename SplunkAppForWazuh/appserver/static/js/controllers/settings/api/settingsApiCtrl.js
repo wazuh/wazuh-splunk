@@ -293,6 +293,7 @@ define(['../../module'], function (controllers) {
         this.scope.showForm = false
         this.scope.$applyAsync()
         this.notification.showSuccessToast('New API was added')
+        this.scope.$emit('updatedAPI', () => { })
       } catch (err) {
         if (
           typeof err === 'string' &&
