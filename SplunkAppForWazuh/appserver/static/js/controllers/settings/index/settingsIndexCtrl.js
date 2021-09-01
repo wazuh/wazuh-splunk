@@ -20,7 +20,8 @@ define([
       this.currentDataService = $currentDataService
       this.urlTokenModel = $urlTokenModel
       this.notification = $notificationService
-      this.selectedIndex = 'wazuh'
+      this.selectedIndex = $currentDataService.getIndex() || 'wazuh'
+      this.selectedSourceType = $currentDataService.getSourceType() || '*'
 
       this.dropdown = new Dropdown(
         'inputIndexes',
@@ -46,7 +47,7 @@ define([
         '$form.sourcetype$',
         'inputSourcetype',
         this.scope,
-        '*',
+        this.selectedSourceType,
         '2017-03-14T10:0:0',
         'now'
     )
@@ -69,7 +70,7 @@ define([
           this.dropdownInstance = this.dropdown.getElement()
           this.dropdownInstance.on('change', newValue => {
               try {
-                  if (newValue && this.dropdownInstance) {
+                  if (newValue && newValue != this.selectedIndex && this.dropdownInstance) {
                       this.currentDataService.setIndex(newValue)
                       this.scope.$emit('updatedAPI', {})
                       this.urlTokenModel.handleValueChange(this.dropdownInstance)
@@ -86,9 +87,10 @@ define([
           this.dropdownInstanceSourcetype = this.dropdownSourceType.getElement()
           this.dropdownInstanceSourcetype.on('change', newValue => {
               try {
-                  if (newValue && this.dropdownInstanceSourcetype) {
+                  if (newValue && newValue != this.selectedSourceType && this.dropdownInstanceSourcetype) {
                       this.currentDataService.setSourceType(newValue)
                       this.scope.$emit('updatedAPI', {})
+                      this.selectedSourceType = newValue                      
                       this.urlTokenModel.handleValueChange(this.dropdownInstanceSourcetype)
                   }
               } catch (error) {

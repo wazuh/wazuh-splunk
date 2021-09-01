@@ -158,19 +158,19 @@ define([
         ),
         new PieChart(
           'topNewFiles',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topNewFiles',
           this.scope
         ),
         new PieChart(
           'topModifiedFiles',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topModifiedFiles',
           this.scope
         ),
         new PieChart(
           'topDeletedFiles',
-          `${this.filters} sourcetype=${this.currentDataService.getSourceType().sourceType} syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topDeletedFiles',
           this.scope
         )
