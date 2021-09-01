@@ -78,7 +78,6 @@ define([
       this.filters = this.getFilters()
 
       this.vizz = [
-        //`${this.filters} | timechart span=1h count`,
         /**
          * Visualizations
          */
