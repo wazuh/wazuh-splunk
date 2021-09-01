@@ -231,12 +231,12 @@ function(directives, Dropdown, DropdownViz, mvc) {
 
             if ($scope.theresAPI && $scope.apiList.length > 1) {
               renderDropdownAPI();
-              renderDropdownIndex();
-              renderDropdownSourceType();
               onChangeDropdownAPI();
-              onChangeDropdownIndex();
-              onChangeDropdownSourceType();
             }
+            renderDropdownIndex();
+            renderDropdownSourceType();
+            onChangeDropdownIndex();
+            onChangeDropdownSourceType();
             $scope.$applyAsync()
           } catch (error) {
             $state.go('settings.api')
