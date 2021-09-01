@@ -21,7 +21,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
         $state,
         $notificationService,
         $urlTokenModel,
-        $route
+        $window
       ) {
         $scope.logoUrl =
           BASE_URL +
@@ -58,7 +58,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
         const onChangeDropdownAPI = () => {
           onChangeListeners.push(dropdownAPI.on('change', newValue => {
             try {
-              if (newValue) {
+              if (newValue && $scope.currentAPI._key != newValue) {
                 selectAPI(newValue)
               }
             } catch (error) {
@@ -72,11 +72,11 @@ function(directives, Dropdown, DropdownViz, mvc) {
           const dropdownInstance = dropdownIndex.getElement()
           onChangeListeners.push(dropdownInstance.on('change', newValue => {
             try {
-              if (newValue && dropdownInstance) {
+              if (newValue && dropdownInstance && $scope.currentIndex != newValue) {
                 $currentDataService.setIndex(newValue)
                 $urlTokenModel.handleValueChange(dropdownInstance)
                 $scope.currentIndex = newValue;
-                $route.reload();
+                $window.location.reload();
               }
             } catch (error) {
               notificationService.showErrorToast(error)
@@ -88,11 +88,11 @@ function(directives, Dropdown, DropdownViz, mvc) {
           const dropdownInstance = dropdownSourceType.getElement()
           onChangeListeners.push(dropdownInstance.on('change', newValue => {
               try {
-                  if (newValue && dropdownInstance) {
+                  if (newValue && dropdownInstance && $scope.currentSourceType != newValue) {
                     $currentDataService.setSourceType(newValue)
                     $scope.currentSourceType = newValue       
                     $urlTokenModel.handleValueChange(dropdownInstance)
-                    $route.reload();
+                    $window.location.reload();
                   }
               } catch (error) {
                   $notificationService.showErrorToast(error)
@@ -173,11 +173,10 @@ function(directives, Dropdown, DropdownViz, mvc) {
         const selectAPI = async (key) => {
           try {
             // checking if the api is up
-            await $currentDataService.checkApiConnection(key)
+            await $currentDataService.checkApiConnection(key);
             // Selecting API
-            await $currentDataService.chose(key)                        
-            $scope.$applyAsync()
-            $route.reload();
+            await $currentDataService.chose(key);
+            $window.location.reload();
           } catch (err) {
             $notificationService.showErrorToast(err || 'Could not select API')
           }
