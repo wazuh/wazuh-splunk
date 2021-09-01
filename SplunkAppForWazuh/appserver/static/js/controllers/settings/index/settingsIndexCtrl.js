@@ -20,7 +20,8 @@ define([
       this.currentDataService = $currentDataService
       this.urlTokenModel = $urlTokenModel
       this.notification = $notificationService
-      this.selectedIndex = 'wazuh'
+      this.selectedIndex = $currentDataService.getIndex() || 'wazuh'
+      this.selectedSourceType = $currentDataService.getSourceType() || '*'
 
       this.dropdown = new Dropdown(
         'inputIndexes',
@@ -46,7 +47,7 @@ define([
         '$form.sourcetype$',
         'inputSourcetype',
         this.scope,
-        '*',
+        this.selectedSourceType,
         '2017-03-14T10:0:0',
         'now'
     )

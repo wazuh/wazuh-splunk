@@ -18,7 +18,8 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
         $currentDataService,
         $navigationService,
         $state,
-        $notificationService
+        $notificationService,
+        $urlTokenModel
       ) {
         $scope.logoUrl =
           BASE_URL +
@@ -50,9 +51,10 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
           selectAPI(newValue)
         }
 
-        
-
+      
         let dropdownAPI;
+        let dropdownIndex;
+        let dropdownSourceType;
         
         const onChangeDropdownAPI = () => {
           dropdownAPI.on('change', newValue => {
@@ -66,27 +68,98 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
           })
         }
 
-        const init = async() => {
-          $scope.apiList = await $currentDataService.getApiList();
-          update();
+        const getSourceTypeQuery = () => {
+          return `| metasearch index=${$scope.currentIndex} sourcetype=* | stats count by index, sourcetype | fields sourcetype`;
+        };
+  
+        const onChangeDropdownIndex = () => {          
+          const dropdownInstance = dropdownIndex.getElement()
+          dropdownInstance.on('change', newValue => {
+            try {
+              if (newValue && dropdownInstance) {
+                $currentDataService.setIndex(newValue)
+                $scope.$emit('updatedAPI', {})
+                $urlTokenModel.handleValueChange(dropdownInstance)
+                $selectedIndex = newValue;            
+                $notificationService.showSuccessToast('Index selected')          
+                dropdownSourceType.changeSearch(getSourceTypeQuery());
+              }
+            } catch (error) {
+              notificationService.showErrorToast(error)
+            }
+          })
+        }
+
+      const onChangeDropdownSourceType = () => {
+          const dropdownInstance = dropdownSourceType.getElement()
+          dropdownInstance.on('change', newValue => {
+              try {
+                  if (newValue && dropdownInstance) {
+                    $currentDataService.setSourceType(newValue)
+                    $scope.$emit('updatedAPI', {})
+                    $notificationService.showSuccessToast('Source Type selected')          
+                    $urlTokenModel.handleValueChange(dropdownInstance)
+                  }
+              } catch (error) {
+                  $notificationService.showErrorToast(error)
+              }
+          })
+      }
+
+        const renderDropdownAPI = () => {
           dropdownAPI = new Dropdown(
             {
               id: `selectAPI`,
-              choices: $scope.apiList.map((item)=>{
-                return {
-                  label:item.managerName,
-                  value:item._key,
-                }
-              }),
+              choices: $scope.apiList.map((item)=> ({ label:item.managerName, value:item._key })),
               value: $scope.currentAPI._key,
               selectFirstChoice: false,                    
               el: $(`#selectAPI`)
             },
             { tokens: false}
           ).render()
+        }
+
+        const renderDropdownIndex = () => {
+          dropdownIndex = new Dropdown(
+            'inputIndexes',
+            `| metasearch index=* sourcetype=*wazuh* | stats count by index, sourcetype | fields index`,
+            'index',
+            '$form.index$',
+            'inputIndexes',
+            $scope,
+            $scope.currentIndex,
+            '2017-03-14T10:0:0',
+            'now'
+          )
+        }
+
+        const renderDropdownSourceType = () => {
+          dropdownSourceType = new Dropdown(
+            'inputSourcetype',
+            getSourceTypeQuery(),
+            'sourcetype',
+            '$form.sourcetype$',
+            'inputSourcetype',
+            $scope,
+            $scope.currentSourceType,
+            '2017-03-14T10:0:0',
+            'now'
+          )
+        }
+
+        const init = async() => {
+          $scope.apiList = await $currentDataService.getApiList();
+          update();
+          renderDropdownAPI();
+          renderDropdownIndex();
+          renderDropdownSourceType();
           onChangeDropdownAPI();
+          onChangeDropdownIndex();
+          onChangeDropdownSourceType();
           $scope.$on('$destroy', () => {
             dropdownAPI.destroy();
+            dropdownIndex.destroy();
+            dropdownSourceType.destroy();
           })
         }
 
