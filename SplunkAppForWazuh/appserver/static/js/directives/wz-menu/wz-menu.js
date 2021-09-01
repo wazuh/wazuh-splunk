@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
+define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directives, Dropdown) {
   'use strict'
   directives.directive('wzMenu', function(BASE_URL) {
     return {
@@ -48,6 +48,40 @@ define(['../module'], function(directives) {
 
         $scope.onChangeSelectedAPI = (newValue) => {
           selectAPI(newValue)
+        }
+
+        const dropdownAPI = new Dropdown(
+          {
+            id: `selectAPI`,
+            choices: apiList,
+            labelField: 'managerName',
+            valueField: '_key',
+            initialValue: currentAPI,
+            default: defaultValue,
+            selectFirstChoice: false,                    
+            el: $(`#selectAPI`)
+          },
+          { tokens: false}
+        ).render()     
+        
+        const init = () => {
+          this.onChangeDropdownIndex();
+          $scope.$on('$destroy', () => {
+            dropdownAPI.destroy();
+          })
+        }
+    
+        const onChangeDropdownAPI = () => {          
+            this.dropdownInstance = dropdownAPI.getElement()
+            this.dropdownInstance.on('change', newValue => {
+                try {
+                    if (newValue && this.dropdownInstance) {
+                        selectAPI(newValue)
+                    }
+                } catch (error) {
+                    this.notification.showErrorToast(error)
+                }
+            })
         }
 
         const selectAPI = async (key) => {
@@ -123,6 +157,8 @@ define(['../module'], function(directives) {
           $scope.select(data)
           update()
         })
+
+        init()
       },
       templateUrl:
         BASE_URL +
