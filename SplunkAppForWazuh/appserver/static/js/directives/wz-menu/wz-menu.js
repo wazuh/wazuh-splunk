@@ -156,7 +156,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
         }
 
         const clearListeners = () => {
-          onChangeListeners.forEach(unregister => unregister())
+          onChangeListeners.forEach(instance => instance.stopListening())
           onChangeListeners = []
         }
 
