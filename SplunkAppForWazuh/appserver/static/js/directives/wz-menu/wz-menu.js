@@ -50,27 +50,14 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
           selectAPI(newValue)
         }
 
-        $scope.apiList = $currentDataService.getApiList()
-
-        const dropdownAPI = new Dropdown(
-          {
-            id: `selectAPI`,
-            choices: apiList,
-            labelField: 'managerName',
-            valueField: '_key',
-            initialValue: currentAPI,
-            default: defaultValue,
-            selectFirstChoice: false,                    
-            el: $(`#selectAPI`)
-          },
-          { tokens: false}
-        ).render()     
         
-        const onChangeDropdownAPI = () => {          
-          const dropdownInstance = dropdownAPI.getElement()
-          dropdownInstance.on('change', newValue => {
+
+        let dropdownAPI;
+        
+        const onChangeDropdownAPI = () => {
+          dropdownAPI.on('change', newValue => {
             try {
-              if (newValue && dropdownInstance) {
+              if (newValue) {
                 selectAPI(newValue)
               }
             } catch (error) {
@@ -79,7 +66,24 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
           })
         }
 
-        const init = () => {
+        const init = async() => {
+          $scope.apiList = await $currentDataService.getApiList();
+          update();
+          dropdownAPI = new Dropdown(
+            {
+              id: `selectAPI`,
+              choices: $scope.apiList.map((item)=>{
+                return {
+                  label:item.managerName,
+                  value:item._key,
+                }
+              }),
+              value: $scope.currentAPI._key,
+              selectFirstChoice: false,                    
+              el: $(`#selectAPI`)
+            },
+            { tokens: false}
+          ).render()
           onChangeDropdownAPI();
           $scope.$on('$destroy', () => {
             dropdownAPI.destroy();
@@ -126,8 +130,8 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
             const api = $currentDataService.getApi()
             $scope.currentIndex = !index ? 'wazuh' : index.index
             $scope.currentSourceType = !sourceType ? '*' : sourceType.sourceType
-            $scope.currentAPI = !api ? '---' : api.managerName
-            $scope.theresAPI = $scope.currentAPI === '---' ? false : true
+            $scope.currentAPI = !api ? {managerName:'---', _key:'-'} : api
+            $scope.theresAPI = !!api
 
             if (checkLastState('ow-', 'overview')) {
               $scope.menuNavItem = 'overview'
