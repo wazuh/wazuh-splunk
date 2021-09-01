@@ -20,7 +20,8 @@ function(directives, Dropdown, DropdownViz, mvc) {
         $navigationService,
         $state,
         $notificationService,
-        $urlTokenModel
+        $urlTokenModel,
+        $route
       ) {
         $scope.logoUrl =
           BASE_URL +
@@ -66,9 +67,6 @@ function(directives, Dropdown, DropdownViz, mvc) {
           }))
         }
 
-        const getSourceTypeQuery = () => {
-          return `| metasearch index=${$scope.currentIndex} sourcetype=* | stats count by index, sourcetype | fields sourcetype`;
-        };
   
         const onChangeDropdownIndex = () => {          
           const dropdownInstance = dropdownIndex.getElement()
@@ -77,8 +75,8 @@ function(directives, Dropdown, DropdownViz, mvc) {
               if (newValue && dropdownInstance) {
                 $currentDataService.setIndex(newValue)
                 $urlTokenModel.handleValueChange(dropdownInstance)
-                $scope.currentIndex = newValue;            
-                dropdownSourceType.changeSearch(getSourceTypeQuery());
+                $scope.currentIndex = newValue;
+                $route.reload();
               }
             } catch (error) {
               notificationService.showErrorToast(error)
@@ -94,6 +92,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
                     $currentDataService.setSourceType(newValue)
                     $scope.currentSourceType = newValue       
                     $urlTokenModel.handleValueChange(dropdownInstance)
+                    $route.reload();
                   }
               } catch (error) {
                   $notificationService.showErrorToast(error)
@@ -145,7 +144,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
           }
           dropdownSourceType = new DropdownViz(
             'menuSelectSourceType',
-            getSourceTypeQuery(),
+            `| metasearch index=${$scope.currentIndex} sourcetype=* | stats count by index, sourcetype | fields sourcetype`,
             'sourcetype',
             '$form.sourcetype$',
             'menuSelectSourceType',
@@ -160,7 +159,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
           onChangeListeners.forEach(unregister => unregister())
           onChangeListeners = []
         }
-        
+
         const init = async() => {
           update();
           $scope.$on('$destroy', () => {
@@ -176,8 +175,9 @@ function(directives, Dropdown, DropdownViz, mvc) {
             // checking if the api is up
             await $currentDataService.checkApiConnection(key)
             // Selecting API
-            await $currentDataService.chose(key)            
+            await $currentDataService.chose(key)                        
             $scope.$applyAsync()
+            $route.reload();
           } catch (err) {
             $notificationService.showErrorToast(err || 'Could not select API')
           }
