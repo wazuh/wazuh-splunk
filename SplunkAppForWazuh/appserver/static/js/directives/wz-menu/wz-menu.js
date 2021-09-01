@@ -18,7 +18,6 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
         $currentDataService,
         $navigationService,
         $state,
-        apiList,
         $notificationService
       ) {
         $scope.logoUrl =
@@ -50,6 +49,8 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
         $scope.onChangeSelectedAPI = (newValue) => {
           selectAPI(newValue)
         }
+
+        $scope.apiList = $currentDataService.getApiList()
 
         const dropdownAPI = new Dropdown(
           {
