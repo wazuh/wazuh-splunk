@@ -9,7 +9,8 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directives, Dropdown) {
+define(['../module','splunkjs/mvc/simpleform/input/dropdown', '../../services/visualizations/inputs/dropdown-input', 'splunkjs/mvc'], 
+function(directives, Dropdown, DropdownViz, mvc) {
   'use strict'
   directives.directive('wzMenu', function(BASE_URL) {
     return {
@@ -108,6 +109,10 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
       }
 
         const renderDropdownAPI = () => {
+          if (dropdownAPI){
+            mvc.Components.revokeInstance(dropdownAPI.id);
+          }
+
           dropdownAPI = new Dropdown(
             {
               id: `selectAPI`,
@@ -121,7 +126,10 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
         }
 
         const renderDropdownIndex = () => {
-          dropdownIndex = new Dropdown(
+          if (dropdownIndex)
+            dropdownIndex.destroy();
+
+          dropdownIndex = new DropdownViz(
             'inputIndexes',
             `| metasearch index=* sourcetype=*wazuh* | stats count by index, sourcetype | fields index`,
             'index',
@@ -135,7 +143,9 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
         }
 
         const renderDropdownSourceType = () => {
-          dropdownSourceType = new Dropdown(
+          if (dropdownSourceType)
+            dropdownSourceType.destroy();
+          dropdownSourceType = new DropdownViz(
             'inputSourcetype',
             getSourceTypeQuery(),
             'sourcetype',
@@ -151,12 +161,7 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
         const init = async() => {
           $scope.apiList = await $currentDataService.getApiList();
           update();
-          renderDropdownAPI();
-          renderDropdownIndex();
-          renderDropdownSourceType();
-          onChangeDropdownAPI();
-          onChangeDropdownIndex();
-          onChangeDropdownSourceType();
+          
           $scope.$on('$destroy', () => {
             dropdownAPI.destroy();
             dropdownIndex.destroy();
@@ -220,6 +225,13 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
             } else if (checkLastState('discover', 'discover')) {
               $scope.menuNavItem = 'discover'
             }
+
+            renderDropdownAPI();
+            renderDropdownIndex();
+            renderDropdownSourceType();
+            onChangeDropdownAPI();
+            onChangeDropdownIndex();
+            onChangeDropdownSourceType();
             $scope.$applyAsync()
           } catch (error) {
             $state.go('settings.api')
