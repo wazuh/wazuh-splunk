@@ -80,7 +80,7 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
                 $currentDataService.setIndex(newValue)
                 $scope.$emit('updatedAPI', {})
                 $urlTokenModel.handleValueChange(dropdownInstance)
-                $selectedIndex = newValue;            
+                $scope.currentIndex = newValue;            
                 $notificationService.showSuccessToast('Index selected')          
                 dropdownSourceType.changeSearch(getSourceTypeQuery());
               }
@@ -97,7 +97,8 @@ define(['../module','splunkjs/mvc/simpleform/input/dropdown'], function(directiv
                   if (newValue && dropdownInstance) {
                     $currentDataService.setSourceType(newValue)
                     $scope.$emit('updatedAPI', {})
-                    $notificationService.showSuccessToast('Source Type selected')          
+                    $notificationService.showSuccessToast('Source Type selected')
+                    $scope.currentSourceType = newValue       
                     $urlTokenModel.handleValueChange(dropdownInstance)
                   }
               } catch (error) {
