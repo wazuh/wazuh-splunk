@@ -17,7 +17,8 @@ define(['../module'], function(directives) {
         $scope,
         $currentDataService,
         $navigationService,
-        $state
+        $state,
+        apiList
       ) {
         $scope.logoUrl =
           BASE_URL +
@@ -44,6 +45,24 @@ define(['../module'], function(directives) {
           event.stopPropagation()
           $scope.openDiscover(data)
         })
+
+        $scope.onChangeSelectedAPI = (newValue) => {
+          selectAPI(newValue)
+        }
+
+        const selectAPI = async (key) => {
+          try {
+            // checking if the api is up
+            await this.currentDataService.checkApiConnection(key)
+            // Selecting API
+            await this.currentDataService.chose(key)            
+            this.notification.showSuccessToast('API selected')
+            this.scope.$emit('updatedAPI', () => { })
+            this.scope.$applyAsync()
+          } catch (err) {
+            this.notification.showErrorToast(err || 'Could not select API')
+          }
+        }
 
         const checkLastState = (prefix, state) => {
           try {
