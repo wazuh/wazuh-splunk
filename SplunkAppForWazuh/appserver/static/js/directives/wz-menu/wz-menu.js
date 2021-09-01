@@ -51,9 +51,11 @@ function(directives, Dropdown, DropdownViz, mvc) {
         let dropdownAPI;
         let dropdownIndex;
         let dropdownSourceType;
+
+        let onChangeListeners = [];
         
         const onChangeDropdownAPI = () => {
-          dropdownAPI.on('change', newValue => {
+          onChangeListeners.push(dropdownAPI.on('change', newValue => {
             try {
               if (newValue) {
                 selectAPI(newValue)
@@ -61,7 +63,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
             } catch (error) {
               $notificationService.showErrorToast(error)
             }
-          })
+          }))
         }
 
         const getSourceTypeQuery = () => {
@@ -70,7 +72,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
   
         const onChangeDropdownIndex = () => {          
           const dropdownInstance = dropdownIndex.getElement()
-          dropdownInstance.on('change', newValue => {
+          onChangeListeners.push(dropdownInstance.on('change', newValue => {
             try {
               if (newValue && dropdownInstance) {
                 $currentDataService.setIndex(newValue)
@@ -81,12 +83,12 @@ function(directives, Dropdown, DropdownViz, mvc) {
             } catch (error) {
               notificationService.showErrorToast(error)
             }
-          })
+          }))
         }
 
       const onChangeDropdownSourceType = () => {
           const dropdownInstance = dropdownSourceType.getElement()
-          dropdownInstance.on('change', newValue => {
+          onChangeListeners.push(dropdownInstance.on('change', newValue => {
               try {
                   if (newValue && dropdownInstance) {
                     $currentDataService.setSourceType(newValue)
@@ -96,7 +98,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
               } catch (error) {
                   $notificationService.showErrorToast(error)
               }
-          })
+          }))
       }
 
         const renderDropdownAPI = () => {
@@ -124,11 +126,11 @@ function(directives, Dropdown, DropdownViz, mvc) {
           }
 
           dropdownIndex = new DropdownViz(
-            'inputIndexes',
+            'menuSelectIndex',
             `| metasearch index=* sourcetype=*wazuh* | stats count by index, sourcetype | fields index`,
             'index',
             '$form.index$',
-            'inputIndexes',
+            'menuSelectIndex',
             $scope,
             $scope.currentIndex,
             '2017-03-14T10:0:0',
@@ -142,11 +144,11 @@ function(directives, Dropdown, DropdownViz, mvc) {
             $(`#menuSelectSourceType`).html('');
           }
           dropdownSourceType = new DropdownViz(
-            'inputSourcetype',
+            'menuSelectSourceType',
             getSourceTypeQuery(),
             'sourcetype',
             '$form.sourcetype$',
-            'inputSourcetype',
+            'menuSelectSourceType',
             $scope,
             $scope.currentSourceType,
             '2017-03-14T10:0:0',
@@ -154,12 +156,18 @@ function(directives, Dropdown, DropdownViz, mvc) {
           )
         }
 
+        const clearListeners = () => {
+          onChangeListeners.forEach(unregister => unregister())
+          onChangeListeners = []
+        }
+        
         const init = async() => {
           update();
           $scope.$on('$destroy', () => {
+            clearListeners()
             dropdownAPI.destroy();
             dropdownIndex.destroy();
-            dropdownSourceType.destroy();
+            dropdownSourceType.destroy();            
           })
         }
 
@@ -219,12 +227,16 @@ function(directives, Dropdown, DropdownViz, mvc) {
               $scope.menuNavItem = 'discover'
             }
 
-            renderDropdownAPI();
-            renderDropdownIndex();
-            renderDropdownSourceType();
-            onChangeDropdownAPI();
-            onChangeDropdownIndex();
-            onChangeDropdownSourceType();
+            clearListeners()
+
+            if ($scope.theresAPI && $scope.apiList.length > 1) {
+              renderDropdownAPI();
+              renderDropdownIndex();
+              renderDropdownSourceType();
+              onChangeDropdownAPI();
+              onChangeDropdownIndex();
+              onChangeDropdownSourceType();
+            }
             $scope.$applyAsync()
           } catch (error) {
             $state.go('settings.api')
