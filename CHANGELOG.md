@@ -3,7 +3,7 @@
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
 
-## Wazuh v4.2.1 - Splunk Enterprise v8.1.3, v8.1.4 - Revision 4202
+## Wazuh v4.2.2 - Splunk Enterprise v8.1.3, v8.1.4 - Revision 4203
 
 ### Added 
 
@@ -21,6 +21,12 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed search bar queries with spaces  [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 - Fixed pinned fields ending with curly brackets [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 - Fixed issues for Splunk Cloud compatibility [#1099](https://github.com/wazuh/wazuh-splunk/pull/1099)
+
+## Wazuh v4.2.1 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4202
+
+### Added 
+
+- Support for Wazuh 4.2.1
 
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4201
 
