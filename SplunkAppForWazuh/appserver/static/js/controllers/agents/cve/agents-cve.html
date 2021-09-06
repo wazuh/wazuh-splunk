@@ -18,23 +18,12 @@
     <div flex></div>
     <!-- Report button -->
     <div style="display:flex; padding-right: 10px;">
-      <button ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
-        ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
-        <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Generate report
-        </md-tooltip>
-      </button>
       <wz-discover
         breadcrumbs="{section: 'Agents', subSection: 'Vulnerabilities', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}">
       </wz-discover>
     </div>
     <div style="margin-right:7px;" id='timePicker'></div>
   </div>
-
-  <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
-      aria-hidden="true"></i></div>
 
   <!-- Threat Detection and Response navbar -->
   <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'inventory'">
@@ -60,7 +49,7 @@
       </div>
     </div>
     
-    <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os && agent.os.platform !== 'windows'">
+    <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
       <md-card flex="" class="wz-md-card _md flex">
         <md-card-content>
           <span class="wz-headline-title">Vulnerabilities</span>
