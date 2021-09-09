@@ -617,13 +617,6 @@ define([
           } catch (error) {} // eslint-disable-line
         }
 
-        /**
-         * Removes a file
-         */
-        $scope.showConfirmRemoveFile = (ev, item) => {
-          $scope.removingFile = item
-        }
-
         $scope.isSyschecks = () => {
           return instance.path.startsWith('/syscheck')
         }
