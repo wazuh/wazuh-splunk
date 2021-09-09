@@ -28,7 +28,7 @@
 
   <!-- Table -->
   <div layout="row" ng-show="!error && !wazuhTableLoading && items.length"
-    ng-if="!isPolicyMonitoring() && !isSyschecks()">
+    ng-if="!isPolicyMonitoring() && !isSyschecks() && !isVulnerabilities()">
     <table ng-class="customColumns ? 'table-resizable' : ''"
       class="table wz-no-outline table-condensed table-striped table-hover" style="table-layout: fixed; "
       id="table{{scapepath}}">
@@ -448,5 +448,77 @@
     <span class="color-grey">0 items ({{time | number: 2}} seconds)</span>
   </div>
 
+
+  <!-- Table for Vulnerabilities -->
+  <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isVulnerabilities()">
+    <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''"
+      class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="table{{scapepath}}">
+      <thead class="wz-text-bold">
+        <th ng-repeat="key in keys  | filter: showKey" class="wz-text-left wz-nowrap"
+          ng-class="{'cursor-pointer' : !key.nosortable}" ng-click="!key.nosortable && sort(key)">
+          {{ keyEquivalence[key.value || key] || key.value || key }}
+          <i ng-if="!key.nosortable" class="fa wz-theader-sort-icon"
+            ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
+            aria-hidden="true"></i>
+        </th>
+      </thead>
+      <tbody>
+        <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"
+          ng-repeat-start="item in items | filter:{item:'!'}" ng-click="expandItem(item)">
+          <td ng-repeat="key in keys | filter: showKey">
+            <span>
+              {{
+              parseValue(key,item)
+              }}
+            </span>
+          </td>
+        </tr>
+        <tr class="wz-word-wrap" style="background-color: #ecf6fb !important" ng-if="item.expanded" ng-repeat-end="">
+          <td colspan="9">
+            <md-card class="wz-margin-12">
+              <table class="table wz-no-outline table-condensed">
+                <tbody>
+                  <tr ng-repeat="(key,value) in item"
+                    ng-show="(!isWindows() || (key !== 'inode' && key !== 'gid' && key !== 'gname')) && key !== 'expanded'">
+                    <td class="wz-width-150"><b>{{keyEquivalence[key] || key}}</b></td>
+                    <td>{{value}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </md-card>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot class="no-border">
+        <td
+          colspan="{{ (path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
+          <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
+            seconds)</span>
+          <div ng-show="totalItems > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
+            <ul layout="row">
+              <li ng-show="currentPage > 0" class="md-padding">
+                <a href ng-click="getFirstPage()">First</a>
+              </li>
+              <li ng-show="currentPage" class="md-padding">
+                <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+              </li>
+
+              <li ng-repeat="n in range"
+                ng-class="{'wz-text-active': n == currentPage}" ng-click="setPage()" class="md-padding">
+                <a href ng-bind="n + 1">1</a>
+              </li>
+
+              <li ng-show="(totalPages - currentPage) > 1" class="md-padding">
+                <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+              </li>
+              <li ng-show="(totalPages - currentPage) > 5" class="md-padding">
+                <a href ng-click="getLastPage()">Last</a>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tfoot>
+    </table>
+  </div>
     
 </div>

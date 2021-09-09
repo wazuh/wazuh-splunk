@@ -67,7 +67,7 @@
             </button>
           </div>
           <div layout="row" ng-if="agent" class="agents-fim-table wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table-server-side custom-columns="true" 
+            <wazuh-table-server-side custom-columns="true" allow-click="true"
               flex path="'/vulnerability/' + agent.id" row-sizes="[12,10,8]"
               extra-limit="true" keys="['cve','name','version','architecture']">
             </wazuh-table-server-side>
