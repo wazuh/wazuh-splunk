@@ -237,7 +237,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
             } else if (checkLastState('discover', 'discover')) { 
               $scope.menuNavItem = 'discover'
             }
-
+            
             if ($scope.theresAPI && $scope.apiList.length > 1) {
               renderDropdownAPI();
               onChangeDropdownAPI();
@@ -255,7 +255,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
 
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', event => {
-          event.stopPropagation()
+          event.stopPropagation && event.stopPropagation()
           update()
         })      
 
