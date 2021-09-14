@@ -641,7 +641,6 @@ define([
         }
 
         $scope.isVulnerabilities = () => {
-          console.log(instance.path.startsWith('/vulnerability'));
           return instance.path.startsWith('/vulnerability')
         }
        
