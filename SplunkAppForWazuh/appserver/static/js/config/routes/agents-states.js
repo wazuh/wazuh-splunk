@@ -20,7 +20,7 @@ define(['../module'], function(module) {
             agentData: [
               '$requestService',
               '$state',
-              async $requestService => {
+              async ($requestService, $state) => {
                 try {
                   const agentsSummary = await $requestService.apiReq(
                     '/overview/agents'
@@ -28,6 +28,20 @@ define(['../module'], function(module) {
                   return agentsSummary
                 } catch (err) {
                   $state.go('settings.api')
+                }
+              }
+            ],
+            clusterInfo: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const clusterData = await $requestService.apiReq(
+                    '/cluster/status'
+                  )
+                  return clusterData.data.data;
+                } catch (err) {
+                  $state.go('settings.api');
                 }
               }
             ]
