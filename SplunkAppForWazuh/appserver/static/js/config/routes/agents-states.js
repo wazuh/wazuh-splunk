@@ -20,7 +20,7 @@ define(['../module'], function(module) {
             agentData: [
               '$requestService',
               '$state',
-              async $requestService => {
+              async ($requestService, $state) => {
                 try {
                   const agentsSummary = await $requestService.apiReq(
                     '/overview/agents'
@@ -34,7 +34,7 @@ define(['../module'], function(module) {
             clusterInfo: [
               '$requestService',
               '$state',
-              async $requestService => {
+              async ($requestService, $state) => {
                 try {
                   const clusterData = await $requestService.apiReq(
                     '/cluster/status'
