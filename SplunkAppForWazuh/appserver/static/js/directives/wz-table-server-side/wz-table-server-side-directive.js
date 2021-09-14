@@ -91,6 +91,11 @@ define([
           $scope.implicitSort,
           true // server-side pagination
         )
+
+        $scope.isVulnerabilities = instance.path.startsWith('/vulnerability')
+        $scope.isPolicyMonitoring = instance.path.includes('sca') && instance.path.includes('/checks')        
+        $scope.isSyschecks = instance.path.startsWith('/syscheck')        
+
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
@@ -555,12 +560,6 @@ define([
           return init()
         }
 
-        $scope.isPolicyMonitoring = () => {
-          return (
-            instance.path.includes('sca') && instance.path.includes('/checks')
-          )
-        }
-
         /**
          * Edits a file
          */
@@ -606,18 +605,16 @@ define([
           } catch (error) {} // eslint-disable-line
         }
 
-        $scope.isSyschecks = () => {
-          return instance.path.startsWith('/syscheck')
-        }
-
-        $scope.isWindows = () => {
+       const checkIsWindows = () => {
           try {
-            const agent = $scope.$parent.$parent.$parent.$parent.agent
+            const agent = $scope.$parent.$parent.$parent.agent
             return (agent.os || {}).platform === 'windows'
           } catch (error) {
             return false
           }
         }
+
+        $scope.isWindows = checkIsWindows()
 
         $scope.expandItem = item => {
           if (item.expanded) item.expanded = false
@@ -629,10 +626,6 @@ define([
           }
         }
 
-        $scope.isVulnerabilities = () => {
-          return instance.path.startsWith('/vulnerability')
-        }
-       
         $scope.loadRegistryValueDetails = async (item) => {
           var parentEl = angular.element(document.body);
           $mdDialog.show({
