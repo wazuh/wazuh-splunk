@@ -2,7 +2,6 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-
 ## Wazuh v4.2.1 - Splunk Enterprise v8.1.3, v8.1.4 - Revision 4202
 
 ### Added 
@@ -10,6 +9,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added MITRE ATT&CK Framework integration [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 - Added MITRE ATT&CK Dashboard integration [#1076](https://github.com/wazuh/wazuh-splunk/pull/1076)
 - Support for Splunk v8.1.4
+- Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
+- Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
 
 ### Fixed
 
@@ -21,7 +22,15 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed search bar queries with spaces  [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 - Fixed pinned fields ending with curly brackets [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 - Fixed issues for Splunk Cloud compatibility [#1099](https://github.com/wazuh/wazuh-splunk/pull/1099)
+- Fixed missing node name for agent overview [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
+- Fixed missing columns for some tables in reports [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
 - Fixed expand row feature in Agent File Integrity Monitoring [#1112](https://github.com/wazuh/wazuh-splunk/pull/1112)
+
+## Wazuh v4.2.1 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4202
+
+### Added 
+
+- Support for Wazuh 4.2.1
 
 ## Wazuh v4.2.0 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4201
 

@@ -356,12 +356,7 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
-            try:
-                self.check_wazuh_version(kwargs)
-            except Exception as ex:
-                self.logger.error("%s" % (ex))
-                error = {"status": 400, "error": "Cannot connect to the API"}
-                return jsonbak.dumps(error)
+            self.check_wazuh_version(kwargs)
             daemons_ready = self.check_daemons(url, auth, verify, opt_cluster, kwargs)
             # Pass the cluster status instead of always False
             if not daemons_ready:
@@ -374,7 +369,7 @@ class manager(controllers.BaseController):
                 return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
             else:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": 400, "error": "Cannot connect to the API"})
+                return jsonbak.dumps({"status": 400, "error": "Cannot connect to the API, please see the app logs"})
         return result
 
     @expose_page(must_login=False, methods=['GET'])
@@ -393,7 +388,7 @@ class manager(controllers.BaseController):
             current_api = self.get_api(apiId=opt_id)
             current_api_json = jsonbak.loads(jsonbak.loads(current_api))
             if not "data" in current_api_json:
-                return jsonbak.dumps({"status": "400", "error": "Error when checking API connection."})
+                raise Exception("Error checking API connection: %s" % (current_api_json))
             opt_username = str(current_api_json["data"]["userapi"])
             opt_password = str(current_api_json["data"]["passapi"])
             opt_base_url = str(current_api_json["data"]["url"])
@@ -460,7 +455,11 @@ class manager(controllers.BaseController):
             wazuh_token = self.wztoken.get_auth_token(url,auth)
 
             wazuh_version = self.session.get(
-                url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()   
+                url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+            
+            if not "data" in wazuh_version:
+               raise Exception(wazuh_version)                
+            
             wazuh_version = wazuh_version['data']['api_version']
 
             app_version = cli.getConfStanza(
