@@ -184,7 +184,7 @@ define([
           IP: this.agent.data.data.affected_items[0].ip,
           Version: this.agent.data.data.affected_items[0].version,
           Manager: this.agent.data.data.affected_items[0].manager,
-          OS: this.agent.data.data.os.affected_items[0].name,
+          OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
           group: this.agent.data.data.affected_items[0].group.toString()

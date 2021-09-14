@@ -156,7 +156,7 @@
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step3">
-                    /var/ossec/bin/ossec-control restart
+                    /var/ossec/bin/wazuh-control restart
                   </div>
                 </div>
                 <!-- If the agent is Windows -->
@@ -165,7 +165,7 @@
                   <div class="power-cmd">
                     Change <span class="bg-whitesmoke">MANAGER_IP</span> for <span
                       class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
-                      (x86)\ossec-agent\ossec.conf</b>:
+                      (x86)\wazuh-agent\ossec.conf</b>:
                   </div>
                   <span class="clip cursor-pointer">
                     <wz-svg icon="copy" color="#0a7b0a" ng-click="toClipboard('step1')"></wz-svg>
@@ -189,7 +189,7 @@
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step2">
-                    'C:\Program Files (x86)\ossec-agent\manage_agents' -i {{config.agentKey}}
+                    'C:\Program Files (x86)\wazuh-agent\manage_agents' -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
                   <div class="wz-margin-left-10">
@@ -248,7 +248,7 @@
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step3">
-                    /Library/Ossec/bin/ossec-control restart
+                    /Library/Ossec/bin/wazuh-control restart
                   </div>
                 </div>
               </div>

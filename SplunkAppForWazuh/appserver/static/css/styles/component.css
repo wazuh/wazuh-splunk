@@ -102,6 +102,33 @@ md-dialog-actions button {
   margin: 0 !important;
 }
 
+/* Custom loader styles */
+.wz-bg-loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff9;
+  display: flex;
+}
+.wz-bg-loader .wz-loader {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.wz-bg-loader .wz-loader *{
+  flex: 0;
+}
+.wz-bg-loader.ng-hide{
+  transition: all 0.5s;
+  transition-timing-function: cubic-bezier(1, -0.01, 1, -1.22);
+  opacity: 0;
+}
+
 /* Custom chips styles */
 
 .wz-chips .md-chips {
@@ -120,6 +147,17 @@ md-chip {
   margin: 0 8px 0 0 !important;
 }
 
+md-chip-template.wz-chip[ng-mouseover="editChip($chip)"]{
+  display: block;
+}
+
+.modalFlexData {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  padding-right: 5%;
+}
+
 .euiFlexGroup {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -130,6 +168,52 @@ md-chip {
   -webkit-box-flex: 1;
   -ms-flex-positive: 1;
   flex-grow: 1;
+}
+
+.wz-tactics-list li{
+  padding: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wz-flex-list{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  margin-right: 1%;
+}
+.wz-flex-list.wz-hover-underline:hover span:first-child {
+  text-decoration: underline;
+}
+
+.wz-tactics-list li.disabled span:first-child,
+.wz-flex-list.disabled span:first-child {
+  opacity: 0.7;
+}
+
+.wz-tactics-list li.disabled .wz-green-badge,
+.wz-flex-list.disabled .wz-green-badge{
+  background-color: #AAA;
+}
+
+.wz-green-badge{
+  font-family: monospace ;
+  font-size: 12px;
+  color: white;
+  background-color: #396e3e;
+  height: 25px;
+  line-height: 26px;
+  cursor: default;
+  border-radius: 16px;
+  padding: 0 8px;
+  text-align: center;
 }
 
 .euiFlexGroup--directionRow {

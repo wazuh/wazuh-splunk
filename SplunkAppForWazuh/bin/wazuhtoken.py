@@ -43,7 +43,7 @@ class wazuhtoken():
                 wazuh_token = self.session.get(
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
                 token = wazuh_token['data']['token']
-                self.cache.set('token', token, 600)
+                self.cache.set('token', token, 900)
                 return token
             else :
                 return self.cache.get('token')

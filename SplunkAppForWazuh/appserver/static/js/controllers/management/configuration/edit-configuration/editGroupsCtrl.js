@@ -66,7 +66,7 @@ define(['../../../module'], function(controllers) {
         }
 
         //Edit groups
-        this.scope.$on('openGroupFromList', (ev, parameters) => {
+        this.scope.$on('openGroupFromList', (ev, parameters) => {          
           ev.stopPropagation()
           const groupName = parameters.group.name
           this.scope.editingFile = true

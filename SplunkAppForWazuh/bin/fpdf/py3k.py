@@ -7,23 +7,13 @@ import sys
 
 PY3K = sys.version_info >= (3, 0)
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 
-try:
-	from urllib import urlopen
-except ImportError:
-	from urllib.request import urlopen
+import pickle
 
-try:
-    from io import BytesIO
-except ImportError:
-    try:
-        from cStringIO import StringIO as BytesIO
-    except ImportError:
-        from StringIO import StringIO as BytesIO
+from urllib.request import urlopen
+
+from io import BytesIO
+
 
 try:
     from hashlib import md5
@@ -34,10 +24,7 @@ except ImportError:
         md5 = None
 def hashpath(fn):
     h = md5()
-    if PY3K:
-        h.update(fn.encode("UTF-8"))
-    else:
-        h.update(fn)
+    h.update(fn.encode("UTF-8"))
     return h.hexdigest()
 
 # Check if PIL is available (tries importing both pypi version and corrected or manually installed versions).
@@ -51,29 +38,20 @@ except ImportError:
     except ImportError:
         Image = None
 
-try:
-	from HTMLParser import HTMLParser
-except ImportError:
-	from html.parser import HTMLParser
+from html.parser import HTMLParser
 
-if PY3K:
-    basestring = str
-    unicode = str
-    ord = lambda x: x
-else:
-    basestring = basestring
-    unicode = unicode
-    ord = ord
+basestring = str
+unicode = str
+ord = lambda x: x
+
 
 # shortcut to bytes conversion (b prefix)
 def b(s): 
     if isinstance(s, basestring):
         return s.encode("latin1")
     elif isinstance(s, int):
-        if PY3K:
-            return bytes([s])       # http://bugs.python.org/issue4588
-        else:
-            return chr(s)
+        return bytes([s])       # http://bugs.python.org/issue4588
+        
 
 def exception():
     "Return the current the exception instance currently being handled"
