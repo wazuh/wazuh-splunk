@@ -138,7 +138,7 @@ define([
         ),
         new RawTableDataService(
           'lastFilesTable',
-          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink as Count | sort count DESC | rename data.virustotal.source as File, data.virustotal.permalink as Link`,
+          `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
           'lastFilesToken',
           '$result$',
           this.scope,

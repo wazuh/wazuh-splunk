@@ -58,8 +58,8 @@ define([
       this.search = new SearchManager(
         {
           id: `${this.id}Search`,
-          earliest_time: '$when.earliest$',
-          latest_time: '$when.latest$',
+          earliest_time: this.earliestTime || '$when.earliest$',
+          latest_time: this.latestTime || '$when.latest$',
           status_buckets: 0,
           sample_ratio: null,
           cancelOnUnload: true,
