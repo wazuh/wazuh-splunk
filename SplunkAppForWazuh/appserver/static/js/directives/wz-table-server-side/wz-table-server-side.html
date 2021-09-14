@@ -255,7 +255,7 @@
       <tbody>
         <tr ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}"
           class="wz-word-wrap" ng-repeat-start="item in items | filter:{item:'!'}"
-          ng-click="expandPolicyMonitoringCheck(item)">
+          ng-click="expandItem(item)">
           <td ng-repeat="key in keys | filter: showKey" ng-class="{'noBorderBottom':item.expanded}">
             <span ng-show="key === 'result'" class="no-wrap">
               <p class="round status littleStat"

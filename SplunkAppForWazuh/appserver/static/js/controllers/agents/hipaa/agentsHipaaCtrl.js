@@ -57,7 +57,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${this.filters} sourcetype=wazuh rule.hipaa{}="*"| stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
+        `${this.filters} rule.hipaa{}="*"| stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
         'rule.hipaa{}',
         '$form.hipaa$',
         'dropDownInput',
@@ -86,33 +86,33 @@ define([
          */
         new ColumnChart(
           'requirementsOverTime',
-          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirement"`,
+          `${this.filters} rule.hipaa{}="$hipaa$" | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirement"`,
           'requirementsOverTime',
           this.scope,
           { stackMode: 'stacked' }
         ),
         new PieChart(
           'top10Requirements',
-          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | top limit=10 rule.hipaa{} | rename rule.hipaa{} as "Requirement"`,
+          `${this.filters} rule.hipaa{}="$hipaa$" | top limit=10 rule.hipaa{} | rename rule.hipaa{} as "Requirement"`,
           'top10Requirements',
           this.scope
         ),
         new ColumnChart(
           'requirementsDistributionByLevel',
-          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | chart count(rule.hipaa{}) by rule.level,rule.hipaa{} | rename count as "Count" , rule.level as "Level", rule.hipaa{} as "Requirement"`,
+          `${this.filters} rule.hipaa{}="$hipaa$" | chart count(rule.hipaa{}) by rule.level,rule.hipaa{} | rename count as "Count" , rule.level as "Level", rule.hipaa{} as "Requirement"`,
           'requirementsDistributionByLevel',
           this.scope,
           { stackMode: 'stacked' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description |  sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
+          `${this.filters} rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description |  sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh rule.hipaa{}="$hipaa$" | stats count sparkline by agent.name, rule.hipaa{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.hipaa{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description |  sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,

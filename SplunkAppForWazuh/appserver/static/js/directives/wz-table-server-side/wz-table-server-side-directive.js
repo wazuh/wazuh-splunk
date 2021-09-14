@@ -392,7 +392,6 @@ define([
          * Pagination variables and functions
          */
         $scope.itemsPerPage = $scope.rowsPerPage || 10
-        $scope.pagedItems = []
         $scope.currentPage = 0
         $scope.gap = 0
         
@@ -562,16 +561,6 @@ define([
           )
         }
 
-        $scope.expandPolicyMonitoringCheck = item => {
-          if (item.expanded) item.expanded = false
-          else {
-            $scope.pagedItems[$scope.currentPage].map(
-              item => (item.expanded = false)
-            )
-            item.expanded = true
-          }
-        }
-
         /**
          * Edits a file
          */
@@ -633,7 +622,7 @@ define([
         $scope.expandItem = item => {
           if (item.expanded) item.expanded = false
           else {
-            $scope.pagedItems[$scope.currentPage].map(
+            $scope.items.map(
               item => (item.expanded = false)
             )
             item.expanded = true

@@ -9,7 +9,8 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
+define(['../module','splunkjs/mvc/simpleform/input/dropdown', '../../services/visualizations/inputs/dropdown-input', 'splunkjs/mvc'], 
+function(directives, Dropdown, DropdownViz, mvc) {
   'use strict'
   directives.directive('wzMenu', function(BASE_URL) {
     return {
@@ -17,7 +18,11 @@ define(['../module'], function(directives) {
         $scope,
         $currentDataService,
         $navigationService,
-        $state
+        $state,
+        $notificationService,
+        $urlTokenModel,
+        $window,
+        $rootScope
       ) {
         $scope.logoUrl =
           BASE_URL +
@@ -45,6 +50,149 @@ define(['../module'], function(directives) {
           $scope.openDiscover(data)
         })
 
+        let dropdownAPI;
+        let dropdownIndex;
+        let dropdownSourceType;
+
+        let onChangeListeners = [];
+        
+        const onChangeDropdownAPI = () => {
+          onChangeListeners.push(dropdownAPI.on('change', newValue => {
+            try {
+              if (newValue && $scope.currentAPI._key != newValue) {
+                selectAPI(newValue)
+              }
+            } catch (error) {
+              $notificationService.showErrorToast(error)
+            }
+          }))
+        }
+
+  
+        const onChangeDropdownIndex = () => {          
+          const dropdownInstance = dropdownIndex.getElement()
+          onChangeListeners.push(dropdownInstance.on('change', newValue => {
+            try {
+              if (newValue && dropdownInstance && $scope.menuCurrentIndex != newValue) {
+                $currentDataService.setIndex(newValue)
+                $urlTokenModel.handleValueChange(dropdownInstance)
+                $scope.menuCurrentIndex = newValue;
+                if (!$scope.menuSkipRefresh) $window.location.reload();
+              }
+            } catch (error) {
+              notificationService.showErrorToast(error)
+            }
+          }))
+        }
+
+      const onChangeDropdownSourceType = () => {
+          const dropdownInstance = dropdownSourceType.getElement()
+          onChangeListeners.push(dropdownInstance.on('change', newValue => {
+              try {
+                  if (newValue && dropdownInstance && $scope.menuCurrentSourceType != newValue) {
+                    $currentDataService.setSourceType(newValue)
+                    $scope.menuCurrentSourceType = newValue       
+                    $urlTokenModel.handleValueChange(dropdownInstance)
+                    if (!$scope.menuSkipRefresh) $window.location.reload();
+                  }
+              } catch (error) {
+                  $notificationService.showErrorToast(error)
+              }
+          }))
+      }
+
+        const renderDropdownAPI = () => {
+          mvc.Components.revokeInstance('menuSelectAPI')
+          $(`#menuSelectAPI`).html('')
+
+          dropdownAPI = new Dropdown(
+            {
+              id: `menuSelectAPI`,
+              choices: $scope.apiList.map((item)=> ({ label:item.managerName, value:item._key })),
+              value: $scope.currentAPI._key,
+              selectFirstChoice: false,                    
+              el: $(`#menuSelectAPI`)
+            },
+            { tokens: false}
+          ).render()
+        }
+
+        const renderDropdownIndex = () => {
+          if (dropdownIndex){
+            dropdownIndex.destroy();
+          } else {
+            mvc.Components.revokeInstance('menuSelectIndex')
+            mvc.Components.revokeInstance('menuSelectIndex')
+          }
+          $(`#menuSelectIndex`).html('')
+
+          dropdownIndex = new DropdownViz(
+            'menuSelectIndex',
+            `| metasearch index=* sourcetype=*wazuh* | stats count by index, sourcetype | fields index`,
+            'index',
+            '$form.index$',
+            'menuSelectIndex',
+            $scope,
+            $scope.menuCurrentIndex,
+            '2017-03-14T10:0:0',
+            'now'
+          )
+        }
+
+        const renderDropdownSourceType = () => {
+          if (dropdownSourceType){
+            dropdownSourceType.destroy();
+          } else {
+            mvc.Components.revokeInstance('menuSelectSourceType')
+            mvc.Components.revokeInstance('menuSelectSourceTypeSearch')
+          }
+          $(`#menuSelectSourceType`).html('');
+
+          dropdownSourceType = new DropdownViz(
+            'menuSelectSourceType',
+            `| metasearch index=${$scope.menuCurrentIndex} sourcetype=* | stats count by index, sourcetype | fields sourcetype`,
+            'sourcetype',
+            '$form.sourcetype$',
+            'menuSelectSourceType',
+            $scope,
+            $scope.menuCurrentSourceType,
+            '2017-03-14T10:0:0',
+            'now'
+          )
+        }
+
+        const clearListeners = () => {
+          onChangeListeners.forEach(instance => instance.stopListening())
+          onChangeListeners = []
+        }
+
+        const init = async() => {
+          update();
+          $scope.$on('$destroy', () => {
+            clearListeners()
+            dropdownAPI.destroy();
+            dropdownIndex.destroy();
+            dropdownSourceType.destroy();            
+          })
+        }
+
+        const selectAPI = async (key) => {
+          try {
+            // checking if the api is up
+            await $currentDataService.checkApiConnection(key);
+            // Selecting API
+            await $currentDataService.chose(key);
+            $scope.currentAPI = $currentDataService.getApi()
+            if (!$scope.menuSkipRefresh) {
+              $window.location.reload();
+            } else { 
+              $rootScope.$broadcast("APIChanged", key)
+            }
+          } catch (err) {
+            $notificationService.showErrorToast(err || 'Could not select API')
+          }
+        }
+
         const checkLastState = (prefix, state) => {
           try {
             const lastState = $navigationService.getLastState()
@@ -64,13 +212,17 @@ define(['../module'], function(directives) {
           }
         }
 
-        const update = () => {
+        const update = async() => {
           try {
+            clearListeners()
+            $scope.apiList = await $currentDataService.getApiList();
             const index = $currentDataService.getIndex()
+            const sourceType = $currentDataService.getSourceType()
             const api = $currentDataService.getApi()
-            $scope.currentIndex = !index ? 'wazuh' : index.index
-            $scope.currentAPI = !api ? '---' : api.managerName
-            $scope.theresAPI = $scope.currentAPI === '---' ? false : true
+            $scope.menuCurrentIndex = !index ? 'wazuh' : index.index
+            $scope.menuCurrentSourceType = !sourceType ? '*' : sourceType.sourceType
+            $scope.currentAPI = !api ? {managerName:'---', _key:'-'} : api
+            $scope.theresAPI = !!api
 
             if (checkLastState('ow-', 'overview')) {
               $scope.menuNavItem = 'overview'
@@ -82,26 +234,38 @@ define(['../module'], function(directives) {
               $scope.menuNavItem = 'settings'
             } else if (checkLastState('dev-tools', 'dev-tools')) {
               $scope.menuNavItem = 'dev-tools'
-            } else if (checkLastState('discover', 'discover')) {
+            } else if (checkLastState('discover', 'discover')) { 
               $scope.menuNavItem = 'discover'
             }
+            
+            if ($scope.theresAPI && $scope.apiList.length > 1) {
+              renderDropdownAPI();
+              onChangeDropdownAPI();
+            }
+            renderDropdownIndex();
+            renderDropdownSourceType();
+            onChangeDropdownIndex();
+            onChangeDropdownSourceType();
             $scope.$applyAsync()
           } catch (error) {
+            console.error('wz-menu:error', error)
             $state.go('settings.api')
           }
         }
 
         // Listens for changes in the selected API
         $scope.$on('updatedAPI', event => {
-          event.stopPropagation()
+          event.stopPropagation && event.stopPropagation()
           update()
-        })
+        })      
 
         //Listens for changes in states
         $scope.$on('stateChanged', (event, data) => {
           $scope.select(data)
-          update()
+          $scope.menuSkipRefresh = data.indexOf('settings') > -1
         })
+
+        init()
       },
       templateUrl:
         BASE_URL +
