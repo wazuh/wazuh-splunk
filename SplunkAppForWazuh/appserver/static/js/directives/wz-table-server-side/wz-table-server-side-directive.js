@@ -30,6 +30,7 @@ define([
   './lib/data',
   './lib/click-action',
   './lib/check-gap',
+  'jQuery',
   'JqueryUI'
 ], function(
   app,
