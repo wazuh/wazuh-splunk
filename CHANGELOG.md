@@ -14,6 +14,10 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
 - Support for Splunk v8.2.2
 
+### Changed 
+
+- Upgrades jQuery version from 2.1.0 to 3.5.0 [#1118](https://github.com/wazuh/wazuh-splunk/pull/1118)
+
 ### Fixed
 
 - Cannot pin search filters on Edge - Chip style collapses [#1070](https://github.com/wazuh/wazuh-splunk/pull/1070)
