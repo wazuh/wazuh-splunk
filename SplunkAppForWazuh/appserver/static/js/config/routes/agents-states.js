@@ -1171,6 +1171,81 @@ define(['../module'], function(module) {
             ]
           }
         })
+        // agents - Common Vulnerabilities and Exposures (CVE)
+        .state('ag-cve', {
+          templateUrl:
+            BASE_URL +
+            'static/app/SplunkAppForWazuh/js/controllers/agents/cve/agents-cve.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ag-cve')
+          },
+          controller: 'agentsCveCtrl',
+          params: { id: null },
+          resolve: {
+            agent: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/agents?q=id=${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            cve: [
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
+              async (
+                $requestService,
+                $stateParams,
+                $currentDataService,
+                $state
+              ) => {
+                try {
+                  const id =
+                    $stateParams.id ||
+                    $currentDataService.getCurrentAgent() ||
+                    $state.go('agents')
+                  const result = await $requestService.apiReq(`/vulnerability/${id}`)
+                  return result
+                } catch (err) {
+                  $state.go('agents')
+                }
+              }
+            ],
+            reportingEnabled: [
+              '$currentDataService',
+              async $currentDataService => {
+                return await $currentDataService.getReportingStatus()
+              }
+            ],
+            extensions: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.getCurrentExtensions()
+                } catch (err) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
         // =========== Docker listener =========== //
         .state('ag-docker', {
           templateUrl:
