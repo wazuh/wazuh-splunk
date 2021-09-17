@@ -91,6 +91,11 @@ define([
           $scope.implicitSort,
           true // server-side pagination
         )
+
+        $scope.isVulnerabilities = instance.path.startsWith('/vulnerability')
+        $scope.isPolicyMonitoring = instance.path.includes('sca') && instance.path.includes('/checks')        
+        $scope.isSyschecks = instance.path.startsWith('/syscheck')        
+
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
@@ -392,7 +397,6 @@ define([
          * Pagination variables and functions
          */
         $scope.itemsPerPage = $scope.rowsPerPage || 10
-        $scope.pagedItems = []
         $scope.currentPage = 0
         $scope.gap = 0
         
@@ -556,22 +560,6 @@ define([
           return init()
         }
 
-        $scope.isPolicyMonitoring = () => {
-          return (
-            instance.path.includes('sca') && instance.path.includes('/checks')
-          )
-        }
-
-        $scope.expandPolicyMonitoringCheck = item => {
-          if (item.expanded) item.expanded = false
-          else {
-            $scope.pagedItems[$scope.currentPage].map(
-              item => (item.expanded = false)
-            )
-            item.expanded = true
-          }
-        }
-
         /**
          * Edits a file
          */
@@ -617,37 +605,27 @@ define([
           } catch (error) {} // eslint-disable-line
         }
 
-        /**
-         * Removes a file
-         */
-        $scope.showConfirmRemoveFile = (ev, item) => {
-          $scope.removingFile = item
-        }
-
-        $scope.isSyschecks = () => {
-          return instance.path.startsWith('/syscheck')
-        }
-
-        $scope.isWindows = () => {
+       const checkIsWindows = () => {
           try {
-            const agent = $scope.$parent.$parent.$parent.$parent.agent
+            const agent = $scope.$parent.$parent.$parent.agent
             return (agent.os || {}).platform === 'windows'
           } catch (error) {
             return false
           }
         }
 
+        $scope.isWindows = checkIsWindows()
+
         $scope.expandItem = item => {
           if (item.expanded) item.expanded = false
           else {
-            $scope.pagedItems[$scope.currentPage].map(
+            $scope.items.map(
               item => (item.expanded = false)
             )
             item.expanded = true
           }
         }
 
-       
         $scope.loadRegistryValueDetails = async (item) => {
           var parentEl = angular.element(document.body);
           $mdDialog.show({
