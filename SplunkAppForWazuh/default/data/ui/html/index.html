@@ -41,6 +41,11 @@
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/build/simplexml/index.js"></script>
+  <!-- Workoaround to have jQuery 2.1.0 and 3.5.0 working together -->
+  <script type="text/javascript">
+    var jQuery_2_1_0 = $.noConflict(true);
+  </script>
+  <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/js/libs/jquery-3.5.0.min.js" type="text/javascript"></script>
   <script src="{{SPLUNKWEB_URL_PREFIX}}/static/app/SplunkAppForWazuh/js/main.js" type="text/javascript"></script>
 
 

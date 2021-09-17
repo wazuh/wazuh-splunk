@@ -30,9 +30,6 @@ require.config({
     // dom-to-image
     domToImg: 'js/libs/required-dom-to-image/src/dom-to-image',
 
-    // jQuery
-    jQuery: 'js/libs/jquery-3.5.0.min',
-
     // JqueryUI
     JqueryUI: 'js/libs/jquery-ui'
   },
