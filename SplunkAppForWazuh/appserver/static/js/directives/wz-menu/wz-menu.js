@@ -50,6 +50,29 @@ function(directives, Dropdown, DropdownViz, mvc) {
           $scope.openDiscover(data)
         })
 
+        $scope.openModal = () => {
+          const modal = document.getElementById('quick-settings-modal');
+          const overlay = document.createElement('div');
+          overlay.id = 'quick-settings-overlay';
+          document.body.appendChild(overlay);
+          overlay.classList.add('modal-backdrop', 'fade');
+          overlay.onclick = () => $scope.closeModal();
+          setTimeout(() => {
+            overlay.classList.add('in')
+            modal.classList.remove('fade')
+            modal.classList.replace('hide', 'show');
+          }, 100);
+        }
+
+        $scope.closeModal = () => {
+          const modal = document.getElementById('quick-settings-modal');
+          const overlay = document.getElementById('quick-settings-overlay');
+          overlay.classList.remove('in');
+          modal.classList.add('fade')
+          modal.classList.replace('show', 'hide');
+          setTimeout(() => document.body.removeChild(overlay), 100);
+        }
+
         let dropdownAPI;
         let dropdownIndex;
         let dropdownSourceType;
@@ -103,7 +126,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
 
         const renderDropdownAPI = () => {
           mvc.Components.revokeInstance('menuSelectAPI')
-          $(`#menuSelectAPI`).html('')
+          document.getElementById(`menuSelectAPI`).innerHTML = '';
 
           dropdownAPI = new Dropdown(
             {
@@ -111,7 +134,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
               choices: $scope.apiList.map((item)=> ({ label:item.managerName, value:item._key })),
               value: $scope.currentAPI._key,
               selectFirstChoice: false,                    
-              el: $(`#menuSelectAPI`)
+              el: document.getElementById(`menuSelectAPI`)
             },
             { tokens: false}
           ).render()
@@ -124,7 +147,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
             mvc.Components.revokeInstance('menuSelectIndex')
             mvc.Components.revokeInstance('menuSelectIndex')
           }
-          $(`#menuSelectIndex`).html('')
+          document.getElementById(`menuSelectIndex`).innerHTML='';
 
           dropdownIndex = new DropdownViz(
             'menuSelectIndex',
@@ -146,7 +169,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
             mvc.Components.revokeInstance('menuSelectSourceType')
             mvc.Components.revokeInstance('menuSelectSourceTypeSearch')
           }
-          $(`#menuSelectSourceType`).html('');
+          document.getElementById(`menuSelectSourceType`).innerHTML='';
 
           dropdownSourceType = new DropdownViz(
             'menuSelectSourceType',

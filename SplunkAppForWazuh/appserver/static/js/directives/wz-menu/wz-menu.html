@@ -52,7 +52,7 @@
         </md-tooltip>
       </span>
       <!-- API/Index pattern section -->
-      <a ng-show="theresAPI" class="view---simplexml---dev---EXZlQ   " aria-haspopup="true" role="button" onclick="$('#quick-settings-modal').modal('show');"><span class="label---simplexml---dev---14s46 label---simplexml---dev---16QEW icon-settings" data-role="label">&nbsp;Quick settings</span><i
+      <a ng-show="theresAPI" class="view---simplexml---dev---EXZlQ   " aria-haspopup="true" role="button" ng-click="openModal()"><span class="label---simplexml---dev---14s46 label---simplexml---dev---16QEW icon-settings" data-role="label">&nbsp;Quick settings</span><i
           data-cid="view21194" data-view="views/shared/Icon"
           class="view---simplexml---dev---18scF triangleDownSmall---simplexml---dev---2oEma" data-icon="triangleDownSmall"
           data-render-time="0" style="font-size: 1em;"></i></a>
@@ -73,7 +73,7 @@
   <!-- Current Configuration modal -->
   <div class="modal hide fade" id="quick-settings-modal">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()">&times;</button>
       <h3>Quick settings</h3>
     </div>
     <div class="modal-body">
