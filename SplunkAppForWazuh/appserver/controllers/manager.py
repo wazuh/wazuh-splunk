@@ -414,6 +414,7 @@ class manager(controllers.BaseController):
 
         """
         self.logger.debug("manager: Get cluster info.")
+        self.logger.info("manager: aca entre al fin.")
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
         wazuh_token = self.wztoken.get_auth_token(url,auth)
