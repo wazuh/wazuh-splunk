@@ -414,16 +414,17 @@ class manager(controllers.BaseController):
 
         """
         self.logger.debug("manager: Get cluster info.")
-        self.logger.info("manager: aca entre al fin.")
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
         wazuh_token = self.wztoken.get_auth_token(url,auth)
+        self.logger.info(wazuh_token)
         verify = False
         try:
             request_manager = self.session.get(
                 url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
             request_cluster = self.session.get(
                 url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+            self.logger.info(jsonbak.dumps(request_cluster))
             if request_cluster['data']['enabled'] == "yes" and request_cluster['data']['running'] == "yes" :
                 request_cluster_name = self.session.get(
                     url + '/cluster/local/info', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
