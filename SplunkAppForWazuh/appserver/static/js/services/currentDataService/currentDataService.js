@@ -110,14 +110,6 @@ define(['../module'], function(module) {
       return $apiMgrService.setApi(api)
     }
 
-    const getExtensions = id => {
-      return $apiIndexStorageService.getExtensions(id)
-    }
-
-    const setExtensions = (api, extensions) => {
-      return $apiIndexStorageService.setExtensions(api, extensions)
-    }
-
     const removeCurrentApi = () => {
       return $apiIndexStorageService.removeAPI()
     }
@@ -288,13 +280,11 @@ define(['../module'], function(module) {
       setApi: setApi,
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent,
-      getExtensions: getExtensions,
       getAdminExtensions: getAdminExtensions,
       getCurrentExtensions: getCurrentExtensions,
       getCurrentConfiguration: getCurrentConfiguration,
       getExtensionsById: getExtensionsById,
       extensionIsEnabled: extensionIsEnabled,
-      setExtensions: setExtensions,
       setExtensionsById: setExtensionsById,
       addApi: addApi,
       isAdmin: isAdmin,
