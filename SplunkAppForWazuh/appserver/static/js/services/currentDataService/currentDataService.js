@@ -135,20 +135,34 @@ define(['../module'], function(module) {
      * @param {String} id
      */
     const getExtensionsById = async id => {
+      const result = {}
       try {
-        const currentExtensions = getExtensions(id)
-        const result = {}
-        if (currentExtensions) {
-          Object.assign(result, currentExtensions)
-        } else {
-          const ext = await $requestService.httpReq(
-            `GET`,
-            `/manager/extensions`
-          )
-          Object.assign(result, ext.data)
-        }
+        const ext = await $requestService.httpReq(
+          `POST`,
+          `/manager/extensions`,
+          {id:id}
+        )
+        Object.assign(result, ext.data)
         return result
       } catch (err) {
+        console.log(err)
+        return Promise.reject(false)
+      }
+    }
+
+    const setExtensionsById = async (id, extensions) => {
+      const result = {}
+      try {
+        const ext = await $requestService.httpReq(
+          `POST`,
+          `/manager/save_extensions`,
+          {id: id,
+          extensions: JSON.stringify(extensions)}
+        )
+        Object.assign(result, ext.data)
+        return result
+      } catch (err) {
+        console.log(err)
         return Promise.reject(false)
       }
     }
@@ -281,6 +295,7 @@ define(['../module'], function(module) {
       getExtensionsById: getExtensionsById,
       extensionIsEnabled: extensionIsEnabled,
       setExtensions: setExtensions,
+      setExtensionsById: setExtensionsById,
       addApi: addApi,
       isAdmin: isAdmin,
       getReportingStatus: getReportingStatus,
