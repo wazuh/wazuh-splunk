@@ -38,17 +38,19 @@ class wazuhtoken():
         
     def get_auth_token(self, url, auth):
         try:
-            if self.cache.get('token-' + url + '-' + auth) is None :
+            token_key = 'token-' + url + '-' + str(auth)
+            if self.cache.get(token_key) is None :
                 verify = False
                 wazuh_token = self.session.get(
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
                 token = wazuh_token['data']['token']
-                self.cache.set('token-' + url + '-' + auth, token, 600)
+                self.cache.set(token_key, token, 600)
+                self.logger.info("api token KEY: %s" % (token_key))
                 self.logger.info("api token: %s" % (token))
                 return token
             else :
-                self.logger.info("cache token: %s" % (self.cache.get('token-' + url + '-' + auth)))
-                return self.cache.get('token-' + url + '-' + auth)
+                self.logger.info("cache token: %s" % (self.cache.get(token_key)))
+                return self.cache.get(token_key)
         except Exception as e:
             self.logger.error("Error when get auth Wazuh token: %s" % (e))
         raise e
