@@ -45,11 +45,11 @@ class wazuhtoken():
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
                 token = wazuh_token['data']['token']
                 self.cache.set(token_key, token, 600)
-                self.logger.info("api token KEY: %s" % (token_key))
-                self.logger.info("api token: %s" % (token))
+                self.logger.debug("api token KEY: %s" % (token_key))
+                self.logger.debug("api token: %s" % (token))
                 return token
             else :
-                self.logger.info("cache token: %s" % (self.cache.get(token_key)))
+                self.logger.debug("cache token: %s" % (self.cache.get(token_key)))
                 return self.cache.get(token_key)
         except Exception as e:
             self.logger.error("Error when get auth Wazuh token: %s" % (e))
