@@ -39,18 +39,18 @@ class wazuhtoken():
     def get_auth_token(self, url, auth):
         try:
             token_key = 'token-' + url + '-' + str(auth)
-            if self.cache.get(token_key) is None :
-                verify = False
-                wazuh_token = self.session.get(
-                url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
-                self.logger.info(jsonbak.dumps(wazuh_token))
-                token = wazuh_token['data']['token']
-                self.cache.set(token_key, token, 600)
-                self.logger.debug("api token KEY: %s" % (token_key))
-                return token
-            else :
-                self.logger.debug("cache token: %s" % (token_key))
-                return self.cache.get(token_key)
+            # if self.cache.get(token_key) is None :
+            verify = False
+            wazuh_token = self.session.get(
+            url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
+            self.logger.info(jsonbak.dumps(wazuh_token))
+            token = wazuh_token['data']['token']
+            self.cache.set(token_key, token, 600)
+            self.logger.debug("api token KEY: %s" % (token_key))
+            return token
+            # else :
+            #     self.logger.debug("cache token: %s" % (token_key))
+            #     return self.cache.get(token_key)
         except Exception as e:
             self.logger.error("Error when get auth Wazuh token: %s" % vars(e))
             raise e
