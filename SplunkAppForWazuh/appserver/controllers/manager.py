@@ -474,7 +474,7 @@ class manager(controllers.BaseController):
             if wazuh_version != app_version:
                 raise Exception("Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (app_version, wazuh_version))
         except Exception as e:
-            self.logger.error("Error when checking Wazuh version: %s" % jsonbak.dumps(e))
+            self.logger.error("Error when checking Wazuh version: %s" % vars(e))
             raise e
             
     def check_daemons(self, url, auth, verify, check_cluster,kwargs):
