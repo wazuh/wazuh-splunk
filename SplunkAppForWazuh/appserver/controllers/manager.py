@@ -457,9 +457,12 @@ class manager(controllers.BaseController):
             verify = False
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             wazuh_token = self.wztoken.get_auth_token(url,auth)
-
+            self.logger.info("check_wazuh_version: Antes de la request.")
             wazuh_version = self.session.get(
-                url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()   
+                url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+            self.logger.info("check_wazuh_version: result wazuh_version --- %s" % str(wazuh_version))
+            self.logger.info("check_wazuh_version: result wazuh_version[data]--- %s" % str(wazuh_version))
+            # self.logger.info("check_wazuh_version: result --- %s" % str(wazuh_version))
             wazuh_version = wazuh_version['data']['api_version']
 
             app_version = cli.getConfStanza(
