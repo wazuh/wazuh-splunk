@@ -43,7 +43,6 @@ class wazuhtoken():
                 verify = False
                 wazuh_token = self.session.get(
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
-                self.logger.info(jsonbak.dumps(wazuh_token))
                 token = wazuh_token['data']['token']
                 self.cache.set(token_key, token, 600)
                 self.logger.debug("api token KEY: %s" % (token_key))
