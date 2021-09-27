@@ -95,6 +95,7 @@ class HTTPBasicAuth(AuthBase):
     def __call__(self, r):
         r.headers['Authorization'] = _basic_auth_str(self.username, self.password)
         return r
+        
     def __str__(self):
         return self.username
 
