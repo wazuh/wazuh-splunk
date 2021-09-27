@@ -45,7 +45,7 @@ class wazuhtoken():
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
                 if wazuh_token is not None and wazuh_token['data'] is not None and wazuh_token['data']['token'] is not None:
                     token = wazuh_token['data']['token']
-                elif wazuh_token is None and wazuh_token['title'] is not None:
+                elif wazuh_token is not None and wazuh_token['title'] is not None:
                     error = wazuh_token['title'] + ':' + wazuh_token['detail'] if wazuh_token['detail'] is not None else wazuh_token['detail']
                     raise error
                 else:
