@@ -423,7 +423,6 @@ class manager(controllers.BaseController):
                 url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
             request_cluster = self.session.get(
                 url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-            self.logger.info(jsonbak.dumps(request_cluster))
             if request_cluster['data']['enabled'] == "yes" and request_cluster['data']['running'] == "yes" :
                 request_cluster_name = self.session.get(
                     url + '/cluster/local/info', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
