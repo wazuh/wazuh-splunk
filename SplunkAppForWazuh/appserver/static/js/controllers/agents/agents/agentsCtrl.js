@@ -168,6 +168,7 @@ define([
       )
 
       this.scope.expandChartAgent = false;
+      this.scope.$applyAsync();
     }
 
     /**
