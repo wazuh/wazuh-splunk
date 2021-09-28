@@ -43,15 +43,15 @@ class wazuhtoken():
                 verify = False
                 wazuh_token = self.session.get(
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
-                
+
                 if hasattr(wazuh_token, 'data'):
                     token = wazuh_token['data']['token']
                 elif hasattr(wazuh_token, 'title'):
                     error = wazuh_token['title'] + ': ' + wazuh_token['detail'] if 'detail' in wazuh_token else wazuh_token['title']
-                    raise error
+                    raise Exception(error)
                 else:
                     error = "An error ocurred when authenticating with Wazuh API"
-                    raise error
+                    raise Exception(error)
                 
                 
                 self.cache.set(token_key, token, 600)
