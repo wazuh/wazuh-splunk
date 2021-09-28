@@ -66,6 +66,16 @@ def putConfStanza(file,stanzaDict):
         raise e
     return { 'error': False }
 
+def rmConfStanza(file,stanza):
+    try:
+        conf = cli.readConfFile(getLocalConfPath(file))
+        response = stanza in conf
+        if response:
+            conf.pop(stanza)
+        cli.writeConfFile(getLocalConfPath(file),conf)
+        return response
+    except Exception as e:
+        raise e
 
 def diff_keys_dic_update_api(kwargs_dic):
     """Get the missing fields for the API entry.
@@ -161,6 +171,16 @@ class manager(controllers.BaseController):
         return data_temp
     
     @expose_page(must_login=False, methods=['POST'])
+    def remove_extensions(self, **kwargs):
+        try:
+            self.logger.debug("manager: Removing extensions.")
+            id = kwargs['id']
+            response = rmConfStanza("extensions",id)
+            return response
+        except Exception as e:
+            return {'error':str(e)}
+
+    @expose_page(must_login=False, methods=['POST'])
     def save_extensions(self, **kwargs):
         """Save extensions to file
 
@@ -171,7 +191,6 @@ class manager(controllers.BaseController):
         """
         try:
             self.logger.debug("manager: Saving extensions.")
-            self.logger.debug(kwargs)
             id = kwargs['id']
             extensions = kwargs['extensions']
             response = {}

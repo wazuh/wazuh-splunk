@@ -159,6 +159,22 @@ define(['../module'], function(module) {
       }
     }
 
+    const removeExtensionsById = async (id) => {
+      const result = {}
+      try {
+        const response = await $requestService.httpReq(
+          `POST`,
+          `/manager/remove_extensions`,
+          {id:id}
+        )
+        Object.assign(result,response.data)
+        return result
+      } catch (err) {
+        console.log(err)
+        return Promise.reject(false)
+      }
+    }
+
     /**
      * Gets admin extensions by ID
      * @param {String} id
@@ -284,6 +300,7 @@ define(['../module'], function(module) {
       getCurrentExtensions: getCurrentExtensions,
       getCurrentConfiguration: getCurrentConfiguration,
       getExtensionsById: getExtensionsById,
+      removeExtensionsById: removeExtensionsById,
       extensionIsEnabled: extensionIsEnabled,
       setExtensionsById: setExtensionsById,
       addApi: addApi,
