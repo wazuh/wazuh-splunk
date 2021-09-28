@@ -93,6 +93,7 @@ define(['../../module'], function (controllers) {
      */
     async removeManager(entry) {
       try {
+        this.scope.loadingVizz = true
         const index = this.scope.apiList.indexOf(entry)
         if (index > -1) {
           await this.currentDataService.remove(entry)
@@ -101,10 +102,12 @@ define(['../../module'], function (controllers) {
             this.currentDataService.removeCurrentApi()
           }
           this.scope.apiList.splice(index, 1)
+          this.scope.loadingVizz = false
           this.notification.showSuccessToast('Manager was removed')
           this.scope.$emit('updatedAPI', () => { })
         }
       } catch (err) {
+        this.scope.loadingVizz = false
         this.notification.showErrorToast(
           `Cannot remove API: ${err.message || err}`
         )
@@ -117,6 +120,7 @@ define(['../../module'], function (controllers) {
      */
     async checkManager(entry) {
       try {
+        this.scope.loadingVizz = true
         const connectionData = await this.currentDataService.checkApiConnection(
           entry._key
         )
@@ -127,9 +131,11 @@ define(['../../module'], function (controllers) {
             break
           }
         }
+        this.scope.loadingVizz = false
         this.notification.showSuccessToast('Connection established')
         this.scope.$applyAsync()
       } catch (err) {
+        this.scope.loadingVizz = false
         this.notification.showErrorToast(err || 'Unreachable API')
       }
     }
@@ -172,6 +178,7 @@ define(['../../module'], function (controllers) {
      */
     async updateEntry(user, pass, url, port) {
       try {
+        this.scope.loadingVizz = true
         if (this.savingApi) {
           this.notification.showWarningToast('Please, wait for success message')
           return
@@ -210,8 +217,10 @@ define(['../../module'], function (controllers) {
         }
 
         this.scope.edit = false
+        this.scope.loadingVizz = false
         this.notification.showSuccessToast('Updated API')
       } catch (err) {
+        this.scope.loadingVizz = false
         this.notification.showErrorToast(err || 'Cannot update API')
       }
       this.savingApi = false
@@ -223,15 +232,18 @@ define(['../../module'], function (controllers) {
      */
     async selectManager(key) {
       try {
+        this.scope.loadingVizz = true
         // checking if the api is up
         await this.currentDataService.checkApiConnection(key)
         // Selecting API
         await this.currentDataService.chose(key)
         this.setYellowStar(key)
+        this.scope.loadingVizz = false
         this.notification.showSuccessToast('API selected')
         this.scope.$emit('updatedAPI', () => { })
         this.scope.$applyAsync()
       } catch (err) {
+        this.scope.loadingVizz = false
         this.notification.showErrorToast(err || 'Could not select manager')
       }
     }
