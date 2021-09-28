@@ -241,6 +241,7 @@ define(['../../module'], function (controllers) {
      */
     async submitApiForm(user, pass, url, port) {
       try {
+        this.scope.loadingVizz = true
         this.scope.validatingError = []
         if (this.savingApi) {
           this.notification.showWarningToast('Please, wait for success message')
@@ -293,8 +294,10 @@ define(['../../module'], function (controllers) {
         this.scope.showForm = false
         this.scope.$applyAsync()
         this.notification.showSuccessToast('New API was added')
+        this.scope.loadingVizz = false
         this.scope.$emit('updatedAPI', () => { })
       } catch (err) {
+        this.scope.loadingVizz = false
         if (
           typeof err === 'string' &&
           err.startsWith('Unexpected Wazuh version')

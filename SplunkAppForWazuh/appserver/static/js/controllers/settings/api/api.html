@@ -39,7 +39,11 @@
     <span>Use Wazuh API settings to connect the Splunk app to your Wazuh manager or cluster</span>
   </div>
   <!-- End headline -->
-
+  <div ng-show="loadingVizz">
+    <div align='center'>
+      Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+    </div>
+  </div>
   <!-- API configuration card section -->
   <div layout="row" layout-align="start start">
     <md-card flex class="wz-md-card">
