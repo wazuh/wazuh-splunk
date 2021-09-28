@@ -2586,3 +2586,15 @@ background-color: white;
 .wz-min-height-40 {
   min-height: 40px !important;
 }
+
+.wz-api-settings-loading{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 5;
+  background-color: #FFFC;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
