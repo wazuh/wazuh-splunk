@@ -2597,7 +2597,7 @@ background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: all linear 500ms;
+  transition: all linear 100ms;
 }
 
 .wz-api-settings-loading.ng-hide{
