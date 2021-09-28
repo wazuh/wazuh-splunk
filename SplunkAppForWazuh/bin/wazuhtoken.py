@@ -47,7 +47,7 @@ class wazuhtoken():
                 if wazuh_token.get('data') is not None:
                     token = wazuh_token['data']['token']
                 elif wazuh_token.get('title') is not None:
-                    error = wazuh_token['title'] + ': ' + wazuh_token['detail'] if wazuh_token.get('detail') is not None else wazuh_token['title']
+                    error = wazuh_token['title'] + ': ' + wazuh_token['detail'] if 'detail' in wazuh_token else wazuh_token['title']
                     raise Exception(error)
                 else:
                     error = "An error ocurred when authenticating with Wazuh API"
