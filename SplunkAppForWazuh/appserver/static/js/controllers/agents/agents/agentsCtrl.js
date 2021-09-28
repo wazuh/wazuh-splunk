@@ -1,6 +1,6 @@
 /*
  * Wazuh app - Agents controller
- * Copyright (C) 2015-2019 Wazuh, Inc.
+ * Copyright (C) 2015-2021 Wazuh, Inc.
  *
  * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,8 +13,9 @@
 define([
   '../../module',
   '../../../services/visualizations/search/search-handler',
+  '../../../services/visualizations/chart/linear-chart',
   'FileSaver'
-], function(app, SearchHandler) {
+], function(app, SearchHandler, LinearChart) {
   'use strict'
 
   class Agents {
@@ -26,7 +27,13 @@ define([
      * @param {Object} $state
      * @param {Object} $notificationService
      * @param {Object} $requestService
+     * @param $csvRequestService
+     * @param $tableFilterService
      * @param {Object} agentData
+     * @param clusterInfo
+     * @param $mdDialog
+     * @param $groupHandler
+     * @param $dateDiffService
      */
 
     constructor(
@@ -44,7 +51,7 @@ define([
       $groupHandler,
       $dateDiffService
     ) {
-      this.scope = $scope
+      this.scope = $scope;
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')
       this.currentDataService = $currentDataService
@@ -140,8 +147,8 @@ define([
             : []
         }
 
-        if (this.clusterInfo && 
-            this.clusterInfo.enabled === 'yes' && 
+        if (this.clusterInfo &&
+            this.clusterInfo.enabled === 'yes' &&
             this.clusterInfo.running === 'yes'
           ) {
           this.scope.searchBarModel.node_name = nodes || []
@@ -160,7 +167,7 @@ define([
         'loadingSearch'
       )
 
-      this.scope.$applyAsync()
+      this.scope.expandChartAgent = false;
     }
 
     /**
@@ -179,6 +186,7 @@ define([
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
       this.scope.$on('$destroy', () => {
+        this.linearChartAgent.destroy();
         this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
@@ -196,6 +204,7 @@ define([
 
       this.scope.loadCharts = id => {
         setTimeout(() => {
+          // eslint-disable-next-line no-undef
           const chart = new Chart(document.getElementById(id), {
             type: 'doughnut',
             data: {
@@ -225,6 +234,67 @@ define([
           chart.update()
         }, 250)
       }
+
+      this.scope.getAgentStatus = () => {
+        this.scope.wzMonitoringEnabled = true;
+
+        //Filters for agents Status
+        try {
+          this.clusOrMng = Object.keys(
+              this.currentDataService.getFilters()[0]
+          )[0]
+
+          if (this.clusOrMng === 'manager.name') {
+            this.mngName = this.currentDataService.getFilters()[0][
+                'manager.name'
+                ]
+            this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
+          } else {
+            this.clusName = this.currentDataService.getFilters()[0][
+                'cluster.name'
+                ]
+            this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
+          }
+          // eslint-disable-next-line no-empty
+        } catch (error) {}
+
+        this.spanTime = '15m'
+        this.linearChartAgent = new LinearChart(
+            `agentStatusChartHistory`,
+            `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
+            `agentStatusChart`,
+            this.scope,
+            {customAxisTitleX: "Time span"}
+        );
+      }
+
+      /**
+       * Expands the visualizations
+       * @param {Number} i
+       * @param {String} id
+       */
+      this.scope.expand = id => {
+        this.scope.expandChartAgent = !this.scope.expandChartAgent;
+        let vis = $(
+          "#" + id + " .panel-body .splunk-view .shared-reportvisualizer"
+        );
+        this.scope.expandChartAgent
+          ? vis.css("height", "calc(100vh - 200px)")
+          : vis.css("height", "250px");
+
+        let vis_header = $(".wz-headline-title");
+        vis_header.dblclick(e => {
+          if (this.scope.expandChartAgent) {
+            this.scope.expandChartAgent = !this.scope.expandChartAgent;
+            this.scope.expandChartAgent
+              ? vis.css("height", "calc(100vh - 200px)")
+              : vis.css("height", "250px");
+            this.scope.$applyAsync();
+          } else {
+            e.preventDefault();
+          }
+        });
+      };
     }
 
     /**
