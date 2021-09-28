@@ -2604,8 +2604,10 @@ background-color: white;
   opacity: 0;
 }
 
-.wz-api-settings-loading div{
-  text-align: center;
+.wz-api-settings-loading .animate-ellipsis{
+  width: 89px;
+  margin: 0 auto;
+  text-align: left;
 }
 
 .animate-ellipsis:after {
