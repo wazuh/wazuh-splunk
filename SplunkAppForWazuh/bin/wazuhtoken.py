@@ -43,7 +43,6 @@ class wazuhtoken():
                 verify = False
                 wazuh_token_response = self.session.get(
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify)
-                self.logger.info("code status get token: %s" %(wazuh_token_response.status_code))
                 if wazuh_token_response.status_code == 200:
                     wazuh_token = wazuh_token_response.json()
                     token = wazuh_token['data']['token']
