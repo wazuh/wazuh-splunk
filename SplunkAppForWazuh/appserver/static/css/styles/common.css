@@ -2597,4 +2597,13 @@ background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  transition: all linear 500ms;
+}
+
+.wz-api-settings-loading.ng-hide{
+  opacity: 0;
+}
+
+.wz-api-settings-loading div{
+  text-align: center;
 }
