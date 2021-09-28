@@ -43,7 +43,7 @@ class wazuhtoken():
                 verify = False
                 wazuh_token = self.session.get(
                 url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
-
+                
                 if wazuh_token.get('data') is not None:
                     token = wazuh_token['data']['token']
                 elif wazuh_token.get('title') is not None:
