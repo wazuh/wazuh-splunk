@@ -239,39 +239,37 @@ define([
       this.scope.getAgentStatus = () => {
         this.scope.wzMonitoringEnabled = true;
 
-        //Filters for agents Status
         try {
           this.clusOrMng = Object.keys(
-              this.currentDataService.getFilters()[0]
-          )[0]
+            this.currentDataService.getFilters()[0]
+          )[0];
 
-          if (this.clusOrMng === 'manager.name') {
+          if (this.clusOrMng === "manager.name") {
             this.mngName = this.currentDataService.getFilters()[0][
-                'manager.name'
-                ]
-            this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
+              "manager.name"
+            ];
+            this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`;
           } else {
             this.clusName = this.currentDataService.getFilters()[0][
-                'cluster.name'
-                ]
-            this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
+              "cluster.name"
+            ];
+            this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`;
           }
           // eslint-disable-next-line no-empty
         } catch (error) {}
 
-        this.spanTime = '15m'
+        this.spanTime = "15m";
         this.linearChartAgent = new LinearChart(
-            `agentStatusChartHistory`,
-            `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
-            `agentStatusChart`,
-            this.scope,
-            {customAxisTitleX: "Time span"}
+          `agentStatusChartHistory`,
+          `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
+          `agentStatusChart`,
+          this.scope,
+          { customAxisTitleX: "Time span" }
         );
-      }
+      };
 
       /**
        * Expands the visualizations
-       * @param {Number} i
        * @param {String} id
        */
       this.scope.expand = id => {
