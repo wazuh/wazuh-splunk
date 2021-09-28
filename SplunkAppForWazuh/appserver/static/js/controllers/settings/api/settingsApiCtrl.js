@@ -44,6 +44,12 @@ define(['../../module'], function (controllers) {
       this.scope.submitApiForm = (user, api, url, port) =>
         this.submitApiForm(user, api, url, port)
       this.init()
+
+      // Listens for changes in the selected API
+      this.scope.$on('APIChanged', (event, key) => {
+        this.setYellowStar(key)
+        this.scope.$applyAsync()
+      })      
     }
 
     /**
@@ -293,6 +299,7 @@ define(['../../module'], function (controllers) {
         this.scope.showForm = false
         this.scope.$applyAsync()
         this.notification.showSuccessToast('New API was added')
+        this.scope.$emit('updatedAPI', () => { })
       } catch (err) {
         if (
           typeof err === 'string' &&
