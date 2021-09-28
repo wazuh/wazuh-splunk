@@ -237,8 +237,6 @@ define([
       }
 
       this.scope.getAgentStatus = () => {
-        this.scope.wzMonitoringEnabled = true;
-
         try {
           this.clusOrMng = Object.keys(
             this.currentDataService.getFilters()[0]
