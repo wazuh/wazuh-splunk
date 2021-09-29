@@ -104,6 +104,7 @@ define(['../../module'], function (controllers) {
           this.notification.showSuccessToast('Manager was removed')
           this.scope.$emit('updatedAPI', () => { })
         }
+        this.currentDataService.removeExtensionsById(entry['_key'])
       } catch (err) {
         this.notification.showErrorToast(
           `Cannot remove API: ${err.message || err}`

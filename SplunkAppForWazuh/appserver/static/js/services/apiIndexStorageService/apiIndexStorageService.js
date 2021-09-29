@@ -70,56 +70,6 @@ define(['../module'], function(app) {
         return Promise.reject(err)
       }
     }
-
-    getExtensions(id) {
-      try {
-        if (this.sessionStorage.extensions) {
-          const currentExtensions = JSON.parse(this.sessionStorage.extensions)
-          const result =
-            currentExtensions.length >= 1
-              ? currentExtensions.filter(item => item.id === id)[0]
-              : false
-          return result
-        }
-      } catch (err) {
-        return false
-      }
-    }
-
-    setExtensions(id, extensions) {
-      try {
-        const newExtensions = Object.assign(extensions, { id })
-        if (extensions.length && this.sessionStorage.getItem('extensions')) {
-          let parsedExtensions = JSON.parse(
-            this.sessionStorage.getItem('extensions')
-          )
-          let existentApi = false
-          for (let i = 0; i < parsedExtensions.length; i++) {
-            if (parsedExtensions[i].id === id) {
-              parsedExtensions[i] = newExtensions //eslint-disable-line
-              existentApi = true
-              break
-            }
-          }
-          if (!existentApi) {
-            parsedExtensions.push(newExtensions)
-          }
-          this.sessionStorage.setItem(
-            'extensions',
-            JSON.stringify(parsedExtensions) || []
-          )
-        } else if (extensions) {
-          const newSet = []
-          newSet.push(newExtensions)
-          this.sessionStorage.setItem(
-            'extensions',
-            JSON.stringify(newSet) || []
-          )
-        }
-      } catch (err) {
-        return
-      }
-    }
   }
   app.service('$apiIndexStorageService', ApiIndexStorageService)
 })
