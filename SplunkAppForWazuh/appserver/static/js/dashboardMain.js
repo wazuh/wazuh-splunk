@@ -142,7 +142,7 @@ define([
         ? vis.css('height', 'calc(100vh - 200px)')
         : vis.css('height', '250px')
 
-      document.querySelectorAll('[role="main"]')[0].style.zIndex = 1000;
+      document.querySelectorAll('[role="main"]')[0].style.zIndex = this.scope.expandArray[i] ? 900 : '';
 
       let vis_header = $('.wz-headline-title')
       vis_header.dblclick(e => {
