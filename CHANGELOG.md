@@ -12,12 +12,14 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Support for Splunk v8.1.4
 - Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
 - Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
+- Added persitence to modules in overview panel [#1135](https://github.com/wazuh/wazuh-splunk/pull/1135)
 - Added Agent status visualization on Agents main view [#1140](https://github.com/wazuh/wazuh-splunk/pull/1140)
 
 ### Fixed 
 
 - Fixed missing node name for agent overview [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
 - Fixed missing columns for some tables in reports [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
+- Fixed multiple Wazuh API token cache [#1103](https://github.com/wazuh/wazuh-splunk/pull/1136)
 
 ## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
 
