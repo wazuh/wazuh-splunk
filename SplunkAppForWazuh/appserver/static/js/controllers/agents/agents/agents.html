@@ -3,7 +3,6 @@
   layout-align="start space-around">
 
   <div layout="row" layout-align="space-between stretch" ng-if="!wazuhNotReadyYet">
-
     <div class="md-padding euiFlexGroup--wrap layout-row wz-margin-top--20">
       <div class="layout-column md-padding">
         <span class="wz-headline-title">
@@ -96,13 +95,24 @@
           </div>
         </div>
       </div>
-
     </div>
 
+      <md-card flex="33" class="wz-md-card" ng-class="{'fullscreen': expandChartAgent}">
+        <md-card-content class="wazuh-column">
+              <span class="wz-headline-title">Agents status
+                <span class="wz-text-link" style="float:right;" ng-click="expand('agentStatusChart')">
+                  <wz-svg icon="expand"></wz-svg>
+                </span>
+              </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id='agentStatusChart' ng-init="getAgentStatus()"></div>
+        </md-card-content>
+      </md-card>
+    </div>
   </div>
 
   <!-- Search bar -->
-  <div ng-if="!loading" layout="row" layout-align="space-between stretch">
+  <div ng-if="!loading" layout="row" layout-align="space-between stretch" class="md-margin">
     <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
     <button type="submit" aria-label="Search" class="btn wz-button-empty wz-margin-left-10 wz-margin-top-15"
       ng-click="reloadList()">
@@ -111,9 +121,8 @@
     </button>
   </div>
 
-  <md-card class="wz-md-card no-margin-sides wz-margin-top-15">
+  <md-card class="wz-md-card wz-margin-top-15">
     <!-- Table -->
-
     <md-card-actions layout="row" layout-align="start center"
       class="layout-align-start-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
       <a class="cursor-pointer green-href" ng-click="addNewAgent()">Add new agent</a>
