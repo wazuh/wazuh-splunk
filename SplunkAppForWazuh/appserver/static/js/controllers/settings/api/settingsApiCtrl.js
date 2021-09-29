@@ -106,6 +106,7 @@ define(['../../module'], function (controllers) {
           this.notification.showSuccessToast('Manager was removed')
           this.scope.$emit('updatedAPI', () => { })
         }
+        this.currentDataService.removeExtensionsById(entry['_key'])
       } catch (err) {
         this.scope.loadingVizz = false
         this.notification.showErrorToast(
