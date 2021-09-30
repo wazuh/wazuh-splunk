@@ -2632,6 +2632,7 @@ background-color: white;
   }
 }
 
+/** Workaround to correct visualizations buttons tooltip placement **/
 body > div.tooltip {
   display: inline-block !important;
 }
