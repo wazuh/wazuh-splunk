@@ -2631,3 +2631,7 @@ background-color: white;
     width: 20px;    
   }
 }
+
+body > div.tooltip {
+  display: inline-block !important;
+}
