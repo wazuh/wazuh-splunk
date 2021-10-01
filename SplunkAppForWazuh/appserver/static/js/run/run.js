@@ -47,6 +47,11 @@ define(['./module'], function(module) {
               $currentDataService.getIndex().index
             }", "implicit":true}`
           )
+          $currentDataService.addFilter(
+            `{"sourcetype":"${
+              $currentDataService.getSourceType().sourceType
+            }", "implicit":true}`
+          )
           // If change the primary state and do not receive an error the two below code lines clear the warning message
           window.localStorage.setItem('wazuhIsReady', 'true')
           $rootScope.wazuhNotReadyYet = false

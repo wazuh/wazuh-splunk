@@ -68,45 +68,45 @@ define([
          */
         new LinearChart(
           'alertsByActionOverTime',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck  | timechart count by syscheck.event`,
+          `${this.filters} rule.groups{}=syscheck  | timechart count by syscheck.event`,
           'alertsByActionOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'top5Agents',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck  | top agent.name limit=5`,
+          `${this.filters} rule.groups{}=syscheck  | top agent.name limit=5`,
           'top5Agents',
           this.scope
         ),
         new LinearChart(
           'eventsSummary',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck  | timechart count`,
+          `${this.filters} rule.groups{}=syscheck  | timechart count`,
           'eventsSummary',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'ruleDistribution',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 rule.description`,
+          `${this.filters} rule.groups{}=syscheck  | top limit=5 rule.description`,
           'ruleDistribution',
           this.scope
         ),
         new PieChart(
           'topActions',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 syscheck.event`,
+          `${this.filters} rule.groups{}=syscheck  | top limit=5 syscheck.event`,
           'topActions',
           this.scope
         ),
         new Table(
           'topUsers',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
+          `${this.filters} rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
           'topUsers',
           this.scope
         ),
         new RawTableDataService(
           'topUsersTable',
-          `${this.filters} sourcetype=wazuh rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
+          `${this.filters} rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
           'topUsersTableToken',
           '$result$',
           this.scope,

@@ -3,7 +3,8 @@ define(['../module'], function(module) {
   module.service('$apiMgrService', function(
     $requestService,
     $apiIndexStorageService,
-    $splunkStoreService
+    $splunkStoreService,
+    $sourceTypeStorageService
   ) {
     // =========== CRUD METHODS =========== //
 
@@ -149,6 +150,20 @@ define(['../module'], function(module) {
      */
     const getIndex = () => {
       return $apiIndexStorageService.getIndex()
+    }
+
+    /**
+     * Sets sourceType
+     */
+    const setSourceType = sourceType => {
+      return $sourceTypeStorageService.setSourceType(sourceType)
+    }
+
+    /**
+     * Gets sourceType
+     */
+    const getSourceType = () => {
+      return $sourceTypeStorageService.getSourceType()
     }
 
     /**
@@ -416,6 +431,8 @@ define(['../module'], function(module) {
       addApi: addApi,
       checkWazuhVersion: checkWazuhVersion,
       resolveCurrentApi: resolveCurrentApi,
+      setSourceType: setSourceType,
+      getSourceType: getSourceType,
     }
   })
 })
