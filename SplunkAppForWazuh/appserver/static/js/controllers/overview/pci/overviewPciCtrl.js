@@ -57,7 +57,7 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${this.filters} sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
+        `${this.filters} rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
         'rule.pci_dss{}',
         '$form.pci$',
         'dropDownInput',
@@ -74,38 +74,38 @@ define([
       this.vizz = [
         new ColumnChart(
           'pciReqVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'pciReqVizz',
           this.scope
         ),
         new LinearChart(
           'evoVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="*" | timechart count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="*" | timechart count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'evoVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'agentsVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$" | stats count by agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'agentsVizz',
           this.scope
         ),
         new ColumnChart(
           'requirementsByAgentVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'requirementsByAgentVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryViz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryViz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
