@@ -33,7 +33,7 @@ class CheckQueue():
         self.session = requestsbak.Session()
         self.auth_key = sys.stdin.readline().strip()
         self.q = JobsQueue()
-        self.db = database()
+        self.db = database("credentials")
 
     def init(self):
         """Inits the jobs

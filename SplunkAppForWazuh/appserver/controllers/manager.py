@@ -107,7 +107,7 @@ class manager(controllers.BaseController):
         self.logger = log()
         try:
             controllers.BaseController.__init__(self)
-            self.db = database()
+            self.db = database("credentials")
             self.wztoken = wazuhtoken()
             self.config =  self.get_config_on_memory()
             self.timeout = int(self.config['timeout'])

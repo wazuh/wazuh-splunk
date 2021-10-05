@@ -15,7 +15,6 @@ Find more information about this on the LICENSE file.
 import jsonbak
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-from db import database
 from log import log
 from jobs_queue import JobsQueue
 
