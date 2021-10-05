@@ -110,14 +110,6 @@ define(['../module'], function(module) {
       return $apiMgrService.setApi(api)
     }
 
-    const setSourceType = sourceType => {
-      return $apiMgrService.setSourceType(sourceType)
-    }
-
-    const setApi = api => {
-      return $apiMgrService.setApi(api)
-    }
-
     const removeCurrentApi = () => {
       return $apiIndexStorageService.removeAPI()
     }
