@@ -129,12 +129,24 @@ define(['../module'], function(module) {
     const getExtensionsById = async id => {
       const result = {}
       try {
+        let payload = {};
+        let updateExtensionKey = false;
+        try{
+          payload['_key'] = $apiIndexStorageService.getExtensionKey(id)
+        } catch (err) {
+          payload['api'] = id
+          updateExtensionKey=true;
+        }
         const ext = await $requestService.httpReq(
           `POST`,
           `/manager/extensions`,
-          {id:id}
+          payload
         )
         Object.assign(result, ext.data)
+        
+        if (updateExtensionKey){
+          $apiIndexStorageService.setExtensionKey(id,result['_key']) 
+        }
         return result
       } catch (err) {
         console.log(err)
@@ -148,8 +160,7 @@ define(['../module'], function(module) {
         const ext = await $requestService.httpReq(
           `POST`,
           `/manager/save_extensions`,
-          {id: id,
-          extensions: JSON.stringify(extensions)}
+          {extensions: JSON.stringify(extensions)}
         )
         Object.assign(result, ext.data)
         return result
@@ -162,12 +173,14 @@ define(['../module'], function(module) {
     const removeExtensionsById = async (id) => {
       const result = {}
       try {
+        const key = $apiIndexStorageService.getExtensionKey(id)
         const response = await $requestService.httpReq(
           `POST`,
           `/manager/remove_extensions`,
-          {id:id}
+          {_key:key}
         )
         Object.assign(result,response.data)
+        $apiIndexStorageService.removeExtensionKey(id)
         return result
       } catch (err) {
         console.log(err)
