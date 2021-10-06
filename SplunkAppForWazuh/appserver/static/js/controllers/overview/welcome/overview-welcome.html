@@ -156,6 +156,11 @@
             sub-title="'Vulnerabilities'" ui-sref='ow-vul' current-tab="'vuls'"
             description="'Discover what applications in your environment are affected by well-known vulnerabilities.'">
           </wz-welcome-card>
+          <wz-welcome-card class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/mitre.svg'" sub-title="'MITRE ATT&amp;CK'" ui-sref='ow-mitre'
+            current-tab="'mitre'"
+            description="'Security events from the knowledge base of adversary tactics and techniques based on real-world observations.'">
+          </wz-welcome-card>
           <wz-welcome-card ng-if="extensions.virustotal" class="euiFlexItem"
             logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'" sub-title="'VirusTotal'"
             title="'VirusTotal'" ui-sref='ow-virustotal' current-tab="'virustotal'"
@@ -167,10 +172,10 @@
             description="'Osquery allows to expose an operating system as a high-performance relational database.'">
           </wz-welcome-card>
           <wz-welcome-card ng-if="extensions.docker" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/docker.svg'" sub-title="'Docker listener'"
-            ui-sref='ow-docker' current-tab="'docker'"
-            description="'Collects events on Docker containers such as starting, stopping or pausing.'">
-          </wz-welcome-card>
+          logo="'/static/app/SplunkAppForWazuh/css/images/docker.svg'" sub-title="'Docker listener'"
+          ui-sref='ow-docker' current-tab="'docker'"
+          description="'Collects events on Docker containers such as starting, stopping or pausing.'">
+        </wz-welcome-card>
           <div ng-if="(isWindows || isMac) && !extensions.docker && !extensions.osquery && !extensions.virustotal" flex
             class="euiCallOut euiCallOut--success no-extensions">
             <div class="euiCallOutHeader">

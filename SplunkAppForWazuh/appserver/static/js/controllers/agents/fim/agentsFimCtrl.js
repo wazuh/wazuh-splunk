@@ -158,19 +158,19 @@ define([
         ),
         new PieChart(
           'topNewFiles',
-          `${this.filters} sourcetype=wazuh syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topNewFiles',
           this.scope
         ),
         new PieChart(
           'topModifiedFiles',
-          `${this.filters} sourcetype=wazuh syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topModifiedFiles',
           this.scope
         ),
         new PieChart(
           'topDeletedFiles',
-          `${this.filters} sourcetype=wazuh syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
+          `${this.filters} syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topDeletedFiles',
           this.scope
         )
@@ -184,7 +184,7 @@ define([
           IP: this.agent.data.data.affected_items[0].ip,
           Version: this.agent.data.data.affected_items[0].version,
           Manager: this.agent.data.data.affected_items[0].manager,
-          OS: this.agent.data.data.os.affected_items[0].name,
+          OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
           group: this.agent.data.data.affected_items[0].group.toString()

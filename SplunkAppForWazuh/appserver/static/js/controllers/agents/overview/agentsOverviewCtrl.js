@@ -388,8 +388,8 @@ define(['../../module'], function(app) {
     toggleExtension(extension, state) {
       try {
         this.extensions[extension] = state.toString()
-        this.currentDataService.setExtensions(this.api, this.extensions)
-        this.extensions = this.currentDataService.getExtensions(this.api)
+        this.currentDataService.setExtensionsById(this.api, this.extensions)
+        this.extensions = this.currentDataService.getExtensionsById(this.api)
         this.refreshExtensions()
       } catch (error) {
         console.error(error)
