@@ -153,6 +153,48 @@ define(['../module'], function(module) {
             ]
           }
         })
+        .state('security', {
+          templateUrl:
+            BASE_URL +
+            '/static/app/SplunkAppForWazuh/js/controllers/security/main/security.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('security.users')
+          },
+          controller: 'securityCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
+        .state('security.users', {
+          templateUrl:
+            BASE_URL +
+            '/static/app/SplunkAppForWazuh/js/controllers/security/users/users.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('security.users')
+          },
+          controller: 'securityCtrl',
+          resolve: {
+            isAdmin: [
+              '$currentDataService',
+              async $currentDataService => {
+                try {
+                  return await $currentDataService.isAdmin()
+                } catch (error) {
+                  return false
+                }
+              }
+            ]
+          }
+        })
         .state('discover', {
           templateUrl:
             BASE_URL +
