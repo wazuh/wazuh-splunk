@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers) {
   'use strict'
 
-  class Users {
+  class Roles {
     constructor($scope) {
       this.scope = $scope
     }
@@ -9,5 +9,5 @@ define(['../../module'], function(controllers) {
     $onInit() {
     }
   }
-  controllers.controller('usersCtrl', Users)
+  controllers.controller('rolesCtrl', Roles)
 })

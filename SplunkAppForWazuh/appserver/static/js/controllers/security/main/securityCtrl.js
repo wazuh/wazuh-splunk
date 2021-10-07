@@ -5,6 +5,8 @@ define(['../../module'], function(app) {
     constructor($scope, $navigationService, isAdmin) {
       this.navigationService = $navigationService
       this.scope = $scope
+      this.scope.message = 'Security'
+      this.scope.tabName = ''
       this.scope.isAdmin = isAdmin
     }
 
@@ -17,8 +19,8 @@ define(['../../module'], function(app) {
         case 'security.roles':
           this.scope.tabName = 'roles'
           break
-        case 'security.polices':
-          this.scope.tabName = 'polices'
+        case 'security.policies':
+          this.scope.tabName = 'policies'
           break
         case 'security.roles-mapping':
           this.scope.tabName = 'roles-mapping'
@@ -31,11 +33,6 @@ define(['../../module'], function(app) {
 
       this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
-        event.preventDefault()
-      })
-
-      this.scope.$on('changeSettingsTab', (event, data) => {
-        this.scope.tabName = data.tabName
         event.preventDefault()
       })
     }
