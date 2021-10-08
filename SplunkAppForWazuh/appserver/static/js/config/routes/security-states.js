@@ -6,54 +6,125 @@ define(['../module'], function(module) {
     'BASE_URL',
     function($stateProvider, BASE_URL) {
       $stateProvider
-        // Manager - Monitoring
-        .state('sg-users', {
-          templateUrl:
-            BASE_URL +
-            'static/app/SplunkAppForWazuh/js/controllers/security/users/users.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('sg-users')
-          },
-          controller: 'usersCtrl',
-          // params: { id: null, filters: null },
-          resolve: {
-            users: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
-                try {
-                  const users = await $requestService.apiReq('/security/users?sort=username');
-                  console.log("users");
-                  console.log(users);
-
-                  // let result = {};
-                  //  if(checkCluster['data']['data'].enabled === 'no'){
-                  //   result = await Promise.all([
-                  //     checkCluster,
-                  //     false,
-                  //     false,
-                  //     $requestService.apiReq('/'),
-                  //     $requestService.apiReq('/agents', { limit: 1 }),
-                  //     false
-                  //   ])
-                  //  }
-                  //  else
-                  //     result = await Promise.all([
-                  //      checkCluster,
-                  //      $requestService.apiReq('/cluster/nodes'),
-                  //      $requestService.apiReq('/cluster/local/config'),
-                  //      $requestService.apiReq('/'),
-                  //      $requestService.apiReq('/agents', { limit: 1 }),
-                  //      $requestService.apiReq('/cluster/healthcheck')
-                  //    ])
-                  return users
-                } catch (err) {
-                  $state.go('settings.api')
-                }
+      .state('security', {
+        templateUrl:
+          BASE_URL +
+          '/static/app/SplunkAppForWazuh/js/controllers/security/main/security.html',
+        onEnter: $navigationService => {
+          $navigationService.storeRoute('security.users')
+        },
+        controller: 'securityCtrl',
+        resolve: {
+          isAdmin: [
+            '$currentDataService',
+            async $currentDataService => {
+              try {
+                return await $currentDataService.isAdmin()
+              } catch (error) {
+                return false
               }
-            ]
-          }
-        })
+            }
+          ]
+        }
+      })
+      .state('security.users', {
+        templateUrl:
+          BASE_URL +
+          '/static/app/SplunkAppForWazuh/js/controllers/security/users/users.html',
+        onEnter: $navigationService => {
+          $navigationService.storeRoute('security.users')
+        },
+        controller: 'usersCtrl',
+        resolve: {
+          isAdmin: [
+            '$currentDataService',
+            async $currentDataService => {
+              try {
+                return await $currentDataService.isAdmin()
+              } catch (error) {
+                return false
+              }
+            }
+          ],
+          users: [
+            '$requestService',
+            async ($requestService, $state) => {
+              try {
+                const users = await $requestService.apiReq('/security/users?sort=username');
+                console.log("users");
+                console.log(users);
+
+                return users
+              } catch (err) {
+                return false
+              }
+            }
+          ]
+        }
+      })
+      .state('security.roles', {
+        templateUrl:
+          BASE_URL +
+          '/static/app/SplunkAppForWazuh/js/controllers/security/roles/roles.html',
+        onEnter: $navigationService => {
+          $navigationService.storeRoute('security.roles')
+        },
+        controller: 'rolesCtrl',
+        resolve: {
+          isAdmin: [
+            '$currentDataService',
+            async $currentDataService => {
+              try {
+                return await $currentDataService.isAdmin()
+              } catch (error) {
+                return false
+              }
+            }
+          ]
+        }
+      })
+      .state('security.policies', {
+        templateUrl:
+          BASE_URL +
+          '/static/app/SplunkAppForWazuh/js/controllers/security/policies/policies.html',
+        onEnter: $navigationService => {
+          $navigationService.storeRoute('security.policies')
+        },
+        controller: 'policiesCtrl',
+        resolve: {
+          isAdmin: [
+            '$currentDataService',
+            async $currentDataService => {
+              try {
+                return await $currentDataService.isAdmin()
+              } catch (error) {
+                return false
+              }
+            }
+          ]
+        }
+      })
+      .state('security.roles-mapping', {
+        templateUrl:
+          BASE_URL +
+          '/static/app/SplunkAppForWazuh/js/controllers/security/roles-mapping/rolesMapping.html',
+        onEnter: $navigationService => {
+          $navigationService.storeRoute('security.roles-mapping')
+        },
+        controller: 'rolesMappingCtrl',
+        resolve: {
+          isAdmin: [
+            '$currentDataService',
+            async $currentDataService => {
+              try {
+                return await $currentDataService.isAdmin()
+              } catch (error) {
+                return false
+              }
+            }
+          ]
+        }
+      })
     }
   ])
 })
