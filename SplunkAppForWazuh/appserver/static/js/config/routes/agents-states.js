@@ -17,6 +17,20 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('agents')
           },
           resolve: {
+            usersData: [
+              '$requestService',
+              '$state',
+              async ($requestService, $state) => {
+                try {
+                  const userSummary = await $requestService.apiReq(
+                    '/security/users?sort=username'
+                  )
+                  return userSummary
+                } catch (err) {
+                  $state.go('settings.api')
+                }
+              }
+            ],
             agentData: [
               '$requestService',
               '$state',
@@ -39,6 +53,8 @@ define(['../module'], function(module) {
                   const clusterData = await $requestService.apiReq(
                     '/cluster/status'
                   )
+                  console.log("clusterData.data.data");
+                  console.log(clusterData.data.data);
                   return clusterData.data.data;
                 } catch (err) {
                   $state.go('settings.api');
