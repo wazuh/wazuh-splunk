@@ -901,7 +901,6 @@
     "related_endpoints": [
       "GET /security/users",
       "GET /security/roles",
-      "GET /security/rules",
       "GET /security/policies"
     ]
   },

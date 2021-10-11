@@ -46,20 +46,6 @@ define(['../module'], function(module) {
               }
             }
           ],
-          users: [
-            '$requestService',
-            async ($requestService, $state) => {
-              try {
-                const users = await $requestService.apiReq('/security/users?sort=username');
-                console.log("users");
-                console.log(users);
-
-                return users
-              } catch (err) {
-                return false
-              }
-            }
-          ]
         }
       })
       .state('security.roles', {

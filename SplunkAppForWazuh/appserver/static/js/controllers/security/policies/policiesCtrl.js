@@ -7,6 +7,8 @@ define(['../../module'], function(controllers) {
     }
 
     $onInit() {
+      console.log("this.scope");
+      console.log(this.scope);
     }
   }
   controllers.controller('policiesCtrl', Policies)

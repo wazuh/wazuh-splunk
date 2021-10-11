@@ -2,13 +2,12 @@ define(['../../module'], function(controllers) {
   'use strict'
 
   class Users {
-    constructor($scope, isAdmin, users) {
+    constructor($scope, isAdmin) {
       this.scope = $scope
-      this.users = users
     }
 
     $onInit() {
-      console.log(this.users);
+
     }
 
   }
