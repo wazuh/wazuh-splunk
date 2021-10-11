@@ -98,16 +98,16 @@ define(['../module'], function(module) {
       return $apiMgrService.setIndex(index)
     }
 
+    const getSourceType = () => {
+      return $apiMgrService.getSourceType()
+    }
+
+    const setSourceType = sourceType => {
+      return $apiMgrService.setSourceType(sourceType)
+    }
+
     const setApi = api => {
       return $apiMgrService.setApi(api)
-    }
-
-    const getExtensions = id => {
-      return $apiIndexStorageService.getExtensions(id)
-    }
-
-    const setExtensions = (api, extensions) => {
-      return $apiIndexStorageService.setExtensions(api, extensions)
     }
 
     const removeCurrentApi = () => {
@@ -127,20 +127,50 @@ define(['../module'], function(module) {
      * @param {String} id
      */
     const getExtensionsById = async id => {
+      const result = {}
       try {
-        const currentExtensions = getExtensions(id)
-        const result = {}
-        if (currentExtensions) {
-          Object.assign(result, currentExtensions)
-        } else {
-          const ext = await $requestService.httpReq(
-            `GET`,
-            `/manager/extensions`
-          )
-          Object.assign(result, ext.data)
-        }
+        const ext = await $requestService.httpReq(
+          `POST`,
+          `/manager/extensions`,
+          {id:id}
+        )
+        Object.assign(result, ext.data)
         return result
       } catch (err) {
+        console.log(err)
+        return Promise.reject(false)
+      }
+    }
+
+    const setExtensionsById = async (id, extensions) => {
+      const result = {}
+      try {
+        const ext = await $requestService.httpReq(
+          `POST`,
+          `/manager/save_extensions`,
+          {id: id,
+          extensions: JSON.stringify(extensions)}
+        )
+        Object.assign(result, ext.data)
+        return result
+      } catch (err) {
+        console.log(err)
+        return Promise.reject(false)
+      }
+    }
+
+    const removeExtensionsById = async (id) => {
+      const result = {}
+      try {
+        const response = await $requestService.httpReq(
+          `POST`,
+          `/manager/remove_extensions`,
+          {id:id}
+        )
+        Object.assign(result,response.data)
+        return result
+      } catch (err) {
+        console.log(err)
         return Promise.reject(false)
       }
     }
@@ -266,17 +296,19 @@ define(['../module'], function(module) {
       setApi: setApi,
       getCurrentAgent: getCurrentAgent,
       setCurrentAgent: setCurrentAgent,
-      getExtensions: getExtensions,
       getAdminExtensions: getAdminExtensions,
       getCurrentExtensions: getCurrentExtensions,
       getCurrentConfiguration: getCurrentConfiguration,
       getExtensionsById: getExtensionsById,
+      removeExtensionsById: removeExtensionsById,
       extensionIsEnabled: extensionIsEnabled,
-      setExtensions: setExtensions,
+      setExtensionsById: setExtensionsById,
       addApi: addApi,
       isAdmin: isAdmin,
       getReportingStatus: getReportingStatus,
-      checkWazuhVersion: checkWazuhVersion
+      checkWazuhVersion: checkWazuhVersion,
+      getSourceType: getSourceType,
+      setSourceType: setSourceType,
     }
   })
 })

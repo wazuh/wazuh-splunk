@@ -101,10 +101,10 @@ def check_status():
                         item["timestamp"] = date
                         print(jsonbak.dumps(item))
             except Exception as e:
-                logger.error("Error requesting agents status: %s" % str(e))
+                logger.error("agents-status: Error requesting agents status: %s" % str(e))
                 pass
     except Exception as e:
-        logger.error("Error requesting agents status: %s" % str(e))
+        logger.error("agents-status: Error requesting agents status: %s" % str(e))
         pass
 
 

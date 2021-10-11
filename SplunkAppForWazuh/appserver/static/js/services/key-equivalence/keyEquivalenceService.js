@@ -36,6 +36,7 @@ define(['../module'], function(module) {
           'nist-800-53': 'NIST 800-53',
           groups: 'Groups',
           name: 'Name',
+          cve: 'CVE',
           count: 'Count',
           'details.program_name': 'Program name',
           'details.order': 'Order',
