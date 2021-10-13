@@ -14,6 +14,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
 - Added persitence to modules in overview panel [#1135](https://github.com/wazuh/wazuh-splunk/pull/1135)
 - Added Agent status visualization on Agents main view [#1140](https://github.com/wazuh/wazuh-splunk/pull/1140)
+- Added validation service to compare user permissions to requirements [#1158](https://github.com/wazuh/wazuh-splunk/pull/1158)
 
 ### Fixed 
 
