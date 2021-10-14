@@ -4,7 +4,7 @@ define(
     'use strict'
 
     /**
-     * 
+     * Class to handle Splunk's users.
      */
     class SplunkUsers {
 
@@ -18,12 +18,11 @@ define(
       };
 
       /**
-       * 
-       * @returns 
+       * @returns {Object} logged in user.
        */
       async getCurrentUser() {
         try {
-          const { data } = await this.httpReq(
+          const data = await this.httpReq(
             `GET`,
             `/users/get_current_user`
           )
@@ -34,12 +33,11 @@ define(
       };
 
       /**
-       * 
-       * @returns 
+       * @returns {Object} a list with every user registered in Splunk.
        */
       async getInternalUsers() {
         try {
-          const { data } = await this.httpReq(
+          const data = await this.httpReq(
             `GET`,
             `/users/get_users`
           )
