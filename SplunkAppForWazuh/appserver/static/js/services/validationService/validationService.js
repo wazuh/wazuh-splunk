@@ -73,7 +73,7 @@ const isMatching = (requirement, permission) => {
 
     let result = true
     reqArr.forEach((value, index) => {
-        if (!(value === perArr[index] || perArr[index] === '*')) {
+        if (!(value === '*' || value === perArr[index] || perArr[index] === '*')) {
             result = false
         }
     })
