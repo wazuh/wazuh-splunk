@@ -12,16 +12,12 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
-import json
-
-import log.log as log
-
-import splunk.auth as splunk_auth
-# import splunk.appserver.mrsparkle.controllers as controllers
-# import splunk.appserver.mrsparkle.lib.decorators.expose_page as expose_page
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
-import splunk.appserver.mrsparkle.lib.routes.route as route
+from log import log
+
+import json
+import splunk.auth as splunk_auth
 
 class Users(controllers.BaseController):
     """
@@ -41,14 +37,12 @@ class Users(controllers.BaseController):
         except Exception as e:
             self.logger.error("Users: Error initializing object")
 
-    # @route('/:app/user')
-    # @expose_page(methods='GET')
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(methods='GET')
     def get_current_user(self):
         """
         """
         try:
-            self.logger.error("Users: get_current_user()")
+            self.logger.debug("Users: get_current_user()")
             user = splunk_auth.getCurrentUser()
 
             return user
@@ -56,13 +50,12 @@ class Users(controllers.BaseController):
             self.logger.error("Users: Error getting Splunk's current user")
             return json.dumps({"error": str(e)})
 
-    # @route('/:app/user')
     @expose_page(methods='GET')
     def get_users(self):
         """
         """
         try:
-            self.logger.error("Users: get_users()")
+            self.logger.debug("Users: get_users()")
             users = splunk_auth.listUsers()
 
             return users
