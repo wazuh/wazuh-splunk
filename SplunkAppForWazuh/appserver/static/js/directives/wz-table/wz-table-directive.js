@@ -527,7 +527,36 @@ define([
         }
         $scope.confirmRemoveSecurityUser = async user => {
         }
-        // END SECURITY SECTION FOR USERS        
+        // END SECURITY SECTION FOR USERS  
+
+        // SECURITY SECTION FOR ROLES
+        $scope.showConfirmRemoveSecurityRoles = (ev, role) => {
+          $scope.removingRoles =
+            $scope.removingRoles === role.name ? null : role.name
+        }
+        $scope.cancelRemoveSecurityRoles = () => {
+          $scope.removingRoles = null
+        }
+        $scope.editSecurityRoles = role => {
+          $scope.$emit('openGroupFromList', { role })
+        }
+        $scope.confirmRemoveSecurityRoles = async role => {
+        }
+        // END SECURITY SECTION FOR ROLES
+        // SECURITY SECTION FOR POLICIES
+        $scope.showConfirmRemoveSecurityPolicies = (ev, policy) => {
+          $scope.removingPolicies =
+            $scope.removingPolicies === policy.name ? null : policy.name
+        }
+        $scope.cancelRemoveSecurityPolicies = () => {
+          $scope.removingPolicies = null
+        }
+        $scope.editSecurityPolicies = policy => {
+          $scope.$emit('openGroupFromList', { policy })
+        }
+        $scope.confirmRemoveSecurityPolicies = async policy => {
+        }
+        // END SECURITY SECTION FOR POLICIES
 
         $scope.showConfirmRemoveGroup = (ev, group) => {
           $scope.removingGroup =
