@@ -31,8 +31,12 @@ from requestsbak.exceptions import ConnectionError
 import os
 
 splunk_home = os.path.normpath(os.environ["SPLUNK_HOME"])
+
+
 def getLocalConfPath(file):
     return os.path.join(splunk_home, "etc", "apps", "SplunkAppForWazuh", "local", file + ".conf")
+
+
 def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
 
@@ -48,6 +52,8 @@ def getSelfConfStanza(file, stanza):
     except Exception as e:
         raise e
     return parsed_data
+
+
 def getConfStanzaById(file, id):
     extConf = getLocalConfPath(file)
     try:
@@ -58,24 +64,28 @@ def getConfStanzaById(file, id):
             raise ParsingError("No custom setting for id %s" % id)
     except Exception as e:
         raise e
-def putConfStanza(file,stanzaDict):
+
+
+def putConfStanza(file, stanzaDict):
     extConf = getLocalConfPath(file)
     try:
-        cli.mergeConfFile(extConf,stanzaDict)
+        cli.mergeConfFile(extConf, stanzaDict)
     except Exception as e:
         raise e
-    return { 'error': False }
+    return {'error': False}
 
-def rmConfStanza(file,stanza):
+
+def rmConfStanza(file, stanza):
     try:
         conf = cli.readConfFile(getLocalConfPath(file))
         response = stanza in conf
         if response:
             conf.pop(stanza)
-        cli.writeConfFile(getLocalConfPath(file),conf)
+        cli.writeConfFile(getLocalConfPath(file), conf)
         return response
     except Exception as e:
         raise e
+
 
 def diff_keys_dic_update_api(kwargs_dic):
     """Get the missing fields for the API entry.
@@ -109,23 +119,24 @@ class manager(controllers.BaseController):
             controllers.BaseController.__init__(self)
             self.db = database()
             self.wztoken = wazuhtoken()
-            self.config =  self.get_config_on_memory()
+            self.config = self.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
             self.wazuh_api = api.api()
-            self.session = requestsbak.Session()            
+            self.session = requestsbak.Session()
             self.session.trust_env = False
         except Exception as e:
-            self.logger.error("manager: Error in manager module constructor: %s" % (e))
+            self.logger.error(
+                "manager: Error in manager module constructor: %s" % (e))
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
-        """Check agent monitoring status.
+        """
+        Check agent monitoring status.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting agents polling state.")
@@ -143,13 +154,13 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['GET', 'POST'])
     def extensions(self, **kwargs):
-        """Obtain extension from file.
+        """
+        Obtain extension from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         id = kwargs['id']
         if id:
@@ -169,20 +180,21 @@ class manager(controllers.BaseController):
             except Exception as e:
                 return jsonbak.dumps({'error': str(e)})
         return data_temp
-    
+
     @expose_page(must_login=False, methods=['POST'])
     def remove_extensions(self, **kwargs):
         try:
             self.logger.debug("manager: Removing extensions.")
             id = kwargs['id']
-            response = rmConfStanza("extensions",id)
+            response = rmConfStanza("extensions", id)
             return response
         except Exception as e:
-            return {'error':str(e)}
+            return {'error': str(e)}
 
     @expose_page(must_login=False, methods=['POST'])
     def save_extensions(self, **kwargs):
-        """Save extensions to file
+        """
+        Save extensions to file
 
         Parameters
         ----------
@@ -194,22 +206,21 @@ class manager(controllers.BaseController):
             id = kwargs['id']
             extensions = kwargs['extensions']
             response = {}
-            putConfStanza("extensions",{id: jsonbak.loads(extensions)})
+            putConfStanza("extensions", {id: jsonbak.loads(extensions)})
             response[id] = 'Success'
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
         return jsonbak.dumps(response)
 
-
     @expose_page(must_login=False, methods=['GET'])
     def admin_extensions(self, **kwargs):
-        """Obtain extension from file.
+        """
+        Obtain extension from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting admin extensions.")
@@ -221,16 +232,17 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['GET'])
     def configuration(self, **kwargs):
-        """Obtain extension from file.
+        """
+        Obtain extension from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
-            self.logger.debug("manager: Getting configuration on memory from frondent.")
+            self.logger.debug(
+                "manager: Getting configuration on memory from frontend.")
             stanza = getSelfConfStanza("config", "configuration")
             data_temp = stanza
         except Exception as e:
@@ -239,23 +251,19 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['GET'])
     def app_info(self, **kwargs):
-        """Obtain app information from file.
+        """
+        Obtain app information from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting app info.")
-            stanza = cli.getConfStanza(
-                'package',
-                'app')
+            stanza = cli.getConfStanza('package', 'app')
             data_temp = stanza
-            stanza = cli.getConfStanza(
-                'package',
-                'splunk')
+            stanza = cli.getConfStanza('package', 'splunk')
             data_temp['splunk_version'] = stanza['version']
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
@@ -264,13 +272,13 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['GET'])
     def get_api(self, **kwargs):
-        """Obtain Wazuh API from DB.
+        """
+        Obtain Wazuh API from DB.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting API info from _key.")
@@ -286,13 +294,13 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['GET'])
     def get_apis(self, **kwargs):
-        """Obtain all Wazuh APIs from DB.
+        """
+        Obtain all Wazuh APIs from DB.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting API list.")
@@ -310,19 +318,19 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['POST'])
     def add_api(self, **kwargs):
-        """Add a Wazuh API.
+        """
+        Add a Wazuh API.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Adding a new API.")
             record = kwargs
             keys_list = ['url', 'portapi', 'userapi', 'passapi',
-                         'managerName', 'filterType', 'filterName']
+                         'managerName', 'filterType', 'filterName', 'runAs']
             if set(record.keys()) == set(keys_list):
                 key = self.db.insert(jsonbak.dumps(record))
                 parsed_data = jsonbak.dumps({'result': key})
@@ -335,13 +343,13 @@ class manager(controllers.BaseController):
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
-        """Delete Wazuh API from DB.
+        """
+        Delete Wazuh API from DB.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Removing API.")
@@ -351,19 +359,20 @@ class manager(controllers.BaseController):
             self.db.remove(api_id['_key'])
             parsed_data = jsonbak.dumps({'data': 'success'})
         except Exception as e:
-            self.logger.error("manager: Error in remove_api endpoint: %s" % (e))
+            self.logger.error(
+                "manager: Error in remove_api endpoint: %s" % (e))
             return jsonbak.dumps({'error': str(e)})
         return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
     def update_api(self, **kwargs):
-        """Update Wazuh API.
+        """
+        Update Wazuh API.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Updating API information.")
@@ -387,38 +396,45 @@ class manager(controllers.BaseController):
                     "Invalid arguments, missing params : %s"
                     % str(missing_params))
         except Exception as e:
-            self.logger.error("manager: Error in update_api endpoint: %s" % (e))
+            self.logger.error(
+                "manager: Error in update_api endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
     def get_log_lines(self, **kwargs):
-        """Get last log lines.
+        """
+        Get last log lines.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting last log lines.")
             lines = self.logger.get_last_log_lines(20)
-            parsed_data = jsonbak.dumps({'logs': lines, 'logs_path': make_splunkhome_path(['var', 'log', 'splunk', 'SplunkAppForWazuh.log'])})
+            parsed_data = jsonbak.dumps(
+                {
+                    'logs': lines,
+                    'logs_path': make_splunkhome_path(
+                        ['var', 'log', 'splunk', 'SplunkAppForWazuh.log'])
+                }
+            )
         except Exception as e:
             self.logger.error("manager: Get_log_lines endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
         return parsed_data
-                        
+
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
-        """Check API connection.
+        """
+        Check API connection.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Checking API connection.")
@@ -431,30 +447,44 @@ class manager(controllers.BaseController):
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             self.check_wazuh_version(kwargs)
-            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster, kwargs)
+            daemons_ready = self.check_daemons(
+                url, auth, verify, opt_cluster, kwargs)
             # Pass the cluster status instead of always False
             if not daemons_ready:
                 raise Exception("DAEMONS-NOT-READY")
-            output = self.get_cluster_info(opt_username, opt_password, opt_base_url, opt_base_port , opt_cluster)   
-            result = jsonbak.dumps(output) 
+            output = self.get_cluster_info(
+                opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster)
+            result = jsonbak.dumps(output)
         except Exception as e:
             if e == "DAEMONS-NOT-READY":
-                self.logger.error("manager: Cannot connect to API; Wazuh not ready yet.")
-                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
+                self.logger.error(
+                    "manager: Cannot connect to API; Wazuh not ready yet.")
+                return jsonbak.dumps(
+                    {
+                        "status": "200",
+                        "error": 3099,
+                        "message": "Wazuh not ready yet."
+                    }
+                )
             else:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": 400, "error": "Cannot connect to the API, please see the app logs"})
+                return jsonbak.dumps(
+                    {
+                        "status": 400,
+                        "error": "Cannot connect to the API, please see the app logs"
+                    }
+                )
         return result
 
     @expose_page(must_login=False, methods=['GET'])
     def check_connection_by_id(self, **kwargs):
-        """Given an API id we check the connection.
-        
+        """
+        Given an API id we check the connection.
+
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Checking API connection by id.")
@@ -462,7 +492,8 @@ class manager(controllers.BaseController):
             current_api = self.get_api(apiId=opt_id)
             current_api_json = jsonbak.loads(jsonbak.loads(current_api))
             if not "data" in current_api_json:
-                raise Exception("Error checking API connection: %s" % (current_api_json))
+                raise Exception("Error checking API connection: %s" %
+                                (current_api_json))
             opt_username = str(current_api_json["data"]["userapi"])
             opt_password = str(current_api_json["data"]["passapi"])
             opt_base_url = str(current_api_json["data"]["url"])
@@ -470,48 +501,75 @@ class manager(controllers.BaseController):
             opt_cluster = False
             if "cluster" in current_api_json["data"]:
                 opt_cluster = current_api_json["data"]["cluster"] == "true"
-            output = self.get_cluster_info(opt_username, opt_password, opt_base_url, opt_base_port , opt_cluster)
+            output = self.get_cluster_info(
+                opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster)
             del current_api_json["data"]["passapi"]
             output['api'] = current_api_json
-            result = jsonbak.dumps(output)             
+            result = jsonbak.dumps(output)
         except Exception as e:
             self.logger.error("Error when checking API connection: %s" % (e))
-            return jsonbak.dumps({"status": "500", "error": "Error when checking API connection: %s" % (e)})
+            return jsonbak.dumps(
+                {
+                    "status": "500",
+                    "error": "Error when checking API connection: %s" % (e)
+                }
+            )
         return result
-    
-    def get_cluster_info(self, opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster):
-        """Get info about the cluster.
 
+    def get_cluster_info(self, opt_username, opt_password, opt_base_url, opt_base_port, opt_cluster):
+        """
+        Get info about the cluster.
         """
         self.logger.debug("manager: Get cluster info.")
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        wazuh_token = self.wztoken.get_auth_token(url,auth)
+        wazuh_token = self.wztoken.get_auth_token(url, auth)
         verify = False
         try:
             request_manager = self.session.get(
-                url + '/agents?q=id=000&select=name', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
+                url + '/agents?q=id=000&select=name',
+                headers={'Authorization': f'Bearer {wazuh_token}'},
+                timeout=20,
+                verify=verify
+            ).json()
             request_cluster = self.session.get(
-                url + '/cluster/status', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-            if request_cluster['data']['enabled'] == "yes" and request_cluster['data']['running'] == "yes" :
+                url + '/cluster/status',
+                headers={'Authorization': f'Bearer {wazuh_token}'},
+                timeout=20,
+                verify=verify
+            ).json()
+            if (request_cluster['data']['enabled'] == "yes" and
+                    request_cluster['data']['running'] == "yes"):
                 request_cluster_name = self.session.get(
-                    url + '/cluster/local/info', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-                request_cluster_name = { "type" : request_cluster_name['data']['affected_items'][0]['type'], "cluster" : request_cluster_name['data']['affected_items'][0]['cluster'], "node" : request_cluster_name['data']['affected_items'][0]['node'] }                                
+                    url + '/cluster/local/info',
+                    headers={'Authorization': f'Bearer {wazuh_token}'},
+                    timeout=20,
+                    verify=verify
+                ).json()
+                request_cluster_name = {
+                    "type": request_cluster_name['data']['affected_items'][0]['type'],
+                    "cluster": request_cluster_name['data']['affected_items'][0]['cluster'],
+                    "node": request_cluster_name['data']['affected_items'][0]['node']
+                }
             else:
-                request_cluster_name = { "cluster": False }
+                request_cluster_name = {"cluster": False}
         except ConnectionError as e:
             self.logger.error("manager: Cannot connect to API : %s" % (e))
             return Exception("Unreachable API, please check the URL and port.")
-        if "error" in request_manager and request_manager["error"] != 0: #Checks if daemons are up and running
+        # Checks if daemons are up and running
+        if "error" in request_manager and request_manager["error"] != 0:
             raise Exception(request_manager["message"])
         output = {}
-        output['managerName'] = { 'name': request_manager['data']['affected_items'][0]['name'] }
+        output['managerName'] = {
+            'name': request_manager['data']['affected_items'][0]['name']
+        }
         output['clusterMode'] = request_cluster['data']
-        output['clusterName'] = request_cluster_name       
+        output['clusterName'] = request_cluster_name
         return output
 
     def check_wazuh_version(self, kwargs):
-        """Check Wazuh version
+        """
+        Check Wazuh version
 
         Parameters
         ----------
@@ -526,18 +584,20 @@ class manager(controllers.BaseController):
             url = opt_base_url + ":" + opt_base_port
             verify = False
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url, auth)
             wazuh_version = self.session.get(
-                url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
-            
+                url + '/',
+                headers={'Authorization': f'Bearer {wazuh_token}'},
+                timeout=20,
+                verify=verify
+            ).json()
+
             if not "data" in wazuh_version:
-               raise Exception(wazuh_version)                
-            
+                raise Exception(wazuh_version)
+
             wazuh_version = wazuh_version['data']['api_version']
 
-            app_version = cli.getConfStanza(
-                'package',
-                'app')
+            app_version = cli.getConfStanza('package', 'app')
             app_version = app_version['version']
 
             v_split = wazuh_version.split('.')
@@ -546,13 +606,17 @@ class manager(controllers.BaseController):
             wazuh_version = str(v_split[0]+"."+v_split[1])
             app_version = str(a_split[0]+"."+a_split[1])
             if wazuh_version != app_version:
-                raise Exception("Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (app_version, wazuh_version))
+                raise Exception(
+                    "Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (
+                        app_version, wazuh_version))
         except Exception as ex:
             self.logger.error("Error when checking Wazuh version: %s" % (ex))
             raise ex
-            
-    def check_daemons(self, url, auth, verify, check_cluster,kwargs):
-        """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
+
+    def check_daemons(self, url, auth, verify, check_cluster, kwargs):
+        """
+        Request to check the status of this daemons: 
+        execd, modulesd, wazuhdb and clusterd
 
         Parameters
         ----------
@@ -567,26 +631,37 @@ class manager(controllers.BaseController):
             opt_password = kwargs["pass"]
             opt_base_url = kwargs["ip"]
             opt_base_port = kwargs["port"]
-            wazuh_token = self.wztoken.get_auth_token(url,auth)
+            wazuh_token = self.wztoken.get_auth_token(url, auth)
             request_cluster = self.session.get(
-                url + '/cluster/status',  headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=self.timeout, verify=verify).json()
+                url + '/cluster/status',
+                headers={'Authorization': f'Bearer {wazuh_token}'},
+                timeout=self.timeout,
+                verify=verify
+            ).json()
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
             except Exception as e:
                 cluster_enabled = False
-            cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
+            cc = check_cluster and cluster_enabled  # Var to check the cluster demon or not
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
-                    url + opt_endpoint, headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify).json()
+                url + opt_endpoint,
+                headers={'Authorization': f'Bearer {wazuh_token}'},
+                verify=verify
+            ).json()
             if not daemons_status['error']:
                 d = daemons_status['data']['affected_items'][0]
-                daemons = {"execd": d['wazuh-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
+                daemons = {
+                    "execd": d['wazuh-execd'],
+                    "modulesd": d['wazuh-modulesd'],
+                    "db": d['wazuh-db']
+                }
                 if cc:
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
-                wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
+                # Checks all the status are equals, and running
+                wazuh_ready = len(set(values)) == 1 and values[0] == "running"
                 return wazuh_ready
         except Exception as e:
             self.logger.error("manager: Error checking daemons: %s" % (e))
@@ -598,12 +673,11 @@ class manager(controllers.BaseController):
         self.logger.debug("manager: Uploading file(s)")
         try:
             # Get file name and file content
-           
-            
+
             file_info = kwargs["file"].__dict__
             file_name = file_info['filename']
             file_content = kwargs['file'].file
-            # Get path 
+            # Get path
             dest_resource = kwargs["resource"]
 
             # Get current API data
@@ -615,27 +689,53 @@ class manager(controllers.BaseController):
             opt_base_url = str(current_api_json["data"]["url"])
             opt_base_port = str(current_api_json["data"]["portapi"])
             opt_cluster = False
-            if "filterType" in current_api_json["data"] and current_api_json["data"]["filterType"] == 'cluster.name':
+            if ("filterType" in current_api_json["data"] and
+                    current_api_json["data"]["filterType"] == 'cluster.name'):
                 opt_cluster = True
 
             # API requests auth
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             verify = False
             url = opt_base_url + ":" + opt_base_port
-            wazuh_token = self.wztoken.get_auth_token(url,auth)
-             
-            
-            response = self.session.put(url + '/' + dest_resource + '/files/' + file_name, data=file_content, headers= {"Content-type": "application/octet-stream", 'Authorization': f'Bearer {wazuh_token}' }, timeout=20, verify=verify)
-            
-            result = jsonbak.loads(response.text)       
-                 
+            wazuh_token = self.wztoken.get_auth_token(url, auth)
+
+            response = self.session.put(
+                url + '/' + dest_resource + '/files/' + file_name,
+                data=file_content,
+                headers={
+                    "Content-type": "application/octet-stream",
+                    'Authorization': f'Bearer {wazuh_token}'
+                },
+                timeout=20,
+                verify=verify
+            )
+
+            result = jsonbak.loads(response.text)
+
             if 'error' in result and result['error'] != 0:
-                self.logger.error("manager: Error trying to upload a file(s): %s" % (result))
-                return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["detail"])})
-            return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
+                self.logger.error(
+                    "manager: Error trying to upload a file(s): %s" % (result))
+                return jsonbak.dumps(
+                    {
+                        "status": "400",
+                        "text": "Error adding file: %s. Cause: %s" % (file_name, result["detail"])
+                    }
+                )
+            return jsonbak.dumps(
+                {
+                    "status": "200",
+                    "text": "File %s was updated successfully. " % file_name
+                }
+            )
         except Exception as e:
-            self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
-            return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,e)})
+            self.logger.error(
+                "manager: Error trying to upload a file(s): %s" % (e))
+            return jsonbak.dumps(
+                {
+                    "status": "400",
+                    "text": "Error adding file: %s. Cause: %s" % (file_name, e)
+                }
+            )
 
     def get_config_on_memory(self):
         try:
@@ -644,5 +744,6 @@ class manager(controllers.BaseController):
             config = jsonbak.loads(config_str)
             return config
         except Exception as e:
-            self.logger.error("manager: Error getting the configuration on memory: %s" % (e))
+            self.logger.error(
+                "manager: Error getting the configuration on memory: %s" % (e))
             raise e
