@@ -79,8 +79,6 @@ define([
         $dateDiffService,
         $mdDialog
       ) {
-
-        console.log($scope);
         /**
          * Init variables
          */
@@ -528,7 +526,6 @@ define([
           $scope.$emit('openGroupFromList', { user })
         }
         $scope.confirmRemoveSecurityUser = async user => {
-          console.log(user);
         }
         // END SECURITY SECTION FOR USERS        
 
