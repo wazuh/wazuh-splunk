@@ -13,22 +13,21 @@ Find more information about this on the LICENSE file.
 """
 
 
-from . import api
-from wazuhtoken import wazuhtoken
+import os
+
 import jsonbak
 import requestsbak
-import uuid
-import json
-# from splunk import AuthorizationFailed as AuthorizationFailed
-from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
-from splunk.appserver.mrsparkle.lib.decorators import expose_page
-from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
-from splunk.clilib.control_exceptions import ParsingError
 from db import database
 from log import log
 from requestsbak.exceptions import ConnectionError
-import os
+from splunk.appserver.mrsparkle.lib.decorators import expose_page
+from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
+from splunk.clilib import cli_common as cli
+from splunk.clilib.control_exceptions import ParsingError
+from wazuhtoken import wazuhtoken
+
+from . import api
 
 splunk_home = os.path.normpath(os.environ["SPLUNK_HOME"])
 
@@ -38,13 +37,13 @@ def getLocalConfPath(file):
 
 
 def getSelfConfStanza(file, stanza):
-    """Get the configuration from a stanza.
+    """
+    Get the configuration from a stanza.
 
     Parameters
     ----------
     stanza : unicode
         The selected stanza
-
     """
     try:
         apikeyconf = cli.getConfStanza(file, stanza)
@@ -88,19 +87,19 @@ def rmConfStanza(file, stanza):
 
 
 def diff_keys_dic_update_api(kwargs_dic):
-    """Get the missing fields for the API entry.
+    """
+    Get the missing fields for the API entry.
 
     Parameters
     ----------
     kwargs_dic : dict
         The current dict to be compared
-
     """
     try:
         diff = []
         kwargs_dic_keys = kwargs_dic.keys()
-        dic_keys = ['_key', 'url', 'portapi', 'userapi',
-                    'passapi', 'filterName', 'filterType', 'managerName']
+        dic_keys = ['_key', 'url', 'portapi', 'userapi', 'passapi',
+                    'filterName', 'filterType', 'managerName', 'runAs']
         for key in dic_keys:
             if key not in kwargs_dic_keys:
                 diff.append(key)
@@ -305,6 +304,7 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Getting API list.")
             apis = self.db.all()
+            self.logger.debug(apis)
             parsed_apis = jsonbak.loads(apis)
             # Remove the password from the list of apis
             for api in parsed_apis:
@@ -329,6 +329,7 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Adding a new API.")
             record = kwargs
+            self.logger.debug(record)
             keys_list = ['url', 'portapi', 'userapi', 'passapi',
                          'managerName', 'filterType', 'filterName', 'runAs']
             if set(record.keys()) == set(keys_list):
@@ -377,6 +378,7 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Updating API information.")
             entry = kwargs
+            self.logger.debug(entry)
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
@@ -385,8 +387,8 @@ class manager(controllers.BaseController):
                 current_api = jsonbak.loads(data_temp)
                 current_api = current_api["data"]
                 entry["passapi"] = current_api["passapi"]
-            keys_list = ['_key', 'url', 'portapi', 'userapi',
-                         'passapi', 'filterName', 'filterType', 'managerName']
+            keys_list = ['_key', 'url', 'portapi', 'userapi', 'passapi',
+                         'filterName', 'filterType', 'managerName', 'runAs']
             if set(entry.keys()) == set(keys_list):
                 self.db.update(entry)
                 parsed_data = jsonbak.dumps({'data': 'success'})
@@ -627,6 +629,7 @@ class manager(controllers.BaseController):
         """
         try:
             self.logger.debug("manager: Checking Wazuh daemons.")
+            # FIXME this opt_* variables are not used
             opt_username = kwargs["user"]
             opt_password = kwargs["pass"]
             opt_base_url = kwargs["ip"]
@@ -643,7 +646,8 @@ class manager(controllers.BaseController):
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
             except Exception as e:
                 cluster_enabled = False
-            cc = check_cluster and cluster_enabled  # Var to check the cluster demon or not
+            # Var to check the cluster demon or not
+            cc = check_cluster and cluster_enabled  
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
                 url + opt_endpoint,
@@ -688,6 +692,7 @@ class manager(controllers.BaseController):
             opt_password = str(current_api_json["data"]["passapi"])
             opt_base_url = str(current_api_json["data"]["url"])
             opt_base_port = str(current_api_json["data"]["portapi"])
+            # FIXME opt_cluster is not accesed (unused variable)
             opt_cluster = False
             if ("filterType" in current_api_json["data"] and
                     current_api_json["data"]["filterType"] == 'cluster.name'):

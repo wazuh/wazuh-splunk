@@ -45,7 +45,7 @@
     </div>
   </div>
   <!-- API configuration card section -->
-  <div layout="row" layout-align="start start">
+  <div layout="row" layout-align="center center">
     <md-card flex class="wz-md-card">
       <div layout="row" class="wz-margin-20" layout-padding ng-show="kvStoreInitializing">
         <div flex class="euiCallOut euiCallOut--warning wz-margin-top-17">
@@ -57,21 +57,24 @@
       </div>
       <md-card-content ng-if="apiList.length >= 1">
         <!-- API entries headings section -->
-        <div layout="row">
+        <div layout="row" class="wz-text-align-center">
           <p flex="15" class="wz-text-bold">Cluster</p>
           <p flex="20" class="wz-text-bold">Manager</p>
           <p flex="15" class="wz-text-bold">API URL</p>
-          <p flex="15" class="wz-text-bold">API Port</p>
-          <p flex="15" class="wz-text-bold">User</p>
+          <p flex="10" class="wz-text-bold">API Port</p>
+          <p flex="10" class="wz-text-bold">User</p>
+          <p flex="10" class="wz-text-bold">Run as</p>
           <p flex="20" class="wz-text-bold">Actions</p>
         </div>
         <md-divider></md-divider>
         <!-- End API entries headings section -->
 
         <!-- API entries list section -->
-        <div ng-repeat="entry in apiList">
+        <div ng-repeat="entry in apiList track by entry._key">
           <!-- API entry -->
-          <div layout="row" layout-align="space-between center" class="wz-padding-top-10">
+          <div 
+            layout="row" layout-align="space-between center" 
+            class="wz-padding-top-10 wz-text-align-center">
             <p flex="15">
               <i ng-show="entry.selected" class="fa fa-star wz-color-orange" aria-hidden="true"></i>
               {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
@@ -79,12 +82,18 @@
                 This is the default Manager
               </md-tooltip>
             </p>
-            <p flex="20">{{entry.managerName}}</p>
-            <p flex="15">{{entry.url}}</p>
-            <p flex="15">{{entry.portapi}}</p>
-            <p flex="15">{{entry.userapi}}</p>
+            <p flex="20" class="wz-word-wrap">{{entry.managerName}}</p>
+            <p flex="15" class="wz-word-wrap">{{entry.url}}</p>
+            <p flex="10" class="wz-word-wrap">{{entry.portapi}}</p>
+            <p flex="10" class="wz-word-wrap">{{entry.userapi}}</p>
+            <p flex="10" class="wz-word-wrap">
+              <i ng-class="getIconAndTooltip(entry).class" aria-hidden="true"></i>
+                <md-tooltip  md-direction="bottom" class="wz-tooltip wz-margin-left-16">
+                  'Run as' is {{ getIconAndTooltip(entry).tooltip }}
+                </md-tooltip>
+            </p>
+            <!-- Actions -->
             <p flex="20">
-
               <span ng-click="selectManager(entry['_key'])" class="cursor-pointer" aria-hidden="true">
                 <wz-svg icon="star"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip wz-margin-left-16">
@@ -103,10 +112,9 @@
                   Remove manager
                 </md-tooltip>
               </span>
-              <div flex></div>
 
-              <span ng-click="editEntry(entry)" class="cursor-pointer wz-margin-right-16" aria-hidden="true">
-                <wz-svg icon="arrow-down" color="#0b3b98"></wz-svg>
+              <span ng-click="editEntry(entry)" class="cursor-pointer wz-margin-left-16" aria-hidden="true">
+                <wz-svg icon="wrench" color="#0b3b98"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Edit API
                 </md-tooltip>
@@ -114,10 +122,10 @@
             </p>
           </div>
           <md-divider style="margin-bottom: 10px;" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key' ></md-divider>
-          <!-- Add API section-->
+          <!-- Update API section-->
           <div layout="row" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key' style="height: 80px;">
-            <!-- Add API form -->
-            <form flex layout="row" layout-align="start stretch" class="margin-top-30">
+            <!-- Update API form -->
+            <form flex layout="row" layout-align="space-around stretch" class="margin-top-30">
               <!-- Input section -->
               <md-input-container class="wz-input-container wz-margin-left-7">
                 <label class="api-label">Username</label>
@@ -139,10 +147,30 @@
                 <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
                   required />
               </md-input-container>
+              <md-input-container 
+                class="wz-input-container wz-margin-left-7 wz-min-width-55"
+              >
+                <label class="api-label">Run as</label>
+                <md-checkbox 
+                  class="wz-height-35 wz-width-55" 
+                  ng-model="runAs"
+                  ng-checked="{{ runAs }}"
+                  type="checkbox" 
+                  placeholder="" 
+                  aria-label="Run As button"
+                  required >
+                </md-checkbox>
+              </md-input-container>
               <md-input-container class="wz-input-container wz-margin-left-7">
-                <button ng-if='edit' ng-click='updateEntry(user,pass,url,port)' type="submit" class="btn wz-button"
-                  aria-label="Save API button">
-                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update
+                <button 
+                  type="submit" 
+                  class="btn wz-button"
+                  ng-if='edit' 
+                  ng-click='updateEntry(user, pass, url, port, runAs)' 
+                  aria-label="Save API button"
+                >
+                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> 
+                  Update
                 </button>
               </md-input-container>
               <!-- Button and errors section -->
@@ -162,20 +190,11 @@
         </div>
         <!-- End API entries list section -->
 
-        <!-- Add API button section -->
-        <div layout="row" layout-align="center center" class="wz-padding-top-10">
-          <button ng-show='!edit && apiList.length > 0 || currentEntryKey' ng-click='addNewApiClick()'
-            class="btn wz-button" aria-label="Add new API button">
-            <wz-svg icon="plus"></wz-svg> Add new
-          </button>
-        </div>
-        <!-- End add API button section -->
-
         <!-- Add API section-->
         <div layout="row"
-          ng-if='((showForm && !edit) || (!showForm && edit)) && !currentEntryKey  && apiList.length >= 1'>
+          ng-if='((showForm && !edit) || (!showForm && edit)) && !currentEntryKey  && apiList.length >= 1' >
           <!-- Add API form -->
-          <form flex layout="row" layout-align="start stretch" class="margin-top-30">
+          <form flex layout="row" layout-align="space-around stretch" style="padding-top: 20px; margin-bottom: auto;">
             <!-- Input section -->
             <md-input-container class="wz-input-container wz-margin-left-7">
               <label class="api-label" >Username</label>
@@ -197,10 +216,29 @@
               <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
                 required />
             </md-input-container>
+            <md-input-container 
+              class="wz-input-container wz-margin-left-7 wz-min-width-55"
+            >
+              <label class="api-label">Run as</label>
+              <md-checkbox 
+                class="wz-height-35 wz-width-55" 
+                ng-model="runAs" 
+                type="checkbox" 
+                placeholder="" 
+                aria-label="Run As button"
+                required >
+              </md-checkbox>
+            </md-input-container>
             <md-input-container class="wz-input-container wz-margin-left-7">
-              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port)' type="button" class="btn wz-button"
-                aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
+              <button 
+                type="button" 
+                class="btn wz-button"
+                ng-if='!edit' 
+                ng-click='submitApiForm(user, pass, url, port, runAs)' 
+                aria-label="Save API button"
+              >
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
+                Save
               </button>
             </md-input-container>
             <!-- Button and errors section -->
@@ -216,9 +254,17 @@
           <!-- Add API form -->
           <!-- End add API form -->
         </div>
+        <md-divider style="margin-bottom: 10px;"></md-divider>
+
+        <!-- Add API button section -->
+        <div layout="row" layout-align="center center" class="wz-padding-top-10">
+          <button ng-show='!edit && apiList.length > 0 || currentEntryKey' ng-click='addNewApiClick()'
+            class="btn wz-button" aria-label="Add new API button">
+            <wz-svg icon="plus"></wz-svg> Add new
+          </button>
+        </div>
+        <!-- End add API button section -->
       </md-card-content>
-
-
 
       <md-card-content style="height:60px;" ng-if="apiList.length < 1">
         <div layout="row" ng-if='apiList.length < 1'>
