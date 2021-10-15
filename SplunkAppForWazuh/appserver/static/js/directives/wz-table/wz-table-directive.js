@@ -79,6 +79,8 @@ define([
         $dateDiffService,
         $mdDialog
       ) {
+
+        console.log($scope);
         /**
          * Init variables
          */
@@ -514,6 +516,22 @@ define([
           $rootScope.$broadcast('editXmlFile', { target: group })
         }
 
+        // SECURITY SECTION FOR USERS
+        $scope.showConfirmRemoveSecurityUser = (ev, user) => {
+          $scope.removingUser =
+            $scope.removingUser === user.username ? null : user.username
+        }
+        $scope.cancelRemoveSecurityUser = () => {
+          $scope.removingUser = null
+        }
+        $scope.editSecurityUser = user => {
+          $scope.$emit('openGroupFromList', { user })
+        }
+        $scope.confirmRemoveSecurityUser = async user => {
+          console.log(user);
+        }
+        // END SECURITY SECTION FOR USERS        
+
         $scope.showConfirmRemoveGroup = (ev, group) => {
           $scope.removingGroup =
             $scope.removingGroup === group.name ? null : group.name
@@ -535,7 +553,7 @@ define([
         $scope.editGroup = group => {
           $scope.$emit('openGroupFromList', { group })
         }
-
+  
         $scope.confirmRemoveAgent = async agent => {
           try {
             const group = instance.path.split('/').pop()
