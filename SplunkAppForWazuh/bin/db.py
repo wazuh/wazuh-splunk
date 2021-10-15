@@ -9,13 +9,14 @@
 #
 # Find more information about this on the LICENSE file.
 #
-import jsonbak
-import requestsbak
 import os
-from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
-from log import log
+
 import splunk
 from splunk import entity, rest
+
+import jsonbak
+import requestsbak
+from log import log
 
 
 class database():
