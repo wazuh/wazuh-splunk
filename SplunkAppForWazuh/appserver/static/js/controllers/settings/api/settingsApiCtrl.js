@@ -429,7 +429,7 @@ define(['../../module'], function (controllers) {
      */
     getIconAndTooltip(entry) {
       // Cast to boolean
-      const runAs = !!entry.runAs
+      const runAs = (entry.runAs === "true")
       return {
         class: runAs ? 'fa fa-check' : 'fa fa-times',
         tooltip: runAs ? 'enabled' : 'disabled'
