@@ -94,7 +94,7 @@ define(['../../module'], function (controllers) {
           }
         }
       } catch (err) {
-        this.notification.showErrorToast('Error loading data')
+        this.notification.showErrorToast('Error loading saved APIs')
       }
     }
 
@@ -157,6 +157,7 @@ define(['../../module'], function (controllers) {
      * Set form visible
      */
     addNewApiClick() {
+      this.clearForm()
       this.scope.showForm = !this.scope.showForm
       this.scope.edit = false
       this.scope.currentEntryKey = false
@@ -233,7 +234,7 @@ define(['../../module'], function (controllers) {
 
         this.scope.edit = false
         this.scope.loadingVizz = false
-        this.notification.showSuccessToast('Updated API')
+        this.notification.showSuccessToast('API updated')
       } catch (err) {
         this.scope.loadingVizz = false
         this.notification.showErrorToast(err || 'Cannot update API')
@@ -429,7 +430,7 @@ define(['../../module'], function (controllers) {
      */
     getIconAndTooltip(entry) {
       // Cast to boolean
-      const runAs = (entry.runAs === "true")
+      const runAs = (entry.runAs === "true") || (entry.runAs === true)
       return {
         class: runAs ? 'fa fa-check' : 'fa fa-times',
         tooltip: runAs ? 'enabled' : 'disabled'
