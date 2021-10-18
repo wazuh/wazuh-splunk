@@ -43,8 +43,10 @@ def to_json(data: str):
 
     try:
         return json.loads(data)
-    except:
-        return data
+    except ValueError:
+        log().error("Users - to_json() - invalid string representation of " 
+           + "a JSON object. Unable to parse.")
+        raise
     
 
 class Users(controllers.BaseController):
