@@ -29,7 +29,14 @@ wztoken = wazuhtoken()
 
 
 def get_apis():
-    """Obtain the list of APIs."""
+    """
+    Obtain the list of APIs.
+    
+    Returns
+    -------
+    string
+        a JSON string containing the saved APIs information.
+    """
     try:
         logger.debug("bin.get_agents_status: Getting APIs.")
         session_key = getSplunkSessionKey()
