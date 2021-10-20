@@ -2110,6 +2110,11 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
   display: inline-block;
 }
 
+.wz-agent-name-position {
+  position: relative !important; 
+  bottom: -6px;
+}
+
 .wz-float-agent {
   float: left;
   width: calc(100% - 8px);
