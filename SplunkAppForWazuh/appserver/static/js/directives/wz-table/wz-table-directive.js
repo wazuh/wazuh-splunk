@@ -77,7 +77,8 @@ define([
         $sce,
         $fileEditor,
         $dateDiffService,
-        $mdDialog
+        $mdDialog,
+        $securityService
       ) {
         /**
          * Init variables
@@ -541,6 +542,16 @@ define([
           $scope.$emit('openGroupFromList', { role })
         }
         $scope.confirmRemoveSecurityRoles = async role => {
+          try {
+            await $securityService.removeRole(role)
+            $notificationService.showSuccessToast(
+                `Success. Role ${role} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
         }
         // END SECURITY SECTION FOR ROLES
         // SECURITY SECTION FOR POLICIES
