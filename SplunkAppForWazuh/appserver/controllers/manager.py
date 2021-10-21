@@ -277,7 +277,13 @@ class manager(controllers.BaseController):
             if 'apiId' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['apiId']
-            data_temp = self.db.get(id)
+
+            #TODO: This conditional statement is done to ensure retrocompatibility with registered managers that do not have an alias. Replace the following 4 lines with data_temp=self.db.get(id) when these are no longer supported.
+            data_temp = jsonbak.loads(self.db.get(id))["data"]
+            if not "alias" in data_temp:
+                data_temp["alias"] = data_temp["url"]
+            data_temp = jsonbak.dumps({"data" : data_temp})
+
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
             self.logger.error("manager: Error in get_apis endpoint: %s" % (e))
