@@ -191,6 +191,8 @@ define(['../../module'], function (controllers) {
           this.notification.showWarningToast('Please, wait for success message')
           return
         }
+        this.scope.validatingError = []
+        this.validateFormInput(user, pass, url, port, alias)
         this.savingApi = true
         this.scope.edit = !this.scope.edit
         this.scope.showForm = false
@@ -258,6 +260,26 @@ define(['../../module'], function (controllers) {
     }
 
     /**
+     * If values are not valid then throw an error
+     * @param {*} user 
+     * @param {*} pass 
+     * @param {*} url 
+     * @param {*} port 
+     * @param {*} alias 
+     */
+    validateFormInput(user, pass, url, port, alias) {
+      if (
+        !this.validPassword(pass) ||
+        !this.validPort(port) ||
+        !this.validUrl(url) ||
+        !this.validUsername(user) ||
+        !this.validAlias(alias)
+      ) {
+        this.scope.$applyAsync()
+        throw new Error('Invalid format. Please check the fields again')
+      }
+    }
+    /**
      * Adds a new API
      */
     async submitApiForm(user, pass, url, port, alias) {
@@ -270,24 +292,13 @@ define(['../../module'], function (controllers) {
         }
         this.savingApi = true
 
+        this.validateFormInput(user, pass, url, port, alias)
         // When the Submit button is clicked, get all the form fields by accessing to the input values
         const form_url = url
         const form_apiport = port
         const form_apiuser = user
         const form_apipass = pass
         const form_alias = alias
-
-        // If values are not valid then throw an error
-        if (
-          !this.validPassword(form_apipass) ||
-          !this.validPort(form_apiport) ||
-          !this.validUrl(form_url) ||
-          !this.validUsername(form_apiuser) ||
-          !this.validAlias(form_alias)
-        ) {
-          this.scope.$applyAsync()
-          throw new Error('Invalid format. Please check the fields again')
-        }
 
         // Create an object to store the field names and values
         const record = {
@@ -342,7 +353,7 @@ define(['../../module'], function (controllers) {
      * @param {String} url
      */
     validUrl(url) {
-      if (this.urlRegEx.test(url) || this.urlRegExIP.test(url)) {
+      if (url && (this.urlRegEx.test(url) || this.urlRegExIP.test(url))) {
         return true
       } else {
         this.scope.validatingError.push('Invalid url format')
@@ -355,7 +366,7 @@ define(['../../module'], function (controllers) {
      * @param {String} port
      */
     validPort(port) {
-      if (this.portRegEx.test(port)) {
+      if (port && this.portRegEx.test(port)) {
         return true
       } else {
         this.scope.validatingError.push('Invalid port format')
@@ -368,7 +379,7 @@ define(['../../module'], function (controllers) {
      * @param {String} user
      */
     validUsername(user) {
-      if (this.userRegEx.test(user)) {
+      if (user && this.userRegEx.test(user)) {
         return true
       } else {
         this.scope.validatingError.push(
@@ -382,11 +393,11 @@ define(['../../module'], function (controllers) {
      * @param {String} user
      */
      validAlias(alias) {
-      if (this.aliasRegEx.test(alias)) {
+      if (alias && this.aliasRegEx.test(alias)) {
         return true
       } else {
         this.scope.validatingError.push(
-          'Invalid alias format, it must have a length between 3 and 100 characters.'
+        'Invalid alias format, it must have a length between 3 and 100 characters.'
         )
         return false
       }
@@ -396,7 +407,7 @@ define(['../../module'], function (controllers) {
      * @param {String} pass
      */
     validPassword(pass) {
-      if (this.passRegEx.test(pass)) {
+      if (pass && this.passRegEx.test(pass)) {
         return true
       } else {
         this.scope.validatingError.push(
