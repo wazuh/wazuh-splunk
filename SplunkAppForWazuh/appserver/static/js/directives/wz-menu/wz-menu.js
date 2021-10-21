@@ -131,7 +131,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
           dropdownAPI = new Dropdown(
             {
               id: `menuSelectAPI`,
-              choices: $scope.apiList.map((item)=> ({ label:item.managerName, value:item._key })),
+              choices: $scope.apiList.map((item)=> ({ label:item.alias, value:item._key })),
               value: $scope.currentAPI._key,
               selectFirstChoice: false,                    
               el: document.getElementById(`menuSelectAPI`)

@@ -302,6 +302,9 @@ class manager(controllers.BaseController):
             for api in parsed_apis:
                 if "passapi" in api:
                     del api["passapi"]
+                #TODO: This conditional is put in place in order to support previous installations that did not have the "alias" field in the database. Remove it when these are no longer supported.
+                if not "alias" in api:
+                    api["alias"] = api["url"]
             result = jsonbak.dumps(parsed_apis)
         except Exception as e:
             self.logger.error(jsonbak.dumps({"error": str(e)}))
@@ -322,7 +325,7 @@ class manager(controllers.BaseController):
             self.logger.debug("manager: Adding a new API.")
             record = kwargs
             keys_list = ['url', 'portapi', 'userapi', 'passapi',
-                         'managerName', 'filterType', 'filterName']
+                         'managerName', 'filterType', 'filterName', 'alias']
             if set(record.keys()) == set(keys_list):
                 key = self.db.insert(jsonbak.dumps(record))
                 parsed_data = jsonbak.dumps({'result': key})
@@ -377,7 +380,7 @@ class manager(controllers.BaseController):
                 current_api = current_api["data"]
                 entry["passapi"] = current_api["passapi"]
             keys_list = ['_key', 'url', 'portapi', 'userapi',
-                         'passapi', 'filterName', 'filterType', 'managerName']
+                         'passapi', 'filterName', 'filterType', 'managerName','alias']
             if set(entry.keys()) == set(keys_list):
                 self.db.update(entry)
                 parsed_data = jsonbak.dumps({'data': 'success'})

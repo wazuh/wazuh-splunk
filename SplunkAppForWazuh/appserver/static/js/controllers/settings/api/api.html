@@ -58,6 +58,7 @@
       <md-card-content ng-if="apiList.length >= 1">
         <!-- API entries headings section -->
         <div layout="row">
+          <p flex="15" class="wz-text-bold">Api Name</p>
           <p flex="15" class="wz-text-bold">Cluster</p>
           <p flex="20" class="wz-text-bold">Manager</p>
           <p flex="15" class="wz-text-bold">API URL</p>
@@ -74,6 +75,9 @@
           <div layout="row" layout-align="space-between center" class="wz-padding-top-10">
             <p flex="15">
               <i ng-show="entry.selected" class="fa fa-star wz-color-orange" aria-hidden="true"></i>
+              {{entry.alias}}
+            </p>
+            <p flex="15">
               {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
               <md-tooltip md-direction="right" class="wz-tooltip">
                 This is the default Manager
@@ -120,6 +124,11 @@
             <form flex layout="row" layout-align="start stretch" class="margin-top-30">
               <!-- Input section -->
               <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">API Name</label>
+                <input class="wz-height-35 wz-input-text" ng-model="alias" type="text" placeholder=""
+                  aria-label="alias" required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
                 <label class="api-label">Username</label>
                 <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder=""
                   aria-label="username" required />
@@ -140,7 +149,7 @@
                   required />
               </md-input-container>
               <md-input-container class="wz-input-container wz-margin-left-7">
-                <button ng-if='edit' ng-click='updateEntry(user,pass,url,port)' type="submit" class="btn wz-button"
+                <button ng-if='edit' ng-click='updateEntry(user,pass,url,port,alias)' type="submit" class="btn wz-button"
                   aria-label="Save API button">
                   <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update
                 </button>
@@ -178,6 +187,11 @@
           <form flex layout="row" layout-align="start stretch" class="margin-top-30">
             <!-- Input section -->
             <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label" >API Name</label>
+              <input class="wz-height-35 wz-input-text" ng-model="alias" type="text" placeholder="" aria-label="alias"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
               <label class="api-label" >Username</label>
               <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder="" aria-label="username"
                 required />
@@ -198,7 +212,7 @@
                 required />
             </md-input-container>
             <md-input-container class="wz-input-container wz-margin-left-7">
-              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port)' type="button" class="btn wz-button"
+              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port,alias)' type="button" class="btn wz-button"
                 aria-label="Save API button">
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
               </button>
@@ -226,6 +240,11 @@
           <form flex layout="row" layout-align="start stretch" class="margin-top-30">
             <!-- Input section -->
             <md-input-container flex="20" class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Api Name</label>
+              <input class="wz-height-35 wz-input-text" ng-model="alias" type="text" placeholder="" aria-label="alias"
+                required />
+            </md-input-container>
+            <md-input-container flex="20" class="wz-input-container wz-margin-left-7">
               <label class="api-label">Username</label>
               <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder="" aria-label="username"
                 required />
@@ -246,7 +265,7 @@
                 required />
             </md-input-container>
             <md-input-container flex="10"  class="wz-input-container wz-margin-left-7">
-              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port)' type="button" class="btn wz-button"
+              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port,alias)' type="button" class="btn wz-button"
                 aria-label="Save API button">
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
               </button>

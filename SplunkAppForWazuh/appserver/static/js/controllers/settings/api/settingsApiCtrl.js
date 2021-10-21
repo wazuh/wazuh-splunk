@@ -18,6 +18,7 @@ define(['../../module'], function (controllers) {
       this.scope.currentEntryKey = ''
       this.userRegEx = new RegExp(/^.{3,100}$/)
       this.passRegEx = new RegExp(/^.{3,100}$/)
+      this.aliasRegEx = new RegExp(/^.{3,100}$/)
       this.urlRegEx = new RegExp(/^https?:\/\/[a-zA-Z0-9-.]{1,300}$/)
       this.urlRegExIP = new RegExp(
         /^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/
@@ -38,11 +39,11 @@ define(['../../module'], function (controllers) {
       this.scope.checkManager = entry => this.checkManager(entry)
       this.scope.editEntry = entry => this.editEntry(entry)
       this.scope.removeManager = entry => this.removeManager(entry)
-      this.scope.updateEntry = (user, pass, url, port) =>
-        this.updateEntry(user, pass, url, port)
+      this.scope.updateEntry = (user, pass, url, port, alias) =>
+        this.updateEntry(user, pass, url, port, alias)
       this.scope.selectManager = mg => this.selectManager(mg)
-      this.scope.submitApiForm = (user, api, url, port) =>
-        this.submitApiForm(user, api, url, port)
+      this.scope.submitApiForm = (user, api, url, port, alias) =>
+        this.submitApiForm(user, api, url, port, alias)
       this.init()
 
       // Listens for changes in the selected API
@@ -183,7 +184,7 @@ define(['../../module'], function (controllers) {
      * Edits an entry
      * @param {Object} entry
      */
-    async updateEntry(user, pass, url, port) {
+    async updateEntry(user, pass, url, port, alias) {
       try {
         this.scope.loadingVizz = true
         if (this.savingApi) {
@@ -197,6 +198,7 @@ define(['../../module'], function (controllers) {
         this.scope.entry.portapi = port
         this.scope.entry.userapi = user
         this.scope.entry.passapi = pass
+        this.scope.entry.alias = alias
         this.scope.entry.filterType = this.scope.filterType
         this.scope.entry.filterName = this.scope.filterName
         this.scope.entry.managerName = this.scope.managerName
@@ -258,7 +260,7 @@ define(['../../module'], function (controllers) {
     /**
      * Adds a new API
      */
-    async submitApiForm(user, pass, url, port) {
+    async submitApiForm(user, pass, url, port, alias) {
       try {
         this.scope.loadingVizz = true
         this.scope.validatingError = []
@@ -273,13 +275,15 @@ define(['../../module'], function (controllers) {
         const form_apiport = port
         const form_apiuser = user
         const form_apipass = pass
+        const form_alias = alias
 
         // If values are not valid then throw an error
         if (
           !this.validPassword(form_apipass) ||
           !this.validPort(form_apiport) ||
           !this.validUrl(form_url) ||
-          !this.validUsername(form_apiuser)
+          !this.validUsername(form_apiuser) ||
+          !this.validAlias(form_alias)
         ) {
           this.scope.$applyAsync()
           throw new Error('Invalid format. Please check the fields again')
@@ -290,7 +294,8 @@ define(['../../module'], function (controllers) {
           url: form_url,
           portapi: form_apiport,
           userapi: form_apiuser,
-          passapi: form_apipass
+          passapi: form_apipass,
+          alias: form_alias
         }
 
         // If connected to the API then continue
@@ -372,7 +377,20 @@ define(['../../module'], function (controllers) {
         return false
       }
     }
-
+    /**
+     * Check if an user is valid or not
+     * @param {String} user
+     */
+     validAlias(alias) {
+      if (this.aliasRegEx.test(alias)) {
+        return true
+      } else {
+        this.scope.validatingError.push(
+          'Invalid alias format, it must have a length between 3 and 100 characters.'
+        )
+        return false
+      }
+    }
     /**
      * Check if a password is valid or not
      * @param {String} pass
@@ -396,6 +414,7 @@ define(['../../module'], function (controllers) {
       this.scope.port = ''
       this.scope.user = ''
       this.scope.pass = ''
+      this.scope.alias = ''
     }
 
     setYellowStar(key) {
