@@ -58,12 +58,32 @@ define(['../module'], function(module) {
         controller: 'rolesCtrl',
         resolve: {
           isAdmin: [
-            '$currentDataService',
+            "$currentDataService",
             async $currentDataService => {
               try {
-                return await $currentDataService.isAdmin()
+                return await $currentDataService.isAdmin();
               } catch (error) {
-                return false
+                return false;
+              }
+            }
+          ],
+          roleData: [
+            "$securityService",
+            async $securityService => {
+              try {
+                return await $securityService.getRoleData();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
+          policiesData: [
+            "$securityService",
+            async $securityService => {
+              try {
+                return await $securityService.getPoliciesData();
+              } catch (error) {
+                return false;
               }
             }
           ]
