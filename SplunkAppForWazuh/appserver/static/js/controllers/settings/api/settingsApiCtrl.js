@@ -397,7 +397,7 @@ define(['../../module'], function (controllers) {
         return true
       } else {
         this.scope.validatingError.push(
-        'Invalid alias format, it must have a length between 3 and 100 characters.'
+        'Invalid API alias format, it must have a length between 3 and 100 characters.'
         )
         return false
       }
