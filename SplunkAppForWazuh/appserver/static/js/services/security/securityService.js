@@ -53,15 +53,15 @@ define(["../module"], function(module) {
         }
 
         const policyResult = await $requestService.apiReq(
-          `/security/roles/${roleId}/policies/`,
+          `/security/roles/${roleId}/policies`,
+          // {
+          //   content: JSON.stringify({
           {
-            content: JSON.stringify({
-              params: {
-                policy_ids: policies.toString()
-              }
-            }),
-            origin: "raw"
+            policy_ids: policies.toString()
           },
+          //   }),
+          //   origin: "json"
+          // },
           "POST"
         );
 

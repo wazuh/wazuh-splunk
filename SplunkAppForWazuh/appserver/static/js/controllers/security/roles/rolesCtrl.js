@@ -38,6 +38,7 @@ define([
       this.securityService = $securityService;
       this.scope.roleName = '';
       this.scope.addingNewRole = false;
+      this.scope.editingRole = false;
 
       this.dropdown = new MultiDropdownView({
         id: "policies-dropdown",
@@ -77,6 +78,7 @@ define([
       this.scope.$on('openRoleFromList', (ev, parameters) => {
         ev.stopPropagation()
         this.scope.addingNewRole = true
+        this.scope.editingRole = true;
         this.scope.roleName = parameters.role.name;
         this.scope.policies = parameters.role.policies;
         this.dropdown.val(this.scope.policies);
@@ -95,6 +97,7 @@ define([
      */
     addNewRole() {
       try {
+        this.clearAll();
         this.scope.overwrite = false;
         this.scope.addingNewRole = true;
         this.scope.policies = [];
@@ -103,17 +106,23 @@ define([
       }
     }
 
-    /**
-     * Cancel Role edition
-     */
-    cancelRoleEdition() {
+    clearAll() {
       this.scope.policies = [];
+      this.scope.roleName = '';
       this.scope.addingNewRole = false;
+      this.scope.editingRole = false;
       this.scope.items = null;
       this.scope.totalItems = null;
       this.scope.pagedItems = null;
       this.scope.currentPage = 0;
       this.scope.gap = 0;
+    }
+
+    /**
+     * Cancel Role edition
+     */
+    cancelRoleEdition() {
+      this.clearAll();
     }
 
     /**
