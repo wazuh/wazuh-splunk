@@ -51,6 +51,13 @@ define([
         search:
           "| eventcount summarize=false index=* index=_* | dedup index | fields index"
       });
+
+      this.dropdown.on('change', newValue => {
+        if (newValue && this.dropdown) {
+          console.log(newValue)
+          this.scope.policies = newValue;
+        }
+      })
     }
 
     getPoliciesList(policiesData) {
@@ -124,7 +131,7 @@ define([
             );
           } else {
             this.scope.saveIncomplete = true;
-            const policies = this.scope.currentRole.policies; // obtener lista de policies seleccionadas
+            const policies = this.scope.policies;
             const result = await this.securityService.saveRole(
               roleName,
               policies

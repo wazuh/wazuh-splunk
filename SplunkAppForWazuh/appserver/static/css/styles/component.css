@@ -977,3 +977,7 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-s-ttcn .cm-ttcn3Macros { color: #27408B; }
 .cm-s-ttcn .cm-types { color: #A52A2A; font-weight:bold; }
 .cm-s-ttcn .cm-visibilityModifiers { font-weight:bold; }
+
+.wz-align-center {
+  align-items: center;
+}

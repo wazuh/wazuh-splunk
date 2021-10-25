@@ -32,6 +32,7 @@
             <div
               layout="row"
               style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+              class="wz-align-center"
             >
               <!-- Save and cancel buttons -->
               <div>
@@ -56,19 +57,25 @@
                   </button>
                 </span>
               </div>
-              <!-- End save and cancel buttons-->
-              <input
-                placeholder="New role name..."
-                type="text"
-                flex
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10"
-                aria-invalid="false"
-                ng-model="currentRole.name"
-                ng-change="enableSave()"
-              />
 
-              <div id="policies-dropdown-view">
+              <div class="flex">
+                <span class="tSize16 wz-breadcrumb-margin">Role name</span>
+                <input
+                  placeholder="New role name..."
+                  type="text"
+                  flex
+                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
+                  aria-invalid="false"
+                  ng-model="currentRole.name"
+                  ng-change="enableSave()"
+                />
+              </div>
 
+              <div class="wz-margin-top-10">
+                <span class="tSize16">Policies</span>
+                <div id="policies-dropdown-view">
+
+                </div>
               </div>
               <!-- End restart button -->
             </div>

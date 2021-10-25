@@ -52,19 +52,15 @@ define(["../module"], function(module) {
           roleId = data.affected_items[0].id;
         }
 
-        // const policiesId = policies.map(policy => {
-        //   return policy.id;
-        // });
-
         const policyResult = await $requestService.apiReq(
-          `/security/roles/${roleId}/policies`,
+          `/security/roles/${roleId}/policies/`,
           {
             content: JSON.stringify({
               params: {
-                policy_ids: "1"
+                policy_ids: policies.toString()
               }
             }),
-            origin: "json"
+            origin: "raw"
           },
           "POST"
         );
