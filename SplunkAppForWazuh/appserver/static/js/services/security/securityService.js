@@ -89,6 +89,14 @@ define(["../module"], function(module) {
           {},
           "DELETE"
         );
+
+        if (
+          result.data.data.failed_items.length &&
+          result.data.data.failed_items[0].error.code === 4008
+        ) {
+          throw new Error(result.data.data.failed_items[0].error.message);
+        }
+
         if (result.data.error !== 0) {
           throw new Error(result.data.message);
         }
