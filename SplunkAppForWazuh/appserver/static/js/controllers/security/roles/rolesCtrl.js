@@ -14,8 +14,9 @@
 define([
   "../../module",
   "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/multidropdownview"
-], function(controllers, SearchManager, MultiDropdownView) {
+  "splunkjs/mvc/multidropdownview",
+  "splunkjs/mvc"
+], function(controllers, SearchManager, MultiDropdownView, mvc) {
   "use strict";
 
   class Roles {
@@ -65,6 +66,13 @@ define([
       this.scope.saveRole = () => this.saveRole();
       this.scope.addingNewRole = false;
       this.scope.addingNewRole = false;
+
+      this.scope.$on("$destroy", () => {
+        mvc.Components.revokeInstance("policies-dropdown");
+        mvc.Components.revokeInstance("policies-search");
+        this.dropdown = null;
+        this.searchManager = null;
+      });
     }
 
     /**
