@@ -539,7 +539,7 @@ define([
           $scope.removingRoles = null
         }
         $scope.editSecurityRoles = role => {
-          $scope.$emit('openGroupFromList', { role })
+          $scope.$emit('openRoleFromList', { role })
         }
         $scope.confirmRemoveSecurityRoles = async role => {
           try {

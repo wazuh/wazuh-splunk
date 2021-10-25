@@ -36,6 +36,7 @@ define([
       );
       this.notification = $notificationService;
       this.securityService = $securityService;
+      this.scope.roleName = '';
       this.scope.addingNewRole = false;
 
       this.dropdown = new MultiDropdownView({
@@ -54,7 +55,6 @@ define([
 
       this.dropdown.on('change', newValue => {
         if (newValue && this.dropdown) {
-          console.log(newValue)
           this.scope.policies = newValue;
         }
       })
@@ -72,7 +72,15 @@ define([
       this.scope.enableSave = () => this.enableSave();
       this.scope.saveRole = () => this.saveRole();
       this.scope.addingNewRole = false;
-      this.scope.addingNewRole = false;
+
+      // Come from the pencil icon on the roles table
+      this.scope.$on('openRoleFromList', (ev, parameters) => {
+        ev.stopPropagation()
+        this.scope.addingNewRole = true
+        this.scope.roleName = parameters.role.name;
+        this.scope.policies = parameters.role.policies;
+        this.dropdown.val(this.scope.policies);
+      })
 
       this.scope.$on("$destroy", () => {
         mvc.Components.revokeInstance("policies-dropdown");
@@ -89,9 +97,7 @@ define([
       try {
         this.scope.overwrite = false;
         this.scope.addingNewRole = true;
-        this.scope.policies = {
-          list: {}
-        };
+        this.scope.policies = [];
       } catch (error) {
         this.notification.showErrorToast("Cannot add new Role.");
       }
@@ -101,7 +107,7 @@ define([
      * Cancel Role edition
      */
     cancelRoleEdition() {
-      this.scope.policies = false;
+      this.scope.policies = [];
       this.scope.addingNewRole = false;
       this.scope.items = null;
       this.scope.totalItems = null;
@@ -123,7 +129,7 @@ define([
     async saveRole() {
       try {
         const constainsBlanks = /.* .*/;
-        const roleName = this.scope.currentRole.name;
+        const roleName = this.scope.roleName;
         if (roleName) {
           if (constainsBlanks.test(roleName)) {
             this.notification.showErrorToast(
