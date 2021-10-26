@@ -77,7 +77,8 @@ define([
         $sce,
         $fileEditor,
         $dateDiffService,
-        $mdDialog
+        $mdDialog,
+        $securityService
       ) {
         /**
          * Init variables

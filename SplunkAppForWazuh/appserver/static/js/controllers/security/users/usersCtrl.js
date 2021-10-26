@@ -4,6 +4,7 @@ define(['../../module'], function(controllers) {
   class Users {
     constructor($scope, isAdmin) {
       this.scope = $scope
+      this.scope.isAdmin = isAdmin;
     }
 
     $onInit() {
@@ -12,4 +13,5 @@ define(['../../module'], function(controllers) {
 
   }
   controllers.controller('usersCtrl', Users)
+  return Users
 })
