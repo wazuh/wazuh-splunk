@@ -7,8 +7,6 @@ define(['../../module'], function(controllers) {
     }
 
     $onInit() {
-<<<<<<< HEAD
-=======
       this.scope.addNewRole = () => this.addNewRole();
       this.scope.cancelRoleEdition = () => this.cancelRoleEdition();
       this.scope.enableSave = () => this.enableSave();
@@ -122,7 +120,6 @@ define(['../../module'], function(controllers) {
         this.scope.saveIncomplete = false;
         this.notification.showErrorToast(error);
       }
->>>>>>> 48ef8b6c... feat(security-policies): Fixed handler errors
     }
   }
   controllers.controller('rolesCtrl', Roles)
