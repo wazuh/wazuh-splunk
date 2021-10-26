@@ -87,6 +87,7 @@ define([
         ev.stopPropagation();
         this.scope.addingNewRole = true;
         this.scope.editingRole = true;
+        this.scope.roleId = parameters.role.id;
         this.scope.roleName = parameters.role.name;
         this.scope.policies = parameters.role.policies;
         this.dropdown.settings.set(
@@ -142,12 +143,14 @@ define([
     }
 
     /**
-     * Saves the CDB list content
+     * Saves Role
      */
     async saveRole() {
       try {
         const constainsBlanks = /.* .*/;
         const roleName = this.scope.roleName;
+        const roleId = this.scope.roleId;
+
         if (roleName) {
           if (constainsBlanks.test(roleName)) {
             this.notification.showErrorToast(
@@ -157,18 +160,20 @@ define([
             this.scope.saveIncomplete = true;
             const policies = this.scope.policies;
             const result = await this.securityService.saveRole(
-              roleName,
+              { name: roleName, id: roleId },
               policies
             );
-            if (result && result.data && result.data.error === 0) {
-              this.notification.showSuccessToast("File saved successfully.");
-              this.scope.saveIncomplete = false;
-              this.scope.$applyAsync();
-            } else if (result.data.error === 1905) {
+            if (result.failed_items[0] && result.failed_items[0].error.code === 4005) {
               this.notification.showWarningToast(
-                result.data.message || "Role already exists."
+                result.failed_items[0].error.message || "Role already exists."
               );
               this.scope.overwrite = true;
+              this.scope.saveIncomplete = false;
+              this.scope.$applyAsync();
+              return;
+            }
+            if (result && result.affected_items[0] && result.affected_items[0].error === 0) {
+              this.notification.showSuccessToast("Role saved successfully.");
               this.scope.saveIncomplete = false;
               this.scope.$applyAsync();
             } else {

@@ -31,25 +31,42 @@ define(["../module"], function(module) {
       }
     };
 
-    const saveRole = async (roleName, policies) => {
+    const fetchNewRole = async (roleName) => {
+      return await $requestService.apiReq(
+        "/security/roles",
+        {
+          content: JSON.stringify({ name: roleName }),
+          origin: "json"
+        },
+        "POST"
+      );
+    };
+
+    const saveRole = async (role, policies) => {
       try {
-        const result = await $requestService.apiReq(
-          "/security/roles",
-          {
-            content: JSON.stringify({ name: roleName }),
-            origin: "json"
-          },
-          "POST"
-        );
-
-        const data = (result.data || {}).data;
-        if (data.failed_items && data.failed_items.length) {
-          return;
-        }
-
         let roleId = "";
-        if (data.affected_items && data.affected_items) {
-          roleId = data.affected_items[0].id;
+
+        if (!role.id) {
+          const result = await fetchNewRole(role.name);
+
+          const data = (result.data || {}).data;
+          if (data.failed_items && data.failed_items.length) {
+            return data;
+          }
+
+          if (data.affected_items && data.affected_items) {
+            roleId = data.affected_items[0].id;
+          }
+
+          if (result.data.error === 1905) {
+            return result;
+          } else if (result.data.error) {
+            throw new Error(
+              result.data.message || result.data.error || "Cannot save Role."
+            );
+          }
+        } else {
+          roleId = role.id;
         }
 
         const policyResult = await $requestService.apiReq(
@@ -63,14 +80,6 @@ define(["../module"], function(module) {
         const policiesData = (policyResult.data || {}).data;
         if (policiesData.failed_items && policiesData.failed_items.length) {
           return policiesData;
-        }
-
-        if (result.data.error === 1905) {
-          return result;
-        } else {
-          throw new Error(
-            result.data.message || result.data.error || "Cannot save Role."
-          );
         }
       } catch (error) {
         return Promise.reject(error);
