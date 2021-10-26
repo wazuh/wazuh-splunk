@@ -4,6 +4,7 @@ define(["../module"], function(module) {
   "use strict";
 
   module.service("$securityService", function($requestService, $state) {
+
     const removeUser = async user => {
       try {
         const result = await $requestService.apiReq(
@@ -18,7 +19,18 @@ define(["../module"], function(module) {
       } catch (error) {
         return Promise.reject(error);
       }
-    }
+    };
+    const fetchNewRole = async (roleName) => {
+      return await $requestService.apiReq(
+        "/security/roles",
+        {
+          content: JSON.stringify({ name: roleName }),
+          origin: "json"
+        },
+        "POST"
+      );
+    };
+
     const getUsers = async user => {
       try {
         const result = await $requestService.apiReq(
