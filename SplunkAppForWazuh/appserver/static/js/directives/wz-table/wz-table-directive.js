@@ -526,6 +526,16 @@ define([
           $scope.$emit('openGroupFromList', { user })
         }
         $scope.confirmRemoveSecurityUser = async user => {
+          try {
+            await $securityService.removeUser(user)
+            $notificationService.showSuccessToast(
+                `Success. User ${role} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
         }
         // END SECURITY SECTION FOR USERS  
 
