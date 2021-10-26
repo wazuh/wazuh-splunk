@@ -23,7 +23,7 @@ define(["../module"], function(module) {
       }
     };
 
-    const getPoliciesData = async () => {
+    const getPolicyData = async () => {
       try {
         return await $requestService.apiReq("/security/policies");
       } catch (error) {
@@ -54,14 +54,9 @@ define(["../module"], function(module) {
 
         const policyResult = await $requestService.apiReq(
           `/security/roles/${roleId}/policies`,
-          // {
-          //   content: JSON.stringify({
           {
             policy_ids: policies.toString()
           },
-          //   }),
-          //   origin: "json"
-          // },
           "POST"
         );
 
@@ -106,11 +101,29 @@ define(["../module"], function(module) {
       }
     };
 
+    const getResourceData = async () => {
+      try {
+        return await $requestService.apiReq("/security/resources");
+      } catch (error) {
+        $state.go("settings.api");
+      }
+    };
+
+    const getActionData = async () => {
+      try {
+        return await $requestService.apiReq("/security/actions");
+      } catch (error) {
+        $state.go("settings.api");
+      }
+    };
+
     return {
       getRoleData: getRoleData,
-      getPoliciesData: getPoliciesData,
+      getPolicyData: getPolicyData,
       saveRole: saveRole,
-      removeRole: removeRole
+      removeRole: removeRole,
+      getResourceData: getResourceData,
+      getActionData: getActionData,
     };
   });
 });

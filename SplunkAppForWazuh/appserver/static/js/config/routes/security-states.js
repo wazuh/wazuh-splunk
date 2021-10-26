@@ -77,11 +77,11 @@ define(['../module'], function(module) {
               }
             }
           ],
-          policiesData: [
+          policyData: [
             "$securityService",
             async $securityService => {
               try {
-                return await $securityService.getPoliciesData();
+                return await $securityService.getPolicyData();
               } catch (error) {
                 return false;
               }
@@ -105,6 +105,36 @@ define(['../module'], function(module) {
                 return await $currentDataService.isAdmin()
               } catch (error) {
                 return false
+              }
+            }
+          ],
+          resourceData: [
+            "$securityService",
+            async $securityService => {
+              try {
+                return await $securityService.getResourceData();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
+          policyData: [
+            "$securityService",
+            async $securityService => {
+              try {
+                return await $securityService.getPolicyData();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
+          actionData: [
+            "$securityService",
+            async $securityService => {
+              try {
+                return await $securityService.getActionData();
+              } catch (error) {
+                return false;
               }
             }
           ]
