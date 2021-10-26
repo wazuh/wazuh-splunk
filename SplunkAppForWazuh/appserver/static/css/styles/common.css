@@ -544,6 +544,10 @@ div.uil-ring-css {
   height: 20px !important;
 }
 
+.wz-min-width-55 {
+  min-width: 55px !important;
+}
+
 .wz-width-85 {
   min-width: 85px;
   width: 85px;
