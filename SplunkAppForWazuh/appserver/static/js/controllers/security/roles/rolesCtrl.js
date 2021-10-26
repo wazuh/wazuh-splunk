@@ -19,33 +19,40 @@ define([
 ], function(controllers, SearchManager, MultiDropdownView, mvc) {
   "use strict";
 
+  const RESERVED_ROLES = [
+    "administrator",
+    "readonly",
+    "users_admin",
+    "agents_readonly",
+    "agents_admin",
+    "cluster_readonly",
+    "cluster_admin"
+  ];
+
   class Roles {
     constructor(
       $scope,
       isAdmin,
       roleData,
-      policiesData,
+      policyData,
       $notificationService,
       $securityService
     ) {
       this.scope = $scope;
       this.scope.isAdmin = isAdmin;
-      this.scope.roleData = roleData.data.data.affected_items || [];
-      this.scope.policiesData = this.getPoliciesList(
-        policiesData.data.data.affected_items || []
+      this.scope.policyData = this.getPolicyList(
+        policyData.data.data.affected_items || []
       );
       this.notification = $notificationService;
       this.securityService = $securityService;
-      this.scope.roleName = '';
+      this.scope.roleName = "";
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
 
       this.dropdown = new MultiDropdownView({
         id: "policies-dropdown",
         managerid: "policies-search",
-        labelField: "index",
-        valueField: "index",
-        choices: this.scope.policiesData,
+        choices: this.scope.policyData,
         el: $("#policies-dropdown-view")
       }).render();
       this.searchManager = new SearchManager({
@@ -54,15 +61,15 @@ define([
           "| eventcount summarize=false index=* index=_* | dedup index | fields index"
       });
 
-      this.dropdown.on('change', newValue => {
+      this.dropdown.on("change", newValue => {
         if (newValue && this.dropdown) {
           this.scope.policies = newValue;
         }
-      })
+      });
     }
 
-    getPoliciesList(policiesData) {
-      return policiesData.map(policy => {
+    getPolicyList(policyData) {
+      return policyData.map(policy => {
         return { label: policy.name, value: policy.id };
       });
     }
@@ -75,14 +82,18 @@ define([
       this.scope.addingNewRole = false;
 
       // Come from the pencil icon on the roles table
-      this.scope.$on('openRoleFromList', (ev, parameters) => {
-        ev.stopPropagation()
-        this.scope.addingNewRole = true
+      this.scope.$on("openRoleFromList", (ev, parameters) => {
+        ev.stopPropagation();
+        this.scope.addingNewRole = true;
         this.scope.editingRole = true;
         this.scope.roleName = parameters.role.name;
         this.scope.policies = parameters.role.policies;
+        this.dropdown.settings.set(
+          "disabled",
+          RESERVED_ROLES.includes(parameters.role.name)
+        );
         this.dropdown.val(this.scope.policies);
-      })
+      });
 
       this.scope.$on("$destroy", () => {
         mvc.Components.revokeInstance("policies-dropdown");
@@ -108,7 +119,8 @@ define([
 
     clearAll() {
       this.scope.policies = [];
-      this.scope.roleName = '';
+      this.scope.roleName = "";
+      this.dropdown.val([]);
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
       this.scope.items = null;

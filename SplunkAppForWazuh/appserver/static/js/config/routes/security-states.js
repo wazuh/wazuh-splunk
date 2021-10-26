@@ -77,11 +77,11 @@ define(['../module'], function(module) {
               }
             }
           ],
-          policiesData: [
+          policyData: [
             "$securityService",
             async $securityService => {
               try {
-                return await $securityService.getPoliciesData();
+                return await $securityService.getPolicyData();
               } catch (error) {
                 return false;
               }
