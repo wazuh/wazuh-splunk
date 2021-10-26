@@ -1,7 +1,8 @@
 define([
   '../../module',
-  '../../../services/visualizations/inputs/dropdown-input'
-], function(app, Dropdown) {
+  '../../../services/visualizations/inputs/dropdown-input',
+  'splunkjs/mvc'
+], function(app, Dropdown, mvc) {
   class SettingIndex {
     /**
      * Class constructor
@@ -22,6 +23,10 @@ define([
       this.notification = $notificationService
       this.selectedIndex = $currentDataService.getIndex() || 'wazuh'
       this.selectedSourceType = $currentDataService.getSourceType() || '*'
+
+      mvc.Components.revokeInstance('inputIndexes')
+      mvc.Components.revokeInstance('inputIndexesSearch')
+      $(`#inputIndexes`).html('')
 
       this.dropdown = new Dropdown(
         'inputIndexes',

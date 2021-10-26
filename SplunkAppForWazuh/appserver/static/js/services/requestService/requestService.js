@@ -1,11 +1,12 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
-  module.service('$requestService', function(
-    $http,
+  module.service('$requestService', ['$http', '$apiIndexStorageService', '$q', function (
+    $https,
     $apiIndexStorageService,
     $q
   ) {
+    constructor
     /**
      * Generated and returns the browser base URL + Splunk Port
      */
@@ -40,20 +41,20 @@ define(['../module'], function(module) {
         const data = {}
 
         // Set content type to form urlencoded
-        $http.defaults.headers.post['Content-Type'] =
+        $https.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         // GET METHOD
         if (method === 'GET')
-          Object.assign(data, await $http.get(tmpUrl, { params: payload }))
+          Object.assign(data, await $https.get(tmpUrl, { params: payload }))
         // PUT METHOD
         else if (method === 'PUT')
-          Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
+          Object.assign(data, await $https.post(tmpUrl, $.param(payload)))
         // POST METHOD
         else if (method === 'POST')
-          Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
+          Object.assign(data, await $https.post(tmpUrl, $.param(payload)))
         // DELETE METHOD
         else if (method === 'DELETE') {
-          Object.assign(data, await $http.post(tmpUrl, $.param(payload)))
+          Object.assign(data, await $https.post(tmpUrl, $.param(payload)))
         }
         if (!data) {
           throw new Error(
@@ -77,7 +78,7 @@ define(['../module'], function(module) {
      */
     const apiReq = async (endpoint, opts = null, method = 'GET') => {
       try {
-        $http.defaults.headers.post['Content-Type'] =
+        $https.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
         const apiId =
@@ -106,7 +107,7 @@ define(['../module'], function(module) {
 
     const wazuhIsReady = async (opts = null) => {
       try {
-        $http.defaults.headers.post['Content-Type'] =
+        $https.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
         const currentApi = $apiIndexStorageService.getApi()
         const apiId =
@@ -155,10 +156,10 @@ define(['../module'], function(module) {
           { content, origin: 'xmleditor' },
           'PUT'
         )
+
         if (
           !result ||
           !result.data ||
-          !result.data.data ||
           result.data.error !== 0
         ) {
           if (result.data.error === 1905) {
@@ -184,7 +185,7 @@ define(['../module'], function(module) {
           result.data.error !== 0
         ) {
           throw new Error('Cannot get file.')
-        }     
+        }
         return result
       } catch (error) {
         return Promise.reject(error)
@@ -202,5 +203,5 @@ define(['../module'], function(module) {
       wazuhIsReady: wazuhIsReady
     }
     return service
-  })
+  }])
 })

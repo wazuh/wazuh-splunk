@@ -30,10 +30,8 @@ from io import BytesIO
 
 from . import Image
 
-if sys.version_info.major > 2:
-    import tkinter
-else:
-    import Tkinter as tkinter
+import tkinter
+
 
 
 # --------------------------------------------------------------------
