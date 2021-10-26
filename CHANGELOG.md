@@ -2,13 +2,19 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v4.2.3 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4203
+## Wazuh v4.2.4 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4205
+
+### Added
+
+- Support for Wazuh 4.2.4
+
+## Wazuh v4.2.3 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4204
 
 ### Added
 
 - Support for Wazuh 4.2.3
 
-## Wazuh v4.2.2 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4202
+## Wazuh v4.2.2 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4203
 
 ### Added 
 
@@ -18,6 +24,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Support for Splunk v8.1.4
 - Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
 - Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
+- Added requirement service [#1162](https://github.com/wazuh/wazuh-splunk/pull/1162)
 - Support for Splunk v8.2.2
 
 ### Changed 
@@ -81,6 +88,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
 - Added persistence to modules in overview panel [#1135](https://github.com/wazuh/wazuh-splunk/pull/1135)
 - Added Agent status visualization on Agents main view [#1140](https://github.com/wazuh/wazuh-splunk/pull/1140)
+- Added validation service to compare user permissions to requirements [#1158](https://github.com/wazuh/wazuh-splunk/pull/1158)
 
 ### Fixed 
 

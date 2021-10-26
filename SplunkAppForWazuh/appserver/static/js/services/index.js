@@ -26,5 +26,7 @@ define([
   './checkDaemons/checkDaemonsService',
   './app-version/appVersionService',
   './sourceTypeStorageService/sourceTypeStorageService',
-  './splunk-services/splunk-users'
+  './splunk-services/splunk-users',
+  './validationService/validationService',
+  './requirementService/requirementService'
 ], function() {})
