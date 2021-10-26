@@ -64,6 +64,7 @@ define([
       this.dropdown.on("change", newValue => {
         if (newValue && this.dropdown) {
           this.scope.policies = newValue;
+          this.scope.$applyAsync();
         }
       });
     }
@@ -112,6 +113,7 @@ define([
         this.scope.overwrite = false;
         this.scope.addingNewRole = true;
         this.scope.policies = [];
+        this.dropdown.settings.set("disabled", false);
       } catch (error) {
         this.notification.showErrorToast("Cannot add new Role.");
       }
@@ -123,11 +125,6 @@ define([
       this.dropdown.val([]);
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
-      this.scope.items = null;
-      this.scope.totalItems = null;
-      this.scope.pagedItems = null;
-      this.scope.currentPage = 0;
-      this.scope.gap = 0;
     }
 
     /**

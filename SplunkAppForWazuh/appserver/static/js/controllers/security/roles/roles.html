@@ -46,7 +46,7 @@
                   <button
                     class="btn wz-button-empty pull-right wz-margin-left-10"
                     ng-click="saveRole()"
-                    ng-disabled="saveIncomplete || overwrite || !roleName"
+                    ng-disabled="saveIncomplete || overwrite || !roleName || policies.length < 1"
                     ng-if="isAdmin"
                   >
                     <i
