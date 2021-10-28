@@ -71,10 +71,7 @@ define(["../module"], function(module) {
 
         return await $requestService.apiReq(
           `/security/roles/${roleId}/policies?policy_ids=${policies.toString()}`,
-          {
-            content: "",
-            origin: "json"
-          },
+          { content: "" },
           "POST"
         );
       } catch (error) {
