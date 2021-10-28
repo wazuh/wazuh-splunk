@@ -63,10 +63,23 @@ define([
 
       this.dropdown.on("change", newValue => {
         if (newValue && this.dropdown) {
+          this.deletePolicy(
+            this.scope.policies.filter(policy => !newValue.includes(policy))[0]
+          );
           this.scope.policies = newValue;
           this.scope.$applyAsync();
         }
       });
+    }
+
+    async deletePolicy(policyId) {
+      const result = await this.securityService.removePolicy(
+        this.scope.roleId,
+        policyId
+      );
+      if (result && result.data.error === 0) {
+        this.notification.showSuccessToast("Policy was removed successfully.");
+      }
     }
 
     getPolicyList(policyData) {

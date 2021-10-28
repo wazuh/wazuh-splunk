@@ -103,11 +103,36 @@ define(["../module"], function(module) {
       }
     };
 
+    const removePolicy = async (roleId, policyId) => {
+      try {
+        const result = await $requestService.apiReq(
+          `/security/roles/${roleId}/policies?policy_ids=${policyId}`,
+          {},
+          "DELETE"
+        );
+
+        if (
+          result.data.data.failed_items.length &&
+          result.data.data.failed_items[0].error
+        ) {
+          throw new Error(result.data.data.failed_items[0].error.message);
+        }
+
+        if (result.data.error !== 0) {
+          throw new Error(result.data.message);
+        }
+        return result;
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    };
+
     return {
       getRoleData: getRoleData,
       getPolicyData: getPolicyData,
       saveRole: saveRole,
-      removeRole: removeRole
+      removeRole: removeRole,
+      removePolicy: removePolicy
     };
   });
 });
