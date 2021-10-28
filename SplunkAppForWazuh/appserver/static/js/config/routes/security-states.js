@@ -46,7 +46,7 @@ define(['../module'], function(module) {
               }
             }
           ],
-          userData: [
+          usersData: [
             "$securityService",
             async $securityService => {
               try {
