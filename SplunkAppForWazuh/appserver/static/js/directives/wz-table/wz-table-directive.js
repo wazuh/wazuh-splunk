@@ -530,7 +530,7 @@ define([
           try {
             await $securityService.removeUser(user)
             $notificationService.showSuccessToast(
-                `Success. User ${role} has been removed`
+                `Success. User ${user} has been removed`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)
