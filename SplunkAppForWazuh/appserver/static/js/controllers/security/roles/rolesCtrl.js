@@ -81,6 +81,7 @@ define([
       this.scope.enableSave = () => this.enableSave();
       this.scope.saveRole = () => this.saveRole();
       this.scope.addingNewRole = false;
+      this.scope.reservedRole = false;
 
       // Come from the pencil icon on the roles table
       this.scope.$on("openRoleFromList", (ev, parameters) => {
@@ -94,6 +95,7 @@ define([
           "disabled",
           RESERVED_ROLES.includes(parameters.role.name)
         );
+        this.scope.reservedRole = RESERVED_ROLES.includes(parameters.role.name);
         this.dropdown.val(this.scope.policies);
       });
 
@@ -126,6 +128,8 @@ define([
       this.dropdown.val([]);
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
+      this.scope.reservedRole = false;
+      this.scope.$applyAsync();
     }
 
     /**
