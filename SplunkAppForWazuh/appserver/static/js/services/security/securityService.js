@@ -31,7 +31,7 @@ define(["../module"], function(module) {
       }
     };
 
-    const fetchNewRole = async (roleName) => {
+    const fetchNewRole = async roleName => {
       return await $requestService.apiReq(
         "/security/roles",
         {
@@ -69,18 +69,14 @@ define(["../module"], function(module) {
           roleId = role.id;
         }
 
-        const policyResult = await $requestService.apiReq(
-          `/security/roles/${roleId}/policies`,
+        return await $requestService.apiReq(
+          `/security/roles/${roleId}/policies?policy_ids=${policies.toString()}`,
           {
-            policy_ids: policies.toString()
+            content: "",
+            origin: "json"
           },
           "POST"
         );
-
-        const policiesData = (policyResult.data || {}).data;
-        if (policiesData.failed_items && policiesData.failed_items.length) {
-          return policiesData;
-        }
       } catch (error) {
         return Promise.reject(error);
       }

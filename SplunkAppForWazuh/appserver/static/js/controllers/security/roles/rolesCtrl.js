@@ -168,11 +168,14 @@ define([
               policies
             );
             if (
-              result.failed_items[0] &&
-              result.failed_items[0].error.code === 4005
+              result &&
+              result.data.error &&
+              result.data.data.failed_items[0] &&
+              result.data.data.failed_items[0].error.code === 4005
             ) {
               this.notification.showWarningToast(
-                result.failed_items[0].error.message || "Role already exists."
+                result.data.datafailed_items[0].error.message ||
+                  "Role already exists."
               );
               this.scope.overwrite = true;
               this.scope.saveIncomplete = false;
@@ -181,9 +184,16 @@ define([
             }
             if (
               result &&
-              result.affected_items[0] &&
-              result.affected_items[0].error === 0
+              result.data.error &&
+              result.data.data.failed_items[0] &&
+              result.data.data.failed_items[0].error.code === 4011
             ) {
+              this.notification.showWarningToast(
+                result.data.data.failed_items[0].error.message
+              );
+              return;
+            }
+            if (result && result.data.error === 0) {
               this.notification.showSuccessToast("Role saved successfully.");
               this.scope.saveIncomplete = false;
               this.scope.$applyAsync();
@@ -197,8 +207,10 @@ define([
           );
         }
       } catch (error) {
-        this.scope.saveIncomplete = false;
         this.notification.showErrorToast(error);
+      } finally {
+        this.scope.saveIncomplete = false;
+        this.clearAll();
       }
     }
   }
