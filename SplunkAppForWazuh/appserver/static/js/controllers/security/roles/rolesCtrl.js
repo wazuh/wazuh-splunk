@@ -163,7 +163,10 @@ define([
               { name: roleName, id: roleId },
               policies
             );
-            if (result.failed_items[0] && result.failed_items[0].error.code === 4005) {
+            if (
+              result.failed_items[0] &&
+              result.failed_items[0].error.code === 4005
+            ) {
               this.notification.showWarningToast(
                 result.failed_items[0].error.message || "Role already exists."
               );
@@ -172,7 +175,11 @@ define([
               this.scope.$applyAsync();
               return;
             }
-            if (result && result.affected_items[0] && result.affected_items[0].error === 0) {
+            if (
+              result &&
+              result.affected_items[0] &&
+              result.affected_items[0].error === 0
+            ) {
               this.notification.showSuccessToast("Role saved successfully.");
               this.scope.saveIncomplete = false;
               this.scope.$applyAsync();
