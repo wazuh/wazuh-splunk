@@ -27,7 +27,10 @@
       <div class="layout-row" style="padding-top: 15px;">
         <div layout="row" class="layout-row" style="width: 100%;">
           <!-- XML editor for add new policy-->
-          <div ng-show="addingNewPolicy" style="width:100%; margin-right: 10px;">
+          <div
+            ng-show="addingNewPolicy"
+            style="width:100%; margin-right: 10px;"
+          >
             <!-- Save and cancel buttons -->
             <div
               layout="row"
@@ -75,6 +78,10 @@
               <div class="wz-margin-top-10">
                 <span class="tSize16">Actions</span>
                 <div id="actions-dropdown-view"></div>
+              </div>
+
+              <div class="wz-margin-top-10">
+                <span class="tSize16">Resources</span>
                 <div id="resources-dropdown-view"></div>
               </div>
               <!-- End restart button -->
@@ -123,7 +130,7 @@
           flex
           extra-limit="100"
           path="'/security/policies'"
-          keys="['id', 'name', 'policy.actions', 'policy.resources', 'policy.effect', 'policy.status']"
+          keys="['id', 'name', 'policy.actions', 'policy.resources', 'policy.effect']"
           allow-click="true"
           row-sizes="[20,15,10,20]"
         >

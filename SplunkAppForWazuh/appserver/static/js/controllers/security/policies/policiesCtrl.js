@@ -55,14 +55,19 @@ define([
         if (newValue && this.actionsDropdown) {
           this.scope.actions = newValue;
 
-          this.resourcesDropdown.val(this.getResourcesOfActions(this.scope.actions));
+          this.resourcesDropdown.settings.set(
+            "choices",
+            this.getResourcesOfActions(this.scope.actions)
+          );
+          this.resourcesDropdown.settings.set("disabled", false);
+          this.scope.$applyAsync();
         }
       });
 
       this.resourcesDropdown = new MultiDropdownView({
         id: "resources-dropdown",
         managerid: "resources-search",
-        choices: this.scope.resources,
+        choices: this.scope.resources || [{ label: "*:*", value: "0" }],
         el: $("#resources-dropdown-view")
       }).render();
       this.resourcesSearchManager = new SearchManager({
@@ -79,15 +84,22 @@ define([
     }
 
     getResourcesOfActions(newValue) {
-      return Object.keys(this.scope.actionList)
-        .map((name, idx) => {
-          return idx === newValue[idx]
-            ? this.scope.actionList[name].resources
-            : "";
-        })
-        .filter(value => {
-          return value;
-        });
+      let result = [];
+      for (let x of newValue) {
+        Object.keys(this.scope.actionList)
+          .map((name, idx) => {
+            return (this.scope.actionData[x] || []).label === name
+              ? result.push({
+                  label: this.scope.actionList[name].resources,
+                  value: (this.scope.actionData[x] || []).value
+                })
+              : "";
+          })
+          .filter(value => {
+            return value;
+          });
+      }
+      return result;
     }
 
     getActionList(actionsData) {
@@ -111,14 +123,20 @@ define([
         this.scope.policyName = parameters.policy.name;
         this.scope.actions = parameters.policy.actions;
         this.actionsDropdown.val(this.scope.actions);
-        this.resourcesDropdown.val(this.getResourcesOfActions(this.scope.actions));
+        this.resourcesDropdown.val(
+          this.getResourcesOfActions(this.scope.actions)
+        );
       });
 
       this.scope.$on("$destroy", () => {
         mvc.Components.revokeInstance("actions-dropdown");
+        mvc.Components.revokeInstance("resources-dropdown");
         mvc.Components.revokeInstance("actions-search");
+        mvc.Components.revokeInstance("resources-search");
         this.actionsDropdown = null;
-        this.searchManager = null;
+        this.resourcesDropdown = null;
+        this.actionsSearchManager = null;
+        this.resourcesSearchManager = null;
       });
     }
 
