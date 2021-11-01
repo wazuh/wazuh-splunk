@@ -346,7 +346,7 @@
          <!-- SECURITY FOR ROLES MAPPING-->
           <td ng-if="path === '/security/rules'" ng-click="$event.stopPropagation()"
             class="cursor-default action-btn-td" class="wz-text-truncatable">
-            <wz-svg ng-if="removingRoleMapping!== item.name && item.name !== 'default'"
+            <wz-svg ng-if="removingRoleMapping!== item.name && item.name !== 'default' && !item.roles.includes(1) &&  !item.roles.includes(2)"
               ng-click="showConfirmRemoveRoleMapping($event, item); $event.stopPropagation()" icon="trash" color="#396e3e"
               svg-tooltip="Remove this item"></wz-svg>
             <wz-svg ng-if="removingRoleMapping !== item.name" ng-click="editRoleMapping(item); $event.stopPropagation()" icon="pencil"

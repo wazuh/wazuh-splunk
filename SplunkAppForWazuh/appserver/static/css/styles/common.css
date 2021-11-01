@@ -1307,6 +1307,11 @@ span.wrong {
   font-weight: 400;
 }
 
+.tSize18 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
 .noBorderBottom {
   border-bottom: none !important;
 }

@@ -1,133 +1,200 @@
 <!-- About card section -->
 <div
-  layout="row"
-  style="margin-top:16px; margin-left: 10px; margin-right: 10px;"
->
-  <md-card style="width:100%;" class="wz-md-card no-margin-sides">
-    <md-card-actions
-      layout="column"
-      class="wz-card-actions wz-card-actions-top md-actions-ruleset"
-      style="background-color: white; height:100%;"
-    >
-      <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
-        <span style="font-size: 28px; padding-right: 10px;"> Roles Mapping </span>
-
-        <span flex="" class="flex"></span>
-
-        <span
-          ng-show="!addingNewRoleMapping"
-          ng-click="addNewRoleMapping()"
-          class="wz-color-text cursor-pointer link-table"
-        >
-          <wz-svg icon="plus"></wz-svg>
-          Add new role mapping
-        </span>
-      </div>
-
-      <div class="layout-row" style="padding-top: 15px;">
-        <div layout="row" class="layout-row" style="width: 100%;">
-          <!-- XML editor for add new role-->
-          <div ng-show="addingNewRoleMapping" style="width:100%; margin-right: 10px;">
-            <!-- Save and cancel buttons -->
-            <div
-              layout="row"
-              style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
-              class="wz-align-center"
-            >
-              <!-- Save and cancel buttons -->
-              <div>
-                <span>
-                  <button
-                    class="btn wz-button-cancel"
-                    ng-click="cancelRoleMappingEdition()"
+   layout="row"
+   style="margin-top:16px; margin-left: 10px; margin-right: 10px;"
+   >
+   <md-card style="width:100%;" class="wz-md-card no-margin-sides">
+      <md-card-actions
+         layout="column"
+         class="wz-card-actions wz-card-actions-top md-actions-ruleset"
+         style="background-color: white; height:100%;"
+         >
+         <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
+            <span style="font-size: 28px; padding-right: 10px;"> Roles Mapping </span>
+            <span flex="" class="flex"></span>
+            <span
+               ng-show="!addingNewRoleMapping"
+               ng-click="addNewRoleMapping()"
+               class="wz-color-text cursor-pointer link-table"
+               >
+               <wz-svg icon="plus"></wz-svg>
+               Add new role mapping
+            </span>
+         </div>
+         <div class="layout-row" style="padding-top: 15px;">
+            <div layout="row" class="layout-row" style="width: 100%;">
+               <!-- XML editor for add new role-->
+               <div ng-show="addingNewRoleMapping" style="width:100%; margin-right: 10px;">
+                  <!-- Save and cancel buttons -->
+                  <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                        <span class="tSize16">Role mapping name</span>
+                        <div>
+                           <input
+                              placeholder="New role mapping name..."
+                              type="text"
+                              flex
+                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-30"
+                              aria-invalid="false"
+                              ng-model="roleMappingName"
+                              ng-change="enableSave()"
+                              ng-disabled="editingRole"
+                              />
+                        </div>
+                     </div>
+                  </div>
+                  <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                        <span class="tSize16">Roles</span>
+                        <div id="roles-dropdown-view"></div>
+                     </div>
+                  </div>
+                  <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                        <span class="tSize18">Mapping rules: Assign roles to users who match these rules. Learn more</span>
+                      </div>
+                  </div>
+                  <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                       <span class="tSize16">User field</span>
+                        <div>
+                           <input
+                              placeholder="User field"
+                              type="text"
+                              flex
+                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-20"
+                              aria-invalid="false"
+                              ng-model="userField"
+                              ng-change="enableSave()"
+                              ng-disabled="editingRole"
+                              />
+                        </div>
+                      </div>
+                  </div>
+                   <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                        <span class="tSize16">Operator</span>
+                        <div id="operator-dropdown-view"></div>
+                     </div>
+                  </div>
+                  <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                       <span class="tSize16">Value</span>
+                        <div>
+                           <input
+                              placeholder="Value"
+                              type="text"
+                              flex
+                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-20"
+                              aria-invalid="false"
+                              ng-model="valueField"
+                              ng-change="enableSave()"
+                              ng-disabled="editingRole"
+                              />
+                        </div>
+                      </div>
+                  </div>
+                  <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto; justify-content: flex-end;"
+                     class="wz-align-center wz-margin-bottom-10"
+                     >
+                     <!-- Save and cancel buttons -->
+                     <div>
+                        <span>
+                        <button
+                           class="btn wz-button-cancel"
+                           ng-click="cancelRoleMappingEdition()"
+                           >
+                        Cancel
+                        </button>
+                        <button
+                           class="btn wz-button-empty pull-right wz-margin-left-10"
+                           ng-click="saveRoleMapping()"
+                           ng-disabled="saveIncomplete || overwrite || !roleMappingName"
+                           ng-if="isAdmin"
+                           >
+                        <i
+                           ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                           aria-hidden="true"
+                           ></i>
+                        Save
+                        </button>
+                        </span>
+                     </div>
+                  </div>
+                  <!-- End save and cancel buttons-->
+               </div>
+               <div
+                  ng-show="!addingNewRoleMapping"
+                  style="width: 100%; display: flex; align-items: flex-start;"
                   >
-                    Cancel
-                  </button>
+                  <label class="wz-icon-loupe">
+                  <input
+                     placeholder="Filter roles..."
+                     ng-model="customSearch"
+                     type="text"
+                     flex
+                     class="kuiLocalSearchInput height-40"
+                     aria-invalid="false"
+                     wz-enter="search(customSearch)"
+                     />
+                  </label>
                   <button
-                    class="btn wz-button-empty pull-right wz-margin-left-10"
-                    ng-click="saveRoleMapping()"
-                    ng-disabled="saveIncomplete || overwrite || !roleName || policies.length < 1"
-                    ng-if="isAdmin"
-                  >
-                    <i
-                      ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                      aria-hidden="true"
-                    ></i>
-                    Save
+                     ng-click="search(customSearch)"
+                     class="btn height-40 agreeBtn pull-right wz-margin-left-7"
+                     style="max-height:40px !important;"
+                     >
+                  <span
+                     ><i
+                     aria-hidden="true"
+                     class="fa fa-fw fa-search wz-margin-left-10"
+                     >&nbsp;</i
+                     >Search</span
+                     >
                   </button>
-                </span>
-              </div>
-
-              <div class="flex">
-                <span class="tSize16 wz-breadcrumb-margin">Role mapping name</span>
-                <input
-                  placeholder="New role mapping name..."
-                  type="text"
-                  flex
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                  aria-invalid="false"
-                  ng-model="roleMappingName"
-                  ng-change="enableSave()"
-                  ng-disabled="editingRole"
-                />
-              </div>
-
-              <div class="wz-margin-top-10">
-                <span class="tSize16">Roles</span>
-                <div id="roles-dropdown-view"></div>
-              </div>
-              <!-- End restart button -->
+               </div>
             </div>
-            <!-- End save and cancel buttons-->
-          </div>
-
-          <div
-            ng-show="!addingNewRoleMapping"
-            style="width: 100%; display: flex; align-items: flex-start;"
-          >
-            <label class="wz-icon-loupe">
-              <input
-                placeholder="Filter roles..."
-                ng-model="customSearch"
-                type="text"
-                flex
-                class="kuiLocalSearchInput height-40"
-                aria-invalid="false"
-                wz-enter="search(customSearch)"
-              />
-            </label>
-            <button
-              ng-click="search(customSearch)"
-              class="btn height-40 agreeBtn pull-right wz-margin-left-7"
-              style="max-height:40px !important;"
-            >
-              <span
-                ><i
-                  aria-hidden="true"
-                  class="fa fa-fw fa-search wz-margin-left-10"
-                  >&nbsp;</i
-                >Search</span
-              >
-            </button>
-          </div>
-        </div>
-      </div>
-    </md-card-actions>
-
-    <md-card-contents ng-if="!addingNewRoleMapping">
-      <div layout="row" layout-padding>
-        <wazuh-table
-          custom-columns="true"
-          admin-mode="isAdmin"
-          flex
-          extra-limit="100"
-          path="'/security/rules'"
-          keys="['id', 'name', 'roles']"
-          allow-click="true"
-          row-sizes="[20,15,10]"
-        >
-        </wazuh-table>
-      </div>
-    </md-card-contents>
-  </md-card>
+         </div>
+      </md-card-actions>
+      <md-card-contents ng-if="!addingNewRoleMapping">
+         <div layout="row" layout-padding>
+            <wazuh-table
+               custom-columns="true"
+               admin-mode="isAdmin"
+               flex
+               extra-limit="100"
+               path="'/security/rules'"
+               keys="['id', 'name', 'roles']"
+               allow-click="true"
+               row-sizes="[20,15,10]"
+               >
+            </wazuh-table>
+         </div>
+      </md-card-contents>
+   </md-card>
 </div>
