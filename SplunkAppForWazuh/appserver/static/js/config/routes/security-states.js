@@ -108,6 +108,16 @@ define(['../module'], function(module) {
                 return false
               }
             }
+          ],
+          roles: [
+            '$requestService',
+            async $requestService => {
+              try {
+                return await $requestService.apiReq('/security/roles')
+              } catch (err) {
+                return { error: 'Cannot fetch roles from API' }
+              }
+            }
           ]
         }
       })
