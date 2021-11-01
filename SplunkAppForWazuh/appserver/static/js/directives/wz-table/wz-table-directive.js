@@ -543,9 +543,9 @@ define([
         }
         $scope.confirmRemoveSecurityRoles = async role => {
           try {
-            await $securityService.removeRole(role)
+            await $securityService.removeRole(role.id)
             $notificationService.showSuccessToast(
-                `Success. Role ${role} has been removed`
+                `Success. Role ${role.name} has been removed`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)

@@ -73,12 +73,16 @@ define([
     }
 
     async deletePolicy(policyId) {
-      const result = await this.securityService.removePolicy(
-        this.scope.roleId,
-        policyId
-      );
-      if (result && result.data.error === 0) {
-        this.notification.showSuccessToast("Policy was removed successfully.");
+      if (policyId) {
+        const result = await this.securityService.removePolicy(
+          this.scope.roleId,
+          policyId
+        );
+        if (result && result.data.error === 0) {
+          this.notification.showSuccessToast(
+            "Policy was removed successfully."
+          );
+        }
       }
     }
 
