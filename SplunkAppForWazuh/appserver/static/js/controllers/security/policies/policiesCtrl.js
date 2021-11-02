@@ -91,7 +91,7 @@ define([
             return (this.scope.actionData[x] || []).label === name
               ? result.push({
                   label: this.scope.actionList[name].resources,
-                  value: (this.scope.actionData[x] || []).value
+                  value: this.scope.actionList[name].resources.toString()
                 })
               : "";
           })
@@ -159,11 +159,11 @@ define([
       this.scope.policyName = "";
       this.scope.addingNewPolicy = false;
       this.scope.editingPolicy = false;
-      this.scope.items = null;
-      this.scope.totalItems = null;
-      this.scope.pagedItems = null;
-      this.scope.currentPage = 0;
-      this.scope.gap = 0;
+      this.resourcesDropdown.val([]);
+      this.actionsDropdown.val([]);
+      this.scope.addingNewPolicy = false;
+      this.scope.editingPolicy = false;
+      this.scope.$applyAsync();
     }
 
     /**
