@@ -584,10 +584,10 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/ciscat/overview-ciscat.html',
-            onEnter: $navigationService => {
-              $navigationService.storeRoute('ow-ciscat')
-            },
-            controller: 'ciscatCtrl',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('ow-ciscat')
+          },
+          controller: 'ciscatCtrl',
           resolve: {
             reportingEnabled: [
               '$currentDataService',
