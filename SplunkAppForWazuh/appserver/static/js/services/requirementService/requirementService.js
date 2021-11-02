@@ -1,7 +1,7 @@
-define(["../module"], function(module) {
+define(["../module"], function (module) {
   "use strict";
 
-  module.service("$requirementService", function() {
+  module.service("$requirementService", function () {
     /**
      * Gets a valid resource string with an optional parameter,
      * returns a wildcard resource if no param is specified
@@ -162,7 +162,8 @@ define(["../module"], function(module) {
     };
 
     /**
-     * Generates an object from an action with the resources used by that action and a method to construct a requirements object for that action
+     * Generates an object from an action with the resources used by that 
+     * action and a method to construct a requirements object for that action
      * @param {
      * "ACTIVE_RESPONSE_COMMAND" |
      * "AGENT_CREATE" |

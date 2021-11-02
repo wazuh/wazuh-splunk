@@ -28,5 +28,7 @@ define([
   './sourceTypeStorageService/sourceTypeStorageService',
   './splunk-services/splunk-users',
   './validationService/validationService',
-  './requirementService/requirementService'
+  './requirementService/requirementService',
+  './security_services/actions_enum',
+  './security_services/security_service'
 ], function() {})

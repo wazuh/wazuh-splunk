@@ -77,6 +77,8 @@ define(['../module'], function (module) {
      * @param {Object} opts
      */
     const apiReq = async (endpoint, opts = null, method = 'GET') => {
+      // NOTE: USED FOR DEVELOPMENT ONLY
+      console.log(`${method} ${endpoint}`)
       try {
         $https.defaults.headers.post['Content-Type'] =
           'application/x-www-form-urlencoded'
