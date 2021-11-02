@@ -15,9 +15,21 @@ define([
   "../../module",
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/multidropdownview",
+  "splunkjs/mvc/dropdownview",
   "splunkjs/mvc"
-], function(controllers, SearchManager, MultiDropdownView, mvc) {
+], function(controllers, SearchManager, MultiDropdownView, DropdownView, mvc) {
   "use strict";
+
+  const effectOptions = [
+    {
+      label: "Allow",
+      value: "allow"
+    },
+    {
+      label: "Deny",
+      value: "deny"
+    }
+  ];
 
   class Policies {
     constructor(
@@ -36,15 +48,36 @@ define([
       this.notification = $notificationService;
       this.securityService = $securityService;
       this.scope.policyName = "";
-      this.scope.addingNewRole = false;
-      this.scope.editingRole = false;
+      this.scope.addingNewPolicy = false;
+      this.scope.editingPolicy = false;
+      this.buildActionsMultiDropdown();
+      this.buildEffectOptionsDropDown();
+      this.buildResourcesMultiDropdown();
+    }
 
+    buildEffectOptionsDropDown() {
+      this.effectOptions = new DropdownView({
+        id: "effectOptions-dropdown",
+        default: 'allow',
+        choices: effectOptions,
+        el: $("#effect-options-dropdown-view")
+      }).render();
+
+      this.effectOptions.on("change", newValue => {
+        if (newValue && this.effectOptions) {
+          this.scope.effectOptions = newValue;
+        }
+      });
+    }
+
+    buildActionsMultiDropdown() {
       this.actionsDropdown = new MultiDropdownView({
         id: "actions-dropdown",
         managerid: "actions-search",
         choices: this.scope.actionData,
         el: $("#actions-dropdown-view")
       }).render();
+
       this.actionsSearchManager = new SearchManager({
         id: "actions-search",
         search:
@@ -63,13 +96,16 @@ define([
           this.scope.$applyAsync();
         }
       });
+    }
 
+    buildResourcesMultiDropdown() {
       this.resourcesDropdown = new MultiDropdownView({
         id: "resources-dropdown",
         managerid: "resources-search",
         choices: this.scope.resources || [{ label: "*:*", value: "0" }],
         el: $("#resources-dropdown-view")
       }).render();
+
       this.resourcesSearchManager = new SearchManager({
         id: "resources-search",
         search:
@@ -112,7 +148,7 @@ define([
       this.scope.addNewPolicy = () => this.addNewPolicy();
       this.scope.cancelPolicyEdition = () => this.cancelPolicyEdition();
       this.scope.enableSave = () => this.enableSave();
-      this.scope.saveRole = () => this.saveRole();
+      this.scope.savePolicy = () => this.savePolicy();
       this.scope.addingNewPolicy = false;
 
       // Come from the pencil icon on the policies table
@@ -150,7 +186,7 @@ define([
         this.scope.addingNewPolicy = true;
         this.scope.actions = [];
       } catch (error) {
-        this.notification.showErrorToast("Cannot add new Role.");
+        this.notification.showErrorToast("Cannot add new Policy.");
       }
     }
 
@@ -183,7 +219,7 @@ define([
     /**
      * Saves the CDB list content
      */
-    async saveRole() {
+    async savePolicy() {
       try {
         const constainsBlanks = /.* .*/;
         const policyName = this.scope.policyName;
@@ -195,7 +231,7 @@ define([
           } else {
             this.scope.saveIncomplete = true;
             const policies = this.scope.policies;
-            const result = await this.securityService.saveRole(
+            const result = await this.securityService.savePolicy(
               policyName,
               policies
             );
@@ -205,18 +241,20 @@ define([
               this.scope.$applyAsync();
             } else if (result.data.error === 1905) {
               this.notification.showWarningToast(
-                result.data.message || "Role already exists."
+                result.data.message || "Policy already exists."
               );
               this.scope.overwrite = true;
               this.scope.saveIncomplete = false;
               this.scope.$applyAsync();
             } else {
-              throw new Error(result.data.message || "Cannot save this Role.");
+              throw new Error(
+                result.data.message || "Cannot save this Policy."
+              );
             }
           }
         } else {
           this.notification.showWarningToast(
-            "Please set a name for the new Role."
+            "Please set a name for the new Policy."
           );
         }
       } catch (error) {

@@ -77,6 +77,30 @@ define(["../module"], function(module) {
       }
     };
 
+    const savePolicy = async (policyName, actions, resources, effectValue) => {
+      try {
+        const result = await $requestService.apiReq(
+          "/security/policies",
+          {
+            content: JSON.stringify({
+              name: policyName,
+              policy: {
+                actions: actions.map(x => x.action),
+                resources: resources.map(x => x.resource),
+                effect: effectValue,
+                origin: "json"
+              }
+            })
+          },
+          "POST"
+        );
+
+        return (result.data || {}).data;
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    };
+
     const removeRole = async role => {
       try {
         const result = await $requestService.apiReq(
@@ -124,6 +148,7 @@ define(["../module"], function(module) {
       removeRole: removeRole,
       getResourceData: getResourceData,
       getActionData: getActionData,
+      savePolicy: savePolicy
     };
   });
 });
