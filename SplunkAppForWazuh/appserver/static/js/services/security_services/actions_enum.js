@@ -74,32 +74,39 @@ const enumActions = {
  * @enum {string}
  */
 const mapActionsControllers = {
-  // Agents
-  'ag-ca': [enumActions.SCA_READ],
+  // Agent > Security Configuration Assessment
+  'ag-ca': [enumActions.AGENT_READ, enumActions.SCA_READ],
+  // Agent > CISCAT
   'ag-ciscat': [enumActions.CISCAT_READ],
-  'ag-fim': [enumActions.SYSCHECK_READ],
+  // Agent > File Integrity Monitoring
+  'ag-fim': [enumActions.AGENT_READ, enumActions.SYSCHECK_READ],
+  // Agent > Security Events
   'ag-general': [
+    enumActions.AGENT_READ,
     enumActions.SYSCHECK_READ,
-    enumActions.SYSCOLLECTOR_READ
+    enumActions.SYSCOLLECTOR_READ,
+    enumActions.ROOTCHECK_READ,
   ],
+  // Agent > Inventory Data
   'ag-inventory': [
+    enumActions.AGENT_READ,
     enumActions.SYSCHECK_READ,
     enumActions.SYSCOLLECTOR_READ
   ],
-  'ag-vul': [enumActions.VULNERABILITY_READ],
-  'ag-vul': [enumActions.VULNERABILITY_READ],
+  // Agent > Vulnerabilities
+  'ag-vul': [enumActions.AGENT_READ, enumActions.VULNERABILITY_READ],
+  // Agent > Overview
   'agent-overview': [
     enumActions.AGENT_READ,
     enumActions.AGENT_MODIFY_GROUP,
     enumActions.AGENT_RESTART,
-    enumActions.CLUSTER_STATUS,
     enumActions.GROUP_MODIFY_ASSIGNMENT,
     enumActions.GROUP_READ,
     enumActions.ROOTCHECK_READ,
     enumActions.SYSCHECK_READ],
-  'agents': [enumActions.AGENT_READ],
+  'agents': [enumActions.AGENT_READ, enumActions.CLUSTER_READ],
   // Discover
-  'discover': [enumActions.AGENT_READ],
+  // 'discover': [enumActions.AGENT_READ],
   // Management > Configuration
   'mg-conf': [enumActions.CLUSTER_READ],
   // Management > Decoders
@@ -131,6 +138,7 @@ const mapActionsControllers = {
     enumActions.LISTS_UPDATE,
     enumActions.LISTS_DELETE
   ],
+  // Management > Logs
   'mg-logs': [
     enumActions.CLUSTER_STATUS,
     enumActions.MANAGER_READ
@@ -166,8 +174,8 @@ const mapActionsControllers = {
   'ow-gdpr': [enumActions.AGENT_READ],
   'ow-general': [
     enumActions.AGENT_READ,
-    enumActions.ROOTCHECK_READ]
-  ,
+    enumActions.ROOTCHECK_READ
+  ],
   'ow-hipaa': [enumActions.AGENT_READ],
   'ow-mitre': [enumActions.AGENT_READ],
   'ow-mitre-ids': [enumActions.MITRE_READ],
