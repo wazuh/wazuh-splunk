@@ -24,7 +24,7 @@ define(
           .generateRequirement()
       }
 
-      _validateRequirementsObject(controllerRequirements, userPolicies = this.getUserPolicies()) {
+      _validateRequirementsObject(controllerRequirements, userPolicies) {
         return this.$validationService
           .validatePermissions(controllerRequirements, userPolicies)
       }
@@ -36,8 +36,7 @@ define(
       async getUserPolicies() {
         try {
           const response = await this.apiReq('/security/users/me/policies')
-          console.log(response.data.data)
-          return response.data
+          return response.data.data
         } catch (err) {
           return Promise.reject(err)
         }
@@ -50,19 +49,24 @@ define(
         var requirementsObject = null
         var isActionAllowed = false
 
-        actionsRequired.forEach((action) => {
-          requirementsObject = this._generateRequirementsObject(action)
-          isActionAllowed = this._validateRequirementsObject(requirementsObject)
-          requirementsList.push({action, isActionAllowed})
+        this.getUserPolicies()
+          .then(userPolicies => {
+            actionsRequired.forEach((action) => {
+              requirementsObject = this._generateRequirementsObject(action)
+              isActionAllowed = this._validateRequirementsObject(requirementsObject, userPolicies)
+              requirementsList.push({ action, isActionAllowed })
+              
+              console.log("User policies")
+              console.log(userPolicies)
+              console.log(`[RBAC - ${controllerName}]`)
+              console.log(requirementsObject)
+              console.log(isActionAllowed)
+              console.log(requirementsList)
+            })
 
-          console.log("HOLA")
-          console.log(`[RBAC - ${controllerName}]`)
-          console.log(requirementsObject)
-          console.log(isActionAllowed)
-          console.log(requirementsList)
-        })
-        
-        return requirementsList
+            return requirementsList
+          })
+          .catch(error => console.error(error))
       }
     }
 
