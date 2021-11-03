@@ -57,7 +57,8 @@ define([
       $tableFilterService,
       reportingEnabled,
       BASE_URL,
-      extensions
+      extensions,
+      requirementsList
     ) {
       super(
         $scope,
@@ -66,6 +67,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.rootScope = $rootScope
       this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled

@@ -36,7 +36,8 @@ define([
       $state,
       $notificationService,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      requirementsList
     ) {
       super(
         $scope,
@@ -45,6 +46,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.scope.reportingEnabled = reportingEnabled
       this.currentDataService.addFilter(
         `{"rule.groups{}":"amazon", "implicit":true}`

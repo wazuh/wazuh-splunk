@@ -43,13 +43,15 @@ define([
       $mdDialog,
       $dateDiffService,
       $urlTokenModel,
-      extensions
+      extensions,
+      requirementsList
     ) {
       this.scope = $scope
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
       )
+      console.log(requirementsList)
       this.modalOpen = false
       this.modalInitialized = false
       this.api = this.currentDataService.getApi()

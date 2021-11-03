@@ -13,8 +13,10 @@ define(['../../module'], function(controllers) {
       agentsInfo,
       extensions,
       $notificationService,
-      $currentDataService
+      $currentDataService,
+      requirementsList
     ) {
+      console.log(requirementsList)
       this.scope = $scope
       this.notificationService = $notificationService
       this.currentDataService = $currentDataService

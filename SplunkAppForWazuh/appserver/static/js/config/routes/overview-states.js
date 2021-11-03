@@ -33,6 +33,12 @@ define(['../module'], function(module) {
             'static/app/SplunkAppForWazuh/js/controllers/overview/welcome/overview-welcome.html',
           controller: 'overviewWelcomeCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('overview')
+              }
+            ],
             agentsInfo: [
               '$requestService',
               '$state',
@@ -66,6 +72,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewGeneralCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-general')
+              }
+            ],
             pollingState: [
               '$requestService',
               '$state',
@@ -109,6 +121,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewPolicyMonitoringCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-pm')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -126,7 +144,8 @@ define(['../module'], function(module) {
               }
             ]
           }
-        }) // Overview - SCA Security Configuration Assessment
+        }) 
+        // Overview - SCA Security Configuration Assessment
         .state('ow-sca', {
           templateUrl:
             BASE_URL +
@@ -136,6 +155,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewSCACtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-sca')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -164,6 +189,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewFimCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-fim')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -192,6 +223,12 @@ define(['../module'], function(module) {
           },
           controller: 'osqueryCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-osquery')
+              }
+            ],
             osquery: [
               '$requestService',
               '$state',
@@ -234,6 +271,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewAuditCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-audit')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -262,6 +305,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewOpenScapCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-os')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -290,6 +339,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewPciCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-pci')
+              }
+            ],
             pciTabs: [
               '$requestService',
               '$state',
@@ -358,6 +413,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewGdprCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-gdpr')
+              }
+            ],
             gdprTabs: [
               '$requestService',
               '$state',
@@ -415,7 +476,8 @@ define(['../module'], function(module) {
               }
             ]
           }
-        }) // Overview - HIPAA
+        }) 
+        // Overview - HIPAA
         .state('ow-hipaa', {
           templateUrl:
             BASE_URL +
@@ -425,6 +487,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewHipaaCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-hipaa')
+              }
+            ],
             hipaaTabs: [
               '$requestService',
               '$state',
@@ -493,6 +561,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewNistCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-nist')
+              }
+            ],
             nistTabs: [
               '$requestService',
               '$state',
@@ -561,6 +635,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewVulnerabilitiesCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-vul')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -589,6 +669,12 @@ define(['../module'], function(module) {
           },
           controller: 'ciscatCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-ciscat')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -623,6 +709,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewVirusTotal',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-virustotal')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -651,6 +743,12 @@ define(['../module'], function(module) {
           },
           controller: 'awsCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-aws')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -669,6 +767,12 @@ define(['../module'], function(module) {
           },
           controller: 'dockerCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-docker')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -697,6 +801,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewMitreCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-mitre')
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -725,6 +835,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewMitreIdsCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-mitre-ids')
+              }
+            ],
             mitre_tactics: [
               '$requestService',
               '$state',

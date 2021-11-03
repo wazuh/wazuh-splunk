@@ -53,7 +53,8 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
-      awsExtensionEnabled
+      awsExtensionEnabled,
+      requirementsList
     ) {
       super(
         $scope,
@@ -62,6 +63,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.awsExtensionEnabled = awsExtensionEnabled
