@@ -13,19 +13,12 @@
 
 define([
   "../../module",
-  '../../../libs/codemirror-conv/lib/codemirror',
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/multidropdownview",
   "splunkjs/mvc"
-], function(controllers, CodeMirror, SearchManager, MultiDropdownView, mvc) {
+], function(controllers, SearchManager, MultiDropdownView, mvc) {
   "use strict";
 
-  const OPERATORS = [
-    "FIND",
-    "FIND$",
-    "MATCH",
-    "MATCH$",
-  ];
   class RolesMapping {
     constructor(
       $scope,
@@ -39,23 +32,15 @@ define([
       this.scope.roles = this.getRolesList(
         roles.data.data.affected_items || []
       );
-      this.scope.operators = this.getOperatorsList(
-        OPERATORS || []
-      );;
       this.notification = $notificationService;
       this.securityService = $securityService;
       this.scope.addingNewRoleMapping = false;
+      this.scope.editingRoleMapping = false;
       this.dropdownRoles = new MultiDropdownView({
         id: "roles-dropdown",
         managerid: "roles-search",
         choices: this.scope.roles,
         el: $("#roles-dropdown-view")
-      }).render();
-      this.dropdownOperators = new MultiDropdownView({
-        id: "operator-dropdown",
-        managerid: "operator-search",
-        choices: this.scope.operators,
-        el: $("#operator-dropdown-view")
       }).render();
 
       this.searchManager = new SearchManager({
@@ -71,14 +56,16 @@ define([
         }
       });
 
-      this.dropdownOperators.on("change", newValue => {
-        if (newValue && this.dropdownOperators) {
-          this.scope.operators = newValue;
-          this.scope.$applyAsync();
-        }
-      });
-
     }
+
+    /**
+     * Searches for a term
+     * @param {String} term
+     */
+     search(term) {
+      this.scope.$broadcast('wazuhSearch', { term })
+    }
+
 
     getRolesList(rolesData) {
       return rolesData.map(role => {
@@ -86,20 +73,84 @@ define([
       });
     }
 
-    getOperatorsList(operatorsData) {
-      return operatorsData.map(operator => {
-        return { label: operator, value: operator };
+    formatRules (rulesArray) {
+      const tmpRules = rulesArray.map((item) => {
+        const searchOperationTmp = Object.keys(item)[0];
+        const userFieldTmp = Object.keys(item[searchOperationTmp])[0];
+        const valueTmp = item[searchOperationTmp][userFieldTmp];
+        return { value: valueTmp };
       });
+    
+      return tmpRules;
     }
+
+    getFormatedRules (rulesArray) {
+      let userRules;
+    
+      const operatorsCount = rulesArray.filter(rule => Array.isArray(rule[Object.keys(rule)[0]]))
+        .length;
+      switch (operatorsCount) {
+        case 0: // only custom rules or internal users
+        userRules = this.formatRules(rulesArray);
+          break;
+        case 2: // internal users and custom rules
+          let operator;
+          // get internal users rules
+          operator = Object.keys(rulesArray[0])[0];
+          userRules = formatRules(rulesArray[0][operator]);
+            break;
+        default:
+          // set all rules as custom rules
+          userRules = formatRules(rulesArray);
+      }
+    
+      return { userRules };
+    };
+
+    decodeJsonRule (ruleObject) {
+        
+        var logicalOperator = Object.keys(ruleObject)[0];
+    
+        var rulesArray;
+        if (logicalOperator === 'AND' || logicalOperator === 'OR') {
+          rulesArray = ruleObject[logicalOperator];
+        } else {
+          rulesArray = [ruleObject];
+        }
+
+        var userRules = this.getFormatedRules(rulesArray).userRules.map(item => item.value) || [];
+
+        return userRules.join(",")
+    };
 
     $onInit() {
       this.scope.addNewRoleMapping = () => this.addNewRoleMapping();
       this.scope.cancelRoleMappingEdition = () => this.cancelRoleMappingEdition();
       this.scope.saveRoleMapping = () => this.saveRoleMapping();
+      this.scope.changeOperator = operator => this.changeOperator(operator);
       this.scope.addingNewRoleMapping = false;
+      this.scope.search = term => this.search(term);
+
+       // Come from the pencil icon on the roles table
+       this.scope.$on("openRuleFromList", (ev, parameters) => {
+        ev.stopPropagation();
+        const isDisabled = parameters.rule.id === 1 || parameters.rule.id === 2
+        this.scope.editingRoleMapping = true;
+        this.scope.addingNewRoleMapping = true;
+        this.scope.ruleId = parameters.rule.id
+        this.scope.roleMappingName = parameters.rule.name;
+        this.dropdownRoles.settings.set(
+          "disabled",
+          parameters.rule.id === 1 || parameters.rule.id === 2
+        );
+        this.dropdownRoles.val(parameters.rule.roles);
+        this.scope.editingRole = isDisabled;
+        this.scope.overwrite = isDisabled;
+        this.scope.userField = this.decodeJsonRule(parameters.rule.rule)
+      });
+
       this.scope.$on("$destroy", () => {
         mvc.Components.revokeInstance("roles-dropdown");
-        mvc.Components.revokeInstance("operator-dropdown");
         mvc.Components.revokeInstance("roles-mapping-search");
         this.dropdownRoles = null;
         this.searchManager = null;
@@ -119,7 +170,10 @@ define([
 
     clearAll() {
       this.scope.addingNewRoleMapping = false;
+      this.scope.editingRoleMapping = false;
+      this.scope.editingRole = false;
       this.scope.roleMappingName = "";
+      this.scope.userField = "";
       this.dropdownRoles.val([]);
       this.scope.$applyAsync();
     }
@@ -133,7 +187,17 @@ define([
           const constainsBlanks = /.* .*/;
           const roleMappingName = this.scope.roleMappingName;
           const roleIds = this.dropdownRoles.val();
-          const rule = {}
+          const userField = this.scope.userField;
+          const rulesMap = [];
+          const isEdit = this.scope.editingRoleMapping;
+          userField.split(',').forEach(item => {
+            rulesMap.push({
+              "FIND": {
+                "user_name": item
+              }
+            })
+          })
+          const rule = rulesMap.length > 1 ? {"OR": rulesMap} : rulesMap[0];
   
           if (roleMappingName) {
             if (constainsBlanks.test(roleMappingName)) {
@@ -142,17 +206,24 @@ define([
               );
             } else {
               this.scope.saveIncomplete = true;
-              const result = await this.securityService.saveRule(
-                { name: roleMappingName, rule: rule, roles: roleIds }
-              );
+              const result = isEdit ?
+                await this.securityService.updateRule(
+                  this.scope.ruleId,
+                  { name: roleMappingName, rule: rule },
+                  roleIds
+                )
+                :
+                await this.securityService.saveRule(
+                  { name: roleMappingName, rule: rule },
+                  roleIds
+                );
               if (
                 result &&
-                result.data.error &&
-                result.data.data.failed_items[0] &&
-                result.data.data.failed_items[0].error.code === 4005
+                result.failed_items[0] &&
+                result.failed_items[0].error.code === 4005
               ) {
                 this.notification.showWarningToast(
-                  result.data.datafailed_items[0].error.message ||
+                  result.failed_items[0].error.message ||
                     "Role mapping already exists."
                 );
                 this.scope.overwrite = true;
@@ -162,26 +233,25 @@ define([
               }
               if (
                 result &&
-                result.data.error &&
-                result.data.data.failed_items[0] &&
-                result.data.data.failed_items[0].error.code === 4011
+                result.failed_items[0] &&
+                result.failed_items[0].error.code === 4011
               ) {
                 this.notification.showWarningToast(
-                  result.data.data.failed_items[0].error.message
+                  result.failed_items[0].error.message
                 );
                 return;
               }
-              if (result && result.data.error === 0) {
-                this.notification.showSuccessToast("Role mapping saved successfully.");
+              if (result && result.total_failed_items === 0) {
+                this.notification.showSuccessToast(`Role mapping ${result.affected_items[0].name} ${isEdit ? 'updated' : 'saved'} successfully.`);
                 this.scope.saveIncomplete = false;
                 this.scope.$applyAsync();
               } else {
-                throw new Error(result.data.message || "Cannot save this Role mapping.");
+                throw new Error(result.data.message || `Cannot ${isEdit ? 'updated' : 'saved'} this Role mapping.`);
               }
             }
           } else {
             this.notification.showWarningToast(
-              "Please set a name for the new Role mapping."
+              `Please set a name for the ${isEdit ? 'update' : 'new'} Role mapping.`
             );
           }
         } catch (error) {

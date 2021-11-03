@@ -38,7 +38,7 @@
                               placeholder="New role mapping name..."
                               type="text"
                               flex
-                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-30"
+                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-20"
                               aria-invalid="false"
                               ng-model="roleMappingName"
                               ng-change="enableSave()"
@@ -63,7 +63,7 @@
                      class="wz-align-center"
                      >
                      <div class="flex wz-margin-bottom-10">
-                        <span class="tSize18">Mapping rules: Assign roles to users who match these rules. Learn more</span>
+                        <span class="tSize20">Mapping rules: Assign roles to users who match these rules. <a href="https://documentation.wazuh.com/current/user-manual/api/rbac/auth_context.html" target="_blank" rel="noopener noreferrer">Learn more<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--small euiIcon-isLoaded euiLink__externalIcon" focusable="false" role="img" aria-label="External link"><path d="M13 8.5a.5.5 0 111 0V12a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2h3.5a.5.5 0 010 1H4a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1V8.5zm-5.12.339a.5.5 0 11-.706-.707L13.305 2H10.5a.5.5 0 110-1H14a1 1 0 011 1v3.5a.5.5 0 11-1 0V2.72L7.88 8.838z"></path></svg></a></span>
                       </div>
                   </div>
                   <div
@@ -72,46 +72,15 @@
                      class="wz-align-center"
                      >
                      <div class="flex wz-margin-bottom-10">
-                       <span class="tSize16">User field</span>
+                       <span class="tSize16">Map internal users (separated by commas)</span>
                         <div>
                            <input
-                              placeholder="User field"
+                              placeholder="Internal users"
                               type="text"
                               flex
-                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-20"
+                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-30 wz-margin-bottom-10"
                               aria-invalid="false"
                               ng-model="userField"
-                              ng-change="enableSave()"
-                              ng-disabled="editingRole"
-                              />
-                        </div>
-                      </div>
-                  </div>
-                   <div
-                     layout="row"
-                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
-                     class="wz-align-center"
-                     >
-                     <div class="flex wz-margin-bottom-10">
-                        <span class="tSize16">Operator</span>
-                        <div id="operator-dropdown-view"></div>
-                     </div>
-                  </div>
-                  <div
-                     layout="row"
-                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
-                     class="wz-align-center"
-                     >
-                     <div class="flex wz-margin-bottom-10">
-                       <span class="tSize16">Value</span>
-                        <div>
-                           <input
-                              placeholder="Value"
-                              type="text"
-                              flex
-                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-20"
-                              aria-invalid="false"
-                              ng-model="valueField"
                               ng-change="enableSave()"
                               ng-disabled="editingRole"
                               />
@@ -135,7 +104,7 @@
                         <button
                            class="btn wz-button-empty pull-right wz-margin-left-10"
                            ng-click="saveRoleMapping()"
-                           ng-disabled="saveIncomplete || overwrite || !roleMappingName"
+                           ng-disabled="saveIncomplete || overwrite || !roleMappingName || !userField"
                            ng-if="isAdmin"
                            >
                         <i
@@ -155,7 +124,7 @@
                   >
                   <label class="wz-icon-loupe">
                   <input
-                     placeholder="Filter roles..."
+                     placeholder="Filter roles mapping..."
                      ng-model="customSearch"
                      type="text"
                      flex
