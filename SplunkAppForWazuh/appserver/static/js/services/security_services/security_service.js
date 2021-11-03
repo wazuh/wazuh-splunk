@@ -3,8 +3,18 @@ define(
   function (app) {
     'use strict'
 
+    /**
+     * Security Service. Implements the Role Based Access Control.
+     */
     class RBAC {
 
+      /**
+       * Constructor.
+       * @param {Object} $requestService 
+       * @param {Object} ACTIONS 
+       * @param {Object} $requirementService 
+       * @param {Object} $validationService 
+       */
       constructor(
         $requestService,
         ACTIONS,
@@ -18,20 +28,37 @@ define(
         this.$validationService = $validationService
       };
 
+      /**
+       * Wrapper method for the requirementsService.
+       * @param {enumActions} enumAction action to generate the 
+       * requirement object for.
+       * @returns a requirement object for the action, to match the 
+       * corresponding user policy.
+       */
       _generateRequirementsObject(enumAction) {
         return this.$requirementService
           .generateRequirementFactory(enumAction)
           .generateRequirement()
       }
 
+      /**
+       * Wrapper method for the validationService.
+       * @param {Object} controllerRequirements requirement object of the view.
+       * @param {Object} userPolicies user's policies (permissions).
+       * @returns {Boolean} true if the user has a policy that allows the view's
+       * requirement.
+       */
       _validateRequirementsObject(controllerRequirements, userPolicies) {
         return this.$validationService
           .validatePermissions(controllerRequirements, userPolicies)
       }
 
       /**
+       * Queries the user's policies on the Wazuh API.
+       * 
        * TODO save on rootScope or similiar
-       * @returns user's policies
+       * 
+       * @returns user's policies.
        */
       async getUserPolicies() {
         try {
@@ -42,32 +69,34 @@ define(
         }
       };
 
-      getRequirementsOfController(controllerName) {
-        // buscar en el map los requisitos del controlador
-        console.log(this.ACTIONS_MAP)
+      /**
+       * Given the controller name this method uses the requirementService
+       * and the validationService to determine if the user has permisions
+       * to perform the actions required by the controller.
+       * @param {String} controllerName name of the controller.
+       * @returns {Array} array with each action required by the controller and
+       * if the user can perform it or not.
+       */
+      async getRequirementsOfController(controllerName) {
+        // Search the controller's requirements on the map.
         const actionsRequired = this.ACTIONS_MAP[controllerName] // :list
         var requirementsList = []
         var requirementsObject = null
         var isActionAllowed = false
 
-        this.getUserPolicies()
-          .then(userPolicies => {
-            actionsRequired.forEach((action) => {
-              requirementsObject = this._generateRequirementsObject(action)
-              isActionAllowed = this._validateRequirementsObject(requirementsObject, userPolicies)
-              requirementsList.push({ action, isActionAllowed })
+        try {
+          const userPolicies = await this.getUserPolicies()
 
-              console.log("User policies")
-              console.log(userPolicies)
-              console.log(`[RBAC - ${controllerName}]`)
-              console.log(requirementsObject)
-              console.log(isActionAllowed)
-              console.log(requirementsList)
-            })
-
-            return requirementsList
+          actionsRequired.forEach((action) => {
+            requirementsObject = this._generateRequirementsObject(action)
+            isActionAllowed = this._validateRequirementsObject(requirementsObject, userPolicies)
+            requirementsList.push({ action, isActionAllowed })
           })
-          .catch(error => console.error(error))
+        }
+        catch (err) {
+          console.error(err)  // TODO improve error handling.
+        }
+        return requirementsList
       }
     }
 
