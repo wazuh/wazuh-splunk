@@ -32,7 +32,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/overview/welcome/overview-welcome.html',
           controller: 'overviewWelcomeCtrl',
-          resolve: { 
+          resolve: {
             requirementsList: [
               '$security_service',
               async $security_service => {
