@@ -259,6 +259,7 @@ define([
       this.scope.addingNewPolicy = false;
       this.scope.editingPolicy = false;
       this.scope.resourcesList = [];
+      this.scope.resourceIdentifier = "";
       this.scope.$applyAsync();
     }
 

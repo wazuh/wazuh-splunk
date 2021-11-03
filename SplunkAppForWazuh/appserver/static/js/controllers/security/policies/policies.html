@@ -107,7 +107,7 @@
 
                       <div
                         ng-if="removingEntry === resource"
-                        class="confirmEmbedBubble"
+                        class="fa-pull-right "
                       >
                         <div layout="row">
                           <span class="font-size-12 wz-padding-left-8"
@@ -116,7 +116,7 @@
                         </div>
                         <div layout="row">
                           <md-button
-                            class="cancelBtn"
+                            class="cancelBtn wz-dev-box"
                             type="button"
                             ng-click="cancelRemoveEntry()"
                             ><i
@@ -126,7 +126,7 @@
                             Cancel</md-button
                           >
                           <md-button
-                            class="agreeBtn"
+                            class="agreeBtn wz-dev-box"
                             type="button"
                             ng-click="confirmRemoveEntry($event, $index)"
                             ><i
@@ -144,7 +144,7 @@
             </div>
 
             <!-- Save and cancel buttons -->
-            <div class="flex fa-pull-right ">
+            <div class="flex fa-pull-right">
               <span>
                 <button
                   class="btn wz-button-cancel"
