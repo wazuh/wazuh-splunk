@@ -50,15 +50,17 @@ define([
       this.scope.policyName = "";
       this.scope.addingNewPolicy = false;
       this.scope.editingPolicy = false;
+      this.scope.resourcesList = [];
+      this.scope.resourceIdentifier = "";
       this.buildActionsMultiDropdown();
       this.buildEffectOptionsDropDown();
-      this.buildResourcesMultiDropdown();
+      this.buildResourcesDropdown();
     }
 
     buildEffectOptionsDropDown() {
       this.effectOptions = new DropdownView({
         id: "effectOptions-dropdown",
-        default: 'allow',
+        default: "allow",
         choices: effectOptions,
         el: $("#effect-options-dropdown-view")
       }).render();
@@ -98,8 +100,8 @@ define([
       });
     }
 
-    buildResourcesMultiDropdown() {
-      this.resourcesDropdown = new MultiDropdownView({
+    buildResourcesDropdown() {
+      this.resourcesDropdown = new DropdownView({
         id: "resources-dropdown",
         managerid: "resources-search",
         choices: this.scope.resources || [{ label: "*:*", value: "0" }],
@@ -115,7 +117,11 @@ define([
       this.resourcesDropdown.on("change", newValue => {
         if (newValue && this.resourcesDropdown) {
           this.scope.resources = newValue;
+          this.scope.disableAdd = newValue.length === 0 || !newValue;
+        } else {
+          this.scope.disableAdd = !newValue;
         }
+        this.scope.$applyAsync();
       });
     }
 
@@ -149,7 +155,14 @@ define([
       this.scope.cancelPolicyEdition = () => this.cancelPolicyEdition();
       this.scope.enableSave = () => this.enableSave();
       this.scope.savePolicy = () => this.savePolicy();
+      this.scope.addResourceIdentifier = () => this.addResourceIdentifier();
+      this.scope.showConfirmRemoveEntry = (ev, key) =>
+        this.showConfirmRemoveEntry(ev, key);
+      this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry();
+      this.scope.confirmRemoveEntry = (ev, key) =>
+        this.confirmRemoveEntry(ev, key);
       this.scope.addingNewPolicy = false;
+      this.scope.disableAdd = true;
 
       // Come from the pencil icon on the policies table
       this.scope.$on("openPolicyFromList", (ev, parameters) => {
@@ -167,10 +180,12 @@ define([
       this.scope.$on("$destroy", () => {
         mvc.Components.revokeInstance("actions-dropdown");
         mvc.Components.revokeInstance("resources-dropdown");
+        mvc.Components.revokeInstance("effectOptions-dropdown");
         mvc.Components.revokeInstance("actions-search");
         mvc.Components.revokeInstance("resources-search");
         this.actionsDropdown = null;
         this.resourcesDropdown = null;
+        this.effectOptions = null;
         this.actionsSearchManager = null;
         this.resourcesSearchManager = null;
       });
@@ -190,6 +205,50 @@ define([
       }
     }
 
+    addResourceIdentifier() {
+      this.scope.resourcesList.push(
+        this.scope.resources + this.scope.resourceIdentifier
+      );
+      this.scope.resourceIdentifier = "";
+    }
+
+    /**
+     * Shows confirmation to remove a field
+     * @param {*} ev
+     * @param {String} key
+     */
+    showConfirmRemoveEntry(env, key) {
+      this.scope.removingEntry = key;
+    }
+
+    /**
+     * Cancels the removing of a entry
+     */
+    cancelRemoveEntry() {
+      this.scope.removingEntry = false;
+    }
+
+    /**
+     * Confirms if wants to remove a entry
+     * @param {String} key
+     */
+    async confirmRemoveEntry(ev, key) {
+      try {
+        this.scope.resourcesList.splice(key, 1);
+        this.refreshResourcesList();
+        this.scope.removingEntry = false;
+      } catch (error) {
+        this.notification.showErrorToast("Error deleting entry.");
+      }
+    }
+
+    /**
+     * Refreshs Resources list fields
+     */
+    refreshResourcesList() {
+      this.scope.$applyAsync();
+    }
+
     clearAll() {
       this.scope.actions = [];
       this.scope.policyName = "";
@@ -199,6 +258,7 @@ define([
       this.actionsDropdown.val([]);
       this.scope.addingNewPolicy = false;
       this.scope.editingPolicy = false;
+      this.scope.resourcesList = [];
       this.scope.$applyAsync();
     }
 
