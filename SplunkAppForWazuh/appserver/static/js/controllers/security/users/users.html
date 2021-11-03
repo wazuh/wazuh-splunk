@@ -3,17 +3,18 @@
   <md-card style="width:100%;" class="wz-md-card no-margin-sides">
     <md-card-actions layout="column"
       class="wz-card-actions wz-card-actions-top md-actions-ruleset" style="background-color: white; height:110px;">
+
       <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
-        <span style="font-size: 28px; padding-right: 10px;"> Users </span> 
+        <span style="font-size: 28px; padding-right: 10px;"> Users </span>
 
         <span flex="" class="flex"></span>
 
-        <span ng-show="!addingNewRole" ng-click="addNewUser()" class="wz-color-text cursor-pointer link-table">
+        <span ng-show="!isAddNewUser" ng-click="addNewUser()" class="wz-color-text cursor-pointer link-table">
           <wz-svg icon="plus"></wz-svg>
           Add new user
-        </span>          
+        </span>
       </div>
-
+          
       <div class="layout-row" style="padding-top: 15px;">
         <div layout="row" class="layout-row" style="width: 100%;">
 
@@ -21,76 +22,74 @@
 
 
 
-
-<!-- ADDING NEW USER -->
-          <div ng-show="isAddNewUser" style="width:100%; margin-right: 10px;">
-            <!-- Save and cancel buttons -->
-            <div
-              layout="row"
-              style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
-              class="wz-align-center"
-            >
-              <!-- Save and cancel buttons -->
-              <div>
-                <span>
-                  <button
-                    class="btn wz-button-cancel"
-                    ng-click="cancelAddUser()"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    class="btn wz-button-empty pull-right wz-margin-left-10"
-                    ng-click="saveUser()"
-                    ng-if="isAdmin"
-                  >
-                    <i
-                      ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                      aria-hidden="true"
-                    ></i>
-                    Save
-                  </button>
-                </span>
-              </div>
-
-
-              <div class="flex">
-                <span class="tSize16 wz-breadcrumb-margin">User name</span>
-                <input
-                  placeholder="New user name..."
-                  type="text"
-                  flex
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                  aria-invalid="false"
-                  ng-model="userName"
-                  ng-change="enableSave()"
-                  ng-disabled="editingUser"
-                />
-                <span class="tSize16 wz-breadcrumb-margin">User password</span>
-                <input
-                  placeholder="New user password..."
-                  type="password"
-                  flex
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                  aria-invalid="false"
-                  ng-model="userpassword"
-                  ng-change="enableSave()"
-                  ng-disabled="editingUser"
-                />
-              </div>
-
-              <div class="wz-margin-top-10">
-                <span class="tSize16">Roles</span>
-                <div id="roles-dropdown-view"></div>
-              </div>
-              <!-- End restart button -->
-            </div>
-            <!-- End save and cancel buttons-->
-          </div>
+<!-- ADD NEW USER FORM -->
+<div ng-show="isAddNewUser" style="width:100%; margin-right: 10px;">
+  <!-- Save and cancel buttons -->
+  <div
+    layout="row"
+    style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+    class="wz-align-center"
+  >
+    <!-- Save and cancel buttons -->
+    <div>
+      <span>
+        <button
+          class="btn wz-button-cancel"
+          ng-click="cancelAddUser()"
+        >
+          Cancel
+        </button>
+        <button
+          class="btn wz-button-empty pull-right wz-margin-left-10"
+          ng-click="saveUser()"
+          ng-if="isAdmin"
+        >
+          <i
+            ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+            aria-hidden="true"
+          ></i>
+          Save
+        </button>
+      </span>
+    </div>
 
 
+      <!-- <div class="flex">
+      <span>
+        <span class="tSize16 wz-breadcrumb-margin">User name</span>
+        <input
+          placeholder="New user name..."
+          type="text"
+          flex
+          class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
+          aria-invalid="false"
+          ng-model="userName"
+          ng-change="enableSave()"
+          ng-disabled="editingUser"
+        />
+        <span class="tSize16 wz-breadcrumb-margin">User password</span>
+        <input
+          placeholder="New user password..."
+          type="password"
+          flex
+          class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
+          aria-invalid="false"
+          ng-model="userpassword"
+          ng-change="enableSave()"
+          ng-disabled="editingUser"
+        />
+      </span>
+      </div> -->
 
-
+        <div class="wz-margin-top-10">
+          <span class="tSize16">Roles</span>
+          <div id="roles-dropdown-view"></div>
+        </div>
+        <!-- End restart button -->
+      </div>
+    <!-- End save and cancel buttons-->
+  </div>
+<!-- END ADD NEW USER FORM -->
 
 
 
@@ -99,17 +98,14 @@
 
 
 
-
-          <div ng-show="!isAddNewUser">
-            <label class="wz-icon-loupe">
-              <input placeholder="Filter user..." ng-model="customSearch" type="text" flex
-                class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-            </label>
-            <button ng-click="search(customSearch)"
-              class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
-              <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
-            </button>
-          </div>
+          <label ng-show="!isAddNewUser" class="wz-icon-loupe">
+            <input placeholder="Filter user..." ng-model="customSearch" type="text" flex
+              class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
+          </label>
+          <button ng-show="!isAddNewUser" ng-click="search(customSearch)"
+            class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
+            <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
+          </button>
         </div>
       </div>
   </md-card-actions>

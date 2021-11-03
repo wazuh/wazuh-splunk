@@ -5,18 +5,19 @@ define(['../../module'], function(controllers) {
     constructor($scope, isAdmin, usersData) {
       this.scope = $scope
       this.scope.isAdmin = isAdmin;
-      this.scope.isAddNewUser = true;
+      this.scope.isAddNewUser = false;
     }
 
     $onInit() {
+      this.scope.addNewUser = () => this.addNewUser();
+      this.scope.cancelAddUser = () => this.cancelAddUser();
       this.scope.isAddNewUser = false;
     }
 
     cancelAddUser() {
       try {
-        this.clearAll();
         // this.scope.overwrite = false;
-        // this.scope.isAddNewUser = true;
+        this.scope.isAddNewUser = false;
         // this.scope.policies = [];
         // this.dropdown.settings.set("disabled", false);
       } catch (error) {
@@ -26,7 +27,6 @@ define(['../../module'], function(controllers) {
     
     addNewUser() {
       try {
-        this.clearAll();
         // this.scope.overwrite = false;
         this.scope.isAddNewUser = true;
         // this.scope.policies = [];
@@ -34,14 +34,6 @@ define(['../../module'], function(controllers) {
       } catch (error) {
         this.notification.showErrorToast("Cannot add new Role.");
       }
-    }
-
-    clearAll() {
-      // this.scope.policies = [];
-      // this.scope.roleName = "";
-      // this.dropdown.valisAddNewUser
-      this.scope.addingNewRole = false;
-      // this.scope.editingRole = false;
     }
 
   }
