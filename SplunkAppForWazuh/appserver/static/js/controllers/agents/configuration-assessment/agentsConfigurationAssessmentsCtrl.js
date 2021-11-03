@@ -45,8 +45,10 @@ define(['../../module', '../../../dashboardMain'], function(
       reportingEnabled,
       BASE_URL,
       extensions,
-      $dateDiffService
+      $dateDiffService,
+      requirementsList
     ) {
+      console.log(requirementsList)
       super($scope, null, $state, $currentDataService, $urlTokenModel)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled

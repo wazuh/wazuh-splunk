@@ -47,7 +47,8 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      requirementsList
     ) {
       super(
         $scope,
@@ -56,6 +57,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.currentDataService.addFilter(
         `{"rule.groups{}":"ciscat", "implicit":true, "onlyShow":true}`
       )

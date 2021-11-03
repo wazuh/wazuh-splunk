@@ -54,7 +54,8 @@ define([
       $csvRequestService,
       $tableFilterService,
       reportingEnabled,
-      extensions
+      extensions,
+      requirementsList
     ) {
       super(
         $scope,
@@ -63,6 +64,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions

@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
@@ -17,6 +17,12 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('agents')
           },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('agents')
+              }
+            ],
             agentData: [
               '$requestService',
               '$state',
@@ -59,6 +65,12 @@ define(['../module'], function(module) {
           controller: 'agentsOverviewCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('agent-overview')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -130,6 +142,12 @@ define(['../module'], function(module) {
           controller: 'inventoryCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-inventory')
+              }
+            ],
             syscollector: [
               '$requestService',
               '$stateParams',
@@ -182,6 +200,12 @@ define(['../module'], function(module) {
           controller: 'osqueryAgentCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-osquery')
+              }
+            ],
             osquery: [
               '$requestService',
               '$currentDataService',
@@ -260,6 +284,12 @@ define(['../module'], function(module) {
           controller: 'agentsGeneralCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-general')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -309,6 +339,12 @@ define(['../module'], function(module) {
           controller: 'agentsFimCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-fim')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -352,6 +388,12 @@ define(['../module'], function(module) {
           controller: 'agentsVirusTotalCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-virustotal')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -405,6 +447,12 @@ define(['../module'], function(module) {
           controller: 'agentsAuditCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-audit')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -458,6 +506,12 @@ define(['../module'], function(module) {
           controller: 'agentsOpenScapCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-os')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -511,6 +565,12 @@ define(['../module'], function(module) {
           controller: 'configurationAgentCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-conf')
+              }
+            ],
             data: [
               '$requestService',
               '$stateParams',
@@ -579,6 +639,12 @@ define(['../module'], function(module) {
           controller: 'agentsGdprCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-gdpr')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -671,6 +737,12 @@ define(['../module'], function(module) {
           controller: 'agentsHipaaCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-hipaa')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -763,6 +835,12 @@ define(['../module'], function(module) {
           controller: 'agentsNistCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-nist')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -855,6 +933,12 @@ define(['../module'], function(module) {
           controller: 'agentsPolicyMonitoringCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-pm')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -908,6 +992,12 @@ define(['../module'], function(module) {
           controller: 'agentsConfigurationAssessmentsCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-ca')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -984,6 +1074,12 @@ define(['../module'], function(module) {
           controller: 'agentsPciCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-pci')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1077,6 +1173,12 @@ define(['../module'], function(module) {
           controller: 'agentsCiscatCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-ciscat')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1130,6 +1232,12 @@ define(['../module'], function(module) {
           controller: 'agentsVulnerabilitiesCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-vul')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1182,6 +1290,12 @@ define(['../module'], function(module) {
           controller: 'agentsCveCtrl',
           params: { id: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-cve')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1256,6 +1370,12 @@ define(['../module'], function(module) {
           },
           controller: 'agentsDockerCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ag-docker')
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',

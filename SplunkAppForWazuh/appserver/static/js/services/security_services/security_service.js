@@ -94,7 +94,8 @@ define(
           })
         }
         catch (err) {
-          console.error(err)  // TODO improve error handling.
+          // TODO improve error handling.
+          console.error(`Missing controller '${controllerName}' in mapActions`, err)
         }
         return requirementsList
       }

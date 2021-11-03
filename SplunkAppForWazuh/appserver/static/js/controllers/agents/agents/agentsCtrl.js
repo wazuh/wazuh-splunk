@@ -45,12 +45,14 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
+      requirementsList,
       agentData,
       clusterInfo,
       $mdDialog,
       $groupHandler,
-      $dateDiffService
+      $dateDiffService,
     ) {
+      console.log(requirementsList)
       this.scope = $scope;
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')

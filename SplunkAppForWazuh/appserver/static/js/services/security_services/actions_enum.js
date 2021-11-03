@@ -78,6 +78,8 @@ const mapActionsControllers = {
   'ag-ca': [enumActions.AGENT_READ, enumActions.SCA_READ],
   // Agent > CISCAT
   'ag-ciscat': [enumActions.CISCAT_READ],
+  // Agent > Configuration
+  'ag-conf': [enumActions.AGENT_READ],
   // Agent > File Integrity Monitoring
   'ag-fim': [enumActions.AGENT_READ, enumActions.SYSCHECK_READ],
   // Agent > Security Events

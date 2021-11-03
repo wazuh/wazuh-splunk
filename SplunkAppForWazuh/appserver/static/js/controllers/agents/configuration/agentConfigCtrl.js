@@ -40,8 +40,10 @@ define(['../../module', '../../../utils/config-handler'], function(
       $notificationService,
       $reportingService,
       data,
-      agent
+      agent,
+      requirementsList
     ) {
+      console.log(requirementsList)
       this.api = $currentDataService.getApi()
       this.reportingService = $reportingService
       this.$scope = $scope

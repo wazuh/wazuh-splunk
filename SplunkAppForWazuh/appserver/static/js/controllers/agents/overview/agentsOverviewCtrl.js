@@ -34,11 +34,13 @@ define(['../../module'], function(app) {
       agent,
       groups,
       isAdmin,
+      requirementsList,
       $mdDialog,
       $groupHandler,
       $dateDiffService,
       $currentDataService
     ) {
+      console.log(requirementsList)
       this.stateParams = $stateParams
       this.scope = $scope
       this.requestService = $requestService

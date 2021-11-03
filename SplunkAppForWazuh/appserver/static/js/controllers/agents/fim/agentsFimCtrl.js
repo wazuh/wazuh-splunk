@@ -52,7 +52,8 @@ define([
       $csvRequestService,
       $notificationService,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      requirementsList
     ) {
       super(
         $scope,
@@ -61,6 +62,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.wzTableFilter = $tableFilterService
       this.agent = agent
       this.api = this.currentDataService.getApi()

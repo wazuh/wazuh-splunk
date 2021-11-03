@@ -45,7 +45,8 @@ define([
       $csvRequestService,
       $notificationService,
       $reportingService,
-      extensions
+      extensions,
+      requirementsList
     ) {
       super(
         $scope,
@@ -54,6 +55,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.wzTableFilter = $tableFilterService;
       this.csvReq = $csvRequestService;
       this.notification = $notificationService;

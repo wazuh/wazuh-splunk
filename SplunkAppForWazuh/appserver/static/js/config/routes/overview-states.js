@@ -607,8 +607,8 @@ define(['../module'], function(module) {
             ],
             requirementsList: [
               '$security_service',
-              ($security_service) => {
-                $security_service.getRequirementsOfController('ow-ciscat')
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('ow-ciscat')
               }
             ]
           }

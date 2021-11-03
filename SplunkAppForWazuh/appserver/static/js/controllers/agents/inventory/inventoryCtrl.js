@@ -30,10 +30,12 @@ define(['../../module', 'FileSaver'], function(module) {
       $scope,
       $reportingService,
       reportingEnabled,
+      requirementsList,
       $currentDataService,
       $csvRequestService,
       $dateDiffService
     ) {
+      console.log(requirementsList)
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
       this.data = syscollector

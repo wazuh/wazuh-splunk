@@ -18,7 +18,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
-], function(
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -48,7 +48,8 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      requirementsList
     ) {
       super(
         $scope,
@@ -57,7 +58,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-
+      console.log(requirementsList)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.agent = agent
@@ -222,10 +223,10 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
+      if (this.scope.agent && this.scope.agent.status) {
         this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
       }
-      
+
       this.scope.formatAgentStatus = agentStatus =>
         this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = agentStatus =>

@@ -56,7 +56,8 @@ define([
       $state,
       $dateDiffService,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      requirementsList
     ) {
       super(
         $scope,
@@ -65,6 +66,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.scope.reportingEnabled = reportingEnabled
       this.requestService = $requestService
       this.notification = $notificationService

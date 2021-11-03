@@ -42,7 +42,8 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      hipaaExtensionEnabled
+      hipaaExtensionEnabled,
+      requirementsList
     ) {
       super(
         $scope,
@@ -51,6 +52,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      console.log(requirementsList)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
