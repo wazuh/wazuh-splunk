@@ -172,6 +172,7 @@ define([
       this.scope.addingNewRoleMapping = false;
       this.scope.editingRoleMapping = false;
       this.scope.editingRole = false;
+      this.scope.overwrite = false;
       this.scope.roleMappingName = "";
       this.scope.userField = "";
       this.dropdownRoles.val([]);
