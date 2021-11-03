@@ -44,6 +44,7 @@ define(
 
       getRequirementsOfController(controllerName) {
         // buscar en el map los requisitos del controlador
+        console.log(this.ACTIONS_MAP)
         const actionsRequired = this.ACTIONS_MAP[controllerName] // :list
         var requirementsList = []
         var requirementsObject = null
@@ -55,7 +56,7 @@ define(
               requirementsObject = this._generateRequirementsObject(action)
               isActionAllowed = this._validateRequirementsObject(requirementsObject, userPolicies)
               requirementsList.push({ action, isActionAllowed })
-              
+
               console.log("User policies")
               console.log(userPolicies)
               console.log(`[RBAC - ${controllerName}]`)

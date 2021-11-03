@@ -15,7 +15,6 @@ const enumActions = {
   CLUSTER_READ: 'CLUSTER_READ',
   CLUSTER_RESTART: 'CLUSTER_RESTART',
   CLUSTER_STATUS: 'CLUSTER_STATUS',
-  // cluster:update_config
   CLUSTER_UPDATE_CONFIG: 'CLUSTER_UPDATE_CONFIG',
   DECODERS_READ: 'DECODERS_READ',
   DECODERS_UPDATE: 'DECODERS_UPDATE',
@@ -75,38 +74,50 @@ const enumActions = {
  * @enum {string}
  */
 const mapActionsControllers = {
-  'ow-ciscat': [enumActions.CISCAT_READ],
+  // Agents
+  'ag-ca': [enumActions.SCA_READ],
   'ag-ciscat': [enumActions.CISCAT_READ],
+  'ag-fim': [enumActions.SYSCHECK_READ],
+  'ag-general': [
+    enumActions.SYSCHECK_READ,
+    enumActions.SYSCOLLECTOR_READ
+  ],
+  'ag-inventory': [
+    enumActions.SYSCHECK_READ,
+    enumActions.SYSCOLLECTOR_READ
+  ],
+  'ag-vul': [enumActions.VULNERABILITY_READ],
+  'ag-vul': [enumActions.VULNERABILITY_READ],
   'agent-overview': [
-    enumActions.AGENT_READ, 
+    enumActions.AGENT_READ,
     enumActions.AGENT_MODIFY_GROUP,
     enumActions.AGENT_RESTART,
     enumActions.CLUSTER_STATUS,
     enumActions.GROUP_MODIFY_ASSIGNMENT,
     enumActions.GROUP_READ,
     enumActions.ROOTCHECK_READ,
-    enumActions.SYSCHECK_READ, 
-  ],
-  'overview': [enumActions.AGENT_READ],
-  //Security Events
-  'ow-general': [
-    enumActions.AGENT_READ,
-    enumActions.ROOTCHECK_READ
-  ],
-  'ow-fim': [enumActions.AGENT_READ],
-  'ow-pm': [enumActions.AGENT_READ],
-  'ow-audit': [enumActions.AGENT_READ],
-  'ow-os': [enumActions.AGENT_READ],
-  'ow-vul': [
-    enumActions.AGENT_READ,
-    enumActions.VULNERABILITY_READ
-  ],
-  'ow-virustotal': [enumActions.AGENT_READ],
-  'ow-mitre': [enumActions.AGENT_READ],
-  'ow-gdpr': [enumActions.AGENT_READ],
-  'ow-hipaa': [enumActions.AGENT_READ],
-  'ow-nist': [enumActions.AGENT_READ],
+    enumActions.SYSCHECK_READ],
   'agents': [enumActions.AGENT_READ],
+  // Discover
+  'discover': [enumActions.AGENT_READ],
+  // Management > Configuration
+  'mg-conf': [enumActions.CLUSTER_READ],
+  // Management > Decoders
+  'mg-decoders': [
+    enumActions.DECODERS_READ,
+    enumActions.DECODERS_UPDATE,
+    enumActions.DECODERS_DELETE
+  ],
+  // Management > Configuration > Edit
+  'mg-editConfig': [
+    enumActions.CLUSTER_RESTART,
+    enumActions.CLUSTER_STATUS,
+    enumActions.MANAGER_READ,
+    enumActions.MANAGER_RESTART,
+    enumActions.MANAGER_UPDATE_CONFIG,
+    enumActions.CLUSTER_UPDATE_CONFIG
+  ],
+  // Management > Groups
   'mg-groups': [
     enumActions.AGENT_MODIFY_GROUP,
     enumActions.AGENT_READ,
@@ -114,6 +125,29 @@ const mapActionsControllers = {
     enumActions.GROUP_MODIFY_ASSIGNMENT,
     enumActions.GROUP_READ
   ],
+  // Management > Lists
+  'mg-list': [
+    enumActions.LISTS_READ,
+    enumActions.LISTS_UPDATE,
+    enumActions.LISTS_DELETE
+  ],
+  'mg-logs': [
+    enumActions.CLUSTER_STATUS,
+    enumActions.MANAGER_READ
+  ],
+  // Management > Cluster
+  'mg-monitoring': [
+    enumActions.AGENT_READ,
+    enumActions.CLUSTER_READ,
+    enumActions.CLUSTER_STATUS
+  ],
+  // Management > Rules
+  'mg-rules': [
+    enumActions.RULES_DELETE,
+    enumActions.RULES_READ,
+    enumActions.RULES_UPDATE
+  ],
+  // Management > Status
   'mg-status': [
     enumActions.AGENT_READ,
     enumActions.CLUSTER_READ,
@@ -124,56 +158,27 @@ const mapActionsControllers = {
     enumActions.MANAGER_READ,
     enumActions.RULES_READ
   ],
-  //Management > Cluster ?
-  'mg-monitoring':[
+  // Overview
+  'overview': [enumActions.AGENT_READ],
+  'ow-audit': [enumActions.AGENT_READ],
+  'ow-ciscat': [enumActions.CISCAT_READ],
+  'ow-fim': [enumActions.AGENT_READ],
+  'ow-gdpr': [enumActions.AGENT_READ],
+  'ow-general': [
     enumActions.AGENT_READ,
-    enumActions.CLUSTER_READ,
-    enumActions.CLUSTER_STATUS,
-  ],
-  'mg-conf': [enumActions.CLUSTER_READ],
-  'mg-editConfig': [
-    enumActions.CLUSTER_RESTART,
-    enumActions.CLUSTER_STATUS,
-    enumActions.MANAGER_READ,
-    enumActions.MANAGER_RESTART,
-    enumActions.MANAGER_UPDATE_CONFIG,
-    //cluster:update_config
-    enumActions.CLUSTER_UPDATE_CONFIG,
-  ],
-  'mg-logs': [
-    enumActions.CLUSTER_STATUS,
-    enumActions.MANAGER_READ
-  ],
-  'mg-decoders': [
-    enumActions.DECODERS_READ,
-    enumActions.DECODERS_UPDATE,
-    enumActions.DECODERS_DELETE
-  ],
+    enumActions.ROOTCHECK_READ]
+  ,
+  'ow-hipaa': [enumActions.AGENT_READ],
+  'ow-mitre': [enumActions.AGENT_READ],
   'ow-mitre-ids': [enumActions.MITRE_READ],
-  'mg-rules': [
-    enumActions.RULES_DELETE,
-    enumActions.RULES_READ,
-    enumActions.RULES_UPDATE
-  ],
-  'discover': [enumActions.AGENT_READ],
-  //Management > Lists
-  'mg-list': [
-    enumActions.LISTS_READ,
-    enumActions.LISTS_UPDATE,
-    enumActions.LISTS_DELETE,
-  ],
-  'ag-ca': [enumActions.SCA_READ],
-  'ag-general': [
-    enumActions.SYSCHECK_READ,
-    enumActions.SYSCOLLECTOR_READ
-  ],
-  'ag-fim': [enumActions.SYSCHECK_READ],
-  'ag-inventory': [
-    enumActions.SYSCHECK_READ,
-    enumActions.SYSCOLLECTOR_READ
-  ],
-  'ag-vul': [enumActions.VULNERABILITY_READ],
-  'ag-vul': [enumActions.VULNERABILITY_READ]
+  'ow-nist': [enumActions.AGENT_READ],
+  'ow-os': [enumActions.AGENT_READ],
+  'ow-pm': [enumActions.AGENT_READ],
+  'ow-virustotal': [enumActions.AGENT_READ],
+  'ow-vul': [
+    enumActions.AGENT_READ,
+    enumActions.VULNERABILITY_READ
+  ]
 }
 
 /**
