@@ -56,6 +56,16 @@ define(['../module'], function(module) {
               }
             }
           ],
+          roleData: [
+            "$securityService",
+            async $securityService => {
+              try {
+                return await $securityService.getRoles();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
         }
       })
       .state('security.roles', {

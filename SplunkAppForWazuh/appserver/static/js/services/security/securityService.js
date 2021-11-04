@@ -21,13 +21,9 @@ define(["../module"], function(module) {
       }
     };
    
-    const getUsers = async user => {
+    const getRoles = async () => {
       try {
-        const result = await $requestService.apiReq(
-          `/security/users?user_ids=${user}`,
-          {},
-          "DELETE"
-        );
+        const result = await $requestService.apiReq(`/security/roles`);
         if (result.data.error !== 0) {
           throw new Error(result.data.message);
         }
@@ -58,7 +54,7 @@ define(["../module"], function(module) {
 
     return {
       addUser: addUser,
-      getUsers: getUsers,
+      getRoles: getRoles,
       removeUser: removeUser
     };    
   });
