@@ -20,7 +20,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $csvRequestService,
       $restartService,
       isAdmin,
-      $fileEditor
+      $fileEditor,
+      requirementsList
     ) {
       super(
         $scope,
@@ -33,6 +34,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $restartService,
         $fileEditor
       )
+      console.log(requirementsList)
       this.isAdmin = isAdmin
     }
 

@@ -19,6 +19,14 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/welcome/manager-welcome.html',
+            resolve: {
+              requirementsList: [
+                '$security_service',
+                async $security_service => {
+                  return await $security_service.getRequirementsOfController('manager')
+                }
+              ],
+            },
             onEnter: () => {
               window.sessionStorage.showLogtest = false
             }
@@ -34,6 +42,12 @@ define(['../module'], function(module) {
           controller: 'monitoringCtrl',
           params: { id: null, filters: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-monitoring')
+              }
+            ],
             monitoringInfo: [
               '$requestService',
               '$state',
@@ -79,6 +93,12 @@ define(['../module'], function(module) {
           },
           controller: 'managerLogsCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-logs')
+              }
+            ],
             logs: [
               '$requestService',
               '$state',
@@ -106,6 +126,12 @@ define(['../module'], function(module) {
           controller: 'managerRulesetCtrl',
           params: { filters: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-rules')
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
@@ -125,6 +151,12 @@ define(['../module'], function(module) {
           controller: 'managerRulesetIdCtrl',
           params: { id: null, filters: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-rules')
+              }
+            ],
             ruleInfo: [
               '$requestService',
               '$stateParams',
@@ -169,6 +201,12 @@ define(['../module'], function(module) {
           controller: 'managerDecodersCtrl',
           params: { filters: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-decoders')
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
@@ -188,6 +226,12 @@ define(['../module'], function(module) {
           controller: 'managerDecodersIdCtrl',
           params: { id: null, name: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-decoders')
+              }
+            ],
             currentDecoder: [
               '$requestService',
               '$stateParams',
@@ -233,6 +277,12 @@ define(['../module'], function(module) {
           controller: 'managerCdbCtrl',
           params: { filters: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-cdb')
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
@@ -253,6 +303,12 @@ define(['../module'], function(module) {
           controller: 'managerCdbIdCtrl',
           params: { name: null, path: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-cdb')
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
@@ -293,6 +349,12 @@ define(['../module'], function(module) {
           controller: 'groupsCtrl',
           params: { group: null },
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-groups')
+              }
+            ],
             extensions: [
               '$currentDataService',
               async $currentDataService => {
@@ -322,6 +384,12 @@ define(['../module'], function(module) {
           },
           controller: 'configurationCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-conf')
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
@@ -370,6 +438,12 @@ define(['../module'], function(module) {
           },
           controller: 'editionCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-editConfig')
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
@@ -418,6 +492,12 @@ define(['../module'], function(module) {
           },
           controller: 'statusCtrl',
           resolve: {
+            requirementsList: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.getRequirementsOfController('mg-status')
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {

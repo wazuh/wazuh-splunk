@@ -131,7 +131,14 @@ const mapActionsControllers = {
   'agents': [enumActions.AGENT_READ, enumActions.CLUSTER_READ],
   // Discover
   // 'discover': [enumActions.AGENT_READ],
+  'manager': [enumActions.MANAGER_READ],
   // Management > Configuration
+  // Management > Decoders
+  'mg-cdb': [
+    enumActions.LISTS_READ,
+    enumActions.LISTS_UPDATE,
+    enumActions.LISTS_DELETE
+  ],
   'mg-conf': [enumActions.CLUSTER_READ],
   // Management > Decoders
   'mg-decoders': [
@@ -173,6 +180,8 @@ const mapActionsControllers = {
     enumActions.CLUSTER_READ,
     enumActions.CLUSTER_STATUS
   ],
+  // Management > Reporting
+  'mg-reporting': [ ],
   // Management > Rules
   'mg-rules': [
     enumActions.RULES_DELETE,

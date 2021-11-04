@@ -19,8 +19,10 @@ define(['../../module'], function(controllers) {
       statusData,
       agentInfo,
       isAdmin,
-      $restartService
+      $restartService,
+      requirementsList
     ) {
+      console.log(requirementsList)
       this.scope = $scope
       this.scope.load = true
       this.apiReq = $requestService.apiReq

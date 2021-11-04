@@ -26,7 +26,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $fileEditor,
       $restartService,
       $requestService,
-      isAdmin
+      isAdmin,
+      requirementsList
     ) {
       super(
         $scope,
@@ -38,6 +39,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         $csvRequestService,
         $restartService
       )
+      console.log(requirementsList)
       this.state = $state
       this.extensions = extensions
       this.fileEditor = $fileEditor

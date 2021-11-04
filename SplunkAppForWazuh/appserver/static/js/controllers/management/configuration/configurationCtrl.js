@@ -12,8 +12,10 @@ define(['../../module', '../../../utils/config-handler'], function(
       $appVersionService,
       $notificationService,
       isAdmin,
-      clusterInfo
+      clusterInfo,
+      requirementsList
     ) {
+      console.log(requirementsList)
       this.scope = $scope
       this.notification = $notificationService
       this.apiReq = $requestService

@@ -25,8 +25,10 @@ define([
       $requestService,
       $appVersionService,
       $notificationService,
-      monitoringInfo
+      monitoringInfo,
+      requirementsList
     ) {
+      console.log(requirementsList)
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.currentDataService = $currentDataService

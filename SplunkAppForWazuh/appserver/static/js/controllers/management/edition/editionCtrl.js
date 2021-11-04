@@ -17,8 +17,10 @@ define(['../../module'], function(controllers) {
       $restartService,
       $interval,
       $rootScope,
-      $state
+      $state,
+      requirementsList
     ) {
+      console.log(requirementsList)
       this.scope = $scope
       this.clusterInfo = clusterInfo
       this.isAdmin = isAdmin

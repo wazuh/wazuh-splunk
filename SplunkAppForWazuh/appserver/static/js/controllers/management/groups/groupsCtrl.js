@@ -27,8 +27,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $reportingService,
       $groupHandler,
       extensions,
-      isAdmin
+      isAdmin,
+      requirementsList
     ) {
+      console.log(requirementsList)
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
