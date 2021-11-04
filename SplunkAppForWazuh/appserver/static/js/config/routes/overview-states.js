@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
   module.paths = {
     root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
@@ -10,7 +10,7 @@ define(['../module'], function(module) {
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
-    function(
+    function (
       $mdIconProvider,
       $locationProvider,
       $stateProvider,
@@ -46,7 +46,7 @@ define(['../module'], function(module) {
                 try {
                   const result = await $requestService.apiReq('/agents/summary/status')
                   return result
-                } catch (err) {} //eslint-disable-line
+                } catch (err) { } //eslint-disable-line
               }
             ],
             extensions: [
@@ -144,7 +144,7 @@ define(['../module'], function(module) {
               }
             ]
           }
-        }) 
+        })
         // Overview - SCA Security Configuration Assessment
         .state('ow-sca', {
           templateUrl:
@@ -476,7 +476,7 @@ define(['../module'], function(module) {
               }
             ]
           }
-        }) 
+        })
         // Overview - HIPAA
         .state('ow-hipaa', {
           templateUrl:
@@ -851,11 +851,11 @@ define(['../module'], function(module) {
                 try {
                   const results = await $requestService.apiReq(`/mitre?select=phase_name`)
                   const data = results.data.data.affected_items
-                  
-                  const tactics = data.reduce((parsed, item)=>{
-                    parsed[item.phase_name[0]]=0
+
+                  const tactics = data.reduce((parsed, item) => {
+                    parsed[item.phase_name[0]] = 0
                     return parsed
-                  },{})
+                  }, {})
 
                   return tactics
 
