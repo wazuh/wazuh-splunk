@@ -195,11 +195,11 @@ const mapActionsControllers = {
   // Overview > Audit
   'ow-audit': [enumActions.AGENT_READ],
   // =========== AWS =========== //
-  'ow-aws': [],
+  'ow-aws': [enumActions.AGENT_READ],
   // Overview - CIS-CAT
   'ow-ciscat': [enumActions.CISCAT_READ],
   // Overview > Docker
-  'ow-docker': [],
+  'ow-docker': [enumActions.AGENT_READ],
   // Overview > FIM
   'ow-fim': [enumActions.AGENT_READ],
   // Overview > GDPR
@@ -220,13 +220,13 @@ const mapActionsControllers = {
   // Overview > OpenSCAP
   'ow-os': [enumActions.AGENT_READ],
   // Overview > Osquery
-  'ow-osquery': [],
+  'ow-osquery': [enumActions.AGENT_READ],
   // Overview > PCI-DSS
-  'ow-pci': [],
+  'ow-pci': [enumActions.AGENT_READ],
   // Overview > Policy Monitoring
   'ow-pm': [enumActions.AGENT_READ],
   // Overview > SCA Security Configuration Assessment
-  'ow-sca': [],
+  'ow-sca': [enumActions.AGENT_READ],
   // Overview > VirusTotal
   'ow-virustotal': [enumActions.AGENT_READ],
   // Overview > Vulnerabilities
