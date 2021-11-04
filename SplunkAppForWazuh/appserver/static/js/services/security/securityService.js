@@ -48,7 +48,7 @@ define(["../module"], function(module) {
         }
 
         let roleId = "";
-        if (data.affected_items && data.affected_items) {
+        if (data.affected_items && data.affected_items.length) {
           roleId = data.affected_items[0].id;
         }
 
@@ -85,17 +85,17 @@ define(["../module"], function(module) {
             content: JSON.stringify({
               name: policyName,
               policy: {
-                actions: actions.map(x => x.action),
-                resources: resources.map(x => x.resource),
-                effect: effectValue,
-                origin: "json"
+                actions: actions,
+                resources: resources,
+                effect: effectValue
               }
-            })
+            }),
+            origin: "json"
           },
           "POST"
         );
 
-        return (result.data || {}).data;
+        return result.data;
       } catch (error) {
         return Promise.reject(error);
       }

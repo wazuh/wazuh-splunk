@@ -51,6 +51,7 @@ define([
       this.scope.addingNewPolicy = false;
       this.scope.editingPolicy = false;
       this.scope.resourcesList = [];
+      this.scope.resources = [];
       this.scope.resourceIdentifier = "";
       this.buildActionsMultiDropdown();
       this.buildEffectOptionsDropDown();
@@ -94,6 +95,7 @@ define([
             "choices",
             this.getResourcesOfActions(this.scope.actions)
           );
+          this.resourcesDropdown.val([]);
           this.resourcesDropdown.settings.set("disabled", false);
           this.scope.$applyAsync();
         }
@@ -104,7 +106,7 @@ define([
       this.resourcesDropdown = new DropdownView({
         id: "resources-dropdown",
         managerid: "resources-search",
-        choices: this.scope.resources || [{ label: "*:*", value: "0" }],
+        choices: this.scope.resources,
         el: $("#resources-dropdown-view")
       }).render();
 
@@ -210,6 +212,7 @@ define([
         this.scope.resources + this.scope.resourceIdentifier
       );
       this.scope.resourceIdentifier = "";
+      this.resourcesDropdown.val([]);
     }
 
     /**
@@ -291,14 +294,21 @@ define([
             );
           } else {
             this.scope.saveIncomplete = true;
-            const policies = this.scope.policies;
+            const resources = this.scope.resourcesList;
+            const actions = this.actionsDropdown._getSelectedData().map(selected => selected.label);
+            const effect = this.effectOptions.val();
+
             const result = await this.securityService.savePolicy(
               policyName,
-              policies
+              actions,
+              resources,
+              effect
             );
-            if (result && result.data && result.data.error === 0) {
-              this.notification.showSuccessToast("File saved successfully.");
+            if (result && result.data && result.data.total_failed_items === 0) {
+              this.notification.showSuccessToast("Policy saved successfully.");
               this.scope.saveIncomplete = false;
+              this.clearAll()
+              this.scope.removingEntry = false;
               this.scope.$applyAsync();
             } else if (result.data.error === 1905) {
               this.notification.showWarningToast(
