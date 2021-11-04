@@ -566,6 +566,16 @@ define([
           $scope.$emit('openGroupFromList', { policy })
         }
         $scope.confirmRemoveSecurityPolicies = async policy => {
+          try {
+            await $securityService.removePolicy(policy.id)
+            $notificationService.showSuccessToast(
+              `Success. Policy ${policy.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingPolicy = null
+          return init()
         }
         // END SECURITY SECTION FOR POLICIES
 

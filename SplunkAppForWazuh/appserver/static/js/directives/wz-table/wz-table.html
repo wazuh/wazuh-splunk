@@ -315,14 +315,14 @@
                 <md-button class="cancelBtn" type="button" ng-click="cancelRemoveSecurityPolicies()"><i aria-hidden='true'
                     class='fa fa-fw fa-close'></i>
                   Cancel</md-button>
-                <md-button class="agreeBtn" type="button" ng-click="confirmRemoveSecurityPolicies(item.name)"><i aria-hidden='true'
+                <md-button class="agreeBtn" type="button" ng-click="confirmRemoveSecurityPolicies(item)"><i aria-hidden='true'
                     class='fa fa-fw fa-check'></i> Confirm</md-button>
               </div>
             </div>
             <td ng-if="isLookingGroup() " ng-click="$event.stopPropagation()"
               class="cursor-default action-btn-td">
               <wz-svg ng-if="removingPolicies !== item.name"
-                ng-click="showConfirmRemoveSecurityPolicies($event, item); $event.stopPropagation()" icon="trash"
+                ng-click="showConfirmRemoveSecurityPolicies($event, item.id); $event.stopPropagation()" icon="trash"
                 color="#396e3e" svg-tooltip="Remove entry">
               </wz-svg>
 
@@ -335,7 +335,7 @@
                   <md-button class="cancelBtn" type="button" ng-click="cancelRemoveSecurityPolicies()"><i aria-hidden='true'
                       class='fa fa-fw fa-close'></i>
                     Cancel</md-button>
-                  <md-button class="agreeBtn" type="button" ng-click="confirmRemoveSecurityPolicies(item.name)"><i aria-hidden='true'
+                  <md-button class="agreeBtn" type="button" ng-click="confirmRemoveSecurityPolicies(item.id)"><i aria-hidden='true'
                       class='fa fa-fw fa-check'></i> Confirm</md-button>
                 </div>
               </div>

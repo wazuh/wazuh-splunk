@@ -101,10 +101,57 @@ define(["../module"], function(module) {
       }
     };
 
+    const updatePolicy = async (policyId, actions, resources, effectValue) => {
+      try {
+        const result = await $requestService.apiReq(
+          `/security/policies/${policyId}`,
+          {
+            content: JSON.stringify({
+              policy: {
+                actions: actions,
+                resources: resources,
+                effect: effectValue
+              }
+            }),
+            origin: "json"
+          },
+          "PUT"
+        );
+
+        return result.data;
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    };
+
     const removeRole = async role => {
       try {
         const result = await $requestService.apiReq(
           `/security/roles?role_ids=${role}`,
+          {},
+          "DELETE"
+        );
+
+        if (
+          result.data.data.failed_items.length &&
+          result.data.data.failed_items[0].error.code === 4008
+        ) {
+          throw new Error(result.data.data.failed_items[0].error.message);
+        }
+
+        if (result.data.error !== 0) {
+          throw new Error(result.data.message);
+        }
+        return result;
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    };
+
+    const removePolicy = async policy => {
+      try {
+        const result = await $requestService.apiReq(
+          `/security/policies?policy_ids=${policy}`,
           {},
           "DELETE"
         );
@@ -146,9 +193,11 @@ define(["../module"], function(module) {
       getPolicyData: getPolicyData,
       saveRole: saveRole,
       removeRole: removeRole,
+      removePolicy: removePolicy,
       getResourceData: getResourceData,
       getActionData: getActionData,
-      savePolicy: savePolicy
+      savePolicy: savePolicy,
+      updatePolicy: updatePolicy
     };
   });
 });
