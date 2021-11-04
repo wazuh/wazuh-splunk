@@ -75,21 +75,21 @@ const enumActions = {
  */
 const mapActionsControllers = {
   // Agent > System Auditing
-  'ag-audit': [enumActions.AGENT_READ], // = ow-audit
+  'ag-audit': [enumActions.AGENT_READ],
   // Agent > Security Configuration Assessment
   'ag-ca': [enumActions.AGENT_READ, enumActions.SCA_READ],
   // Agent > CISCAT
   'ag-ciscat': [enumActions.CISCAT_READ],
   // Agent > Invenotry
-  'ag-cve': [],
+  'ag-cve': [enumActions.VULNERABILITY_READ],
   // Agent > Docker Listener
-  'ag-docker': [],
+  'ag-docker': [enumActions.AGENT_READ],
   // Agent > Configuration
   'ag-conf': [enumActions.AGENT_READ],
   // Agent > File Integrity Monitoring
   'ag-fim': [enumActions.AGENT_READ, enumActions.SYSCHECK_READ],
   // Agent > GDPR
-  'ag-gdpr': [enumActions.AGENT_READ], // = ow-gdpr
+  'ag-gdpr': [enumActions.AGENT_READ],
   // Agent > Security Events
   'ag-general': [
     enumActions.AGENT_READ,
@@ -98,7 +98,7 @@ const mapActionsControllers = {
     enumActions.ROOTCHECK_READ,
   ],
   // Agent > HIPAA
-  'ag-hipaa': [enumActions.AGENT_READ], // = ow-hipaa
+  'ag-hipaa': [enumActions.AGENT_READ],
   // Agent > Inventory Data
   'ag-inventory': [
     enumActions.AGENT_READ,
@@ -106,17 +106,17 @@ const mapActionsControllers = {
     enumActions.SYSCOLLECTOR_READ
   ],
   // Agent > NIST 800-53
-  'ag-nist': [enumActions.AGENT_READ], // = ow-nist
+  'ag-nist': [enumActions.AGENT_READ],
   // Agent > OpenSCAP
-  'ag-os': [enumActions.AGENT_READ], // = ow-os
+  'ag-os': [enumActions.AGENT_READ],
   // Agent > Osquery
-  'ag-osquery': [],
+  'ag-osquery': [enumActions.AGENT_READ],
   // Agent > PCI DSS
-  'ag-pci': [],
+  'ag-pci': [enumActions.AGENT_READ],
   // Agent > Policy Monitoring
-  'ag-pm': [enumActions.AGENT_READ], // = ow-pm
+  'ag-pm': [enumActions.AGENT_READ],
   // Agent > VirusTotal
-  'ag-virustotal': [enumActions.AGENT_READ], // = ow-virustotal
+  'ag-virustotal': [enumActions.AGENT_READ],
   // Agent > Vulnerabilities
   'ag-vul': [enumActions.AGENT_READ, enumActions.VULNERABILITY_READ],
   // Agent > Overview
@@ -192,44 +192,44 @@ const mapActionsControllers = {
   ],
   // Overview
   'overview': [enumActions.AGENT_READ],
-  // Overview - audit
+  // Overview > Audit
   'ow-audit': [enumActions.AGENT_READ],
   // =========== AWS =========== //
   'ow-aws': [],
   // Overview - CIS-CAT
   'ow-ciscat': [enumActions.CISCAT_READ],
-  // Docker listener
+  // Overview > Docker
   'ow-docker': [],
-  // Overview - FIM
+  // Overview > FIM
   'ow-fim': [enumActions.AGENT_READ],
-  // Overview - GDPR
+  // Overview > GDPR
   'ow-gdpr': [enumActions.AGENT_READ],
-  // Overview - General
+  // Overview > General
   'ow-general': [
     enumActions.AGENT_READ,
     enumActions.ROOTCHECK_READ
   ],
-  // Overview - HIPAA
+  // Overview > HIPAA
   'ow-hipaa': [enumActions.AGENT_READ],
   // Overview > MITRE ATT&CK
   'ow-mitre': [enumActions.AGENT_READ],
   // Overview > MITRE ATT&CK Framework
   'ow-mitre-ids': [enumActions.MITRE_READ],
-   // Overview - NIST 800-53
+  // Overview > NIST 800-53
   'ow-nist': [enumActions.AGENT_READ],
-  // Overview - OpenSCAP
+  // Overview > OpenSCAP
   'ow-os': [enumActions.AGENT_READ],
-  // Overview - Osquery
+  // Overview > Osquery
   'ow-osquery': [],
-  // Overview - PCI-DSS
+  // Overview > PCI-DSS
   'ow-pci': [],
-  // Overview - policy monitoring
+  // Overview > Policy Monitoring
   'ow-pm': [enumActions.AGENT_READ],
-  // Overview - SCA Security Configuration Assessment
+  // Overview > SCA Security Configuration Assessment
   'ow-sca': [],
-  // Overview - VirusTotal
+  // Overview > VirusTotal
   'ow-virustotal': [enumActions.AGENT_READ],
-  // Overview - Vulnerabilities
+  // Overview > Vulnerabilities
   'ow-vul': [
     enumActions.AGENT_READ,
     enumActions.VULNERABILITY_READ
