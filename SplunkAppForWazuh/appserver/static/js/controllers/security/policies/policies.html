@@ -66,7 +66,7 @@
                   class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-10"
                   aria-invalid="false"
                   ng-model="resourceIdentifier"
-                  ng-disabled="editingPolicy"
+                  ng-change="onResourceIdentifierChanged()"
                 />
                 <button
                   ng-disabled="!resourceIdentifier ||  disableAdd"

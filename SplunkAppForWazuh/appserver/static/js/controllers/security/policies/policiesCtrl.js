@@ -96,7 +96,6 @@ define([
             this.getResourcesOfActions(this.scope.actions)
           );
           this.resourcesDropdown.val([]);
-          this.resourcesDropdown.settings.set("disabled", false);
           this.scope.$applyAsync();
         }
       });
@@ -133,17 +132,23 @@ define([
         Object.keys(this.scope.actionList)
           .map((name, idx) => {
             return (this.scope.actionData[x] || []).label === name
-              ? result.push({
-                  label: this.scope.actionList[name].resources,
-                  value: this.scope.actionList[name].resources.toString()
-                })
+              ? result.push(
+                  this.scope.actionList[name].resources.map(
+                    (resource, index) => {
+                      return {
+                        label: resource,
+                        value: index
+                      };
+                    }
+                  )
+                )
               : "";
           })
           .filter(value => {
             return value;
           });
       }
-      return result;
+      return result[0];
     }
 
     getActionList(actionsData) {
@@ -158,6 +163,8 @@ define([
       this.scope.enableSave = () => this.enableSave();
       this.scope.savePolicy = () => this.savePolicy();
       this.scope.addResourceIdentifier = () => this.addResourceIdentifier();
+      this.scope.onResourceIdentifierChanged = () =>
+        this.onResourceIdentifierChanged();
       this.scope.showConfirmRemoveEntry = (ev, key) =>
         this.showConfirmRemoveEntry(ev, key);
       this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry();
@@ -172,11 +179,14 @@ define([
         this.scope.addingNewPolicy = true;
         this.scope.editingPolicy = true;
         this.scope.policyName = parameters.policy.name;
-        this.scope.actions = parameters.policy.actions;
+        this.scope.policyId = parameters.policy.id;
+        this.scope.actions = parameters.policy.policy.actions;
         this.actionsDropdown.val(this.scope.actions);
-        this.resourcesDropdown.val(
-          this.getResourcesOfActions(this.scope.actions)
-        );
+        this.effectOptions.val(parameters.policy.policy.effect);
+        parameters.policy.policy.resources.map(resource => {
+          this.scope.resourcesList.push(resource);
+        });
+        this.scope.disableAdd = false;
       });
 
       this.scope.$on("$destroy", () => {
@@ -209,10 +219,16 @@ define([
 
     addResourceIdentifier() {
       this.scope.resourcesList.push(
-        this.scope.resources + this.scope.resourceIdentifier
+        `${this.resourcesDropdown._getSelectedData().label}:${
+          this.scope.resourceIdentifier
+        }`
       );
       this.scope.resourceIdentifier = "";
       this.resourcesDropdown.val([]);
+    }
+
+    onResourceIdentifierChanged() {
+      this.scope.disableAdd = this.scope.resourceIdentifier.length > 0;
     }
 
     /**
@@ -256,7 +272,6 @@ define([
       this.scope.actions = [];
       this.scope.policyName = "";
       this.scope.addingNewPolicy = false;
-      this.scope.editingPolicy = false;
       this.resourcesDropdown.val([]);
       this.actionsDropdown.val([]);
       this.scope.addingNewPolicy = false;
@@ -295,19 +310,32 @@ define([
           } else {
             this.scope.saveIncomplete = true;
             const resources = this.scope.resourcesList;
-            const actions = this.actionsDropdown._getSelectedData().map(selected => selected.label);
+            const actions = this.actionsDropdown
+              ._getSelectedData()
+              .map(selected => selected.label);
             const effect = this.effectOptions.val();
 
-            const result = await this.securityService.savePolicy(
-              policyName,
-              actions,
-              resources,
-              effect
-            );
+            let result;
+            if (this.scope.editingPolicy) {
+              result = await this.securityService.updatePolicy(
+                this.scope.policyId,
+                actions,
+                resources,
+                effect
+              );
+            } else {
+              result = await this.securityService.savePolicy(
+                policyName,
+                actions,
+                resources,
+                effect
+              );
+            }
+
             if (result && result.data && result.data.total_failed_items === 0) {
               this.notification.showSuccessToast("Policy saved successfully.");
               this.scope.saveIncomplete = false;
-              this.clearAll()
+              this.clearAll();
               this.scope.removingEntry = false;
               this.scope.$applyAsync();
             } else if (result.data.error === 1905) {

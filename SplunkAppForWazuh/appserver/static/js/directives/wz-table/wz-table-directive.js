@@ -563,7 +563,7 @@ define([
           $scope.removingPolicies = null
         }
         $scope.editSecurityPolicies = policy => {
-          $scope.$emit('openGroupFromList', { policy })
+          $scope.$emit('openPolicyFromList', { policy })
         }
         $scope.confirmRemoveSecurityPolicies = async policy => {
           try {
