@@ -115,6 +115,7 @@ define(["../module"], function (module) {
         CLUSTER_READ: "cluster:read",
         CLUSTER_RESTART: "cluster:restart",
         CLUSTER_STATUS: "cluster:status",
+        CLUSTER_UPDATE_CONFIG: "cluster:update_config",
         DECODERS_READ: "decoders:read",
         DECODERS_UPDATE: "decoders:update",
         DECODERS_DELETE: "decoders:delete",
@@ -177,6 +178,7 @@ define(["../module"], function (module) {
      * "CLUSTER_READ" |
      * "CLUSTER_RESTART" |
      * "CLUSTER_STATUS" |
+     * "CLUSTER_UPDATE_CONFIG" |
      * "DECODERS_READ" |
      * "DECODERS_UPDATE" |
      * "DECODERS_DELETE" |
@@ -272,6 +274,10 @@ define(["../module"], function (module) {
         CLUSTER_STATUS: {
           resources: ["RESOURCELESS"],
           action: "CLUSTER_STATUS",
+        },
+        CLUSTER_UPDATE_CONFIG: { 
+          resources: ["NODE_ID"], 
+          action: "CLUSTER_UPDATE_CONFIG" 
         },
         DECODERS_READ: { resources: ["DECODER_FILE"], action: "DECODERS_READ" },
         DECODERS_UPDATE: {
