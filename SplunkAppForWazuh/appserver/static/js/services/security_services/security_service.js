@@ -95,7 +95,7 @@ define(
        *                    false otherwise.
        */
       async isWazuhAdmin() {
-        const userInfo = await this.getUserRoles()
+        const userInfo = await this.getUserInfo()
         return userInfo.roles.some(role => role.name === 'administrator')
       }
 
