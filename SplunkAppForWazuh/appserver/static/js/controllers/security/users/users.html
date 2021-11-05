@@ -79,7 +79,7 @@
         type="checkbox"
         flex
         aria-invalid="false"
-        ng-model="allowRunAs"
+        ng-model="userAllowRunAs"
         ng-disabled="editingUser"
       />
     </div>
@@ -91,7 +91,7 @@
         flex
         class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
         aria-invalid="false"
-        ng-model="pass"
+        ng-model="userPassword"
         ng-disabled="editingUser"
       />
       <span class="tSize16 wz-breadcrumb-margin">Confirm password</span>
@@ -101,69 +101,15 @@
         flex
         class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
         aria-invalid="false"
-        ng-model="confirmPass"
+        ng-model="userPasswordConfirm"
         ng-disabled="editingUser"
       />
     </div>
+    <div layout="row" class="layout-row">
+      <span class="tSize16">Roles</span>
+      <div id="roles-dropdown-view"></div>
+   </div>
    </md-card-actions>
-    <!-- <md-card-actions ng-show="isAddNewUser">
-      <div class="flex" ng-show="isAddNewUser">
-        <div layout="row" class="layout-row" style="width: 100%;">
-          <span>
-            <div class="flex">
-              <span class="tSize16 wz-breadcrumb-margin">User name</span>
-              <input
-                placeholder="New user name..."
-                type="text"
-                flex
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                aria-invalid="false"
-                ng-model="userName"
-                ng-change="enableSave()"
-                ng-disabled="editingUser"
-              />
-              <p class="tSize16 wz-breadcrumb-margin">Allow run_as</p>
-              <input
-                type="checkbox"
-                flex
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                aria-invalid="false"
-                ng-change="enableSave()"
-                ng-disabled="editingUser"
-              />              
-            </div>
-          </span>
-        </div>
-        <div layout="row" class="layout-row" style="width: 100%;">
-          <span>
-            <div class="flex">
-              <span class="tSize16 wz-breadcrumb-margin">Password</span>
-              <input
-                placeholder="Password..."
-                type="text"
-                flex
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                aria-invalid="false"
-                ng-model="userName"
-                ng-change="enableSave()"
-                ng-disabled="editingUser"
-              />
-              <span class="tSize16 wz-breadcrumb-margin">Confirm password</span>
-              <input
-                placeholder="Confirm password..."
-                type="password"
-                flex
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                aria-invalid="false"
-                ng-model="userpassword"
-                ng-change="enableSave()"
-                ng-disabled="editingUser"
-              />
-            </div>
-          </span>
-        </div>
-      </div>
-    </md-card-actions> -->
     <md-card-actions ng-show="!isAddNewUser">
       <div layout="row" layout-padding ng-show="!isAddNewUser">
         <wazuh-table custom-columns="true" admin-mode='adminMode' implicit-filter="appliedFilters" flex path="'/security/users'"
