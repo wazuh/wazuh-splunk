@@ -224,7 +224,7 @@ define([
           splunkUsers.forEach(item => {
             rulesMap.push({
               "FIND": {
-                "user_name": item
+                "username": item
               }
             })
           })
