@@ -24,13 +24,17 @@ define([
       $scope,
       isAdmin,
       roles,
+      splunkUsers,
       $notificationService,
-      $securityService
+      $securityService,
     ) {
       this.scope = $scope
       this.scope.isAdmin = isAdmin;
       this.scope.roles = this.getRolesList(
         roles.data.data.affected_items || []
+      );
+      this.scope.splunkUsers = this.getSplunkUsersList(
+        splunkUsers.data || []
       );
       this.notification = $notificationService;
       this.securityService = $securityService;
@@ -43,6 +47,13 @@ define([
         el: $("#roles-dropdown-view")
       }).render();
 
+      this.dropdownSplunkUsers = new MultiDropdownView({
+        id: "splunk-users-dropdown",
+        managerid: "splunk-users-search",
+        choices: this.scope.splunkUsers,
+        el: $("#splunk-users-dropdown-view")
+      }).render();
+
       this.searchManager = new SearchManager({
         id: "roles-mapping-search",
         search:
@@ -52,6 +63,13 @@ define([
       this.dropdownRoles.on("change", newValue => {
         if (newValue && this.dropdownRoles) {
           this.scope.roles = newValue;
+          this.scope.$applyAsync();
+        }
+      });
+
+      this.dropdownSplunkUsers.on("change", newValue => {
+        if (newValue && this.dropdownSplunkUsers) {
+          this.scope.splunkUsers = newValue;
           this.scope.$applyAsync();
         }
       });
@@ -70,6 +88,12 @@ define([
     getRolesList(rolesData) {
       return rolesData.map(role => {
         return { label: role.name, value: role.id };
+      });
+    }
+
+    getSplunkUsersList(users) {
+      return Object.keys(users).map(user => {
+        return { label: user, value: user };
       });
     }
 
@@ -120,7 +144,7 @@ define([
 
         var userRules = this.getFormatedRules(rulesArray).userRules.map(item => item.value) || [];
 
-        return userRules.join(",")
+        return userRules
     };
 
     $onInit() {
@@ -130,7 +154,6 @@ define([
       this.scope.changeOperator = operator => this.changeOperator(operator);
       this.scope.addingNewRoleMapping = false;
       this.scope.search = term => this.search(term);
-
        // Come from the pencil icon on the roles table
        this.scope.$on("openRuleFromList", (ev, parameters) => {
         ev.stopPropagation();
@@ -141,18 +164,24 @@ define([
         this.scope.roleMappingName = parameters.rule.name;
         this.dropdownRoles.settings.set(
           "disabled",
-          parameters.rule.id === 1 || parameters.rule.id === 2
+          isDisabled
+        );
+        this.dropdownSplunkUsers.settings.set(
+          "disabled",
+          isDisabled
         );
         this.dropdownRoles.val(parameters.rule.roles);
         this.scope.editingRole = isDisabled;
         this.scope.overwrite = isDisabled;
-        this.scope.userField = this.decodeJsonRule(parameters.rule.rule)
+        this.dropdownSplunkUsers.val(this.decodeJsonRule(parameters.rule.rule))
       });
 
       this.scope.$on("$destroy", () => {
         mvc.Components.revokeInstance("roles-dropdown");
         mvc.Components.revokeInstance("roles-mapping-search");
+        mvc.Components.revokeInstance("splunk-users-dropdown");
         this.dropdownRoles = null;
+        this.dropdownSplunkUsers = null
         this.searchManager = null;
       });
     }
@@ -161,8 +190,8 @@ define([
       try {
         this.clearAll();
         this.scope.addingNewRoleMapping = true;
-        this.dropdownRoles.val([]);
         this.dropdownRoles.settings.set("disabled", false);
+        this.dropdownSplunkUsers.settings.set("disabled", false);
       } catch (error) {
         this.notification.showErrorToast("Cannot add new Role Mapping.");
       }
@@ -176,6 +205,7 @@ define([
       this.scope.roleMappingName = "";
       this.scope.userField = "";
       this.dropdownRoles.val([]);
+      this.dropdownSplunkUsers.val([]);
       this.scope.$applyAsync();
     }
 
@@ -188,10 +218,10 @@ define([
           const constainsBlanks = /.* .*/;
           const roleMappingName = this.scope.roleMappingName;
           const roleIds = this.dropdownRoles.val();
-          const userField = this.scope.userField;
+          const splunkUsers = this.dropdownSplunkUsers.val();
           const rulesMap = [];
           const isEdit = this.scope.editingRoleMapping;
-          userField.split(',').forEach(item => {
+          splunkUsers.forEach(item => {
             rulesMap.push({
               "FIND": {
                 "user_name": item
@@ -200,7 +230,7 @@ define([
           })
           const rule = rulesMap.length > 1 ? {"OR": rulesMap} : rulesMap[0];
   
-          if (roleMappingName) {
+          if (roleMappingName && (splunkUsers.length && roleIds.length != 0)) {
             if (constainsBlanks.test(roleMappingName)) {
               this.notification.showErrorToast(
                 "Error creating a new role mapping. The name can not contain white spaces."
@@ -250,16 +280,15 @@ define([
                 throw new Error(result.data.message || `Cannot ${isEdit ? 'updated' : 'saved'} this Role mapping.`);
               }
             }
+            this.scope.saveIncomplete = false;
+            this.clearAll();
           } else {
             this.notification.showWarningToast(
-              `Please set a name for the ${isEdit ? 'update' : 'new'} Role mapping.`
+              `Please set all fields for the ${isEdit ? 'update' : 'new'} Role mapping.`
             );
           }
         } catch (error) {
           this.notification.showErrorToast(error);
-        } finally {
-          this.scope.saveIncomplete = false;
-          this.clearAll();
         }
     }
 

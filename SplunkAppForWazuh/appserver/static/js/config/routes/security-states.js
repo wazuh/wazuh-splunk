@@ -118,6 +118,16 @@ define(['../module'], function(module) {
                 return { error: 'Cannot fetch roles from API' }
               }
             }
+          ],
+          splunkUsers: [
+            '$splunkUsers',
+            async $splunkUsers => {
+              try {
+                return await $splunkUsers.getInternalUsers()
+              } catch (err) {
+                return { error: 'Cannot fetch splunk users from API' }
+              }
+            }
           ]
         }
       })

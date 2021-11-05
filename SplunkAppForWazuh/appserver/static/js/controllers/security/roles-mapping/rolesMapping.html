@@ -72,19 +72,8 @@
                      class="wz-align-center"
                      >
                      <div class="flex wz-margin-bottom-10">
-                       <span class="tSize16">Map internal users (separated by commas)</span>
-                        <div>
-                           <input
-                              placeholder="Internal users"
-                              type="text"
-                              flex
-                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-30 wz-margin-bottom-10"
-                              aria-invalid="false"
-                              ng-model="userField"
-                              ng-change="enableSave()"
-                              ng-disabled="editingRole"
-                              />
-                        </div>
+                       <span class="tSize16">Map internal users</span>
+                        <div id="splunk-users-dropdown-view"></div>
                       </div>
                   </div>
                   <div
@@ -104,7 +93,7 @@
                         <button
                            class="btn wz-button-empty pull-right wz-margin-left-10"
                            ng-click="saveRoleMapping()"
-                           ng-disabled="saveIncomplete || overwrite || !roleMappingName || !userField"
+                           ng-disabled="saveIncomplete || overwrite || !roleMappingName"
                            ng-if="isAdmin"
                            >
                         <i

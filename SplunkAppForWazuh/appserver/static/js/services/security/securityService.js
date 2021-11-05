@@ -32,7 +32,7 @@ define(["../module"], function(module) {
     };
 
     const getRuleDataById = async (id) => {
-      return await $requestService.apiReq("/security/rules?rule_ids="+id);
+      return await $requestService.apiReq(`/security/rules?rule_ids=${id}`);
     };
 
     const fetchNewRole = async roleName => {
