@@ -28,55 +28,47 @@
         <div layout="row" class="layout-row" style="width: 100%;">
           <!-- XML editor for add new role-->
           <div ng-show="addingNewRole" style="width:100%; margin-right: 10px;">
+            <div class="flex wz-margin-10">
+              <span class="tSize16 wz-breadcrumb-margin">Role name</span>
+              <input
+                placeholder="New role name..."
+                type="text"
+                flex
+                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
+                aria-invalid="false"
+                ng-model="roleName"
+                ng-change="enableSave()"
+                ng-disabled="editingRole"
+              />
+            </div>
+
+            <div class="wz-margin-20">
+              <span class="tSize16">Policies</span>
+              <div id="policies-dropdown-view"></div>
+            </div>
+
             <!-- Save and cancel buttons -->
-            <div
-              layout="row"
-              style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
-              class="wz-align-center"
-            >
-              <!-- Save and cancel buttons -->
-              <div>
-                <span>
-                  <button
-                    class="btn wz-button-cancel"
-                    ng-click="cancelRoleEdition()"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    class="btn wz-button-empty pull-right wz-margin-left-10"
-                    ng-click="saveRole()"
-                    ng-disabled="saveIncomplete || overwrite || !roleName || policies.length < 1 || reservedRole"
-                    ng-if="isAdmin"
-                  >
-                    <i
-                      ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                      aria-hidden="true"
-                    ></i>
-                    Save
-                  </button>
-                </span>
-              </div>
-
-              <div class="flex">
-                <span class="tSize16 wz-breadcrumb-margin">Role name</span>
-                <input
-                  placeholder="New role name..."
-                  type="text"
-                  flex
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                  aria-invalid="false"
-                  ng-model="roleName"
-                  ng-change="enableSave()"
-                  ng-disabled="editingRole"
-                />
-              </div>
-
-              <div class="wz-margin-top-10">
-                <span class="tSize16">Policies</span>
-                <div id="policies-dropdown-view"></div>
-              </div>
-              <!-- End restart button -->
+            <div class="flex fa-pull-right">
+              <span>
+                <button
+                  class="btn wz-button-cancel"
+                  ng-click="cancelRoleEdition()"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="btn wz-button-empty pull-right wz-margin-left-10"
+                  ng-click="saveRole()"
+                  ng-disabled="saveIncomplete || overwrite || !roleName || policies.length < 1 || reservedRole"
+                  ng-if="isAdmin"
+                >
+                  <i
+                    ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                    aria-hidden="true"
+                  ></i>
+                  Save
+                </button>
+              </span>
             </div>
             <!-- End save and cancel buttons-->
           </div>

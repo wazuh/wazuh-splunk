@@ -97,6 +97,7 @@ define([
       this.scope.cancelRoleEdition = () => this.cancelRoleEdition();
       this.scope.enableSave = () => this.enableSave();
       this.scope.saveRole = () => this.saveRole();
+      this.scope.search = term => this.search(term);
       this.scope.addingNewRole = false;
       this.scope.reservedRole = false;
 
@@ -122,6 +123,14 @@ define([
         this.dropdown = null;
         this.searchManager = null;
       });
+    }
+
+    /**
+     * Searches by a term
+     * @param {String} term
+     */
+    search(term) {
+      this.scope.$broadcast("wazuhSearch", { term });
     }
 
     /**
