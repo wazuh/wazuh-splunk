@@ -168,6 +168,7 @@ define([
       this.scope.showConfirmRemoveEntry = (ev, key) =>
         this.showConfirmRemoveEntry(ev, key);
       this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry();
+      this.scope.search = term => this.search(term);
       this.scope.confirmRemoveEntry = (ev, key) =>
         this.confirmRemoveEntry(ev, key);
       this.scope.addingNewPolicy = false;
@@ -201,6 +202,15 @@ define([
         this.actionsSearchManager = null;
         this.resourcesSearchManager = null;
       });
+    }
+
+    /**
+     * Searches for a term
+     * @param {String} term
+     */
+    search(term) {
+      console.log(term);
+      this.scope.$broadcast("wazuhSearch", { term });
     }
 
     /**
