@@ -67,7 +67,37 @@ define(
         } catch (err) {
           return Promise.reject(err)
         }
-      };
+      }
+
+      /**
+       * Obtains user's information.
+       * @returns {Object} user's information object. Contains the following
+       *                   properties:
+       * - id: Integer
+       * - allow_run_as: Boolean
+       * - roles: Array
+       * - username: String
+       * 
+       * @endpoint /security/users/me
+       */
+      async getUserInfo() {
+        try {
+          const response = await this.apiReq('/security/users/me')
+          return response.data.data.affected_items[0]
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
+
+      /**
+       * Checks if the user has an administrator role.
+       * @returns {Boolean} true is de user hsa the administrator role,
+       *                    false otherwise.
+       */
+      async isWazuhAdmin() {
+        const userInfo = await this.getUserRoles()
+        return userInfo.roles.some(role => role.name === 'administrator')
+      }
 
       /**
        * Given the controller name this method uses the requirementService

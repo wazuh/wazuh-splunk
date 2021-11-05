@@ -18,6 +18,12 @@ define(['../module'], function(module) {
           },
           controller: 'settingsCtrl',
           resolve: {
+            isWazuhAdmin: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.isWazuhAdmin()
+              }
+            ],
             isAdmin: [
               '$currentDataService',
               async $currentDataService => {
