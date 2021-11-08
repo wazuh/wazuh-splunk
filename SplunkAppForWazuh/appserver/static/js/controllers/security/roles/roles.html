@@ -30,16 +30,18 @@
           <div ng-show="addingNewRole" style="width:100%; margin-right: 10px;">
             <div class="flex wz-margin-10">
               <span class="tSize16 wz-breadcrumb-margin">Role name</span>
-              <input
-                placeholder="New role name..."
-                type="text"
-                flex
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-                aria-invalid="false"
-                ng-model="roleName"
-                ng-change="enableSave()"
-                ng-disabled="editingRole"
-              />
+              <div>
+                <input
+                  placeholder="New role name..."
+                  type="text"
+                  flex
+                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-25"
+                  aria-invalid="false"
+                  ng-model="roleName"
+                  ng-change="enableSave()"
+                  ng-disabled="editingRole"
+                />
+              </div>
             </div>
 
             <div class="wz-margin-20">

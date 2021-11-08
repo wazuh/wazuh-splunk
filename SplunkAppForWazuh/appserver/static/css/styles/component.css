@@ -985,3 +985,7 @@ span.CodeMirror-selectedtext { background: none; }
 .wz-background-disabled {
   background-color: #e1e6eb !important;
 }
+
+#policies-dropdown-view > div:nth-child(1) > div {
+  width: 25% !important;
+}
