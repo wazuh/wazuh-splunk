@@ -7,6 +7,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added
 
 - Support for Wazuh 4.2.3
+- Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
 
 ## Wazuh v4.2.2 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4202
 
