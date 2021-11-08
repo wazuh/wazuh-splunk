@@ -116,9 +116,9 @@ define([
       });
 
       this.resourcesDropdown.on("change", newValue => {
-        if (newValue && this.resourcesDropdown) {
+        if (newValue >= 0 && this.resourcesDropdown) {
           this.scope.resources = newValue;
-          this.scope.disableAdd = newValue.length === 0 || !newValue;
+          this.scope.disableAdd = newValue === null || newValue === undefined;
         } else {
           this.scope.disableAdd = !newValue;
         }
@@ -181,7 +181,7 @@ define([
         this.scope.editingPolicy = true;
         this.scope.policyName = parameters.policy.name;
         this.scope.policyId = parameters.policy.id;
-        this.scope.actions = parameters.policy.policy.actions;
+        this.scope.actions = this.findActions(parameters.policy.policy.actions);
         this.actionsDropdown.val(this.scope.actions);
         this.effectOptions.val(parameters.policy.policy.effect);
         parameters.policy.policy.resources.map(resource => {
@@ -202,6 +202,17 @@ define([
         this.actionsSearchManager = null;
         this.resourcesSearchManager = null;
       });
+    }
+
+    findActions(actions) {
+      let result = [];
+      actions.map(labelAction => {
+        return this.scope.actionData.map(action => {
+          return action.label === labelAction ? result.push(action.value) : null;
+        });
+      });
+
+      return result;
     }
 
     /**
@@ -238,7 +249,7 @@ define([
     }
 
     onResourceIdentifierChanged() {
-      this.scope.disableAdd = this.scope.resourceIdentifier.length > 0;
+      this.scope.disableAdd = this.scope.resourceIdentifier.length < 0;
     }
 
     /**
@@ -329,7 +340,7 @@ define([
             if (this.scope.editingPolicy) {
               result = await this.securityService.updatePolicy(
                 this.scope.policyId,
-                this.scope.actions,
+                actions,
                 resources,
                 effect
               );
