@@ -42,12 +42,31 @@ define(["../module"], function(module) {
       );
     };
 
+    const fetchEditRole = async (roleId, policies) => {
+      return await $requestService.apiReq(
+        `/security/roles/${roleId}/policies?policy_ids=${policies.toString()}`,
+        { content: "" },
+        "POST"
+      );
+    };
+
     const saveRole = async (role, policies) => {
       try {
         let roleId = "";
 
         if (!role.id) {
           const result = await fetchNewRole(role.name);
+
+          if (
+            result.data.error === 1 &&
+            result.data.data.failed_items[0].error.code === 4005
+          ) {
+            throw new Error(
+              result.data.data.failed_items[0].error.message ||
+                result.data.data.message ||
+                "Cannot save Role."
+            );
+          }
 
           const data = (result.data || {}).data;
           if (data.failed_items && data.failed_items.length) {
@@ -69,11 +88,7 @@ define(["../module"], function(module) {
           roleId = role.id;
         }
 
-        return await $requestService.apiReq(
-          `/security/roles/${roleId}/policies?policy_ids=${policies.toString()}`,
-          { content: "" },
-          "POST"
-        );
+        return await fetchEditRole(roleId, policies);
       } catch (error) {
         return Promise.reject(error);
       }

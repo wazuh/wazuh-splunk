@@ -209,17 +209,12 @@ define([
               return;
             }
             if (
-              result &&
-              result.data.error &&
-              result.data.data.failed_items[0] &&
-              result.data.data.failed_items[0].error.code === 4011
+              (result && result.data.error === 0) ||
+              (result &&
+                result.data.error &&
+                result.data.data.failed_items[0] &&
+                result.data.data.failed_items[0].error.code === 4011)
             ) {
-              this.notification.showWarningToast(
-                result.data.data.failed_items[0].error.message
-              );
-              return;
-            }
-            if (result && result.data.error === 0) {
               this.notification.showSuccessToast("Role saved successfully.");
               this.scope.saveIncomplete = false;
               this.scope.$applyAsync();
