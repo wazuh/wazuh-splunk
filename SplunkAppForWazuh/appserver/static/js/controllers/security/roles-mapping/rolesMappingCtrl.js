@@ -15,8 +15,9 @@ define([
   "../../module",
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/multidropdownview",
-  "splunkjs/mvc"
-], function(controllers, SearchManager, MultiDropdownView, mvc) {
+  "splunkjs/mvc",
+  '../../../libs/codemirror-conv/lib/codemirror'
+], function(controllers, SearchManager, MultiDropdownView, mvc, CodeMirror) {
   "use strict";
 
   class RolesMapping {
@@ -40,6 +41,21 @@ define([
       this.securityService = $securityService;
       this.scope.addingNewRoleMapping = false;
       this.scope.editingRoleMapping = false;
+      this.jsonCodeBox = CodeMirror.fromTextArea(
+        document.getElementById('viewer_json_box'),
+        {
+          lineNumbers: false,
+          autoRefresh: true,
+          matchClosing: true,
+          matchBrackets: true,
+          mode: { name: 'javascript', json: true },
+          theme: 'ttcn',
+          foldGutter: true,
+          styleSelectedText: true,
+          gutters: ["CodeMirror-lint-markers"],
+          lint: true,
+        }
+      )
       this.dropdownRoles = new MultiDropdownView({
         id: "roles-dropdown",
         managerid: "roles-search",
@@ -70,6 +86,7 @@ define([
       this.dropdownSplunkUsers.on("change", newValue => {
         if (newValue && this.dropdownSplunkUsers) {
           this.scope.splunkUsers = newValue;
+          this.refreshJsonEditor(newValue)
           this.scope.$applyAsync();
         }
       });
@@ -82,6 +99,34 @@ define([
      */
      search(term) {
       this.scope.$broadcast('wazuhSearch', { term })
+    }
+
+    refreshJsonEditor(splunkUsers){
+      let ruleObject;
+      if(splunkUsers.length > 1){
+        const usersRulesArray = splunkUsers.map(item => {
+          const tmpRule = {};
+          tmpRule["FIND"] = {};
+          tmpRule["FIND"]["user_name"] = item;
+          return tmpRule;
+        });
+        ruleObject = {
+          "OR": usersRulesArray
+        }
+      } else if(splunkUsers.length === 1) {
+        ruleObject = {
+          "FIND": {
+            "user_name": splunkUsers[0]
+          }
+        }
+      }else{
+        ruleObject = false;
+      }
+      this.jsonCodeBox.setValue(ruleObject ? JSON.stringify(ruleObject, null, 2) : "");
+      setTimeout(() => {
+        this.jsonCodeBox.refresh()
+        this.scope.$applyAsync();
+      },1);
     }
 
 
@@ -151,8 +196,10 @@ define([
       this.scope.addNewRoleMapping = () => this.addNewRoleMapping();
       this.scope.cancelRoleMappingEdition = () => this.cancelRoleMappingEdition();
       this.scope.saveRoleMapping = () => this.saveRoleMapping();
+      this.scope.openJsonEditor = () => this.openJsonEditor();
       this.scope.changeOperator = operator => this.changeOperator(operator);
       this.scope.addingNewRoleMapping = false;
+      this.scope.isOpenJsonEditor = false;
       this.scope.search = term => this.search(term);
        // Come from the pencil icon on the roles table
        this.scope.$on("openRuleFromList", (ev, parameters) => {
@@ -171,10 +218,12 @@ define([
           "disabled",
           isDisabled
         );
+        this.jsonCodeBox.setOption("readOnly", isDisabled)
         this.dropdownRoles.val(parameters.rule.roles);
         this.scope.editingRole = isDisabled;
         this.scope.overwrite = isDisabled;
-        this.dropdownSplunkUsers.val(this.decodeJsonRule(parameters.rule.rule))
+        this.dropdownSplunkUsers.val(this.decodeJsonRule(parameters.rule.rule));
+        this.jsonCodeBox.setValue(JSON.stringify(parameters.rule.rule, null, 2));
       });
 
       this.scope.$on("$destroy", () => {
@@ -184,6 +233,7 @@ define([
         this.dropdownRoles = null;
         this.dropdownSplunkUsers = null
         this.searchManager = null;
+        this.jsonCodeBox.setValue(null)
       });
     }
 
@@ -198,6 +248,14 @@ define([
       }
     }
 
+    openJsonEditor(){
+      setTimeout(() => {
+        this.jsonCodeBox.refresh()
+        this.scope.$applyAsync();
+      },1);
+      this.scope.isOpenJsonEditor = this.scope.isOpenJsonEditor ? false : true
+    }
+
     clearAll() {
       this.scope.addingNewRoleMapping = false;
       this.scope.editingRoleMapping = false;
@@ -208,6 +266,9 @@ define([
       this.scope.currentRoles = [];
       this.dropdownRoles.val([]);
       this.dropdownSplunkUsers.val([]);
+      this.jsonCodeBox.setOption("readOnly", false)
+      this.scope.isOpenJsonEditor = false
+      this.jsonCodeBox.setValue("")
       this.scope.$applyAsync();
     }
 
@@ -283,6 +344,8 @@ define([
                 throw new Error(result.data.message || `Cannot ${isEdit ? 'updated' : 'saved'} this Role mapping.`);
               }
             }
+            this.scope.saveIncomplete = false;
+            this.clearAll();
           } else {
             this.notification.showWarningToast(
               `Please set all fields for the ${isEdit ? 'update' : 'new'} Role mapping.`
@@ -290,9 +353,6 @@ define([
           }
         } catch (error) {
           this.notification.showErrorToast(error);
-        } finally {
-          this.scope.saveIncomplete = false;
-          this.clearAll();
         }
     }
 

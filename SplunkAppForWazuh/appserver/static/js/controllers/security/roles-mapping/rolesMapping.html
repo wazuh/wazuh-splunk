@@ -76,6 +76,23 @@
                         <div id="splunk-users-dropdown-view"></div>
                       </div>
                   </div>
+                   <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                        <span
+                           ng-click="openJsonEditor()"
+                           class="wz-color-text cursor-pointer link-table"
+                           >
+                           Open JSON editor
+                        </span>
+                         <div class='wzJsonXmlEditorBody' ng-show="isOpenJsonEditor">
+                           <textarea id='viewer_json_box'></textarea>
+                        </div>
+                      </div>
+                  </div>
                   <div
                      layout="row"
                      style="width:calc(100% - 32px); margin-right:auto; margin-left:auto; justify-content: flex-end;"
