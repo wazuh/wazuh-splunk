@@ -329,7 +329,7 @@ define([
             if (this.scope.editingPolicy) {
               result = await this.securityService.updatePolicy(
                 this.scope.policyId,
-                actions,
+                this.scope.actions,
                 resources,
                 effect
               );
