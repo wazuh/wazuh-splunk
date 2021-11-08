@@ -59,7 +59,7 @@
                   Cancel
                 </button>
                 <button
-                  ng-class="{'wz-background-disabled': !saveIncomplete}"
+                  ng-class="{'wz-background-disabled': saveIncomplete || overwrite || !roleName || policies.length < 1 || reservedRolek}"
                   class="btn wz-button-empty pull-right wz-margin-left-10"
                   ng-click="saveRole()"
                   ng-disabled="saveIncomplete || overwrite || !roleName || policies.length < 1 || reservedRole"
