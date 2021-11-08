@@ -162,6 +162,7 @@ define([
         this.scope.addingNewRoleMapping = true;
         this.scope.ruleId = parameters.rule.id
         this.scope.roleMappingName = parameters.rule.name;
+        this.scope.currentRoles = parameters.rule.roles;
         this.dropdownRoles.settings.set(
           "disabled",
           isDisabled
@@ -204,6 +205,7 @@ define([
       this.scope.overwrite = false;
       this.scope.roleMappingName = "";
       this.scope.userField = "";
+      this.scope.currentRoles = [];
       this.dropdownRoles.val([]);
       this.dropdownSplunkUsers.val([]);
       this.scope.$applyAsync();
@@ -241,6 +243,7 @@ define([
                 await this.securityService.updateRule(
                   this.scope.ruleId,
                   { name: roleMappingName, rule: rule },
+                  this.scope.currentRoles,
                   roleIds
                 )
                 :
@@ -280,8 +283,6 @@ define([
                 throw new Error(result.data.message || `Cannot ${isEdit ? 'updated' : 'saved'} this Role mapping.`);
               }
             }
-            this.scope.saveIncomplete = false;
-            this.clearAll();
           } else {
             this.notification.showWarningToast(
               `Please set all fields for the ${isEdit ? 'update' : 'new'} Role mapping.`
@@ -289,6 +290,9 @@ define([
           }
         } catch (error) {
           this.notification.showErrorToast(error);
+        } finally {
+          this.scope.saveIncomplete = false;
+          this.clearAll();
         }
     }
 

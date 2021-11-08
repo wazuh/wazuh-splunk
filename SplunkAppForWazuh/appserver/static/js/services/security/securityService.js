@@ -31,10 +31,6 @@ define(["../module"], function(module) {
       }
     };
 
-    const getRuleDataById = async (id) => {
-      return await $requestService.apiReq(`/security/rules?rule_ids=${id}`);
-    };
-
     const fetchNewRole = async roleName => {
       return await $requestService.apiReq(
         "/security/roles",
@@ -225,7 +221,7 @@ define(["../module"], function(module) {
       }
     };
 
-    const updateRule = async (id,rule,newRoles) => {
+    const updateRule = async (id,rule,currentRoles,newRoles) => {
       try {
           const result = await editRule(id,rule);
           const data = (result.data || {}).data || result;
@@ -237,13 +233,15 @@ define(["../module"], function(module) {
           }
 
           if (data.affected_items && data.affected_items) {
-            const currentRoles = await getRuleDataById(id)
-            await Promise.all(
-              currentRoles.data.data.affected_items[0].roles.map(async (role) => await deleteRoleRules(role, [id]))
-            );
-            await Promise.all(
-              newRoles.map(async (role) => await addRoleRules(role, [id]))
-            );
+              currentRoles.map(async (role) => {
+                if(!newRoles.includes(role)){
+                  await deleteRoleRules(role, [id])
+                }
+              });
+              newRoles.map(async (role) => {
+                if(!currentRoles.includes(role))
+                  await addRoleRules(role, [id])
+              });
             return data
           }
 

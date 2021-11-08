@@ -573,12 +573,12 @@ define([
           try {
             await $securityService.removeRule(rule.id)
             $notificationService.showSuccessToast(
-                `Success. Rule ${rule.name} has been removed`
+                `Success. Role mapping ${rule.name} has been removed`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)
           }
-          $scope.removingGroup = null
+          $scope.removingRoleMapping = null
           return init()
         }
         // END SECURITY SECTION FOR ROLE MAPPING

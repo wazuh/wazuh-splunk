@@ -41,7 +41,7 @@
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
             aria-hidden="true"></i>
         </th>
-        <th ng-if="(path === '/security/users' || path === '/security/roles' || path === '/security/policies' || path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode)) "
+        <th ng-if="(path === '/security/users' || path === '/security/roles' || path === '/security/policies' || path === '/security/rules' || path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode)) "
           class="wz-text-left wz-nowrap"
           ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">
           Actions</th>
