@@ -204,11 +204,13 @@
           <!-- SECURITY SECTION USERS-->
           <td ng-if="path === '/security/users'" ng-click="$event.stopPropagation()"
             class="cursor-default action-btn-td" class="wz-text-truncatable">
+            
+            <wz-svg ng-if="removingUser !== item.username" ng-click="editSecurityUser(item); $event.stopPropagation()" icon="pencil"
+              color="#396e3e" svg-tooltip="Edit user {{item.username}}">
+            </wz-svg>
             <wz-svg ng-if="removingUser !== item.username && item.username !== 'default'"
               ng-click="showConfirmRemoveSecurityUser($event, item); $event.stopPropagation()" icon="trash" color="#396e3e"
-              svg-tooltip="Remove this item"></wz-svg>
-            <wz-svg ng-if="removingUser !== item.username" ng-click="editSecurityUser(item); $event.stopPropagation()" icon="pencil"
-              color="#396e3e" svg-tooltip="Edit this user configuration">
+              svg-tooltip="Remove user {{item.username}}">
             </wz-svg>
 
             <span class="wz-padding-left-8" ng-if="removingUser !== item.username && item.username === 'default'">-</span>

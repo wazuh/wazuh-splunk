@@ -12,7 +12,7 @@ define([
       this.scope.isAdmin = isAdmin;
       this.notification = $notificationService;
       this.securityService = $securityService;
-      this.scope.isEditingRole = false;
+      this.scope.isEditingUser = false;
       this.scope.isAddNewUser = false;
       
       this.scope.userName = "";
@@ -29,6 +29,7 @@ define([
       this.scope.addNewUser = () => this.addNewUser();
       this.scope.cancelAddUser = () => this.cancelAddUser();
       this.scope.isAddNewUser = false;
+      this.scope.isEditingUser = false;
 
       this.dropdown = new MultiDropdownView({
         id: "roles-dropdown",
@@ -56,6 +57,26 @@ define([
         this.dropdown = null;
         this.searchManager = null;
       });
+
+      this.scope.$on("openUserFromList", (ev, parameters) => {
+        ev.stopPropagation();
+        this.scope.isAddNewUser = false;
+        this.scope.isEditingUser = true;
+
+        this.scope.userName = parameters.user.username;
+        this.scope.userAllowRunAs = parameters.user.allow_run_as;
+
+        console.log(console.log(parameters));
+        console.log(console.log(parameters.user.username, parameters.user.allow_run_as, parameters.user.roles));
+        
+        // this.scope.policyName = parameters.policy.name;
+        // this.actionsDropdown.val(this.scope.actions);
+        // this.effectOptions.val(parameters.policy.policy.effect);
+        // parameters.policy.policy.resources.map(resource => {
+        //   this.scope.resourcesList.push(resource);
+        // });
+        // this.scope.disableAdd = false;
+      });
     }
 
     async saveUser() {
@@ -81,8 +102,8 @@ define([
 
     cancelAddUser() {
       try {
-        // this.scope.overwrite = false;
         this.scope.isAddNewUser = false;
+        this.scope.isEditingUser = false;
         this.scope.userName = "";
         this.scope.userPassword = "";
         this.scope.userPasswordConfirm = "";
@@ -111,6 +132,8 @@ define([
     addNewUser() {
       try {
         this.scope.isAddNewUser = true;
+        this.scope.isEditingUser = false;
+
       } catch (error) {
         this.notification.showErrorToast("Cannot add new User.");
       }

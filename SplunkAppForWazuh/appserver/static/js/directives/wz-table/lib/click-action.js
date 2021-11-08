@@ -55,7 +55,9 @@ define([], function() {
     } else if (instance.path === '/lists/files') {
       $state.go('mg-cdb-id', { name: item.filename, path: item.relative_dirname })
     } else if (instance.path === '/cluster/nodes') {
-      $scope.$emit('wazuhShowClusterNode', { node: item })
+      $scope.$emit('wazuhShowClusterNode', { node: item })    
+    } else if (instance.path === '/security/users') {
+      $scope.$emit("openUserFromList", { user: item });
     }
   }
 })

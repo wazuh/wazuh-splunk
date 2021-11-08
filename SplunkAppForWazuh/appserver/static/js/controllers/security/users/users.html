@@ -9,21 +9,21 @@
 
         <span flex="" class="flex"></span>
 
-        <span ng-show="!isAddNewUser" ng-click="addNewUser()" class="wz-color-text cursor-pointer link-table">
+        <span ng-show="!isAddNewUser && !isEditingUser" ng-click="addNewUser()" class="wz-color-text cursor-pointer link-table">
           <wz-svg icon="plus"></wz-svg>
           Add new user
         </span>
       </div>
           
-      <div class="layout-row" style="padding-top: 15px;">
+      <div flex class="layout-row" style="padding-top: 15px; width:100%; margin-right: 10px; justify-content: right;">
         <div layout="row" class="layout-row" style="width: 100%;">
-          <div ng-show="isAddNewUser" style="width:100%; margin-right: 10px;">
+          <div ng-show="isAddNewUser || isEditingUser">
             <!-- Save and cancel buttons -->
-            <div
+            <!-- <div
               layout="row"
               style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
               class="wz-align-center"
-            >
+            > -->
               <!-- Save and cancel buttons -->
               <div>
                 <span>
@@ -46,72 +46,81 @@
                   </button>
                 </span>
               </div>
-            </div>
+            <!-- </div> -->
               <!-- End save and cancel buttons-->
           </div>
-          <label ng-show="!isAddNewUser" class="wz-icon-loupe">
+          <label ng-show="!isAddNewUser && !isEditingUser" class="wz-icon-loupe">
             <input placeholder="Filter user..." ng-model="customSearch" type="text" flex
               class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
           </label>
-          <button ng-show="!isAddNewUser" ng-click="search(customSearch)"
+          <button ng-show="!isAddNewUser && !isEditingUser" ng-click="search(customSearch)"
             class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
             <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
           </button>
         </div>
       </div>
    </md-card-actions>
-   <md-card-actions ng-show="isAddNewUser">
-    <div layout="row" class="layout-row" style="width: 100%;">
-      <span class="tSize16 wz-breadcrumb-margin">User name</span>
-      <input
-        placeholder="New user name..."
-        type="text"
-        flex
-        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-        aria-invalid="false"
-        ng-model="userName"
-        ng-disabled="editingUser"
-      />
-      <span class="tSize16">Allow run_as</span>
-      &nbsp;
-      <input
-        placeholder="New user name..."
-        type="checkbox"
-        flex
-        aria-invalid="false"
-        ng-model="userAllowRunAs"
-        ng-disabled="editingUser"
-      />
+   <md-card-actions ng-show="isAddNewUser || isEditingUser">
+    <div layout="row" class="layout-row" style="width: 50%;">
+      <div>
+        <span class="tSize16 wz-breadcrumb-margin">Username</span>
+        <input
+          placeholder="New user name..."
+          type="text"
+          flex
+          class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
+          aria-invalid="false"
+          ng-model="userName"
+          ng-disabled="editingUser"
+        />
+      </div>
     </div>
-    <div layout="row" class="layout-row" style="width: 100%;">
-      <span class="tSize16 wz-breadcrumb-margin">Password</span>
-      <input
-        placeholder="New password..."
-        type="password"
-        flex
-        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-        aria-invalid="false"
-        ng-model="userPassword"
-        ng-disabled="editingUser"
-      />
-      <span class="tSize16 wz-breadcrumb-margin">Confirm password</span>
-      <input
-        placeholder="Conform new password..."
-        type="password"
-        flex
-        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
-        aria-invalid="false"
-        ng-model="userPasswordConfirm"
-        ng-disabled="editingUser"
-      />
+    <div style="width: 50%; margin-bottom: 20px;">
+      <div>
+        <span class="tSize16">Allow run_as</span>
+        &nbsp;
+        <input
+          type="checkbox"
+          flex        
+          aria-invalid="false"
+          ng-model="userAllowRunAs"
+          ng-disabled="editingUser"
+        />
+      </div>
+    </div>
+    <div layout="row" class="layout-row" style="width: 50%; margin-bottom: 20px;">
+      <div>
+        <span class="tSize16 wz-breadcrumb-margin">Password</span>
+        <input
+          placeholder="New password..."
+          type="password"
+          flex
+          class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
+          aria-invalid="false"
+          ng-model="userPassword"
+          ng-disabled="editingUser"
+        />
+      </div>
+      <div>
+        <span class="tSize16 wz-breadcrumb-margin">Confirm password</span>
+        <input
+          placeholder="Conform new password..."
+          type="password"
+          flex
+          class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
+          aria-invalid="false"
+          ng-model="userPasswordConfirm"
+          ng-disabled="editingUser"
+        />
+      </div>
     </div>
     <div layout="row" class="layout-row">
       <span class="tSize16">Roles</span>
       <div id="roles-dropdown-view"></div>
    </div>
    </md-card-actions>
-    <md-card-actions ng-show="!isAddNewUser">
-      <div layout="row" layout-padding ng-show="!isAddNewUser">
+    <md-card-actions ng-show="!isAddNewUser && !isEditingUser">
+      <div layout="row" layout-padding ng-show="!isAddNewUser || !isEditingUser">
         <wazuh-table custom-columns="true" admin-mode='adminMode' implicit-filter="appliedFilters" flex path="'/security/users'"
         keys="['id','username', 'allow_run_as', 'roles']" allow-click="true" rows-per-page="14" row-sizes="[20,15,10,20]">
         </wazuh-table>

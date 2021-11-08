@@ -524,7 +524,7 @@ define([
           $scope.removingUser = null
         }
         $scope.editSecurityUser = user => {
-          $scope.$emit('openGroupFromList', { user })
+          $scope.$emit('openUserFromList', { user })
         }
         $scope.confirmRemoveSecurityUser = async user => {
           try {
