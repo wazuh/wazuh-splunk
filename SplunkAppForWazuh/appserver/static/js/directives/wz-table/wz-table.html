@@ -251,13 +251,13 @@
           <!-- SECURITY FOR ROLES-->
           <td ng-if="path === '/security/roles'" ng-click="$event.stopPropagation()"
             class="cursor-default action-btn-td" class="wz-text-truncatable">
-            <wz-svg ng-if="removingRoles !== item.name && item.id >= '7'"
+            <wz-svg ng-if="removingRoles !== item.name && item.id > '7'"
               ng-click="showConfirmRemoveSecurityRoles($event, item); $event.stopPropagation()" icon="trash" color="#396e3e"
               svg-tooltip="Remove this item"></wz-svg>
-            <wz-svg ng-if="removingRoles !== item.name && item.id >= '7'" ng-click="editSecurityRoles(item); $event.stopPropagation()" icon="pencil"
+            <wz-svg ng-if="removingRoles !== item.name && item.id > '7'" ng-click="editSecurityRoles(item); $event.stopPropagation()" icon="pencil"
               color="#396e3e" svg-tooltip="Edit this item configuration">
             </wz-svg>
-            <wz-svg ng-if="removingRoles !== item.name && item.id < '7'" ng-click="editSecurityRoles(item); $event.stopPropagation()" icon="eye"
+            <wz-svg ng-if="removingRoles !== item.name && item.id <= '7'" ng-click="editSecurityRoles(item); $event.stopPropagation()" icon="eye"
                     color="#396e3e" svg-tooltip="Edit this item configuration">
             </wz-svg>
 
