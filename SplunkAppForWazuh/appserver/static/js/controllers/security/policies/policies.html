@@ -210,7 +210,13 @@
           flex
           extra-limit="100"
           path="'/security/policies'"
-          keys="['id', 'name', 'policy.actions', 'policy.resources', 'policy.effect']"
+          keys="[
+            'id',
+            'name',
+            { value: 'policy.actions', nosortable: true },
+            { value: 'policy.resources', nosortable: true },
+            { value: 'policy.effect', nosortable: true }
+          ]"
           allow-click="true"
           row-sizes="[20,15,10,20]"
         >
