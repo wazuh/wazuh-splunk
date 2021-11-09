@@ -15,15 +15,15 @@
         </span>
       </div>
           
-      <div flex class="layout-row" style="padding-top: 15px; width:100%; margin-right: 10px; justify-content: right;">
+      <div flex class="layout-row" style="padding-top: 15px;">
         <div layout="row" class="layout-row" style="width: 100%;">
-          <div ng-show="isAddNewUser || isEditingUser">
+          <div ng-show="isAddNewUser || isEditingUser" style="width:100%; margin-right: 10px;">
             <!-- Save and cancel buttons -->
-            <!-- <div
+            <div
               layout="row"
               style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
-              class="wz-align-center"
-            > -->
+              class="wz-align-center wz-margin-bottom-10"
+            >
               <!-- Save and cancel buttons -->
               <div>
                 <span>
@@ -46,17 +46,19 @@
                   </button>
                 </span>
               </div>
-            <!-- </div> -->
+            </div>
               <!-- End save and cancel buttons-->
           </div>
-          <label ng-show="!isAddNewUser && !isEditingUser" class="wz-icon-loupe">
-            <input placeholder="Filter user..." ng-model="customSearch" type="text" flex
-              class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-          </label>
-          <button ng-show="!isAddNewUser && !isEditingUser" ng-click="search(customSearch)"
-            class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
-            <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
-          </button>
+          <div ng-show="!addingNewRoleMapping" style="width: 100%; display: flex; align-items: flex-start;">
+            <label ng-show="!isAddNewUser && !isEditingUser" class="wz-icon-loupe">
+              <input placeholder="Filter user..." ng-model="customSearch" type="text" flex
+                class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
+            </label>
+            <button ng-show="!isAddNewUser && !isEditingUser" ng-click="search(customSearch)"
+              class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
+              <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
+            </button>
+          </div>
         </div>
       </div>
    </md-card-actions>
