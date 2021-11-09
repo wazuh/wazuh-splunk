@@ -2665,8 +2665,3 @@ background-color: white;
 body > div.tooltip {
   display: inline-block !important;
 }
-
-/** capitalize all column names of wazuh-table **/
-table > thead > tr > th {
-  text-transform:capitalize;
-}
