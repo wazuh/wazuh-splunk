@@ -2669,3 +2669,10 @@ background-color: white;
 body > div.tooltip {
   display: inline-block !important;
 }
+
+.wz-forbidden-container{
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

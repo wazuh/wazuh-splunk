@@ -173,6 +173,15 @@ define(['../module'], function(module) {
             breadcrumbs: null
           }
         })
+        .state('forbidden', {
+          templateUrl:
+            BASE_URL +
+            '/static/app/SplunkAppForWazuh/js/directives/wz-forbidden/wz-forbidden.html',
+          onEnter: $navigationService => {
+            $navigationService.storeRoute('forbidden')
+          },
+          controller: [function () {}]
+        })
     }
   ])
 })
