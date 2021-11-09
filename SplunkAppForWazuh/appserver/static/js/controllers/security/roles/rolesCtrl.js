@@ -151,6 +151,7 @@ define([
     clearAll() {
       this.scope.policies = [];
       this.scope.roleName = "";
+      this.scope.roleId = "";
       this.dropdown.val([]);
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
