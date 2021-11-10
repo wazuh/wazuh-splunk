@@ -76,6 +76,77 @@
                         <div id="splunk-users-dropdown-view"></div>
                       </div>
                   </div>
+                  <div
+                     layout="row"
+                     style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
+                     class="wz-align-center"
+                     >
+                     <div class="flex wz-margin-bottom-10">
+                       <span class="tSize16">Custom rules</span>
+                       <div style="margin: 20px 0;">
+                        <wz-kbn-switch switch-model="logicalOperator"    
+                              switch-change="toggleLogicalOperator(!logicalOperator)">
+                           </wz-kbn-switch><span>All are true</span>
+                        </div>
+                        <div>
+                            <input
+                              placeholder="New role mapping name..."
+                              type="text"
+                              flex
+                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-20"
+                              aria-invalid="false"
+                              ng-model="customField"
+                              ng-change="enableSave()"
+                              ng-disabled="editingRole"
+                              />
+                         <select ng-options="n for n in operators" ng-model="selectedOperator" ng-init="selectedOperator"
+                           ng-change="onSelectorChange(selectedOperator)" ng-if="isAdmin"
+                           class="input input-dropdown conf-operator-selector wz-button-empty">
+                           </select>
+                           <input
+                              placeholder="Custom value..."
+                              type="text"
+                              flex
+                              class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-20"
+                              aria-invalid="false"
+                              ng-model="customValue"
+                              ng-disabled="editingRole"
+                              />
+                           <span
+                              ng-show="addingNewRoleMapping"
+                              ng-click="addNewCustomRule()"
+                              ng-disabled="!customValue"
+                              class="wz-color-text cursor-pointer link-table"
+                              >
+                              <wz-svg icon="plus"></wz-svg>
+                              Add new rule
+                           </span>
+                        </div>
+                        <div class="new-custom-rule-container wz-margin-bottom-10">
+                        <table ng-if="customRules.length != 0">
+                           <tr>
+                              <th>User Field</th>
+                              <th>Operation</th>
+                              <th>Value</th>
+                              <th></th>
+                           </tr>
+                           <tr ng-repeat="rule in customRules track by $index">
+                              <td><span>{{rule.user_field}}</span></td>
+                              <td><span>{{rule.searchOperation}}</span></td>
+                              <td><span>{{rule.value}}</span></td>
+                              <td><span>
+                              <button
+                              class="delete-button-icon"
+                              ng-click="removeRule($index)"
+                              >
+                                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiButtonIcon__icon" focusable="false" role="img" aria-hidden="true"><path d="M11 3h5v1H0V3h5V1a1 1 0 011-1h4a1 1 0 011 1v2zm-7.056 8H7v1H4.1l.392 2.519c.042.269.254.458.493.458h6.03c.239 0 .451-.189.493-.458l1.498-9.576H14l-1.504 9.73c-.116.747-.74 1.304-1.481 1.304h-6.03c-.741 0-1.365-.557-1.481-1.304l-1.511-9.73H9V5.95H3.157L3.476 8H8v1H3.632l.312 2zM6 3h4V1H6v2z"></path></svg>
+                              </button>
+                           </span></td>
+                           </tr>
+                           </table>
+                        </div>
+                      </div>
+                  </div>
                    <div
                      layout="row"
                      style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;"
@@ -86,7 +157,8 @@
                            ng-click="openJsonEditor()"
                            class="wz-color-text cursor-pointer link-table"
                            >
-                           Open JSON editor
+                           <span ng-show="!isOpenJsonEditor">Open JSON editor</span>
+                           <span ng-show="isOpenJsonEditor">Close JSON editor</span>
                         </span>
                          <div class='wzJsonXmlEditorBody' ng-show="isOpenJsonEditor">
                            <textarea id='viewer_json_box'></textarea>
