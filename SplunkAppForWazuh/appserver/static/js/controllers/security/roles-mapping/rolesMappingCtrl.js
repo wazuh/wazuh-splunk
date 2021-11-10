@@ -412,6 +412,8 @@ define([
       this.scope.overwrite = false;
       this.scope.roleMappingName = "";
       this.scope.userField = "";
+      this.scope.customValue = "";
+      this.scope.customField = "";
       this.scope.currentRoles = [];
       this.scope.customRules = []
       this.dropdownRoles.val([]);

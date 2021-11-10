@@ -1825,6 +1825,10 @@ input:focus {
   border-radius: 4px;
 }
 
+.customRoleMappingInput{
+  margin-top: 5px !important;
+}
+
 .new-custom-rule-container{
   width: 50%;
   display: flex;
