@@ -7,7 +7,7 @@ define([
   'use strict'
 
   class Users {
-    constructor($scope, isAdmin, usersData, roleData, $notificationService, $securityService) {
+    constructor($scope, $route, isAdmin, usersData, roleData, $notificationService, $securityService) {
       this.scope = $scope
       this.scope.isAdmin = isAdmin;
       this.notification = $notificationService;
@@ -16,6 +16,7 @@ define([
       this.scope.isAddNewUser = false;
       
       this.scope.userName = "";
+      this.scope.userId = "";
       this.scope.userPassword = "";
       this.scope.userPasswordConfirm = "";
       this.scope.userAllowRunAs = false;
@@ -26,6 +27,7 @@ define([
 
     $onInit() {
       this.scope.saveUser = () => this.saveUser();
+      this.scope.editUser = () => this.editUser();
       this.scope.addNewUser = () => this.addNewUser();
       this.scope.cancelAddUser = () => this.cancelAddUser();
       this.scope.isAddNewUser = false;
@@ -64,26 +66,55 @@ define([
         this.scope.isEditingUser = true;
 
         this.scope.userName = parameters.user.username;
-        this.scope.userAllowRunAs = parameters.user.allow_run_as;
-
-        console.log(console.log(parameters));
-        console.log(console.log(parameters.user.username, parameters.user.allow_run_as, parameters.user.roles));
-        
-        // this.scope.policyName = parameters.policy.name;
-        // this.actionsDropdown.val(this.scope.actions);
-        // this.effectOptions.val(parameters.policy.policy.effect);
-        // parameters.policy.policy.resources.map(resource => {
-        //   this.scope.resourcesList.push(resource);
-        // });
-        // this.scope.disableAdd = false;
+        this.scope.userId = parameters.user.userId;
+        this.scope.userAllowRunAs = parameters.user.allow_run_as;      
       });
     }
 
     async saveUser() {
       try{
-       newUserRequest({
-          roles: this.dropdown.val(),
+        if(this.scope.userPassword === this.scope.userPasswordConfirm && this.scope.userName != ""){
+          //add user
+          const newUserData = await this.securityService.addUser(
+             this.scope.userName,
+             this.scope.userPassword
+          )
+          console.log("return: ", newUserData.data.affected_items[0].id);
+          console.log("return: ", newUserData.data.data.affected_items[0].id);
+          
+          //allow run as if needed
+          await this.securityService.addRunAs(
+            newUserData.data.affected_items[0].id,
+            this.scope.allow_run_as
+          )          
+          //add roles
+          await this.securityService.addRoles(
+            newUserData.data.affected_items[0].id,
+            this.scope.userRoles
+          )
+        }else{
+          this.notification.showErrorToast("Both password must be equals and usernamecan't be empty");  
+        }
+
+      }catch(error){
+        this.notification.showErrorToast(error);
+      } 
+      finally {
+        this.cancelAddUser();
+      }
+    }
+
+    async editUser() {
+      try{
+
+        this.dropdown.val(this.scope.userRoles);
+        // this.dropdown.on("change", newValue => {
+        //   this.dropdown.val(this.scope.userRoles);
+        // });
+       editUserRequest({
+          roles: this.scope.userRoles,
           username: this.scope.userName,
+          userID: this.scope.userId,
           password:this.scope.userPassword
        })
       }catch(error){
@@ -101,13 +132,14 @@ define([
     }
 
     cancelAddUser() {
-      try {
+      try {        
         this.scope.isAddNewUser = false;
         this.scope.isEditingUser = false;
+        this.scope.userId = "";
         this.scope.userName = "";
         this.scope.userPassword = "";
         this.scope.userPasswordConfirm = "";
-        // this.scope.userAllowRunAs = false;
+        this.scope.userAllowRunAs = false;
         this.dropdown.val([]);
         this.scope.$applyAsync();
 
@@ -118,14 +150,34 @@ define([
       }
     }
     
-    newUserRequest = async userPayload => {
+    // newUserRequest = async userPayload => {
+    //   //1 save user and get id
+    //   try {
+    //     const data = await $requestService.apiReq(
+    //       "/security/users",
+    //       {
+    //         content: JSON.stringify({name: userPayload.username, password: userPayload.password}),
+    //         origin: "json"
+    //       },
+    //       "POST"
+    //     );
+    //     return data
+    //   }catch(error){
+    //     this.notification.showErrorToast("Error adding user: "+error);
+    //   }
+    //   //2 allow run_as
+
+    //   //3 save roles
+    // };
+    
+    editUserRequest = async userPayload => {
       return await $requestService.apiReq(
-        "/security/users",
+        `/security/users/${userPayload.userID}`,
         {
           content: JSON.stringify(userPayload),
           origin: "json"
         },
-        "POST"
+        "PUT"
       );
     };
 
