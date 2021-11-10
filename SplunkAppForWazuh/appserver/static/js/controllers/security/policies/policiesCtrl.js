@@ -220,7 +220,6 @@ define([
      * @param {String} term
      */
     search(term) {
-      console.log(term);
       this.scope.$broadcast("wazuhSearch", { term });
     }
 
