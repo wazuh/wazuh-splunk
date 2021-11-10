@@ -208,7 +208,9 @@ define([
       let result = [];
       actions.map(labelAction => {
         return this.scope.actionData.map(action => {
-          return action.label === labelAction ? result.push(action.value) : null;
+          return action.label === labelAction
+            ? result.push(action.value)
+            : null;
         });
       });
 
@@ -238,11 +240,22 @@ define([
     }
 
     addResourceIdentifier() {
-      this.scope.resourcesList.push(
-        `${this.resourcesDropdown._getSelectedData().label}:${
-          this.scope.resourceIdentifier
-        }`
-      );
+      const newResource = `${this.resourcesDropdown._getSelectedData().label}:${
+        this.scope.resourceIdentifier
+      }`;
+
+      if (this.scope.resourcesList.length === 0) {
+        this.scope.resourcesList.push(newResource);
+      } else {
+        if (this.scope.resourcesList.indexOf(newResource) === -1) {
+          this.scope.resourcesList.push(newResource);
+        } else {
+          this.notification.showWarningToast(
+            `Resource ${newResource} already exists.`
+          );
+        }
+      }
+
       this.scope.resourceIdentifier = "";
       this.resourcesDropdown.val([]);
     }
