@@ -57,6 +57,10 @@ define(["../module"], function(module) {
         if (!role.id) {
           const result = await fetchNewRole(role.name);
 
+          if (typeof result.data.error === 'string') {
+            throw new Error(`Cannot save Role ${role.name}`);
+          }
+
           if (
             result.data.error === 1 &&
             result.data.data.failed_items[0].error.code === 4005
