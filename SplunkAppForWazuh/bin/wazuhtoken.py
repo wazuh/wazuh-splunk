@@ -12,16 +12,14 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
-import jsonbak
 import requestsbak
 from cache import cache
-import splunk.appserver.mrsparkle.controllers as controllers
-from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from log import log
 
-class wazuhtoken():
 
-    """Queue class.
+class wazuhtoken():
+    """
+    Queue class.
 
     Handle Jobs queue methods
     """
@@ -34,15 +32,16 @@ class wazuhtoken():
             self.session.trust_env = False
             self.cache = cache()
         except Exception as e:
-            self.logger.error("token: Error in token module constructor: %s" % (e))
-        
+            self.logger.error(
+                "token: Error in token module constructor: %s" % (e))
+
     def get_auth_token(self, url, auth):
         try:
             token_key = 'token-' + url + '-' + str(auth)
-            if self.cache.get(token_key) is None :
+            if self.cache.get(token_key) is None:
                 verify = False
                 wazuh_token_response = self.session.get(
-                url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify)
+                    url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify)
                 if wazuh_token_response.status_code == 200:
                     wazuh_token = wazuh_token_response.json()
                     token = wazuh_token['data']['token']
@@ -56,9 +55,10 @@ class wazuhtoken():
                 self.cache.set(token_key, token, 600)
                 self.logger.debug("api token KEY: %s" % (token_key))
                 return token
-            else :
+            else:
                 self.logger.debug("cache token: %s" % (token_key))
                 return self.cache.get(token_key)
         except Exception as e:
-            self.logger.error("wazuh-token: Error geting auth Wazuh token: %s" % (e))
+            self.logger.error(
+                "wazuh-token: Error geting auth Wazuh token: %s" % (e))
             raise e
