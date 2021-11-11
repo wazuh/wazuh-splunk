@@ -140,7 +140,10 @@ define(['../module'], function(module) {
           L: 'Has pages locked into memory (for real-time and custom IO)',
           s: 'Is a session leader',
           l: 'Is multi-threaded (using CLONE_THREAD, like NPTL pthreads do)',
-          '+': 'Is in the foreground process group'
+          '+': 'Is in the foreground process group',
+          'policy.actions' : 'Policy Actions',
+          'policy.resources' : 'Resources',
+          'policies' : 'Policies',
         }
       }
     }
