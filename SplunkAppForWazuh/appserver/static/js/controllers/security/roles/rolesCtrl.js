@@ -19,6 +19,16 @@ define([
 ], function(controllers, SearchManager, MultiDropdownView, mvc) {
   "use strict";
 
+  const RESERVED_ROLES = [
+    "administrator",
+    "readonly",
+    "users_admin",
+    "agents_readonly",
+    "agents_admin",
+    "cluster_readonly",
+    "cluster_admin"
+  ];
+
   class Roles {
     constructor(
       $scope,
@@ -53,9 +63,27 @@ define([
 
       this.dropdown.on("change", newValue => {
         if (newValue && this.dropdown) {
+          this.deletePolicy(
+            this.scope.policies.filter(policy => !newValue.includes(policy))[0]
+          );
           this.scope.policies = newValue;
+          this.scope.$applyAsync();
         }
       });
+    }
+
+    async deletePolicy(policyId) {
+      if (policyId) {
+        const result = await this.securityService.removePolicy(
+          this.scope.roleId,
+          policyId
+        );
+        if (result && result.data.error === 0) {
+          this.notification.showSuccessToast(
+            "Policy was removed successfully."
+          );
+        }
+      }
     }
 
     getPolicyList(policyData) {
@@ -69,15 +97,23 @@ define([
       this.scope.cancelRoleEdition = () => this.cancelRoleEdition();
       this.scope.enableSave = () => this.enableSave();
       this.scope.saveRole = () => this.saveRole();
+      this.scope.search = term => this.search(term);
       this.scope.addingNewRole = false;
+      this.scope.reservedRole = false;
 
       // Come from the pencil icon on the roles table
       this.scope.$on("openRoleFromList", (ev, parameters) => {
         ev.stopPropagation();
         this.scope.addingNewRole = true;
         this.scope.editingRole = true;
+        this.scope.roleId = parameters.role.id;
         this.scope.roleName = parameters.role.name;
         this.scope.policies = parameters.role.policies;
+        this.dropdown.settings.set(
+          "disabled",
+          RESERVED_ROLES.includes(parameters.role.name)
+        );
+        this.scope.reservedRole = RESERVED_ROLES.includes(parameters.role.name);
         this.dropdown.val(this.scope.policies);
       });
 
@@ -90,6 +126,14 @@ define([
     }
 
     /**
+     * Searches by a term
+     * @param {String} term
+     */
+    search(term) {
+      this.scope.$broadcast("wazuhSearch", { term });
+    }
+
+    /**
      * Open the editor for a new role
      */
     addNewRole() {
@@ -98,6 +142,7 @@ define([
         this.scope.overwrite = false;
         this.scope.addingNewRole = true;
         this.scope.policies = [];
+        this.dropdown.settings.set("disabled", false);
       } catch (error) {
         this.notification.showErrorToast("Cannot add new Role.");
       }
@@ -106,14 +151,12 @@ define([
     clearAll() {
       this.scope.policies = [];
       this.scope.roleName = "";
+      this.scope.roleId = "";
       this.dropdown.val([]);
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
-      this.scope.items = null;
-      this.scope.totalItems = null;
-      this.scope.pagedItems = null;
-      this.scope.currentPage = 0;
-      this.scope.gap = 0;
+      this.scope.reservedRole = false;
+      this.scope.$applyAsync();
     }
 
     /**
@@ -131,12 +174,14 @@ define([
     }
 
     /**
-     * Saves the CDB list content
+     * Saves Role
      */
     async saveRole() {
       try {
         const constainsBlanks = /.* .*/;
         const roleName = this.scope.roleName;
+        const roleId = this.scope.roleId;
+
         if (roleName) {
           if (constainsBlanks.test(roleName)) {
             this.notification.showErrorToast(
@@ -146,18 +191,32 @@ define([
             this.scope.saveIncomplete = true;
             const policies = this.scope.policies;
             const result = await this.securityService.saveRole(
-              roleName,
+              { name: roleName, id: roleId },
               policies
             );
-            if (result && result.data && result.data.error === 0) {
-              this.notification.showSuccessToast("File saved successfully.");
-              this.scope.saveIncomplete = false;
-              this.scope.$applyAsync();
-            } else if (result.data.error === 1905) {
+            if (
+              result &&
+              result.data.error &&
+              result.data.data.failed_items[0] &&
+              result.data.data.failed_items[0].error.code === 4005
+            ) {
               this.notification.showWarningToast(
-                result.data.message || "Role already exists."
+                result.data.datafailed_items[0].error.message ||
+                  "Role already exists."
               );
               this.scope.overwrite = true;
+              this.scope.saveIncomplete = false;
+              this.scope.$applyAsync();
+              return;
+            }
+            if (
+              (result && result.data.error === 0) ||
+              (result &&
+                result.data.error &&
+                result.data.data.failed_items[0] &&
+                result.data.data.failed_items[0].error.code === 4011)
+            ) {
+              this.notification.showSuccessToast("Role saved successfully.");
               this.scope.saveIncomplete = false;
               this.scope.$applyAsync();
             } else {
@@ -170,8 +229,10 @@ define([
           );
         }
       } catch (error) {
-        this.scope.saveIncomplete = false;
         this.notification.showErrorToast(error);
+      } finally {
+        this.scope.saveIncomplete = false;
+        this.clearAll();
       }
     }
   }
