@@ -8,6 +8,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Support for Wazuh 4.2.3
 - Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
+- Added Crud Role Mapping on security section. [#1169](https://github.com/wazuh/wazuh-splunk/pull/1169)
 
 ## Wazuh v4.2.2 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4202
 

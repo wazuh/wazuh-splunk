@@ -568,7 +568,30 @@ define([
         $scope.confirmRemoveSecurityPolicies = async policy => {
         }
         // END SECURITY SECTION FOR POLICIES
-
+        // SECURITY SECTION FOR ROLE MAPPING
+        $scope.showConfirmRemoveRoleMapping = (ev, rule) => {
+          $scope.removingRoleMapping =
+            $scope.removingRoleMapping === rule.name ? null : rule.name
+        }
+        $scope.cancelRemoveRoleMapping = () => {
+          $scope.removingRoleMapping = null
+        }
+        $scope.editRoleMapping = rule => {
+          $scope.$emit('openRuleFromList', { rule })
+        }
+        $scope.confirmRemoveRoleMapping = async rule => {
+          try {
+            await $securityService.removeRule(rule.id)
+            $notificationService.showSuccessToast(
+                `Success. Role mapping ${rule.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingRoleMapping = null
+          return init()
+        }
+        // END SECURITY SECTION FOR ROLE MAPPING
         $scope.showConfirmRemoveGroup = (ev, group) => {
           $scope.removingGroup =
             $scope.removingGroup === group.name ? null : group.name
