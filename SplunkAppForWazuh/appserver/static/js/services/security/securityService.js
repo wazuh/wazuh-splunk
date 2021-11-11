@@ -5,10 +5,10 @@ define(["../module"], function(module) {
 
   module.service("$securityService", function($requestService, $state) {
 
-    const removeUser = async user => {
+    const removeUser = async users => {
       try {
         const result = await $requestService.apiReq(
-          `/security/users?user_ids=${user}`,
+          `/security/users?user_ids=${users}`,
           {},
           "DELETE"
         );
@@ -53,13 +53,14 @@ define(["../module"], function(module) {
     const addRunAs = async (user, status) => {
       try {
         const data = await $requestService.apiReq(
-          `/security/users/${user}/run_as`,
+          `/security/users/${user}/run_as?run_as?${status}`,
           {
-            content: JSON.stringify({allow_run_as: status}),
-            origin: "json"
+            // content: JSON.stringify({allow_run_as: status}),
+            // origin: "json"
           },
           "PUT"
         );
+        console.log("run as: ", data);
         return data
       }catch(error){
         this.notification.showErrorToast("Error modifying run as: "+error);
@@ -70,12 +71,23 @@ define(["../module"], function(module) {
     const addRoles = async (user, roles) => {
       try {
         const data = await $requestService.apiReq(
-          `/security/users/${user}/roles`,
-          {
-            content: JSON.stringify({roles_ids: roles}),
-            origin: "json"
-          },
+          `/security/users/${user}/roles?role_ids=${roles}`,
+          {},
           "POST"
+        );
+        return data
+      }catch(error){
+        this.notification.showErrorToast("Error adding roles: "+error);
+        return Promise.reject(error);
+      }
+    }
+
+    const deleteRoles = async (user, roles) => {
+      try {
+        const data = await $requestService.apiReq(
+          `/security/users/${user}/roles?role_ids=${roles}`,
+          {},
+          "DELETE"
         );
         return data
       }catch(error){
@@ -89,6 +101,7 @@ define(["../module"], function(module) {
       addRunAs: addRunAs,
       addRoles: addRoles,
       getRoles: getRoles,
+      deleteRoles: deleteRoles,
       removeUser: removeUser
     };    
   });

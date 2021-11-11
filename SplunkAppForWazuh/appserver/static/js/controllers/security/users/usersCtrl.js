@@ -7,7 +7,7 @@ define([
   'use strict'
 
   class Users {
-    constructor($scope, $route, isAdmin, usersData, roleData, $notificationService, $securityService) {
+    constructor($scope, isAdmin, usersData, roleData, $notificationService, $securityService) {
       this.scope = $scope
       this.scope.isAdmin = isAdmin;
       this.notification = $notificationService;
@@ -61,13 +61,17 @@ define([
       });
 
       this.scope.$on("openUserFromList", (ev, parameters) => {
+        console.log(parameters);
         ev.stopPropagation();
         this.scope.isAddNewUser = false;
         this.scope.isEditingUser = true;
 
         this.scope.userName = parameters.user.username;
-        this.scope.userId = parameters.user.userId;
+        this.scope.userId = parameters.user.id;
         this.scope.userAllowRunAs = parameters.user.allow_run_as;      
+        this.scope.userRoles = parameters.user.roles;   
+        
+        this.dropdown.val(this.scope.userRoles);
       });
     }
 
@@ -79,17 +83,16 @@ define([
              this.scope.userName,
              this.scope.userPassword
           )
-          console.log("return: ", newUserData.data.affected_items[0].id);
           console.log("return: ", newUserData.data.data.affected_items[0].id);
           
           //allow run as if needed
           await this.securityService.addRunAs(
-            newUserData.data.affected_items[0].id,
-            this.scope.allow_run_as
+            newUserData.data.data.affected_items[0].id,
+            this.scope.userAllowRunAs
           )          
           //add roles
           await this.securityService.addRoles(
-            newUserData.data.affected_items[0].id,
+            newUserData.data.data.affected_items[0].id,
             this.scope.userRoles
           )
         }else{
@@ -97,7 +100,7 @@ define([
         }
 
       }catch(error){
-        this.notification.showErrorToast(error);
+        this.notification.showErrorToast("Error adding a new user: "+error);
       } 
       finally {
         this.cancelAddUser();
@@ -105,18 +108,26 @@ define([
     }
 
     async editUser() {
+      console.log(this.scope.userId);
+      console.log(this.scope.userRoles);
+      console.log(this.dropdown.val());
+      console.log(this.scope.userAllowRunAs);
       try{
-
-        this.dropdown.val(this.scope.userRoles);
-        // this.dropdown.on("change", newValue => {
-        //   this.dropdown.val(this.scope.userRoles);
-        // });
-       editUserRequest({
-          roles: this.scope.userRoles,
-          username: this.scope.userName,
-          userID: this.scope.userId,
-          password:this.scope.userPassword
-       })
+        //remove roles
+        await this.securityService.deleteRoles(
+          this.scope.userId,
+          this.scope.userRoles
+        )
+        //allow run as if needed
+        await this.securityService.addRunAs(
+          this.scope.userId,
+          this.scope.userAllowRunAs
+        )          
+        //add roles        
+        await this.securityService.addRoles(
+          this.scope.userId,
+          this.scope.userRoles
+        )
       }catch(error){
         this.notification.showErrorToast(error);
       } 
@@ -139,11 +150,11 @@ define([
         this.scope.userName = "";
         this.scope.userPassword = "";
         this.scope.userPasswordConfirm = "";
+        this.scope.role = [];
         this.scope.userAllowRunAs = false;
         this.dropdown.val([]);
         this.scope.$applyAsync();
 
-        // this.scope.role = [];
         // this.dropdown.settings.set("disabled", false);
       } catch (error) {
         this.notification.showErrorToast("Error closing form.");

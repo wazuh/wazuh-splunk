@@ -528,7 +528,7 @@ define([
         }
         $scope.confirmRemoveSecurityUser = async user => {
           try {
-            await $securityService.removeUser(user)
+            await $securityService.removeUser(user.id)
             $notificationService.showSuccessToast(
                 `Success. User ${user} has been removed`
             )
