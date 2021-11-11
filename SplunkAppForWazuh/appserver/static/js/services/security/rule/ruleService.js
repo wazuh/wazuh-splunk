@@ -1,5 +1,5 @@
 /*
- * Wazuh app - Security service
+ * Wazuh app - Security Rule service
 --
  * Copyright (C) 2015-2021 Wazuh, Inc.
  *
