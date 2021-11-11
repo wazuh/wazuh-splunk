@@ -53,7 +53,7 @@ define(["../module"], function(module) {
       );
     };
 
-    const editRule = async (id,rulePayload) => {
+    const editRule = async (id, rulePayload) => {
       return await $requestService.apiReq(
         `/security/rules/${id}`,
         {
@@ -66,7 +66,7 @@ define(["../module"], function(module) {
 
     const deleteRoleRules = async (roleId, rules) => {
       return await $requestService.apiReq(
-        `/security/roles/${roleId}/rules?rule_ids=${rules.join(',')}`,
+        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`,
         { content: "" },
         "DELETE"
       );
@@ -74,8 +74,8 @@ define(["../module"], function(module) {
 
     const addRoleRules = async (roleId, rules) => {
       return await $requestService.apiReq(
-        `/security/roles/${roleId}/rules?rule_ids=${rules.join(',')}`,
-        );
+        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`
+      );
     };
 
     const fetchEditRole = async (roleId, policies) => {
@@ -93,7 +93,7 @@ define(["../module"], function(module) {
         if (!role.id) {
           const result = await fetchNewRole(role.name);
 
-          if (typeof result.data.error === 'string') {
+          if (typeof result.data.error === "string") {
             throw new Error(`Cannot save Role ${role.name}`);
           }
 
@@ -103,8 +103,8 @@ define(["../module"], function(module) {
           ) {
             throw new Error(
               result.data.data.failed_items[0].error.message ||
-              result.data.data.message ||
-              "Cannot save Role."
+                result.data.data.message ||
+                "Cannot save Role."
             );
           }
 
@@ -269,68 +269,67 @@ define(["../module"], function(module) {
       }
     };
 
-    const saveRule = async (rule,roles) => {
+    const saveRule = async (rule, roles) => {
       let ruleId = "";
       try {
-          const result = await fetchNewRule(rule);
-          const data = (result.data || {}).data || result;
-          if(data.error){
-            return data;
-          }
-          if (data.failed_items && data.failed_items.length) {
-            return data;
-          }
+        const result = await fetchNewRule(rule);
+        const data = (result.data || {}).data || result;
+        if (data.error) {
+          return data;
+        }
+        if (data.failed_items && data.failed_items.length) {
+          return data;
+        }
 
-          if (data.affected_items && data.affected_items) {
-            ruleId = data.affected_items[0].id;
-            await Promise.all(
-              roles.map(async (role) => await addRoleRules(role, [ruleId]))
-            );
-            return data
-          }
+        if (data.affected_items && data.affected_items) {
+          ruleId = data.affected_items[0].id;
+          await Promise.all(
+            roles.map(async role => await addRoleRules(role, [ruleId]))
+          );
+          return data;
+        }
 
-          if (result.data.error === 1905) {
-            return result;
-          } else if (result.data.error) {
-            throw new Error(
-              result.data.message || result.data.error || "Cannot save Rule."
-            );
+        if (result.data.error === 1905) {
+          return result;
+        } else if (result.data.error) {
+          throw new Error(
+            result.data.message || result.data.error || "Cannot save Rule."
+          );
         }
       } catch (error) {
         return Promise.reject(error);
       }
     };
 
-    const updateRule = async (id,rule,currentRoles,newRoles) => {
+    const updateRule = async (id, rule, currentRoles, newRoles) => {
       try {
-          const result = await editRule(id,rule);
-          const data = (result.data || {}).data || result;
-          if(data.error){
-            return data;
-          }
-          if (data.failed_items && data.failed_items.length) {
-            return data;
-          }
+        const result = await editRule(id, rule);
+        const data = (result.data || {}).data || result;
+        if (data.error) {
+          return data;
+        }
+        if (data.failed_items && data.failed_items.length) {
+          return data;
+        }
 
-          if (data.affected_items && data.affected_items) {
-              currentRoles.map(async (role) => {
-                if(!newRoles.includes(role)){
-                  await deleteRoleRules(role, [id])
-                }
-              });
-              newRoles.map(async (role) => {
-                if(!currentRoles.includes(role))
-                  await addRoleRules(role, [id])
-              });
-            return data
-          }
+        if (data.affected_items && data.affected_items) {
+          currentRoles.map(async role => {
+            if (!newRoles.includes(role)) {
+              await deleteRoleRules(role, [id]);
+            }
+          });
+          newRoles.map(async role => {
+            if (!currentRoles.includes(role)) await addRoleRules(role, [id]);
+          });
+          return data;
+        }
 
-          if (result.data.error === 1905) {
-            return result;
-          } else if (result.data.error) {
-            throw new Error(
-              result.data.message || result.data.error || "Cannot save Rule."
-            );
+        if (result.data.error === 1905) {
+          return result;
+        } else if (result.data.error) {
+          throw new Error(
+            result.data.message || result.data.error || "Cannot save Rule."
+          );
         }
       } catch (error) {
         return Promise.reject(error);
@@ -339,17 +338,17 @@ define(["../module"], function(module) {
 
     return {
       getRoleData: getRoleData,
-      getPolicyData: getPolicyData,
       saveRole: saveRole,
-      getResourceData: getResourceData,
-      getActionData: getActionData,
+      removeRole: removeRole,
+      getPolicyData: getPolicyData,
       savePolicy: savePolicy,
       updatePolicy: updatePolicy,
-      removeRole: removeRole,
+      removePolicy: removePolicy,
+      getResourceData: getResourceData,
+      getActionData: getActionData,
       removeRule: removeRule,
       saveRule: saveRule,
-      updateRule: updateRule,
-      removePolicy: removePolicy
+      updateRule: updateRule
     };
   });
 });

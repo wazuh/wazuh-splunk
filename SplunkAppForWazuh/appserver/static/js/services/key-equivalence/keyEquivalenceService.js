@@ -72,9 +72,6 @@ define(['../module'], function(module) {
           'remote.ip': 'Remote IP',
           'local.port': 'Local port',
           'remote.port': 'Remote port',
-          'policy.actions': 'Policy actions',
-          'policy.resources': 'Policy resources',
-          'policy.effect': ' Policy effect',
           uname: 'User',
           gname: 'Group',
           perm: 'Permissions',
@@ -147,6 +144,8 @@ define(['../module'], function(module) {
           'policy.actions' : 'Policy Actions',
           'policy.resources' : 'Resources',
           'policies' : 'Policies',
+          'policy.effect': 'Effect',
+          'roles': 'Roles',
         }
       }
     }
