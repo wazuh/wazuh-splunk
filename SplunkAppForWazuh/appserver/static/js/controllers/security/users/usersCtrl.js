@@ -84,8 +84,6 @@ define([
              this.scope.userName,
              this.scope.userPassword
           )
-          console.log("return: ", newUserData.data.data.affected_items[0].id);
-          
           //allow run as if needed
           await this.securityService.addRunAs(
             newUserData.data.data.affected_items[0].id,
@@ -109,11 +107,6 @@ define([
     }
 
     async editUser() {
-      console.log(this.scope.userId);
-      console.log(this.scope.editUserRoles);
-      console.log(this.scope.userRoles);
-      console.log(this.dropdown.val());
-      console.log(this.scope.userAllowRunAs);
       try{
         //remove roles
         await this.securityService.deleteRoles(

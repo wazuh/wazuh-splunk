@@ -51,17 +51,12 @@ define(["../module"], function(module) {
     }
 
     const addRunAs = async (user, status) => {
-      console.log(user, status);
       try {
         const data = await $requestService.apiReq(
-          `/security/users/${user}/run_as?run_as?${status}`,
-          {
-            // content: JSON.stringify({allow_run_as: status}),
-            // origin: "json"
-          },
+          `/security/users/${user}/run_as?allow_run_as=${status}`,
+          {},
           "PUT"
         );
-        console.log("run as: ", data);
         return data
       }catch(error){
         this.notification.showErrorToast("Error modifying run as: "+error);
