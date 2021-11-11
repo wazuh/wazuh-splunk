@@ -13,9 +13,9 @@ define(['../../module', '../../../utils/config-handler'], function(
       $notificationService,
       isAdmin,
       clusterInfo,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope
       this.notification = $notificationService
       this.apiReq = $requestService

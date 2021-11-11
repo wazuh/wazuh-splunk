@@ -25,7 +25,7 @@ define([
       isAdmin,
       $cdbEditor,
       $restartService,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -37,7 +37,7 @@ define([
         $csvRequestService,
         $restartService
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.pagination = pagination
       this.checkGap = checkGap
       this.isAdmin = isAdmin

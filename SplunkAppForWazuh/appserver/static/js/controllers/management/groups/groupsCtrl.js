@@ -28,9 +28,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $groupHandler,
       extensions,
       isAdmin,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService

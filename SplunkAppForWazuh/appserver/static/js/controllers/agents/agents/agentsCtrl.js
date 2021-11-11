@@ -45,15 +45,16 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
-      requirementsList,
+      rbacRequirements,
       agentData,
       clusterInfo,
       $mdDialog,
       $groupHandler,
       $dateDiffService,
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope;
+      this.scope.rbacRequirements = rbacRequirements;
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')
       this.currentDataService = $currentDataService
@@ -159,7 +160,7 @@ define([
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
+        `${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',

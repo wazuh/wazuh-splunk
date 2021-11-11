@@ -104,30 +104,27 @@ define(
        * and the validationService to determine if the user has permisions
        * to perform the actions required by the controller.
        * @param {String} controllerName name of the controller.
-       * @returns {Array} array with each action required by the controller and
+       * @returns {{[key: string]: boolean}} object with each action required by the controller and
        * if the user can perform it or not.
        */
       async getRequirementsOfController(controllerName) {
-        // Search the controller's requirements on the map.
-        const actionsRequired = this.ACTIONS_MAP[controllerName] // :list
-        var requirementsList = []
-        var requirementsObject = null
-        var isActionAllowed = false
-
+        
         try {
+          // Search the controller's requirements on the map.
+          const actionsRequired = this.ACTIONS_MAP[controllerName] // :list
           const userPolicies = await this.getUserPolicies()
 
-          actionsRequired.forEach((action) => {
-            requirementsObject = this._generateRequirementsObject(action)
-            isActionAllowed = this._validateRequirementsObject(requirementsObject, userPolicies)
-            requirementsList.push({ action, isActionAllowed })
-          })
+          return actionsRequired.reduce((accum, action) => {
+            const requirementsObject = this._generateRequirementsObject(action)
+            const isActionAllowed = this._validateRequirementsObject(requirementsObject, userPolicies)
+            accum[action] = isActionAllowed
+            return accum
+          },{})
         }
         catch (err) {
           // TODO improve error handling.
           console.error(`Missing controller '${controllerName}' in mapActions`, err)
         }
-        return requirementsList
       }
     }
 

@@ -26,9 +26,9 @@ define([
       $appVersionService,
       $notificationService,
       monitoringInfo,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
       this.currentDataService = $currentDataService

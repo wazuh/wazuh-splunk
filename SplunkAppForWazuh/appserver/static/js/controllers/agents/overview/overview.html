@@ -24,17 +24,17 @@
         <!-- Restart button -->
         <div ng-show="confirmingRestart" style="text-align: right;">
           <span style="padding-top: 8px;">The {{ agent.name}}({{agent.id}}) will be restarted.</span>
-          <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
+          <button style="height: 30px;" ng-if="rbacRequirements.AGENT_RESTART" ng-click="switchRestart()"
             class='btn wz-button-cancel pull-right wz-margin-left-10'>
-            <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+            <span ng-show='rbacRequirements.AGENT_RESTART'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
           </button>
-          <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
+          <button style="height: 30px;" ng-if="rbacRequirements.AGENT_RESTART && !clusterEnabled" ng-click="restart(); switchRestart()"
             class='btn wz-button-empty pull-right wz-margin-left-10'>
-            <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+            <span ng-show='rbacRequirements.AGENT_RESTART'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
           </button>
         </div>
         <div ng-show="!confirmingRestart">
-          <button ng-if="isAdmin && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
+          <button ng-if="rbacRequirements.AGENT_RESTART && agent.status === 'Active'" ng-click="switchRestart()" ng-disabled="restartInProgress"
             class="btn wz-button-empty pull-right ng-scope">
             <span aria-hidden="false">
               <wz-svg icon="refresh"></wz-svg>
@@ -127,7 +127,7 @@
 
         <div layout="row" ng-if="agent.group">
           <span class="font-size-17">Groups
-            <wz-svg ng-if='isAdmin' ng-click="switchGroupEdit()" svg-tooltip="Add group" icon="plus" color="#0079a5">
+            <wz-svg ng-if='rbacRequirements.AGENT_MODIFY_GROUP' ng-click="switchGroupEdit()" svg-tooltip="Add group" icon="plus" color="#0079a5">
             </wz-svg>
           </span>
         </div>

@@ -28,7 +28,7 @@ define([
       $cdbEditor,
       cdbInfo,
       $restartService,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -40,7 +40,7 @@ define([
         $csvRequestService,
         $restartService
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.state = $state
       this.isAdmin = isAdmin
       this.cdbEditor = $cdbEditor

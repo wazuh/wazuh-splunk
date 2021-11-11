@@ -33,16 +33,16 @@ define(['../../module'], function(app) {
       $notificationService,
       agent,
       groups,
-      isAdmin,
-      requirementsList,
+      rbacRequirements,
       $mdDialog,
       $groupHandler,
       $dateDiffService,
       $currentDataService
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.stateParams = $stateParams
       this.scope = $scope
+      this.scope.rbacRequirements = rbacRequirements
       this.requestService = $requestService
       this.state = $state
       this.notification = $notificationService
@@ -57,7 +57,6 @@ define(['../../module'], function(app) {
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
       this.scope.restartInProgress = false
-      this.scope.isAdmin = isAdmin
       this.currentDataService = $currentDataService
       this.currentApi = this.currentDataService.getApi()
       this.api = this.currentApi['_key']
@@ -83,12 +82,12 @@ define(['../../module'], function(app) {
         this.scope.confirmingRestart = false
         this.setAgentPlatform()
         if (
-          this.agent.length &&
-          typeof this.agent[0] === 'object' &&
-          this.agent[0].data &&
-          typeof this.agent[0].data.data === 'object'
+          this.agent &&
+          typeof this.agent === 'object' &&
+          this.agent.data &&
+          typeof this.agent.data.data === 'object'
         ) {
-          this.scope.agent = this.agent[0].data.data.affected_items[0]
+          this.scope.agent = this.agent.data.data.affected_items[0]
 
           // Capitalize Status
           if(this.scope.agent && this.scope.agent.status){
@@ -103,25 +102,11 @@ define(['../../module'], function(app) {
               ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
                   .codename || '-'} ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
-          this.scope.syscheck =
-            this.agent.length > 0 &&
-            typeof this.agent[1] === 'object' &&
-            typeof this.agent[1].data === 'object' &&
-            !this.agent[1].data.error
-              ? this.agent[1].data.data
-              : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
           this.scope.id = this.stateParams.id
-          this.scope.rootcheck =
-            this.agent.length > 1 &&
-            typeof this.agent[2] === 'object' &&
-            typeof this.agent[2].data === 'object' &&
-            !this.agent[2].data.error
-              ? this.agent[2].data.data
-              : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
             this.refreshExtensions()
 
-            this.scope.groups = this.groups.data.data.affected_items
+            this.scope.groups = this.groups.error ? [] : this.groups.data.data.affected_items
               .map(item => item.name)
               .filter(
                 item =>
@@ -137,27 +122,7 @@ define(['../../module'], function(app) {
             this.scope.searchRootcheck = (term, specificFilter) =>
               this.scope.$broadcast('wazuhSearch', { term, specificFilter })
 
-            this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
-            this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
-
             this.scope.checkModules = module => this.checkModules(module)
-
-            this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
-              this.scope.syscheck.start,
-              this.scope.syscheck.end
-            ).duration
-            this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(
-              this.scope.rootcheck.start,
-              this.scope.rootcheck.end
-            ).duration
-            this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(
-              this.scope.syscheck.start,
-              this.scope.syscheck.end
-            ).inProgress
-            this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(
-              this.scope.rootcheck.start,
-              this.scope.rootcheck.end
-            ).inProgress
 
             this.scope.switchGroupEdit = () => {
               this.scope.addingGroupToAgent = false
@@ -218,13 +183,6 @@ define(['../../module'], function(app) {
                 })
             }
           }
-          //Check OS type
-          if (
-            this.agent[0].data.data &&
-            this.agent[0].data.data.os &&
-            this.agent[0].data.data.os.uname
-          ) {
-          }
 
           if (this.scope.agent.status == 'Never connected') {
             this.scope.agent.os = {
@@ -247,9 +205,9 @@ define(['../../module'], function(app) {
             dateAdd: 'Unknown',
             lastKeepAlive: 'Unknown'
           }
-          if (this.agent[0].data.error) {
+          if (this.agent.data.error) {
             this.scope.agent.error =
-              this.agent[0].data.message || this.agent[0].data.error
+              this.agent.data.message || this.agent.data.error
           } else {
             this.scope.agent = {
               group: null,
@@ -262,9 +220,9 @@ define(['../../module'], function(app) {
               dateAdd: 'Unknown',
               lastKeepAlive: 'Unknown'
             }
-            if (this.agent[0].data.error) {
+            if (this.agent.data.error) {
               this.scope.agent.error =
-                this.agent[0].data.message || this.agent[0].data.error
+                this.agent.data.message || this.agent.data.error
             } else {
               this.scope.agent.error = 'Unable to load agent data from API'
             }
@@ -405,7 +363,7 @@ define(['../../module'], function(app) {
     setAgentPlatform() {
       try {
         this.scope.agentPlatform = 'other'
-        const agentInfo = ((((this.agent[0] || []).data || {}).data || {}).affected_items || [])[0] || {}
+        const agentInfo = ((((this.agent || []).data || {}).data || {}).affected_items || [])[0] || {}
         let agentPlatformLinux = (
           (agentInfo || {}).os || {}
         ).uname

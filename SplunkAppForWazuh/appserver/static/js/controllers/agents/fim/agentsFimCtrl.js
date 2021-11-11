@@ -53,7 +53,7 @@ define([
       $notificationService,
       $reportingService,
       reportingEnabled,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -62,7 +62,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.wzTableFilter = $tableFilterService
       this.agent = agent
       this.api = this.currentDataService.getApi()

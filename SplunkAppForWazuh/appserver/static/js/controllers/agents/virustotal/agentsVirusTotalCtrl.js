@@ -47,7 +47,7 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -56,9 +56,10 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
+      this.scope.rbacRequirements = rbacRequirements
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
         `{"rule.groups{}":"virustotal", "implicit":true}`

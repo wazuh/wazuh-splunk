@@ -21,7 +21,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $restartService,
       isAdmin,
       $fileEditor,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -34,7 +34,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         $restartService,
         $fileEditor
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope.typeFilter = 'all'
       this.isAdmin = isAdmin
       this.restartService = $restartService

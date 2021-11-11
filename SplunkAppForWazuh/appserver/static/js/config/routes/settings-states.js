@@ -21,7 +21,11 @@ define(['../module'], function(module) {
             isWazuhAdmin: [
               '$security_service',
               async $security_service => {
-                return await $security_service.isWazuhAdmin()
+                try{
+                  return await $security_service.isWazuhAdmin()
+                }catch(error){
+                  return false;
+                }
               }
             ],
             isAdmin: [

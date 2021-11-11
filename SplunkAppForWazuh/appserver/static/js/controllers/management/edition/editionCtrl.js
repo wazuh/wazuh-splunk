@@ -18,9 +18,9 @@ define(['../../module'], function(controllers) {
       $interval,
       $rootScope,
       $state,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope
       this.clusterInfo = clusterInfo
       this.isAdmin = isAdmin
