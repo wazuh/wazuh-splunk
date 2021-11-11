@@ -530,7 +530,7 @@ define([
           try {
             await $securityService.removeUser(user.id)
             $notificationService.showSuccessToast(
-                `Success. User ${user} has been removed`
+                `Success. User ${user.username} has been removed`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)
@@ -549,7 +549,7 @@ define([
           $scope.removingRoles = null
         }
         $scope.editSecurityRoles = role => {
-          $scope.$emit('openGroupFromList', { role })
+            $scope.$emit('openGroupFromList', { role })          
         }
         $scope.confirmRemoveSecurityRoles = async role => {
         }

@@ -39,6 +39,7 @@
                     class="btn wz-button-empty pull-right wz-margin-left-10"
                     ng-click="saveUser()"
                     ng-if="isAdmin"
+                    ng-disabled="isAddNewUser"
                   >
                     <i
                       ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
@@ -50,6 +51,7 @@
                     ng-show="isEditingUser" 
                     class="btn wz-button-empty pull-right wz-margin-left-10"
                     ng-click="editUser()"
+                    ng-disable="!isEditingUser"
                     ng-if="isAdmin"
                   >
                     <i

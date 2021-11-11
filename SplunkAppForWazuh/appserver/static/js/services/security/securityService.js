@@ -51,6 +51,7 @@ define(["../module"], function(module) {
     }
 
     const addRunAs = async (user, status) => {
+      console.log(user, status);
       try {
         const data = await $requestService.apiReq(
           `/security/users/${user}/run_as?run_as?${status}`,
@@ -69,6 +70,7 @@ define(["../module"], function(module) {
     }
 
     const addRoles = async (user, roles) => {
+      console.log(user, roles);
       try {
         const data = await $requestService.apiReq(
           `/security/users/${user}/roles?role_ids=${roles}`,
@@ -83,6 +85,7 @@ define(["../module"], function(module) {
     }
 
     const deleteRoles = async (user, roles) => {
+      console.log(user, roles);
       try {
         const data = await $requestService.apiReq(
           `/security/users/${user}/roles?role_ids=${roles}`,

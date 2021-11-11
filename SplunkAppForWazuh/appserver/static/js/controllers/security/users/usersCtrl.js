@@ -21,6 +21,7 @@ define([
       this.scope.userPasswordConfirm = "";
       this.scope.userAllowRunAs = false;
       this.scope.userRoles = [];
+      this.scope.editUserRoles = [];
 
       this.scope.roleData = this.getRoleList(roleData.data.data.affected_items || []);
     }
@@ -61,17 +62,17 @@ define([
       });
 
       this.scope.$on("openUserFromList", (ev, parameters) => {
-        console.log(parameters);
-        ev.stopPropagation();
         this.scope.isAddNewUser = false;
         this.scope.isEditingUser = true;
-
+        
         this.scope.userName = parameters.user.username;
         this.scope.userId = parameters.user.id;
         this.scope.userAllowRunAs = parameters.user.allow_run_as;      
         this.scope.userRoles = parameters.user.roles;   
+        this.scope.editUserRoles = parameters.user.roles;   
         
         this.dropdown.val(this.scope.userRoles);
+        ev.stopPropagation();
       });
     }
 
@@ -109,6 +110,7 @@ define([
 
     async editUser() {
       console.log(this.scope.userId);
+      console.log(this.scope.editUserRoles);
       console.log(this.scope.userRoles);
       console.log(this.dropdown.val());
       console.log(this.scope.userAllowRunAs);
@@ -116,7 +118,7 @@ define([
         //remove roles
         await this.securityService.deleteRoles(
           this.scope.userId,
-          this.scope.userRoles
+          this.scope.editUserRoles
         )
         //allow run as if needed
         await this.securityService.addRunAs(
@@ -150,7 +152,8 @@ define([
         this.scope.userName = "";
         this.scope.userPassword = "";
         this.scope.userPasswordConfirm = "";
-        this.scope.role = [];
+        this.scope.userRoles = [];
+        this.scope.editUserRoles = [];
         this.scope.userAllowRunAs = false;
         this.dropdown.val([]);
         this.scope.$applyAsync();
@@ -181,16 +184,16 @@ define([
     //   //3 save roles
     // };
     
-    editUserRequest = async userPayload => {
-      return await $requestService.apiReq(
-        `/security/users/${userPayload.userID}`,
-        {
-          content: JSON.stringify(userPayload),
-          origin: "json"
-        },
-        "PUT"
-      );
-    };
+    // editUserRequest = async userPayload => {
+    //   return await $requestService.apiReq(
+    //     `/security/users/${userPayload.userID}`,
+    //     {
+    //       content: JSON.stringify(userPayload),
+    //       origin: "json"
+    //     },
+    //     "PUT"
+    //   );
+    // };
 
     addNewUser() {
       try {
