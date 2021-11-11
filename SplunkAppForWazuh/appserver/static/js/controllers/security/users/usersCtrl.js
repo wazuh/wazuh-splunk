@@ -7,14 +7,14 @@ define([
   'use strict'
 
   class Users {
-    constructor($scope, isAdmin, usersData, roleData, $notificationService, $securityService) {
+    constructor($scope, isAdmin, roleData, $notificationService, $userService) {
       this.scope = $scope
       this.scope.isAdmin = isAdmin;
       this.notification = $notificationService;
-      this.securityService = $securityService;
+      this.userService = $userService;
       this.scope.isEditingUser = false;
       this.scope.isAddNewUser = false;
-      
+
       this.scope.userName = "";
       this.scope.userId = "";
       this.scope.userPassword = "";
@@ -46,7 +46,7 @@ define([
         search:
           "| eventcount summarize=false index=* index=_* | dedup index | fields index"
       });
-  
+
       this.dropdown.on("change", newValue => {
         if (newValue && this.dropdown) {
           this.scope.userRoles = newValue;
@@ -64,13 +64,13 @@ define([
       this.scope.$on("openUserFromList", (ev, parameters) => {
         this.scope.isAddNewUser = false;
         this.scope.isEditingUser = true;
-        
+
         this.scope.userName = parameters.user.username;
         this.scope.userId = parameters.user.id;
-        this.scope.userAllowRunAs = parameters.user.allow_run_as;      
-        this.scope.userRoles = parameters.user.roles;   
-        this.scope.editUserRoles = parameters.user.roles;   
-        
+        this.scope.userAllowRunAs = parameters.user.allow_run_as;
+        this.scope.userRoles = parameters.user.roles;
+        this.scope.editUserRoles = parameters.user.roles;
+
         this.dropdown.val(this.scope.userRoles);
         ev.stopPropagation();
       });
@@ -80,17 +80,17 @@ define([
       try{
         if(this.scope.userPassword === this.scope.userPasswordConfirm && this.scope.userName != ""){
           //add user
-          const newUserData = await this.securityService.addUser(
+          const newUserData = await this.userService.addUser(
              this.scope.userName,
              this.scope.userPassword
           )
           //allow run as if needed
-          await this.securityService.addRunAs(
+          await this.userService.addRunAs(
             newUserData.data.data.affected_items[0].id,
             this.scope.userAllowRunAs
           )          
           //add roles
-          await this.securityService.addRoles(
+          await this.userService.addRoles(
             newUserData.data.data.affected_items[0].id,
             this.scope.userRoles
           )
@@ -109,23 +109,23 @@ define([
     async editUser() {
       try{
         //remove roles
-        await this.securityService.deleteRoles(
+        await this.userService.deleteRoles(
           this.scope.userId,
           this.scope.editUserRoles
         )
         //allow run as if needed
-        await this.securityService.addRunAs(
+        await this.userService.addRunAs(
           this.scope.userId,
           this.scope.userAllowRunAs
-        )          
-        //add roles        
-        await this.securityService.addRoles(
+        )
+        //add roles
+        await this.userService.addRoles(
           this.scope.userId,
           this.scope.userRoles
         )
       }catch(error){
         this.notification.showErrorToast(error);
-      } 
+      }
       finally {
         this.cancelAddUser();
       }
@@ -138,7 +138,7 @@ define([
     }
 
     cancelAddUser() {
-      try {        
+      try {
         this.scope.isAddNewUser = false;
         this.scope.isEditingUser = false;
         this.scope.userId = "";
@@ -156,7 +156,7 @@ define([
         this.notification.showErrorToast("Error closing form.");
       }
     }
-    
+
     // newUserRequest = async userPayload => {
     //   //1 save user and get id
     //   try {
@@ -176,7 +176,7 @@ define([
 
     //   //3 save roles
     // };
-    
+
     // editUserRequest = async userPayload => {
     //   return await $requestService.apiReq(
     //     `/security/users/${userPayload.userID}`,

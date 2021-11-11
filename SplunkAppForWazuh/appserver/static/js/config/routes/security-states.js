@@ -46,21 +46,11 @@ define(['../module'], function(module) {
               }
             }
           ],
-          usersData: [
-            "$securityService",
-            async $securityService => {
-              try {
-                return await $securityService.getUsers();
-              } catch (error) {
-                return false;
-              }
-            }
-          ],
           roleData: [
-            "$securityService",
-            async $securityService => {
+            "$userService",
+            async $userService => {
               try {
-                return await $securityService.getRoles();
+                return await $userService.getRoles();
               } catch (error) {
                 return false;
               }

@@ -78,7 +78,7 @@ define([
         $fileEditor,
         $dateDiffService,
         $mdDialog,
-        $securityService
+        $userService
       ) {
         /**
          * Init variables
@@ -528,7 +528,7 @@ define([
         }
         $scope.confirmRemoveSecurityUser = async user => {
           try {
-            await $securityService.removeUser(user.id)
+            await $userService.removeUser(user.id)
             $notificationService.showSuccessToast(
                 `Success. User ${user.username} has been removed`
             )

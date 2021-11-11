@@ -26,5 +26,5 @@ define([
   './checkDaemons/checkDaemonsService',
   './app-version/appVersionService',
   './sourceTypeStorageService/sourceTypeStorageService',
-  './security/securityService'
+  './security/user/userService'
 ], function() {})
