@@ -78,7 +78,9 @@ define([
         $fileEditor,
         $dateDiffService,
         $mdDialog,
-        $securityService
+        $ruleService,
+        $roleService,
+        $policyService
       ) {
         /**
          * Init variables
@@ -543,7 +545,7 @@ define([
         }
         $scope.confirmRemoveSecurityRoles = async role => {
           try {
-            await $securityService.removeRole(role.id)
+            await $roleService.removeRole(role.id)
             $notificationService.showSuccessToast(
                 `Success. Role ${role.name} has been removed`
             )
@@ -567,7 +569,7 @@ define([
         }
         $scope.confirmRemoveSecurityPolicies = async policy => {
           try {
-            await $securityService.removePolicy(policy.id)
+            await $policyService.removePolicy(policy.id)
             $notificationService.showSuccessToast(
               `Success. Policy ${policy.name} has been removed`
             )
@@ -591,7 +593,7 @@ define([
         }
         $scope.confirmRemoveRoleMapping = async rule => {
           try {
-            await $securityService.removeRule(rule.id)
+            await $ruleService.removeRule(rule.id)
             $notificationService.showSuccessToast(
                 `Success. Role mapping ${rule.name} has been removed`
             )

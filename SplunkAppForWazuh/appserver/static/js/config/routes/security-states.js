@@ -68,20 +68,20 @@ define(['../module'], function(module) {
             }
           ],
           roleData: [
-            "$securityService",
-            async $securityService => {
+            "$roleService",
+            async $roleService => {
               try {
-                return await $securityService.getRoleData();
+                return await $roleService.getRoleData();
               } catch (error) {
                 return false;
               }
             }
           ],
           policyData: [
-            "$securityService",
-            async $securityService => {
+            "$policyService",
+            async $policyService => {
               try {
-                return await $securityService.getPolicyData();
+                return await $policyService.getPolicyData();
               } catch (error) {
                 return false;
               }
@@ -109,30 +109,30 @@ define(['../module'], function(module) {
             }
           ],
           resourceData: [
-            "$securityService",
-            async $securityService => {
+            "$policyService",
+            async $policyService => {
               try {
-                return await $securityService.getResourceData();
+                return await $policyService.getResourceData();
               } catch (error) {
                 return false;
               }
             }
           ],
           policyData: [
-            "$securityService",
-            async $securityService => {
+            "$policyService",
+            async $policyService => {
               try {
-                return await $securityService.getPolicyData();
+                return await $policyService.getPolicyData();
               } catch (error) {
                 return false;
               }
             }
           ],
           actionData: [
-            "$securityService",
-            async $securityService => {
+            "$policyService",
+            async $policyService => {
               try {
-                return await $securityService.getActionData();
+                return await $policyService.getActionData();
               } catch (error) {
                 return false;
               }
@@ -160,12 +160,12 @@ define(['../module'], function(module) {
             }
           ],
           roles: [
-            '$requestService',
-            async $requestService => {
+            "$roleService",
+            async $roleService => {
               try {
-                return await $requestService.apiReq('/security/roles')
-              } catch (err) {
-                return { error: 'Cannot fetch roles from API' }
+                return await $roleService.getRoleData();
+              } catch (error) {
+                return false;
               }
             }
           ],

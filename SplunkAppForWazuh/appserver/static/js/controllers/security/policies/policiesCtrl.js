@@ -39,14 +39,14 @@ define([
       actionData,
       resourceData,
       $notificationService,
-      $securityService
+      $policyService
     ) {
       this.scope = $scope;
       this.scope.isAdmin = isAdmin;
       this.scope.actionData = this.getActionList(actionData.data.data || []);
       this.scope.actionList = actionData.data.data;
       this.notification = $notificationService;
-      this.securityService = $securityService;
+      this.policyService = $policyService;
       this.scope.policyName = "";
       this.scope.addingNewPolicy = false;
       this.scope.editingPolicy = false;
@@ -350,14 +350,14 @@ define([
 
             let result;
             if (this.scope.editingPolicy) {
-              result = await this.securityService.updatePolicy(
+              result = await this.policyService.updatePolicy(
                 this.scope.policyId,
                 actions,
                 resources,
                 effect
               );
             } else {
-              result = await this.securityService.savePolicy(
+              result = await this.policyService.savePolicy(
                 policyName,
                 actions,
                 resources,
