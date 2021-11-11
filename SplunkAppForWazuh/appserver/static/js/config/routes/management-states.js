@@ -20,7 +20,7 @@ define(['../module'], function(module) {
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/welcome/manager-welcome.html',
             resolve: {
-              requirementsList: [
+              rbacRequirements: [
                 '$security_service',
                 async $security_service => {
                   return await $security_service.getRequirementsOfController('manager')
@@ -42,7 +42,7 @@ define(['../module'], function(module) {
           controller: 'monitoringCtrl',
           params: { id: null, filters: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-monitoring')
@@ -93,7 +93,7 @@ define(['../module'], function(module) {
           },
           controller: 'managerLogsCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-logs')
@@ -126,7 +126,7 @@ define(['../module'], function(module) {
           controller: 'managerRulesetCtrl',
           params: { filters: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-rules')
@@ -151,7 +151,7 @@ define(['../module'], function(module) {
           controller: 'managerRulesetIdCtrl',
           params: { id: null, filters: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-rules')
@@ -201,7 +201,7 @@ define(['../module'], function(module) {
           controller: 'managerDecodersCtrl',
           params: { filters: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-decoders')
@@ -226,7 +226,7 @@ define(['../module'], function(module) {
           controller: 'managerDecodersIdCtrl',
           params: { id: null, name: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-decoders')
@@ -277,7 +277,7 @@ define(['../module'], function(module) {
           controller: 'managerCdbCtrl',
           params: { filters: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-cdb')
@@ -303,7 +303,7 @@ define(['../module'], function(module) {
           controller: 'managerCdbIdCtrl',
           params: { name: null, path: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-cdb')
@@ -349,7 +349,7 @@ define(['../module'], function(module) {
           controller: 'groupsCtrl',
           params: { group: null },
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-groups')
@@ -384,7 +384,7 @@ define(['../module'], function(module) {
           },
           controller: 'configurationCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-conf')
@@ -438,7 +438,7 @@ define(['../module'], function(module) {
           },
           controller: 'editionCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-editConfig')
@@ -492,7 +492,7 @@ define(['../module'], function(module) {
           },
           controller: 'statusCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('mg-status')

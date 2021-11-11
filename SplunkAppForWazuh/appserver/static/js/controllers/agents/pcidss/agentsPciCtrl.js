@@ -51,7 +51,7 @@ define([
       gdprExtensionEnabled,
       hipaaExtensionEnabled,
       nistExtensionEnabled,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -60,12 +60,13 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
       this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.pciTabs = pciTabs ? pciTabs : false
+      this.scope.rbacRequirements = rbacRequirements
 
       this.scope.expandArray = [false, false, false, false, false]
 

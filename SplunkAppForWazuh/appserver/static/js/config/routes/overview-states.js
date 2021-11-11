@@ -33,7 +33,7 @@ define(['../module'], function (module) {
             'static/app/SplunkAppForWazuh/js/controllers/overview/welcome/overview-welcome.html',
           controller: 'overviewWelcomeCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('overview')
@@ -72,7 +72,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewGeneralCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-general')
@@ -121,7 +121,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewPolicyMonitoringCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-pm')
@@ -155,7 +155,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewSCACtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-sca')
@@ -189,7 +189,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewFimCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-fim')
@@ -223,7 +223,7 @@ define(['../module'], function (module) {
           },
           controller: 'osqueryCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-osquery')
@@ -271,7 +271,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewAuditCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-audit')
@@ -305,7 +305,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewOpenScapCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-os')
@@ -339,7 +339,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewPciCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-pci')
@@ -413,7 +413,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewGdprCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-gdpr')
@@ -487,7 +487,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewHipaaCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-hipaa')
@@ -561,7 +561,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewNistCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-nist')
@@ -635,7 +635,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewVulnerabilitiesCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-vul')
@@ -669,7 +669,7 @@ define(['../module'], function (module) {
           },
           controller: 'ciscatCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-ciscat')
@@ -691,7 +691,7 @@ define(['../module'], function (module) {
                 }
               }
             ],
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-ciscat')
@@ -709,7 +709,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewVirusTotal',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-virustotal')
@@ -743,7 +743,7 @@ define(['../module'], function (module) {
           },
           controller: 'awsCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-aws')
@@ -767,7 +767,7 @@ define(['../module'], function (module) {
           },
           controller: 'dockerCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-docker')
@@ -801,7 +801,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewMitreCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-mitre')
@@ -835,7 +835,7 @@ define(['../module'], function (module) {
           },
           controller: 'overviewMitreIdsCtrl',
           resolve: {
-            requirementsList: [
+            rbacRequirements: [
               '$security_service',
               async $security_service => {
                 return await $security_service.getRequirementsOfController('ow-mitre-ids')

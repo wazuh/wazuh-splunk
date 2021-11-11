@@ -20,9 +20,9 @@ define(['../../module'], function(controllers) {
       agentInfo,
       isAdmin,
       $restartService,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope
       this.scope.load = true
       this.apiReq = $requestService.apiReq

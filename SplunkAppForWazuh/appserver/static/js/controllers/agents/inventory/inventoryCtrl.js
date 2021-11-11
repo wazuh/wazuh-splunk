@@ -30,14 +30,15 @@ define(['../../module', 'FileSaver'], function(module) {
       $scope,
       $reportingService,
       reportingEnabled,
-      requirementsList,
+      rbacRequirements,
       $currentDataService,
       $csvRequestService,
       $dateDiffService
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
+      this.scope.rbacRequirements = rbacRequirements
       this.data = syscollector
       this.httpReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
@@ -67,7 +68,7 @@ define(['../../module', 'FileSaver'], function(module) {
      * On controller loads
      */
     $onInit() {
-      try {
+      try { 
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = obj =>
           obj && typeof obj === 'object' && Object.keys(obj).length

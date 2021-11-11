@@ -48,7 +48,7 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -57,7 +57,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.currentDataService.addFilter(
         `{"rule.groups{}":"ciscat", "implicit":true, "onlyShow":true}`
       )
@@ -68,6 +68,7 @@ define([
 
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
+      this.scope.rbacRequirements = rbacRequirements
       this.agent = agent
       this.scope.expandArray = [false, false, false]
 

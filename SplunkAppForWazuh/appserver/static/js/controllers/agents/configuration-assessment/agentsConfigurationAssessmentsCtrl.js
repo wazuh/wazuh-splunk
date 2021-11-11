@@ -46,13 +46,14 @@ define(['../../module', '../../../dashboardMain'], function(
       BASE_URL,
       extensions,
       $dateDiffService,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       super($scope, null, $state, $currentDataService, $urlTokenModel)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
+      this.scope.rbacRequirements = rbacRequirements
       this.apiReq = $requestService.apiReq
       this.agent = agent
       this.configAssess = configAssess

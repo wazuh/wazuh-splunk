@@ -44,14 +44,14 @@ define([
       $dateDiffService,
       $urlTokenModel,
       extensions,
-      requirementsList
+      rbacRequirements
     ) {
       this.scope = $scope
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.modalOpen = false
       this.modalInitialized = false
       this.api = this.currentDataService.getApi()

@@ -14,9 +14,9 @@ define(['../../module'], function(controllers) {
       extensions,
       $notificationService,
       $currentDataService,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope = $scope
       this.notificationService = $notificationService
       this.currentDataService = $currentDataService

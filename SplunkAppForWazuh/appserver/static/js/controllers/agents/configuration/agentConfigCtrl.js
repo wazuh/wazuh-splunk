@@ -41,14 +41,15 @@ define(['../../module', '../../../utils/config-handler'], function(
       $reportingService,
       data,
       agent,
-      requirementsList
+      rbacRequirements
     ) {
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.api = $currentDataService.getApi()
       this.reportingService = $reportingService
       this.$scope = $scope
       this.agent = agent
       this.$scope.currentAgent = this.agent.data.data.affected_items[0]
+      this.$scope.rbacRequirements = rbacRequirements
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.state = $state

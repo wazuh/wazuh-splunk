@@ -44,7 +44,7 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -53,7 +53,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.addFilter = $currentDataService.addFilter

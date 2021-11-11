@@ -25,4 +25,6 @@ define([
   './wz-logtest/wz-logtest',
   './wz-upload-files/wz-upload-files',
   './wz-iframe-onload/wz-iframe-onload',
+  './wz-forbidden/wz-forbidden',
+  './wz-rbac-prompt/wz-rbac-prompt'
 ], function() {})

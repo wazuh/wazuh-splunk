@@ -46,7 +46,7 @@ define([
       $notificationService,
       $reportingService,
       extensions,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -55,13 +55,14 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.wzTableFilter = $tableFilterService;
       this.csvReq = $csvRequestService;
       this.notification = $notificationService;
       this.api = this.currentDataService.getApi();
       this.scope.loadingVizz = false;
       this.scope.extensions = extensions
+      this.scope.rbacRequirements = rbacRequirements
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
       )

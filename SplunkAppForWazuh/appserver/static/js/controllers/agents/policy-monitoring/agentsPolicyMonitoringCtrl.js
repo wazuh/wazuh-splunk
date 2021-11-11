@@ -55,7 +55,7 @@ define([
       $tableFilterService,
       reportingEnabled,
       extensions,
-      requirementsList
+      rbacRequirements
     ) {
       super(
         $scope,
@@ -64,10 +64,11 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(requirementsList)
+      console.log(rbacRequirements)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
+      this.scope.rbacRequirements = rbacRequirements
       this.apiReq = $requestService.apiReq
       this.scope.showPolicies = false
       this.agent = agent
@@ -180,8 +181,6 @@ define([
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
-      this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
