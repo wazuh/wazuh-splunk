@@ -539,9 +539,19 @@ define([
           $scope.removingRoles = null
         }
         $scope.editSecurityRoles = role => {
-          $scope.$emit('openGroupFromList', { role })
+          $scope.$emit('openRoleFromList', { role })
         }
         $scope.confirmRemoveSecurityRoles = async role => {
+          try {
+            await $securityService.removeRole(role.id)
+            $notificationService.showSuccessToast(
+                `Success. Role ${role.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
         }
         // END SECURITY SECTION FOR ROLES
         // SECURITY SECTION FOR POLICIES

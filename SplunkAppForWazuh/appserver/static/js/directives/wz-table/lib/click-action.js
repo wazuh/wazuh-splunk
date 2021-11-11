@@ -58,6 +58,8 @@ define([], function() {
       $scope.$emit('wazuhShowClusterNode', { node: item })
     }else if (instance.path === "/security/rules") {
       $scope.$emit("openRuleFromList", { rule: item });
+    } else if (instance.path === "/security/roles") {
+      $scope.$emit("openRoleFromList", { role: item });
     }
   }
 })
