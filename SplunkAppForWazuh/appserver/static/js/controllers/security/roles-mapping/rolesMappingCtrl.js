@@ -33,7 +33,7 @@ define([
       roles,
       splunkUsers,
       $notificationService,
-      $securityService,
+      $ruleService,
     ) {
       this.scope = $scope
       this.scope.isAdmin = isAdmin;
@@ -45,7 +45,7 @@ define([
       );
       this.scope.splunkUsers = Object.keys(splunkUsers.data).map(data => data) || []
       this.notification = $notificationService;
-      this.securityService = $securityService;
+      this.ruleService = $ruleService;
       this.scope.addingNewRoleMapping = false;
       this.scope.editingRoleMapping = false;
       this.scope.operators = operators;
@@ -445,14 +445,14 @@ define([
             } else {
               this.scope.saveIncomplete = true;
               const result = isEdit ?
-                await this.securityService.updateRule(
+                await this.ruleService.updateRule(
                   this.scope.ruleId,
                   { name: roleMappingName, rule: rule },
                   this.scope.currentRoles,
                   roleIds
                 )
                 :
-                await this.securityService.saveRule(
+                await this.ruleService.saveRule(
                   { name: roleMappingName, rule: rule },
                   roleIds
                 );

@@ -78,7 +78,9 @@ define([
         $fileEditor,
         $dateDiffService,
         $mdDialog,
-        $securityService
+        $ruleService,
+        $roleService,
+        $policyService
       ) {
         /**
          * Init variables
@@ -543,7 +545,7 @@ define([
         }
         $scope.confirmRemoveSecurityRoles = async role => {
           try {
-            await $securityService.removeRole(role.id)
+            await $roleService.removeRole(role.id)
             $notificationService.showSuccessToast(
                 `Success. Role ${role.name} has been removed`
             )
@@ -563,9 +565,19 @@ define([
           $scope.removingPolicies = null
         }
         $scope.editSecurityPolicies = policy => {
-          $scope.$emit('openGroupFromList', { policy })
+          $scope.$emit('openPolicyFromList', { policy })
         }
         $scope.confirmRemoveSecurityPolicies = async policy => {
+          try {
+            await $policyService.removePolicy(policy.id)
+            $notificationService.showSuccessToast(
+              `Success. Policy ${policy.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingPolicy = null
+          return init()
         }
         // END SECURITY SECTION FOR POLICIES
         // SECURITY SECTION FOR ROLE MAPPING
@@ -581,7 +593,7 @@ define([
         }
         $scope.confirmRemoveRoleMapping = async rule => {
           try {
-            await $securityService.removeRule(rule.id)
+            await $ruleService.removeRule(rule.id)
             $notificationService.showSuccessToast(
                 `Success. Role mapping ${rule.name} has been removed`
             )

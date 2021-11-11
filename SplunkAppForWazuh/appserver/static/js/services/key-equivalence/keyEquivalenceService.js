@@ -144,6 +144,8 @@ define(['../module'], function(module) {
           'policy.actions' : 'Policy Actions',
           'policy.resources' : 'Resources',
           'policies' : 'Policies',
+          'policy.effect': 'Effect',
+          'roles': 'Roles',
         }
       }
     }

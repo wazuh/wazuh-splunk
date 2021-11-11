@@ -7,6 +7,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added
 
 - Support for Wazuh 4.2.3
+- Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
 - Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
 - Added Crud Role Mapping on security section. [#1169](https://github.com/wazuh/wazuh-splunk/pull/1169)
 

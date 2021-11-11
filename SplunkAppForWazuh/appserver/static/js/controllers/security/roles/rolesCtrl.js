@@ -36,7 +36,7 @@ define([
       roleData,
       policyData,
       $notificationService,
-      $securityService
+      $roleService
     ) {
       this.scope = $scope;
       this.scope.isAdmin = isAdmin;
@@ -44,7 +44,7 @@ define([
         policyData.data.data.affected_items || []
       );
       this.notification = $notificationService;
-      this.securityService = $securityService;
+      this.roleService = $roleService;
       this.scope.roleName = "";
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
@@ -74,7 +74,7 @@ define([
 
     async deletePolicy(policyId) {
       if (policyId) {
-        const result = await this.securityService.removePolicy(
+        const result = await this.roleService.removePolicyRole(
           this.scope.roleId,
           policyId
         );
@@ -190,7 +190,7 @@ define([
           } else {
             this.scope.saveIncomplete = true;
             const policies = this.scope.policies;
-            const result = await this.securityService.saveRole(
+            const result = await this.roleService.saveRole(
               { name: roleName, id: roleId },
               policies
             );
