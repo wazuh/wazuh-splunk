@@ -89,11 +89,30 @@ define(["../../module"], function(module) {
       }
     };
 
+    const editPassword = async (user, pass) => {
+      try {
+        const data = await $requestService.apiReq(
+          `/security/users/${user}`,
+          {
+            content: JSON.stringify({ password: pass }),
+            origin: "json"
+          },
+          "PUT"
+        );
+        console.log(data);
+        return data;
+      } catch (error) {
+        this.notification.showErrorToast("Error adding roles: " + error);
+        return Promise.reject(error);
+      }
+    };
+
     return {
       addUser: addUser,
       addRunAs: addRunAs,
       addRoles: addRoles,
       getRoles: getRoles,
+      editPassword: editPassword,
       deleteRoles: deleteRoles,
       removeUser: removeUser
     };

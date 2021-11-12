@@ -84,6 +84,7 @@ define([
              this.scope.userName,
              this.scope.userPassword
           )
+          // console.log(newUserData);
           //allow run as if needed
           await this.userService.addRunAs(
             newUserData.data.data.affected_items[0].id,
@@ -108,21 +109,31 @@ define([
 
     async editUser() {
       try{
-        //remove roles
-        await this.userService.deleteRoles(
-          this.scope.userId,
-          this.scope.editUserRoles
-        )
-        //allow run as if needed
-        await this.userService.addRunAs(
-          this.scope.userId,
-          this.scope.userAllowRunAs
-        )
-        //add roles
-        await this.userService.addRoles(
-          this.scope.userId,
-          this.scope.userRoles
-        )
+        if(this.scope.userPassword === this.scope.userPasswordConfirm
+          && this.scope.userPassword != "" && this.scope.userPasswordConfirm != ""){
+          //remove roles
+          await this.userService.deleteRoles(
+            this.scope.userId,
+            this.scope.editUserRoles
+          )
+          //allow run as if needed
+          await this.userService.addRunAs(
+            this.scope.userId,
+            this.scope.userAllowRunAs
+          )
+          //add roles
+          await this.userService.addRoles(
+            this.scope.userId,
+            this.scope.userRoles
+          )
+          await this.userService.editPassword(
+            this.scope.userId,
+            this.scope.userPassword
+          )
+
+        }else{
+          this.notification.showErrorToast("Both password must be equals");  
+        }
       }catch(error){
         this.notification.showErrorToast(error);
       }
