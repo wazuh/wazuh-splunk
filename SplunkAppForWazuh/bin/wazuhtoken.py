@@ -2,7 +2,7 @@
 """
 Wazuh app - API backend module.
 
-Copyright (C) 2015-2019 Wazuh, Inc.
+Copyright (C) 2015-2021 Wazuh, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@ from log import log
 
 class wazuhtoken():
     """
-    Queue class.
+    WazuhToken class.
 
-    Handle Jobs queue methods
+    Handle the user's authorization token on the Wazuh API.
     """
 
     def __init__(self):
@@ -33,31 +33,56 @@ class wazuhtoken():
             self.cache = cache()
         except Exception as e:
             self.logger.error(
-                "token: Error in token module constructor: %s" % (e))
+                "wazuh-token: error in the constructor: %s" % (e))
 
-    def get_auth_token(self, url, auth):
+    def get_auth_token(self, api_url, api_user):
+        """
+        Fetches a new authorization token for the given manager API and API user.
+        The token can be obtained from the session cache or he Wazuh Manager API.
+        If a new token is obtained, it is stored in the session cache.
+
+        :param api_url: Manager URL --> {protocol}://{host}:{port}
+        :param api_user: API username (e.g: wazuh, wazuh-wui...)
+        :return: String with the authorization token from the Wazuh API
+        """
+        token_key = f'token-{api_url}-{api_user}'
         try:
-            token_key = 'token-' + url + '-' + str(auth)
-            if self.cache.get(token_key) is None:
-                verify = False
-                wazuh_token_response = self.session.get(
-                    url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify)
-                if wazuh_token_response.status_code == 200:
-                    wazuh_token = wazuh_token_response.json()
-                    token = wazuh_token['data']['token']
-                elif wazuh_token_response.status_code >= 400 and wazuh_token_response.status_code <= 499:
-                    wazuh_token = wazuh_token_response.json()
-                    error = wazuh_token['title'] + ': ' + wazuh_token['detail']
-                    raise Exception(error)
-                else:
-                    error = "An error ocurred when authenticating with Wazuh API"
-                    raise Exception(error)
-                self.cache.set(token_key, token, 600)
-                self.logger.debug("api token KEY: %s" % (token_key))
-                return token
+            # Return cached token, if it exists
+            auth_token = self.cache.get(token_key)
+            if auth_token is not None:
+                self.logger.debug(
+                    f"wazuh-token: the token for {token_key} key is in cache")
+                return auth_token
+            # Otherwise, get a new token from the manager's API.
             else:
-                self.logger.debug("cache token: %s" % (token_key))
-                return self.cache.get(token_key)
+                # Performs a GET request
+                response = self.session.get(
+                    f"{api_url}/security/user/authenticate",
+                    auth=api_user,
+                    timeout=20,
+                    verify=False
+                )
+                # Request was successful
+                if response.status_code == 200:
+                    token = response.json()['data']['token']
+                    self.cache.set(token_key, token, 600)
+                    self.logger.debug(
+                        f"wazuh-token: new token for key {token_key}")
+                    return token
+                # Request returned an error code
+                elif response.status_code != 200:
+                    error_title = response.json()['title']
+                    error_detail = response.json()['detail']
+                    error_code = response.json()['error']
+                    self.logger.error(
+                        f"wazuh-token: new token request failed with code {error_code}")
+                    raise Exception(
+                        f"wazuh-token: {error_title} - {error_detail}")
+                # No response
+                else:
+                    error = "wazuh-token: no response received from the Wazuh API"
+                    self.logger.error(error)
+                    raise Exception(error)
         except Exception as e:
             self.logger.error(
                 "wazuh-token: Error geting auth Wazuh token: %s" % (e))
