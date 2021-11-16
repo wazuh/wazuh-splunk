@@ -26,17 +26,17 @@
             </div>
         </div>
          <div ng-show="isAddNewUser || isEditingUser">
-            <div layout="row" class="layout-row" style="width: 50%;">
+            <div layout="row" class="layout-row" style="width: 50%; margin-top:16px">
                <div>
-                  <span class="tSize16 wz-breadcrumb-margin">User Sname</span>
+                  <span class="tSize16 wz-breadcrumb-margin">Username</span>
                   <input
-                     placeholder="New user name..."
+                     placeholder="New username..."
                      type="text"
                      flex
                      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
                      aria-invalid="false"
                      ng-model="userName"
-                     ng-disabled="editingUser"
+                     ng-disabled="isEditingUser || (!isEditingUser && !isAddNewUser)"
                      />
                </div>
             </div>
@@ -49,11 +49,11 @@
                      flex        
                      aria-invalid="false"
                      ng-model="userAllowRunAs"
-                     ng-disabled="editingUser"
-                     />
+                     ng-disabled="!isEditingUser && !isAddNewUser"
+                  />
                </div>
             </div>
-            <div layout="row" class="layout-row" style="width: 50%; margin-bottom: 20px;">
+            <div layout="row" class="layout-row" style="width: 50%; margin-bottom: 20px;" >
                <div>
                   <span class="tSize16 wz-breadcrumb-margin">Password</span>
                   <input
@@ -63,8 +63,7 @@
                      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
                      aria-invalid="false"
                      ng-model="userPassword"
-                     ng-disabled="editingUser"
-                     />
+                  />
                </div>
                <div>
                   <span class="tSize16 wz-breadcrumb-margin">Confirm password</span>
@@ -75,13 +74,14 @@
                      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
                      aria-invalid="false"
                      ng-model="userPasswordConfirm"
-                     ng-disabled="editingUser"
                      />
                </div>
             </div>
             <div class="wz-margin-10">
               <span class="tSize16">Roles</span>
-               <div id="roles-dropdown-view"></div>
+               <div id="roles-dropdown-view" 
+                  ng-disabled="!isEditingUser && !isAddNewUser">
+               </div>
             </div>
             <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto; justify-content: flex-end;" class="wz-align-center wz-margin-bottom-10">
                <div ng-show="isAddNewUser || isEditingUser">
@@ -99,7 +99,6 @@
                            class="btn wz-button-empty pull-right wz-margin-left-10"
                            ng-click="saveUser()"
                            ng-if="isAdmin"
-                           ng-disabled="!isAddNewUser"
                            >
                         <i
                            ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
@@ -111,7 +110,7 @@
                            ng-show="isEditingUser" 
                            class="btn wz-button-empty pull-right wz-margin-left-10"
                            ng-click="editUser()"
-                           ng-disable="!isEditingUser"
+                           ng-disabled="!isEditingUser && !isAddNewUser"
                            ng-if="isAdmin"
                            >
                         <i
