@@ -49,7 +49,7 @@ define(['../../module'], function (controllers) {
       this.scope.$on('APIChanged', (event, key) => {
         this.setYellowStar(key)
         this.scope.$applyAsync()
-      })      
+      })
     }
 
     /**
@@ -58,10 +58,10 @@ define(['../../module'], function (controllers) {
     async init() {
       try {
         const kvStoreError = ((this.apiList || {}).messages || [])[0] || {}
-        if (kvStoreError.text){
+        if (kvStoreError.text) {
           this.notification.showErrorToast(kvStoreError.text)
           this.scope.kvStoreInitializing = true
-        }else {
+        } else {
           this.scope.kvStoreInitializing = false
           // If no API, then remove cookie
           if (Array.isArray(this.apiList) && this.apiList.length === 0) {
@@ -134,7 +134,8 @@ define(['../../module'], function (controllers) {
         for (let i = 0; i < this.scope.apiList.length; i++) {
           if (this.scope.apiList[i]._key === entry._key) {
             this.scope.apiList[i] = connectionData
-            this.scope.apiList[i].selected = entry.selected // Check if the API was selected, if it was, set the yellow star
+            // Check if the API was selected, if it was, set the yellow star
+            this.scope.apiList[i].selected = entry.selected
             break
           }
         }
@@ -304,7 +305,7 @@ define(['../../module'], function (controllers) {
 
         // Check and refresh data
         this.checkManager(api)
-        
+
         // If the only one API in the list, then try to select it
         if (this.scope.apiList.length === 1) {
           this.selectManager(api['_key'])

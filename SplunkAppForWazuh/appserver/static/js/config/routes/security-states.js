@@ -68,12 +68,32 @@ define(['../module'], function(module) {
         controller: 'rolesCtrl',
         resolve: {
           isAdmin: [
-            '$currentDataService',
+            "$currentDataService",
             async $currentDataService => {
               try {
-                return await $currentDataService.isAdmin()
+                return await $currentDataService.isAdmin();
               } catch (error) {
-                return false
+                return false;
+              }
+            }
+          ],
+          roleData: [
+            "$roleService",
+            async $roleService => {
+              try {
+                return await $roleService.getRoleData();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
+          policyData: [
+            "$policyService",
+            async $policyService => {
+              try {
+                return await $policyService.getPolicyData();
+              } catch (error) {
+                return false;
               }
             }
           ]
@@ -97,6 +117,36 @@ define(['../module'], function(module) {
                 return false
               }
             }
+          ],
+          resourceData: [
+            "$policyService",
+            async $policyService => {
+              try {
+                return await $policyService.getResourceData();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
+          policyData: [
+            "$policyService",
+            async $policyService => {
+              try {
+                return await $policyService.getPolicyData();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
+          actionData: [
+            "$policyService",
+            async $policyService => {
+              try {
+                return await $policyService.getActionData();
+              } catch (error) {
+                return false;
+              }
+            }
           ]
         }
       })
@@ -116,6 +166,26 @@ define(['../module'], function(module) {
                 return await $currentDataService.isAdmin()
               } catch (error) {
                 return false
+              }
+            }
+          ],
+          roles: [
+            "$roleService",
+            async $roleService => {
+              try {
+                return await $roleService.getRoleData();
+              } catch (error) {
+                return false;
+              }
+            }
+          ],
+          splunkUsers: [
+            '$splunkUsers',
+            async $splunkUsers => {
+              try {
+                return await $splunkUsers.getInternalUsers()
+              } catch (err) {
+                return { error: 'Cannot fetch splunk users from API' }
               }
             }
           ]

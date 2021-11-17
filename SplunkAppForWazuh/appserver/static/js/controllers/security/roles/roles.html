@@ -1,39 +1,128 @@
 <!-- About card section -->
-<div layout="row" style="margin-top:16px; margin-left: 10px; margin-right: 10px;">
+<div
+  layout="row"
+  style="margin-top:16px; margin-left: 10px; margin-right: 10px;"
+>
   <md-card style="width:100%;" class="wz-md-card no-margin-sides">
-    <md-card-actions layout="column"
-      class="wz-card-actions wz-card-actions-top md-actions-ruleset" style="background-color: white; height:110px;">
+    <md-card-actions
+      layout="column"
+      class="wz-card-actions wz-card-actions-top md-actions-ruleset"
+      style="background-color: white; height:100%;"
+    >
       <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
-        <span style="font-size: 28px; padding-right: 10px;"> Roles </span> 
+        <span style="font-size: 28px; padding-right: 10px;"> Roles </span>
 
         <span flex="" class="flex"></span>
 
-        <span ng-click="addNewUser()" class="wz-color-text cursor-pointer link-table">
+        <span
+          ng-show="!addingNewRole"
+          ng-click="addNewRole()"
+          class="wz-color-text cursor-pointer link-table"
+        >
           <wz-svg icon="plus"></wz-svg>
           Add new role
-        </span>          
+        </span>
       </div>
 
       <div class="layout-row" style="padding-top: 15px;">
         <div layout="row" class="layout-row" style="width: 100%;">
+          <!-- XML editor for add new role-->
+          <div ng-show="addingNewRole" style="width:100%; margin-right: 10px;">
+            <div class="flex wz-margin-10">
+              <span class="tSize16 wz-breadcrumb-margin">Role name</span>
+              <div>
+                <input
+                  placeholder="New role name..."
+                  type="text"
+                  flex
+                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-25"
+                  aria-invalid="false"
+                  ng-model="roleName"
+                  ng-change="enableSave()"
+                  ng-disabled="editingRole"
+                />
+              </div>
+            </div>
 
+            <div class="wz-margin-20">
+              <span class="tSize16">Policies</span>
+              <div id="policies-dropdown-view"></div>
+            </div>
+
+            <!-- Save and cancel buttons -->
+            <div class="flex fa-pull-right">
+              <span>
+                <button
+                  class="btn wz-button-cancel"
+                  ng-click="cancelRoleEdition()"
+                >
+                  Cancel
+                </button>
+                <button
+                  ng-class="{'wz-background-disabled': saveIncomplete || overwrite || !roleName || policies.length < 1 || reservedRolek}"
+                  class="btn wz-button-empty pull-right wz-margin-left-10"
+                  ng-click="saveRole()"
+                  ng-disabled="saveIncomplete || overwrite || !roleName || policies.length < 1 || reservedRole"
+                  ng-if="isAdmin"
+                >
+                  <i
+                    ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                    aria-hidden="true"
+                  ></i>
+                  Save
+                </button>
+              </span>
+            </div>
+            <!-- End save and cancel buttons-->
+          </div>
+
+          <div
+            ng-show="!addingNewRole"
+            style="width: 100%; display: flex; align-items: flex-start;"
+          >
             <label class="wz-icon-loupe">
-                <input placeholder="Filter user..." ng-model="customSearch" type="text" flex
-                  class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-              </label>
-          <button ng-click="search(customSearch)"
-            class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
-            <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
-          </button>
+              <input
+                placeholder="Filter roles..."
+                ng-model="customSearch"
+                type="text"
+                flex
+                class="kuiLocalSearchInput height-40"
+                aria-invalid="false"
+                wz-enter="search(customSearch)"
+              />
+            </label>
+            <button
+              ng-click="search(customSearch)"
+              class="btn height-40 agreeBtn pull-right wz-margin-left-7"
+              style="max-height:40px !important;"
+            >
+              <span
+                ><i
+                  aria-hidden="true"
+                  class="fa fa-fw fa-search wz-margin-left-10"
+                  >&nbsp;</i
+                >Search</span
+              >
+            </button>
+          </div>
         </div>
       </div>
-  </md-card-actions>
-  <md-card-actions>
-    <div layout="row" layout-padding>
-      <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/security/roles'"
-        keys="['id','name', 'policies']" allow-click="true" row-sizes="[20,15,10]">
-    </wazuh-table>
-    </div>
-  </md-card-contents>
-</md-card>
+    </md-card-actions>
+
+    <md-card-contents ng-if="!addingNewRole">
+      <div layout="row" layout-padding>
+        <wazuh-table
+          custom-columns="true"
+          admin-mode="isAdmin"
+          flex
+          extra-limit="100"
+          path="'/security/roles'"
+          keys="['id', 'name', 'policies']"
+          allow-click="true"
+          row-sizes="[20,15,10]"
+        >
+        </wazuh-table>
+      </div>
+    </md-card-contents>
+  </md-card>
 </div>

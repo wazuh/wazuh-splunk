@@ -78,6 +78,9 @@ define([
         $fileEditor,
         $dateDiffService,
         $mdDialog,
+        $ruleService,
+        $roleService,
+        $policyService,
         $userService
       ) {
         /**
@@ -520,7 +523,7 @@ define([
           $scope.removingUser =
             $scope.removingUser === user.username ? null : user.username
         }
-        
+
         $scope.cancelRemoveSecurityUser = () => {
           $scope.removingUser = null
         }
@@ -552,9 +555,19 @@ define([
           $scope.removingRoles = null
         }
         $scope.editSecurityRoles = role => {
-            $scope.$emit('openGroupFromList', { role })          
+          $scope.$emit('openRoleFromList', { role })
         }
         $scope.confirmRemoveSecurityRoles = async role => {
+          try {
+            await $roleService.removeRole(role.id)
+            $notificationService.showSuccessToast(
+                `Success. Role ${role.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
         }
         // END SECURITY SECTION FOR ROLES
         // SECURITY SECTION FOR POLICIES
@@ -566,12 +579,45 @@ define([
           $scope.removingPolicies = null
         }
         $scope.editSecurityPolicies = policy => {
-          $scope.$emit('openGroupFromList', { policy })
+          $scope.$emit('openPolicyFromList', { policy })
         }
         $scope.confirmRemoveSecurityPolicies = async policy => {
+          try {
+            await $policyService.removePolicy(policy.id)
+            $notificationService.showSuccessToast(
+              `Success. Policy ${policy.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingPolicy = null
+          return init()
         }
         // END SECURITY SECTION FOR POLICIES
-
+        // SECURITY SECTION FOR ROLE MAPPING
+        $scope.showConfirmRemoveRoleMapping = (ev, rule) => {
+          $scope.removingRoleMapping =
+            $scope.removingRoleMapping === rule.name ? null : rule.name
+        }
+        $scope.cancelRemoveRoleMapping = () => {
+          $scope.removingRoleMapping = null
+        }
+        $scope.editRoleMapping = rule => {
+          $scope.$emit('openRuleFromList', { rule })
+        }
+        $scope.confirmRemoveRoleMapping = async rule => {
+          try {
+            await $ruleService.removeRule(rule.id)
+            $notificationService.showSuccessToast(
+                `Success. Role mapping ${rule.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingRoleMapping = null
+          return init()
+        }
+        // END SECURITY SECTION FOR ROLE MAPPING
         $scope.showConfirmRemoveGroup = (ev, group) => {
           $scope.removingGroup =
             $scope.removingGroup === group.name ? null : group.name
