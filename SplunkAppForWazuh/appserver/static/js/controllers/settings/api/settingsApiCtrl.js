@@ -60,8 +60,8 @@ define(['../../module'], function (controllers) {
       try {
         const kvStoreError = ((this.apiList || {}).messages || [])[0] || {}
         if (kvStoreError.text){
-          this.notification.showErrorToast(kvStoreError.text)
           this.scope.kvStoreInitializing = true
+          throw new Error(kvStoreError.text)
         }else {
           this.scope.kvStoreInitializing = false
           // If no API, then remove cookie
@@ -90,7 +90,9 @@ define(['../../module'], function (controllers) {
           }
         }
       } catch (err) {
-        this.notification.showErrorToast('Error loading data')
+        this.notification.showErrorToast(
+          `Error loading the data: ${err.message || err}`
+        )
       }
     }
 
@@ -117,7 +119,7 @@ define(['../../module'], function (controllers) {
       } catch (err) {
         this.scope.loadingVizz = false
         this.notification.showErrorToast(
-          `Cannot remove API: ${err.message || err}`
+          `Cannot remove the API: ${err.message || err}`
         )
       }
     }
@@ -144,7 +146,9 @@ define(['../../module'], function (controllers) {
         this.scope.$applyAsync()
       } catch (err) {
         this.scope.loadingVizz = false
-        this.notification.showErrorToast(err || 'Unreachable API')
+        this.notification.showErrorToast(
+          `Unreachable API: ${err.message || err}`
+        )
       }
     }
 
@@ -152,6 +156,7 @@ define(['../../module'], function (controllers) {
      * Set form visible
      */
     addNewApiClick() {
+      this.clearForm()
       this.scope.showForm = !this.scope.showForm
       this.scope.edit = false
       this.scope.currentEntryKey = false
@@ -167,6 +172,7 @@ define(['../../module'], function (controllers) {
           this.scope.currentEntryKey === entry['_key'] ? !this.scope.edit : true
         this.scope.showForm = false
         this.scope.currentEntryKey = entry['_key']
+        this.scope.alias = entry.alias
         this.scope.url = entry.url
         this.scope.pass = entry.pass
         this.scope.port = entry.portapi
@@ -176,7 +182,9 @@ define(['../../module'], function (controllers) {
         this.scope.filterName = entry.filterName
         this.scope.entry.url = entry
       } catch (err) {
-        this.notification.showErrorToast('Could not open API form')
+        this.notification.showErrorToast(
+          `Could not open the API form: ${err.message || err}`
+        )
       }
     }
 
@@ -208,7 +216,19 @@ define(['../../module'], function (controllers) {
 
         delete this.scope.entry['$$hashKey']
         await this.currentDataService.checkRawConnection(this.scope.entry)
-        await this.currentDataService.update(this.scope.entry)
+        
+        // Update API
+        let res = await this.currentDataService.update(this.scope.entry)
+        // Handle errors
+        if ('data' in res && 'messages' in res.data){
+          // messages in an array of {type, text} objects
+          res.data.messages.forEach(item => {
+            if ('type' in item && item.type === "ERROR") {
+              throw new Error(item.text)
+            }
+          })
+        }
+
         const updatedApi = await this.currentDataService.checkApiConnection(
           this.scope.entry['_key']
         )
@@ -232,7 +252,10 @@ define(['../../module'], function (controllers) {
         this.notification.showSuccessToast('Updated API')
       } catch (err) {
         this.scope.loadingVizz = false
-        this.notification.showErrorToast(err || 'Cannot update API')
+        
+        this.notification.showErrorToast(
+          `Cannot update the API: ${err.message || err}`
+        )
       }
       this.savingApi = false
     }
@@ -255,7 +278,9 @@ define(['../../module'], function (controllers) {
         this.scope.$applyAsync()
       } catch (err) {
         this.scope.loadingVizz = false
-        this.notification.showErrorToast(err || 'Could not select manager')
+        this.notification.showErrorToast(
+          `Could not select manager: ${err.message || err}`
+        )
       }
     }
 
@@ -279,6 +304,7 @@ define(['../../module'], function (controllers) {
         throw new Error('Invalid format. Please check the fields again')
       }
     }
+
     /**
      * Adds a new API
      */
@@ -293,7 +319,8 @@ define(['../../module'], function (controllers) {
         this.savingApi = true
 
         this.validateFormInput(user, pass, url, port, alias)
-        // When the Submit button is clicked, get all the form fields by accessing to the input values
+        // When the Submit button is clicked, get all the form 
+        // fields by accessing to the input values
         const form_url = url
         const form_apiport = port
         const form_apiuser = user
@@ -341,7 +368,7 @@ define(['../../module'], function (controllers) {
           this.scope.$applyAsync()
         } else {
           this.notification.showErrorToast(
-            err.message || err || 'Cannot save the API.'
+            `Cannot save the API: ${err.message || err}`
           )
         }
       }
@@ -356,7 +383,7 @@ define(['../../module'], function (controllers) {
       if (url && (this.urlRegEx.test(url) || this.urlRegExIP.test(url))) {
         return true
       } else {
-        this.scope.validatingError.push('Invalid url format')
+        this.scope.validatingError.push('Invalid URL format')
         return false
       }
     }

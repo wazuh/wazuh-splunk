@@ -230,7 +230,7 @@ class manager(controllers.BaseController):
 
         """
         try:
-            self.logger.debug("manager: Getting configuration on memory from frondent.")
+            self.logger.debug("manager: Getting configuration on memory from frontend.")
             stanza = getSelfConfStanza("config", "configuration")
             data_temp = stanza
         except Exception as e:
@@ -278,7 +278,10 @@ class manager(controllers.BaseController):
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['apiId']
 
-            #TODO: This conditional statement is done to ensure retrocompatibility with registered managers that do not have an alias. Replace the following 4 lines with data_temp=self.db.get(id) when these are no longer supported.
+            # TODO: This conditional statement is done to ensure 
+            # retrocompatibility with registered managers that do 
+            # not have an alias. Replace the following 4 lines with 
+            # data_temp=self.db.get(id) when these are no longer supported.
             data_temp = jsonbak.loads(self.db.get(id))["data"]
             if not "alias" in data_temp:
                 data_temp["alias"] = data_temp["url"]
@@ -308,7 +311,9 @@ class manager(controllers.BaseController):
             for api in parsed_apis:
                 if "passapi" in api:
                     del api["passapi"]
-                #TODO: This conditional is put in place in order to support previous installations that did not have the "alias" field in the database. Remove it when these are no longer supported.
+                # TODO: This conditional is put in place in order to support 
+                # previous installations that did not have the "alias" field 
+                # in the database. Remove it when these are no longer supported.
                 if not "alias" in api:
                     api["alias"] = api["url"]
             result = jsonbak.dumps(parsed_apis)
@@ -388,8 +393,7 @@ class manager(controllers.BaseController):
             keys_list = ['_key', 'url', 'portapi', 'userapi',
                          'passapi', 'filterName', 'filterType', 'managerName','alias']
             if set(entry.keys()) == set(keys_list):
-                self.db.update(entry)
-                parsed_data = jsonbak.dumps({'data': 'success'})
+                result = self.db.update(entry)
             else:
                 missing_params = diff_keys_dic_update_api(entry)
                 raise Exception(
@@ -398,7 +402,7 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error("manager: Error in update_api endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
-        return parsed_data
+        return result
 
     @expose_page(must_login=False, methods=['GET'])
     def get_log_lines(self, **kwargs):
