@@ -541,12 +541,6 @@ define([
           $scope.removingGroup = null
           return init()
         }
-        // $scope.reloadNewUser = async (status) => {
-        //   $notificationService.showSuccessToast(
-        //     `Success. The user has been ${status}`
-        //   )
-        //   return init()
-        // }
         // END SECURITY SECTION FOR USERS  
 
         // SECURITY SECTION FOR ROLES

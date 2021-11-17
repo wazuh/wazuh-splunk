@@ -49,12 +49,11 @@ define([
           "| eventcount summarize=false index=* index=_* | dedup index | fields index"
       });
 
-      this.dropdown.on("change", newValue => {
-        // $scope.isDisable = true;
+      this.dropdown.on("change", newValue => {          
         if (newValue && this.dropdown) {
           this.scope.userRoles = newValue;
           this.scope.$applyAsync();
-        }
+        } 
       });
 
       this.scope.$on("$destroy", () => {
@@ -63,8 +62,8 @@ define([
         this.dropdown = null;
         this.searchManager = null;
       });
-
-      this.scope.$on("openUserFromList", (ev, parameters) => {
+      
+      this.scope.$on("openUserFromList", (ev, parameters) => {        
         this.scope.isAddNewUser = false;
         this.scope.isEditingUser = true;
 
@@ -73,6 +72,11 @@ define([
         this.scope.userAllowRunAs = parameters.user.allow_run_as;
         this.scope.userRoles = parameters.user.roles;
         this.scope.editUserRoles = parameters.user.roles;
+
+        this.dropdown.isDisabled = true
+        this.dropdown.settings.set(
+          "disabled"
+        )
 
         this.dropdown.val(this.scope.userRoles);
         ev.stopPropagation();
@@ -85,57 +89,78 @@ define([
 
     async saveUser() {
       try{
-        let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
-        if(checkedPass){
-          if(this.scope.userPassword === this.scope.userPasswordConfirm && this.scope.userName != ""){
-            //add user
-            let newUserData = await this.userService.addUser(
-               this.scope.userName,
-               this.scope.userPassword
-            )
-
-            if (newUserData.data.data.failed_items.length > 0
-                || newUserData.data.error != 0) {
-              throw new Error(
-                  "Cannot save User."
-              );
-            }
-
-            //allow run as if needed
-            await this.userService.addRunAs(
-              newUserData.data.data.affected_items[0].id,
-              this.scope.userAllowRunAs
-            )          
-            //add roles
-            await this.userService.addRoles(
-              newUserData.data.data.affected_items[0].id,
-              this.scope.userRoles
-            )
-          }else{
-            this.notification.showErrorToast("Both password must be equals and username can't be empty");  
-          }
-        }else{
-          this.notification.showErrorToast("Password must contain at least one upper case, one number and one special character. Also, the length must be greater than 8.");
+        if(this.scope.userName === "" || this.scope.userName === undefined){
+          throw new Error("Username can't be empty")
         }
+        if(this.scope.userPassword === undefined || this.scope.userPassword === "" ||
+          this.scope.userPasswordConfirm === undefined || this.scope.userPasswordConfirm === ""){
+          throw new Error("Password can't be empty")
+        }
+        if(this.scope.userPassword != this.scope.userPasswordConfirm){
+          throw new Error("Both password must be equals")
+        }
+                
+        let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
+        if(!checkedPass){
+          throw new Error("Password must contain at least one upper case, one number and one special character. Also, the length must be greater than 8")
+        }
+
+        //add user
+        let newUserData = await this.userService.addUser(
+          this.scope.userName,
+          this.scope.userPassword
+        )
+
+        if (newUserData.data.data.failed_items.length > 0 || newUserData.data.error != 0) {
+          throw new Error("Cannot save the new user");
+        }
+
+        //allow run as if needed
+        await this.userService.addRunAs(
+          newUserData.data.data.affected_items[0].id,
+          this.scope.userAllowRunAs
+        )          
+        //add roles
+        await this.userService.addRoles(
+          newUserData.data.data.affected_items[0].id,
+          this.scope.userRoles
+        )        
       }catch(error){
         this.notification.showErrorToast("Error adding a new user: "+error);
       } finally{
         this.cancelAddUser();
         this.scope.$applyAsync();
-        // this.reloadNewUser("added")        
       }
     }
 
     async editUser() {
       try{
         let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
-        if(checkedPass){
-          if(this.scope.userPassword === this.scope.userPasswordConfirm){      
-            await this.userService.editPassword(
-              this.scope.userId,
-              this.scope.userPassword
-            )
-            //remove roles
+        if(this.scope.userPassword === this.scope.userPasswordConfirm){      
+          if(this.scope.userPassword != ""){
+            if(checkedPass){
+              await this.userService.editPassword(
+                this.scope.userId,
+                this.scope.userPassword
+              )
+              await this.userService.deleteRoles(
+                this.scope.userId,
+                this.scope.editUserRoles
+              )
+              //allow run as if needed
+              await this.userService.addRunAs(
+                this.scope.userId,
+                this.scope.userAllowRunAs
+              )
+              //add roles
+              await this.userService.addRoles(
+                this.scope.userId,
+                this.scope.userRoles
+              )
+            }else{            
+              throw Error("Password must have at least one upper case, one number and one special character");  
+            }
+          }else{
             await this.userService.deleteRoles(
               this.scope.userId,
               this.scope.editUserRoles
@@ -149,20 +174,15 @@ define([
             await this.userService.addRoles(
               this.scope.userId,
               this.scope.userRoles
-            )
-          }else{
-            this.notification.showErrorToast("Both password must be equals");  
+            )          
           }
-        }else{
-          this.notification.showErrorToast("Password mus have at least one upper case, one number and one special character");  
+        }else{            
+          throw Error("Password must be equals");  
         }
-      }catch(error){
-        this.notification.showErrorToast("Error editing user: "+error);
-      }
-      finally {
         this.cancelAddUser();
         this.scope.$applyAsync();
-        // this.reloadNewUser("edited")
+      }catch(error){
+        this.notification.showErrorToast("Error editing user: "+error);
       }
     }
 

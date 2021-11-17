@@ -45,12 +45,11 @@
                   <span class="tSize16">Allow run_as</span>
                   &nbsp;
                   <input
-                     ng-disabled="!isEditingUser && !isAddNewUser"
+                     ng-disabled="(!isEditingUser && !isAddNewUser)"
                      type="checkbox"
                      flex        
                      aria-invalid="false"
-                     ng-model="userAllowRunAs"
-                     ng-disabled="!isEditingUser && !isAddNewUser"
+                     ng-model="userAllowRunAs"                     
                   />
                </div>
             </div>
@@ -80,7 +79,7 @@
             </div>
             <div class="wz-margin-10">
               <span class="tSize16">Roles</span>
-               <div id="roles-dropdown-view">
+               <div id="roles-dropdown-view" >
                </div>
             </div>
             <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto; justify-content: flex-end;" class="wz-align-center wz-margin-bottom-10">
