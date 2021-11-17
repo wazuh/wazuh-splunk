@@ -28,6 +28,7 @@ define(['../../module'], function (controllers) {
       this.currentDataService = $currentDataService
       this.notification = $notificationService
       this.savingApi = false
+      this.scope.runAs = false;
     }
 
     /**
@@ -39,12 +40,16 @@ define(['../../module'], function (controllers) {
       this.scope.checkManager = entry => this.checkManager(entry)
       this.scope.editEntry = entry => this.editEntry(entry)
       this.scope.removeManager = entry => this.removeManager(entry)
-      this.scope.updateEntry = (user, pass, url, port, alias) =>
-        this.updateEntry(user, pass, url, port, alias)
+      this.scope.updateEntry = (user, pass, url, port, alias, runAs) =>
+        this.updateEntry(user, pass, url, port, alias, runAs)
       this.scope.selectManager = mg => this.selectManager(mg)
-      this.scope.submitApiForm = (user, api, url, port, alias) =>
-        this.submitApiForm(user, api, url, port, alias)
+      this.scope.submitApiForm = (user, api, url, port, alias, runAs) =>
+        this.submitApiForm(user, api, url, port, alias, runAs)
+      this.scope.getIconAndTooltip = entry => this.getIconAndTooltip(entry)
       this.init()
+
+      // Init form values
+      this.clearForm();
 
       // Listens for changes in the selected API
       this.scope.$on('APIChanged', (event, key) => {
@@ -137,7 +142,8 @@ define(['../../module'], function (controllers) {
         for (let i = 0; i < this.scope.apiList.length; i++) {
           if (this.scope.apiList[i]._key === entry._key) {
             this.scope.apiList[i] = connectionData
-            this.scope.apiList[i].selected = entry.selected // Check if the API was selected, if it was, set the yellow star
+            // Check if the API was selected, if it was, set the yellow star
+            this.scope.apiList[i].selected = entry.selected
             break
           }
         }
@@ -176,6 +182,7 @@ define(['../../module'], function (controllers) {
         this.scope.url = entry.url
         this.scope.pass = entry.pass
         this.scope.port = entry.portapi
+        this.scope.runAs = entry.runAs;
         this.scope.user = entry.userapi
         this.scope.managerName = entry.managerName
         this.scope.filterType = entry.filterType
@@ -192,7 +199,7 @@ define(['../../module'], function (controllers) {
      * Edits an entry
      * @param {Object} entry
      */
-    async updateEntry(user, pass, url, port, alias) {
+    async updateEntry(user, pass, url, port, alias, runAs = false) {
       try {
         this.scope.loadingVizz = true
         if (this.savingApi) {
@@ -209,6 +216,7 @@ define(['../../module'], function (controllers) {
         this.scope.entry.userapi = user
         this.scope.entry.passapi = pass
         this.scope.entry.alias = alias
+        this.scope.entry.runAs = runAs
         this.scope.entry.filterType = this.scope.filterType
         this.scope.entry.filterName = this.scope.filterName
         this.scope.entry.managerName = this.scope.managerName
@@ -249,7 +257,7 @@ define(['../../module'], function (controllers) {
 
         this.scope.edit = false
         this.scope.loadingVizz = false
-        this.notification.showSuccessToast('Updated API')
+        this.notification.showSuccessToast('API updated')
       } catch (err) {
         this.scope.loadingVizz = false
 
@@ -308,7 +316,7 @@ define(['../../module'], function (controllers) {
     /**
      * Adds a new API
      */
-    async submitApiForm(user, pass, url, port, alias) {
+    async submitApiForm(user, pass, url, port, alias, runAs = false) {
       try {
         this.scope.loadingVizz = true
         this.scope.validatingError = []
@@ -333,7 +341,8 @@ define(['../../module'], function (controllers) {
           portapi: form_apiport,
           userapi: form_apiuser,
           passapi: form_apipass,
-          alias: form_alias
+          alias: form_alias,
+          runAs: runAs
         }
 
         // If connected to the API then continue
@@ -453,6 +462,7 @@ define(['../../module'], function (controllers) {
       this.scope.user = ''
       this.scope.pass = ''
       this.scope.alias = ''
+      this.scope.runAs = false
     }
 
     setYellowStar(key) {
@@ -460,6 +470,29 @@ define(['../../module'], function (controllers) {
         api['_key'] === key ? (api.selected = true) : (api.selected = false)
       })
     }
+
+
+    /**
+     * Evaluates the class and tooltip text for the given API 
+     * object depending on the `run_as` value.
+     * 
+     * If the `run_as` field is true, a check icon is shown. If it is false,
+     * a cross icon is shown instead. Respectively, the tooltip text takes 
+     * 'enabled' or 'disable'.
+     * 
+     * @param {Object} entry API object to evaluate.
+     * @returns Object with the CSS class for the icon and string text 
+     * for the tooltip.
+     */
+    getIconAndTooltip(entry) {
+      // Cast to boolean
+      const runAs = (entry.runAs === "true") || (entry.runAs === true)
+      return {
+        class: runAs ? 'fa fa-check' : 'fa fa-times',
+        tooltip: runAs ? 'enabled' : 'disabled'
+      }
+    }
+
   }
   controllers.controller('settingsApiCtrl', SettingsApi)
 })
