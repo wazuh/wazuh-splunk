@@ -252,7 +252,7 @@ define(['../../module'], function (controllers) {
           this.currentDataService.getApi() &&
           this.currentDataService.getApi()['_key'] === this.scope.entry['_key']
         ) {
-          this.selectManager(updatedApi['_key'])
+          this.selectManager(updatedApi['_key'], false)
         }
 
         this.scope.edit = false
@@ -272,7 +272,7 @@ define(['../../module'], function (controllers) {
      * Select an API as the default one
      * @param {String} key
      */
-    async selectManager(key) {
+    async selectManager(key, showToast = true) {
       try {
         this.scope.loadingVizz = true
         // checking if the api is up
@@ -281,7 +281,8 @@ define(['../../module'], function (controllers) {
         await this.currentDataService.chose(key)
         this.setYellowStar(key)
         this.scope.loadingVizz = false
-        this.notification.showSuccessToast('API selected')
+        if (showToast)
+          this.notification.showSuccessToast('API selected')
         this.scope.$emit('updatedAPI', () => { })
         this.scope.$applyAsync()
       } catch (err) {
@@ -359,7 +360,7 @@ define(['../../module'], function (controllers) {
 
         // If the only one API in the list, then try to select it
         if (this.scope.apiList.length === 1) {
-          this.selectManager(api['_key'])
+          this.selectManager(api['_key'], false)
         }
 
         this.scope.showForm = false
