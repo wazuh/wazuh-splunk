@@ -50,6 +50,7 @@ define([
       });
 
       this.dropdown.on("change", newValue => {
+        // $scope.isDisable = true;
         if (newValue && this.dropdown) {
           this.scope.userRoles = newValue;
           this.scope.$applyAsync();

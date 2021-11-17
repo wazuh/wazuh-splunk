@@ -45,6 +45,7 @@
                   <span class="tSize16">Allow run_as</span>
                   &nbsp;
                   <input
+                     ng-disabled="!isEditingUser && !isAddNewUser"
                      type="checkbox"
                      flex        
                      aria-invalid="false"
@@ -53,7 +54,7 @@
                   />
                </div>
             </div>
-            <div layout="row" class="layout-row" style="width: 50%; margin-bottom: 20px;" >
+            <div layout="row" class="layout-row" style="width: 50%; margin-bottom: 20px;" ng-disabled="isEditingUser || (!isEditingUser && !isAddNewUser)" >
                <div>
                   <span class="tSize16 wz-breadcrumb-margin">Password</span>
                   <input
@@ -79,8 +80,7 @@
             </div>
             <div class="wz-margin-10">
               <span class="tSize16">Roles</span>
-               <div id="roles-dropdown-view" 
-                  ng-disabled="!isEditingUser && !isAddNewUser">
+               <div id="roles-dropdown-view">
                </div>
             </div>
             <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto; justify-content: flex-end;" class="wz-align-center wz-margin-bottom-10">
@@ -125,7 +125,7 @@
             </div>
          </div>
       </md-card-actions>
-      <md-card-contents ng-show="!isAddNewUser && !isEditingUser">
+      <md-card-contents ng-if="!isAddNewUser && !isEditingUser">
          <div layout="row" layout-padding>
             <wazuh-table custom-columns="true" admin-mode='adminMode' flex path="'/security/users'"
                keys="['id','username', 'allow_run_as', 'roles']" allow-click="true" rows-per-page="14" row-sizes="[20,15,10,20]">
