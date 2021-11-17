@@ -50,7 +50,7 @@ define(['../../module'], function (controllers) {
       this.scope.$on('APIChanged', (event, key) => {
         this.setYellowStar(key)
         this.scope.$applyAsync()
-      })      
+      })
     }
 
     /**
@@ -59,10 +59,10 @@ define(['../../module'], function (controllers) {
     async init() {
       try {
         const kvStoreError = ((this.apiList || {}).messages || [])[0] || {}
-        if (kvStoreError.text){
+        if (kvStoreError.text) {
           this.scope.kvStoreInitializing = true
           throw new Error(kvStoreError.text)
-        }else {
+        } else {
           this.scope.kvStoreInitializing = false
           // If no API, then remove cookie
           if (Array.isArray(this.apiList) && this.apiList.length === 0) {
@@ -216,11 +216,11 @@ define(['../../module'], function (controllers) {
 
         delete this.scope.entry['$$hashKey']
         await this.currentDataService.checkRawConnection(this.scope.entry)
-        
+
         // Update API
         let res = await this.currentDataService.update(this.scope.entry)
         // Handle errors
-        if ('data' in res && 'messages' in res.data){
+        if ('data' in res && 'messages' in res.data) {
           // messages in an array of {type, text} objects
           res.data.messages.forEach(item => {
             if ('type' in item && item.type === "ERROR") {
@@ -252,7 +252,7 @@ define(['../../module'], function (controllers) {
         this.notification.showSuccessToast('Updated API')
       } catch (err) {
         this.scope.loadingVizz = false
-        
+
         this.notification.showErrorToast(
           `Cannot update the API: ${err.message || err}`
         )
@@ -286,11 +286,11 @@ define(['../../module'], function (controllers) {
 
     /**
      * If values are not valid then throw an error
-     * @param {*} user 
-     * @param {*} pass 
-     * @param {*} url 
-     * @param {*} port 
-     * @param {*} alias 
+     * @param {*} user
+     * @param {*} pass
+     * @param {*} url
+     * @param {*} port
+     * @param {*} alias
      */
     validateFormInput(user, pass, url, port, alias) {
       if (
@@ -319,7 +319,7 @@ define(['../../module'], function (controllers) {
         this.savingApi = true
 
         this.validateFormInput(user, pass, url, port, alias)
-        // When the Submit button is clicked, get all the form 
+        // When the Submit button is clicked, get all the form
         // fields by accessing to the input values
         const form_url = url
         const form_apiport = port
@@ -347,7 +347,7 @@ define(['../../module'], function (controllers) {
 
         // Check and refresh data
         this.checkManager(api)
-        
+
         // If the only one API in the list, then try to select it
         if (this.scope.apiList.length === 1) {
           this.selectManager(api['_key'])
@@ -419,12 +419,12 @@ define(['../../module'], function (controllers) {
      * Check if an user is valid or not
      * @param {String} user
      */
-     validAlias(alias) {
+    validAlias(alias) {
       if (alias && this.aliasRegEx.test(alias)) {
         return true
       } else {
         this.scope.validatingError.push(
-        'Invalid API alias format, it must have a length between 3 and 100 characters.'
+          'Invalid API alias format, it must have a length between 3 and 100 characters.'
         )
         return false
       }
