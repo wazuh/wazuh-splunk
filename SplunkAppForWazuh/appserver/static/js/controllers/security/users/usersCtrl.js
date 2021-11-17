@@ -93,8 +93,6 @@ define([
                this.scope.userPassword
             )
 
-            // console.log(newUserData);
-           
             if (newUserData.data.data.failed_items.length > 0
                 || newUserData.data.error != 0) {
               throw new Error(
@@ -122,41 +120,47 @@ define([
         this.notification.showErrorToast("Error adding a new user: "+error);
       } finally{
         this.cancelAddUser();
+        this.scope.$applyAsync();
         // this.reloadNewUser("added")        
       }
     }
 
     async editUser() {
       try{
-        if((this.scope.userPassword == "" && this.scope.userPasswordConfirm == "") || 
-          (this.scope.userPassword === this.scope.userPasswordConfirm && this.scope.userPassword != "" && this.scope.userPasswordConfirm != "")){      
-          await this.userService.editPassword(
-            this.scope.userId,
-            this.scope.userPassword
-          )
-          //remove roles
-          await this.userService.deleteRoles(
-            this.scope.userId,
-            this.scope.editUserRoles
-          )
-          //allow run as if needed
-          await this.userService.addRunAs(
-            this.scope.userId,
-            this.scope.userAllowRunAs
-          )
-          //add roles
-          await this.userService.addRoles(
-            this.scope.userId,
-            this.scope.userRoles
-          )
+        let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
+        if(checkedPass){
+          if(this.scope.userPassword === this.scope.userPasswordConfirm){      
+            await this.userService.editPassword(
+              this.scope.userId,
+              this.scope.userPassword
+            )
+            //remove roles
+            await this.userService.deleteRoles(
+              this.scope.userId,
+              this.scope.editUserRoles
+            )
+            //allow run as if needed
+            await this.userService.addRunAs(
+              this.scope.userId,
+              this.scope.userAllowRunAs
+            )
+            //add roles
+            await this.userService.addRoles(
+              this.scope.userId,
+              this.scope.userRoles
+            )
+          }else{
+            this.notification.showErrorToast("Both password must be equals");  
+          }
         }else{
-          this.notification.showErrorToast("Both password must be equals");  
+          this.notification.showErrorToast("Password mus have at least one upper case, one number and one special character");  
         }
       }catch(error){
-        this.notification.showErrorToast(error);
+        this.notification.showErrorToast("Error editing user: "+error);
       }
       finally {
         this.cancelAddUser();
+        this.scope.$applyAsync();
         // this.reloadNewUser("edited")
       }
     }
@@ -180,8 +184,6 @@ define([
         this.scope.userAllowRunAs = false;
         this.dropdown.val([]);
         this.scope.$applyAsync();
-
-        // this.dropdown.settings.set("disabled", false);
       } catch (error) {
         this.notification.showErrorToast("Error closing form.");
       }

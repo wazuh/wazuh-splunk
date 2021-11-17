@@ -520,12 +520,15 @@ define([
           $scope.removingUser =
             $scope.removingUser === user.username ? null : user.username
         }
+        
         $scope.cancelRemoveSecurityUser = () => {
           $scope.removingUser = null
         }
+
         $scope.editSecurityUser = user => {
           $scope.$emit('openUserFromList', { user })
         }
+
         $scope.confirmRemoveSecurityUser = async user => {
           try {
             await $userService.removeUser(user.id)
@@ -538,12 +541,12 @@ define([
           $scope.removingGroup = null
           return init()
         }
-        $scope.reloadNewUser = async (status) => {
-          $notificationService.showSuccessToast(
-            `Success. The user has been ${status}`
-        )
-          return init()
-        }
+        // $scope.reloadNewUser = async (status) => {
+        //   $notificationService.showSuccessToast(
+        //     `Success. The user has been ${status}`
+        //   )
+        //   return init()
+        // }
         // END SECURITY SECTION FOR USERS  
 
         // SECURITY SECTION FOR ROLES

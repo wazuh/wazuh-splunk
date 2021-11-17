@@ -88,37 +88,36 @@
                   <!-- Save and cancel buttons -->
                      <div>
                         <span>
-                        <button
-                           class="btn wz-button-cancel"
-                           ng-click="cancelAddUser()"
-                           >
-                        Cancel
-                        </button>
-                        <button
-                           ng-show="isAddNewUser" 
-                           class="btn wz-button-empty pull-right wz-margin-left-10"
-                           ng-click="saveUser()"
-                           ng-if="isAdmin"
-                           >
-                        <i
-                           ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                           aria-hidden="true"
-                           ></i>
-                        Save
-                        </button>
-                        <button
-                           ng-show="isEditingUser" 
-                           class="btn wz-button-empty pull-right wz-margin-left-10"
-                           ng-click="editUser()"
-                           ng-disabled="!isEditingUser && !isAddNewUser"
-                           ng-if="isAdmin"
-                           >
-                        <i
-                           ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                           aria-hidden="true"
-                           ></i>
-                        Save
-                        </button>
+                           <button
+                              class="btn wz-button-cancel"
+                              ng-click="cancelAddUser()"
+                              >
+                           Cancel
+                           </button>
+                           <button
+                              ng-show="!isEditingUser && isAddNewUser" 
+                              class="btn wz-button-empty pull-right wz-margin-left-10"
+                              ng-click="saveUser()"
+                              ng-if="isAdmin"
+                              >
+                           <i
+                              ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                              aria-hidden="true"
+                              ></i>
+                           Save
+                           </button>
+                           <button
+                              ng-show="isEditingUser && !isAddNewUser" 
+                              class="btn wz-button-empty pull-right wz-margin-left-10"
+                              ng-click="editUser()"
+                              ng-if="isAdmin"
+                              >
+                           <i
+                              ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                              aria-hidden="true"
+                              ></i>
+                           Edit
+                           </button>
                         </span>
                   </div>
                   <!-- End save and cancel buttons-->
@@ -127,8 +126,8 @@
          </div>
       </md-card-actions>
       <md-card-contents ng-show="!isAddNewUser && !isEditingUser">
-         <div layout="row" layout-padding ng-show="!isAddNewUser || !isEditingUser">
-            <wazuh-table custom-columns="true" admin-mode='adminMode' implicit-filter="appliedFilters" flex path="'/security/users'"
+         <div layout="row" layout-padding>
+            <wazuh-table custom-columns="true" admin-mode='adminMode' flex path="'/security/users'"
                keys="['id','username', 'allow_run_as', 'roles']" allow-click="true" rows-per-page="14" row-sizes="[20,15,10,20]">
             </wazuh-table>
          </div>
