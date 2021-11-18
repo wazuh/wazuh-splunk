@@ -237,6 +237,9 @@ define(['../../module'], function (controllers) {
           })
         }
 
+        // Notify observers (modal)
+        this.scope.$emit('updatedAPI', {})
+
         const updatedApi = await this.currentDataService.checkApiConnection(
           this.scope.entry['_key']
         )
