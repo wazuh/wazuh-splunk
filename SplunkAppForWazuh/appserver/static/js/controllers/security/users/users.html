@@ -45,7 +45,7 @@
                   <span class="tSize16">Allow run_as</span>
                   &nbsp;
                   <input
-                     ng-disabled="(!isEditingUser && !isAddNewUser)"
+                     ng-disabled="isViewUser"
                      type="checkbox"
                      flex        
                      aria-invalid="false"
@@ -53,7 +53,7 @@
                   />
                </div>
             </div>
-            <div layout="row" class="layout-row" style="width: 50%; margin-bottom: 20px;" ng-disabled="isEditingUser || (!isEditingUser && !isAddNewUser)" >
+            <div layout="row" class="layout-row" style="width: 50%; margin-bottom: 20px;" ng-show="!isViewUser" >
                <div>
                   <span class="tSize16 wz-breadcrumb-margin">Password</span>
                   <input
@@ -94,7 +94,7 @@
                            Cancel
                            </button>
                            <button
-                              ng-show="!isEditingUser && isAddNewUser" 
+                              ng-show="!isViewUser && !isEditingUser" 
                               class="btn wz-button-empty pull-right wz-margin-left-10"
                               ng-click="saveUser()"
                               ng-if="isAdmin"
@@ -106,7 +106,7 @@
                            Save
                            </button>
                            <button
-                              ng-show="isEditingUser && !isAddNewUser" 
+                              ng-show="!isViewUser && isEditingUser" 
                               class="btn wz-button-empty pull-right wz-margin-left-10"
                               ng-click="editUser()"
                               ng-if="isAdmin"

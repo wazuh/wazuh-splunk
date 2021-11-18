@@ -14,6 +14,7 @@ define([
       this.userService = $userService;
       this.scope.isEditingUser = false;
       this.scope.isAddNewUser = false;
+      this.scope.isViewUser = false;
 
       this.scope.userName = "";
       this.scope.userId = "";
@@ -34,6 +35,7 @@ define([
       this.scope.reloadNewUser = (val) => this.reloadNewUser(val);
       this.scope.cancelAddUser = () => this.cancelAddUser();
       this.scope.isAddNewUser = false;
+      this.scope.isViewUser = false;
       this.scope.isEditingUser = false;
 
       this.dropdown = new MultiDropdownView({
@@ -63,8 +65,15 @@ define([
         this.searchManager = null;
       });
       
-      this.scope.$on("openUserFromList", (ev, parameters) => {        
-        this.scope.isAddNewUser = false;
+      this.scope.$on("viewUserContent", (ev, parameters) => {      
+        this.scope.isViewUser = true;
+        this.dropdown.settings.set("disabled", true)
+        ev.stopPropagation();
+      })
+
+      this.scope.$on("openUserFromList", (ev, parameters) => {      
+        this.scope.isAddNewUser = true;
+        this.scope.isViewUser = false;
         this.scope.isEditingUser = true;
 
         this.scope.userName = parameters.user.username;
@@ -73,10 +82,8 @@ define([
         this.scope.userRoles = parameters.user.roles;
         this.scope.editUserRoles = parameters.user.roles;
 
-        this.dropdown.isDisabled = true
-        this.dropdown.settings.set(
-          "disabled"
-        )
+        // this.dropdown.isDisabled = true
+        this.dropdown.settings.set("disabled", false)
 
         this.dropdown.val(this.scope.userRoles);
         ev.stopPropagation();
@@ -195,6 +202,7 @@ define([
     cancelAddUser() {
       try {
         this.scope.isAddNewUser = false;
+        this.scope.isViewUser = false;
         this.scope.isEditingUser = false;
         this.scope.userId = "";
         this.scope.userName = "";
@@ -213,7 +221,9 @@ define([
     addNewUser() {
       try {
         this.scope.isAddNewUser = true;
+        this.scope.isViewUser = false;
         this.scope.isEditingUser = false;
+        this.dropdown.settings.set("disabled", false);
       } catch (error) {
         this.notification.showErrorToast("Cannot add new User.");
       }

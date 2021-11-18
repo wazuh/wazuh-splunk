@@ -532,6 +532,10 @@ define([
           $scope.$emit('openUserFromList', { user })
         }
 
+        $scope.viewUserContent = user => {
+          $scope.$emit('viewUserContent', { user })
+        }
+
         $scope.confirmRemoveSecurityUser = async user => {
           try {
             await $userService.removeUser(user.id)
