@@ -17,10 +17,10 @@ define(['../module'], function (module) {
             $navigationService.storeRoute('agents')
           },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('agents')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agentData: [
@@ -65,10 +65,10 @@ define(['../module'], function (module) {
           controller: 'agentsOverviewCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('agent-overview')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -127,10 +127,10 @@ define(['../module'], function (module) {
           controller: 'inventoryCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-inventory')
+                return await $security_service.updateUserPermissions()
               }
             ],
             syscollector: [
@@ -185,10 +185,10 @@ define(['../module'], function (module) {
           controller: 'osqueryAgentCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-osquery')
+                return await $security_service.updateUserPermissions()
               }
             ],
             osquery: [
@@ -269,10 +269,10 @@ define(['../module'], function (module) {
           controller: 'agentsGeneralCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-general')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -322,10 +322,10 @@ define(['../module'], function (module) {
           controller: 'agentsFimCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-fim')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -371,10 +371,10 @@ define(['../module'], function (module) {
           controller: 'agentsVirusTotalCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-virustotal')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -430,10 +430,10 @@ define(['../module'], function (module) {
           controller: 'agentsAuditCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-audit')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -489,10 +489,10 @@ define(['../module'], function (module) {
           controller: 'agentsOpenScapCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-os')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -548,10 +548,10 @@ define(['../module'], function (module) {
           controller: 'configurationAgentCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-conf')
+                return await $security_service.updateUserPermissions()
               }
             ],
             data: [
@@ -622,10 +622,10 @@ define(['../module'], function (module) {
           controller: 'agentsGdprCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-gdpr')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -720,10 +720,10 @@ define(['../module'], function (module) {
           controller: 'agentsHipaaCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-hipaa')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -818,10 +818,10 @@ define(['../module'], function (module) {
           controller: 'agentsNistCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-nist')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -916,10 +916,10 @@ define(['../module'], function (module) {
           controller: 'agentsPolicyMonitoringCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-pm')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -975,10 +975,10 @@ define(['../module'], function (module) {
           controller: 'agentsConfigurationAssessmentsCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-ca')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -1057,10 +1057,10 @@ define(['../module'], function (module) {
           controller: 'agentsPciCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-pci')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -1156,10 +1156,10 @@ define(['../module'], function (module) {
           controller: 'agentsCiscatCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-ciscat')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -1215,10 +1215,10 @@ define(['../module'], function (module) {
           controller: 'agentsVulnerabilitiesCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-vul')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -1273,10 +1273,10 @@ define(['../module'], function (module) {
           controller: 'agentsCveCtrl',
           params: { id: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-cve')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [
@@ -1353,10 +1353,10 @@ define(['../module'], function (module) {
           },
           controller: 'agentsDockerCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ag-docker')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agent: [

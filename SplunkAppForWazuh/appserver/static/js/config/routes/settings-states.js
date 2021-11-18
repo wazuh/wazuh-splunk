@@ -149,19 +149,7 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('dev-tools')
           },
-          controller: 'devToolsCtrl',
-          resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
-              }
-            ]
-          }
+          controller: 'devToolsCtrl'
         })
         .state('discover', {
           templateUrl:
@@ -176,15 +164,6 @@ define(['../module'], function(module) {
             previousState: null,
             breadcrumbs: null
           }
-        })
-        .state('forbidden', {
-          templateUrl:
-            BASE_URL +
-            '/static/app/SplunkAppForWazuh/js/directives/wz-forbidden/wz-forbidden.html',
-          onEnter: $navigationService => {
-            $navigationService.storeRoute('forbidden')
-          },
-          controller: [function () {}]
         })
     }
   ])

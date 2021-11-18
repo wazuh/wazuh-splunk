@@ -36,11 +36,13 @@ define([
   class OverviewVirusTotal extends DashboardMain {
     /**
      * Class Overview Virus Total
-     * @param {*} $urlTokenModel
      * @param {*} $scope
+     * @param {*} $urlTokenModel
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $scope,
@@ -50,7 +52,6 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      rbacRequirements
     ) {
       super(
         $scope,
@@ -59,7 +60,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
 

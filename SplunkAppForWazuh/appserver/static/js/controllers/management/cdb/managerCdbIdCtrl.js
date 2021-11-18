@@ -15,6 +15,10 @@ define([
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $cdbEditor
+     * @param {*} cdbInfo
+     * @param {*} $restartService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -24,11 +28,10 @@ define([
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      isAdmin,
       $cdbEditor,
       cdbInfo,
       $restartService,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -40,15 +43,14 @@ define([
         $csvRequestService,
         $restartService
       )
-      console.log(rbacRequirements)
       this.state = $state
-      this.isAdmin = isAdmin
       this.cdbEditor = $cdbEditor
       this.cdbInfo = cdbInfo
       this.notification = $notificationService
       this.pagination = pagination
       this.checkGap = checkGap
       this.restartService = $restartService
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
@@ -87,7 +89,6 @@ define([
         this.cdbInfo.content = this.stringToObj(this.cdbInfo.content)
 
         this.scope.currentList.list = this.cdbInfo.content
-        this.scope.adminMode = this.isAdmin
         this.scope.saveList = () => this.saveList()
 
         /**

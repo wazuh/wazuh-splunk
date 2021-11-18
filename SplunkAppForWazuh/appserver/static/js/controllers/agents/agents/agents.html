@@ -1,6 +1,6 @@
 <!-- End loading ring -->
-<wz-rbac-prompt permissions="rbacRequirements.AGENT_READ">
-  <div flex ng-if="!loading && !noAgents && !addingAgents && rbacRequirements.AGENT_READ" class="md-padding" layout="column"
+<wz-rbac-prompt permissions="userHasPermissions({'agent:read': ['agent:id:*', 'agent:group:*']})">
+  <div flex ng-if="!loading && !noAgents && !addingAgents" class="md-padding" layout="column"
     layout-align="start space-around">
 
     <div layout="row" layout-align="space-between stretch" ng-if="!wazuhNotReadyYet">

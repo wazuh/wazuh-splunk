@@ -31,13 +31,16 @@ define([
     /**
      * Class Agents Osquery
      * @param {Object} $urlTokenModel
-     * @param {Object} $state
      * @param {Object} $scope
-     * @param {Object} $currentDataService
-     * @param {Object} $notificationService
      * @param {Object} agent
+     * @param {Object} $notificationService
+     * @param {Object} $currentDataService
+     * @param {Object} $state
      * @param {Object} osquery
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
+     * @param {*} $security_service
      */
 
     constructor(
@@ -51,7 +54,7 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -60,10 +63,9 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.notification = $notificationService
       this.osquery = osquery
       this.currentDataService.addFilter(

@@ -38,6 +38,9 @@ define([
      * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
+     * @param {*} $security_service
      */
     constructor(
       $urlTokenModel,
@@ -48,7 +51,7 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -57,7 +60,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.currentDataService.addFilter(
         `{"rule.groups{}":"ciscat", "implicit":true, "onlyShow":true}`
       )
@@ -68,7 +70,7 @@ define([
 
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.agent = agent
       this.scope.expandArray = [false, false, false]
 

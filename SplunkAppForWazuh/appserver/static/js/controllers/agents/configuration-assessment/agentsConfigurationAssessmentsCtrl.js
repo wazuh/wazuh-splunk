@@ -20,14 +20,21 @@ define(['../../module', '../../../dashboardMain'], function(
     /**
      * Class Agents Policy-Monitoring
      * @param {Object} $urlTokenModel
+     * @param {Object} $rootScope
      * @param {Object} $scope
      * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
-     * @param {*} $reportingService
+     * @param {Object} configAssess
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} BASE_URL
+     * @param {*} extensions
+     * @param {*} $dateDiffService
+     * @param {*} $security_service
      */
 
     constructor(
@@ -46,14 +53,13 @@ define(['../../module', '../../../dashboardMain'], function(
       BASE_URL,
       extensions,
       $dateDiffService,
-      rbacRequirements
+      $security_service
     ) {
-      console.log(rbacRequirements)
       super($scope, null, $state, $currentDataService, $urlTokenModel)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.apiReq = $requestService.apiReq
       this.agent = agent
       this.configAssess = configAssess

@@ -21,6 +21,11 @@ define(['../../module', 'FileSaver'], function(module) {
      * @param {*} $notificationService
      * @param {*} $scope
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} $currentDataService
+     * @param {*} $csvRequestService
+     * @param {*} $dateDiffService
+     * @param {*} $security_service
      */
     constructor(
       $requestService,
@@ -30,15 +35,14 @@ define(['../../module', 'FileSaver'], function(module) {
       $scope,
       $reportingService,
       reportingEnabled,
-      rbacRequirements,
       $currentDataService,
       $csvRequestService,
-      $dateDiffService
+      $dateDiffService,
+      $security_service,
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.data = syscollector
       this.httpReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq

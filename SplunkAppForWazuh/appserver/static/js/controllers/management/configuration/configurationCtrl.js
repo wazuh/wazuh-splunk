@@ -5,18 +5,28 @@ define(['../../module', '../../../utils/config-handler'], function(
   'use strict'
 
   class ConfigurationController {
+    /**
+     * Class ConfigurationController
+     * @param {*} $scope
+     * @param {*} $requestService
+     * @param {*} $beautifierJson
+     * @param {*} $appVersionService
+     * @param {*} $notificationService
+     * @param {*} clusterInfo
+     * @param {*} $security_service
+     */
     constructor(
       $scope,
       $requestService,
       $beautifierJson,
       $appVersionService,
       $notificationService,
-      isAdmin,
       clusterInfo,
-      rbacRequirements
+      $security_service
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.userHasPermissionsSecurityActionWithAgent = $security_service.userHasPermissionsSecurityActionWithAgent.bind($security_service)
       this.notification = $notificationService
       this.apiReq = $requestService
       this.scope.load = false
@@ -32,7 +42,6 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.scope.configurationSubTab = ''
       this.scope.integrations = {}
       this.scope.selectedItem = 0
-      this.scope.isAdmin = isAdmin
       this.clusterInfo = clusterInfo
 
       // Save current sections, configTabs and woodles

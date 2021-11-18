@@ -26,6 +26,12 @@ define([
      * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} hipaaTabs
+     * @param {*} reportingEnabled
+     * @param {*} pciExtensionEnabled
+     * @param {*} gdprExtensionEnabled
+     * @param {*} nistExtensionEnabled
+     * @param {*} $security_service
      */
     constructor(
       $urlTokenModel,
@@ -39,7 +45,7 @@ define([
       pciExtensionEnabled,
       gdprExtensionEnabled,
       nistExtensionEnabled,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -48,13 +54,12 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.hipaaTabs = hipaaTabs ? hipaaTabs : false
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
 
       this.scope.expandArray = [false, false, false, false, false]
 

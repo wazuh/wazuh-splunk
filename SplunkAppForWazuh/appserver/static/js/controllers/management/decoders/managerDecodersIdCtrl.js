@@ -12,6 +12,11 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} extensions
+     * @param {*} $fileEditor
+     * @param {*} $restartService
+     * @param {*} $requestService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -26,8 +31,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $fileEditor,
       $restartService,
       $requestService,
-      isAdmin,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -39,14 +43,13 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         $csvRequestService,
         $restartService
       )
-      console.log(rbacRequirements)
       this.state = $state
       this.extensions = extensions
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.requestService = $requestService
       this.currentDecoder = currentDecoder
-      this.scope.adminMode = isAdmin
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
     }
 
     /**
@@ -114,7 +117,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
-        dir: 'decoders',
+        dir: 'etc/decoders',
         overwrite: true
       })
     }

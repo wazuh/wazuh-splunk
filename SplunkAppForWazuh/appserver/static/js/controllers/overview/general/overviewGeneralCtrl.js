@@ -41,6 +41,8 @@ define([
      * @param {Object} pollingState
      * @param {*} $reportingService
      * @param {*} $rootScope
+     * @param {*} reportingEnabled
+     * @param {*} awsExtensionEnabled
      */
     constructor(
       $urlTokenModel,
@@ -54,7 +56,6 @@ define([
       $rootScope,
       reportingEnabled,
       awsExtensionEnabled,
-      rbacRequirements
     ) {
       super(
         $scope,
@@ -63,7 +64,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.awsExtensionEnabled = awsExtensionEnabled

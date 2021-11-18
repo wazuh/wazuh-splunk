@@ -7,6 +7,8 @@ define(['../../module'], function(controllers) {
      * @param {*} $scope
      * @param {Object} agentsInfo
      * @param {Object} extensions
+     * @param {Object} $notificationService
+     * @param {Object} $currentDataService
      */
     constructor(
       $scope,
@@ -14,9 +16,7 @@ define(['../../module'], function(controllers) {
       extensions,
       $notificationService,
       $currentDataService,
-      rbacRequirements
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope
       this.notificationService = $notificationService
       this.currentDataService = $currentDataService

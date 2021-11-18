@@ -14,18 +14,21 @@ define(
        * @param {Object} ACTIONS 
        * @param {Object} $requirementService 
        * @param {Object} $validationService 
+       * @param {Object} userPermissions
        */
       constructor(
         $requestService,
         ACTIONS,
         $requirementService,
-        $validationService
+        $validationService,
+        userPermissions
       ) {
         this.apiReq = $requestService.apiReq
         this.ACTIONS_ENUM = ACTIONS.ACTIONS_ENUM
         this.ACTIONS_MAP = ACTIONS.ACTIONS_MAP
         this.$requirementService = $requirementService
         this.$validationService = $validationService
+        this.userPermissions = userPermissions
       };
 
       /**
@@ -126,6 +129,41 @@ define(
           console.error(`Missing controller '${controllerName}' in mapActions`, err)
         }
       }
+
+      /**
+       * Given the RBAC permission requirements, returns if the user
+       * has permissions to perform the action required.
+       * @param {Object} requirements name of the controller.
+       * @returns {Boolean} the user can/can't perform the action.
+       */
+      userHasPermissions(requirements) {
+        return validatePermissions(requirements, this.userPermissions.get())
+      }
+
+      /**
+       * Given the RBAC action and the agent data ({id, group}), returns if the user
+       * has permissions to perform the action required.
+       * @param {Object} requirements name of the controller.
+       * @returns {Boolean} the user can/can't perform the action.
+       */
+      userHasPermissionsSecurityActionWithAgent(action, agentData){
+        console.log('action', action, agentData)
+        return agentData && this.userHasPermissions({[action]: [`agent:id:${agentData.id}`, ...agentData.group.map(group => `agent:group:${group}`)]})
+      }
+
+      /**
+       * Update the user policies in the userPermissions factory.
+       */
+      async updateUserPermissions() {
+          try{
+              const userPolicies = await this.getUserPolicies()
+              this.userPermissions.set(userPolicies)
+          }catch(error){
+              this.userPermissions.set({}) 
+          }
+      }
+
+      
     }
 
     // Register current class as a service

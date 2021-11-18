@@ -9,8 +9,8 @@ define(['../../module'], function(controllers) {
      * @param {*} $notificationService
      * @param {Array} statusData
      * @param {Object} agentInfo
-     * @param {Boolean} isAdmin
      * @param {*} $restartService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -18,13 +18,12 @@ define(['../../module'], function(controllers) {
       $notificationService,
       statusData,
       agentInfo,
-      isAdmin,
       $restartService,
-      rbacRequirements
+      $security_service
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope
       this.scope.load = true
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
       const parsedStatusData = statusData.map(item =>
@@ -50,7 +49,6 @@ define(['../../module'], function(controllers) {
       this.decoders = decoders
       this.scope.clusterEnabled = masterNode || false
       this.agentInfo = agentInfo.data.data
-      this.isAdmin = isAdmin
       this.restartService = $restartService
     }
 
@@ -60,7 +58,6 @@ define(['../../module'], function(controllers) {
     $onInit() {
       this.scope.selectedNavTab = 'status'
       this.scope.confirmingRestart = false
-      this.scope.isAdmin = this.isAdmin
       this.scope.switchRestart = () => this.switchRestart()
       this.scope.restartInProgress = false
       if (this.masterNode && this.masterNode.name) {

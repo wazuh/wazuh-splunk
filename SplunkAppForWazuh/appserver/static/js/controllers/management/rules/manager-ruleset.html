@@ -53,6 +53,10 @@
 
                     <span flex="" class="flex"></span>
 
+                    <span ng-if="userHasPermissions({'rules:update': ['*:*:*']})" ng-click="addNewFile()" class="wz-color-text cursor-pointer link-table">
+                      <wz-svg icon="plus"></wz-svg>
+                      Add new file
+                    </span>
                     <span ng-if="!rulesetFiles" ng-click="switchFiles()" class="wz-color-text cursor-pointer link-table">
                       <wz-svg icon="submodule"></wz-svg>
                       Manage rules files
@@ -61,7 +65,7 @@
                         <wz-svg icon="import"></wz-svg>
                       Export formatted
                     </span>
-                    <span ng-show="rulesetFiles" ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer link-table">
+                    <span ng-if="rulesetFiles && userHasPermissions({'rules:update': ['*:*:*']})" ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer link-table">
                         <wz-svg icon="export"></wz-svg>
                       Import files
                     </span>
@@ -214,10 +218,10 @@
                     flex path="'/rules'" keys="['id',{value:'description',size:4},{value:'groups',nosortable:true,size:2},{value:'pci',nosortable:true,size:2},{value:'gdpr',nosortable:true},{value:'hipaa',nosortable:true},{value:'nist-800-53',nosortable:true},'level',{value:'filename',size:2},{value:'relative_dirname',nosortable:true}]"
                     allow-click="true" rows-per-page="14">
                   </wazuh-table-server-side>
-                  <wazuh-table-server-side admin-mode="adminMode" ng-if="rulesetFiles && !localFilter" flex path="'/rules/files'" keys="['filename']"
+                  <wazuh-table-server-side ng-if="rulesetFiles && !localFilter" flex path="'/rules/files'" keys="['filename']"
                     rows-per-page="[16,13,11]">
                   </wazuh-table-server-side>
-                  <wazuh-table-server-side admin-mode="adminMode" ng-if="rulesetFiles && localFilter" flex path="'/rules/files'"
+                  <wazuh-table-server-side ng-if="rulesetFiles && localFilter" flex path="'/rules/files'"
                     implicit-filter="[{ name:'relative_dirname',value: 'etc/rules'}]" keys="['filename']" rows-per-page="[16,13,11]">
                   </wazuh-table-server-side>
                 </div>
@@ -231,15 +235,15 @@
             <div ng-if="addingNewFile">
               <div layout="row" class="md-padding wz-padding-top-0">
                 <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-                <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete'
+                <button ng-if="userHasPermissions({'rules:update': ['rule:file:' + editingFile.filename]})" ng-disabled='xmlHasErrors || overwrite || saveIncomplete'
                   ng-click='saveRuleConfig(editingFile.filename, editingFile.dir)'
                   class='btn wz-button-empty pull-right wz-margin-left-10'>
-                  <span ng-show='!xmlHasErrors && adminMode'>
+                  <span ng-show='!xmlHasErrors'>
                     <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                       aria-hidden='true'></i>
                     Save file
                   </span>
-                  <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true'
+                  <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true'
                       class='fa fa-fw fa-exclamation-triangle'></i>
                     XML format error</span>
                 </button>
@@ -260,13 +264,13 @@
             <div ng-if="editingRulesetFile">
               <div layout="row" class="md-padding wz-padding-top-0">
                 <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-                <button ng-if="adminMode" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.file, editingRulesetFile.dir)'
+                <button ng-if="userHasPermissions({'rules:update': ['rule:file:' + editingRulesetFile.filename]})" ng-disabled='xmlHasErrors || overwrite || saveIncomplete' ng-click='saveFile(editingRulesetFile.filename, editingRulesetFile.dir)'
                   class='btn wz-button-empty pull-right wz-margin-left-10'>
-                  <span ng-show='!xmlHasErrors && adminMode'><i
+                  <span ng-show='!xmlHasErrors'><i
                       ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                       aria-hidden='true'></i>
                     Save file</span>
-                  <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true'
+                  <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true'
                       class='fa fa-fw fa-exclamation-triangle'></i>
                     XML format error</span>
                 </button>

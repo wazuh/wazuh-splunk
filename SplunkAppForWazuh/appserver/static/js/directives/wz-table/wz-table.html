@@ -41,11 +41,11 @@
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
             aria-hidden="true"></i>
         </th>
-        <th ng-if="(path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode)) "
+        <th ng-if="(path === '/agents' || (path === '/groups') || (isLookingGroup())) "
           class="wz-text-left wz-nowrap"
           ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">
           Actions</th>
-        <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') && adminMode"
+        <th ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')"
           class="wz-text-left wz-nowrap" ng-style="path !== '/agents' && {'width':'375px'}">
           Actions
         </th>
@@ -121,23 +121,24 @@
             </wz-svg>
           </td>
           <!-- Remove files -->
-          <td ng-if="adminMode && (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')">
+          <td ng-if="path === '/rules/files' || path === '/decoders/files' || path === '/lists/files'">
             <!-- Edit icon -->
+            <!--FIXME: The icon is not displayed possibly due to the validation service when the user is allowed: action=[rules:update] resource=[*:*:*]-->
             <wz-svg
-              ng-if="!removingFile && path !== '/lists/files' && (item.relative_dirname === 'etc/rules' || item.relative_dirname === 'etc/decoders')"
+              ng-if="!removingFile && path !== '/lists/files' && ((item.relative_dirname === 'etc/rules' && userHasPermissions({'rules:update': ['rule:file:' + item.filename || item.name]})) || (item.relative_dirname === 'etc/decoders' && userHasPermissions({'decoders:update': ['decoder:file:' + item.filename || item.name]})))"
               ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname)" icon="pencil"
               svg-tooltip="Edit this file" color="#0079a5">
             </wz-svg>
             <!--Remove icon -->
             <wz-svg
-              ng-if="!removingFile && (item.relative_dirname === 'etc/rules' || item.relative_dirname === 'etc/decoders' || path === '/lists/files')"
+              ng-if="!removingFile && ((item.relative_dirname === 'etc/rules' && userHasPermissions({'rules:delete': ['rule:file:' + item.filename || item.name]})) || (item.relative_dirname === 'etc/decoders' && userHasPermissions({'decoders:delete': ['decoder:file:' + item.filename || item.name]})) || (path === '/lists/files' && userHasPermissions({'lists:update': ['list:file:' + item.filename || item.name]})))"
               ng-click="showConfirmRemoveFile($event, item.filename || item.name); $event.stopPropagation()" icon="trash"
               color="#0079a5" svg-tooltip="Remove this file">
             </wz-svg>
             <!--NO icon -->
             <i ng-if="item.relative_dirname !== 'etc/rules' && item.relative_dirname !== 'etc/decoders' && path !== '/lists/files'"
               aria-hidden="true" style="color: #396e3e;font-size: 17px;">
-              <wz-svg ng-if="item.relative_dirname !== 'etc/rules' && item.relative_dirname !== 'etc/decoders' && path !== '/lists/files'"
+              <wz-svg
                 ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname, true)" icon="eye"
                 svg-tooltip="View file content" color="#396e3e">
               </wz-svg>
@@ -157,16 +158,15 @@
             </div>
           </td>
           <!-- End remove files-->
-          <td ng-if="path === '/groups' && adminMode " ng-click="$event.stopPropagation()"
+          <td ng-if="path === '/groups'" ng-click="$event.stopPropagation()"
             class="cursor-default action-btn-td" class="wz-text-truncatable">
-            <wz-svg ng-if="removingGroup !== item.name && item.name !== 'default'"
+            <wz-svg ng-if="removingGroup !== item.name && item.name !== 'default' && userHasPermissions({'group:delete': ['group:id:' + item.name ]}) "
               ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()" icon="trash" color="#396e3e"
               svg-tooltip="Remove this group"></wz-svg>
-            <wz-svg ng-if="removingGroup !== item.name" ng-click="editGroup(item); $event.stopPropagation()" icon="pencil"
+            <wz-svg ng-if="removingGroup !== item.name && userHasPermissions({'group:update_config': ['group:id:' + item.name ]})" ng-click="editGroup(item); $event.stopPropagation()" icon="pencil"
               color="#396e3e" svg-tooltip="Edit this group configuration">
             </wz-svg>
 
-            <span class="wz-padding-left-8" ng-if="removingGroup !== item.name && item.name === 'default'">-</span>
             <div ng-if="removingGroup === item.name && item.name !== 'default'">
               <div layout="row">
                 <span class="euiToastHeader__title font-size-12">Group {{item.name}} will be removed</span>
@@ -175,13 +175,13 @@
                 <md-button class="cancelBtn" type="button" ng-click="cancelRemoveGroup()"><i aria-hidden='true'
                     class='fa fa-fw fa-close'></i>
                   Cancel</md-button>
-                <md-button class="agreeBtn" type="button" ng-click="confirmRemoveGroup(item.name)"><i aria-hidden='true'
+                <md-button ng-if="userHasPermissions({'group:delete': ['group:id:' + item.name ]})" class="agreeBtn" type="button" ng-click="confirmRemoveGroup(item.name)"><i aria-hidden='true'
                     class='fa fa-fw fa-check'></i> Confirm</md-button>
               </div>
             </div>
-          <td ng-if="isLookingGroup() && adminMode " ng-click="$event.stopPropagation()"
+          <td ng-if="isLookingGroup()" ng-click="$event.stopPropagation()"
             class="cursor-default action-btn-td">
-            <wz-svg ng-if="removingAgent !== item.id && adminMode"
+            <wz-svg ng-if="removingAgent !== item.id && userHasPermissionsSecurityActionWithAgent('agent:modify_group', item)"
               ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()" icon="trash"
               color="#396e3e" svg-tooltip="Remove agent">
             </wz-svg>
@@ -195,7 +195,7 @@
                 <md-button class="cancelBtn" type="button" ng-click="cancelRemoveAgent()"><i aria-hidden='true'
                     class='fa fa-fw fa-close'></i>
                   Cancel</md-button>
-                <md-button class="agreeBtn" type="button" ng-click="confirmRemoveAgent(item.id)"><i aria-hidden='true'
+                <md-button ng-if="userHasPermissionsSecurityActionWithAgent('agent:modify_group',item)" class="agreeBtn" type="button" ng-click="confirmRemoveAgent(item.id)"><i aria-hidden='true'
                     class='fa fa-fw fa-check'></i> Confirm</md-button>
               </div>
             </div>
@@ -205,7 +205,7 @@
       </tbody>
       <tfoot class="no-border">
         <td
-          colspan="{{ (path === '/agents' || (path === '/groups' && adminMode) || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
+          colspan="{{ (path === '/agents' || (path === '/groups') || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
             seconds)</span>
           <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
@@ -247,7 +247,7 @@
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
             aria-hidden="true"></i>
         </th>
-        <th ng-if="(path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode)) "
+        <th ng-if="(path === '/agents' || (path === '/groups') || (isLookingGroup())) "
           class="wz-text-left wz-nowrap"
           ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}  && getWitdh(key.value || key)">
           Actions</th>
@@ -316,7 +316,7 @@
       </tbody>
       <tfoot class="no-border">
         <td
-          colspan="{{ (path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
+          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
             seconds)</span>
           <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
@@ -396,7 +396,7 @@
       </tbody>
       <tfoot class="no-border">
         <td
-          colspan="{{ (path === '/agents' || (path === '/groups' && adminMode) || (isLookingGroup() && adminMode))  ? keys.length + 1 : keys.length}}">
+          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items ({{time | number: 2}}
             seconds)</span>
           <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">

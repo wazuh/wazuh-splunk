@@ -23,14 +23,16 @@ define([
   class OverviewMitreIds {
     /**
      * Class constructor
-     * @param {Object} $urlTokenModel
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} $state
      * @param {Object} $notificationService
      * @param {Object} $requestService
-     * @param {Object} agentData
-     * @param {*} $reportingService
+     * @param {Object} mitre_tactics
+     * @param {*} $mdDialog
+     * @param {*} $dateDiffService
+     * @param {*} $urlTokenModel
+     * @param {*} extensions
      */
 
     constructor(
@@ -44,14 +46,12 @@ define([
       $dateDiffService,
       $urlTokenModel,
       extensions,
-      rbacRequirements
     ) {
       this.scope = $scope
       this.currentDataService = $currentDataService
       this.currentDataService.addFilter(
         `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
       )
-      console.log(rbacRequirements)
       this.modalOpen = false
       this.modalInitialized = false
       this.api = this.currentDataService.getApi()

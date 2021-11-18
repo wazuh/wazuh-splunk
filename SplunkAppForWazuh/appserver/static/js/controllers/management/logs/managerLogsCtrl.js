@@ -32,9 +32,7 @@ define(['../../module', 'FileSaver'], function(app) {
       $currentDataService,
       $csvRequestService,
       logs,
-      rbacRequirements
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope
       this.scope.realtime = false
       this.apiReq = $requestService.apiReq

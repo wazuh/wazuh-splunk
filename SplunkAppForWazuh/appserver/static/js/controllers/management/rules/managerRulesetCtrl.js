@@ -10,6 +10,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $restartService
+     * @param {*} $fileEditor
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -19,9 +22,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       $restartService,
-      isAdmin,
       $fileEditor,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -34,15 +36,13 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $restartService,
         $fileEditor
       )
-      console.log(rbacRequirements)
-      this.isAdmin = isAdmin
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
     }
 
     /**
      * On controller load
      */
     $onInit() {
-      this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })

@@ -6,11 +6,16 @@ define(['../../module'], function(controllers) {
      * Class Status
      * @param {*} $scope
      * @param {Array} clusterInfo
-     * @param {Boolean} isAdmin
+     * @param {*} clusterInfo
+     * @param {*} $fileEditor
+     * @param {*} $restartService
+     * @param {*} $interval
+     * @param {*} $rootScope
+     * @param {*} $state
+     * @param {*} $security_service
      */
     constructor(
       $scope,
-      isAdmin,
       $notificationService,
       clusterInfo,
       $fileEditor,
@@ -18,12 +23,11 @@ define(['../../module'], function(controllers) {
       $interval,
       $rootScope,
       $state,
-      rbacRequirements
+      $security_service
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope
+      this.scope.$security_service = $security_service.userHasPermissions.bind($security_service)
       this.clusterInfo = clusterInfo
-      this.isAdmin = isAdmin
       this.notification = $notificationService
       this.clusterInfo = clusterInfo
       this.fileEditor = $fileEditor
@@ -59,7 +63,6 @@ define(['../../module'], function(controllers) {
         } else {
           this.editNode()
         }
-        this.scope.isAdmin = this.isAdmin
 
         /**
          *  Listeners

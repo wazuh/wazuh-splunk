@@ -42,6 +42,10 @@ define([
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} BASE_URL
+     * @param {*} extensions
      */
 
     constructor(
@@ -58,7 +62,6 @@ define([
       reportingEnabled,
       BASE_URL,
       extensions,
-      rbacRequirements
     ) {
       super(
         $scope,
@@ -67,7 +70,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.rootScope = $rootScope
       this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled

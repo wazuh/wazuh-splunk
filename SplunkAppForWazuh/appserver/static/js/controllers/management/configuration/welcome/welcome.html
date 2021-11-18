@@ -29,7 +29,7 @@
         <!-- Edit config -->
         <md-card-actions layout-align="end center" class="wz-card-actions wz-card-actions-top md-actions-conf"
           ng-if="!agent || agent.id === '000'">
-          <button ng-if="isAdmin" ui-sref="mg-editConfig" class="btn-invisible-conf ng-scope">
+          <button ng-if="selectedNode ? userHasPermissions({'cluster:update_config': ['node:id:' + selectedNode.name]}) : userHasPermissions({'manager:update_config': ['*:*:*']})" ui-sref="mg-editConfig" class="btn-invisible-conf ng-scope">
             <span aria-hidden="false">
               <wz-svg icon="pencil"></wz-svg>
               &nbsp;

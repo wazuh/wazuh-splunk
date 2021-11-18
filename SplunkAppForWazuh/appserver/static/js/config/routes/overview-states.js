@@ -33,15 +33,14 @@ define(['../module'], function (module) {
             'static/app/SplunkAppForWazuh/js/controllers/overview/welcome/overview-welcome.html',
           controller: 'overviewWelcomeCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('overview')
+                return await $security_service.updateUserPermissions()
               }
             ],
             agentsInfo: [
               '$requestService',
-              '$state',
               async $requestService => {
                 try {
                   const result = await $requestService.apiReq('/agents/summary/status')
@@ -72,16 +71,15 @@ define(['../module'], function (module) {
           },
           controller: 'overviewGeneralCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-general')
+                return await $security_service.updateUserPermissions()
               }
             ],
             pollingState: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const result = await $requestService.httpReq(
                     `GET`,
@@ -89,7 +87,7 @@ define(['../module'], function (module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -121,10 +119,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewPolicyMonitoringCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-pm')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -155,10 +153,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewSCACtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-sca')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -189,10 +187,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewFimCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-fim')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -223,23 +221,22 @@ define(['../module'], function (module) {
           },
           controller: 'osqueryCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-osquery')
+                return await $security_service.updateUserPermissions()
               }
             ],
             osquery: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const result = await $requestService.apiReq(
                     `/agents/000/config/wmodules/wmodules`
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -271,10 +268,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewAuditCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-audit')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -305,10 +302,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewOpenScapCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-os')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -339,16 +336,15 @@ define(['../module'], function (module) {
           },
           controller: 'overviewPciCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-pci')
+                return await $security_service.updateUserPermissions()
               }
             ],
             pciTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const pciTabs = []
                   const data = await $requestService.httpReq(
@@ -361,7 +357,7 @@ define(['../module'], function (module) {
                   }
                   return pciTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -413,16 +409,15 @@ define(['../module'], function (module) {
           },
           controller: 'overviewGdprCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-gdpr')
+                return await $security_service.updateUserPermissions()
               }
             ],
             gdprTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const gdprTabs = []
                   const data = await $requestService.httpReq(
@@ -435,7 +430,7 @@ define(['../module'], function (module) {
                   }
                   return gdprTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -487,16 +482,15 @@ define(['../module'], function (module) {
           },
           controller: 'overviewHipaaCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-hipaa')
+                return await $security_service.updateUserPermissions()
               }
             ],
             hipaaTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const hipaaTabs = []
                   const data = await $requestService.httpReq(
@@ -509,7 +503,7 @@ define(['../module'], function (module) {
                   }
                   return hipaaTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -561,16 +555,15 @@ define(['../module'], function (module) {
           },
           controller: 'overviewNistCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-nist')
+                return await $security_service.updateUserPermissions()
               }
             ],
             nistTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const nistTabs = []
                   const data = await $requestService.httpReq(
@@ -583,7 +576,7 @@ define(['../module'], function (module) {
                   }
                   return nistTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -635,10 +628,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewVulnerabilitiesCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-vul')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -669,10 +662,10 @@ define(['../module'], function (module) {
           },
           controller: 'ciscatCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-ciscat')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -691,12 +684,6 @@ define(['../module'], function (module) {
                 }
               }
             ],
-            rbacRequirements: [
-              '$security_service',
-              async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-ciscat')
-              }
-            ]
           }
         })
         // Overview - VirusTotal
@@ -709,10 +696,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewVirusTotal',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-virustotal')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -743,10 +730,10 @@ define(['../module'], function (module) {
           },
           controller: 'awsCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-aws')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -767,10 +754,10 @@ define(['../module'], function (module) {
           },
           controller: 'dockerCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-docker')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -801,10 +788,10 @@ define(['../module'], function (module) {
           },
           controller: 'overviewMitreCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-mitre')
+                return await $security_service.updateUserPermissions()
               }
             ],
             reportingEnabled: [
@@ -835,18 +822,16 @@ define(['../module'], function (module) {
           },
           controller: 'overviewMitreIdsCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('ow-mitre-ids')
+                return await $security_service.updateUserPermissions()
               }
             ],
             mitre_tactics: [
               '$requestService',
-              '$state',
               async (
                 $requestService,
-                $state
               ) => {
                 try {
                   const results = await $requestService.apiReq(`/mitre?select=phase_name`)
@@ -860,7 +845,7 @@ define(['../module'], function (module) {
                   return tactics
 
                 } catch (err) {
-                  $state.go('overview')
+                  return false
                 }
               }
             ],

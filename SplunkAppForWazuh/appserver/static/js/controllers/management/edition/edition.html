@@ -31,21 +31,17 @@
 <div ng-show="editingNode">
   <div layout="row" class="wz-margin-left-10">
     <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
-      ng-change="changeNode(selectedNode.name)" style="margin:0 5px;" ng-if="isAdmin && clusterEnabled"
+      ng-change="changeNode(selectedNode.name)" style="margin:0 5px;" ng-if="clusterEnabled && userHasPermissions({'cluster:read': ['*:*:*']})"
       class="input input-dropdown wz-button-empty"></select>
-    <button class="md-icon-button cursor-pointer" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i
-        class="fa fa-fw fa-close" aria-hidden="true"></i>
-      <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
-    </button>
-    <button style="height: 30px;" ng-if="isAdmin" ui-sref="mg-conf"
-      class='edit-cancel-button wz-margin-left-10'>Cancel</button>
-    <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors || saveIncomplete || restartInProgress || wazuhNotReadyYet'
+    <button style="height: 30px;" ui-sref="mg-conf"
+      class='edit-cancel-button wz-margin-left-10'>Close file</button>
+    <button style="height: 30px;" ng-if="((clusterEnabled && userHasPermissions({'cluster:update_config': ['node:id:' + selectedNode.name]})) || (!clusterEnabled && userHasPermissions({'manager:update_config': ['*:*:*']})))" ng-disabled='xmlHasErrors || saveIncomplete || restartInProgress || wazuhNotReadyYet'
       ng-click='saveOssecConfig()' class='btn wz-button-empty pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && isAdmin'>
+      <span ng-show="!xmlHasErrors && ((clusterEnabled && userHasPermissions({'cluster:update_config': ['node:id:' + selectedNode.name]})) || (!clusterEnabled && userHasPermissions({'manager:update_config': ['*:*:*']})))">
         <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
           aria-hidden='true'></i>
         Save</span>
-      <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true'
+      <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true'
           class='fa fa-fw fa-exclamation-triangle'></i>
         XML format error</span>
     </button>
@@ -54,32 +50,32 @@
     <!-- Restart button -->
     <div style="padding-right: 15px;">
       <div ng-show="!confirmingRestart">
-        <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()"
+        <button style="height: 30px;" ng-if="userHasPermissions({'manager:restart': ['*:*:*']})" ng-show="!clusterEnabled" ng-click="switchRestart()"
           ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet" class='btn wz-button pull-right'>
-          <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
+          <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
             aria-hidden='true'></i>Restart
             {{editingNode}}</span>
         </button>
-        <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="switchRestart()"
+        <button style="height: 30px;" ng-if="userHasPermissions({'cluster:restart': ['node:id:' + editingNode]})" ng-show="clusterEnabled" ng-click="switchRestart()"
           ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet" class='btn wz-button pull-right'>
-          <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
+          <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
             aria-hidden='true'></i>Restart
             {{editingNode}}</span>
         </button>
       </div>
       <div ng-show="confirmingRestart">
         <span class="node-will-be-restarted" style="padding-top: 8px;"><b>{{editingNode}}</b> will be restarted</span>
-        <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
+        <button style="height: 30px;" ng-click="switchRestart()"
           class='edit-cancel-button wz-margin-left-10'>
-          <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+          <span><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
         </button>
-        <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
+        <button style="height: 30px;" ng-if="!clusterEnabled && userHasPermissions({'manager:restart': ['*:*:*']})" ng-click="restart(); switchRestart()"
           class='btn wz-button wz-margin-left-10'>
-          <span class="wz-margin-left--10" ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+          <span class="wz-margin-left--10"><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
         </button>
-        <button style="height: 30px;" ng-if="isAdmin && clusterEnabled" ng-click="restart(editingNode); switchRestart()"
+        <button style="height: 30px;" ng-if="clusterEnabled && userHasPermissions({'cluster:restart': ['node:id:' + editingNode]})" ng-click="restart(editingNode); switchRestart()"
           class='btn wz-button wz-margin-left-10'>
-          <span class="wz-margin-left--10" ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+          <span class="wz-margin-left--10"><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
         </button>
       </div>
     </div>
@@ -91,16 +87,16 @@
     <wz-xml-file-editor style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode"
       valid-fn='xmlIsValid(valid)'>
       <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
-        ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="isAdmin && clusterEnabled"
+        ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="clusterEnabled"
         class="input input-dropdown wz-button-empty"></select>
 
-      <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="restart()"
+      <button style="height: 30px;" ng-if="!clusterEnabled && userHasPermissions({'manager:restart': ['*:*:*']})" ng-click="restart()"
         ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><wz-svg icon="refresh"></wz-svg></i>Restart {{editingNode}}</span>
+        <span><wz-svg icon="refresh"></wz-svg></i>Restart {{editingNode}}</span>
       </button>
-      <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="restart(editingNode)"
+      <button style="height: 30px;" ng-if="clusterEnabled && userHasPermissions({'cluster:restart': ['node:id:' + editingNode]})" ng-click="restart(editingNode)"
         ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><wz-svg icon="refresh"></wz-svg></i>Restart {{editingNode}}</span>
+        <span><wz-svg icon="refresh"></wz-svg></i>Restart {{editingNode}}</span>
       </button>
 
   </div>

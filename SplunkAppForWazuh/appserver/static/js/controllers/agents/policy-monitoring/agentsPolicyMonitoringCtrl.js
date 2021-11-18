@@ -39,6 +39,10 @@ define([
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
+     * @param {*} $security_service
      */
 
     constructor(
@@ -55,7 +59,7 @@ define([
       $tableFilterService,
       reportingEnabled,
       extensions,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -64,11 +68,10 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.apiReq = $requestService.apiReq
       this.scope.showPolicies = false
       this.agent = agent

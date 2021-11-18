@@ -33,6 +33,7 @@ define([
      * @param {Object} $notificationService
      * @param {*} $reportingService
      * @param {Object} extensions
+     * @param {Object} $security_service
      */
 
     constructor(
@@ -46,7 +47,7 @@ define([
       $notificationService,
       $reportingService,
       extensions,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -55,14 +56,13 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.wzTableFilter = $tableFilterService;
       this.csvReq = $csvRequestService;
       this.notification = $notificationService;
       this.api = this.currentDataService.getApi();
       this.scope.loadingVizz = false;
       this.scope.extensions = extensions
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
       )

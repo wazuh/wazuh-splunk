@@ -49,7 +49,7 @@
     </div>
 
     <div layout="row">
-      <button ng-if="adminMode" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items"
+      <button ng-if="userHasPermissions({'lists:update': ['list:files:*']})" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items"
         class='btn wz-button pull-right wz-margin-left-10 wz-margin-left-20'>
         <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
             aria-hidden='true'></i>Save list</span>
@@ -110,37 +110,35 @@
                     </div>
                   </td>
                   <td class="action-btn-td td-align-middle wz-width-350">
-                    <div ng-hide="!adminMode">
-                      <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
-                        ng-click="setEditingKey(item[0], item[1])" icon="pencil" svg-tooltip="Edit">
-                      </wz-svg>
-                      <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer"
-                        ng-click="cancelEditingKey()">
-                        <md-tooltip md-direction="bottom" class="wz-tooltip">
-                          Cancel
-                        </md-tooltip>
-                      </span>
-                      <span ng-show="editingKey === item[0] && editingNewValue !== ''"
-                        class="fa fa-fw fa-check cursor-pointer" ng-click="editKey(item[0], editingNewValue)">
-                        <md-tooltip md-direction="bottom" class="wz-tooltip">
-                          Apply
-                        </md-tooltip>
-                      </span>
-                      <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
-                        ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()" icon="trash"
-                        svg-tooltip="Remove this entry">
-                      </wz-svg>
-                      <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
-                        <div layout="row">
-                          <span class="font-size-12 wz-padding-left-8">This entry will be
-                            removed</span>
-                        </div>
-                        <div layout="row">
-                          <md-button class="cancelBtn" type="button" ng-click="cancelRemoveEntry()"><i
-                              aria-hidden='true' class='fa fa-fw fa-close'></i> Cancel</md-button>
-                          <md-button class="agreeBtn" type="button" ng-click="confirmRemoveEntry(item[0])"><i
-                              aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
-                        </div>
+                    <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
+                      ng-click="setEditingKey(item[0], item[1])" icon="pencil" svg-tooltip="Edit">
+                    </wz-svg>
+                    <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer"
+                      ng-click="cancelEditingKey()">
+                      <md-tooltip md-direction="bottom" class="wz-tooltip">
+                        Cancel
+                      </md-tooltip>
+                    </span>
+                    <span ng-show="editingKey === item[0] && editingNewValue !== ''"
+                      class="fa fa-fw fa-check cursor-pointer" ng-click="editKey(item[0], editingNewValue)">
+                      <md-tooltip md-direction="bottom" class="wz-tooltip">
+                        Apply
+                      </md-tooltip>
+                    </span>
+                    <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
+                      ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()" icon="trash"
+                      svg-tooltip="Remove this entry">
+                    </wz-svg>
+                    <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
+                      <div layout="row">
+                        <span class="font-size-12 wz-padding-left-8">This entry will be
+                          removed</span>
+                      </div>
+                      <div layout="row">
+                        <md-button class="cancelBtn" type="button" ng-click="cancelRemoveEntry()"><i
+                            aria-hidden='true' class='fa fa-fw fa-close'></i> Cancel</md-button>
+                        <md-button class="agreeBtn" type="button" ng-click="confirmRemoveEntry(item[0])"><i
+                            aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
                       </div>
                     </div>
                   </td>

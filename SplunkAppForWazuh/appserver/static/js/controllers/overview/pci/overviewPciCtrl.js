@@ -27,6 +27,10 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} pciTabs
+     * @param {*} reportingEnabled
+     * @param {*} gdprExtensionEnabled
+     * @param {*} nistExtensionEnabled
      */
     constructor(
       $urlTokenModel,
@@ -39,7 +43,6 @@ define([
       gdprExtensionEnabled,
       hipaaExtensionEnabled,
       nistExtensionEnabled,
-      rbacRequirements
     ) {
       super(
         $scope,
@@ -48,7 +51,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled

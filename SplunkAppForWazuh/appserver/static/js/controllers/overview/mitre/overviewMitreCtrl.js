@@ -35,6 +35,8 @@ define([
      * @param {*} $notificationService
      * @param {*} $reportingService
      * @param {*} $rootScope
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -46,7 +48,6 @@ define([
       $rootScope,
       reportingEnabled,
       extensions,
-      rbacRequirements
     ) {
       super(
         $scope,
@@ -55,7 +56,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.rootScope = $rootScope
       this.state = $state
       this.scope.reportingEnabled = reportingEnabled

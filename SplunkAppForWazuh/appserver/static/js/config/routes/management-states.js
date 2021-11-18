@@ -1,14 +1,6 @@
 define(['../module'], function(module) {
   'use strict'
 
-  const checkAdmin = async $currentDataService => {
-    try {
-      return await $currentDataService.isAdmin()
-    } catch (error) {
-      return false
-    }
-  }
-
   module.config([
     '$stateProvider',
     'BASE_URL',
@@ -19,14 +11,6 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/welcome/manager-welcome.html',
-            resolve: {
-              rbacRequirements: [
-                '$security_service',
-                async $security_service => {
-                  return await $security_service.getRequirementsOfController('manager')
-                }
-              ],
-            },
             onEnter: () => {
               window.sessionStorage.showLogtest = false
             }
@@ -42,16 +26,16 @@ define(['../module'], function(module) {
           controller: 'monitoringCtrl',
           params: { id: null, filters: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-monitoring')
+                return await $security_service.updateUserPermissions()
               }
             ],
             monitoringInfo: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const checkCluster = await $requestService.apiReq('/cluster/status');
                   let result = {};
@@ -76,7 +60,14 @@ define(['../module'], function(module) {
                      ])
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return [
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false
+                  ]
                 }
               }
             ]
@@ -93,23 +84,23 @@ define(['../module'], function(module) {
           },
           controller: 'managerLogsCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-logs')
+                return await $security_service.updateUserPermissions()
               }
             ],
             logs: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const result = await $requestService.apiReq(
                     '/manager/logs/summary'
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ]
@@ -126,18 +117,12 @@ define(['../module'], function(module) {
           controller: 'managerRulesetCtrl',
           params: { filters: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-rules')
+                return await $security_service.updateUserPermissions()
               }
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
           }
         })
         // Manager - Ruleset/:id
@@ -151,10 +136,10 @@ define(['../module'], function(module) {
           controller: 'managerRulesetIdCtrl',
           params: { id: null, filters: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-rules')
+                return await $security_service.updateUserPermissions()
               }
             ],
             ruleInfo: [
@@ -168,7 +153,7 @@ define(['../module'], function(module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  $state.go('settings.api') //TODO: this could be improved displaying a prompt instead of going to `settings.api`
                 }
               }
             ],
@@ -182,12 +167,6 @@ define(['../module'], function(module) {
                 }
               }
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
           }
         })
         // Manager - Decoders
@@ -201,18 +180,12 @@ define(['../module'], function(module) {
           controller: 'managerDecodersCtrl',
           params: { filters: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-decoders')
+                return await $security_service.updateUserPermissions()
               }
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
           }
         })
         // Manager - Decoders/:id
@@ -226,10 +199,10 @@ define(['../module'], function(module) {
           controller: 'managerDecodersIdCtrl',
           params: { id: null, name: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-decoders')
+                return await $security_service.updateUserPermissions()
               }
             ],
             currentDecoder: [
@@ -243,7 +216,7 @@ define(['../module'], function(module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  $state.go('settings.api') //TODO: this could be improved displaying a prompt instead of going to `settings.api`
                 }
               }
             ],
@@ -257,12 +230,6 @@ define(['../module'], function(module) {
                 }
               }
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
           }
         })
 
@@ -277,18 +244,12 @@ define(['../module'], function(module) {
           controller: 'managerCdbCtrl',
           params: { filters: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-cdb')
+                return await $security_service.updateUserPermissions()
               }
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
           }
         })
 
@@ -303,16 +264,10 @@ define(['../module'], function(module) {
           controller: 'managerCdbIdCtrl',
           params: { name: null, path: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-cdb')
-              }
-            ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
+                return await $security_service.updateUserPermissions()
               }
             ],
             cdbInfo: [
@@ -331,7 +286,7 @@ define(['../module'], function(module) {
                     content: result
                   }
                 } catch (error) {
-                  $state.go('settings.api')
+                  $state.go('settings.api')  //TODO: this could be improved displaying a prompt instead of going to `settings.api`
                 }
               }
             ]
@@ -349,10 +304,10 @@ define(['../module'], function(module) {
           controller: 'groupsCtrl',
           params: { group: null },
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-groups')
+                return await $security_service.updateUserPermissions()
               }
             ],
             extensions: [
@@ -365,12 +320,6 @@ define(['../module'], function(module) {
                 }
               }
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
           }
         })
 
@@ -384,16 +333,10 @@ define(['../module'], function(module) {
           },
           controller: 'configurationCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-conf')
-              }
-            ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
+                return await $security_service.updateUserPermissions()
               }
             ],
             clusterInfo: [
@@ -438,16 +381,10 @@ define(['../module'], function(module) {
           },
           controller: 'editionCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-editConfig')
-              }
-            ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
+                return await $security_service.updateUserPermissions()
               }
             ],
             clusterInfo: [
@@ -475,7 +412,7 @@ define(['../module'], function(module) {
                   }
                   return info
                 } catch (error) {
-                  $state.go('manager')
+                  return false
                 }
               }
             ]
@@ -492,22 +429,15 @@ define(['../module'], function(module) {
           },
           controller: 'statusCtrl',
           resolve: {
-            rbacRequirements: [
+            updateUserPermissions: [
               '$security_service',
               async $security_service => {
-                return await $security_service.getRequirementsOfController('mg-status')
-              }
-            ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
+                return await $security_service.updateUserPermissions()
               }
             ],
             statusData: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const responseStatus = await $requestService.apiReq(
                     '/cluster/status'
@@ -599,14 +529,20 @@ define(['../module'], function(module) {
                   }
                   return await Promise.all(promises)
                 } catch (err) {
-                  $state.go('settings.api')
+                  return [
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false
+                  ]
                 }
               }
             ],
             agentInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const response = await $requestService.apiReq('/agents', {
                     limit: 1,
@@ -619,7 +555,7 @@ define(['../module'], function(module) {
                   )
                   return lastAgent
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ]
@@ -635,21 +571,16 @@ define(['../module'], function(module) {
           },
           controller: 'reportingCtrl',
           resolve: {
-            reportsList: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
-                try {
-                  const result = await $requestService.httpReq(
-                    'GET',
-                    '/report/reports'
-                  )
-                  return result
-                } catch (err) {
-                  $state.go('settings.api')
+            isWazuhAdmin: [
+              '$security_service',
+              async $security_service => {
+                try{
+                  return await $security_service.isWazuhAdmin()
+                }catch(error){
+                  return false;
                 }
               }
-            ]
+            ],
           }
         })
     }

@@ -29,6 +29,7 @@ define(['../../module', '../../../utils/config-handler'], function(
      * @param {*} $reportingService
      * @param {Object} data
      * @param {Object} agent
+     * @param {Object} $security_service
      */
     constructor(
       $scope,
@@ -41,15 +42,15 @@ define(['../../module', '../../../utils/config-handler'], function(
       $reportingService,
       data,
       agent,
-      rbacRequirements
+      $security_service
     ) {
-      console.log(rbacRequirements)
       this.api = $currentDataService.getApi()
       this.reportingService = $reportingService
       this.$scope = $scope
       this.agent = agent
       this.$scope.currentAgent = this.agent.data.data.affected_items[0]
-      this.$scope.rbacRequirements = rbacRequirements
+      this.$scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.$scope.userHasPermissionsSecurityActionWithAgent = $security_service.userHasPermissionsSecurityActionWithAgent.bind($security_service)
       this.errorHandler = $notificationService
       this.apiReq = $requestService
       this.state = $state

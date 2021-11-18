@@ -23,6 +23,12 @@ define(['../../module'], function(app) {
      * @param {*} $state
      * @param {*} $notificationService
      * @param {Object} agent
+     * @param {Object} groups
+     * @param {Object} $mdDialog
+     * @param {Object} $groupHandler
+     * @param {Object} $dateDiffService
+     * @param {Object} $currentDataService
+     * @param {Object} $security_service
      */
     constructor(
       $stateParams,
@@ -33,16 +39,16 @@ define(['../../module'], function(app) {
       $notificationService,
       agent,
       groups,
-      rbacRequirements,
       $mdDialog,
       $groupHandler,
       $dateDiffService,
-      $currentDataService
+      $currentDataService,
+      $security_service,
     ) {
-      console.log(rbacRequirements)
       this.stateParams = $stateParams
       this.scope = $scope
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.userHasPermissionsSecurityActionWithAgent = $security_service.userHasPermissionsSecurityActionWithAgent.bind($security_service)
       this.requestService = $requestService
       this.state = $state
       this.notification = $notificationService
@@ -157,12 +163,13 @@ define(['../../module'], function(app) {
               this.groupHandler
                 .addAgentToGroup(group, this.scope.agent.id)
                 .then(() =>
-                  this.requestService.apiReq(`/agents/${this.scope.agent.id}`)
+                  this.requestService.apiReq(`/agents?agents_list=${this.scope.agent.id}`)
                 )
-                .then(agent => {
-                  this.scope.agent.group = agent.data.data.group
+                .then(response => {
+                  const agent = response.data.data.affected_items[0]
+                  this.scope.agent.group = agent.group
                   this.scope.groups = this.scope.groups.filter(
-                    item => !agent.data.data.group.includes(item)
+                    item => !agent.group.includes(item)
                   )
                   this.scope.addingGroupToAgent = false
                   this.scope.editGroup = false

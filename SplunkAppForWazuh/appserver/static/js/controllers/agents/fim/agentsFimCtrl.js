@@ -34,12 +34,16 @@ define([
     /**
      * Class constructor
      * @param {Object} $urlTokenModel
-     * @param {Object} $state
      * @param {Object} $scope
+     * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {Object} $tableFilterService
+     * @param {Object} $csvRequestService
      * @param {Object} $notificationService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} $security_service
      */
 
     constructor(
@@ -53,7 +57,7 @@ define([
       $notificationService,
       $reportingService,
       reportingEnabled,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -62,7 +66,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.wzTableFilter = $tableFilterService
       this.agent = agent
       this.api = this.currentDataService.getApi()

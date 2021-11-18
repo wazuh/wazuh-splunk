@@ -13,6 +13,9 @@ define(['../../module', 'FileSaver'], function(controllers) {
      * @param {*} $beautifierJson
      * @param {*} $notificationService
      * @param {*} $reportingService
+     * @param {*} $groupHandler
+     * @param {*} extensions
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -27,10 +30,8 @@ define(['../../module', 'FileSaver'], function(controllers) {
       $reportingService,
       $groupHandler,
       extensions,
-      isAdmin,
-      rbacRequirements
+      $security_service
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope
       this.state = $state
       this.reportingService = $reportingService
@@ -47,6 +48,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.editingFile = false
       this.scope.loadingRing = false
       this.scope.exportConfig = false
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.scope.selectedOptions = {
         groupConf: true,
         agentsList: true
@@ -75,7 +77,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
         }
       })
       this.extensions = extensions
-      this.scope.adminMode = isAdmin
       this.scope.addingGroup = false
       this.scope.addingAgents = false
       this.scope.$on('groupsIsReloaded', () => {
@@ -114,8 +115,7 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
         event.stopPropagation()
         if (
-          ((parameters || {}).fileName || '').includes('agent.conf') &&
-          this.scope.adminMode
+          ((parameters || {}).fileName || '').includes('agent.conf')
         ) {
           return this.scope.editGroupAgentConfig()
         }
@@ -254,7 +254,6 @@ define(['../../module', 'FileSaver'], function(controllers) {
         this.scope.$applyAsync()
       } catch (err) {
         console.error('err ', err)
-        this.scope.adminMode = true
         this.notification.showErrorToast('Error loading groups information')
       }
     }

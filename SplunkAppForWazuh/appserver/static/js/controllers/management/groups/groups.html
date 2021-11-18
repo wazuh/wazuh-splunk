@@ -18,9 +18,9 @@
         <div layout="row">
           <span class="font-size-18">
             <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
-          <span ng-if='adminMode' class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><wz-svg class="wz-margin-left-10" icon="plus"></wz-svg></span>
+          <span ng-if="userHasPermissions({'group:create': ['*:*:*']})" class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><wz-svg class="wz-margin-left-10" icon="plus"></wz-svg></span>
         </div>
-        <div layout="row" ng-if="addingGroup" ng-if='adminMode'>
+        <div layout="row" ng-if="userHasPermissions({'group:create': ['*:*:*']}) && addingGroup">
           <input placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
             aria-invalid="false">
           <button type="submit" aria-label="Search" class="kuiLocalSearchButton addGroupBtn height-20" ng-click="createGroup(groupToBeAdded)">
@@ -52,17 +52,17 @@
       <!-- XML editor for group agents -->
       <div ng-show="editingFile" class="md-padding-h">
         <div layout="row" class="wz-padding-bottom-14">
-          <button class="md-icon-button cursor-pointer" ng-if="!adminMode" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
+          <button class="md-icon-button cursor-pointer" aria-label="Back" ng-click="goBackFiles()"><i class="fa fa-fw fa-close"
               aria-hidden="true"></i>
             <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
           </button>
-          <button ng-if="adminMode" ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-          <button ng-if="adminMode" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='doSaveGroupAgentConfig()'
+          <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
+          <button ng-if="userHasPermissions({'group:update_config': ['group:id:' + currentGroup.name]})" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='doSaveGroupAgentConfig()'
             class='btn wz-button-empty pull-right wz-margin-left-10'>
-            <span ng-show='!xmlHasErrors && adminMode'><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+            <span ng-show="!xmlHasErrors && userHasPermissions({'group:update_config': ['group:id:' + currentGroup.name]})"><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                 aria-hidden='true'></i>
               Save file</span>
-            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
+            <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
               XML format error</span>
           </button>
         </div>
@@ -97,11 +97,11 @@
           </button>
           <div ng-if="(lookingGroup && groupsSelectedTab==='agents') || (lookingGroup && groupsSelectedTab==='files')"
             class="btns-separator"></div>
-          <button ng-if="lookingGroup && groupsSelectedTab==='agents' && lookingGroup && currentGroup && adminMode"
+          <button ng-if="lookingGroup && groupsSelectedTab==='agents' && lookingGroup && currentGroup && userHasPermissions({'group:modify_assigment': ['group:id:' + currentGroup.name]})"
             ng-click='addMultipleAgents(true)' class='btn height-40 wz-button-empty'><wz-svg icon="plus"></wz-svg>
             Add or remove agents
           </button>
-          <button ng-if="lookingGroup && groupsSelectedTab==='files' && lookingGroup && currentGroup && adminMode"
+          <button ng-if="lookingGroup && groupsSelectedTab==='files' && lookingGroup && currentGroup && userHasPermissions({'group:modify_assigment': ['group:id:' + currentGroup.name]})"
             ng-click='editGroupAgentConfig(currentGroup)' class='btn height-40 wz-button-empty'><wz-svg icon="pencil"></wz-svg>
             Edit group configuration
           </button>
@@ -150,7 +150,7 @@
           </md-card-actions>
           <md-card-contents>
             <div layout="row" ng-if="!lookingGroup" class="md-padding">
-              <wazuh-table custom-columns="true" admin-mode='adminMode' flex extra-limit="100" path="'/groups'"
+              <wazuh-table custom-columns="true" flex extra-limit="100" path="'/groups'"
                 keys="['name','count','mergedSum']" allow-click="true" row-sizes="[20,15,10]">
               </wazuh-table>
             </div>
@@ -168,7 +168,7 @@
             <div ng-if='!addingAgents'>
               <!-- Group agents table -->
               <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='agents' && currentGroup" class="md-padding">
-                <wazuh-table admin-mode='adminMode' flex path="'/groups/' + currentGroup.name + '/agents'" keys="['id','name','ip','status','os.name','os.version','version']"
+                <wazuh-table flex path="'/groups/' + currentGroup.name + '/agents'" keys="['id','name','ip','status','os.name','os.version','version']"
                   allow-click="true" row-sizes="[20,15,10]" custom-columns="true" empty-results="'No agents were added to this group.'" />
               </div>
               <!-- End Group agents table -->
@@ -184,7 +184,7 @@
               <!-- Group files table -->
               <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='files' && !fileViewer && currentGroup"
                 class="md-padding">
-                <wazuh-table admin-mode='adminMode' extra-limit="100" flex path="'/groups/' + currentGroup.name + '/files'"
+                <wazuh-table extra-limit="100" flex path="'/groups/' + currentGroup.name + '/files'" userHasPermissions="userHasPermissions"
                   keys="[{value:'filename',size:2},{value:'hash',size:6}]" allow-click="true" row-sizes="[10,8,6,4]">
                 </wazuh-table>
               </div>

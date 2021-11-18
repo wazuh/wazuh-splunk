@@ -53,7 +53,6 @@ define([
         implicitFilter: '=implicitFilter',
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
-        adminMode: '=adminMode',
         emptyResults: '=emptyResults',
         customColumns: '=customColumns',
         implicitSort: '=implicitSort',
@@ -495,7 +494,7 @@ define([
 
         $scope.isLookingGroup = () => {
           try {
-            const regexp = new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/)
+            const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/)
             $scope.isLookingDefaultGroup =
               instance.path.split('/').pop() === 'default'
             return regexp.test(instance.path)
@@ -532,13 +531,13 @@ define([
 
         $scope.confirmRemoveAgent = async agent => {
           try {
-            const group = instance.path.split('/').pop()
+            const [_, group] = instance.path.match(/^\/groups\/([a-zA-Z0-9_\-\.]*)\/agents$/) || []
             const result = await $groupHandler.removeAgentFromGroup(
               group,
               agent
             )
             $notificationService.showSuccessToast(
-              result || `Success. Agent ${agent} has been removed from ${group}`
+              result.message || `Success. Agent ${agent} has been removed from ${group}`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)

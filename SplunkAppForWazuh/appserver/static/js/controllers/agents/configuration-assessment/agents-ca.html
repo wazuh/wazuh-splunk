@@ -1,176 +1,174 @@
-<wz-rbac-prompt permissions="rbacRequirements.AGENT_READ">
-  <md-content flex layout="column" layout-align="start">
-    <!-- Breadcrumbs -->
-    <div layout="row" class="wz-height-35">
-      <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
-      <div class='wz-breadcrumb-margin'>
-        <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
-        <span> / </span>
-        <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})'
-          class="wz-text-link cursor-pointer">{{agent.name}}
-          ({{agent.id}})</span>
-        <span ng-if="agent.error">Unknown agent</span>
-        <span> / </span>
-        <span>Security Configuration Assessment</span>
-      <span ng-if="agent.status">
-          <span class="no-wrap wz-padding-left-8" aria-hidden="false">
-              <wz-svg icon="agent-{{agent.status}}"></wz-svg>
-            </span>{{formatAgentStatus(agent.status)}}
-          </span>
-        </div>
-      <div flex></div>
-      <!-- Report button -->
-      <div style="display:flex; padding-right: 10px;">
-        <wz-discover
-          breadcrumbs="{section: 'Agents', subSection: 'Policity monitoring', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}">
-        </wz-discover>
+<md-content flex layout="column" layout-align="start">
+  <!-- Breadcrumbs -->
+  <div layout="row" class="wz-height-35">
+    <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
+    <div class='wz-breadcrumb-margin'>
+      <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+      <span> / </span>
+      <span ng-if="!agent.error" ui-sref='agent-overview({id:agent.id})'
+        class="wz-text-link cursor-pointer">{{agent.name}}
+        ({{agent.id}})</span>
+      <span ng-if="agent.error">Unknown agent</span>
+      <span> / </span>
+      <span>Security Configuration Assessment</span>
+    <span ng-if="agent.status">
+        <span class="no-wrap wz-padding-left-8" aria-hidden="false">
+            <wz-svg icon="agent-{{agent.status}}"></wz-svg>
+          </span>{{formatAgentStatus(agent.status)}}
+        </span>
       </div>
-      <div style="margin-right:7px;" id='timePicker'></div>
+    <div flex></div>
+    <!-- Report button -->
+    <div style="display:flex; padding-right: 10px;">
+      <wz-discover
+        breadcrumbs="{section: 'Agents', subSection: 'Policity monitoring', agentName: agent.name, agentId: agent.id, ref: 'agents', agentRef: 'agent-overview'}">
+      </wz-discover>
     </div>
-  
-    <!-- Loading report-->
-    <div text-align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
-        aria-hidden="true"></i></div>
-  
-    <!-- Auditing and Policy Monitoring navbar -->
-    <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'sca'">
-      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-pm" name="pm">Policy monitoring
-      </md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="sca">SCA</md-nav-item>
-      <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
-        ui-sref="ag-audit" name="audit">System auditing</md-nav-item>
-      <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
-        ui-sref="ag-os" name="openscap">OpenSCAP</md-nav-item>
-      <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
-        ui-sref="ag-ciscat" name="ciscat">CIS-CAT</md-nav-item>
-    </md-nav-bar>
-  
-  
-    <div>
-      <!-- Policies list -->
-      <div ng-show="!showPolicyChecks">
-        <div ng-show="configAssess.length">
-          <div class="md-padding layout-row" ng-if="agent && agent.os">
-            <div class="layout-column md-padding wz-width-25" ng-repeat="policy in configAssess">
-              <span class="wz-headline-title">{{policy.name}}</span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <canvas id="{{policy.policy_id}}" class=" wz-margin-top-10 chart chart-doughnut"
-                ng-init="loadCharts(policy)" height="150">
-            </div>
+    <div style="margin-right:7px;" id='timePicker'></div>
+  </div>
+
+  <!-- Loading report-->
+  <div text-align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
+      aria-hidden="true"></i></div>
+
+  <!-- Auditing and Policy Monitoring navbar -->
+  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'sca'">
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-pm" name="pm">Policy monitoring
+    </md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="sca">SCA</md-nav-item>
+    <md-nav-item ng-if="extensions.audit === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ag-audit" name="audit">System auditing</md-nav-item>
+    <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ag-os" name="openscap">OpenSCAP</md-nav-item>
+    <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
+      ui-sref="ag-ciscat" name="ciscat">CIS-CAT</md-nav-item>
+  </md-nav-bar>
+
+
+  <div>
+    <!-- Policies list -->
+    <div ng-show="!showPolicyChecks">
+      <div ng-show="configAssess.length">
+        <div class="md-padding layout-row" ng-if="agent && agent.os">
+          <div class="layout-column md-padding wz-width-25" ng-repeat="policy in configAssess">
+            <span class="wz-headline-title">{{policy.name}}</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <canvas id="{{policy.policy_id}}" class=" wz-margin-top-10 chart chart-doughnut"
+              ng-init="loadCharts(policy)" height="150">
           </div>
-        </div>
-  
-        <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8"
-          ng-if="showPolicies && (!agent || !agent.os)">
-          <div flex class="euiCallOut euiCallOut--warning">
-            <div class="euiCallOutHeader">
-              <wz-svg icon="callOutHeader"></wz-svg>
-              <span class="euiCallOutHeader__title">This agent is never connected.</span>
-            </div>
-          </div>
-        </div>
-  
-        <div ng-if="configAssess.length" layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
-          <md-card flex="" class="wz-md-card _md flex">
-            <md-card-content>
-              <span class="wz-headline-title"><i class="fa fa-fw fa-shield"></i> Security Configuration Assessment</span>
-              <md-divider class="wz-margin-top-10"></md-divider>
-              <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
-                <thead>
-                  <th class="wz-nowrap">Policy</th>
-                  <th class="wz-nowrap">Description</th>
-                  <th class="wz-nowrap">Last scan</th>
-                  <th class="wz-nowrap">Pass</th>
-                  <th class="wz-nowrap">Fail</th>
-                  <th class="wz-nowrap">Not applicable</th>
-                  <th class="wz-nowrap">Score</th>
-                </thead>
-                <tbody>
-                  <tr class="wz-word-wrap" ng-repeat="policy in configAssess track by $index">
-                    <td ng-click="loadPolicyChecks(policy)" class="wz-text-link cursor-pointer">
-                      {{policy.name}}</td>
-                    <td>{{policy.description}}</td>
-                    <td>{{policy.end_scan}}</td>
-                    <td>{{policy.pass}}</td>
-                    <td>{{policy.fail}}</td>
-                    <td>{{policy.invalid}}</td>
-                    <td>{{policy.score}}%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </md-card-content>
-          </md-card>
-        </div>
-  
-        <div ng-if="!configAssess.length" layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
-          <md-card flex="60" class="wz-md-card center">
-            <md-card-content class="wazuh-column">
-              <span class="wz-headline-title">
-                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                No scans available.
-                <md-divider class="wz-margin-top-10"></md-divider>
-                <button class="btn wz-button-empty wz-margin-top-15" ng-click="refreshScans()" aria-label="Refresh">
-                  <wz-svg icon="refresh"></wz-svg>
-                  &nbsp;Refresh
-                </button>
-              </span>
-            </md-card-content>
-          </md-card>
         </div>
       </div>
-  
-      <!-- Policies checks table -->
-      <div ng-if="showPolicyChecks">
-  
-        <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8"
-          ng-if="showPolicies && (!agent || !agent.os)">
-          <div flex class="euiCallOut euiCallOut--warning">
-            <div class="euiCallOutHeader">
-              <wz-svg icon="callOutHeader"></wz-svg>
-              <span class="euiCallOutHeader__title">This agent is never connected.</span>
-            </div>
+
+      <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8"
+        ng-if="showPolicies && (!agent || !agent.os)">
+        <div flex class="euiCallOut euiCallOut--warning">
+          <div class="euiCallOutHeader">
+            <wz-svg icon="callOutHeader"></wz-svg>
+            <span class="euiCallOutHeader__title">This agent is never connected.</span>
           </div>
         </div>
-  
-        <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
-          <md-card flex="" class="wz-md-card _md flex">
-            <md-card-content>
-              <span class="sca-title">
-                <i class="fa fa-fw fa-arrow-left cursor-pointer" ng-click="backToConfAssess()">
-                  <md-tooltip class="wz-tooltip" md-direction="top">
-                    Back to Configuration assessment
-                  </md-tooltip>
-                </i>
-                {{policy.name}}&nbsp;
-                <span class="sca-title-checks">
-                  Pass: <b>{{policy.pass}}</b> &nbsp;
-                  Failed: <b>{{policy.fail}}</b> &nbsp;
-                  Not applicable: <b>{{policy.invalid}}</b> &nbsp;
-                  Score: <b>{{policy.score}}%</b> &nbsp;
-                </span>
-              </span>
+      </div>
+
+      <div ng-if="configAssess.length" layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
+        <md-card flex="" class="wz-md-card _md flex">
+          <md-card-content>
+            <span class="wz-headline-title"><i class="fa fa-fw fa-shield"></i> Security Configuration Assessment</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <table class="table table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+              <thead>
+                <th class="wz-nowrap">Policy</th>
+                <th class="wz-nowrap">Description</th>
+                <th class="wz-nowrap">Last scan</th>
+                <th class="wz-nowrap">Pass</th>
+                <th class="wz-nowrap">Fail</th>
+                <th class="wz-nowrap">Not applicable</th>
+                <th class="wz-nowrap">Score</th>
+              </thead>
+              <tbody>
+                <tr class="wz-word-wrap" ng-repeat="policy in configAssess track by $index">
+                  <td ng-click="loadPolicyChecks(policy)" class="wz-text-link cursor-pointer">
+                    {{policy.name}}</td>
+                  <td>{{policy.description}}</td>
+                  <td>{{policy.end_scan}}</td>
+                  <td>{{policy.pass}}</td>
+                  <td>{{policy.fail}}</td>
+                  <td>{{policy.invalid}}</td>
+                  <td>{{policy.score}}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </md-card-content>
+        </md-card>
+      </div>
+
+      <div ng-if="!configAssess.length" layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
+        <md-card flex="60" class="wz-md-card center">
+          <md-card-content class="wazuh-column">
+            <span class="wz-headline-title">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              No scans available.
               <md-divider class="wz-margin-top-10"></md-divider>
-              <span class="sca-hash">Policy checksum: {{policy.hash_file}}</span>
-              <div flex layout="row">
-                <div class="wz-width-100 wz-margin-bottom-25">
-                  <label class="wz-icon-loupe">
-                    <input id="search-input-rules" placeholder="Filter checks..." ng-model="customSearch" type="text" flex
-                      class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-                  </label>
-                </div>
-                <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
-                  ng-click="search(customSearch)">
-                  <span>Search</span>
-                </button>
+              <button class="btn wz-button-empty wz-margin-top-15" ng-click="refreshScans()" aria-label="Refresh">
+                <wz-svg icon="refresh"></wz-svg>
+                &nbsp;Refresh
+              </button>
+            </span>
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+
+    <!-- Policies checks table -->
+    <div ng-if="showPolicyChecks">
+
+      <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8"
+        ng-if="showPolicies && (!agent || !agent.os)">
+        <div flex class="euiCallOut euiCallOut--warning">
+          <div class="euiCallOutHeader">
+            <wz-svg icon="callOutHeader"></wz-svg>
+            <span class="euiCallOutHeader__title">This agent is never connected.</span>
+          </div>
+        </div>
+      </div>
+
+      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
+        <md-card flex="" class="wz-md-card _md flex">
+          <md-card-content>
+            <span class="sca-title">
+              <i class="fa fa-fw fa-arrow-left cursor-pointer" ng-click="backToConfAssess()">
+                <md-tooltip class="wz-tooltip" md-direction="top">
+                  Back to Configuration assessment
+                </md-tooltip>
+              </i>
+              {{policy.name}}&nbsp;
+              <span class="sca-title-checks">
+                Pass: <b>{{policy.pass}}</b> &nbsp;
+                Failed: <b>{{policy.fail}}</b> &nbsp;
+                Not applicable: <b>{{policy.invalid}}</b> &nbsp;
+                Score: <b>{{policy.score}}%</b> &nbsp;
+              </span>
+            </span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <span class="sca-hash">Policy checksum: {{policy.hash_file}}</span>
+            <div flex layout="row">
+              <div class="wz-width-100 wz-margin-bottom-25">
+                <label class="wz-icon-loupe">
+                  <input id="search-input-rules" placeholder="Filter checks..." ng-model="customSearch" type="text" flex
+                    class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
+                </label>
               </div>
-              <wazuh-table flex path="wzTablePath" row-sizes="[13,11,9]" extra-limit="100"
-                keys="['id', 'title',{value:'file',nosortable:true},'result']" implicit-sort="'id'">
-              </wazuh-table>
-  
-            </md-card-content>
-          </md-card>
-        </div>
+              <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
+                ng-click="search(customSearch)">
+                <span>Search</span>
+              </button>
+            </div>
+            <wazuh-table flex path="wzTablePath" row-sizes="[13,11,9]" extra-limit="100"
+              keys="['id', 'title',{value:'file',nosortable:true},'result']" implicit-sort="'id'">
+            </wazuh-table>
+
+          </md-card-content>
+        </md-card>
       </div>
     </div>
-  </md-content>
-</wz-rbac-prompt>
+  </div>
+</md-content>

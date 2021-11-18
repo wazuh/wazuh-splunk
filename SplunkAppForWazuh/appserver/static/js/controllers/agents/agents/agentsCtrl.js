@@ -29,6 +29,7 @@ define([
      * @param {Object} $requestService
      * @param $csvRequestService
      * @param $tableFilterService
+     * @param {Object} $security_service
      * @param {Object} agentData
      * @param clusterInfo
      * @param $mdDialog
@@ -45,16 +46,15 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
-      rbacRequirements,
+      $security_service,
       agentData,
       clusterInfo,
       $mdDialog,
       $groupHandler,
       $dateDiffService,
     ) {
-      console.log(rbacRequirements)
       this.scope = $scope;
-      this.scope.rbacRequirements = rbacRequirements;
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')
       this.currentDataService = $currentDataService

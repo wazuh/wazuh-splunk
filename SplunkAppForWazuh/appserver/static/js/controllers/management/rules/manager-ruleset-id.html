@@ -86,7 +86,7 @@
 
       <!-- Edit button -->
       <div layout="row" ng-if="!editingFile">
-        <button ng-if="ruleInfo.filename && isLocal && adminMode" ng-click="editRule(ruleInfo.filename)"
+        <button ng-if="ruleInfo.filename && isLocal && userHasPermissions({'rules:update': ['rule:file:' + ruleInfo.filename]})" ng-click="editRule(ruleInfo.filename)"
           class="btn wz-button-empty btn-ruleset ng-scope">
           <wz-svg icon="pencil"></wz-svg> Edit
           {{ ruleInfo.filename }}
@@ -296,13 +296,13 @@
         <div ng-show="editingFile">
           <div layout="row" class="md-padding wz-padding-top-0">
             <span  ng-click="closeEditingFile()" class="btn wz-button-cancel">Cancel</span>
-            <button ng-if="adminMode && fetchedXML" ng-disabled="xmlHasErrors || saveIncomplete"
+            <button ng-if="userHasPermissions({'rules:update': ['rule:file:' + ruleInfo.filename]}) && fetchedXML" ng-disabled="xmlHasErrors || saveIncomplete"
               ng-click="saveRuleConfig(ruleInfo.filename)" class="btn wz-button-empty pull-right wz-margin-left-10">
-              <span ng-show="!xmlHasErrors && adminMode">
+              <span ng-show="!xmlHasErrors">
                 <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                   aria-hidden="true"></i>
                 Save file</span>
-              <span ng-show="xmlHasErrors && adminMode" class="btn-danger"><i aria-hidden="true"
+              <span ng-show="xmlHasErrors" class="btn-danger"><i aria-hidden="true"
                   class="fa fa-fw fa-exclamation-triangle"></i>
                 XML format error</span>
             </button>

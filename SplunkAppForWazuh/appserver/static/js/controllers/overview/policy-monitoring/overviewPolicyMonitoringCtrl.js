@@ -34,6 +34,8 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -43,7 +45,6 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      rbacRequirements
     ) {
       super(
         $scope,
@@ -52,7 +53,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       $currentDataService.addFilter(

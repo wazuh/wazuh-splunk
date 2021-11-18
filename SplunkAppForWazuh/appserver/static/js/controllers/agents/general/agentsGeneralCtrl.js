@@ -34,15 +34,18 @@ define([
   class AgentsGeneral extends DashboardMain {
     /**
      * Class constructor
-     * @param {Object} $scope
-     * @param {Object} $currentDataService
      * @param {Object} $urlTokenModel
+     * @param {Object} $scope
      * @param {Object} $requestService
      * @param {Object} $notificationService
      * @param {Object} $stateParams
-     * @param {Object} $state
+     * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {Object} $state
+     * @param {Object} $dateDiffService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} $security_service
      */
 
     constructor(
@@ -57,7 +60,7 @@ define([
       $dateDiffService,
       $reportingService,
       reportingEnabled,
-      rbacRequirements
+      $security_service
     ) {
       super(
         $scope,
@@ -66,9 +69,8 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      console.log(rbacRequirements)
       this.scope.reportingEnabled = reportingEnabled
-      this.scope.rbacRequirements = rbacRequirements
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.requestService = $requestService
       this.notification = $notificationService
       this.stateParams = $stateParams
