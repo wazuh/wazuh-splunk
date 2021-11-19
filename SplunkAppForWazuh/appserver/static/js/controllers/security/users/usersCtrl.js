@@ -33,6 +33,7 @@ define([
       this.scope.editUser = () => this.editUser();
       this.scope.addNewUser = () => this.addNewUser();
       this.scope.reloadNewUser = (val) => this.reloadNewUser(val);
+      this.scope.enableSave = () => this.enableSave();
       this.scope.cancelAddUser = () => this.cancelAddUser();
       this.scope.isAddNewUser = false;
       this.scope.isViewUser = false;
@@ -90,12 +91,19 @@ define([
       });
     }
 
+    enableSave() {
+      this.scope.overwrite = false;
+    }
+
     checkPasswordStrength(password){    
       return /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[#?!@$%^&*\-_]).{8,}$/.test(password);
     }
 
     async saveUser() {
       try{
+        if(this.scope.userName == "" || /.* .*/.test(this.scope.userName)){
+          throw new Error("Username can't contain empty spaces")
+        }
         if(this.scope.userName === "" || this.scope.userName === undefined){
           throw new Error("Username can't be empty")
         }
@@ -132,6 +140,8 @@ define([
           newUserData.data.data.affected_items[0].id,
           this.scope.userRoles
         )        
+
+        this.notification.showSuccessToast(`User created successfully.`);
       }catch(error){
         this.notification.showErrorToast("Error adding a new user: "+error);
       } finally{
@@ -186,6 +196,7 @@ define([
         }else{            
           throw Error("Password must be equals");  
         }
+        this.notification.showSuccessToast(`User modified successfully.`);
         this.cancelAddUser();
         this.scope.$applyAsync();
       }catch(error){
@@ -220,8 +231,12 @@ define([
 
     addNewUser() {
       try {
+        this.notification.showWarningToast(`Password must contain at least one upper case, 
+        one number and one special character. Also, the length must be greater than 8`);
+
         this.scope.isAddNewUser = true;
         this.scope.isViewUser = false;
+        this.scope.overwrite = false;
         this.scope.isEditingUser = false;
         this.dropdown.settings.set("disabled", false);
       } catch (error) {

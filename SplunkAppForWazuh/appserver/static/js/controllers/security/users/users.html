@@ -37,6 +37,7 @@
                      aria-invalid="false"
                      ng-model="userName"
                      ng-disabled="isEditingUser || (!isEditingUser && !isAddNewUser)"
+                     ng-change="enableSave()"
                      />
                </div>
             </div>
@@ -95,6 +96,7 @@
                            </button>
                            <button
                               ng-show="!isViewUser && !isEditingUser" 
+                              ng-disabled="overwrite || !userName || !userPassword || !userPasswordConfirm"
                               class="btn wz-button-empty pull-right wz-margin-left-10"
                               ng-click="saveUser()"
                               ng-if="isAdmin"
@@ -106,6 +108,7 @@
                            Save
                            </button>
                            <button
+                              ng-disabled="overwrite || !userPassword || !userPasswordConfirm"
                               ng-show="!isViewUser && isEditingUser" 
                               class="btn wz-button-empty pull-right wz-margin-left-10"
                               ng-click="editUser()"
