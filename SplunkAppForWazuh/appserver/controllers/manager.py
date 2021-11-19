@@ -433,9 +433,9 @@ class manager(controllers.BaseController):
         """
         Check API connection BEFORE registration.
 
-        FIXME API registration logic is wrongly done on the frontend. The 
+        FIXME API registration logic is wrongly done on the frontend. The
         registration process takes 2 steps guided by the frontend:
-            - 1. This endpoint is accessed to check API connectivity. 
+            - 1. This endpoint is accessed to check API connectivity.
                  Full API info is sent.
             - 2. If the connection was successful (checked on the frontend),
                  then the frontend sends another request to register the API
@@ -513,7 +513,7 @@ class manager(controllers.BaseController):
             current_api_json = jsonbak.loads(self.db.get(api_id))["data"]
 
             output = self.get_cluster_info(current_api_json)
-            
+
             # Hide API password
             del current_api_json["passapi"]
             output["api"] = {"data": current_api_json}
@@ -541,7 +541,7 @@ class manager(controllers.BaseController):
             current_api_json = jsonbak.loads(self.db.get(api_id))["data"]
         except Exception as e:
             self.logger.error(str(e))
-        
+
         opt_username = str(current_api_json["userapi"])
         opt_password = str(current_api_json["passapi"])
         opt_base_url = str(current_api_json["url"])
@@ -602,7 +602,6 @@ class manager(controllers.BaseController):
     # ------------------------------------------------------------ #
     #   Utility methods
     # ------------------------------------------------------------ #
-
 
     def get_cluster_info(self, current_api):
         """
@@ -671,7 +670,7 @@ class manager(controllers.BaseController):
             The request's parameters
         """
         self.logger.debug("manager::check_wazuh_version()")
-        
+
         opt_username = str(current_api["userapi"])
         opt_password = str(current_api["passapi"])
         opt_base_url = str(current_api["url"])
@@ -713,7 +712,7 @@ class manager(controllers.BaseController):
 
     def check_daemons(self, current_api):
         """
-        Request to check the status of this daemons: 
+        Request to check the status of this daemons:
         execd, modulesd, wazuhdb and clusterd
 
         Parameters
@@ -722,7 +721,7 @@ class manager(controllers.BaseController):
             API object
         """
         self.logger.debug("manager: Checking Wazuh daemons.")
-        
+
         opt_username = str(current_api["userapi"])
         opt_password = str(current_api["passapi"])
         opt_base_url = str(current_api["url"])
@@ -747,7 +746,7 @@ class manager(controllers.BaseController):
             except Exception as e:
                 cluster_enabled = False
             # Var to check the cluster demon or not
-            cc = check_cluster and cluster_enabled  
+            cc = check_cluster and cluster_enabled
             opt_endpoint = "/manager/status"
             daemons_status = self.session.get(
                 url + opt_endpoint,
