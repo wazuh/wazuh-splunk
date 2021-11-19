@@ -29,7 +29,7 @@ from wazuhtoken import wazuhtoken
 
 from . import api
 
-splunk_home = os.path.normpath(os.environ["SPLUNK_HOME"])
+splunk_home = os.path.normpath(os.environ['SPLUNK_HOME'])
 
 
 def getLocalConfPath(file):
@@ -309,7 +309,7 @@ class manager(controllers.BaseController):
             # Remove the password from the list of apis
             for api in parsed_apis:
                 if "passapi" in api:
-                    del api["passapi"]
+                    del api['passapi']
             result = jsonbak.dumps(parsed_apis)
         except Exception as e:
             self.logger.error(jsonbak.dumps({"error": str(e)}))
@@ -382,11 +382,11 @@ class manager(controllers.BaseController):
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
-                opt_id = entry["_key"]
+                opt_id = entry['_key']
                 data_temp = self.db.get(opt_id)
                 current_api = jsonbak.loads(data_temp)
-                current_api = current_api["data"]
-                entry["passapi"] = current_api["passapi"]
+                current_api = current_api['data']
+                entry['passapi'] = current_api['passapi']
             keys_list = ['_key', 'url', 'portapi', 'userapi', 'passapi',
                          'filterName', 'filterType', 'managerName', 'runAs']
             if set(entry.keys()) == set(keys_list):
@@ -456,11 +456,11 @@ class manager(controllers.BaseController):
             # runAs is not given as a parameter but accesed by the auxiliary
             # methods, thus why we set it to False.
             api = {
-                "userapi": str(kwargs["user"]),
-                "passapi": str(kwargs["pass"]),
-                "url": str(kwargs["ip"]),
-                "portapi": str(kwargs["port"]),
-                "cluster": str(kwargs["cluster"]) == "true",
+                "userapi": str(kwargs['user']),
+                "passapi": str(kwargs['pass']),
+                "url": str(kwargs['ip']),
+                "portapi": str(kwargs['port']),
+                "cluster": str(kwargs['cluster']) == "true",
                 "runAs": False
             }
         except KeyError as e:
@@ -509,14 +509,14 @@ class manager(controllers.BaseController):
             # Get current API data
             if not 'apiId' in kwargs:
                 raise Exception("Missing API Key")
-            api_id = kwargs["apiId"]
-            current_api_json = jsonbak.loads(self.db.get(api_id))["data"]
+            api_id = kwargs['apiId']
+            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
 
             output = self.get_cluster_info(current_api_json)
 
             # Hide API password
-            del current_api_json["passapi"]
-            output["api"] = {"data": current_api_json}
+            del current_api_json['passapi']
+            output['api'] = {"data": current_api_json}
             result = jsonbak.dumps(output)
         except KeyError as e:
             self.logger.error(f"KeyError {e}")
@@ -537,16 +537,16 @@ class manager(controllers.BaseController):
             # Get current API data
             if not 'apiId' in kwargs:
                 raise Exception("Missing API Key")
-            api_id = kwargs["apiId"]
-            current_api_json = jsonbak.loads(self.db.get(api_id))["data"]
+            api_id = kwargs['apiId']
+            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
         except Exception as e:
             self.logger.error(str(e))
 
-        opt_username = str(current_api_json["userapi"])
-        opt_password = str(current_api_json["passapi"])
-        opt_base_url = str(current_api_json["url"])
-        opt_base_port = str(current_api_json["portapi"])
-        api_run_as = str(current_api_json["runAs"])
+        opt_username = str(current_api_json['userapi'])
+        opt_password = str(current_api_json['passapi'])
+        opt_base_url = str(current_api_json['url'])
+        opt_base_port = str(current_api_json['portapi'])
+        api_run_as = str(current_api_json['runAs'])
 
         # API requests auth
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
@@ -555,11 +555,11 @@ class manager(controllers.BaseController):
 
         try:
             # Get file name and file content
-            file_info = kwargs["file"].__dict__
+            file_info = kwargs['file'].__dict__
             file_name = file_info['filename']
             file_content = kwargs['file'].file
             # Get path
-            dest_resource = kwargs["resource"]
+            dest_resource = kwargs['resource']
 
             response = self.session.put(
                 url + '/' + dest_resource + '/files/' + file_name,
@@ -580,7 +580,7 @@ class manager(controllers.BaseController):
                 return jsonbak.dumps(
                     {
                         "status": "400",
-                        "text": "Error adding file: %s. Cause: %s" % (file_name, result["detail"])
+                        "text": "Error adding file: %s. Cause: %s" % (file_name, result['detail'])
                     }
                 )
             return jsonbak.dumps(
@@ -609,10 +609,10 @@ class manager(controllers.BaseController):
         """
         self.logger.debug("manager::get_cluster_info()")
 
-        opt_username = str(current_api["userapi"])
-        opt_password = str(current_api["passapi"])
-        opt_base_url = str(current_api["url"])
-        opt_base_port = str(current_api["portapi"])
+        opt_username = str(current_api['userapi'])
+        opt_password = str(current_api['passapi'])
+        opt_base_url = str(current_api['url'])
+        opt_base_port = str(current_api['portapi'])
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
@@ -650,8 +650,8 @@ class manager(controllers.BaseController):
             self.logger.error("manager: Cannot connect to API : %s" % (e))
             return Exception("Unreachable API, please check the URL and port.")
         # Checks if daemons are up and running
-        if "error" in request_manager and request_manager["error"] != 0:
-            raise Exception(request_manager["message"])
+        if "error" in request_manager and request_manager['error'] != 0:
+            raise Exception(request_manager['message'])
         output = {}
         output['managerName'] = {
             'name': request_manager['data']['affected_items'][0]['name']
@@ -671,11 +671,11 @@ class manager(controllers.BaseController):
         """
         self.logger.debug("manager::check_wazuh_version()")
 
-        opt_username = str(current_api["userapi"])
-        opt_password = str(current_api["passapi"])
-        opt_base_url = str(current_api["url"])
-        opt_base_port = str(current_api["portapi"])
-        api_run_as = str(current_api["runAs"])
+        opt_username = str(current_api['userapi'])
+        opt_password = str(current_api['passapi'])
+        opt_base_url = str(current_api['url'])
+        opt_base_port = str(current_api['portapi'])
+        api_run_as = str(current_api['runAs'])
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
@@ -722,12 +722,12 @@ class manager(controllers.BaseController):
         """
         self.logger.debug("manager: Checking Wazuh daemons.")
 
-        opt_username = str(current_api["userapi"])
-        opt_password = str(current_api["passapi"])
-        opt_base_url = str(current_api["url"])
-        opt_base_port = str(current_api["portapi"])
-        api_run_as = str(current_api["runAs"])
-        check_cluster = str(current_api["cluster"]) == "true"
+        opt_username = str(current_api['userapi'])
+        opt_password = str(current_api['passapi'])
+        opt_base_url = str(current_api['url'])
+        opt_base_port = str(current_api['portapi'])
+        api_run_as = str(current_api['runAs'])
+        check_cluster = str(current_api['cluster']) == "true"
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)

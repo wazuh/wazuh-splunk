@@ -57,10 +57,10 @@ class api(controllers.BaseController):
             api = self.db.get(the_id)
             api = jsonbak.loads(api)
             if api:
-                opt_username = api['data']["userapi"]
-                opt_password = api['data']["passapi"]
-                opt_base_url = api['data']["url"]
-                opt_base_port = api['data']["portapi"]
+                opt_username = api['data']['userapi']
+                opt_password = api['data']['passapi']
+                opt_base_url = api['data']['url']
+                opt_base_port = api['data']['portapi']
                 url = str(opt_base_url) + ":" + str(opt_base_port)
                 auth = requestsbak.auth.HTTPBasicAuth(
                     opt_username, opt_password)
@@ -87,39 +87,39 @@ class api(controllers.BaseController):
         try:
             self.logger.debug("api: Offuscating keys.")
             hide = "********"
-            if "data" in response and type(response["data"]) == dict:
+            if "data" in response and type(response['data']) == dict:
                 # Remove agent key
-                if "internal_key" in response["data"]:
-                    response["data"]["internal_key"] = hide
+                if "internal_key" in response['data']:
+                    response['data']['internal_key'] = hide
 
                 # Remove cluster key (/come/cluster)
-                if "node_type" in response["data"]:
-                    if "key" in response["data"]:
-                        response["data"]["key"] = hide
+                if "node_type" in response['data']:
+                    if "key" in response['data']:
+                        response['data']['key'] = hide
 
                 # Remove cluster key (/manager/configuration)
-                if "cluster" in response["data"]:
-                    if "node_type" in response["data"]["cluster"]:
-                        if "key" in response["data"]["cluster"]:
-                            response["data"]["cluster"]["key"] = hide
+                if "cluster" in response['data']:
+                    if "node_type" in response['data']['cluster']:
+                        if "key" in response['data']['cluster']:
+                            response['data']['cluster']['key'] = hide
 
                 # Remove AWS keys
-                if "wmodules" in response["data"]:
-                    for wmod in response["data"]["wmodules"]:
+                if "wmodules" in response['data']:
+                    for wmod in response['data']['wmodules']:
                         if "aws-s3" in wmod:
-                            if "buckets" in wmod["aws-s3"]:
-                                for bucket in wmod["aws-s3"]["buckets"]:
-                                    bucket["access_key"] = hide
-                                    bucket["secret_key"] = hide
-                            if "services" in wmod["aws-s3"]:
-                                for service in wmod["aws-s3"]["services"]:
-                                    service["access_key"] = hide
-                                    service["secret_key"] = hide
+                            if "buckets" in wmod['aws-s3']:
+                                for bucket in wmod['aws-s3']['buckets']:
+                                    bucket['access_key'] = hide
+                                    bucket['secret_key'] = hide
+                            if "services" in wmod['aws-s3']:
+                                for service in wmod['aws-s3']['services']:
+                                    service['access_key'] = hide
+                                    service['secret_key'] = hide
 
                 # Remove integrations keys
-                if "integration" in response["data"]:
-                    for integ in response["data"]["integration"]:
-                        integ["api_key"] = hide
+                if "integration" in response['data']:
+                    for integ in response['data']['integration']:
+                        integ['api_key'] = hide
             return response
         except Exception as e:
             self.logger.error(
@@ -314,7 +314,7 @@ class api(controllers.BaseController):
                 del kwargs['method']
             the_id = kwargs['id']
             url, auth, verify, cluster_enabled = self.get_credentials(the_id)
-            opt_endpoint = kwargs["endpoint"]
+            opt_endpoint = kwargs['endpoint']
             del kwargs['id']
             del kwargs['endpoint']
             daemons_ready = self.check_daemons(
@@ -452,7 +452,7 @@ class api(controllers.BaseController):
                 del kwargs['method']
             the_id = kwargs['apiId']
             url, auth, verify, cluster_enabled = self.get_credentials(the_id)
-            opt_endpoint = kwargs["endpoint"]
+            opt_endpoint = kwargs['endpoint']
             del kwargs['apiId']
             del kwargs['endpoint']
             daemons_ready = self.check_daemons(
@@ -516,10 +516,10 @@ class api(controllers.BaseController):
             the_id = kwargs['id']
             api = self.db.get(the_id)
             api = jsonbak.loads(api)
-            opt_username = api["data"]["userapi"]
-            opt_password = api["data"]["passapi"]
-            opt_base_url = api["data"]["url"]
-            opt_base_port = api["data"]["portapi"]
+            opt_username = api['data']['userapi']
+            opt_password = api['data']['passapi']
+            opt_base_url = api['data']['url']
+            opt_base_port = api['data']['portapi']
             opt_endpoint = kwargs['path']
             url = str(opt_base_url) + ":" + str(opt_base_port)
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
@@ -543,7 +543,7 @@ class api(controllers.BaseController):
                 if is_list_export_keys_values:
                     items_list = [
                         {"Key": k, "Value": v}
-                        for k, v in request["data"]["affected_items"][0].items()
+                        for k, v in request['data']['affected_items'][0].items()
                     ]
 
                     dict_writer = csv.DictWriter(
@@ -561,12 +561,12 @@ class api(controllers.BaseController):
                     self.logger.debug("api: CSV file generated.")
                     return csv_result
                 else:
-                    final_obj = request["data"]["affected_items"]
+                    final_obj = request['data']['affected_items']
                 if isinstance(final_obj, list):
                     keys = final_obj[0].keys()
                     self.format_output(keys)
                     final_obj_dict = self.format_output(final_obj)
-                    total_items = request["data"]["total_affected_items"]
+                    total_items = request['data']['total_affected_items']
                     # initializes CSV buffer
                     if total_items > 0:
                         dict_writer = csv.DictWriter(
