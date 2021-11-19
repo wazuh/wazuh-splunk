@@ -35,7 +35,7 @@ class wazuhtoken():
             self.logger.error(
                 "wazuh-token: error in the constructor: %s" % (e))
 
-    def get_auth_token(self, api_url, api_user):
+    def get_auth_token(self, api_url, api_user, api_object: dict = None):
         """
         Fetches a new authorization token for the given manager API and API user.
         The token can be obtained from the session cache or he Wazuh Manager API.
@@ -46,6 +46,13 @@ class wazuhtoken():
         :return: String with the authorization token from the Wazuh API
         """
         token_key = f'token-{api_url}-{api_user}'
+        
+        self.logger.debug("wazuhtoken::get_auth_token()")
+        if api_object is None:
+            self.logger.debug("Missing API object")
+        else:
+            self.logger.debug(f"wazuhtoken: {api_object}")
+
         try:
             # Return cached token, if it exists
             auth_token = self.cache.get(token_key)
