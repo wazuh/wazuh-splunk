@@ -35,6 +35,7 @@
       <thead class="wz-text-bold">
         <th ng-repeat="key in keys | filter: showKey" class="wz-text-left wz-nowrap"
           ng-class="{'cursor-pointer' : !key.nosortable}" ng-click="!key.nosortable && sort(key)">
+          {{console.log(keys)}}
           {{ path === '/groups' && (key.value || key) === 'count' ? 'Agents' : keyEquivalence[key.value ||
           key] || key.value || key }}
           <i ng-if="!key.nosortable" class="fa wz-theader-sort-icon"

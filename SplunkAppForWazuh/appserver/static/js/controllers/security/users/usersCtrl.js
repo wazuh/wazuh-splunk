@@ -15,6 +15,7 @@ define([
       this.scope.isEditingUser = false;
       this.scope.isAddNewUser = false;
       this.scope.isViewUser = false;
+      this.scope.overwrite = false;
 
       this.scope.userName = "";
       this.scope.userId = "";
@@ -29,8 +30,8 @@ define([
 
     $onInit() {
       this.scope.saveUser = () => this.saveUser();
-      this.scope.checkPasswordStrength = (val) => this.checkPasswordStrength(val);
       this.scope.editUser = () => this.editUser();
+      this.scope.checkPasswordStrength = (val) => this.checkPasswordStrength(val);
       this.scope.addNewUser = () => this.addNewUser();
       this.scope.reloadNewUser = (val) => this.reloadNewUser(val);
       this.scope.enableSave = () => this.enableSave();
@@ -38,6 +39,7 @@ define([
       this.scope.isAddNewUser = false;
       this.scope.isViewUser = false;
       this.scope.isEditingUser = false;
+      this.scope.overwrite = false;
 
       this.dropdown = new MultiDropdownView({
         id: "roles-dropdown",
@@ -52,7 +54,7 @@ define([
           "| eventcount summarize=false index=* index=_* | dedup index | fields index"
       });
 
-      this.dropdown.on("change", newValue => {          
+      this.dropdown.on("change", newValue => {    
         if (newValue && this.dropdown) {
           this.scope.userRoles = newValue;
           this.scope.$applyAsync();
@@ -76,7 +78,7 @@ define([
         this.scope.isAddNewUser = true;
         this.scope.isViewUser = false;
         this.scope.isEditingUser = true;
-
+        
         this.scope.userName = parameters.user.username;
         this.scope.userId = parameters.user.id;
         this.scope.userAllowRunAs = parameters.user.allow_run_as;
@@ -85,6 +87,7 @@ define([
 
         // this.dropdown.isDisabled = true
         this.dropdown.settings.set("disabled", false)
+        // this.dropdown.settings.set("onClick", this.enableSave())
 
         this.dropdown.val(this.scope.userRoles);
         ev.stopPropagation();
@@ -92,7 +95,11 @@ define([
     }
 
     enableSave() {
-      this.scope.overwrite = false;
+      if((this.scope.editUserRoles != this.dropdown.val()) ||
+        (this.scope.userPassword=="" && this.scope.userPasswordConfirm == "")
+          || (this.scope.userPassword!="" && this.scope.userPasswordConfirm != "")){
+        this.scope.overwrite = true;
+      }
     }
 
     checkPasswordStrength(password){    
@@ -150,7 +157,7 @@ define([
       }
     }
 
-    async editUser() {
+    async editUser() {      
       try{
         let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
         if(this.scope.userPassword === this.scope.userPasswordConfirm){      
@@ -213,6 +220,7 @@ define([
     cancelAddUser() {
       try {
         this.scope.isAddNewUser = false;
+        this.scope.overwrite = false;
         this.scope.isViewUser = false;
         this.scope.isEditingUser = false;
         this.scope.userId = "";

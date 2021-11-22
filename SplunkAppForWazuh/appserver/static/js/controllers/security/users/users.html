@@ -47,6 +47,7 @@
                   &nbsp;
                   <input
                      ng-disabled="isViewUser"
+                     ng-change="enableSave()"
                      type="checkbox"
                      flex        
                      aria-invalid="false"
@@ -64,6 +65,7 @@
                      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
                      aria-invalid="false"
                      ng-model="userPassword"
+                     ng-change="enableSave()"
                   />
                </div>
                <div>
@@ -72,6 +74,7 @@
                      placeholder="Confirm new password..."
                      type="password"
                      flex
+                     ng-change="enableSave()"
                      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-95"
                      aria-invalid="false"
                      ng-model="userPasswordConfirm"
@@ -96,7 +99,7 @@
                            </button>
                            <button
                               ng-show="!isViewUser && !isEditingUser" 
-                              ng-disabled="overwrite || !userName || !userPassword || !userPasswordConfirm"
+                              ng-disabled="!userName || !userPassword || !userPasswordConfirm"
                               class="btn wz-button-empty pull-right wz-margin-left-10"
                               ng-click="saveUser()"
                               ng-if="isAdmin"
@@ -108,7 +111,7 @@
                            Save
                            </button>
                            <button
-                              ng-disabled="overwrite || !userPassword || !userPasswordConfirm"
+                              ng-disabled="!overwrite"
                               ng-show="!isViewUser && isEditingUser" 
                               class="btn wz-button-empty pull-right wz-margin-left-10"
                               ng-click="editUser()"

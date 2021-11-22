@@ -99,7 +99,6 @@ define(["../../module"], function(module) {
           },
           "PUT"
         );
-        console.log(data);
         return data;
       } catch (error) {
         this.notification.showErrorToast("Error adding roles: " + error);
