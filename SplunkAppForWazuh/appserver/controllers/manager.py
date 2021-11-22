@@ -546,12 +546,11 @@ class manager(controllers.BaseController):
         opt_password = str(current_api_json['passapi'])
         opt_base_url = str(current_api_json['url'])
         opt_base_port = str(current_api_json['portapi'])
-        api_run_as = str(current_api_json['runAs'])
 
         # API requests auth
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
         url = opt_base_url + ":" + opt_base_port
-        wazuh_token = self.wztoken.get_auth_token(url, auth, api_run_as)
+        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api_json)
 
         try:
             # Get file name and file content
@@ -603,7 +602,7 @@ class manager(controllers.BaseController):
     #   Utility methods
     # ------------------------------------------------------------ #
 
-    def get_cluster_info(self, current_api):
+    def get_cluster_info(self, current_api: dict):
         """
         Get info about the cluster.
         """
@@ -660,7 +659,7 @@ class manager(controllers.BaseController):
         output['clusterName'] = request_cluster_name
         return output
 
-    def check_wazuh_version(self, current_api):
+    def check_wazuh_version(self, current_api: dict):
         """
         Check Wazuh version
 
@@ -675,11 +674,10 @@ class manager(controllers.BaseController):
         opt_password = str(current_api['passapi'])
         opt_base_url = str(current_api['url'])
         opt_base_port = str(current_api['portapi'])
-        api_run_as = str(current_api['runAs'])
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        wazuh_token = self.wztoken.get_auth_token(url, auth, api_run_as)
+        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api)
 
         try:
             wazuh_version = self.session.get(
@@ -710,7 +708,7 @@ class manager(controllers.BaseController):
             self.logger.error("Error when checking Wazuh version: %s" % (ex))
             raise ex
 
-    def check_daemons(self, current_api):
+    def check_daemons(self, current_api: dict) -> bool:
         """
         Request to check the status of this daemons:
         execd, modulesd, wazuhdb and clusterd
@@ -726,12 +724,11 @@ class manager(controllers.BaseController):
         opt_password = str(current_api['passapi'])
         opt_base_url = str(current_api['url'])
         opt_base_port = str(current_api['portapi'])
-        api_run_as = str(current_api['runAs'])
         check_cluster = str(current_api['cluster']) == "true"
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        wazuh_token = self.wztoken.get_auth_token(url, auth, api_run_as)
+        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api)
 
         try:
             request_cluster = self.session.get(
@@ -765,6 +762,14 @@ class manager(controllers.BaseController):
                 values = list(daemons.values())
                 # Checks all the status are equals, and running
                 wazuh_ready = len(set(values)) == 1 and values[0] == "running"
+
+                # Log result
+                if wazuh_ready:
+                    checked_debug_msg = "Wazuh daemons ready"
+                else:
+                    checked_debug_msg = "Wazuh daemons not ready yet"
+                self.logger.debug("api: %s" % checked_debug_msg)
+                
                 return wazuh_ready
         except Exception as e:
             self.logger.error("manager: Error checking daemons: %s" % (e))
