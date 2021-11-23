@@ -55,13 +55,13 @@ define([
       });
 
       this.dropdown.on("change", newValue => {   
-        console.log(this.scope.editUserRoles, newValue); 
+        log(this.scope.editUserRoles, newValue); 
         if(this.scope.editUserRoles == newValue){
-          console.log("disabled...");
+          log("disabled...");
           this.scope.overwrite = false;
         }
         if(this.scope.editUserRoles != newValue && (this.scope.editUserRoles!=[] && newValue!=[])){
-          console.log("diff. Enabling edit option...");
+          log("diff. Enabling edit option...");
           this.scope.overwrite = true;
         }
         if (newValue && this.dropdown) {
@@ -142,12 +142,13 @@ define([
           this.scope.userPassword
         )
 
-        console.log(newUserData.data);
-        console.log("failed_items" in newUserData.data.data);
-        console.log("error" in newUserData.data);
+        log(newUserData);
+        log(newUserData.data);
+        // log("error" in newUserData.data);
+        // log("failed_items" in newUserData.data.data);
 
-        if (newUserData.data.data.failed_items.length > 0 || newUserData.data.error != 0) {
-          throw new Error("Cannot save the new user");
+        if (newUserData.data.error != 0) {
+          throw new Error("Error creating a new user: Invalid username");
         }
 
         //allow run as if needed
@@ -162,11 +163,11 @@ define([
         )        
 
         this.notification.showSuccessToast(`User created successfully.`);
+        this.cancelAddUser();
+        this.scope.$applyAsync();
       }catch(error){
         this.notification.showErrorToast("Error adding a new user: "+error);
       } finally{
-        this.cancelAddUser();
-        this.scope.$applyAsync();
       }
     }
 
