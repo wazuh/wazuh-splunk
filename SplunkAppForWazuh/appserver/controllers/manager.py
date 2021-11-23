@@ -13,6 +13,7 @@ Find more information about this on the LICENSE file.
 """
 
 
+import json
 import os
 
 import jsonbak
@@ -374,10 +375,11 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        self.logger.debug("manager::update_api() called")
         try:
-            self.logger.debug("manager: Updating API information.")
             entry = kwargs
-            self.logger.debug(entry)
+            self.logger.debug(f'''manager: Updating API information
+                {json.dumps(entry, indent=4)}''')
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
