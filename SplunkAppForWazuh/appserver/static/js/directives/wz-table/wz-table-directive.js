@@ -147,7 +147,6 @@ define([
               }
             }
           }
-          //updateStoredKeys($scope.keys)
         }
 
         $scope.exists = key => {
@@ -397,7 +396,6 @@ define([
           try {
             $scope.error = false
             await fetch()
-            //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')

@@ -55,13 +55,10 @@ define([
       });
 
       this.dropdown.on("change", newValue => {   
-        log(this.scope.editUserRoles, newValue); 
         if(this.scope.editUserRoles == newValue){
-          log("disabled...");
           this.scope.overwrite = false;
         }
         if(this.scope.editUserRoles != newValue && (this.scope.editUserRoles!=[] && newValue!=[])){
-          log("diff. Enabling edit option...");
           this.scope.overwrite = true;
         }
         if (newValue && this.dropdown) {
@@ -94,9 +91,7 @@ define([
         this.scope.userRoles = parameters.user.roles;
         this.scope.editUserRoles = parameters.user.roles;
 
-        // this.dropdown.isDisabled = true
         this.dropdown.settings.set("disabled", false)
-        // this.dropdown.settings.set("onClick", this.enableSave())
 
         this.dropdown.val(this.scope.userRoles);
         ev.stopPropagation();
@@ -142,13 +137,12 @@ define([
           this.scope.userPassword
         )
 
-        log(newUserData);
-        log(newUserData.data);
-        // log("error" in newUserData.data);
-        // log("failed_items" in newUserData.data.data);
-
         if (newUserData.data.error != 0) {
-          throw new Error("Error creating a new user: Invalid username");
+          if ("message" in newUserData.data){
+            throw new Error(newUserData.data.message);
+          }else{
+            throw new Error("Invalid username");
+          }
         }
 
         //allow run as if needed
