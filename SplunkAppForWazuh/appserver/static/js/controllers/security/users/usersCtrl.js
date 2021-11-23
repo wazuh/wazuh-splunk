@@ -54,7 +54,16 @@ define([
           "| eventcount summarize=false index=* index=_* | dedup index | fields index"
       });
 
-      this.dropdown.on("change", newValue => {    
+      this.dropdown.on("change", newValue => {   
+        console.log(this.scope.editUserRoles, newValue); 
+        if(this.scope.editUserRoles == newValue){
+          console.log("disabled...");
+          this.scope.overwrite = false;
+        }
+        if(this.scope.editUserRoles != newValue && (this.scope.editUserRoles!=[] && newValue!=[])){
+          console.log("diff. Enabling edit option...");
+          this.scope.overwrite = true;
+        }
         if (newValue && this.dropdown) {
           this.scope.userRoles = newValue;
           this.scope.$applyAsync();
@@ -133,6 +142,10 @@ define([
           this.scope.userPassword
         )
 
+        console.log(newUserData.data);
+        console.log("failed_items" in newUserData.data.data);
+        console.log("error" in newUserData.data);
+
         if (newUserData.data.data.failed_items.length > 0 || newUserData.data.error != 0) {
           throw new Error("Cannot save the new user");
         }
@@ -158,7 +171,7 @@ define([
     }
 
     async editUser() {      
-      try{
+      try{        
         let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
         if(this.scope.userPassword === this.scope.userPasswordConfirm){      
           if(this.scope.userPassword != ""){
@@ -203,10 +216,13 @@ define([
         }else{            
           throw Error("Password must be equals");  
         }
-        this.notification.showSuccessToast(`User modified successfully.`);
+        this.scope.overwrite = false;
         this.cancelAddUser();
+        this.notification.showSuccessToast(`User modified successfully.`);
         this.scope.$applyAsync();
       }catch(error){
+        this.scope.overwrite = false;
+        this.cancelAddUser();
         this.notification.showErrorToast("Error editing user: "+error);
       }
     }
