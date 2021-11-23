@@ -13,9 +13,10 @@ Find more information about this on the LICENSE file.
 """
 
 import logging
+
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.clilib import cli_common as cli
-# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "."))
+
 import tailer
 
 _APPNAME = 'SplunkAppForWazuh'

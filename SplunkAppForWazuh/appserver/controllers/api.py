@@ -443,7 +443,7 @@ class api(controllers.BaseController):
         kwargs : dict
             Request parameters
         """
-        self.logger.debug("api:is_wazuh_ready()")
+        self.logger.debug("api:is_wazuh_ready() called")
         try:
             # Get current API data
             if not 'apiId' in kwargs:
@@ -929,7 +929,7 @@ class api(controllers.BaseController):
     """
     @expose_page(must_login=False, methods=['GET'])
     def getSyscollector(self, **kwargs):
-        self.logger.debug("api::getSysCollector()")
+        self.logger.debug("api::getSysCollector() called")
         try:
             # Get current API data
             if not 'apiId' in kwargs:

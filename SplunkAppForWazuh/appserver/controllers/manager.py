@@ -304,7 +304,6 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Getting API list.")
             apis = self.db.all()
-            self.logger.debug(apis)
             parsed_apis = jsonbak.loads(apis)
             # Remove the password from the list of apis
             for api in parsed_apis:
@@ -450,7 +449,7 @@ class manager(controllers.BaseController):
             pass: str: API user password.
             cluster: str: true or false
         """
-        self.logger.debug("manager::check_connection()")
+        self.logger.debug("manager::check_connection() called")
 
         try:
             # runAs is not given as a parameter but accesed by the auxiliary
@@ -504,7 +503,7 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
-        self.logger.debug("manager::check_connection_by_id()")
+        self.logger.debug("manager::check_connection_by_id() called")
         try:
             # Get current API data
             if not 'apiId' in kwargs:
@@ -606,7 +605,7 @@ class manager(controllers.BaseController):
         """
         Get info about the cluster.
         """
-        self.logger.debug("manager::get_cluster_info()")
+        self.logger.debug("manager::get_cluster_info() called")
 
         opt_username = str(current_api['userapi'])
         opt_password = str(current_api['passapi'])
@@ -668,7 +667,7 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
-        self.logger.debug("manager::check_wazuh_version()")
+        self.logger.debug("manager::check_wazuh_version() called")
 
         opt_username = str(current_api['userapi'])
         opt_password = str(current_api['passapi'])
