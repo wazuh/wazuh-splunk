@@ -48,7 +48,7 @@ class log():
                     backupCount=50
                 )
                 self.formatter = logging.Formatter(
-                    "%(levelname)s: %(asctime)s: '%(message)s'", "%Y/%m/%d %H:%M:%S")                    
+                    "%(levelname)s: %(asctime)s: '%(message)s'", "%Y/%m/%d %H:%M:%S")
                 self.file_handler.setFormatter(self.formatter)
                 self.logger.addHandler(self.file_handler)
                 loggers['splunk.appserver.%s.controllers.logs' %
@@ -74,7 +74,8 @@ class log():
     def get_last_log_lines(self, lines):
         """Return the last logs messages."""
         try:
-            current_tail = tailer.tail(open(make_splunkhome_path(['var', 'log', 'splunk', 'SplunkAppForWazuh.log'])), lines)
+            current_tail = tailer.tail(open(make_splunkhome_path(
+                ['var', 'log', 'splunk', 'SplunkAppForWazuh.log'])), lines)
             result = list(reversed(current_tail))
         except Exception as e:
             self.error('[log.py][get_last_log_lines] %s' % (e))
@@ -86,5 +87,6 @@ class log():
             config = cli.getConfStanza("config", "configuration")
             return config
         except Exception as e:
-            self.logger.error("log: Error getting the configuration on memory: %s" % (e))
+            self.logger.error(
+                "log: Error getting the configuration on memory: %s" % (e))
             raise e
