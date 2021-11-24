@@ -770,7 +770,7 @@ class manager(controllers.BaseController):
                 else:
                     checked_debug_msg = "Wazuh daemons not ready yet"
                 self.logger.debug("api: %s" % checked_debug_msg)
-                
+
                 return wazuh_ready
         except Exception as e:
             self.logger.error("manager: Error checking daemons: %s" % (e))
