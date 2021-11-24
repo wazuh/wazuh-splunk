@@ -13,6 +13,9 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added
 
 - Support for Wazuh 4.2.3
+- Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
+- Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
+- Added Crud Role Mapping on security section. [#1169](https://github.com/wazuh/wazuh-splunk/pull/1169)
 
 ## Wazuh v4.2.2 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4203
 
@@ -20,6 +23,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Added MITRE ATT&CK Framework integration [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
 - Added MITRE ATT&CK Dashboard integration [#1076](https://github.com/wazuh/wazuh-splunk/pull/1076)
+- Added Crud Users on security section. [#1173](https://github.com/wazuh/wazuh-splunk/pull/1173)
 - Added CVE Dashboard [#1109](https://github.com/wazuh/wazuh-splunk/pull/1109)
 - Support for Splunk v8.1.4
 - Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
