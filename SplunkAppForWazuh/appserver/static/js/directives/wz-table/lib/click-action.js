@@ -62,6 +62,8 @@ define([], function() {
       $scope.$emit("openRoleFromList", { role: item });
     } else if (instance.path === "/security/policies") {
       $scope.$emit("openPolicyFromList", { policy: item });
+    } else if (instance.path === '/security/users') {
+      $scope.$emit("openUserFromList", { user: item });
     }
   }
 })

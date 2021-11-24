@@ -80,7 +80,8 @@ define([
         $mdDialog,
         $ruleService,
         $roleService,
-        $policyService
+        $policyService,
+        $userService
       ) {
         /**
          * Init variables
@@ -146,7 +147,6 @@ define([
               }
             }
           }
-          //updateStoredKeys($scope.keys)
         }
 
         $scope.exists = key => {
@@ -396,7 +396,6 @@ define([
           try {
             $scope.error = false
             await fetch()
-            //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
@@ -522,13 +521,30 @@ define([
           $scope.removingUser =
             $scope.removingUser === user.username ? null : user.username
         }
+
         $scope.cancelRemoveSecurityUser = () => {
           $scope.removingUser = null
         }
+
         $scope.editSecurityUser = user => {
-          $scope.$emit('openGroupFromList', { user })
+          $scope.$emit('openUserFromList', { user })
         }
+
+        $scope.viewUserContent = user => {
+          $scope.$emit('viewUserContent', { user })
+        }
+
         $scope.confirmRemoveSecurityUser = async user => {
+          try {
+            await $userService.removeUser(user.id)
+            $notificationService.showSuccessToast(
+                `Success. User ${user.username} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
         }
         // END SECURITY SECTION FOR USERS  
 
