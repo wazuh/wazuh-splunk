@@ -137,12 +137,8 @@ define([
           this.scope.userPassword
         )
 
-        if (newUserData.data.error != 0) {
-          if ("message" in newUserData.data){
-            throw new Error(newUserData.data.message);
-          }else{
-            throw new Error("Invalid username");
-          }
+        if (newUserData.data.error != 0 ) {
+          throw new Error(newUserData.data.message || "Invalid username");
         }
 
         //allow run as if needed
