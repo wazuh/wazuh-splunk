@@ -39,6 +39,12 @@
         <wz-svg icon="console"></wz-svg>
         Dev tools
       </md-button>
+
+      <!-- Security buttom -->
+      <md-button class="wz-menu-button" ui-sref="security.users" ng-click="select('security')" ng-class="{'wz-menu-active': menuNavItem === 'security' }" aria-label="Security tab">
+        <wz-svg icon="shield"></wz-svg>
+        Security
+      </md-button>
   
       <!-- Fill up the space between left and right area -->
       <span flex></span>

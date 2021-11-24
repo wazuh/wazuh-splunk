@@ -49,6 +49,10 @@
           class="wz-text-left wz-nowrap" ng-style="path !== '/agents' && {'width':'375px'}">
           Actions
         </th>
+        <th ng-if="(path === '/security/users' || path === '/security/rules' || path === '/security/policies')"
+          class="wz-text-left wz-nowrap" ng-style="path !== '/agents' && {'width':'375px'}">
+          Actions
+        </th>
       </thead>
       <tbody>
         <tr ng-class="allowClick ? 'cursor-pointer' : ''" class="wz-word-wrap"

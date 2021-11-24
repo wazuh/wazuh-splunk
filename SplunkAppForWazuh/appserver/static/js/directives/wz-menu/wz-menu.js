@@ -259,6 +259,8 @@ function(directives, Dropdown, DropdownViz, mvc) {
               $scope.menuNavItem = 'dev-tools'
             } else if (checkLastState('discover', 'discover')) { 
               $scope.menuNavItem = 'discover'
+            } else if (checkLastState('security', 'security')) { 
+              $scope.menuNavItem = 'security'
             }
             
             if ($scope.theresAPI && $scope.apiList.length > 1) {
