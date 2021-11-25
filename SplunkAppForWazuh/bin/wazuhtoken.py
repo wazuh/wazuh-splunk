@@ -124,21 +124,21 @@ class wazuhtoken():
                 json.dumps(user, indent=4)
             )
             self.logger.debug("wazuh-token: API.run_as is " + str(api_run_as))
-
+            response = self.basic_auth_login(api_url, api_user)
             # Try to log in using the auth context first
-            if api_run_as:
-                response = self.auth_context_login(api_url, api_user, user)
-                # If it fails, use the basic auth
-                if response.status_code != 200:
-                    self.logger.debug(
-                        "wazuh-token: API response\n" +
-                        json.dumps(response.json(), sort_keys=True, indent=4)
-                    )
-                    self.logger.info(
-                        f'wazuh-token: allow_run_as not enabled for user {api_user}')
-                    response = self.basic_auth_login(api_url, api_user)
-            else:
-                response = self.basic_auth_login(api_url, api_user)
+            # if api_run_as:
+            #     response = self.auth_context_login(api_url, api_user, user)
+            #     # If it fails, use the basic auth
+            #     if response.status_code != 200:
+            #         self.logger.debug(
+            #             "wazuh-token: API response\n" +
+            #             json.dumps(response.json(), sort_keys=True, indent=4)
+            #         )
+            #         self.logger.info(
+            #             f'wazuh-token: allow_run_as not enabled for user {api_user}')
+            #         response = self.basic_auth_login(api_url, api_user)
+            # else:
+            #     response = self.basic_auth_login(api_url, api_user)
             return response
         except Exception as e:
             self.logger.error("wazuh-token::get_token_request() - " + str(e))
@@ -177,10 +177,10 @@ class wazuhtoken():
         """
         self.logger.debug("wazuh-token: using auth context")
         try:
-            return self.session.get(
+            return self.session.post(
                 f"{api_url}/security/user/authenticate/run_as",
                 auth=api_user,
-                data=auth_context,
+                data=json.dumps(auth_context),
                 timeout=20,
                 verify=False
             )
