@@ -41,7 +41,7 @@
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
             aria-hidden="true"></i>
         </th>
-        <th ng-if="(path === '/agents' || (path === '/groups') || (isLookingGroup())) "
+        <th ng-if="(path === '/security/users' || path === '/security/roles' || path === '/security/policies' || path === '/security/rules' || path === '/agents' || path === '/groups' || isLookingGroup()) "
           class="wz-text-left wz-nowrap"
           ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">
           Actions</th>
@@ -229,7 +229,7 @@
                 <md-button class="cancelBtn" type="button" ng-click="cancelRemoveSecurityUser()"><i aria-hidden='true'
                     class='fa fa-fw fa-close'></i>
                   Cancel</md-button>
-                <md-button class="agreeBtn" type="button" ng-click="confirmRemoveSecurityUser(item)"><i aria-hidden='true'
+                <md-button ng-if="userHasPermissionsSecurityActionWithAgent('agent:modify_group',item)" class="agreeBtn" type="button" ng-click="confirmRemoveAgent(item.id)"><i aria-hidden='true'
                     class='fa fa-fw fa-check'></i> Confirm</md-button>
               </div>
             </div>

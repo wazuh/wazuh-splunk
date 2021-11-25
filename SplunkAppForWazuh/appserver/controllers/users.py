@@ -71,8 +71,8 @@ class Users(controllers.BaseController):
         """
         Returns the user logged in.
         """
+        self.logger.debug("Users::get_current_user() called")
         try:
-            self.logger.debug("Users: get_current_user()")
             user = splunk_auth.getCurrentUser()
             return json.dumps(user)
         except Exception as e:
@@ -84,8 +84,8 @@ class Users(controllers.BaseController):
         """
         Returns a list with every user registered in this Splunk's instance.
         """
+        self.logger.debug("Users::get_users() called")
         try:
-            self.logger.debug("Users: get_users()")
             # The method listUsers() returns an EntityCollection object, which 
             # is not JSON serializable. The string representation does not match
             # a JSON representation neither, so a few fixes must be done first.

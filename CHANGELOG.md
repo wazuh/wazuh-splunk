@@ -5,6 +5,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ## Wazuh v4.3.0 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4207
 
 ### Added
+- Added the ability to use the Authorization Context login method. [#1174](https://github.com/wazuh/wazuh-splunk/pull/1174)
 - Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
 - Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
 - Added Crud Role Mapping on security section. [#1169](https://github.com/wazuh/wazuh-splunk/pull/1169)
