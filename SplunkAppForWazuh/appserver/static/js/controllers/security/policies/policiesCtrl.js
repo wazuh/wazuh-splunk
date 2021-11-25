@@ -34,15 +34,15 @@ define([
   class Policies {
     constructor(
       $scope,
-      isAdmin,
       policyData,
       actionData,
       resourceData,
       $notificationService,
-      $policyService
+      $policyService,
+      $security_service
     ) {
       this.scope = $scope;
-      this.scope.isAdmin = isAdmin;
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.scope.actionData = this.getActionList(actionData.data.data || []);
       this.scope.actionList = actionData.data.data;
       this.notification = $notificationService;

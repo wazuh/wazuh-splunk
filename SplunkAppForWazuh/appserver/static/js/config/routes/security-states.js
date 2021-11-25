@@ -14,18 +14,6 @@ define(['../module'], function(module) {
           $navigationService.storeRoute('security.users')
         },
         controller: 'securityCtrl',
-        resolve: {
-          isAdmin: [
-            '$currentDataService',
-            async $currentDataService => {
-              try {
-                return await $currentDataService.isAdmin()
-              } catch (error) {
-                return false
-              }
-            }
-          ]
-        }
       })
       .state('security.users', {
         templateUrl:
@@ -36,14 +24,10 @@ define(['../module'], function(module) {
         },
         controller: 'usersCtrl',
         resolve: {
-          isAdmin: [
-            '$currentDataService',
-            async $currentDataService => {
-              try {
-                return await $currentDataService.isAdmin()
-              } catch (error) {
-                return false
-              }
+          updateUserPermissions: [
+            '$security_service',
+            async $security_service => {
+              return await $security_service.updateUserPermissions()
             }
           ],
           roleData: [
@@ -67,14 +51,10 @@ define(['../module'], function(module) {
         },
         controller: 'rolesCtrl',
         resolve: {
-          isAdmin: [
-            "$currentDataService",
-            async $currentDataService => {
-              try {
-                return await $currentDataService.isAdmin();
-              } catch (error) {
-                return false;
-              }
+          updateUserPermissions: [
+            '$security_service',
+            async $security_service => {
+              return await $security_service.updateUserPermissions()
             }
           ],
           roleData: [
@@ -108,14 +88,10 @@ define(['../module'], function(module) {
         },
         controller: 'policiesCtrl',
         resolve: {
-          isAdmin: [
-            '$currentDataService',
-            async $currentDataService => {
-              try {
-                return await $currentDataService.isAdmin()
-              } catch (error) {
-                return false
-              }
+          updateUserPermissions: [
+            '$security_service',
+            async $security_service => {
+              return await $security_service.updateUserPermissions()
             }
           ],
           resourceData: [
@@ -159,14 +135,10 @@ define(['../module'], function(module) {
         },
         controller: 'rolesMappingCtrl',
         resolve: {
-          isAdmin: [
-            '$currentDataService',
-            async $currentDataService => {
-              try {
-                return await $currentDataService.isAdmin()
-              } catch (error) {
-                return false
-              }
+          updateUserPermissions: [
+            '$security_service',
+            async $security_service => {
+              return await $security_service.updateUserPermissions()
             }
           ],
           roles: [

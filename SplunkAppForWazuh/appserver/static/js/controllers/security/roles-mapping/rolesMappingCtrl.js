@@ -29,14 +29,14 @@ define([
   class RolesMapping {
     constructor(
       $scope,
-      isAdmin,
       roles,
       splunkUsers,
       $notificationService,
       $ruleService,
+      $security_service,
     ) {
       this.scope = $scope
-      this.scope.isAdmin = isAdmin;
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.scope.roles = this.getRolesList(
         roles.data.data.affected_items || []
       );
@@ -52,7 +52,7 @@ define([
       this.scope.customRules = [];
       this.scope.logicalOperator = true
       this.scope.selectedOperator = operators[0]
-      this.jsonCodeBox = CodeMirror.fromTextArea(
+      this.jsonCodeBox = document.getElementById('viewer_json_box') && CodeMirror.fromTextArea(
         document.getElementById('viewer_json_box'),
         {
           lineNumbers: false,
