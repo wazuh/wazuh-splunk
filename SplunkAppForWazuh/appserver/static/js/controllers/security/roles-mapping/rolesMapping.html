@@ -65,9 +65,20 @@
                      <div class="flex wz-margin-bottom-10">
                         <span class="tSize20">
                            Mapping rules: Assign roles to users who match these rules. 
-                           <a href="https://documentation.wazuh.com/current/user-manual/api/rbac/auth_context.html" target="_blank" rel="noopener noreferrer">
+                           <a 
+                              href="https://documentation.wazuh.com/current/user-manual/api/rbac/auth_context.html" 
+                              target="_blank" 
+                              rel="noopener noreferrer">
                               Learn more
-                              <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--small euiIcon-isLoaded euiLink__externalIcon" focusable="false" role="img" aria-label="External link">
+                              <svg 
+                                 width="16" 
+                                 height="16" 
+                                 viewBox="0 0 16 16" 
+                                 xmlns="http://www.w3.org/2000/svg" 
+                                 class="euiIcon euiIcon--small euiIcon-isLoaded euiLink__externalIcon" 
+                                 focusable="false" 
+                                 role="img" 
+                                 aria-label="External link">
                                  <path d="M13 8.5a.5.5 0 111 0V12a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2h3.5a.5.5 0 010 1H4a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1V8.5zm-5.12.339a.5.5 0 11-.706-.707L13.305 2H10.5a.5.5 0 110-1H14a1 1 0 011 1v3.5a.5.5 0 11-1 0V2.72L7.88 8.838z"></path>
                               </svg>
                            </a>
@@ -108,9 +119,14 @@
                               ng-change="enableSave()"
                               ng-disabled="editingRole"
                               />
-                           <select ng-options="n for n in operators" ng-model="selectedOperator" ng-init="selectedOperator"
-                              ng-change="onSelectorChange(selectedOperator)" ng-if="isAdmin"
-                              class="input input-dropdown conf-operator-selector wz-button-empty" ng-disabled="editingRole">
+                           <select 
+                              ng-options="n for n in operators" 
+                              ng-model="selectedOperator" 
+                              ng-init="selectedOperator"
+                              ng-change="onSelectorChange(selectedOperator)" 
+                              ng-if="isAdmin"
+                              class="input input-dropdown conf-operator-selector wz-button-empty" 
+                              ng-disabled="editingRole">
                            </select>
                            <input
                               placeholder="Custom value..."
@@ -150,7 +166,15 @@
                                           ng-click="removeRule($index)"
                                           ng-disabled="editingRole"
                                           >
-                                          <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiButtonIcon__icon" focusable="false" role="img" aria-hidden="true">
+                                          <svg 
+                                             width="16" 
+                                             height="16" 
+                                             viewBox="0 0 16 16" 
+                                             xmlns="http://www.w3.org/2000/svg" 
+                                             class="euiIcon euiIcon--medium euiButtonIcon__icon" 
+                                             focusable="false" 
+                                             role="img" 
+                                             aria-hidden="true">
                                              <path d="M11 3h5v1H0V3h5V1a1 1 0 011-1h4a1 1 0 011 1v2zm-7.056 8H7v1H4.1l.392 2.519c.042.269.254.458.493.458h6.03c.239 0 .451-.189.493-.458l1.498-9.576H14l-1.504 9.73c-.116.747-.74 1.304-1.481 1.304h-6.03c-.741 0-1.365-.557-1.481-1.304l-1.511-9.73H9V5.95H3.157L3.476 8H8v1H3.632l.312 2zM6 3h4V1H6v2z"></path>
                                           </svg>
                                        </button>

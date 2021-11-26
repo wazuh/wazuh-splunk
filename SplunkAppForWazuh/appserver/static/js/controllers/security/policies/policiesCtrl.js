@@ -17,7 +17,7 @@ define([
   "splunkjs/mvc/multidropdownview",
   "splunkjs/mvc/dropdownview",
   "splunkjs/mvc"
-], function(controllers, SearchManager, MultiDropdownView, DropdownView, mvc) {
+], function (controllers, SearchManager, MultiDropdownView, DropdownView, mvc) {
   "use strict";
 
   const effectOptions = [
@@ -133,15 +133,15 @@ define([
           .map((name, idx) => {
             return (this.scope.actionData[x] || []).label === name
               ? result.push(
-                  this.scope.actionList[name].resources.map(
-                    (resource, index) => {
-                      return {
-                        label: resource,
-                        value: index
-                      };
-                    }
-                  )
+                this.scope.actionList[name].resources.map(
+                  (resource, index) => {
+                    return {
+                      label: resource,
+                      value: index
+                    };
+                  }
                 )
+              )
               : "";
           })
           .filter(value => {
@@ -240,9 +240,8 @@ define([
     }
 
     addResourceIdentifier() {
-      const newResource = `${this.resourcesDropdown._getSelectedData().label}:${
-        this.scope.resourceIdentifier
-      }`;
+      const newResource =
+        `${this.resourcesDropdown._getSelectedData().label}:${this.scope.resourceIdentifier}`;
 
       if (this.scope.resourcesList.length === 0) {
         this.scope.resourcesList.push(newResource);

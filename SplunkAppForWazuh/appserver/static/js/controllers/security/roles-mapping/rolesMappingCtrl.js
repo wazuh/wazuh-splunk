@@ -17,7 +17,7 @@ define([
   "splunkjs/mvc/multidropdownview",
   "splunkjs/mvc",
   '../../../libs/codemirror-conv/lib/codemirror'
-], function(controllers, SearchManager, MultiDropdownView, mvc, CodeMirror) {
+], function (controllers, SearchManager, MultiDropdownView, mvc, CodeMirror) {
   "use strict";
 
   const operators = [
@@ -98,7 +98,11 @@ define([
         if (newValue && this.dropdownSplunkUsers) {
           this.scope.splunkUsersDropdown = newValue;
           this.scope.tmpInternalUsersRules = newValue.map(user => {
-            return { user_field: 'username', searchOperation: 'FIND', value: user };
+            return {
+              user_field: 'username',
+              searchOperation: 'FIND',
+              value: user
+            };
           });
           this.updateJsonRules();
           this.scope.$applyAsync();
@@ -115,42 +119,50 @@ define([
       this.scope.$broadcast('wazuhSearch', { term })
     }
 
-    addNewCustomRule(){
-      if(this.scope.customField && this.scope.customValue){
-        const rule = { user_field: this.scope.customField, searchOperation: this.scope.selectedOperator, value: this.scope.customValue };
+    addNewCustomRule() {
+      if (this.scope.customField && this.scope.customValue) {
+        const rule = {
+          user_field: this.scope.customField,
+          searchOperation: this.scope.selectedOperator,
+          value: this.scope.customValue
+        };
         this.scope.customRules.push(rule);
-        this.scope.customField= "";
+        this.scope.customField = "";
         this.scope.selectedOperator = operators[0];
-        this.scope.customValue= "";
+        this.scope.customValue = "";
         this.updateJsonRules();
         this.scope.$applyAsync();
-      }else{
+      } else {
         this.notification.showWarningToast(
           `Please set all fields for the custom rule.`
         );
       }
     };
 
-    onSelectorChange(value){
+    onSelectorChange(value) {
       this.scope.selectedOperator = value;
     };
-  
+
     removeRule(id) {
       this.scope.customRules.splice(id, 1);
       this.updateJsonRules();
     };
 
-    updateJsonRules(){
-      const ruleObject = this.getJsonFromRule(this.scope.tmpInternalUsersRules,this.scope.customRules,this.scope.logicalOperator)
+    updateJsonRules() {
+      const ruleObject = this.getJsonFromRule(
+        this.scope.tmpInternalUsersRules,
+        this.scope.customRules,
+        this.scope.logicalOperator
+      )
       this.refreshJsonEditor(ruleObject)
     }
-  
+
     toggleLogicalOperator(state) {
       this.scope.logicalOperator = state;
       this.updateJsonRules();
     }
 
-    getJsonFromRule (internalUserRules, rules, operator){
+    getJsonFromRule(internalUserRules, rules, operator) {
       const ruleObject = {};
       const logicalOperator = operator ? 'AND' : 'OR';
       const usersRulesArray = internalUserRules.map(item => {
@@ -164,7 +176,7 @@ define([
         tmpRule[item.searchOperation] = {};
         tmpRule[item.searchOperation][item.user_field] = item.value;
         return tmpRule;
-      }); 
+      });
       if (usersRulesArray.length && rulesArray.length) {
         ruleObject['OR'] = [
           {
@@ -175,44 +187,50 @@ define([
           },
         ];
       } else {
-        if(rulesArray.length == 1){
+        if (rulesArray.length == 1) {
           return rulesArray[0]
-        }else if(usersRulesArray.length == 1){
+        } else if (usersRulesArray.length == 1) {
           return usersRulesArray[0]
-        }else{
-          if (usersRulesArray.length) {      
+        } else {
+          if (usersRulesArray.length) {
             ruleObject['OR'] = usersRulesArray;
           }
           if (rulesArray.length) {
-            ruleObject[logicalOperator] = rulesArray;         
+            ruleObject[logicalOperator] = rulesArray;
           }
         }
-      } 
+      }
       return ruleObject;
     };
 
-    refreshJsonEditor(newJsonRule){
+    refreshJsonEditor(newJsonRule) {
       this.jsonCodeBox.setValue(newJsonRule ? JSON.stringify(newJsonRule, null, 2) : "");
       setTimeout(() => {
         this.jsonCodeBox.refresh()
         this.scope.$applyAsync();
-      },1);
+      }, 1);
     }
 
 
     getRolesList(rolesData) {
       return rolesData.map(role => {
-        return { label: role.name, value: role.id };
+        return {
+          label: role.name,
+          value: role.id
+        };
       });
     }
 
     getSplunkUsersList(users) {
       return Object.keys(users).map(user => {
-        return { label: user, value: user };
+        return {
+          label: user,
+          value: user
+        };
       });
     }
 
-    
+
     formatRules(rulesArray) {
       let wrongFormat = false;
       const tmpRules = rulesArray.map((item, idx) => {
@@ -225,26 +243,30 @@ define([
         }
         const userFieldTmp = Object.keys(item[searchOperationTmp])[0];
         const valueTmp = item[searchOperationTmp][userFieldTmp];
-    
-        return { user_field: userFieldTmp, searchOperation: searchOperationTmp, value: valueTmp };
+
+        return {
+          user_field: userFieldTmp,
+          searchOperation: searchOperationTmp,
+          value: valueTmp
+        };
       });
-    
+
       return { tmpRules, wrongFormat };
     };
 
-    hasInternalUsers(rules, internalUsers){
+    hasInternalUsers(rules, internalUsers) {
       return rules.every(rule => {
         return internalUsers.some(user => user === rule.value);
       });
     };
 
-    getFormatedRules(rulesArray, internalUsers){
+    getFormatedRules(rulesArray, internalUsers) {
       let customRules = [];
       let internalUsersRules = [];
       let wrongFormat = false;
       let formatedRules;
       let logicalOperator;
-    
+
       const operatorsCount = rulesArray.filter(rule => Array.isArray(rule[Object.keys(rule)[0]]))
         .length;
       switch (operatorsCount) {
@@ -273,14 +295,14 @@ define([
             wrongFormat = true;
             break;
           }
-    
+
           //get custom rules
           operator = Object.keys(rulesArray[1])[0];
           formatedRules = this.formatRules(rulesArray[1][operator]);
           customRules = formatedRules.tmpRules;
           wrongFormat = formatedRules.wrongFormat;
           logicalOperator = operator || 'AND';
-    
+
           break;
         default:
           // set all rules as custom rules
@@ -288,11 +310,16 @@ define([
           customRules = formatedRules.tmpRules;
           wrongFormat = true;
       }
-    
-      return { customRules, internalUsersRules, wrongFormat, logicalOperator };
+
+      return {
+        customRules,
+        internalUsersRules,
+        wrongFormat,
+        logicalOperator
+      };
     };
 
-      decodeJsonRule(jsonRule, internalUsers){
+    decodeJsonRule(jsonRule, internalUsers) {
       try {
         var wrongFormat = false;
         const ruleObject = jsonRule;
@@ -300,7 +327,7 @@ define([
           wrongFormat = true;
         }
         var logicalOperator = Object.keys(ruleObject)[0];
-    
+
         var rulesArray;
         if (logicalOperator === 'AND' || logicalOperator === 'OR') {
           rulesArray = ruleObject[logicalOperator];
@@ -309,7 +336,7 @@ define([
           logicalOperator = 'AND';
         }
         const formatedRules = this.getFormatedRules(rulesArray, internalUsers);
-    
+
         return {
           customRules: formatedRules.customRules,
           internalUsersRules: formatedRules.internalUsersRules,
@@ -317,12 +344,16 @@ define([
           logicalOperator: formatedRules.logicalOperator || logicalOperator,
         };
       } catch (error) {
-        return { customRules: [], internalUsersRules: [], wrongFormat: true };
+        return {
+          customRules: [],
+          internalUsersRules: [],
+          wrongFormat: true
+        };
       }
     };
 
     changeOperator(operator) {
-        this.scope.selectedOperator = operator
+      this.scope.selectedOperator = operator
     }
 
     $onInit() {
@@ -333,15 +364,15 @@ define([
       this.scope.changeOperator = operator => this.changeOperator(operator);
       this.scope.addNewCustomRule = () => this.addNewCustomRule();
       this.scope.toggleLogicalOperator = operator => this.toggleLogicalOperator(operator);
-      this.scope.onSelectorChange = (e,idx) => this.onSelectorChange(e,idx);
-      this.scope.updateUserField = (e,idx) => this.updateUserField(e,idx);
+      this.scope.onSelectorChange = (e, idx) => this.onSelectorChange(e, idx);
+      this.scope.updateUserField = (e, idx) => this.updateUserField(e, idx);
       this.scope.updateValueField = (e, idx) => this.updateValueField(e, idx);
       this.scope.removeRule = id => this.removeRule(id);
       this.scope.addingNewRoleMapping = false;
       this.scope.isOpenJsonEditor = false;
       this.scope.search = term => this.search(term);
-       // Come from the pencil icon on the roles table
-       this.scope.$on("openRuleFromList", (ev, parameters) => {
+      // Come from the pencil icon on the roles table
+      this.scope.$on("openRuleFromList", (ev, parameters) => {
         ev.stopPropagation();
         const isDisabled = parameters.rule.id === 1 || parameters.rule.id === 2
         this.scope.editingRoleMapping = true;
@@ -367,7 +398,7 @@ define([
           this.scope.splunkUsers
         );
         this.scope.logicalOperator = logicalOperator === 'AND' ? true : false;
-        customRules.map(rule =>{
+        customRules.map(rule => {
           this.scope.customRules.push(rule);
         })
         this.dropdownSplunkUsers.val(internalUsersRules.map(rules => rules.value));
@@ -396,11 +427,11 @@ define([
       }
     }
 
-    openJsonEditor(){
+    openJsonEditor() {
       setTimeout(() => {
         this.jsonCodeBox.refresh()
         this.scope.$applyAsync();
-      },1);
+      }, 1);
       this.scope.isOpenJsonEditor = this.scope.isOpenJsonEditor ? false : true
 
     }
@@ -429,75 +460,76 @@ define([
     }
 
     async saveRoleMapping() {
-        try {
-          const constainsBlanks = /.* .*/;
-          const roleMappingName = this.scope.roleMappingName;
-          const roleIds = this.dropdownRoles.val();
-          const splunkUsers = this.dropdownSplunkUsers.val();
-          const isEdit = this.scope.editingRoleMapping;
-          const rule = JSON.parse(this.jsonCodeBox.getValue());
-  
-          if (roleMappingName && (splunkUsers.length && roleIds.length != 0)) {
-            if (constainsBlanks.test(roleMappingName)) {
-              this.notification.showErrorToast(
-                "Error creating a new role mapping. The name can not contain white spaces."
-              );
-            } else {
-              this.scope.saveIncomplete = true;
-              const result = isEdit ?
-                await this.ruleService.updateRule(
-                  this.scope.ruleId,
-                  { name: roleMappingName, rule: rule },
-                  this.scope.currentRoles,
-                  roleIds
-                )
-                :
-                await this.ruleService.saveRule(
-                  { name: roleMappingName, rule: rule },
-                  roleIds
-                );
-              if (
-                result &&
-                result.failed_items[0] &&
-                result.failed_items[0].error.code === 4005
-              ) {
-                this.notification.showWarningToast(
-                  result.failed_items[0].error.message ||
-                    "Role mapping already exists."
-                );
-                this.scope.overwrite = true;
-                this.scope.saveIncomplete = false;
-                this.scope.$applyAsync();
-                return;
-              }
-              if (
-                result &&
-                result.failed_items[0] &&
-                result.failed_items[0].error.code === 4011
-              ) {
-                this.notification.showWarningToast(
-                  result.failed_items[0].error.message
-                );
-                return;
-              }
-              if (result && result.total_failed_items === 0) {
-                this.notification.showSuccessToast(`Role mapping ${result.affected_items[0].name} ${isEdit ? 'updated' : 'saved'} successfully.`);
-                this.scope.saveIncomplete = false;
-                this.scope.$applyAsync();
-              } else {
-                throw new Error(result.data.message || `Cannot ${isEdit ? 'updated' : 'saved'} this Role mapping.`);
-              }
-            }
-            this.scope.saveIncomplete = false;
-            this.clearAll();
-          } else {
-            this.notification.showWarningToast(
-              `Please set all fields for the ${isEdit ? 'update' : 'new'} Role mapping.`
+      try {
+        const constainsBlanks = /.* .*/;
+        const roleMappingName = this.scope.roleMappingName;
+        const roleIds = this.dropdownRoles.val();
+        const splunkUsers = this.dropdownSplunkUsers.val();
+        const isEdit = this.scope.editingRoleMapping;
+        const rule = JSON.parse(this.jsonCodeBox.getValue());
+
+        if (roleMappingName && (splunkUsers.length && roleIds.length != 0)) {
+          if (constainsBlanks.test(roleMappingName)) {
+            this.notification.showErrorToast(
+              "Error creating a new role mapping. The name can not contain white spaces."
             );
+          } else {
+            this.scope.saveIncomplete = true;
+            const result = isEdit ?
+              await this.ruleService.updateRule(
+                this.scope.ruleId,
+                { name: roleMappingName, rule: rule },
+                this.scope.currentRoles,
+                roleIds
+              )
+              :
+              await this.ruleService.saveRule(
+                { name: roleMappingName, rule: rule },
+                roleIds
+              );
+            if (
+              result &&
+              result.failed_items[0] &&
+              result.failed_items[0].error.code === 4005
+            ) {
+              this.notification.showWarningToast(
+                result.failed_items[0].error.message ||
+                "Role mapping already exists."
+              );
+              this.scope.overwrite = true;
+              this.scope.saveIncomplete = false;
+              this.scope.$applyAsync();
+              return;
+            }
+            if (
+              result &&
+              result.failed_items[0] &&
+              result.failed_items[0].error.code === 4011
+            ) {
+              this.notification.showWarningToast(
+                result.failed_items[0].error.message
+              );
+              return;
+            }
+            if (result && result.total_failed_items === 0) {
+              this.notification.showSuccessToast(
+                `Role mapping ${result.affected_items[0].name} ${isEdit ? 'updated' : 'saved'} successfully.`);
+              this.scope.saveIncomplete = false;
+              this.scope.$applyAsync();
+            } else {
+              throw new Error(result.data.message || `Cannot ${isEdit ? 'updated' : 'saved'} this Role mapping.`);
+            }
           }
-        } catch (error) {
-          this.notification.showErrorToast(error);
+          this.scope.saveIncomplete = false;
+          this.clearAll();
+        } else {
+          this.notification.showWarningToast(
+            `Please set all fields for the ${isEdit ? 'update' : 'new'} Role mapping.`
+          );
         }
+      } catch (error) {
+        this.notification.showErrorToast(error);
+      }
     }
 
 

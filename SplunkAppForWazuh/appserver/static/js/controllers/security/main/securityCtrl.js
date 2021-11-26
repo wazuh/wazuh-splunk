@@ -1,4 +1,4 @@
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class MainSecurity {

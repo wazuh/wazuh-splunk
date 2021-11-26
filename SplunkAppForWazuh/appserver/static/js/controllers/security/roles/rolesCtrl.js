@@ -16,7 +16,7 @@ define([
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/multidropdownview",
   "splunkjs/mvc"
-], function(controllers, SearchManager, MultiDropdownView, mvc) {
+], function (controllers, SearchManager, MultiDropdownView, mvc) {
   "use strict";
 
   const RESERVED_ROLES = [
@@ -203,7 +203,7 @@ define([
             ) {
               this.notification.showWarningToast(
                 result.data.datafailed_items[0].error.message ||
-                  "Role already exists."
+                "Role already exists."
               );
               this.scope.overwrite = true;
               this.scope.saveIncomplete = false;
