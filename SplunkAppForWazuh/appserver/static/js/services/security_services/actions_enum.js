@@ -181,7 +181,7 @@ const mapActionsControllers = {
     enumActions.CLUSTER_STATUS
   ],
   // Management > Reporting
-  'mg-reporting': [ ],
+  'mg-reporting': [],
   // Management > Rules
   'mg-rules': [
     enumActions.RULES_DELETE,
@@ -251,8 +251,8 @@ const mapActionsControllers = {
 define(['../module'], function (app) {
   app.constant(
     'ACTIONS', {
-      'ACTIONS_ENUM': enumActions,
-      'ACTIONS_MAP': mapActionsControllers
-    }
+    'ACTIONS_ENUM': enumActions,
+    'ACTIONS_MAP': mapActionsControllers
+  }
   )
 })

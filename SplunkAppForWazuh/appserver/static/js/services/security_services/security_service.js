@@ -10,10 +10,10 @@ define(
 
       /**
        * Constructor.
-       * @param {Object} $requestService 
-       * @param {Object} ACTIONS 
-       * @param {Object} $requirementService 
-       * @param {Object} $validationService 
+       * @param {Object} $requestService
+       * @param {Object} ACTIONS
+       * @param {Object} $requirementService
+       * @param {Object} $validationService
        * @param {Object} userPermissions
        */
       constructor(
@@ -33,9 +33,9 @@ define(
 
       /**
        * Wrapper method for the requirementsService.
-       * @param {enumActions} enumAction action to generate the 
+       * @param {enumActions} enumAction action to generate the
        * requirement object for.
-       * @returns a requirement object for the action, to match the 
+       * @returns a requirement object for the action, to match the
        * corresponding user policy.
        */
       _generateRequirementsObject(enumAction) {
@@ -58,9 +58,9 @@ define(
 
       /**
        * Queries the user's policies on the Wazuh API.
-       * 
+       *
        * TODO save on rootScope or similiar
-       * 
+       *
        * @returns user's policies.
        */
       async getUserPolicies() {
@@ -80,7 +80,7 @@ define(
        * - allow_run_as: Boolean
        * - roles: Array
        * - username: String
-       * 
+       *
        * @endpoint /security/users/me
        */
       async getUserInfo() {
@@ -107,11 +107,11 @@ define(
        * and the validationService to determine if the user has permisions
        * to perform the actions required by the controller.
        * @param {String} controllerName name of the controller.
-       * @returns {{[key: string]: boolean}} object with each action required by the controller and
-       * if the user can perform it or not.
+       * @returns {{[key: string]: boolean}} object with each action required 
+       * by the controller and if the user can perform it or not.
        */
       async getRequirementsOfController(controllerName) {
-        
+
         try {
           // Search the controller's requirements on the map.
           const actionsRequired = this.ACTIONS_MAP[controllerName] // :list
@@ -122,7 +122,7 @@ define(
             const isActionAllowed = this._validateRequirementsObject(requirementsObject, userPolicies)
             accum[action] = isActionAllowed
             return accum
-          },{})
+          }, {})
         }
         catch (err) {
           // TODO improve error handling.
@@ -141,29 +141,38 @@ define(
       }
 
       /**
-       * Given the RBAC action and the agent data ({id, group}), returns if the user
-       * has permissions to perform the action required.
+       * Given the RBAC action and the agent data ({id, group}), returns
+       * if the user has permissions to perform the action required.
        * @param {Object} requirements name of the controller.
        * @returns {Boolean} the user can/can't perform the action.
        */
-      userHasPermissionsSecurityActionWithAgent(action, agentData){
+      userHasPermissionsSecurityActionWithAgent(action, agentData) {
         console.log('action', action, agentData)
-        return agentData && this.userHasPermissions({[action]: [`agent:id:${agentData.id}`, ...agentData.group.map(group => `agent:group:${group}`)]})
+        return (
+          agentData &&
+          this.userHasPermissions(
+            {
+              [action]: [
+                `agent:id:${agentData.id}`,
+                ...agentData.group.map(group => `agent:group:${group}`)
+              ]
+            }
+          )
+        )
       }
 
       /**
        * Update the user policies in the userPermissions factory.
        */
       async updateUserPermissions() {
-          try{
-              const userPolicies = await this.getUserPolicies()
-              this.userPermissions.set(userPolicies)
-          }catch(error){
-              this.userPermissions.set({}) 
-          }
+        try {
+          const userPolicies = await this.getUserPolicies()
+          this.userPermissions.set(userPolicies)
+        } catch (error) {
+          this.userPermissions.set({})
+        }
       }
 
-      
     }
 
     // Register current class as a service

@@ -1,7 +1,7 @@
-define(["../../module"], function(module) {
+define(["../../module"], function (module) {
   "use strict";
 
-  module.service("$userService", function($requestService, $state) {
+  module.service("$userService", function ($requestService, $state) {
     const removeUser = async users => {
       try {
         const result = await $requestService.apiReq(

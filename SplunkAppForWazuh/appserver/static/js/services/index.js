@@ -35,4 +35,4 @@ define([
   './security/role/roleService',
   './security/policy/policyService',
   './security/user/userService'
-], function() {})
+], function () { })

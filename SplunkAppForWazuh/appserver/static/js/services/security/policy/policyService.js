@@ -11,10 +11,10 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function(module) {
+define(["../../module"], function (module) {
   "use strict";
 
-  module.service("$policyService", function($requestService, $state) {
+  module.service("$policyService", function ($requestService, $state) {
     const getPolicyData = async () => {
       try {
         return await $requestService.apiReq("/security/policies");

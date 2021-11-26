@@ -11,10 +11,10 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function(module) {
+define(["../../module"], function (module) {
   "use strict";
 
-  module.service("$roleService", function($requestService, $state) {
+  module.service("$roleService", function ($requestService, $state) {
     const getRoleData = async () => {
       try {
         return await $requestService.apiReq("/security/roles");
@@ -83,8 +83,8 @@ define(["../../module"], function(module) {
           ) {
             throw new Error(
               result.data.data.failed_items[0].error.message ||
-                result.data.data.message ||
-                "Cannot save Role."
+              result.data.data.message ||
+              "Cannot save Role."
             );
           }
 
