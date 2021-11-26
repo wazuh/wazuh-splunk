@@ -1,227 +1,229 @@
 <!-- About card section -->
-<div
-  layout="row"
-  style="margin-top:16px; margin-left: 10px; margin-right: 10px;"
->
-  <md-card style="width:100%;" class="wz-md-card no-margin-sides">
-    <md-card-actions
-      layout="column"
-      class="wz-card-actions wz-card-actions-top md-actions-ruleset"
-      style="background-color: white; height:100%;"
-    >
-      <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
-        <span style="font-size: 28px; padding-right: 10px;"> Policies </span>
-
-        <span flex="" class="flex"></span>
-
-        <span
-          ng-show="!addingNewPolicy"
-          ng-click="addNewPolicy()"
-          class="wz-color-text cursor-pointer link-table"
-        >
-          <wz-svg icon="plus"></wz-svg>
-          Add new policy
-        </span>
-      </div>
-
-      <div class="layout-row" style="padding-top: 15px;">
-        <div layout="row" class="layout-row" style="width: 100%;">
-          <!-- XML editor for add new policy-->
-          <div
-            ng-show="addingNewPolicy"
-            style="width:100%; margin-right: 10px;"
+<wz-forbidden ng-if="!userHasPermissions({'security:read': ['policy:id:*']})"></wz-forbidden>
+<div ng-show="userHasPermissions({'security:read': ['policy:id:*']})">
+  <div
+    layout="row"
+    style="margin-top:16px; margin-left: 10px; margin-right: 10px;"
+  >
+    <md-card style="width:100%;" class="wz-md-card no-margin-sides">
+      <md-card-actions
+        layout="column"
+        class="wz-card-actions wz-card-actions-top md-actions-ruleset"
+        style="background-color: white; height:100%;"
+      >
+        <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
+          <span style="font-size: 28px; padding-right: 10px;"> Policies </span>
+  
+          <span flex="" class="flex"></span>
+  
+          <span
+            ng-show="!addingNewPolicy && userHasPermissions({'security:update': ['policy:id:*']})"
+            ng-click="addNewPolicy()"
+            class="wz-color-text cursor-pointer link-table"
           >
-            <div class="flex">
-              <span class="tSize16 wz-breadcrumb-margin">Name</span>
-              <div>
-                <input
-                  placeholder="New policy name..."
-                  type="text"
-                  flex
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-20"
-                  aria-invalid="false"
-                  ng-model="policyName"
-                  ng-change="enableSave()"
-                  ng-disabled="editingPolicy"
-                />
-              </div>
-            </div>
-
-            <div class="wz-margin-10">
-              <span class="tSize16">Actions</span>
-              <div id="actions-dropdown-view"></div>
-            </div>
-
-            <div class="wz-margin-10">
-              <span class="tSize16">Resource</span>
-              <div id="resources-dropdown-view"></div>
-            </div>
-            <div class="wz-margin-10">
-              <span class="tSize16">Resource identifier</span>
-              <div>
-                <input
-                  placeholder="Type * for all."
-                  type="text"
-                  flex
-                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-10"
-                  aria-invalid="false"
-                  ng-model="resourceIdentifier"
-                  ng-change="onResourceIdentifierChanged()"
-                />
-                <button
-                  ng-disabled="!resourceIdentifier ||  disableAdd"
-                  class="btn wz-button-cancel wz-margin-bottom-10 wz-margin-left-25"
-                  ng-click="addResourceIdentifier()"
-                >
-                  <wz-svg icon="plus"></wz-svg>
-                  Add
-                </button>
-              </div>
-            </div>
-
-            <div class="wz-margin-10">
-              <span class="tSize16">Select an effect</span>
-              <div id="effect-options-dropdown-view"></div>
-            </div>
-
-            <div class="wz-margin-20">
-              <table
-                class="table table-striped table-condensed"
-                style="table-layout: fixed !important;"
-              >
-                <thead class="wz-text-bold">
-                  <th class="wz-text-left col-lg-2">Resources</th>
-                </thead>
-                <tbody class="wz-word-wrap">
-                  <tr ng-repeat="resource in resourcesList track by $index">
-                    <td>{{ resource }}</td>
-                    <td>
-                      <wz-svg
-                        class="fa-pull-right wz-margin-right-10"
-                        ng-if="(!removingEntry || removingEntry !== resource) && editingKey !== resource"
-                        ng-click="showConfirmRemoveEntry($event, resource); $event.stopPropagation()"
-                        icon="trash"
-                        svg-tooltip="Remove this entry"
-                      >
-                      </wz-svg>
-
-                      <div
-                        ng-if="removingEntry === resource"
-                        class="fa-pull-right "
-                      >
-                        <div layout="row">
-                          <span class="font-size-12 wz-padding-left-8"
-                            >This entry will be removed</span
-                          >
-                        </div>
-                        <div layout="row">
-                          <md-button
-                            class="cancelBtn wz-dev-box"
-                            type="button"
-                            ng-click="cancelRemoveEntry()"
-                            ><i
-                              aria-hidden="true"
-                              class="fa fa-fw fa-close"
-                            ></i>
-                            Cancel</md-button
-                          >
-                          <md-button
-                            class="agreeBtn wz-dev-box"
-                            type="button"
-                            ng-click="confirmRemoveEntry($event, $index)"
-                            ><i
-                              aria-hidden="true"
-                              class="fa fa-fw fa-check"
-                            ></i>
-                            Confirm
-                          </md-button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Save and cancel buttons -->
-            <div class="flex fa-pull-right">
-              <span>
-                <button
-                  class="btn wz-button-cancel"
-                  ng-click="cancelPolicyEdition()"
-                >
-                  Cancel
-                </button>
-                <button
-                  class="btn wz-button-empty pull-right wz-margin-left-10"
-                  ng-click="savePolicy()"
-                  ng-disabled="saveIncomplete || overwrite || !policyName"
-                  ng-if="isAdmin"
-                >
-                  <i
-                    ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                    aria-hidden="true"
-                  ></i>
-                  Save
-                </button>
-              </span>
-            </div>
-            <!-- End save and cancel buttons-->
-          </div>
-
-          <div
-            ng-show="!addingNewPolicy"
-            style="width: 100%; display: flex; align-items: flex-start;"
-          >
-            <label class="wz-icon-loupe">
-              <input
-                placeholder="Filter policies..."
-                ng-model="customSearch"
-                type="text"
-                flex
-                class="kuiLocalSearchInput height-40"
-                aria-invalid="false"
-                wz-enter="search(customSearch)"
-              />
-            </label>
-            <button
-              ng-click="search(customSearch)"
-              class="btn height-40 agreeBtn pull-right wz-margin-left-7"
-              style="max-height:40px !important;"
+            <wz-svg icon="plus"></wz-svg>
+            Add new policy
+          </span>
+        </div>
+  
+        <div class="layout-row" style="padding-top: 15px;">
+          <div layout="row" class="layout-row" style="width: 100%;">
+            <!-- XML editor for add new policy-->
+            <div
+              ng-show="addingNewPolicy"
+              style="width:100%; margin-right: 10px;"
             >
-              <span
-                ><i
-                  aria-hidden="true"
-                  class="fa fa-fw fa-search wz-margin-left-10"
-                  >&nbsp;</i
-                >Search</span
+              <div class="flex">
+                <span class="tSize16 wz-breadcrumb-margin">Name</span>
+                <div>
+                  <input
+                    placeholder="New policy name..."
+                    type="text"
+                    flex
+                    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10 wz-width-20"
+                    aria-invalid="false"
+                    ng-model="policyName"
+                    ng-change="enableSave()"
+                    ng-disabled="editingPolicy"
+                  />
+                </div>
+              </div>
+  
+              <div class="wz-margin-10">
+                <span class="tSize16">Actions</span>
+                <div id="actions-dropdown-view"></div>
+              </div>
+  
+              <div class="wz-margin-10">
+                <span class="tSize16">Resource</span>
+                <div id="resources-dropdown-view"></div>
+              </div>
+              <div class="wz-margin-10">
+                <span class="tSize16">Resource identifier</span>
+                <div>
+                  <input
+                    placeholder="Type * for all."
+                    type="text"
+                    flex
+                    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-width-10"
+                    aria-invalid="false"
+                    ng-model="resourceIdentifier"
+                    ng-change="onResourceIdentifierChanged()"
+                  />
+                  <button
+                    ng-disabled="!resourceIdentifier ||  disableAdd"
+                    class="btn wz-button-cancel wz-margin-bottom-10 wz-margin-left-25"
+                    ng-click="addResourceIdentifier()"
+                  >
+                    <wz-svg icon="plus"></wz-svg>
+                    Add
+                  </button>
+                </div>
+              </div>
+  
+              <div class="wz-margin-10">
+                <span class="tSize16">Select an effect</span>
+                <div id="effect-options-dropdown-view"></div>
+              </div>
+  
+              <div class="wz-margin-20">
+                <table
+                  class="table table-striped table-condensed"
+                  style="table-layout: fixed !important;"
+                >
+                  <thead class="wz-text-bold">
+                    <th class="wz-text-left col-lg-2">Resources</th>
+                  </thead>
+                  <tbody class="wz-word-wrap">
+                    <tr ng-repeat="resource in resourcesList track by $index">
+                      <td>{{ resource }}</td>
+                      <td>
+                        <wz-svg
+                          class="fa-pull-right wz-margin-right-10"
+                          ng-if="(!removingEntry || removingEntry !== resource) && editingKey !== resource"
+                          ng-click="showConfirmRemoveEntry($event, resource); $event.stopPropagation()"
+                          icon="trash"
+                          svg-tooltip="Remove this entry"
+                        >
+                        </wz-svg>
+  
+                        <div
+                          ng-if="removingEntry === resource"
+                          class="fa-pull-right "
+                        >
+                          <div layout="row">
+                            <span class="font-size-12 wz-padding-left-8"
+                              >This entry will be removed</span
+                            >
+                          </div>
+                          <div layout="row">
+                            <md-button
+                              class="cancelBtn wz-dev-box"
+                              type="button"
+                              ng-click="cancelRemoveEntry()"
+                              ><i
+                                aria-hidden="true"
+                                class="fa fa-fw fa-close"
+                              ></i>
+                              Cancel</md-button
+                            >
+                            <md-button
+                              class="agreeBtn wz-dev-box"
+                              type="button"
+                              ng-click="confirmRemoveEntry($event, $index)"
+                              ><i
+                                aria-hidden="true"
+                                class="fa fa-fw fa-check"
+                              ></i>
+                              Confirm
+                            </md-button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+  
+              <!-- Save and cancel buttons -->
+              <div class="flex fa-pull-right">
+                <span>
+                  <button
+                    class="btn wz-button-cancel"
+                    ng-click="cancelPolicyEdition()"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="btn wz-button-empty pull-right wz-margin-left-10"
+                    ng-click="savePolicy()"
+                    ng-disabled="saveIncomplete || overwrite || !policyName"
+                    ng-if="userHasPermissions({'security:update': ['policy:id:' + policyName]})"
+                  >
+                    <i
+                      ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                      aria-hidden="true"
+                    ></i>
+                    Save
+                  </button>
+                </span>
+              </div>
+              <!-- End save and cancel buttons-->
+            </div>
+  
+            <div
+              ng-show="!addingNewPolicy"
+              style="width: 100%; display: flex; align-items: flex-start;"
+            >
+              <label class="wz-icon-loupe">
+                <input
+                  placeholder="Filter policies..."
+                  ng-model="customSearch"
+                  type="text"
+                  flex
+                  class="kuiLocalSearchInput height-40"
+                  aria-invalid="false"
+                  wz-enter="search(customSearch)"
+                />
+              </label>
+              <button
+                ng-click="search(customSearch)"
+                class="btn height-40 agreeBtn pull-right wz-margin-left-7"
+                style="max-height:40px !important;"
               >
-            </button>
+                <span
+                  ><i
+                    aria-hidden="true"
+                    class="fa fa-fw fa-search wz-margin-left-10"
+                    >&nbsp;</i
+                  >Search</span
+                >
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </md-card-actions>
-
-    <md-card-contents ng-if="!addingNewPolicy">
-      <div layout="row" layout-padding>
-        <wazuh-table
-          custom-columns="true"
-          admin-mode="adminMode"
-          flex
-          extra-limit="100"
-          path="'/security/policies'"
-          keys="[
-            'id',
-            'name',
-            { value: 'policy.actions', nosortable: true },
-            { value: 'policy.resources', nosortable: true },
-            { value: 'policy.effect', nosortable: true }
-          ]"
-          allow-click="true"
-          row-sizes="[20,15,10,20]"
-        >
-        </wazuh-table>
-      </div>
-    </md-card-contents>
-  </md-card>
+      </md-card-actions>
+  
+      <md-card-contents ng-if="!addingNewPolicy">
+        <div layout="row" layout-padding>
+          <wazuh-table
+            custom-columns="true"
+            flex
+            extra-limit="100"
+            path="'/security/policies'"
+            keys="[
+              'id',
+              'name',
+              { value: 'policy.actions', nosortable: true },
+              { value: 'policy.resources', nosortable: true },
+              { value: 'policy.effect', nosortable: true }
+            ]"
+            allow-click="true"
+            row-sizes="[20,15,10,20]"
+          >
+          </wazuh-table>
+        </div>
+      </md-card-contents>
+    </md-card>
+  </div>
 </div>

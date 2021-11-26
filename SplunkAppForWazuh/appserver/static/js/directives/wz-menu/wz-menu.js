@@ -262,7 +262,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
             } else if (checkLastState('security', 'security')) { 
               $scope.menuNavItem = 'security'
             }
-                      
+            
             if ($scope.theresAPI && $scope.apiList.length > 1) {
               renderDropdownAPI();
               onChangeDropdownAPI();

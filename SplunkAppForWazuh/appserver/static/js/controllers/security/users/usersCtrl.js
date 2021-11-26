@@ -7,9 +7,8 @@ define([
   'use strict'
 
   class Users {
-    constructor($scope, isAdmin, roleData, $notificationService, $userService) {
+    constructor($scope, roleData, $notificationService, $userService, $security_service) {
       this.scope = $scope
-      this.scope.isAdmin = isAdmin;
       this.notification = $notificationService;
       this.userService = $userService;
       this.scope.isEditingUser = false;
@@ -24,6 +23,7 @@ define([
       this.scope.userAllowRunAs = false;
       this.scope.userRoles = [];
       this.scope.editUserRoles = [];
+      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
 
       this.scope.roleData = this.getRoleList(roleData.data.data.affected_items || []);
     }
