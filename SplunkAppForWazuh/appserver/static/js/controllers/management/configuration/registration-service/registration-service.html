@@ -21,7 +21,9 @@
   <div flex="auto" layout="row" ng-if="!load">
 
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['auth-auth']" ng-if="(currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])) || !currentConfig['auth-auth'].auth"></wz-no-config>
+    <wz-no-config 
+      flex error="currentConfig['auth-auth']" 
+      ng-if="(currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])) || !currentConfig['auth-auth'].auth"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
@@ -47,19 +49,33 @@
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
 
-            <wz-config-item label="Service status" value="currentConfig['auth-auth'].auth.disabled === 'yes'? 'disabled' : 'enabled'">
+            <wz-config-item 
+              label="Service status" 
+              value="currentConfig['auth-auth'].auth.disabled === 'yes'? 'disabled' : 'enabled'">
             </wz-config-item>
-            <wz-config-item label="Listen to connections at port" value="currentConfig['auth-auth'].auth.port">
+            <wz-config-item 
+              label="Listen to connections at port" 
+              value="currentConfig['auth-auth'].auth.port">
             </wz-config-item>
-            <wz-config-item label="Use client's source IP address" value="currentConfig['auth-auth'].auth.use_source_ip">
+            <wz-config-item 
+              label="Use client's source IP address" 
+              value="currentConfig['auth-auth'].auth.use_source_ip">
             </wz-config-item>
-            <wz-config-item label="Use a password to register agents" value="currentConfig['auth-auth'].auth.use_password">
+            <wz-config-item 
+              label="Use a password to register agents" 
+              value="currentConfig['auth-auth'].auth.use_password">
             </wz-config-item>
-            <wz-config-item label="Purge agents list when removing agents" value="currentConfig['auth-auth'].auth.purge">
+            <wz-config-item 
+              label="Purge agents list when removing agents" 
+              value="currentConfig['auth-auth'].auth.purge">
             </wz-config-item>
-            <wz-config-item label="Limit registration to maximum number of agents" value="currentConfig['auth-auth'].auth.limit_maxagents">
+            <wz-config-item 
+              label="Limit registration to maximum number of agents" 
+              value="currentConfig['auth-auth'].auth.limit_maxagents">
             </wz-config-item>
-            <wz-config-item label="Force registration when using an existing IP address" value="currentConfig['auth-auth'].auth.force.enabled">
+            <wz-config-item 
+              label="Force registration when using an existing IP address" 
+              value="currentConfig['auth-auth'].auth.force.enabled">
             </wz-config-item>
 
           </div>
@@ -76,17 +92,29 @@
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
 
-            <wz-config-item label="Verify agents using a CA certificate" value="currentConfig['auth-auth'].auth.ssl_verify_host">
+            <wz-config-item 
+              label="Verify agents using a CA certificate" 
+              value="currentConfig['auth-auth'].auth.ssl_verify_host">
             </wz-config-item>
-            <wz-config-item label="Auto-select the SSL negotiation method" value="currentConfig['auth-auth'].auth.ssl_auto_negotiate">
+            <wz-config-item 
+              label="Auto-select the SSL negotiation method" 
+              value="currentConfig['auth-auth'].auth.ssl_auto_negotiate">
             </wz-config-item>
-            <wz-config-item label="CA certificate location" value="currentConfig['auth-auth'].auth.ssl_agent_ca">
+            <wz-config-item 
+              label="CA certificate location" 
+              value="currentConfig['auth-auth'].auth.ssl_agent_ca">
             </wz-config-item>
-            <wz-config-item label="Server SSL certificate location" value="currentConfig['auth-auth'].auth.ssl_manager_cert">
+            <wz-config-item 
+              label="Server SSL certificate location" 
+              value="currentConfig['auth-auth'].auth.ssl_manager_cert">
             </wz-config-item>
-            <wz-config-item label="Server SSL key location" value="currentConfig['auth-auth'].auth.ssl_manager_key">
+            <wz-config-item 
+              label="Server SSL key location" 
+              value="currentConfig['auth-auth'].auth.ssl_manager_key">
             </wz-config-item>
-            <wz-config-item label="Use the following SSL ciphers" value="currentConfig['auth-auth'].auth.ciphers">
+            <wz-config-item 
+              label="Use the following SSL ciphers" 
+              value="currentConfig['auth-auth'].auth.ciphers">
             </wz-config-item>
 
           </div>
@@ -95,7 +123,11 @@
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
+      <wz-config-viewer 
+        flex getjson="getJSON()" 
+        getxml="getXML()" 
+        jsoncontent="JSONContent" 
+        xmlcontent="XMLContent" />
 
     </div>
     <!-- End main content section -->
