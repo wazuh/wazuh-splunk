@@ -128,10 +128,10 @@
       <a class="cursor-pointer green-href" ng-click="addNewAgent()">Add new agent</a>
     </md-card-actions>
     <md-card-contents>
-      <wazuh-table flex path="'/agents'" custom-columns="true"
+      <wazuh-table-server-side flex path="'/agents'" custom-columns="true"
         keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version','node_name', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
         allow-click="true" rows-per-page="17">
-      </wazuh-table>
+      </wazuh-table-server-side>
     </md-card-contents>
 
 

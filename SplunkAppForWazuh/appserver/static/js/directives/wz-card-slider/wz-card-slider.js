@@ -17,11 +17,13 @@ define(['../module'], function(directives) {
       scope: {
         data: '=data'
       },
-      controller: function($scope) {
+      controller: function($scope, $sce) {
         $scope.expanded = false
         $scope.currentPos = 0
         $scope.maxCards = 4
-
+        $scope.data && $scope.data.forEach((item)=>{
+          item.content = $sce.trustAsHtml(item.content)
+        })
         $scope.canShow = index => {
           return (
             index >= $scope.currentPos * $scope.maxCards &&

@@ -1,5 +1,7 @@
 define([
   './general/overviewGeneralCtrl',
+  './mitre/overviewMitreCtrl',
+  './mitre-ids/overviewMitreIdsCtrl',
   './welcome/overviewWelcomeCtrl',
   './audit/overviewAuditCtrl',
   './fim/overviewFimCtrl',

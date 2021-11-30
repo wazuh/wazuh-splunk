@@ -101,10 +101,6 @@ class _Operand(object):
         # an image is "true" if it contains at least one non-zero pixel
         return self.im.getbbox() is not None
 
-    if not py3:
-        # Provide __nonzero__ for pre-Py3k
-        __nonzero__ = __bool__
-        del __bool__
 
     def __abs__(self):
         return self.apply("abs", self)
@@ -151,13 +147,6 @@ class _Operand(object):
 
     def __rpow__(self, other):
         return self.apply("pow", other, self)
-
-    if not py3:
-        # Provide __div__ and __rdiv__ for pre-Py3k
-        __div__ = __truediv__
-        __rdiv__ = __rtruediv__
-        del __truediv__
-        del __rtruediv__
 
     # bitwise
     def __invert__(self):

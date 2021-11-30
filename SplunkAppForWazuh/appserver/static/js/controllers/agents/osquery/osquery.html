@@ -38,6 +38,8 @@
 
   <!-- Threat Detection and Response navbar -->
   <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'osquery'">
+    <md-nav-item 
+      class="wz-nav-item" md-nav-click="stopPropagation()" name="inventory" ui-sref="ag-cve">Inventory</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ag-vul" name="vulnerabilities">
       Vulnerabilities</md-nav-item>
     <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="osquery">Osquery</md-nav-item>

@@ -163,11 +163,11 @@
 
         </div>
         <div layout="row" class="md-padding">
-          <wazuh-table custom-columns="true" flex path="'/decoders'"
+          <wazuh-table-server-side custom-columns="true" flex path="'/decoders'"
             implicit-filter="[{ name:'filename',value: currentDecoder.filename}]"
             keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'filename',{value:'relative_dirname',nosortable:true}]"
             allow-click="true">
-          </wazuh-table>
+          </wazuh-table-server-side>
         </div>
         <div ng-show="!editingFile" layout="row" class="ruleset-csv-formater">
           <span flex></span>

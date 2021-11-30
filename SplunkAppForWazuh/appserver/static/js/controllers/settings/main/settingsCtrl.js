@@ -37,6 +37,11 @@ define(['../../module'], function(controllers) {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
+
+      this.scope.$on('changeSettingsTab', (event, data) => {
+        this.scope.tabName = data.tabName
+        event.preventDefault()
+      })
     }
   }
   controllers.controller('settingsCtrl', Main)

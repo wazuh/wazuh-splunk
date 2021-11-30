@@ -2,11 +2,12 @@ define(['../module'], function(module) {
   'use strict'
 
   class navigationService {
-    constructor($state, $window, $location, $apiMgrService) {
+    constructor($state, $window, $location, $apiMgrService, $rootScope) {
       this.$state = $state;
       this.$window = $window;
       this.$location = $location;
       this.$apiMgrService = $apiMgrService;
+      this.$rootScope = $rootScope;
 
       this.$window.onpopstate = () => {
         try {
@@ -74,7 +75,8 @@ define(['../module'], function(module) {
     async goToDefaultPage() {
       let currentApi; 
       try {
-        currentApi = await this.$apiMgrService.resolveCurrentApi();
+        currentApi = await this.$apiMgrService.resolveCurrentApi();        
+        this.$rootScope.$broadcast("updatedAPI", () => {});
       } catch (error) {
         console.warn('Wazuh API is not configured or it is down.');
       }

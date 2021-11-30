@@ -31,8 +31,7 @@ __version__ = "0.2"
 
 _handler = None
 
-if py3:
-    long = int
+long = int
 
 
 def register_handler(handler):

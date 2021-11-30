@@ -94,7 +94,10 @@ define([
           '$result.count$',
           'totalAlerts',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         new SearchHandler(
           `searchLevel12`,
@@ -103,7 +106,10 @@ define([
           '$result.count$',
           'levelTwelve',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         new SearchHandler(
           `searchAuthFailure`,
@@ -112,7 +118,10 @@ define([
           '$result.count$',
           'authFailure',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         new SearchHandler(
           `searchAuthSuccess`,
@@ -121,14 +130,17 @@ define([
           '$result.count$',
           'authSuccess',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         /**
          * Visualizations
          */
         new LinearChart(
           'alertLevEvoVizz',
-          `${this.filters} rule.level=*| timechart count by rule.level  `,
+          `${this.filters} rule.level=*`,
           'alertLevEvoVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }

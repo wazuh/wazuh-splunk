@@ -30,6 +30,11 @@ require.config({
     // dom-to-image
     domToImg: 'js/libs/required-dom-to-image/src/dom-to-image',
 
+    // Local jQuery 3.5.0
+    localjQuery: 'js/libs/jquery-3.5.0.min',
+
+    jQuery: 'js/jQuery',
+
     // JqueryUI
     JqueryUI: 'js/libs/jquery-ui'
   },
@@ -62,6 +67,9 @@ require.config({
     angularChart: {
       exports: 'angularChart',
       deps: ['angular', 'chart']
+    },
+    localjQuery: {
+      exports: '$'
     }
   },
 

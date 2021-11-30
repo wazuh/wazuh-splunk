@@ -1,4 +1,4 @@
-define(['../module', 'jquery'], function(module, $) {
+define(['../module', 'jQuery'], function(module, $) {
   'use strict'
   class ReportingService {
     constructor(

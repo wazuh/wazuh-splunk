@@ -6,6 +6,11 @@ define(['../module'], function(module) {
       equivalences: () => {
         return {
           id: 'ID',
+          'phase_name': 'Phase name',
+          'platform_name': 'Platforms',
+          'json.created': 'Created',
+          'json.name': 'Name',
+          'json.x_mitre_version': 'Version',
           timestamp: 'Timestamp',
           url: 'URL',
           version: 'Version',
@@ -31,6 +36,7 @@ define(['../module'], function(module) {
           'nist-800-53': 'NIST 800-53',
           groups: 'Groups',
           name: 'Name',
+          cve: 'CVE',
           count: 'Count',
           'details.program_name': 'Program name',
           'details.order': 'Order',

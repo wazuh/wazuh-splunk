@@ -12,13 +12,14 @@ define([
      * @param {*} $scope
      * @param {*} $urlTokenModel
      */
-    constructor($scope, $urlTokenModel) {
+    constructor($scope, $urlTokenModel, $notificationService) {
       this.timePicker = new TimePicker(
         '#timePicker',
         $urlTokenModel.handleValueChange
       )
       this.scope = $scope
       this.dashboardController = DashboardController
+      this.noticacionService = $notificationService;
       this.urlTokenModel = $urlTokenModel
       this.layoutView = new LayoutView({
         hideFooter: false,
@@ -43,6 +44,12 @@ define([
           : (this.scope.loadingMain = false)
         event.preventDefault()
         this.scope.$applyAsync()
+      })
+
+      // show warning notification diff version backend front end
+      this.scope.$on('showAppVersionsDiff', (event,data) => {
+        this.noticacionService.showWarningToast('Conflict with the Wazuh app version.\n'+
+        'The version of the Wazuh app in your browser not correspond with the app version installed in Splunk. Please, clear your browser cache.');
       })
 
       this.dashboardController.onReady(() => {

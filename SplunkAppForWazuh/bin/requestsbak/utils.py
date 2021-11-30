@@ -47,10 +47,8 @@ if sys.platform == 'win32':
 
     def proxy_bypass_registry(host):
         try:
-            if is_py3:
-                import winreg
-            else:
-                import _winreg as winreg
+            import winreg
+            
         except ImportError:
             return False
 

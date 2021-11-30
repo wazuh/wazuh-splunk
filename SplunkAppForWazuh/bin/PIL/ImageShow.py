@@ -20,11 +20,7 @@ import sys
 import tempfile
 
 from PIL import Image
-
-if sys.version_info.major >= 3:
-    from shlex import quote
-else:
-    from pipes import quote
+from shlex import quote
 
 _viewers = []
 

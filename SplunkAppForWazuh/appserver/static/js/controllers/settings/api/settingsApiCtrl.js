@@ -44,6 +44,12 @@ define(['../../module'], function (controllers) {
       this.scope.submitApiForm = (user, api, url, port) =>
         this.submitApiForm(user, api, url, port)
       this.init()
+
+      // Listens for changes in the selected API
+      this.scope.$on('APIChanged', (event, key) => {
+        this.setYellowStar(key)
+        this.scope.$applyAsync()
+      })      
     }
 
     /**

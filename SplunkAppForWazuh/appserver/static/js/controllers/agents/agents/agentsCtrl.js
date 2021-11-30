@@ -147,8 +147,8 @@ define([
             : []
         }
 
-        if (this.clusterInfo &&
-            this.clusterInfo.enabled === 'yes' &&
+        if (this.clusterInfo && 
+            this.clusterInfo.enabled === 'yes' && 
             this.clusterInfo.running === 'yes'
           ) {
           this.scope.searchBarModel.node_name = nodes || []
@@ -164,7 +164,8 @@ define([
         this.submittedTokenModel,
         this.scope,
         true,
-        'loadingSearch'
+        'loadingSearch',
+        this.notification
       )
 
       this.scope.expandChartAgent = false;

@@ -19,7 +19,7 @@
       <md-tooltip md-direction="bottom" class="wz-tooltip">
         Show or hide columns
       </md-tooltip>
-      <span class="action-btn-td cursor-pointer" ng-click="showCheckbox()">
+      <span class="action-btn-td cursor-pointer action-show-hide-columns" ng-click="showCheckbox()">
         <wz-svg icon="settings" color="green"></wz-svg>
       </span>
     </div>
@@ -350,7 +350,7 @@
   <!-- Table for syschecks -->
   <div layout="row" ng-show="!error && !wazuhTableLoading && items.length" ng-if="isSyschecks()">
     <table ng-class="customColumns ? 'table-resizable' : ''" ng-class="customColumns ? 'table-resizable' : ''"
-      class="table wz-no-outline table-condensed" style="table-layout: fixed !important" id="table{{scapepath}}">
+      class="table wz-no-outline table-condensed wz-break-word" style="table-layout: fixed !important" id="table{{scapepath}}">
       <thead class="wz-text-bold">
         <th ng-repeat="key in keys  | filter: showKey" class="wz-text-left wz-nowrap"
           ng-class="{'cursor-pointer' : !key.nosortable}" ng-click="!key.nosortable && sort(key)">

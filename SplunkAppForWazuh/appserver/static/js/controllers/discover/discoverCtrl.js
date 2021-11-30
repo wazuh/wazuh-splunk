@@ -1,4 +1,4 @@
-define(["../module", "jquery"], function (app, $) {
+define(["../module", "jQuery"], function (app, $) {
   "use strict";
 
   class Discover {

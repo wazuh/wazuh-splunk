@@ -139,7 +139,7 @@ define([
         ),
         new LinearChart(
           'profilesVizz',
-          `${this.filters} rule.level=*| timechart count by rule.level`,
+          `${this.filters} rule.level=*`,
           'profilesVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }

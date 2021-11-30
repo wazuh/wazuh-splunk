@@ -11,7 +11,7 @@
  */
 define([
   '../module',
-  'jquery',
+  'jQuery',
   '../../libs/codemirror-conv/lib/codemirror',
   '../../libs/codemirror-conv/json-lint',
   '../../libs/codemirror-conv/javascript',
