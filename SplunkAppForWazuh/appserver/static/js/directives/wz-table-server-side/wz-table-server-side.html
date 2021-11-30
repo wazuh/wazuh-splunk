@@ -156,8 +156,7 @@
                 <md-button class="cancelBtn" type="button" ng-click="$event.stopPropagation();cancelRemoveFile()"><i
                     aria-hidden='true' class='fa fa-fw fa-close'></i>
                   Cancel</md-button>
-                <!--FIXME: This button requires to set the user permissions to display-->
-                <md-button class="agreeBtn" type="button" ng-click="$event.stopPropagation();confirmRemoveFile(item)"><i
+                <md-button ng-if="userHasPermissions({'rules:delete': ['rule:file:' + item.filename || item.name]})" class="agreeBtn" type="button" ng-click="$event.stopPropagation();confirmRemoveFile(item)"><i
                     aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
               </div>
             </div>
