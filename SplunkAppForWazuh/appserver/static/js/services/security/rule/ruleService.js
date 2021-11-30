@@ -47,7 +47,9 @@ define(["../../module"], function (module) {
 
     const addRoleRules = async (roleId, rules) => {
       return await $requestService.apiReq(
-        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`
+        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`,
+        {},
+        'POST'
       );
     };
 
