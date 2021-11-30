@@ -266,8 +266,8 @@ define([
       let wrongFormat = false;
       let formatedRules;
       let logicalOperator;
-
-      const operatorsCount = rulesArray.filter(rule => Array.isArray(rule[Object.keys(rule)[0]]))
+      const operatorsCount = rulesArray
+        .filter(rule => Array.isArray(rule[Object.keys(rule)[0]]))
         .length;
       switch (operatorsCount) {
         case 0: // only custom rules or internal users
@@ -393,10 +393,16 @@ define([
         this.scope.editingRole = isDisabled;
         this.scope.overwrite = isDisabled;
         this.jsonCodeBox.setValue(JSON.stringify(parameters.rule.rule, null, 2));
-        const { customRules, internalUsersRules, wrongFormat, logicalOperator } = this.decodeJsonRule(
+        const {
+          customRules,
+          internalUsersRules,
+          wrongFormat,
+          logicalOperator
+        } = this.decodeJsonRule(
           parameters.rule.rule,
           this.scope.splunkUsers
         );
+        this.scope.wrongFormat = wrongFormat;
         this.scope.logicalOperator = logicalOperator === 'AND' ? true : false;
         customRules.map(rule => {
           this.scope.customRules.push(rule);
@@ -412,7 +418,7 @@ define([
         this.dropdownRoles = null;
         this.dropdownSplunkUsers = null
         this.searchManager = null;
-        this.jsonCodeBox.setValue(null)
+        this.jsonCodeBox.setValue("");
       });
     }
 

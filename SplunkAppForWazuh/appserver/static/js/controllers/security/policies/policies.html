@@ -1,5 +1,8 @@
 <!-- About card section -->
-<wz-forbidden ng-if="!userHasPermissions({'security:read': ['policy:id:*']})"></wz-forbidden>
+<wz-forbidden 
+  ng-if="!userHasPermissions({'security:read': ['policy:id:*']})">
+</wz-forbidden>
+
 <div ng-show="userHasPermissions({'security:read': ['policy:id:*']})">
   <div
     layout="row"
@@ -112,29 +115,29 @@
                           class="fa-pull-right "
                         >
                           <div layout="row">
-                            <span class="font-size-12 wz-padding-left-8"
-                              >This entry will be removed</span
-                            >
+                            <span class="font-size-12 wz-padding-left-8">
+                              This entry will be removed
+                            </span>
                           </div>
                           <div layout="row">
                             <md-button
                               class="cancelBtn wz-dev-box"
                               type="button"
-                              ng-click="cancelRemoveEntry()"
-                              ><i
+                              ng-click="cancelRemoveEntry()">
+                              <i
                                 aria-hidden="true"
-                                class="fa fa-fw fa-close"
-                              ></i>
-                              Cancel</md-button
-                            >
+                                class="fa fa-fw fa-close">
+                              </i>
+                              Cancel
+                            </md-button>
                             <md-button
                               class="agreeBtn wz-dev-box"
                               type="button"
-                              ng-click="confirmRemoveEntry($event, $index)"
-                              ><i
+                              ng-click="confirmRemoveEntry($event, $index)">
+                              <i
                                 aria-hidden="true"
-                                class="fa fa-fw fa-check"
-                              ></i>
+                                class="fa fa-fw fa-check">
+                              </i>
                               Confirm
                             </md-button>
                           </div>
@@ -162,8 +165,8 @@
                   >
                     <i
                       ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                      aria-hidden="true"
-                    ></i>
+                      aria-hidden="true">
+                    </i>
                     Save
                   </button>
                 </span>
@@ -191,13 +194,14 @@
                 class="btn height-40 agreeBtn pull-right wz-margin-left-7"
                 style="max-height:40px !important;"
               >
-                <span
-                  ><i
+                <span>
+                  <i
                     aria-hidden="true"
-                    class="fa fa-fw fa-search wz-margin-left-10"
-                    >&nbsp;</i
-                  >Search</span
-                >
+                    class="fa fa-fw fa-search wz-margin-left-10">
+                    &nbsp;
+                  </i>
+                  Search
+                </span>
               </button>
             </div>
           </div>
