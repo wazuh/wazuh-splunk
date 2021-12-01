@@ -35,11 +35,24 @@ class wazuhtoken():
             self.session = requestsbak.Session()
             self.session.trust_env = False
             self.cache = cache()
+            self.__refresh = False
         except Exception as e:
             self.logger.error(
                 "wazuh-token: error in the constructor: %s" % (e))
 
-    def get_auth_token(self, api_url: str, api_user: str, api_object: dict = None) -> str:
+    def refresh(self):
+        """
+        Use this method to force a token refresh on the next request.
+        """
+        self.logger.debug("wazuh-token: token refresh requested")
+        self.__refresh = True
+
+    def get_auth_token(
+        self, 
+        api_url: str, 
+        api_user: str, 
+        api_object: dict = None
+    ) -> str:
         """
         Fetches a new authorization token for the given manager API and API user.
         The token can be obtained from the session cache or he Wazuh Manager API.
@@ -67,48 +80,12 @@ class wazuhtoken():
         api_run_as: bool = (api_object["runAs"] == "true")
         token_key: str = f'token-{api_url}-{api_user}'
 
-        def validate_token(token: str) -> str:
-            """
-            Validate the token by performing a simple GET request against
-            the Wazuh API.
-
-            The token might be deprecated either by the API, as a result
-            of changes on the security rules, or due to a timeout.
-
-            :param token: credentials token.
-            :return:      Returns the given token if the request replies
-                          with an OK" - 200 status code. If a "Unauhorized"
-                          - 401 status code is received instead, a new token
-                          is requested.
-            """
-            self.logger.debug("wazuh-token: validating token")
-            try:
-                response = self.session.get(
-                    f"{api_url}/",
-                    headers={'Authorization': f'Bearer {token}'},
-                    timeout=20,
-                    verify=False
-                )
-                if response.status_code == 200:
-                    self.logger.debug("wazuh-token: token is valid")
-                    return token
-                elif response.status_code == 401:
-                    self.logger.debug(
-                        "wazuh-token: token is deprecated. Refreshing...")
-                    self.cache.delete(token_key)
-                    return self.get_auth_token(api_url, api_user, api_object)
-            except Exception as e:
-                self.logger.error(
-                    "wazuh-token: error validating token: %s" % (e))
-                return token
-
         try:
-            # Return cached token, if it exists. Check if it's valid.
+            # Return cached token, if it exists. Check if a refresh is required.
             token: str = self.cache.get(token_key)
-            if token is not None:
+            if not self.__refresh and token is not None:
                 self.logger.debug(
                     f"wazuh-token: the token for {token_key} key is in cache")
-                return validate_token(token)
             # Otherwise, get a new token from the manager's API.
             else:
                 response = self.get_token_request(
@@ -121,7 +98,6 @@ class wazuhtoken():
                     self.cache.set(token_key, token, 900)
                     self.logger.debug(
                         f"wazuh-token: new token for key {token_key}")
-                    return token
                 # Request returned an error code
                 elif response.status_code != 200:
                     error_title = response.json()['title']
@@ -136,12 +112,20 @@ class wazuhtoken():
                     error = "wazuh-token: no response received from the Wazuh API"
                     self.logger.error(error)
                     raise Exception(error)
+
+            self.__refresh = False
+            return token
         except Exception as e:
             self.logger.error(
                 "wazuh-token: error on get_auth_token: %s" % (e))
             raise e
 
-    def get_token_request(self, api_url: str, api_user: str, api_run_as: bool) -> requestsbak.models.Response:
+    def get_token_request(
+        self, 
+        api_url: str, 
+        api_user: str, 
+        api_run_as: bool
+    ) -> requestsbak.models.Response:
         """
         This method should be called to get an API token. Performs a request on
         the Wazuh API to get the token. If allowed, an authorization context
@@ -154,13 +138,16 @@ class wazuhtoken():
         self.logger.debug("wazuh-token::get_token_request() called")
         try:
             # Obtain Splunk's user context.
-            user: dict = {"username": splunk_auth.getCurrentUser()['name']}
+            user: dict = {"user_name": splunk_auth.getCurrentUser()['name']}
             self.logger.debug(
                 "wazuh-token: Splunk's User is\n" +
                 json.dumps(user, indent=4)
             )
             self.logger.debug("wazuh-token: API.run_as is " + str(api_run_as))
-            response = self.basic_auth_login(api_url, api_user)
+            response = self.basic_auth_login(api_url, api_user)  # REMOVE ME
+            self.logger.debug("wazuh-token: TOKEN " +
+                              json.dumps(response.json()))
+            # TODO CONTINUE DEBUG
             # Try to log in using the auth context first
             # if api_run_as:
             #     response = self.auth_context_login(api_url, api_user, user)
@@ -180,7 +167,11 @@ class wazuhtoken():
             self.logger.error("wazuh-token::get_token_request() - " + str(e))
             raise (e)
 
-    def basic_auth_login(self, api_url: str, api_user: str) -> requestsbak.models.Response:
+    def basic_auth_login(
+        self, 
+        api_url: str, 
+        api_user: str
+    ) -> requestsbak.models.Response:
         """
         This method should be called to get an API token.
 
@@ -201,7 +192,12 @@ class wazuhtoken():
                 "wazuh-token: error on basic_auth_login: %s" % (e))
             raise e
 
-    def auth_context_login(self, api_url: str, api_user: str, auth_context: dict = {}) -> requestsbak.models.Response:
+    def auth_context_login(
+        self, 
+        api_url: str, 
+        api_user: str, 
+        auth_context: dict = {}
+    ) -> requestsbak.models.Response:
         """
         This method should be called to get an API token using an
         authorization context body.

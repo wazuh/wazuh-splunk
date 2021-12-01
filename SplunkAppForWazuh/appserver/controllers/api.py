@@ -126,7 +126,11 @@ class api(controllers.BaseController):
             else:
                 if str(self.getSelfAdminStanza()['admin']) != 'true':
                     self.logger.error('api: Admin mode is disabled.')
-                    return jsonbak.dumps({'error': 'Forbidden. Enable admin mode.'})
+                    return jsonbak.dumps(
+                        {
+                            'error': 'Forbidden. Enable admin mode.'
+                        }
+                    )
                 method = kwargs['method']
                 del kwargs['method']
 
@@ -148,7 +152,11 @@ class api(controllers.BaseController):
             result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("api: Error making API request: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return result
 
     @expose_page(must_login=False, methods=['GET'])
@@ -160,7 +168,11 @@ class api(controllers.BaseController):
             self.logger.debug("Returning autocomplete for devtools.")
             return api_info.get_api_endpoints()
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
 
     # POST /api/csv : Generates a CSV file with the returned data from API
     @expose_page(must_login=False, methods=['POST'])
@@ -188,8 +200,6 @@ class api(controllers.BaseController):
 
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(
-                url, auth, current_api_json)
 
             if 'path' not in kwargs:
                 raise Exception("Missing path param.")
@@ -214,12 +224,14 @@ class api(controllers.BaseController):
             # init csv writer
             output_file = StringIO()
             # get total items and keys
-            request = self.session.get(
-                url + opt_endpoint,
-                params=None if is_list_export_keys_values else filters,
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            request = self.make_request(
+                'GET',
+                url,
+                opt_endpoint,
+                {} if is_list_export_keys_values else filters,
+                auth,
+                current_api_json
+            )
             self.logger.debug("api: Data obtained for generate CSV file.")
             if ('affected_items' in request['data'] and
                     len(request['data']['affected_items']) > 0):
@@ -269,14 +281,15 @@ class api(controllers.BaseController):
                         while offset <= total_items:
                             offset += filters['limit']
                             filters['offset'] = offset
-                            req = self.session.get(
-                                url + opt_endpoint,
-                                params=filters,
-                                headers={
-                                    'Authorization': f'Bearer {wazuh_token}'},
-                                verify=False
-                            ).json()
-                            paginated_result = req['data']['affected_items']
+                            request = self.make_request(
+                                'GET',
+                                url,
+                                opt_endpoint,
+                                filters,
+                                auth,
+                                current_api_json
+                            )
+                            paginated_result = request['data']['affected_items']
                             format_paginated_results = self.format_output(
                                 paginated_result)
                             dict_writer.writerows(format_paginated_results)
@@ -291,7 +304,11 @@ class api(controllers.BaseController):
             self.logger.debug("api: CSV file generated.")
         except Exception as e:
             self.logger.error("api: Error in CSV generation!: %s" % (str(e)))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
         return csv_result
 
     @expose_page(must_login=False, methods=['GET'])
@@ -312,8 +329,6 @@ class api(controllers.BaseController):
 
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(
-                url, auth, current_api_json)
 
             if not 'requirement' in kwargs:
                 raise Exception('Missing requirement.')
@@ -322,15 +337,21 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/pci'
-                request = self.session.get(
-                    url + opt_endpoint,
-                    params=kwargs,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=False
-                ).json()
+                request = self.make_request(
+                    'GET',
+                    url,
+                    opt_endpoint,
+                    kwargs,
+                    auth,
+                    current_api_json
+                )
 
                 if request['error'] != 0:
-                    return jsonbak.dumps({'error': request['error']})
+                    return jsonbak.dumps(
+                        {
+                            'error': request['error']
+                        }
+                    )
                 data = request['data']['items']
                 result = {}
 
@@ -339,7 +360,11 @@ class api(controllers.BaseController):
                 return jsonbak.dumps(result)
             else:
                 if not requirement in pci_requirements.pci:
-                    return jsonbak.dumps({'error': 'Requirement not found.'})
+                    return jsonbak.dumps(
+                        {
+                            'error': 'Requirement not found.'
+                        }
+                    )
 
                 pci_description = pci_requirements.pci[requirement]
                 result = {}
@@ -350,7 +375,11 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "api: Error getting PCI-DSS requirements: %s" % (str(e)))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['GET'])
     def gdpr(self, **kwargs):
@@ -370,8 +399,6 @@ class api(controllers.BaseController):
 
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(
-                url, auth, current_api_json)
 
             if not 'requirement' in kwargs:
                 raise Exception('Missing requirement.')
@@ -380,15 +407,21 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/gdpr'
-                request = self.session.get(
-                    url + opt_endpoint,
-                    params=kwargs,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=False
-                ).json()
+                request = self.make_request(
+                    'GET',
+                    url,
+                    opt_endpoint,
+                    kwargs,
+                    auth,
+                    current_api_json
+                )
 
                 if request['error'] != 0:
-                    return jsonbak.dumps({'error': request['error']})
+                    return jsonbak.dumps(
+                        {
+                            'error': request['error']
+                        }
+                    )
                 data = request['data']['items']
                 result = {}
 
@@ -398,7 +431,11 @@ class api(controllers.BaseController):
                 return jsonbak.dumps(result)
             else:
                 if not requirement in gdpr_requirements.gdpr:
-                    return jsonbak.dumps({'error': 'Requirement not found.'})
+                    return jsonbak.dumps(
+                        {
+                            'error': 'Requirement not found.'
+                        }
+                    )
 
                 pci_description = gdpr_requirements.gdpr[requirement]
                 result = {}
@@ -410,7 +447,11 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "api: Error getting PCI-DSS requirements: %s" % (str(e)))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['GET'])
     def hipaa(self, **kwargs):
@@ -430,8 +471,6 @@ class api(controllers.BaseController):
 
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(
-                url, auth, current_api_json)
 
             if not 'requirement' in kwargs:
                 raise Exception('Missing requirement.')
@@ -440,15 +479,21 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/hipaa'
-                request = self.session.get(
-                    url + opt_endpoint,
-                    params=kwargs,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=False
-                ).json()
+                request = self.make_request(
+                    'GET',
+                    url,
+                    opt_endpoint,
+                    kwargs,
+                    auth,
+                    current_api_json
+                )
 
                 if request['error'] != 0:
-                    return jsonbak.dumps({'error': request['error']})
+                    return jsonbak.dumps(
+                        {
+                            'error': request['error']
+                        }
+                    )
                 data = request['data']['items']
                 result = {}
 
@@ -458,7 +503,11 @@ class api(controllers.BaseController):
                 return jsonbak.dumps(result)
             else:
                 if not requirement in hipaa_requirements.hipaa:
-                    return jsonbak.dumps({'error': 'Requirement not found.'})
+                    return jsonbak.dumps(
+                        {
+                            'error': 'Requirement not found.'
+                        }
+                    )
 
                 hipaa_description = hipaa_requirements.hipaa[requirement]
                 result = {}
@@ -470,7 +519,11 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "api: Error getting HIPAA requirements: %s" % (str(e)))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['GET'])
     def nist(self, **kwargs):
@@ -490,8 +543,6 @@ class api(controllers.BaseController):
 
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(
-                url, auth, current_api_json)
 
             if not 'requirement' in kwargs:
                 raise Exception('Missing requirement.')
@@ -500,15 +551,21 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/nist-800-53'
-                request = self.session.get(
-                    url + opt_endpoint,
-                    params=kwargs,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=False
-                ).json()
+                request = self.make_request(
+                    'GET',
+                    url,
+                    opt_endpoint,
+                    kwargs,
+                    auth,
+                    current_api_json
+                )
 
                 if request['error'] != 0:
-                    return jsonbak.dumps({'error': request['error']})
+                    return jsonbak.dumps(
+                        {
+                            'error': request['error']
+                        }
+                    )
                 data = request['data']['items']
                 result = {}
 
@@ -517,7 +574,11 @@ class api(controllers.BaseController):
                 return jsonbak.dumps(result)
             else:
                 if not requirement in nist_requirements.nist:
-                    return jsonbak.dumps({'error': 'Requirement not found.'})
+                    return jsonbak.dumps(
+                        {
+                            'error': 'Requirement not found.'
+                        }
+                    )
 
                 nist_description = nist_requirements.nist[requirement]
                 result = {}
@@ -529,7 +590,11 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "api: Error getting NIST 800-53 requirements: %s" % (str(e)))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
 
     def get_config_on_memory(self):
         try:
@@ -539,7 +604,11 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "api: Error getting the configuration on memory: %s" % (e))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
 
     """
     Get basic syscollector information for a given agent.
@@ -562,8 +631,6 @@ class api(controllers.BaseController):
 
             url = opt_base_url + ":" + opt_base_port
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = self.wztoken.get_auth_token(
-                url, auth, current_api_json)
 
             if not 'agentId' in kwargs:
                 raise Exception('Missing `agentID` parameter.')
@@ -582,12 +649,14 @@ class api(controllers.BaseController):
             # FIXME USE A FOR LOOP
             # Hardware
             endpoint_hardware = f'/syscollector/{agentId}/hardware'
-            hardware_data = self.session.get(
-                url + endpoint_hardware,
-                params={},
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            hardware_data = self.make_request(
+                'GET',
+                url,
+                endpoint_hardware,
+                {},
+                auth,
+                current_api_json
+            )
 
             if ('error' in hardware_data and hardware_data['error'] == 0
                     and 'data' in hardware_data):
@@ -595,24 +664,28 @@ class api(controllers.BaseController):
 
             # OS
             endpoint_os = f'/syscollector/{agentId}/os'
-            os_data = self.session.get(
-                url + endpoint_os,
-                params={},
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            os_data = self.make_request(
+                'GET',
+                url,
+                endpoint_os,
+                {},
+                auth,
+                current_api_json
+            )
 
             if 'error' in os_data and os_data['error'] == 0 and 'data' in os_data:
                 syscollectorData['os'] = os_data['data']
 
             # Ports
             endpoint_ports = f'/syscollector/{agentId}/ports'
-            ports_data = self.session.get(
-                url + endpoint_ports,
-                params={'limit': 1},
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            ports_data = self.make_request(
+                'GET',
+                url,
+                endpoint_ports,
+                {'limit': 1},
+                auth,
+                current_api_json
+            )
 
             if ('error' in ports_data and ports_data['error'] == 0
                     and 'data' in ports_data):
@@ -620,12 +693,14 @@ class api(controllers.BaseController):
 
             # Packages
             endpoint_packages = f'/syscollector/{agentId}/packages'
-            packages_data = self.session.get(
-                url + endpoint_packages,
-                params={'limit': 1},
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            packages_data = self.make_request(
+                'GET',
+                url,
+                endpoint_packages,
+                {'limit': 1},
+                auth,
+                current_api_json
+            )
 
             if ('error' in packages_data and packages_data['error'] == 0
                     and 'data' in packages_data):
@@ -638,12 +713,14 @@ class api(controllers.BaseController):
 
             # Processes
             endpoint_processes = f'/syscollector/{agentId}/processes'
-            processes_data = self.session.get(
-                url + endpoint_processes,
-                params={'limit': 1},
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            processes_data = self.make_request(
+                'GET',
+                url,
+                endpoint_processes,
+                {'limit': 1},
+                auth,
+                current_api_json
+            )
 
             if ('error' in processes_data and processes_data['error'] == 0 and
                     'data' in processes_data):
@@ -656,12 +733,14 @@ class api(controllers.BaseController):
 
             # Netiface
             endpoint_netiface = F'/syscollector/{agentId}netiface'
-            netiface_data = self.session.get(
-                url + endpoint_netiface,
-                params={},
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            netiface_data = self.make_request(
+                'GET',
+                url,
+                endpoint_netiface,
+                {},
+                auth,
+                current_api_json
+            )
 
             if ('error' in netiface_data and netiface_data['error'] == 0 and
                     'data' in netiface_data):
@@ -669,12 +748,14 @@ class api(controllers.BaseController):
 
             # Netaddr
             endpoint_netaddr = f'/syscollector/{agentId}/netaddr'
-            netaddr_data = self.session.get(
-                url + endpoint_netaddr,
-                params={'limit': 1},
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+            netaddr_data = self.make_request(
+                'GET',
+                url,
+                endpoint_netaddr,
+                {'limit': 1},
+                auth,
+                current_api_json
+            )
 
             if ('error' in netaddr_data and netaddr_data['error'] == 0 and
                     'data' in netaddr_data):
@@ -684,7 +765,11 @@ class api(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "Error getting syscollector information for a given agent: %s" % (str(e)))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
 
     # ------------------------------------------------------------ #
     #   Utility methods
@@ -699,7 +784,6 @@ class api(controllers.BaseController):
     # API entry points as manager.py
     # It would be better if it returned an object and not
     # different variables.
-
     def get_credentials(self, the_id):
         try:
             self.logger.debug("api: Getting API credentials.")
@@ -726,7 +810,6 @@ class api(controllers.BaseController):
         """
         try:
             apikeyconf = cli.getConfStanza('config', 'configuration')
-            # parsed_data = jsonbak.dumps(apikeyconf)
         except Exception as e:
             raise e
         return apikeyconf
@@ -807,15 +890,38 @@ class api(controllers.BaseController):
         except Exception as e:
             raise e
 
-    def catch_Exceptions(self, request):
-        try:
-            if request.status_code != 200:
-                raise Exception(request.json())
-            return request.json()
-        except Exception as e:
-            raise e
-
     def make_request(self, method, url, opt_endpoint, kwargs, auth, current_api, counter=3):
+
+        def catch_Exceptions(request):
+            """
+            Auxiliar function. Controls some  of the request's status codes.
+            """
+            # Static variable. Retains state between calls
+            if not hasattr(catch_Exceptions, 'attempts'):
+                catch_Exceptions.attempts = 0
+            try:
+                # Unauthorized. Try to refresh the token and re-attempt request
+                if request.status_code == 401:
+                    if catch_Exceptions.attempts == 0:
+                        self.wztoken.refresh()
+                        return self.make_request(
+                            method,
+                            url,
+                            opt_endpoint,
+                            kwargs,
+                            auth,
+                            current_api,
+                            counter - 1
+                        )
+
+                if request.status_code != 200:
+                    raise Exception(request.json())
+
+                catch_Exceptions.attempts = 0
+                return request.json()
+            except Exception as e:
+                raise e
+
         verify = False
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
@@ -828,6 +934,7 @@ class api(controllers.BaseController):
                             headers={'Authorization': f'Bearer {wazuh_token}'},
                             verify=verify
                         ).content
+                        # FIXME
                         json_response = json.dumps(
                             {'data': request_xml.decode("utf-8")})
                         json_load = json.loads(json_response)
@@ -849,19 +956,25 @@ class api(controllers.BaseController):
                         headers={'Authorization': f'Bearer {wazuh_token}'},
                         verify=verify
                     )
-                    request = self.catch_Exceptions(request)
+                    request = catch_Exceptions(request)
 
             if method == 'POST':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmleditor':
-                        headers = {'Content-Type': 'application/xml',
-                                   'Authorization': f'Bearer {wazuh_token}'}
+                        headers = {
+                            'Content-Type': 'application/xml',
+                            'Authorization': f'Bearer {wazuh_token}'
+                        }
                     elif kwargs['origin'] == 'json':
-                        headers = {'Content-Type':  'application/json',
-                                   'Authorization': f'Bearer {wazuh_token}'}
+                        headers = {
+                            'Content-Type':  'application/json',
+                            'Authorization': f'Bearer {wazuh_token}'
+                        }
                     elif kwargs['origin'] == 'raw':
-                        headers = {'Content-Type':  'application/octet-stream',
-                                   'Authorization': f'Bearer {wazuh_token}'}
+                        headers = {
+                            'Content-Type':  'application/octet-stream',
+                            'Authorization': f'Bearer {wazuh_token}'
+                        }
                     kwargs = str(kwargs['content'])
                     request = self.session.post(
                         url + opt_endpoint,
@@ -869,7 +982,7 @@ class api(controllers.BaseController):
                         verify=verify,
                         headers=headers
                     )
-                    request = self.catch_Exceptions(request)
+                    request = catch_Exceptions(request)
                 else:
                     request = self.session.post(
                         url + opt_endpoint,
@@ -877,19 +990,25 @@ class api(controllers.BaseController):
                         headers={'Authorization': f'Bearer {wazuh_token}'},
                         verify=verify
                     )
-                    request = self.catch_Exceptions(request)
+                    request = catch_Exceptions(request)
 
             if method == 'PUT':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmleditor':
-                        headers = {'Content-Type': 'application/xml',
-                                   'Authorization': f'Bearer {wazuh_token}'}
+                        headers = {
+                            'Content-Type': 'application/xml',
+                            'Authorization': f'Bearer {wazuh_token}'
+                        }
                     elif kwargs['origin'] == 'json':
-                        headers = {'Content-Type':  'application/json',
-                                   'Authorization': f'Bearer {wazuh_token}'}
+                        headers = {
+                            'Content-Type':  'application/json',
+                            'Authorization': f'Bearer {wazuh_token}'
+                        }
                     elif kwargs['origin'] == 'raw':
-                        headers = {'Content-Type':  'application/octet-stream',
-                                   'Authorization': f'Bearer {wazuh_token}'}
+                        headers = {
+                            'Content-Type':  'application/octet-stream',
+                            'Authorization': f'Bearer {wazuh_token}'
+                        }
                     kwargs = str(kwargs['content'])
                     request = self.session.put(
                         url + opt_endpoint,
@@ -897,7 +1016,7 @@ class api(controllers.BaseController):
                         verify=verify,
                         headers=headers
                     )
-                    request = self.catch_Exceptions(request)
+                    request = catch_Exceptions(request)
 
                 elif opt_endpoint == '/agents/group':
                     request = self.session.put(
@@ -906,7 +1025,7 @@ class api(controllers.BaseController):
                         headers={'Authorization': f'Bearer {wazuh_token}'},
                         verify=verify
                     )
-                    request = self.catch_Exceptions(request)
+                    request = catch_Exceptions(request)
 
                 else:
                     request = self.session.put(
@@ -915,7 +1034,7 @@ class api(controllers.BaseController):
                         headers={'Authorization': f'Bearer {wazuh_token}'},
                         verify=verify
                     )
-                    request = self.catch_Exceptions(request)
+                    request = catch_Exceptions(request)
 
             if method == 'DELETE':
                 request = self.session.delete(
@@ -923,9 +1042,12 @@ class api(controllers.BaseController):
                     data=kwargs,
                     headers={'Authorization': f'Bearer {wazuh_token}'},
                     verify=verify
-                ).json()
+                )
+                request = catch_Exceptions(request)
+
             self.logger.debug("api: %s: %s%s - %s" %
                               (method, url, opt_endpoint, kwargs))
+
             if request['error'] and request['error'] in socket_errors:
                 self.logger.debug("api: Trying the previous request again.")
                 if counter > 0:
@@ -981,7 +1103,10 @@ class api(controllers.BaseController):
                 if str(self.getSelfAdminStanza()['admin']) != 'true':
                     self.logger.error('Admin mode is disabled.')
                     return jsonbak.dumps(
-                        {'error': 'Forbidden. Enable admin mode.'})
+                        {
+                            'error': 'Forbidden. Enable admin mode.'
+                        }
+                    )
                 method = kwargs['method']
                 del kwargs['method']
 
@@ -1003,7 +1128,11 @@ class api(controllers.BaseController):
             result = jsonbak.dumps(request)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return result
 
     # -----------
@@ -1020,7 +1149,7 @@ class api(controllers.BaseController):
         current_api : dict
             API object
         """
-        self.logger.debug("api: Checking Wazuh daemons.")
+        self.logger.debug("api::check_daemons() called")
 
         opt_username = str(current_api['userapi'])
         opt_password = str(current_api['passapi'])
@@ -1030,15 +1159,17 @@ class api(controllers.BaseController):
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api)
 
         try:
-            request_cluster = self.session.get(
-                url + '/cluster/status',
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                timeout=self.timeout,
-                verify=False
-            ).json()
+            request_cluster = self.make_request(
+                'GET',
+                url,
+                '/cluster/status',
+                {},
+                auth,
+                current_api
+            )
+
             # Try to get cluster is enabled if the request fail set to false
             try:
                 cluster_enabled = request_cluster['data']['enabled'] == 'yes'
@@ -1046,12 +1177,16 @@ class api(controllers.BaseController):
                 cluster_enabled = False
             # Var to check the cluster demon or not
             cc = check_cluster and cluster_enabled
-            opt_endpoint = "/manager/status"
-            daemons_status = self.session.get(
-                url + opt_endpoint,
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
+
+            daemons_status = self.make_request(
+                'GET',
+                url,
+                '/manager/status',
+                {},
+                auth,
+                current_api
+            )
+
             if not daemons_status['error']:
                 d = daemons_status['data']['affected_items'][0]
                 daemons = {
@@ -1063,7 +1198,8 @@ class api(controllers.BaseController):
                     daemons['clusterd'] = d['wazuh-clusterd']
                 values = list(daemons.values())
                 # Checks all the status are equals, and running
-                wazuh_ready = len(set(values)) == 1 and values[0] == "running"
+                wazuh_ready = len(
+                    set(values)) == 1 and values[0] == "running"
 
                 # Log result
                 if wazuh_ready:
@@ -1071,8 +1207,9 @@ class api(controllers.BaseController):
                 else:
                     checked_debug_msg = "Wazuh daemons not ready yet"
                 self.logger.debug("api: %s" % checked_debug_msg)
-
                 return wazuh_ready
+            else:
+                raise Exception(daemons_status["error"])
         except Exception as e:
-            self.logger.error("api: Error checking daemons: %s" % (e))
+            self.logger.error(f"api::check_daemons(): {e}")
             raise e
