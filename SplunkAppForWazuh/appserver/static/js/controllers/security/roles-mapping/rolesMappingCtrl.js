@@ -99,7 +99,7 @@ define([
           this.scope.splunkUsersDropdown = newValue;
           this.scope.tmpInternalUsersRules = newValue.map(user => {
             return {
-              user_field: 'username',
+              user_field: 'name',
               searchOperation: 'FIND',
               value: user
             };
