@@ -24,6 +24,15 @@ class cache(object):
         except KeyError:
             return None
 
+
+    @classmethod
+    def delete(cls, key):
+        """Delete the given 'key' and its value'"""
+        try:
+            del cls._cache_[key] # Delete the item
+        except KeyError:
+            pass
+
     @classmethod
     def set(cls, key, value, duration=3600):
         """Store/overwite a value in the cache with 'key' and an optional duration (seconds)"""

@@ -59,20 +59,56 @@ class wazuhtoken():
             self.logger.error(f"wazuh-token: {error}")
             raise Exception(error)
         else:
-            self.logger.debug(
-                "wazuh-token: API object provided\n" +
-                json.dumps(api_object, sort_keys=True, indent=4)
-            )
-
+            self.logger.debug("wazuh-token: API object provided")
+            # self.logger.debug(
+            #     "wazuh-token: API object provided\n" +
+            #     json.dumps(api_object, sort_keys=True, indent=4)
+            # )
         api_run_as: bool = (api_object["runAs"] == "true")
         token_key: str = f'token-{api_url}-{api_user}'
+
+        def validate_token(token: str) -> str:
+            """
+            Validate the token by performing a simple GET request against
+            the Wazuh API.
+
+            The token might be deprecated either by the API, as a result
+            of changes on the security rules, or due to a timeout.
+
+            :param token: credentials token.
+            :return:      Returns the given token if the request replies
+                          with an OK" - 200 status code. If a "Unauhorized"
+                          - 401 status code is received instead, a new token
+                          is requested.
+            """
+            self.logger.debug("wazuh-token: validating token")
+            try:
+                response = self.session.get(
+                    f"{api_url}/",
+                    headers={'Authorization': f'Bearer {token}'},
+                    timeout=20,
+                    verify=False
+                )
+                if response.status_code == 200:
+                    self.logger.debug("wazuh-token: token is valid")
+                    return token
+                elif response.status_code == 401:
+                    self.logger.debug(
+                        "wazuh-token: token is deprecated. Refreshing...")
+                    self.cache.delete(token_key)
+                    return self.get_auth_token(api_url, api_user, api_object)
+            except Exception as e:
+                self.logger.error(
+                    "wazuh-token: error validating token: %s" % (e))
+                return token
+
         try:
-            # Return cached token, if it exists
-            auth_token: str = self.cache.get(token_key)
-            if auth_token is not None:
+            # Return cached token, if it exists. Check if it's valid.
+            token: str = self.cache.get(token_key)
+            if token is not None:
                 self.logger.debug(
                     f"wazuh-token: the token for {token_key} key is in cache")
-                return auth_token
+                return validate_token(token)
             # Otherwise, get a new token from the manager's API.
             else:
                 response = self.get_token_request(
