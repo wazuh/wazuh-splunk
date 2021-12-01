@@ -156,7 +156,6 @@ define([
       this.scope.addingNewRole = false;
       this.scope.editingRole = false;
       this.scope.reservedRole = false;
-      this.scope.overwrite = true;
       this.scope.$applyAsync();
     }
 
