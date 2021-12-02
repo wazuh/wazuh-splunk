@@ -13,26 +13,26 @@ Find more information about this on the LICENSE file.
 """
 
 import csv
-import json
-import time
 from io import StringIO
 
 import api_info
 import jsonbak
 import requestsbak
 import splunk.appserver.mrsparkle.controllers as controllers
+from check_daemons import check_daemons
 from db import database
 from log import log
 from requirements import (gdpr_requirements, hipaa_requirements,
                           nist_requirements, pci_requirements)
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from splunk.clilib import cli_common as cli
+from wazuh_api import Wazuh_API
 from wazuhtoken import wazuhtoken
 
 
 class api(controllers.BaseController):
-
-    """API class.
+    """
+    API class.
 
     Handle API methods
     """
@@ -42,6 +42,7 @@ class api(controllers.BaseController):
         try:
             self.logger = log()
             self.wztoken = wazuhtoken()
+            self.wz_api = Wazuh_API()
             self.config = self.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
             self.db = database()
@@ -69,7 +70,7 @@ class api(controllers.BaseController):
             api_id = kwargs['apiId']
             current_api_json = jsonbak.loads(self.db.get(api_id))['data']
 
-            daemons_ready = self.check_daemons(current_api_json)
+            daemons_ready = check_daemons(current_api_json)
             msg = "Wazuh is now ready." if daemons_ready else "Wazuh not ready yet."
             self.logger.debug("api: %s" % msg)
             return jsonbak.dumps(
@@ -139,7 +140,7 @@ class api(controllers.BaseController):
             del kwargs['endpoint']
 
             # Raise error if Wazuh Daemons are not ready.
-            if not self.check_daemons(current_api_json):
+            if not check_daemons(current_api_json):
                 return jsonbak.dumps(
                     {
                         "status": "200",
@@ -147,9 +148,15 @@ class api(controllers.BaseController):
                         "message": "Wazuh not ready yet."
                     }
                 )
-            request = self.make_request(
-                method, url, opt_endpoint, kwargs, auth, current_api_json)
-            result = jsonbak.dumps(request)
+            response = self.wz_api.make_request(
+                method,
+                url,
+                opt_endpoint,
+                kwargs,
+                auth,
+                current_api_json
+            )
+            result = jsonbak.dumps(response)
         except Exception as e:
             self.logger.error("api: Error making API request: %s" % (e))
             return jsonbak.dumps(
@@ -224,7 +231,7 @@ class api(controllers.BaseController):
             # init csv writer
             output_file = StringIO()
             # get total items and keys
-            request = self.make_request(
+            response = self.wz_api.make_request(
                 'GET',
                 url,
                 opt_endpoint,
@@ -233,13 +240,13 @@ class api(controllers.BaseController):
                 current_api_json
             )
             self.logger.debug("api: Data obtained for generate CSV file.")
-            if ('affected_items' in request['data'] and
-                    len(request['data']['affected_items']) > 0):
+            if ('affected_items' in response['data'] and
+                    len(response['data']['affected_items']) > 0):
                 # Export CSV the CDB List keys and values
                 if is_list_export_keys_values:
                     items_list = [
                         {"Key": k, "Value": v}
-                        for k, v in request['data']['affected_items'][0].items()
+                        for k, v in response['data']['affected_items'][0].items()
                     ]
 
                     dict_writer = csv.DictWriter(
@@ -257,12 +264,12 @@ class api(controllers.BaseController):
                     self.logger.debug("api: CSV file generated.")
                     return csv_result
                 else:
-                    final_obj = request['data']['affected_items']
+                    final_obj = response['data']['affected_items']
                 if isinstance(final_obj, list):
                     keys = final_obj[0].keys()
                     self.format_output(keys)
                     final_obj_dict = self.format_output(final_obj)
-                    total_items = request['data']['total_affected_items']
+                    total_items = response['data']['total_affected_items']
                     # initializes CSV buffer
                     if total_items > 0:
                         dict_writer = csv.DictWriter(
@@ -281,7 +288,7 @@ class api(controllers.BaseController):
                         while offset <= total_items:
                             offset += filters['limit']
                             filters['offset'] = offset
-                            request = self.make_request(
+                            response = self.wz_api.make_request(
                                 'GET',
                                 url,
                                 opt_endpoint,
@@ -289,7 +296,7 @@ class api(controllers.BaseController):
                                 auth,
                                 current_api_json
                             )
-                            paginated_result = request['data']['affected_items']
+                            paginated_result = response['data']['affected_items']
                             format_paginated_results = self.format_output(
                                 paginated_result)
                             dict_writer.writerows(format_paginated_results)
@@ -337,7 +344,7 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/pci'
-                request = self.make_request(
+                response = self.wz_api.make_request(
                     'GET',
                     url,
                     opt_endpoint,
@@ -346,13 +353,13 @@ class api(controllers.BaseController):
                     current_api_json
                 )
 
-                if request['error'] != 0:
+                if response['error'] != 0:
                     return jsonbak.dumps(
                         {
-                            'error': request['error']
+                            'error': response['error']
                         }
                     )
-                data = request['data']['items']
+                data = response['data']['items']
                 result = {}
 
                 for item in data:
@@ -407,7 +414,7 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/gdpr'
-                request = self.make_request(
+                response = self.wz_api.make_request(
                     'GET',
                     url,
                     opt_endpoint,
@@ -416,13 +423,13 @@ class api(controllers.BaseController):
                     current_api_json
                 )
 
-                if request['error'] != 0:
+                if response['error'] != 0:
                     return jsonbak.dumps(
                         {
-                            'error': request['error']
+                            'error': response['error']
                         }
                     )
-                data = request['data']['items']
+                data = response['data']['items']
                 result = {}
 
                 for item in data:
@@ -479,7 +486,7 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/hipaa'
-                request = self.make_request(
+                response = self.wz_api.make_request(
                     'GET',
                     url,
                     opt_endpoint,
@@ -488,13 +495,13 @@ class api(controllers.BaseController):
                     current_api_json
                 )
 
-                if request['error'] != 0:
+                if response['error'] != 0:
                     return jsonbak.dumps(
                         {
-                            'error': request['error']
+                            'error': response['error']
                         }
                     )
-                data = request['data']['items']
+                data = response['data']['items']
                 result = {}
 
                 for item in data:
@@ -551,7 +558,7 @@ class api(controllers.BaseController):
 
             if requirement == 'all':
                 opt_endpoint = '/rules/nist-800-53'
-                request = self.make_request(
+                response = self.wz_api.make_request(
                     'GET',
                     url,
                     opt_endpoint,
@@ -560,13 +567,13 @@ class api(controllers.BaseController):
                     current_api_json
                 )
 
-                if request['error'] != 0:
+                if response['error'] != 0:
                     return jsonbak.dumps(
                         {
-                            'error': request['error']
+                            'error': response['error']
                         }
                     )
-                data = request['data']['items']
+                data = response['data']['items']
                 result = {}
 
                 for item in data:
@@ -649,7 +656,7 @@ class api(controllers.BaseController):
             # FIXME USE A FOR LOOP
             # Hardware
             endpoint_hardware = f'/syscollector/{agentId}/hardware'
-            hardware_data = self.make_request(
+            hardware_data = self.wz_api.make_request(
                 'GET',
                 url,
                 endpoint_hardware,
@@ -664,7 +671,7 @@ class api(controllers.BaseController):
 
             # OS
             endpoint_os = f'/syscollector/{agentId}/os'
-            os_data = self.make_request(
+            os_data = self.wz_api.make_request(
                 'GET',
                 url,
                 endpoint_os,
@@ -678,7 +685,7 @@ class api(controllers.BaseController):
 
             # Ports
             endpoint_ports = f'/syscollector/{agentId}/ports'
-            ports_data = self.make_request(
+            ports_data = self.wz_api.make_request(
                 'GET',
                 url,
                 endpoint_ports,
@@ -693,7 +700,7 @@ class api(controllers.BaseController):
 
             # Packages
             endpoint_packages = f'/syscollector/{agentId}/packages'
-            packages_data = self.make_request(
+            packages_data = self.wz_api.make_request(
                 'GET',
                 url,
                 endpoint_packages,
@@ -713,7 +720,7 @@ class api(controllers.BaseController):
 
             # Processes
             endpoint_processes = f'/syscollector/{agentId}/processes'
-            processes_data = self.make_request(
+            processes_data = self.wz_api.make_request(
                 'GET',
                 url,
                 endpoint_processes,
@@ -733,7 +740,7 @@ class api(controllers.BaseController):
 
             # Netiface
             endpoint_netiface = F'/syscollector/{agentId}netiface'
-            netiface_data = self.make_request(
+            netiface_data = self.wz_api.make_request(
                 'GET',
                 url,
                 endpoint_netiface,
@@ -748,7 +755,7 @@ class api(controllers.BaseController):
 
             # Netaddr
             endpoint_netaddr = f'/syscollector/{agentId}/netaddr'
-            netaddr_data = self.make_request(
+            netaddr_data = self.wz_api.make_request(
                 'GET',
                 url,
                 endpoint_netaddr,
@@ -814,50 +821,6 @@ class api(controllers.BaseController):
             raise e
         return apikeyconf
 
-    def clean_keys(self, response):
-        """Hide sensible data from API response."""
-        try:
-            self.logger.debug("api: Offuscating keys.")
-            hide = "********"
-            if "data" in response and type(response['data']) == dict:
-                # Remove agent key
-                if "internal_key" in response['data']:
-                    response['data']['internal_key'] = hide
-
-                # Remove cluster key (/come/cluster)
-                if "node_type" in response['data']:
-                    if "key" in response['data']:
-                        response['data']['key'] = hide
-
-                # Remove cluster key (/manager/configuration)
-                if "cluster" in response['data']:
-                    if "node_type" in response['data']['cluster']:
-                        if "key" in response['data']['cluster']:
-                            response['data']['cluster']['key'] = hide
-
-                # Remove AWS keys
-                if "wmodules" in response['data']:
-                    for wmod in response['data']['wmodules']:
-                        if "aws-s3" in wmod:
-                            if "buckets" in wmod['aws-s3']:
-                                for bucket in wmod['aws-s3']['buckets']:
-                                    bucket['access_key'] = hide
-                                    bucket['secret_key'] = hide
-                            if "services" in wmod['aws-s3']:
-                                for service in wmod['aws-s3']['services']:
-                                    service['access_key'] = hide
-                                    service['secret_key'] = hide
-
-                # Remove integrations keys
-                if "integration" in response['data']:
-                    for integ in response['data']['integration']:
-                        integ['api_key'] = hide
-            return response
-        except Exception as e:
-            self.logger.error(
-                "api: Error while cleaning keys in request response: %s" % (e))
-            raise e
-
     def format_output(self, arr):
         """Format the data for the CSV file generation.
 
@@ -888,186 +851,6 @@ class api(controllers.BaseController):
                         item = str(item)
             return arr
         except Exception as e:
-            raise e
-
-    def make_request(self, method, url, opt_endpoint, kwargs, auth, current_api, counter=3):
-
-        def catch_Exceptions(request):
-            """
-            Auxiliar function. Controls some  of the request's status codes.
-            """
-            # Static variable. Retains state between calls
-            if not hasattr(catch_Exceptions, 'attempts'):
-                catch_Exceptions.attempts = 0
-            try:
-                # Unauthorized. Try to refresh the token and re-attempt request
-                if request.status_code == 401:
-                    if catch_Exceptions.attempts == 0:
-                        self.wztoken.refresh()
-                        return self.make_request(
-                            method,
-                            url,
-                            opt_endpoint,
-                            kwargs,
-                            auth,
-                            current_api,
-                            counter - 1
-                        )
-
-                if request.status_code != 200:
-                    raise Exception(request.json())
-
-                catch_Exceptions.attempts = 0
-                return request.json()
-            except Exception as e:
-                raise e
-
-        verify = False
-        try:
-            socket_errors = (1013, 1014, 1017, 1018, 1019)
-            wazuh_token = self.wztoken.get_auth_token(url, auth, current_api)
-            if method == 'GET':
-                if 'origin' in kwargs:
-                    if kwargs['origin'] == 'xmlreader':
-                        request_xml = self.session.get(
-                            url + opt_endpoint,
-                            headers={'Authorization': f'Bearer {wazuh_token}'},
-                            verify=verify
-                        ).content
-                        # FIXME
-                        json_response = json.dumps(
-                            {'data': request_xml.decode("utf-8")})
-                        json_load = json.loads(json_response)
-                        request = json_load
-                        return request
-                    if kwargs['origin'] == 'raw':
-                        response = self.session.get(
-                            url + opt_endpoint,
-                            headers={'Authorization': f'Bearer {wazuh_token}'},
-                            verify=verify
-                        )
-                        return json.loads(json.dumps(
-                            {'data': response.content.decode("utf-8")})
-                        )
-                else:
-                    request = self.session.get(
-                        url + opt_endpoint,
-                        params=kwargs,
-                        headers={'Authorization': f'Bearer {wazuh_token}'},
-                        verify=verify
-                    )
-                    request = catch_Exceptions(request)
-
-            if method == 'POST':
-                if 'origin' in kwargs:
-                    if kwargs['origin'] == 'xmleditor':
-                        headers = {
-                            'Content-Type': 'application/xml',
-                            'Authorization': f'Bearer {wazuh_token}'
-                        }
-                    elif kwargs['origin'] == 'json':
-                        headers = {
-                            'Content-Type':  'application/json',
-                            'Authorization': f'Bearer {wazuh_token}'
-                        }
-                    elif kwargs['origin'] == 'raw':
-                        headers = {
-                            'Content-Type':  'application/octet-stream',
-                            'Authorization': f'Bearer {wazuh_token}'
-                        }
-                    kwargs = str(kwargs['content'])
-                    request = self.session.post(
-                        url + opt_endpoint,
-                        data=kwargs,
-                        verify=verify,
-                        headers=headers
-                    )
-                    request = catch_Exceptions(request)
-                else:
-                    request = self.session.post(
-                        url + opt_endpoint,
-                        data=kwargs,
-                        headers={'Authorization': f'Bearer {wazuh_token}'},
-                        verify=verify
-                    )
-                    request = catch_Exceptions(request)
-
-            if method == 'PUT':
-                if 'origin' in kwargs:
-                    if kwargs['origin'] == 'xmleditor':
-                        headers = {
-                            'Content-Type': 'application/xml',
-                            'Authorization': f'Bearer {wazuh_token}'
-                        }
-                    elif kwargs['origin'] == 'json':
-                        headers = {
-                            'Content-Type':  'application/json',
-                            'Authorization': f'Bearer {wazuh_token}'
-                        }
-                    elif kwargs['origin'] == 'raw':
-                        headers = {
-                            'Content-Type':  'application/octet-stream',
-                            'Authorization': f'Bearer {wazuh_token}'
-                        }
-                    kwargs = str(kwargs['content'])
-                    request = self.session.put(
-                        url + opt_endpoint,
-                        data=kwargs,
-                        verify=verify,
-                        headers=headers
-                    )
-                    request = catch_Exceptions(request)
-
-                elif opt_endpoint == '/agents/group':
-                    request = self.session.put(
-                        url + opt_endpoint,
-                        params=kwargs,
-                        headers={'Authorization': f'Bearer {wazuh_token}'},
-                        verify=verify
-                    )
-                    request = catch_Exceptions(request)
-
-                else:
-                    request = self.session.put(
-                        url + opt_endpoint,
-                        data=kwargs,
-                        headers={'Authorization': f'Bearer {wazuh_token}'},
-                        verify=verify
-                    )
-                    request = catch_Exceptions(request)
-
-            if method == 'DELETE':
-                request = self.session.delete(
-                    url + opt_endpoint,
-                    data=kwargs,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify
-                )
-                request = catch_Exceptions(request)
-
-            self.logger.debug("api: %s: %s%s - %s" %
-                              (method, url, opt_endpoint, kwargs))
-
-            if request['error'] and request['error'] in socket_errors:
-                self.logger.debug("api: Trying the previous request again.")
-                if counter > 0:
-                    time.sleep(0.5)
-                    return self.make_request(
-                        method,
-                        url,
-                        opt_endpoint,
-                        kwargs,
-                        auth,
-                        current_api,
-                        counter - 1
-                    )
-                else:
-                    raise Exception("Tried to execute %s %s three times with no success, aborted." % (
-                        method, opt_endpoint))
-            return self.clean_keys(request)
-        except Exception as e:
-            self.logger.error(
-                "api: Error while requesting to Wazuh API: %s" % (e))
             raise e
 
     # -----------
@@ -1114,7 +897,7 @@ class api(controllers.BaseController):
             del kwargs['id']
             del kwargs['endpoint']
 
-            if not self.check_daemons(current_api_json):
+            if not check_daemons(current_api_json):
                 return jsonbak.dumps(
                     {
                         "status": "200",
@@ -1122,10 +905,16 @@ class api(controllers.BaseController):
                         "message": "Wazuh not ready yet."
                     }
                 )
-            request = self.make_request(
-                method, url, opt_endpoint, kwargs, auth, current_api_json)
-            self.logger.info(request)
-            result = jsonbak.dumps(request)
+            response = self.wz_api.make_request(
+                method,
+                url,
+                opt_endpoint,
+                kwargs,
+                auth,
+                current_api_json
+            )
+            self.logger.info(response)
+            result = jsonbak.dumps(response)
         except Exception as e:
             self.logger.error("Error making API request: %s" % (e))
             return jsonbak.dumps(
@@ -1134,82 +923,3 @@ class api(controllers.BaseController):
                 }
             )
         return result
-
-    # -----------
-    # NOTE
-    # -----------
-    # Also present in manager.py
-    def check_daemons(self, current_api: dict) -> bool:
-        """
-        Request to check the status of this daemons:
-        execd, modulesd, wazuhdb and clusterd
-
-        Parameters
-        ----------
-        current_api : dict
-            API object
-        """
-        self.logger.debug("api::check_daemons() called")
-
-        opt_username = str(current_api['userapi'])
-        opt_password = str(current_api['passapi'])
-        opt_base_url = str(current_api['url'])
-        opt_base_port = str(current_api['portapi'])
-        check_cluster = str(current_api['filterType']) == "cluster.name"
-
-        url = opt_base_url + ":" + opt_base_port
-        auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-        try:
-            request_cluster = self.make_request(
-                'GET',
-                url,
-                '/cluster/status',
-                {},
-                auth,
-                current_api
-            )
-
-            # Try to get cluster is enabled if the request fail set to false
-            try:
-                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
-            except Exception as e:
-                cluster_enabled = False
-            # Var to check the cluster demon or not
-            cc = check_cluster and cluster_enabled
-
-            daemons_status = self.make_request(
-                'GET',
-                url,
-                '/manager/status',
-                {},
-                auth,
-                current_api
-            )
-
-            if not daemons_status['error']:
-                d = daemons_status['data']['affected_items'][0]
-                daemons = {
-                    "execd": d['wazuh-execd'],
-                    "modulesd": d['wazuh-modulesd'],
-                    "db": d['wazuh-db']
-                }
-                if cc:
-                    daemons['clusterd'] = d['wazuh-clusterd']
-                values = list(daemons.values())
-                # Checks all the status are equals, and running
-                wazuh_ready = len(
-                    set(values)) == 1 and values[0] == "running"
-
-                # Log result
-                if wazuh_ready:
-                    checked_debug_msg = "Wazuh daemons ready"
-                else:
-                    checked_debug_msg = "Wazuh daemons not ready yet"
-                self.logger.debug("api: %s" % checked_debug_msg)
-                return wazuh_ready
-            else:
-                raise Exception(daemons_status["error"])
-        except Exception as e:
-            self.logger.error(f"api::check_daemons(): {e}")
-            raise e
