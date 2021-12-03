@@ -31,7 +31,7 @@ wztoken = wazuhtoken()
 def get_apis():
     """
     Obtain the list of APIs.
-    
+
     Returns
     -------
     string
@@ -69,8 +69,10 @@ def check_status():
             try:
                 request_agents = requestsbak.get(
                     agents_url_total_items,
-                    headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=1,
-                    verify=verify).json()
+                    headers={'Authorization': f'Bearer {wazuh_token}'},
+                    timeout=1,
+                    verify=verify
+                ).json()
                 total_items = request_agents["data"]["total_affected_items"]
                 limit = 500
                 offset = 0
@@ -82,7 +84,11 @@ def check_status():
                         '/agents?select=id,ip,manager,status&offset=' + \
                         str(offset)+'&limit='+str(limit)
                     request_agents = requestsbak.get(
-                        agents_url, headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=1, verify=verify).json()
+                        agents_url,
+                        headers={'Authorization': f'Bearer {wazuh_token}'},
+                        timeout=1,
+                        verify=verify
+                    ).json()
 
                     agent_list = request_agents["data"]["affected_items"]
                     final_url_cluster = url + '/cluster/status'
@@ -90,15 +96,18 @@ def check_status():
                         final_url_cluster,
                         headers={'Authorization': f'Bearer {wazuh_token}'},
                         timeout=1,
-                        verify=verify).json()
+                        verify=verify
+                    ).json()
                     cluster_status = request_cluster_status["data"]["enabled"]
+                    
                     if request_cluster_status["data"]["enabled"] == "yes":
                         final_url_cluster_name = url + '/cluster/local/info'
                         request_cluster_name = requestsbak.get(
                             final_url_cluster_name,
                             timeout=1,
                             headers={'Authorization': f'Bearer {wazuh_token}'},
-                            verify=verify).json()
+                            verify=verify
+                        ).json()
                     offset = offset + limit
                     for item in agent_list:
                         if cluster_status == "yes":
