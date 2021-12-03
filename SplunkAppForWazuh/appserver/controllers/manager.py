@@ -126,7 +126,8 @@ class manager(controllers.BaseController):
             self.session.trust_env = False
         except Exception as e:
             self.logger.error(
-                "manager: Error in manager module constructor: %s" % (e))
+                "manager: Error in manager module constructor: %s" % (e)
+            )
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
@@ -142,14 +143,19 @@ class manager(controllers.BaseController):
             self.logger.debug("manager: Getting agents polling state.")
             app = cli.getConfStanza(
                 'inputs',
-                'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py')
+                'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py'
+            )
 
             disabled = app.get('disabled')
             polling_dict = {}
             polling_dict['disabled'] = disabled
             data_temp = jsonbak.dumps(polling_dict)
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return data_temp
 
     @expose_page(must_login=False, methods=['GET', 'POST'])
@@ -170,7 +176,11 @@ class manager(controllers.BaseController):
             except ParsingError as e:
                 stanza = getSelfConfStanza("config", "extensions")
             except Exception as e:
-                return jsonbak.dumps({'error': str(e)})
+                return jsonbak.dumps(
+                    {
+                        'error': str(e)
+                    }
+                )
             data_temp = stanza
         else:
             try:
@@ -178,7 +188,11 @@ class manager(controllers.BaseController):
                 stanza = getSelfConfStanza("config", "extensions")
                 data_temp = stanza
             except Exception as e:
-                return jsonbak.dumps({'error': str(e)})
+                return jsonbak.dumps(
+                    {
+                        'error': str(e)
+                    }
+                )
         return data_temp
 
     @expose_page(must_login=False, methods=['POST'])
@@ -206,10 +220,19 @@ class manager(controllers.BaseController):
             id = kwargs['id']
             extensions = kwargs['extensions']
             response = {}
-            putConfStanza("extensions", {id: jsonbak.loads(extensions)})
+            putConfStanza(
+                "extensions",
+                {
+                    id: jsonbak.loads(extensions)
+                }
+            )
             response[id] = 'Success'
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return jsonbak.dumps(response)
 
     @expose_page(must_login=False, methods=['GET'])
@@ -227,7 +250,11 @@ class manager(controllers.BaseController):
             stanza = getSelfConfStanza("config", "admin_extensions")
             data_temp = stanza
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
@@ -246,7 +273,11 @@ class manager(controllers.BaseController):
             stanza = getSelfConfStanza("config", "configuration")
             data_temp = stanza
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
@@ -267,7 +298,11 @@ class manager(controllers.BaseController):
             data_temp['splunk_version'] = stanza['version']
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
@@ -283,13 +318,21 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Getting API info from _key.")
             if 'apiId' not in kwargs:
-                return jsonbak.dumps({'error': 'Missing ID.'})
+                return jsonbak.dumps(
+                    {
+                        'error': 'Missing ID.'
+                    }
+                )
             id = kwargs['apiId']
             data_temp = self.db.get(id)
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
             self.logger.error("manager: Error in get_apis endpoint: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
@@ -312,8 +355,16 @@ class manager(controllers.BaseController):
                     del api['passapi']
             result = jsonbak.dumps(parsed_apis)
         except Exception as e:
-            self.logger.error(jsonbak.dumps({"error": str(e)}))
-            return jsonbak.dumps({"error": str(e)})
+            self.logger.error(jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            ))
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return result
 
     @expose_page(must_login=False, methods=['POST'])
@@ -334,13 +385,21 @@ class manager(controllers.BaseController):
                          'managerName', 'filterType', 'filterName', 'runAs']
             if set(record.keys()) == set(keys_list):
                 key = self.db.insert(jsonbak.dumps(record))
-                parsed_data = jsonbak.dumps({'result': key})
+                parsed_data = jsonbak.dumps(
+                    {
+                        'result': key
+                    }
+                )
                 return parsed_data
             else:
                 raise Exception('Invalid number of arguments')
         except Exception as e:
             self.logger.error({'manager - add_api': str(e)})
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
@@ -356,13 +415,25 @@ class manager(controllers.BaseController):
             self.logger.debug("manager: Removing API.")
             api_id = kwargs
             if '_key' not in api_id:
-                return jsonbak.dumps({'error': 'Missing ID'})
+                return jsonbak.dumps(
+                    {
+                        'error': 'Missing ID'
+                    }
+                )
             self.db.remove(api_id['_key'])
-            parsed_data = jsonbak.dumps({'data': 'success'})
+            parsed_data = jsonbak.dumps(
+                {
+                    'data': 'success'
+                }
+            )
         except Exception as e:
             self.logger.error(
                 "manager: Error in remove_api endpoint: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
@@ -392,7 +463,11 @@ class manager(controllers.BaseController):
                          'filterName', 'filterType', 'managerName', 'runAs']
             if set(entry.keys()) == set(keys_list):
                 self.db.update(entry)
-                parsed_data = jsonbak.dumps({'data': 'success'})
+                parsed_data = jsonbak.dumps(
+                    {
+                        'data': 'success'
+                    }
+                )
             else:
                 missing_params = diff_keys_dic_update_api(entry)
                 raise Exception(
@@ -401,7 +476,11 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "manager: Error in update_api endpoint: %s" % (e))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
@@ -426,7 +505,11 @@ class manager(controllers.BaseController):
             )
         except Exception as e:
             self.logger.error("manager: Get_log_lines endpoint: %s" % (e))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
@@ -517,7 +600,9 @@ class manager(controllers.BaseController):
 
             # Hide API password
             del current_api_json['passapi']
-            output['api'] = {"data": current_api_json}
+            output['api'] = {
+                "data": current_api_json
+            }
             result = jsonbak.dumps(output)
         except KeyError as e:
             self.logger.error(f"KeyError {e}")
@@ -631,7 +716,8 @@ class manager(controllers.BaseController):
 
             # Request was successful
             if response.status_code == 200:
-                manager_name: str = response.json()['data']['affected_items'][0]['name']
+                manager_name: str = response.json(
+                )['data']['affected_items'][0]['name']
                 output['managerName'] = {
                     'name': manager_name
                 }
@@ -665,7 +751,7 @@ class manager(controllers.BaseController):
 
             # Request was successful
             if response.status_code == 200:
-                cluster_data : dict = response.json()['data']
+                cluster_data: dict = response.json()['data']
                 output['clusterMode'] = cluster_data
 
                 # Cluster enabled and running
@@ -681,7 +767,8 @@ class manager(controllers.BaseController):
 
                     # Request was successful
                     if response.status_code == 200:
-                        cluster_info: dict = response.json()['data']['affected_items'][0]
+                        cluster_info: dict = response.json(
+                        )['data']['affected_items'][0]
                         output['clusterName'] = {
                             "type":     cluster_info['type'],
                             "cluster":  cluster_info['cluster'],
@@ -848,5 +935,6 @@ class manager(controllers.BaseController):
             return config
         except Exception as e:
             self.logger.error(
-                "manager: Error getting the configuration on memory: %s" % (e))
+                "manager: Error getting the configuration on memory: %s" % (e)
+            )
             raise e
