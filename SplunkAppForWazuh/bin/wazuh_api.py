@@ -29,10 +29,14 @@ class Wazuh_API():
 
     def __init__(self):
         """Constructor."""
-        self.logger = log()
-        self.wztoken = wazuhtoken()
-        self.session = requestsbak.Session()
-        self.session.trust_env = False
+        try:
+            self.logger = log()
+            self.wztoken = wazuhtoken()
+            self.session = requestsbak.Session()
+            self.session.trust_env = False
+        except Exception as e:
+            self.logger.error(
+                "wazuh-api: error in the constructor: %s" % (e))
 
     def make_request(
         self,
@@ -40,7 +44,7 @@ class Wazuh_API():
         api_url: str,
         endpoint_url: str,
         kwargs,
-        auth,
+        auth: requestsbak.auth.HTTPBasicAuth,
         current_api: dict,
         counter: int = 3
     ):

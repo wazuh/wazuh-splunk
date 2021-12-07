@@ -27,19 +27,22 @@ class CheckQueue():
 
     def __init__(self):
         """Constructor."""
-        self.logger = log()
-        self.wztoken = wazuhtoken()
-        self.now = time.time()  # Get the date in seconds
-        self.session = requestsbak.Session()
-        self.auth_key = sys.stdin.readline().strip()
-        self.q = JobsQueue()
-        self.db = database()
+        try:
+            self.logger = log()
+            self.wztoken = wazuhtoken()
+            self.now = time.time()  # Get the date in seconds
+            self.session = requestsbak.Session()
+            self.auth_key = sys.stdin.readline().strip()
+            self.q = JobsQueue()
+            self.db = database()
+        except Exception as e:
+            self.logger.error(
+                "bin.check_queue: error in the constructor: %s" % (e))
 
     def init(self):
-        """Inits the jobs
-        """
+        """Inits the job"""
+        self.logger.debug("bin.check_queue: Checking jobs queue.")
         try:
-            self.logger.debug("bin.check_queue: Checking jobs queue.")
             jobs = self.q.get_jobs(self.auth_key)
             todo_jobs = self.get_todo_jobs(jobs)
             self.check_todo_jobs(todo_jobs)
@@ -50,16 +53,16 @@ class CheckQueue():
                 'bin.check_queue: Error at init in the CheckQueue module: {}'.format(e))
 
     def get_todo_jobs(self, jobs):
-        """Gets the to do jobs
+        """
+        Gets the to do jobs
 
         Parameters
         ----------
         str: jobs
             A dictionary in string format with the jobs
         """
-
+        self.logger.debug("bin.check_queue: Gettings todo jobs.")
         try:
-            self.logger.debug("bin.check_queue: Gettings todo jobs.")
             jobs = jsonbak.loads(jobs)
             todo_jobs = filter(lambda j: j['done'] == False, jobs)
         except TypeError as e:
@@ -69,15 +72,16 @@ class CheckQueue():
         return todo_jobs
 
     def check_todo_jobs(self, jobs):
-        """Check the to do jobs
+        """
+        Check the to do jobs
 
         Parameters
         ----------
         dic: jobs
             A dictionary with the todo jobs
         """
+        self.logger.debug("bin.check_queue: Checking todo jobs.")
         try:
-            self.logger.debug("bin.check_queue: Checking todo jobs.")
             for job in jobs:
                 if job['exec_time'] < self.now:
                     self.exec_job(job)
@@ -86,15 +90,16 @@ class CheckQueue():
                 'bin.check_queue: Error checking to do jobs in the CheckQueue module: {}'.format(e))
 
     def exec_job(self, job):
-        """Exec the passed job
+        """
+        Exec the passed job
 
         Parameters
         ----------
         dic: job
             A dictionary with the job
         """
+        self.logger.debug("bin.check_queue: Executing job.")
         try:
-            self.logger.debug("bin.check_queue: Executing job.")
             req = job['job']
             method = 'GET'
 
@@ -162,15 +167,16 @@ class CheckQueue():
                 'bin.check_queue: Error executing the job in CheckQueue module: {}'.format(e))
 
     def mark_as_done(self, job):
-        """Update the job and mark as done.
+        """
+        Update the job and mark as done.
 
         Parameters
         ----------
         str: job_key
             The job key in the kvStore
         """
+        self.logger.debug("bin.check_queue: Marking job as done.")
         try:
-            self.logger.debug("bin.check_queue: Marking job as done.")
             job['done'] = True
             self.q.update_job(job, self.auth_key)
         except Exception as e:
@@ -178,35 +184,38 @@ class CheckQueue():
                 'bin.check_queue: Error updating the job in CheckQueue module: {}'.format(e))
 
     def remove_job(self, job_key):
-        """Remove the job of the queue.
+        """
+        Remove the job of the queue.
 
         Parameters
         ----------
         str: job_key
             The job key in the kvStore
         """
+        self.logger.debug("bin.check_queue: Removing job.")
         try:
-            self.logger.debug("bin.check_queue: Removing job.")
             self.q.remove_job(job_key, self.auth_key)
         except Exception as e:
             self.logger.error(
                 'bin.check_queue: Error removing the job in CheckQueue module: {}'.format(e))
 
     def get_api_credentials(self, api_id):
-        """Get API credentials.
+        """
+        Get API credentials.
 
         Parameters
         ----------
         str: api_id
             The API id
         """
+        self.logger.debug("bin.check_queue: Getting API credentials.")
         try:
-            self.logger.debug("bin.check_queue: Getting API credentials.")
             api = self.db.get(api_id, self.auth_key)
             api = jsonbak.loads(api)
             if api["data"]["messages"][0]["type"] == "ERROR":
                 raise Exception('API does not exist')
             elif api:
+                self.logger.debug(jsonbak.dumps(api, indent=4))
                 opt_username = api['data']["userapi"]
                 opt_password = api['data']["passapi"]
                 opt_base_url = api['data']["url"]

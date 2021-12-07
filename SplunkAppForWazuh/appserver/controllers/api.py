@@ -27,7 +27,6 @@ from requirements import (gdpr_requirements, hipaa_requirements,
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from splunk.clilib import cli_common as cli
 from wazuh_api import Wazuh_API
-from wazuhtoken import wazuhtoken
 
 
 class api(controllers.BaseController):
@@ -40,15 +39,10 @@ class api(controllers.BaseController):
     def __init__(self):
         """Constructor."""
         try:
-            self.logger = log()
-            self.wztoken = wazuhtoken()
-            self.wz_api = Wazuh_API()
-            self.config = self.get_config_on_memory()
-            self.timeout = int(self.config['timeout'])
-            self.db = database()
             controllers.BaseController.__init__(self)
-            self.session = requestsbak.Session()
-            self.session.trust_env = False
+            self.logger = log()
+            self.wz_api = Wazuh_API()
+            self.db = database()
         except Exception as e:
             self.logger.error("api: Error in API module constructor: %s" % (e))
 
