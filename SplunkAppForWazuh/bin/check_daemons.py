@@ -36,19 +36,23 @@ def check_daemons(current_api: dict) -> bool:
     opt_password = str(current_api['passapi'])
     opt_base_url = str(current_api['url'])
     opt_base_port = str(current_api['portapi'])
-    check_cluster = str(current_api['filterType']) == "cluster.name"
+    check_cluster = (
+        'filterType' in current_api and str(current_api['filterType']) == "cluster.name"
+        or
+        'cluster' in current_api and str(current_api['cluster']) == "true"
+    )
 
     url = opt_base_url + ":" + opt_base_port
     auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
 
     try:
         request_cluster = wz_api.make_request(
-            'GET',
-            url,
-            '/cluster/status',
-            {},
-            auth,
-            current_api
+            method='GET',
+            api_url=url,
+            endpoint_url='/cluster/status',
+            kwargs={},
+            auth=auth,
+            current_api=current_api
         )
 
         # Try to get cluster is enabled if the request fail set to false
@@ -60,12 +64,12 @@ def check_daemons(current_api: dict) -> bool:
         cc = check_cluster and cluster_enabled
 
         daemons_status = wz_api.make_request(
-            'GET',
-            url,
-            '/manager/status',
-            {},
-            auth,
-            current_api
+            method='GET',
+            api_url=url,
+            endpoint_url='/manager/status',
+            kwargs={},
+            auth=auth,
+            current_api=current_api
         )
 
         if not daemons_status['error']:

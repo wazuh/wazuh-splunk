@@ -51,14 +51,14 @@ class Wazuh_API():
         """
         Use this method to launch response to a Wazuh API.
 
-        Given the HTTP method, API URL and API endpoint, perform a response 
+        Given the HTTP method, API URL and API endpoint, perform a response
         with kwargs as payload / parameters, and retry 'counter' times if
         it fails.
 
         :param method
         :param api_url
         :param endpoint_url
-        :param kwargs 
+        :param kwargs
         :param auth
         :param current_api
         :param counter
@@ -81,13 +81,13 @@ class Wazuh_API():
                     if catch_exceptions.attempts == 0:
                         self.wztoken.refresh()
                         return self.make_request(
-                            method,
-                            api_url,
-                            endpoint_url,
-                            kwargs,
-                            auth,
-                            current_api,
-                            counter - 1
+                            method=method,
+                            api_url=api_url,
+                            endpoint_url=endpoint_url,
+                            kwargs=kwargs,
+                            auth=auth,
+                            current_api=current_api,
+                            counter=counter - 1
                         )
 
                 if response.status_code != 200:
@@ -107,7 +107,7 @@ class Wazuh_API():
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmlreader':
                         response_xml = self.session.get(
-                            api_url + endpoint_url,
+                            url=api_url + endpoint_url,
                             headers={
                                 'Authorization': f'Bearer {wazuh_token}'
                             },
@@ -124,7 +124,7 @@ class Wazuh_API():
                         return response
                     if kwargs['origin'] == 'raw':
                         response = self.session.get(
-                            api_url + endpoint_url,
+                            url=api_url + endpoint_url,
                             headers={
                                 'Authorization': f'Bearer {wazuh_token}'
                             },
@@ -139,7 +139,7 @@ class Wazuh_API():
                         )
                 else:
                     response = self.session.get(
-                        api_url + endpoint_url,
+                        url=api_url + endpoint_url,
                         params=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
@@ -167,7 +167,7 @@ class Wazuh_API():
                         }
                     kwargs = str(kwargs['content'])
                     response = self.session.post(
-                        api_url + endpoint_url,
+                        url=api_url + endpoint_url,
                         data=kwargs,
                         verify=verify,
                         headers=headers
@@ -175,7 +175,7 @@ class Wazuh_API():
                     response = catch_exceptions(response)
                 else:
                     response = self.session.post(
-                        api_url + endpoint_url,
+                        url=api_url + endpoint_url,
                         data=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
@@ -203,7 +203,7 @@ class Wazuh_API():
                         }
                     kwargs = str(kwargs['content'])
                     response = self.session.put(
-                        api_url + endpoint_url,
+                        url=api_url + endpoint_url,
                         data=kwargs,
                         verify=verify,
                         headers=headers
@@ -212,7 +212,7 @@ class Wazuh_API():
 
                 elif endpoint_url == '/agents/group':
                     response = self.session.put(
-                        api_url + endpoint_url,
+                        url=api_url + endpoint_url,
                         params=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
@@ -223,7 +223,7 @@ class Wazuh_API():
 
                 else:
                     response = self.session.put(
-                        api_url + endpoint_url,
+                        url=api_url + endpoint_url,
                         data=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
@@ -234,7 +234,7 @@ class Wazuh_API():
 
             if method == 'DELETE':
                 response = self.session.delete(
-                    api_url + endpoint_url,
+                    url=api_url + endpoint_url,
                     data=kwargs,
                     headers={
                         'Authorization': f'Bearer {wazuh_token}'
@@ -254,13 +254,13 @@ class Wazuh_API():
                 if counter > 0:
                     time.sleep(0.5)
                     return self.make_request(
-                        method,
-                        api_url,
-                        endpoint_url,
-                        kwargs,
-                        auth,
-                        current_api,
-                        counter - 1
+                        method=method,
+                        api_url=api_url,
+                        endpoint_url=endpoint_url,
+                        kwargs=kwargs,
+                        auth=auth,
+                        current_api=current_api,
+                        counter=counter - 1
                     )
                 else:
                     raise Exception(

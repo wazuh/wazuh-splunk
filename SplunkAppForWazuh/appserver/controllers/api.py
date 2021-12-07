@@ -143,12 +143,12 @@ class api(controllers.BaseController):
                     }
                 )
             response = self.wz_api.make_request(
-                method,
-                url,
-                opt_endpoint,
-                kwargs,
-                auth,
-                current_api_json
+                method=method,
+                api_url=url,
+                endpoint_url=opt_endpoint,
+                kwargs=kwargs,
+                auth=auth,
+                current_api=current_api_json
             )
             result = jsonbak.dumps(response)
         except Exception as e:
@@ -226,12 +226,12 @@ class api(controllers.BaseController):
             output_file = StringIO()
             # get total items and keys
             response = self.wz_api.make_request(
-                'GET',
-                url,
-                opt_endpoint,
-                {} if is_list_export_keys_values else filters,
-                auth,
-                current_api_json
+                method='GET',
+                api_url=url,
+                endpoint_url=opt_endpoint,
+                kwargs={} if is_list_export_keys_values else filters,
+                auth=auth,
+                current_api=current_api_json
             )
             self.logger.debug("api: Data obtained for generate CSV file.")
             if ('affected_items' in response['data'] and
@@ -283,12 +283,12 @@ class api(controllers.BaseController):
                             offset += filters['limit']
                             filters['offset'] = offset
                             response = self.wz_api.make_request(
-                                'GET',
-                                url,
-                                opt_endpoint,
-                                filters,
-                                auth,
-                                current_api_json
+                               method='GET',
+                               api_url=url,
+                               endpoint_url=opt_endpoint,
+                               kwargs=filters,
+                               auth=auth,
+                               current_api=current_api_json
                             )
                             paginated_result = response['data']['affected_items']
                             format_paginated_results = self.format_output(
@@ -409,12 +409,12 @@ class api(controllers.BaseController):
             if requirement == 'all':
                 opt_endpoint = '/rules/gdpr'
                 response = self.wz_api.make_request(
-                    'GET',
-                    url,
-                    opt_endpoint,
-                    kwargs,
-                    auth,
-                    current_api_json
+                    method='GET',
+                    api_url=url,
+                    endpoint_url=opt_endpoint,
+                    kwargs=kwargs,
+                    auth=auth,
+                    current_api=current_api_json
                 )
 
                 if response['error'] != 0:
@@ -481,12 +481,12 @@ class api(controllers.BaseController):
             if requirement == 'all':
                 opt_endpoint = '/rules/hipaa'
                 response = self.wz_api.make_request(
-                    'GET',
-                    url,
-                    opt_endpoint,
-                    kwargs,
-                    auth,
-                    current_api_json
+                    method='GET',
+                    api_url=url,
+                    endpoint_url=opt_endpoint,
+                    kwargs=kwargs,
+                    auth=auth,
+                    current_api=current_api_json
                 )
 
                 if response['error'] != 0:
@@ -553,12 +553,12 @@ class api(controllers.BaseController):
             if requirement == 'all':
                 opt_endpoint = '/rules/nist-800-53'
                 response = self.wz_api.make_request(
-                    'GET',
-                    url,
-                    opt_endpoint,
-                    kwargs,
-                    auth,
-                    current_api_json
+                    method='GET',
+                    api_url=url,
+                    endpoint_url=opt_endpoint,
+                    kwargs=kwargs,
+                    auth=auth,
+                    current_api=current_api_json
                 )
 
                 if response['error'] != 0:
@@ -651,12 +651,12 @@ class api(controllers.BaseController):
             # Hardware
             endpoint_hardware = f'/syscollector/{agentId}/hardware'
             hardware_data = self.wz_api.make_request(
-                'GET',
-                url,
-                endpoint_hardware,
-                {},
-                auth,
-                current_api_json
+                method='GET',
+                api_url=url,
+                endpoint_url=endpoint_hardware,
+                kwargs={},
+                auth=auth,
+                current_api=current_api_json
             )
 
             if ('error' in hardware_data and hardware_data['error'] == 0
@@ -666,12 +666,12 @@ class api(controllers.BaseController):
             # OS
             endpoint_os = f'/syscollector/{agentId}/os'
             os_data = self.wz_api.make_request(
-                'GET',
-                url,
-                endpoint_os,
-                {},
-                auth,
-                current_api_json
+                method='GET',
+                api_url=url,
+                endpoint_url=endpoint_os,
+                kwargs={},
+                auth=auth,
+                current_api=current_api_json
             )
 
             if 'error' in os_data and os_data['error'] == 0 and 'data' in os_data:
@@ -680,12 +680,12 @@ class api(controllers.BaseController):
             # Ports
             endpoint_ports = f'/syscollector/{agentId}/ports'
             ports_data = self.wz_api.make_request(
-                'GET',
-                url,
-                endpoint_ports,
-                {'limit': 1},
-                auth,
-                current_api_json
+               method='GET',
+               api_url=url,
+               endpoint_url=endpoint_ports,
+               kwargs={'limit': 1},
+               auth=auth,
+               current_api=current_api_json
             )
 
             if ('error' in ports_data and ports_data['error'] == 0
@@ -695,12 +695,12 @@ class api(controllers.BaseController):
             # Packages
             endpoint_packages = f'/syscollector/{agentId}/packages'
             packages_data = self.wz_api.make_request(
-                'GET',
-                url,
-                endpoint_packages,
-                {'limit': 1},
-                auth,
-                current_api_json
+                method='GET',
+                api_url=url,
+                endpoint_url=endpoint_packages,
+                kwargs={'limit': 1},
+                auth=auth,
+                current_api=current_api_json
             )
 
             if ('error' in packages_data and packages_data['error'] == 0
@@ -715,12 +715,12 @@ class api(controllers.BaseController):
             # Processes
             endpoint_processes = f'/syscollector/{agentId}/processes'
             processes_data = self.wz_api.make_request(
-                'GET',
-                url,
-                endpoint_processes,
-                {'limit': 1},
-                auth,
-                current_api_json
+                method='GET',
+                api_url=url,
+                endpoint_url=endpoint_processes,
+                kwargs={'limit': 1},
+                auth=auth,
+                current_api=current_api_json
             )
 
             if ('error' in processes_data and processes_data['error'] == 0 and
@@ -735,12 +735,12 @@ class api(controllers.BaseController):
             # Netiface
             endpoint_netiface = F'/syscollector/{agentId}netiface'
             netiface_data = self.wz_api.make_request(
-                'GET',
-                url,
-                endpoint_netiface,
-                {},
-                auth,
-                current_api_json
+                method='GET',
+                api_url=url,
+                endpoint_url=endpoint_netiface,
+                kwargs={},
+                auth=auth,
+                current_api=current_api_json
             )
 
             if ('error' in netiface_data and netiface_data['error'] == 0 and
@@ -750,12 +750,12 @@ class api(controllers.BaseController):
             # Netaddr
             endpoint_netaddr = f'/syscollector/{agentId}/netaddr'
             netaddr_data = self.wz_api.make_request(
-                'GET',
-                url,
-                endpoint_netaddr,
-                {'limit': 1},
-                auth,
-                current_api_json
+                method='GET',
+                api_url=url,
+                endpoint_url=endpoint_netaddr,
+                kwargs={'limit': 1},
+                auth=auth,
+                current_api=current_api_json
             )
 
             if ('error' in netaddr_data and netaddr_data['error'] == 0 and
@@ -900,12 +900,12 @@ class api(controllers.BaseController):
                     }
                 )
             response = self.wz_api.make_request(
-                method,
-                url,
-                opt_endpoint,
-                kwargs,
-                auth,
-                current_api_json
+                method=method,
+                api_url=url,
+                endpoint_url=opt_endpoint,
+                kwargs=kwargs,
+                auth=auth,
+                current_api=current_api_json
             )
             self.logger.info(response)
             result = jsonbak.dumps(response)
