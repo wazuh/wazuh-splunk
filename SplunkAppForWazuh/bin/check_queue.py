@@ -20,7 +20,6 @@ import requestsbak
 from db import database
 from jobs_queue import JobsQueue
 from log import log
-from wazuhtoken import wazuhtoken
 
 
 class CheckQueue():
@@ -29,9 +28,7 @@ class CheckQueue():
         """Constructor."""
         try:
             self.logger = log()
-            self.wztoken = wazuhtoken()
             self.now = time.time()  # Get the date in seconds
-            self.session = requestsbak.Session()
             self.auth_key = sys.stdin.readline().strip()
             self.q = JobsQueue()
             self.db = database()
@@ -118,50 +115,70 @@ class CheckQueue():
             else:
                 raise Exception('Missing API ID')
             try:
-                url, auth, verify = self.get_api_credentials(api_id)
+                current_api_json = jsonbak.loads(self.db.get(api_id))['data']
             except Exception as e:
                 self.logger.error(
                     "bin.check_queue: Error executing the job, job will be deleted from the queue. Reason: {}".format(e))
                 self.remove_job(job['_key'])
                 return
+
+            opt_username = str(current_api_json['userapi'])
+            opt_password = str(current_api_json['passapi'])
+            opt_base_url = str(current_api_json['url'])
+            opt_base_port = str(current_api_json['portapi'])
+
+            # API requests auth
+            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+            url = opt_base_url + ":" + opt_base_port
+
             endpoint = req['endpoint']
-            wazuh_token = self.wztoken.get_auth_token(url, auth)
             # Checks methods
             if method == 'GET':
-                request = self.session.get(
-                    url + endpoint,
-                    params=req,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify
-                ).json()
-            if method == 'POST':
-                request = self.session.post(
-                    url + endpoint,
-                    data=req,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify
-                ).json()
-            if method == 'PUT':
-                request = self.session.put(
-                    url + endpoint,
-                    data=req,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify
-                ).json()
-            if method == 'DELETE':
-                request = self.session.delete(
-                    url + endpoint,
-                    data=req,
-                    headers={'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify
-                ).json()
+                response = self.wz_api.make_request(
+                    method='GET',
+                    api_url=url,
+                    endpoint_url=endpoint,
+                    kwargs={},
+                    auth=auth,
+                    current_api=current_api_json
+                )
 
-            if request['error'] == 0:
+            if method == 'POST':
+                response = self.wz_api.make_request(
+                    method='POST',
+                    api_url=url,
+                    endpoint_url=endpoint,
+                    kwargs=req,
+                    auth=auth,
+                    current_api=current_api_json
+                )
+
+            if method == 'PUT':
+                response = self.wz_api.make_request(
+                    method='PUT',
+                    api_url=url,
+                    endpoint_url=endpoint,
+                    kwargs=req,
+                    auth=auth,
+                    current_api=current_api_json
+                )
+
+            if method == 'DELETE':
+                response = self.wz_api.make_request(
+                    method='DELETE',
+                    api_url=url,
+                    endpoint_url=endpoint,
+                    kwargs=req,
+                    auth=auth,
+                    current_api=current_api_json
+                )
+
+            if response['error'] == 0:
                 # self.mark_as_done(job)
                 self.remove_job(job['_key'])
             else:
                 raise Exception('Job cannot be executed properly.')
-            return request
+            return response
         except Exception as e:
             self.logger.error(
                 'bin.check_queue: Error executing the job in CheckQueue module: {}'.format(e))
@@ -199,6 +216,8 @@ class CheckQueue():
             self.logger.error(
                 'bin.check_queue: Error removing the job in CheckQueue module: {}'.format(e))
 
+    # NOTE currently unused. Should be moved as a reutilizable module, as this
+    # is extensively used along the classes.
     def get_api_credentials(self, api_id):
         """
         Get API credentials.
