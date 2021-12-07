@@ -19,22 +19,27 @@ import os
 import jsonbak
 import requestsbak
 import splunk.appserver.mrsparkle.controllers as controllers
+from check_daemons import check_daemons
 from db import database
 from log import log
-from requestsbak.exceptions import ConnectionError
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.clilib import cli_common as cli
 from splunk.clilib.control_exceptions import ParsingError
-from wazuhtoken import wazuhtoken
-
-from . import api
+from wazuh_api import Wazuh_API
 
 splunk_home = os.path.normpath(os.environ['SPLUNK_HOME'])
 
 
 def getLocalConfPath(file):
-    return os.path.join(splunk_home, "etc", "apps", "SplunkAppForWazuh", "local", file + ".conf")
+    return os.path.join(
+        splunk_home,
+        "etc",
+        "apps",
+        "SplunkAppForWazuh",
+        "local",
+        file + ".conf"
+    )
 
 
 def getSelfConfStanza(file, stanza):
@@ -118,12 +123,7 @@ class manager(controllers.BaseController):
         try:
             controllers.BaseController.__init__(self)
             self.db = database()
-            self.wztoken = wazuhtoken()
-            self.config = self.get_config_on_memory()
-            self.timeout = int(self.config['timeout'])
-            self.wazuh_api = api.api()
-            self.session = requestsbak.Session()
-            self.session.trust_env = False
+            self.wz_api = Wazuh_API()
         except Exception as e:
             self.logger.error(
                 "manager: Error in manager module constructor: %s" % (e)
@@ -449,8 +449,7 @@ class manager(controllers.BaseController):
         self.logger.debug("manager::update_api() called")
         try:
             entry = kwargs
-            self.logger.debug(f'''manager: Updating API information
-                {json.dumps(entry, indent=4)}''')
+            self.logger.debug(f'manager: Updating API information')
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
@@ -553,7 +552,7 @@ class manager(controllers.BaseController):
         try:
             self.check_wazuh_version(api)
             # Raise error if Wazuh Daemons are not ready.
-            if not self.check_daemons(api):
+            if not check_daemons(api):
                 raise Exception("DAEMONS-NOT-READY")
             output = self.get_cluster_info(api)
             result = jsonbak.dumps(output)
@@ -636,7 +635,6 @@ class manager(controllers.BaseController):
         # API requests auth
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
         url = opt_base_url + ":" + opt_base_port
-        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api_json)
 
         try:
             # Get file name and file content
@@ -646,17 +644,14 @@ class manager(controllers.BaseController):
             # Get path
             dest_resource = kwargs['resource']
 
-            response = self.session.put(
-                url + '/' + dest_resource + '/files/' + file_name,
-                data=file_content,
-                headers={
-                    "Content-type": "application/octet-stream",
-                    'Authorization': f'Bearer {wazuh_token}'
-                },
-                timeout=20,
-                verify=False
+            response = self.wz_api.make_request(
+                method='PUT',
+                api_url=url,
+                endpoint_url=f'/{dest_resource}/files/{file_name}',
+                kwargs=file_content,
+                auth=auth,
+                current_api=current_api_json
             )
-
             result = jsonbak.loads(response.text)
 
             if 'error' in result and result['error'] != 0:
@@ -701,114 +696,61 @@ class manager(controllers.BaseController):
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api)
 
         output: dict = {}
         # Get manager's name
         try:
-            endpoint: str = f'{url}/agents?q=id=000&select=name'
-            response = self.session.get(
-                endpoint,
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                timeout=20,
-                verify=False
+            response = self.wz_api.make_request(
+                method='GET',
+                api_url=url,
+                endpoint_url='/agents?q=id=000&select=name',
+                kwargs={},
+                auth=auth,
+                current_api=current_api
             )
-
-            # Request was successful
-            if response.status_code == 200:
-                manager_name: str = response.json(
-                )['data']['affected_items'][0]['name']
-                output['managerName'] = {
-                    'name': manager_name
-                }
-            # Request returned an error code
-            elif response.status_code != 200:
-                error_title = response.json()['title']
-                error_detail = response.json()['detail']
-                error_code = response.status_code
-                self.logger.error(
-                    f"manager: {endpoint} request failed with code {error_code}")
-                raise Exception(
-                    f"manager: {error_title} - {error_detail}")
-            # No response
-            else:
-                error = "manager: no response received from the Wazuh API"
-                self.logger.error(error)
-                raise Exception(error)
-        except Exception as e:
-            self.logger.error(f"manager: error on get_cluster_info(): {e}")
-            raise Exception(json.dumps(response.json(), indent=4))
-
-        # Get cluster's status
-        try:
-            endpoint: str = f'{url}/cluster/status'
-            response = self.session.get(
-                endpoint,
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                timeout=20,
-                verify=False
-            )
-
-            # Request was successful
-            if response.status_code == 200:
-                cluster_data: dict = response.json()['data']
-                output['clusterMode'] = cluster_data
-
-                # Cluster enabled and running
-                if all(value == "yes" for value in cluster_data.values()):
-                    # Get cluster's info
-                    endpoint: str = f'{url}/cluster/local/info'
-                    response = self.session.get(
-                        endpoint,
-                        headers={'Authorization': f'Bearer {wazuh_token}'},
-                        timeout=20,
-                        verify=False
-                    )
-
-                    # Request was successful
-                    if response.status_code == 200:
-                        cluster_info: dict = response.json(
-                        )['data']['affected_items'][0]
-                        output['clusterName'] = {
-                            "type":     cluster_info['type'],
-                            "cluster":  cluster_info['cluster'],
-                            "node":     cluster_info['node']
-                        }
-                    # Request returned an error code
-                    elif response.status_code != 200:
-                        error_title = response.json()['title']
-                        error_detail = response.json()['detail']
-                        error_code = response.status_code
-                        self.logger.error(
-                            f"manager: {endpoint} request failed with code {error_code}")
-                        raise Exception(
-                            f"manager: {error_title} - {error_detail}")
-                    # No response
-                    else:
-                        error = "manager: no response received from the Wazuh API"
-                        self.logger.error(error)
-                        raise Exception(error)
-                else:
-                    output['clusterName'] = {"cluster": False}
-
-            # Request returned an error code
-            elif response.status_code != 200:
-                error_title = response.json()['title']
-                error_detail = response.json()['detail']
-                error_code = response.status_code
-                self.logger.error(
-                    f"manager: {endpoint} request failed with code {error_code}")
-                raise Exception(
-                    f"manager: {error_title} - {error_detail}")
-            # No response
-            else:
-                error = "manager: no response received from the Wazuh API"
-                self.logger.error(error)
-                raise Exception(error)
+            manager_name: str = response['data']['affected_items'][0]['name']
+            output['managerName'] = {
+                'name': manager_name
+            }
         except Exception as e:
             self.logger.error(f"manager: error on get_cluster_info(): {e}")
             raise e
 
+        # Get cluster's status
+        try:
+            response = self.wz_api.make_request(
+                method='GET',
+                api_url=url,
+                endpoint_url='/cluster/status',
+                kwargs={},
+                auth=auth,
+                current_api=current_api
+            )
+            cluster_data: dict = response['data']
+            output['clusterMode'] = cluster_data
+
+            # Cluster enabled and running
+            if all(value == "yes" for value in cluster_data.values()):
+                # Get cluster's info
+                response = self.wz_api.make_request(
+                    method='GET',
+                    api_url=url,
+                    endpoint_url='/cluster/local/info',
+                    kwargs={},
+                    auth=auth,
+                    current_api=current_api
+                )
+                cluster_info: dict = response['data']['affected_items'][0]
+                output['clusterName'] = {
+                    "type":     cluster_info['type'],
+                    "cluster":  cluster_info['cluster'],
+                    "node":     cluster_info['node']
+                }
+            else:
+                output['clusterName'] = {"cluster": False}
+        except Exception as e:
+            self.logger.error(f"manager: error on get_cluster_info(): {e}")
+            raise e
         return output
 
     def check_wazuh_version(self, current_api: dict):
@@ -829,103 +771,35 @@ class manager(controllers.BaseController):
 
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api)
 
         try:
-            wazuh_version = self.session.get(
-                url + '/',
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                timeout=20,
-                verify=False
-            ).json()
+            response = self.wz_api.make_request(
+                method='GET',
+                api_url=url,
+                endpoint_url='/',
+                kwargs={},
+                auth=auth,
+                current_api=current_api
+            )
 
-            if not "data" in wazuh_version:
-                raise Exception(wazuh_version)
+            if not "data" in response:
+                raise Exception(json.dumps(response, indent=4))
 
-            wazuh_version = wazuh_version['data']['api_version']
-
-            app_version = cli.getConfStanza('package', 'app')
-            app_version = app_version['version']
-
+            wazuh_version = response['data']['api_version']
             v_split = wazuh_version.split('.')
-            a_split = app_version.split('.')
-
             wazuh_version = str(v_split[0]+"."+v_split[1])
+
+            app_version = cli.getConfStanza('package', 'app')['version']
+            a_split = app_version.split('.')
             app_version = str(a_split[0]+"."+a_split[1])
+
             if wazuh_version != app_version:
                 raise Exception(
-                    "Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (
-                        app_version, wazuh_version))
+                    "Unexpected Wazuh version. App version: %s, Wazuh version: %s"
+                    % (app_version, wazuh_version))
         except Exception as ex:
             self.logger.error("Error when checking Wazuh version: %s" % (ex))
             raise ex
-
-    def check_daemons(self, current_api: dict) -> bool:
-        """
-        Request to check the status of this daemons:
-        execd, modulesd, wazuhdb and clusterd
-
-        Parameters
-        ----------
-        current_api : dict
-            API object
-        """
-        self.logger.debug("manager: Checking Wazuh daemons.")
-
-        opt_username = str(current_api['userapi'])
-        opt_password = str(current_api['passapi'])
-        opt_base_url = str(current_api['url'])
-        opt_base_port = str(current_api['portapi'])
-        check_cluster = str(current_api['cluster']) == "true"
-
-        url = opt_base_url + ":" + opt_base_port
-        auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        wazuh_token = self.wztoken.get_auth_token(url, auth, current_api)
-
-        try:
-            request_cluster = self.session.get(
-                url + '/cluster/status',
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                timeout=self.timeout,
-                verify=False
-            ).json()
-            # Try to get cluster is enabled if the request fail set to false
-            try:
-                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
-            except Exception as e:
-                cluster_enabled = False
-            # Var to check the cluster demon or not
-            cc = check_cluster and cluster_enabled
-            opt_endpoint = "/manager/status"
-            daemons_status = self.session.get(
-                url + opt_endpoint,
-                headers={'Authorization': f'Bearer {wazuh_token}'},
-                verify=False
-            ).json()
-            if not daemons_status['error']:
-                d = daemons_status['data']['affected_items'][0]
-                daemons = {
-                    "execd": d['wazuh-execd'],
-                    "modulesd": d['wazuh-modulesd'],
-                    "db": d['wazuh-db']
-                }
-                if cc:
-                    daemons['clusterd'] = d['wazuh-clusterd']
-                values = list(daemons.values())
-                # Checks all the status are equals, and running
-                wazuh_ready = len(set(values)) == 1 and values[0] == "running"
-
-                # Log result
-                if wazuh_ready:
-                    checked_debug_msg = "Wazuh daemons ready"
-                else:
-                    checked_debug_msg = "Wazuh daemons not ready yet"
-                self.logger.debug("api: %s" % checked_debug_msg)
-
-                return wazuh_ready
-        except Exception as e:
-            self.logger.error("manager: Error checking daemons: %s" % (e))
-            raise e
 
     def get_config_on_memory(self):
         try:
@@ -935,6 +809,5 @@ class manager(controllers.BaseController):
             return config
         except Exception as e:
             self.logger.error(
-                "manager: Error getting the configuration on memory: %s" % (e)
-            )
+                "manager: Error getting the configuration on memory: %s" % (e))
             raise e
