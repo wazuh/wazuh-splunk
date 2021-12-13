@@ -13,6 +13,7 @@ Find more information about this on the LICENSE file.
 """
 
 import requestsbak
+import json
 from log import log
 from wazuh_api import Wazuh_API
 
@@ -26,11 +27,15 @@ def check_daemons(current_api: dict) -> bool:
     ----------
     current_api :  dict
         Holds the API information.
+    Returns
+    ----------
+    bool
+        True if the daemons listed above are up and running, False otherwise.
     """
     logger = log()
     wz_api = Wazuh_API()
 
-    logger.debug("Daemons::check_daemons() called")
+    logger.debug("check_daemons() called")
 
     opt_username = str(current_api['userapi'])
     opt_password = str(current_api['passapi'])
@@ -45,58 +50,57 @@ def check_daemons(current_api: dict) -> bool:
     url = opt_base_url + ":" + opt_base_port
     auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
 
+    request_cluster = wz_api.make_request(
+        method='GET',
+        api_url=url,
+        endpoint_url='/cluster/status',
+        kwargs={},
+        auth=auth,
+        current_api=current_api
+    )
+    # Try to get if the cluster is enabled.
+    # If the request has failed, then set cluster_enabled to false.
     try:
-        request_cluster = wz_api.make_request(
-            method='GET',
-            api_url=url,
-            endpoint_url='/cluster/status',
-            kwargs={},
-            auth=auth,
-            current_api=current_api
+        cluster_enabled = request_cluster['data']['enabled'] == 'yes'
+    except KeyError as e:
+        cluster_enabled = False
+
+    # Var to check the cluster demon or not
+    cc = check_cluster and cluster_enabled
+    daemons_status = wz_api.make_request(
+        method='GET',
+        api_url=url,
+        endpoint_url='/manager/status',
+        kwargs={},
+        auth=auth,
+        current_api=current_api
+    )
+
+    wazuh_ready = False
+    if not daemons_status['error']:
+        d = daemons_status['data']['affected_items'][0]
+        daemons = {
+            "execd": d['wazuh-execd'],
+            "modulesd": d['wazuh-modulesd'],
+            "db": d['wazuh-db']
+        }
+        if cc:
+            daemons['clusterd'] = d['wazuh-clusterd']
+        values = list(daemons.values())
+        # Checks all the status are equals, and running
+        wazuh_ready = len(set(daemons.values())) == 1 and values[0] == "running"
+    else:
+        logger.error(
+            "check_daemons():\n"
+            + json.dumps(daemons_status["error"], indent=4)
         )
 
-        # Try to get cluster is enabled if the request fail set to false
-        try:
-            cluster_enabled = request_cluster['data']['enabled'] == 'yes'
-        except Exception as e:
-            cluster_enabled = False
-        # Var to check the cluster demon or not
-        cc = check_cluster and cluster_enabled
-
-        daemons_status = wz_api.make_request(
-            method='GET',
-            api_url=url,
-            endpoint_url='/manager/status',
-            kwargs={},
-            auth=auth,
-            current_api=current_api
-        )
-
-        if not daemons_status['error']:
-            d = daemons_status['data']['affected_items'][0]
-            daemons = {
-                "execd": d['wazuh-execd'],
-                "modulesd": d['wazuh-modulesd'],
-                "db": d['wazuh-db']
-            }
-            if cc:
-                daemons['clusterd'] = d['wazuh-clusterd']
-            values = list(daemons.values())
-            # Checks all the status are equals, and running
-            wazuh_ready = len(
-                set(values)) == 1 and values[0] == "running"
-
-            # Log result
-            if wazuh_ready:
-                checked_debug_msg = "Wazuh daemons ready"
-            else:
-                checked_debug_msg = "Wazuh daemons not ready yet"
-            logger.debug(
-                "Daemons::check_daemons(): %s" % checked_debug_msg
-            )
-            return wazuh_ready
-        else:
-            raise Exception(daemons_status["error"])
-    except Exception as e:
-        logger.error(f"Daemons::check_daemons(): {e}")
-        raise e
+    # Log result
+    if wazuh_ready:
+        checked_debug_msg = "Wazuh daemons ready"
+    else:
+        checked_debug_msg = "Wazuh daemons not ready yet"
+    logger.debug(
+        "check_daemons(): %s" % checked_debug_msg
+    )
+    return wazuh_ready

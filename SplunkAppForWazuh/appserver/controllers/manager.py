@@ -449,7 +449,7 @@ class manager(controllers.BaseController):
         self.logger.debug("manager::update_api() called")
         try:
             entry = kwargs
-            self.logger.debug(f'manager: Updating API information')
+            self.logger.debug(f"manager: Updating API information")
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
@@ -647,7 +647,7 @@ class manager(controllers.BaseController):
             response = self.wz_api.make_request(
                 method='PUT',
                 api_url=url,
-                endpoint_url=f'/{dest_resource}/files/{file_name}',
+                endpoint_url=f"/{dest_resource}/files/{file_name}",
                 kwargs=file_content,
                 auth=auth,
                 current_api=current_api_json
@@ -697,35 +697,51 @@ class manager(controllers.BaseController):
         url = opt_base_url + ":" + opt_base_port
         auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
 
-        output: dict = {}
-        # Get manager's name
-        try:
-            response = self.wz_api.make_request(
-                method='GET',
-                api_url=url,
-                endpoint_url='/agents?q=id=000&select=name',
-                kwargs={},
-                auth=auth,
-                current_api=current_api
-            )
-            manager_name: str = response['data']['affected_items'][0]['name']
-            output['managerName'] = {
-                'name': manager_name
+        # Response model
+        output: dict = {
+            'managerName': {
+                'name': 'NoName'
+            },
+            'clusterMode': {
+                'enabled': 'no',
+                'running': 'no'
+            },
+            'clusterName': {
+                'cluster': False
             }
-        except Exception as e:
-            self.logger.error(f"manager: error on get_cluster_info(): {e}")
-            raise e
+        }
+
+        # Get manager's name
+        endpoint = "/agents?q=id=000&select=name"
+        response = self.wz_api.make_request(
+            method='GET',
+            api_url=url,
+            endpoint_url=endpoint,
+            kwargs={},
+            auth=auth,
+            current_api=current_api
+        )
+        try:
+            manager_name: str = response['data']['affected_items'][0]['name']
+        except IndexError:
+            # data.affected_items is empty
+            self.logger.error(
+                f"manager::get_cluster_info(): {endpoint} did not return any data\n"
+                + json.dumps(response, indent=4)
+            )
+        else:
+            output['managerName']['name'] = manager_name
 
         # Get cluster's status
+        response = self.wz_api.make_request(
+            method='GET',
+            api_url=url,
+            endpoint_url='/cluster/status',
+            kwargs={},
+            auth=auth,
+            current_api=current_api
+        )
         try:
-            response = self.wz_api.make_request(
-                method='GET',
-                api_url=url,
-                endpoint_url='/cluster/status',
-                kwargs={},
-                auth=auth,
-                current_api=current_api
-            )
             cluster_data: dict = response['data']
             output['clusterMode'] = cluster_data
 
@@ -742,15 +758,19 @@ class manager(controllers.BaseController):
                 )
                 cluster_info: dict = response['data']['affected_items'][0]
                 output['clusterName'] = {
-                    "type":     cluster_info['type'],
-                    "cluster":  cluster_info['cluster'],
-                    "node":     cluster_info['node']
+                    'type':     cluster_info['type'],
+                    'cluster':  cluster_info['cluster'],
+                    'node':     cluster_info['node']
                 }
-            else:
-                output['clusterName'] = {"cluster": False}
+        except (IndexError, KeyError):
+            # data does not exist or data.affected_items is empty
+            self.logger.error(
+                f"manager: {endpoint} did not return any data\n"
+                + json.dumps(response, indent=4)
+            )
         except Exception as e:
             self.logger.error(f"manager: error on get_cluster_info(): {e}")
-            raise e
+
         return output
 
     def check_wazuh_version(self, current_api: dict):

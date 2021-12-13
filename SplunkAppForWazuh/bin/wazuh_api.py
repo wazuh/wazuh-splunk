@@ -2,7 +2,7 @@
 """
 Wazuh app - API backend module.
 
-Copyright (C) 2015-2019 Wazuh, Inc.
+Copyright (C) 2015-2021 Wazuh, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ class Wazuh_API():
     """
     Wazuh_API class.
 
-    Handles responsees to the Wazuh API.
+    Handle the requests sent to the Wazuh API.
     """
 
     def __init__(self):
@@ -66,19 +66,36 @@ class Wazuh_API():
 
         def catch_exceptions(
             response: requestsbak.models.Response
-        ) -> requestsbak.models.Response:
+        ) -> dict:
             """
             Auxiliar function. Controls some of the response's status codes.
 
-            :param response
+            - 200 Ok
+                Return the request's JSON body.
+
+            - 401 Unauthorized - No token provided
+                In this case, a token refresh is enforced and the request is
+                sent again.
+
+            Parameters
+            ----------
+            response : requestsbak.models.Response
+                A response object.
+
+            Returns
+            ----------
+            The response JSON body.
             """
             # Static variable. Retains state between calls
             if not hasattr(catch_exceptions, 'attempts'):
                 catch_exceptions.attempts = 0
+
             try:
-                # Unauthorized. Try to refresh the token and re-attempt response
-                if response.status_code == 401:
+                status_code = response.status_code
+                # Unauthorized. Try to refresh the token and re-attempt request.
+                if status_code == 401:
                     if catch_exceptions.attempts == 0:
+                        catch_exceptions.attempts += 1
                         self.wztoken.refresh()
                         return self.make_request(
                             method=method,
@@ -89,14 +106,19 @@ class Wazuh_API():
                             current_api=current_api,
                             counter=counter - 1
                         )
-
-                if response.status_code != 200:
-                    raise Exception(response.json())
-
+                elif status_code != 200:
+                    raise Exception(
+                        f"{method} {endpoint_url} request failed with status {status_code}\n"
+                        + json.dumps(response.json(), indent=4)
+                    )
                 catch_exceptions.attempts = 0
-                return response.json()
             except Exception as e:
+                self.logger.error(
+                    f"{self.__class__.__name__}::catch_exceptions() {e}"
+                )
                 raise e
+            finally:
+                return response.json()
 
         verify = False
         try:
@@ -114,14 +136,15 @@ class Wazuh_API():
                             verify=verify
                         ).content
                         # FIXME dumps + loads ???
-                        json_response = json.dumps(
-                            {
-                                'data': response_xml.decode("utf-8")
-                            }
-                        )
-                        json_load = json.loads(json_response)
-                        response = json_load
-                        return response
+                        response = {
+                            'data': response_xml.decode("utf-8")
+                        }
+                        # json_response = json.dumps(
+                        #     {
+                        #         'data': response_xml.decode("utf-8")
+                        #     }
+                        # )
+                        # response = json.loads(json_response)
                     if kwargs['origin'] == 'raw':
                         response = self.session.get(
                             url=api_url + endpoint_url,
@@ -130,13 +153,16 @@ class Wazuh_API():
                             },
                             verify=verify
                         )
-                        return json.loads(
-                            json.dumps(
-                                {
-                                    'data': response.content.decode("utf-8")
-                                }
-                            )
-                        )
+                        response = {
+                            'data': response.content.decode("utf-8")
+                        }
+                        # return json.loads(
+                        #     json.dumps(
+                        #         {
+                        #             'data': response.content.decode("utf-8")
+                        #         }
+                        #     )
+                        # )
                 else:
                     response = self.session.get(
                         url=api_url + endpoint_url,
@@ -267,13 +293,25 @@ class Wazuh_API():
                         "Tried to execute %s %s three times with no success."
                         % (method, endpoint_url)
                     )
+
             return self.clean_keys(response)
         except Exception as e:
             self.logger.error(f"{self.__class__.__name__}: {e}")
             raise e
 
-    def clean_keys(self, response):
-        """Hide sensible data from API response."""
+    def clean_keys(self, response) -> dict:
+        """
+        Hide sensible data from the API response.
+
+        Parameters
+        ----------
+        response : dict
+            The response JSON body.
+
+        Returns
+        ----------
+        The same response object but with every sensible data hidden.
+        """
         self.logger.debug(f"{self.__class__.__name__}::clean_keys() called.")
         try:
             hide = "********"

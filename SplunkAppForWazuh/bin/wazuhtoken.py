@@ -17,6 +17,7 @@ import json
 import splunk.auth as splunk_auth
 
 import requestsbak
+import utils
 from cache import cache
 from log import log
 
@@ -76,18 +77,17 @@ class wazuhtoken():
             self.logger.error(f"wazuh-token: {error}")
             raise Exception(error)
         else:
-            self.logger.debug("wazuh-token: API object provided")
-            # self.logger.debug(
-            #     "wazuh-token: API object provided\n" +
-            #     json.dumps(api_object, sort_keys=True, indent=4)
-            # )
+            self.logger.debug(
+                "wazuh-token: API object provided\n" +
+                json.dumps(api_object, sort_keys=True, indent=4)
+            )
 
         # Init values
         self.api_url = api_url
         self.api_auth = api_auth
         self.api_object = api_object
 
-        token_key: str = f'token-{api_url}-{api_auth}'
+        token_key = utils.dict_hash(self.api_object)
 
         try:
             # Return cached token, if it exists. Check if a refresh is required.
@@ -100,17 +100,16 @@ class wazuhtoken():
                 response = self._get_token_request()
                 # TODO handle possible status codes
                 token: str = response.json()['data']['token']
+
                 # timeout of 900 seconds, as specified on the Wazuh API
                 # TODO get configured value from /security/config endpoint
                 self.cache.set(token_key, token, 900)
-                self.logger.debug(
-                    f"wazuh-token: new token for key {token_key}")
+                self.logger.debug(f"wazuh-token: new token for key {token_key}")
 
             self.__refresh = False
             return token
         except Exception as e:
-            self.logger.error(
-                "wazuh-token: error on get_auth_token: %s" % (e))
+            self.logger.error("wazuh-token: error on get_auth_token: %s" % (e))
             raise e
 
     def _get_token_request(self) -> requestsbak.models.Response:
@@ -124,35 +123,24 @@ class wazuhtoken():
         self.logger.debug("wazuh-token::get_token_request() called")
         try:
             api_run_as: bool = (self.api_object["runAs"] == "true")
-            # Obtain Splunk's user context.
-            user: dict = {"user_name": splunk_auth.getCurrentUser()['name']}
-            self.logger.debug(
-                "wazuh-token: Splunk's User is\n" +
-                json.dumps(user, indent=4)
-            )
-            self.logger.debug("wazuh-token: API.run_as is " + str(api_run_as))
-            response = self._basic_auth_login()  # REMOVE ME
-            self.logger.debug("wazuh-token: TOKEN " +
-                              json.dumps(response.json()))
-            # TODO CONTINUE DEBUG
-            # Try to log in using the auth context first
-            # if api_run_as:
-            #     response = self._auth_context_login()
-            #     # If it fails, use the basic auth
-            #     if response.status_code != 200:
-            #         self.logger.debug(
-            #             "wazuh-token: API response\n" +
-            #             json.dumps(response.json(), sort_keys=True, indent=4)
-            #         )
-            #         self.logger.info(
-            #             f'wazuh-token: allow_run_as not enabled for user {api_auth}')
-            #         response = self._basic_auth_login()
-            # else:
-            #     response = self._basic_auth_login()
+
+            if api_run_as:
+                response = self._auth_context_login()
+                # If it fails, use the basic auth
+                if response.status_code != 200:
+                    self.logger.error(
+                        f"wazuh-token: allow_run_as not enabled for user {self.api_auth}\n"
+                        + "API response:\n"
+                        + f"Request failed with code {response.status_code}"
+                        + json.dumps(response.json(), indent=4)
+                    )
+                    response = self._basic_auth_login()
+            else:
+                response = self._basic_auth_login()
             return response
         except Exception as e:
             self.logger.error("wazuh-token::get_token_request() - " + str(e))
-            raise (e)
+            raise e
 
     def _basic_auth_login(self) -> requestsbak.models.Response:
         """
@@ -173,19 +161,26 @@ class wazuhtoken():
                 "wazuh-token: error on basic_auth_login: %s" % (e))
             raise e
 
-    def _auth_context_login(self, auth_context: dict = {}) -> requestsbak.models.Response:
+    def _auth_context_login(self) -> requestsbak.models.Response:
         """
         This method should be called to get an API token using an
         authorization context body.
 
         :return: Response object result of the login request.
         """
-        self.logger.debug("wazuh-token: using auth context")
+        # Obtain Splunk's user context.
+        auth_context = {
+            "user_name": splunk_auth.getCurrentUser()['name']
+        }
+        self.logger.debug(
+            "wazuh-token: using auth context\n"
+            + json.dumps(auth_context, indent=4)
+        )
         try:
             return self.session.post(
                 f"{self.api_url}/security/user/authenticate/run_as",
                 auth=self.api_auth,
-                data=auth_context,
+                json=auth_context,
                 timeout=20,
                 verify=False
             )
