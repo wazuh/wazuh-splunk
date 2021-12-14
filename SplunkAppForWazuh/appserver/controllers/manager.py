@@ -729,6 +729,7 @@ class manager(controllers.BaseController):
                 f"manager::get_cluster_info(): {endpoint} did not return any data\n"
                 + json.dumps(response, indent=4)
             )
+            return response # API error response
         else:
             output['managerName']['name'] = manager_name
 
