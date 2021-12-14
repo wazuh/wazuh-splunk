@@ -21,6 +21,35 @@ import utils
 from cache import cache
 from log import log
 
+import re
+def to_json(data: str) -> dict:
+    """
+    Apply few fixes to a String representation of an object in order
+    to be parsed as a JSON object following the (RFC 8259) standard.
+
+    Parameters
+    ----------
+    data : str
+    The string to be parsed.
+
+    Returns
+    ----------
+    data : JSON object or str
+    The parsed string as a JSON object if possible, as a string otherwise.
+    """
+    data = re.sub('\'\{', '{', data)        # Replace '{ with {
+    data = re.sub('\}\'', '}', data)        # Replace }' with }
+    data = re.sub('\'', '"', data)          # Replace ' with "
+    data = re.sub('None', '"None"', data)   # Replace None with "None"
+
+    try:
+        return json.loads(data)
+    except ValueError:
+        raise ValueError(
+            "to_json() - invalid string representation of a JSON object."
+            + "Unable to parse."
+        )
+    
 
 class wazuhtoken():
     """
@@ -86,6 +115,8 @@ class wazuhtoken():
         self.api_url = api_url
         self.api_auth = api_auth
         self.api_object = api_object
+        # Inject Splunk user (to ensure an unique token per user)
+        self.api_object['_user'] = splunk_auth.getCurrentUser()['name']
 
         token_key = utils.dict_hash(self.api_object)
 
@@ -169,9 +200,12 @@ class wazuhtoken():
         :return: Response object result of the login request.
         """
         # Obtain Splunk's user context.
-        auth_context = {
-            "user_name": splunk_auth.getCurrentUser()['name']
-        }
+        users: str = splunk_auth.listUsers().__str__()
+        users: dict = to_json(users)
+        auth_context =  users[self.api_object['_user']]
+        auth_context['name'] = self.api_object['_user']
+        auth_context['user_name'] = self.api_object['_user']
+
         self.logger.debug(
             "wazuh-token: using auth context\n"
             + json.dumps(auth_context, indent=4)
