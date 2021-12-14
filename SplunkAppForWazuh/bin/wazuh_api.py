@@ -273,7 +273,7 @@ class Wazuh_API():
                 f"{self.__class__.__name__}: {method} {api_url} {endpoint_url} {kwargs}"
             )
 
-            if response['error'] and response['error'] in socket_errors:
+            if 'error' in response and response['error'] in socket_errors:
                 self.logger.debug(
                     f"{self.__class__.__name__}: retrying response ({counter})."
                 )
