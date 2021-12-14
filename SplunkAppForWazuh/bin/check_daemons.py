@@ -62,7 +62,7 @@ def check_daemons(current_api: dict) -> bool:
     # If the request has failed, then set cluster_enabled to false.
     try:
         cluster_enabled = request_cluster['data']['enabled'] == 'yes'
-    except KeyError as e:
+    except KeyError:
         cluster_enabled = False
 
     # Var to check the cluster demon or not
@@ -77,7 +77,12 @@ def check_daemons(current_api: dict) -> bool:
     )
 
     wazuh_ready = False
-    if not daemons_status['error']:
+    if 'error' in daemons_status:
+        logger.error(
+            "check_daemons():\n"
+            + json.dumps(daemons_status, indent=4)
+        )
+    else:
         d = daemons_status['data']['affected_items'][0]
         daemons = {
             "execd": d['wazuh-execd'],
@@ -88,12 +93,7 @@ def check_daemons(current_api: dict) -> bool:
             daemons['clusterd'] = d['wazuh-clusterd']
         values = list(daemons.values())
         # Checks all the status are equals, and running
-        wazuh_ready = len(set(daemons.values())) == 1 and values[0] == "running"
-    else:
-        logger.error(
-            "check_daemons():\n"
-            + json.dumps(daemons_status["error"], indent=4)
-        )
+        wazuh_ready = len(set(daemons.values())) == 1 and values[0] == "running"        
 
     # Log result
     if wazuh_ready:
