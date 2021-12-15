@@ -1,2 +1,3 @@
 # __init__.py
-from .dict_hash import dict_hash
+from .dict import dict_hash
+from .dict import to_json

@@ -12,42 +12,14 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
+import json
+
 import splunk.appserver.mrsparkle.controllers as controllers
-from splunk.appserver.mrsparkle.lib.decorators import expose_page
-from log import log
-
-import jsonbak as json
 import splunk.auth as splunk_auth
-import re
+import utils
+from log import log
+from splunk.appserver.mrsparkle.lib.decorators import expose_page
 
-
-def to_json(data: str):
-    """
-    Apply few fixes to a String representation of an object in order
-    to be parsed as a JSON object following the (RFC 8259) standard.
-
-    Parameters
-    ----------
-    data : str
-    The string to be parsed.
-
-    Returns
-    ----------
-    data : JSON object or str
-    The parsed string as a JSON object if possible, as a string otherwise.
-    """
-    data = re.sub('\'\{', '{', data)        # Replace '{ with {
-    data = re.sub('\}\'', '}', data)        # Replace }' with }
-    data = re.sub('\'', '"', data)          # Replace ' with "
-    data = re.sub('None', '"None"', data)   # Replace None with "None"
-
-    try:
-        return json.loads(data)
-    except ValueError:
-        log().error("Users - to_json() - invalid string representation of " 
-           + "a JSON object. Unable to parse.")
-        raise
-    
 
 class Users(controllers.BaseController):
     """
@@ -86,13 +58,13 @@ class Users(controllers.BaseController):
         """
         self.logger.debug("Users::get_users() called")
         try:
-            # The method listUsers() returns an EntityCollection object, which 
+            # The method listUsers() returns an EntityCollection object, which
             # is not JSON serializable. The string representation does not match
             # a JSON representation neither, so a few fixes must be done first.
             # We are going to parse the string representation of the object
             # following the (RFC 8259) standard.
             users = splunk_auth.listUsers().__str__()
-            users = to_json(users)
+            users = utils.to_json(users)
             return json.dumps(users)
         except Exception as e:
             self.logger.error("Users: Error getting internal Splunk's users")
