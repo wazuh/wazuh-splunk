@@ -12,20 +12,21 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
-import requestsbak
 import json
+
+from API_model import API_model
 from log import log
 from wazuh_api import Wazuh_API
 
 
-def check_daemons(current_api: dict) -> bool:
+def check_daemons(api: API_model) -> bool:
     """
     Request to check the status of this daemons:
     execd, modulesd, wazuhdb and clusterd
 
     Parameters
     ----------
-    current_api :  dict
+    api :  API_model
         Holds the API information.
     Returns
     ----------
@@ -37,26 +38,14 @@ def check_daemons(current_api: dict) -> bool:
 
     logger.debug("check_daemons() called")
 
-    opt_username = str(current_api['userapi'])
-    opt_password = str(current_api['passapi'])
-    opt_base_url = str(current_api['url'])
-    opt_base_port = str(current_api['portapi'])
-    check_cluster = (
-        'filterType' in current_api and str(current_api['filterType']) == "cluster.name"
-        or
-        'cluster' in current_api and str(current_api['cluster']) == "true"
-    )
-
-    url = opt_base_url + ":" + opt_base_port
-    auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
+    # FIXME check intialization of filter_type and cluster on manager.py
+    check_cluster = (api.filter_type == "cluster.name" or api.cluster)
 
     request_cluster = wz_api.make_request(
         method='GET',
-        api_url=url,
         endpoint_url='/cluster/status',
         kwargs={},
-        auth=auth,
-        current_api=current_api
+        current_api=api
     )
     # Try to get if the cluster is enabled.
     # If the request has failed, then set cluster_enabled to false.
@@ -69,11 +58,9 @@ def check_daemons(current_api: dict) -> bool:
     cc = check_cluster and cluster_enabled
     daemons_status = wz_api.make_request(
         method='GET',
-        api_url=url,
         endpoint_url='/manager/status',
         kwargs={},
-        auth=auth,
-        current_api=current_api
+        current_api=api
     )
 
     wazuh_ready = False

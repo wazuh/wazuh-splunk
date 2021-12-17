@@ -15,11 +15,14 @@ Find more information about this on the LICENSE file.
 import sys
 import time
 
+import get_api_by_id as API_services
 import jsonbak
-import requestsbak
+import utils
+from API_model import API_model
 from db import database
 from jobs_queue import JobsQueue
 from log import log
+from wazuh_api import Wazuh_API
 
 
 class CheckQueue():
@@ -32,6 +35,7 @@ class CheckQueue():
             self.auth_key = sys.stdin.readline().strip()
             self.q = JobsQueue()
             self.db = database()
+            self.wz_api = Wazuh_API()
         except Exception as e:
             self.logger.error(
                 "bin.check_queue: error in the constructor: %s" % (e))
@@ -101,80 +105,56 @@ class CheckQueue():
             method = 'GET'
 
             # Checks if are missing params
-            if ('id' not in req and 'apiId' not in req) or 'endpoint' not in req:
-                raise Exception('Missing ID or endpoint')
+            endpoint = utils.get_parameter(req, 'endpoint')
+            api_id = utils.get_parameter(req, 'apiId')
+
             if 'method' in req.keys() and req['method'] != 'GET':
                 method = req['method']
                 del req['method']
 
-            api_id = 0
-            if 'id' in req:
-                api_id = req['id']
-            elif 'apiId' in req:
-                api_id = req['apiId']
-            else:
-                raise Exception('Missing API ID')
             try:
-                current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+                api: API_model = API_services.get_api_by_id(api_id)
             except Exception as e:
                 self.logger.error(
-                    "bin.check_queue: Error executing the job, job will be deleted from the queue. Reason: {}".format(e))
+                    "bin.check_queue: Error executing the job, job will be"
+                    + " deleted from the queue. Reason: {}".format(e))
                 self.remove_job(job['_key'])
                 return
 
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            # API requests auth
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            url = opt_base_url + ":" + opt_base_port
-
-            endpoint = req['endpoint']
             # Checks methods
             if method == 'GET':
                 response = self.wz_api.make_request(
                     method='GET',
-                    api_url=url,
                     endpoint_url=endpoint,
                     kwargs={},
-                    auth=auth,
-                    current_api=current_api_json
+                    current_api=api
                 )
 
-            if method == 'POST':
+            elif method == 'POST':
                 response = self.wz_api.make_request(
                     method='POST',
-                    api_url=url,
                     endpoint_url=endpoint,
                     kwargs=req,
-                    auth=auth,
-                    current_api=current_api_json
+                    current_api=api
                 )
 
-            if method == 'PUT':
+            elif method == 'PUT':
                 response = self.wz_api.make_request(
                     method='PUT',
-                    api_url=url,
                     endpoint_url=endpoint,
                     kwargs=req,
-                    auth=auth,
-                    current_api=current_api_json
+                    current_api=api
                 )
 
-            if method == 'DELETE':
+            elif method == 'DELETE':
                 response = self.wz_api.make_request(
                     method='DELETE',
-                    api_url=url,
                     endpoint_url=endpoint,
                     kwargs=req,
-                    auth=auth,
-                    current_api=current_api_json
+                    current_api=api
                 )
 
             if response['error'] == 0:
-                # self.mark_as_done(job)
                 self.remove_job(job['_key'])
             else:
                 raise Exception('Job cannot be executed properly.')
@@ -215,41 +195,6 @@ class CheckQueue():
         except Exception as e:
             self.logger.error(
                 'bin.check_queue: Error removing the job in CheckQueue module: {}'.format(e))
-
-    # NOTE currently unused. Should be moved as a reutilizable module, as this
-    # is extensively used along the classes.
-    def get_api_credentials(self, api_id):
-        """
-        Get API credentials.
-
-        Parameters
-        ----------
-        str: api_id
-            The API id
-        """
-        self.logger.debug("bin.check_queue: Getting API credentials.")
-        try:
-            api = self.db.get(api_id, self.auth_key)
-            api = jsonbak.loads(api)
-            if api["data"]["messages"][0]["type"] == "ERROR":
-                raise Exception('API does not exist')
-            elif api:
-                self.logger.debug(jsonbak.dumps(api, indent=4))
-                opt_username = api['data']["userapi"]
-                opt_password = api['data']["passapi"]
-                opt_base_url = api['data']["url"]
-                opt_base_port = api['data']["portapi"]
-                url = str(opt_base_url) + ":" + str(opt_base_port)
-                auth = requestsbak.auth.HTTPBasicAuth(
-                    opt_username, opt_password)
-                verify = False
-                return url, auth, verify
-            else:
-                raise Exception('API not found')
-        except KeyError:
-            raise Exception('API does not exist')
-        except Exception as e:
-            raise e
 
 
 if __name__ == '__main__':

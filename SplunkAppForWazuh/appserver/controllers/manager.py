@@ -16,9 +16,11 @@ Find more information about this on the LICENSE file.
 import json
 import os
 
+import get_api_by_id as API_services
 import jsonbak
-import requestsbak
 import splunk.appserver.mrsparkle.controllers as controllers
+import utils
+from API_model import API_model
 from check_daemons import check_daemons
 from db import database
 from log import log
@@ -315,25 +317,21 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Getting API info from _key.")
-            if 'apiId' not in kwargs:
-                return jsonbak.dumps(
-                    {
-                        'error': 'Missing ID.'
-                    }
-                )
-            id = kwargs['apiId']
-            data_temp = self.db.get(id)
-            parsed_data = jsonbak.dumps(data_temp)
+            
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api = self.db.get(api_id)
+            
+            return jsonbak.dumps(api)
         except Exception as e:
-            self.logger.error("manager: Error in get_apis endpoint: %s" % (e))
+            self.logger.error("manager::get_api(): %s" % (e))
             return jsonbak.dumps(
                 {
                     'error': str(e)
                 }
             )
-        return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
     def get_apis(self, **kwargs):
@@ -345,27 +343,27 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Getting API list.")
+            
             apis = self.db.all()
             parsed_apis = jsonbak.loads(apis)
+            
             # Remove the password from the list of apis
             for api in parsed_apis:
                 if "passapi" in api:
                     del api['passapi']
-            result = jsonbak.dumps(parsed_apis)
+            
+            return jsonbak.dumps(parsed_apis)
         except Exception as e:
-            self.logger.error(jsonbak.dumps(
+            error = jsonbak.dumps(
                 {
-                    'error': str(e)
-                }
-            ))
-            return jsonbak.dumps(
-                {
-                    'error': str(e)
+                    "error": str(e)
                 }
             )
-        return result
+            self.logger.error(error)
+            return error
 
     @expose_page(must_login=False, methods=['POST'])
     def add_api(self, **kwargs):
@@ -377,6 +375,7 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Adding a new API.")
             record = kwargs
@@ -411,17 +410,14 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Removing API.")
-            api_id = kwargs
-            if '_key' not in api_id:
-                return jsonbak.dumps(
-                    {
-                        'error': 'Missing ID'
-                    }
-                )
-            self.db.remove(api_id['_key'])
-            parsed_data = jsonbak.dumps(
+
+            api_id = utils.get_parameter(kwargs, '_key')
+            self.db.remove(api_id)
+
+            return jsonbak.dumps(
                 {
                     'data': 'success'
                 }
@@ -434,7 +430,6 @@ class manager(controllers.BaseController):
                     'error': str(e)
                 }
             )
-        return parsed_data
 
     @expose_page(must_login=False, methods=['POST'])
     def update_api(self, **kwargs):
@@ -446,6 +441,7 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        # TODO USE MODEL AND SERVICE
         self.logger.debug("manager::update_api() called")
         try:
             entry = kwargs
@@ -453,16 +449,15 @@ class manager(controllers.BaseController):
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
-                opt_id = entry['_key']
-                data_temp = self.db.get(opt_id)
-                current_api = jsonbak.loads(data_temp)
-                current_api = current_api['data']
-                entry['passapi'] = current_api['passapi']
+                api_id = utils.get_parameter(entry, '_key')
+                api = jsonbak.loads(self.db.get(api_id))['data']
+
+                entry['passapi'] = api['passapi']
             keys_list = ['_key', 'url', 'portapi', 'userapi', 'passapi',
                          'filterName', 'filterType', 'managerName', 'runAs']
             if set(entry.keys()) == set(keys_list):
                 self.db.update(entry)
-                parsed_data = jsonbak.dumps(
+                return jsonbak.dumps(
                     {
                         'data': 'success'
                     }
@@ -480,7 +475,6 @@ class manager(controllers.BaseController):
                     'error': str(e)
                 }
             )
-        return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
     def get_log_lines(self, **kwargs):
@@ -534,18 +528,14 @@ class manager(controllers.BaseController):
             cluster: str: true or false
         """
         self.logger.debug("manager::check_connection() called")
-
         try:
-            # runAs is not given as a parameter but accesed by the auxiliary
-            # methods, thus why we set it to False.
-            api = {
-                "userapi": str(kwargs['user']),
-                "passapi": str(kwargs['pass']),
-                "url": str(kwargs['ip']),
-                "portapi": str(kwargs['port']),
-                "cluster": str(kwargs['cluster']) == "true",
-                "runAs": False
-            }
+            api = API_model(
+                address=kwargs['ip'],
+                port=kwargs['port'],
+                user=kwargs['user'],
+                password=kwargs['pass'],
+                cluster=kwargs['cluster'] == "true",
+            )
         except KeyError as e:
             self.log.error(f"Missing parameters: {e}")
 
@@ -589,52 +579,43 @@ class manager(controllers.BaseController):
         """
         self.logger.debug("manager::check_connection_by_id() called")
         try:
-            # Get current API data
-            if not 'apiId' in kwargs:
-                raise Exception("Missing API Key")
-            api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api: API_model = API_services.get_api_by_id(api_id)
+            # NOTE the frontend expects a different interface, so the API_model
+            # cannot be used yet.
+            # TODO Needs a refactor on the frontend
+            current_api_json: dict = jsonbak.loads(self.db.get(api_id))['data']
 
-            output = self.get_cluster_info(current_api_json)
+            output = self.get_cluster_info(api)
 
             # Hide API password
-            del current_api_json['passapi']
+            api.hide_password()
+            del current_api_json['passapi'] # FIXME
+
             output['api'] = {
                 "data": current_api_json
             }
-            result = jsonbak.dumps(output)
+            return jsonbak.dumps(output)
         except KeyError as e:
             self.logger.error(f"KeyError {e}")
         except Exception as e:
-            self.logger.error("Error when checking API connection: %s" % (e))
+            msg = f"Error checking API connection: {e}"
+            self.logger.error(msg)
             return jsonbak.dumps(
                 {
                     "status": "500",
-                    "error": "Error when checking API connection: %s" % (e)
+                    "error": msg
                 }
             )
-        return result
 
     @expose_page(must_login=False, methods=['POST'])
     def upload_file(self, **kwargs):
         self.logger.debug("manager: Uploading file(s)")
         try:
-            # Get current API data
-            if not 'apiId' in kwargs:
-                raise Exception("Missing API Key")
-            api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api: API_model = API_services.get_api_by_id(api_id)
         except Exception as e:
             self.logger.error(str(e))
-
-        opt_username = str(current_api_json['userapi'])
-        opt_password = str(current_api_json['passapi'])
-        opt_base_url = str(current_api_json['url'])
-        opt_base_port = str(current_api_json['portapi'])
-
-        # API requests auth
-        auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-        url = opt_base_url + ":" + opt_base_port
 
         try:
             # Get file name and file content
@@ -646,11 +627,9 @@ class manager(controllers.BaseController):
 
             response = self.wz_api.make_request(
                 method='PUT',
-                api_url=url,
                 endpoint_url=f"/{dest_resource}/files/{file_name}",
                 kwargs=file_content,
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
             result = jsonbak.loads(response.text)
 
@@ -683,19 +662,11 @@ class manager(controllers.BaseController):
     #   Utility methods
     # ------------------------------------------------------------ #
 
-    def get_cluster_info(self, current_api: dict) -> dict:
+    def get_cluster_info(self, api: API_model) -> dict:
         """
         Get information about the cluster.
         """
         self.logger.debug("manager::get_cluster_info() called")
-
-        opt_username = str(current_api['userapi'])
-        opt_password = str(current_api['passapi'])
-        opt_base_url = str(current_api['url'])
-        opt_base_port = str(current_api['portapi'])
-
-        url = opt_base_url + ":" + opt_base_port
-        auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
 
         # Response model
         output: dict = {
@@ -715,11 +686,9 @@ class manager(controllers.BaseController):
         endpoint = "/agents?q=id=000&select=name"
         response = self.wz_api.make_request(
             method='GET',
-            api_url=url,
             endpoint_url=endpoint,
             kwargs={},
-            auth=auth,
-            current_api=current_api
+            current_api=api
         )
         try:
             manager_name: str = response['data']['affected_items'][0]['name']
@@ -736,11 +705,9 @@ class manager(controllers.BaseController):
         # Get cluster's status
         response = self.wz_api.make_request(
             method='GET',
-            api_url=url,
             endpoint_url='/cluster/status',
             kwargs={},
-            auth=auth,
-            current_api=current_api
+            current_api=api
         )
         try:
             cluster_data: dict = response['data']
@@ -751,11 +718,9 @@ class manager(controllers.BaseController):
                 # Get cluster's info
                 response = self.wz_api.make_request(
                     method='GET',
-                    api_url=url,
                     endpoint_url='/cluster/local/info',
                     kwargs={},
-                    auth=auth,
-                    current_api=current_api
+                    current_api=api
                 )
                 cluster_info: dict = response['data']['affected_items'][0]
                 output['clusterName'] = {
@@ -774,7 +739,7 @@ class manager(controllers.BaseController):
 
         return output
 
-    def check_wazuh_version(self, current_api: dict):
+    def check_wazuh_version(self, api: API_model):
         """
         Check Wazuh version
 
@@ -785,28 +750,15 @@ class manager(controllers.BaseController):
         """
         self.logger.debug("manager::check_wazuh_version() called")
 
-        opt_username = str(current_api['userapi'])
-        opt_password = str(current_api['passapi'])
-        opt_base_url = str(current_api['url'])
-        opt_base_port = str(current_api['portapi'])
-
-        url = opt_base_url + ":" + opt_base_port
-        auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
         try:
             response = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
                 endpoint_url='/',
                 kwargs={},
-                auth=auth,
-                current_api=current_api
+                current_api=api
             )
 
-            if not "data" in response:
-                raise Exception(json.dumps(response, indent=4))
-
-            wazuh_version = response['data']['api_version']
+            wazuh_version = utils.get_parameter(response, 'data')['api_version']
             v_split = wazuh_version.split('.')
             wazuh_version = str(v_split[0]+"."+v_split[1])
 

@@ -16,9 +16,11 @@ import csv
 from io import StringIO
 
 import api_info
+import get_api_by_id as API_services
 import jsonbak
-import requestsbak
 import splunk.appserver.mrsparkle.controllers as controllers
+import utils
+from API_model import API_model
 from check_daemons import check_daemons
 from db import database
 from log import log
@@ -57,14 +59,10 @@ class api(controllers.BaseController):
         """
         self.logger.debug("api:is_wazuh_ready() called")
         try:
-            # Get current API data
-            if not 'apiId' in kwargs:
-                raise Exception("Missing API Key")
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api: API_model = API_services.get_api_by_id(api_id)
 
-            api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
-
-            daemons_ready = check_daemons(current_api_json)
+            daemons_ready = check_daemons(api)
             msg = "Wazuh is now ready." if daemons_ready else "Wazuh not ready yet."
             self.logger.debug("api: %s" % msg)
             return jsonbak.dumps(
@@ -95,24 +93,11 @@ class api(controllers.BaseController):
         """
         self.logger.debug("api: Preparing request.")
         try:
-            # Get current API data
-            if not 'apiId' in kwargs:
-                raise Exception("Missing API Key")
+            endpoint = utils.get_parameter(kwargs, 'endpoint')
 
-            api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api: API_model = API_services.get_api_by_id(api_id)
 
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            # API requests auth
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            url = opt_base_url + ":" + opt_base_port
-
-            if 'endpoint' not in kwargs:
-                raise Exception('Missing endpoint')
             if 'method' not in kwargs:
                 method = 'GET'
             elif kwargs['method'] == 'GET':
@@ -129,26 +114,23 @@ class api(controllers.BaseController):
                 method = kwargs['method']
                 del kwargs['method']
 
-            opt_endpoint = kwargs['endpoint']
             del kwargs['apiId']
             del kwargs['endpoint']
 
             # Raise error if Wazuh Daemons are not ready.
-            if not check_daemons(current_api_json):
-                return jsonbak.dumps(
-                    {
-                        "status": "200",
-                        "error": 3099,
-                        "message": "Wazuh not ready yet."
-                    }
-                )
+            # if not check_daemons(current_api_json):
+            #     return jsonbak.dumps(
+            #         {
+            #             "status": "200",
+            #             "error": 3099,
+            #             "message": "Wazuh not ready yet."
+            #         }
+            #     )
             response = self.wz_api.make_request(
                 method=method,
-                api_url=url,
-                endpoint_url=opt_endpoint,
+                endpoint_url=endpoint,
                 kwargs=kwargs,
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
             result = jsonbak.dumps(response)
         except Exception as e:
@@ -187,24 +169,10 @@ class api(controllers.BaseController):
         """
         self.logger.debug("api: Generating CSV file.")
         try:
-            # Get current API data
-            if not 'apiId' in kwargs:
-                raise Exception("Missing API Key")
+            endpoint = utils.get_parameter(kwargs, 'endpoint')
 
-            api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
-
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-            if 'path' not in kwargs:
-                raise Exception("Missing path param.")
-            opt_endpoint = kwargs['path']
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api = API_services.get_api_by_id(api_id)
 
             filters = {}
             filters['limit'] = 500
@@ -212,7 +180,7 @@ class api(controllers.BaseController):
             if 'filters' in kwargs and kwargs['filters'] != '':
                 parsed_filters = jsonbak.loads(kwargs['filters'])
                 keys_to_delete = []
-                for key, value in parsed_filters.items():
+                for key, _ in parsed_filters.items():
                     if parsed_filters[key] == "":
                         keys_to_delete.append(key)
                 if len(keys_to_delete) > 0:
@@ -220,18 +188,16 @@ class api(controllers.BaseController):
                         parsed_filters.pop(key, None)
                 filters.update(parsed_filters)
 
-            is_list_export_keys_values = "lists/files" in opt_endpoint
+            is_list_export_keys_values = "lists/files" in endpoint
 
             # init csv writer
             output_file = StringIO()
             # get total items and keys
             response = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
-                endpoint_url=opt_endpoint,
+                endpoint_url=endpoint,
                 kwargs={} if is_list_export_keys_values else filters,
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
             self.logger.debug("api: Data obtained for generate CSV file.")
             if ('affected_items' in response['data'] and
@@ -283,12 +249,10 @@ class api(controllers.BaseController):
                             offset += filters['limit']
                             filters['offset'] = offset
                             response = self.wz_api.make_request(
-                               method='GET',
-                               api_url=url,
-                               endpoint_url=opt_endpoint,
-                               kwargs=filters,
-                               auth=auth,
-                               current_api=current_api_json
+                                method='GET',
+                                endpoint_url=endpoint,
+                                kwargs=filters,
+                                current_api=api
                             )
                             paginated_result = response['data']['affected_items']
                             format_paginated_results = self.format_output(
@@ -320,31 +284,20 @@ class api(controllers.BaseController):
             if not 'apiId' in kwargs:
                 return jsonbak.dumps(pci_requirements.pci)
 
+            requirement = utils.get_parameter(kwargs, 'requirement')
+
             api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api = API_services.get_api_by_id(api_id)
 
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-            if not 'requirement' in kwargs:
-                raise Exception('Missing requirement.')
             pci_description = ''
-            requirement = kwargs['requirement']
 
             if requirement == 'all':
-                opt_endpoint = '/rules/pci'
+                endpoint = '/rules/pci'
                 response = self.wz_api.make_request(
-                    'GET',
-                    url,
-                    opt_endpoint,
-                    kwargs,
-                    auth,
-                    current_api_json
+                    method='GET',
+                    endpoint_url=endpoint,
+                    kwargs=kwargs,
+                    current_api=api
                 )
 
                 if response['error'] != 0:
@@ -390,31 +343,20 @@ class api(controllers.BaseController):
             if not 'apiId' in kwargs:
                 return jsonbak.dumps(gdpr_requirements.gdpr)
 
+            requirement = utils.get_parameter(kwargs, 'requirement')
+
             api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api = API_services.get_api_by_id(api_id)
 
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-            if not 'requirement' in kwargs:
-                raise Exception('Missing requirement.')
             pci_description = ''
-            requirement = kwargs['requirement']
 
             if requirement == 'all':
-                opt_endpoint = '/rules/gdpr'
+                endpoint = '/rules/gdpr'
                 response = self.wz_api.make_request(
                     method='GET',
-                    api_url=url,
-                    endpoint_url=opt_endpoint,
+                    endpoint_url=endpoint,
                     kwargs=kwargs,
-                    auth=auth,
-                    current_api=current_api_json
+                    current_api=api
                 )
 
                 if response['error'] != 0:
@@ -462,31 +404,20 @@ class api(controllers.BaseController):
             if not 'apiId' in kwargs:
                 return jsonbak.dumps(hipaa_requirements.hipaa)
 
+            requirement = utils.get_parameter(kwargs, 'requirement')
+
             api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api = API_services.get_api_by_id(api_id)
 
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-            if not 'requirement' in kwargs:
-                raise Exception('Missing requirement.')
             hipaa_description = ''
-            requirement = kwargs['requirement']
 
             if requirement == 'all':
-                opt_endpoint = '/rules/hipaa'
+                endpoint = '/rules/hipaa'
                 response = self.wz_api.make_request(
                     method='GET',
-                    api_url=url,
-                    endpoint_url=opt_endpoint,
+                    endpoint_url=endpoint,
                     kwargs=kwargs,
-                    auth=auth,
-                    current_api=current_api_json
+                    current_api=api
                 )
 
                 if response['error'] != 0:
@@ -534,31 +465,20 @@ class api(controllers.BaseController):
             if not 'apiId' in kwargs:
                 return jsonbak.dumps(nist_requirements.nist)
 
+            requirement = utils.get_parameter(kwargs, 'requirement')
+
             api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api = API_services.get_api_by_id(api_id)
 
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-            if not 'requirement' in kwargs:
-                raise Exception('Missing requirement.')
             nist_description = ''
-            requirement = kwargs['requirement']
 
             if requirement == 'all':
-                opt_endpoint = '/rules/nist-800-53'
+                endpoint = '/rules/nist-800-53'
                 response = self.wz_api.make_request(
                     method='GET',
-                    api_url=url,
-                    endpoint_url=opt_endpoint,
+                    endpoint_url=endpoint,
                     kwargs=kwargs,
-                    auth=auth,
-                    current_api=current_api_json
+                    current_api=api
                 )
 
                 if response['error'] != 0:
@@ -618,24 +538,10 @@ class api(controllers.BaseController):
     def getSyscollector(self, **kwargs):
         self.logger.debug("api::getSysCollector() called")
         try:
-            # Get current API data
-            if not 'apiId' in kwargs:
-                raise Exception("Missing API Key")
+            agentId = utils.get_parameter(kwargs, 'agentId')
 
-            api_id = kwargs['apiId']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
-
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-            if not 'agentId' in kwargs:
-                raise Exception('Missing `agentID` parameter.')
-            agentId = str(kwargs['agentId'])
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api = API_services.get_api_by_id(api_id)
 
             syscollectorData = {
                 'hardware': False,
@@ -652,11 +558,9 @@ class api(controllers.BaseController):
             endpoint_hardware = f'/syscollector/{agentId}/hardware'
             hardware_data = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
                 endpoint_url=endpoint_hardware,
                 kwargs={},
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
 
             if ('error' in hardware_data and hardware_data['error'] == 0
@@ -667,11 +571,9 @@ class api(controllers.BaseController):
             endpoint_os = f'/syscollector/{agentId}/os'
             os_data = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
                 endpoint_url=endpoint_os,
                 kwargs={},
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
 
             if 'error' in os_data and os_data['error'] == 0 and 'data' in os_data:
@@ -680,12 +582,10 @@ class api(controllers.BaseController):
             # Ports
             endpoint_ports = f'/syscollector/{agentId}/ports'
             ports_data = self.wz_api.make_request(
-               method='GET',
-               api_url=url,
-               endpoint_url=endpoint_ports,
-               kwargs={'limit': 1},
-               auth=auth,
-               current_api=current_api_json
+                method='GET',
+                endpoint_url=endpoint_ports,
+                kwargs={'limit': 1},
+                current_api=api
             )
 
             if ('error' in ports_data and ports_data['error'] == 0
@@ -696,11 +596,9 @@ class api(controllers.BaseController):
             endpoint_packages = f'/syscollector/{agentId}/packages'
             packages_data = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
                 endpoint_url=endpoint_packages,
                 kwargs={'limit': 1},
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
 
             if ('error' in packages_data and packages_data['error'] == 0
@@ -716,11 +614,9 @@ class api(controllers.BaseController):
             endpoint_processes = f'/syscollector/{agentId}/processes'
             processes_data = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
                 endpoint_url=endpoint_processes,
                 kwargs={'limit': 1},
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
 
             if ('error' in processes_data and processes_data['error'] == 0 and
@@ -736,11 +632,9 @@ class api(controllers.BaseController):
             endpoint_netiface = F'/syscollector/{agentId}netiface'
             netiface_data = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
                 endpoint_url=endpoint_netiface,
                 kwargs={},
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
 
             if ('error' in netiface_data and netiface_data['error'] == 0 and
@@ -751,11 +645,9 @@ class api(controllers.BaseController):
             endpoint_netaddr = f'/syscollector/{agentId}/netaddr'
             netaddr_data = self.wz_api.make_request(
                 method='GET',
-                api_url=url,
                 endpoint_url=endpoint_netaddr,
                 kwargs={'limit': 1},
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
 
             if ('error' in netaddr_data and netaddr_data['error'] == 0 and
@@ -775,36 +667,6 @@ class api(controllers.BaseController):
     # ------------------------------------------------------------ #
     #   Utility methods
     # ------------------------------------------------------------ #
-
-    # -----------------------------------------------------
-    # NOTE
-    # -----------------------------------------------------
-    # Useful utility. Should be moved out of this class and
-    # use it as a service.
-    # This code is used extensively across this and other
-    # API entry points as manager.py
-    # It would be better if it returned an object and not
-    # different variables.
-    def get_credentials(self, the_id):
-        try:
-            self.logger.debug("api: Getting API credentials.")
-            api = self.db.get(the_id)
-            api = jsonbak.loads(api)
-            if api:
-                opt_username = api['data']['userapi']
-                opt_password = api['data']['passapi']
-                opt_base_url = api['data']['url']
-                opt_base_port = api['data']['portapi']
-                url = str(opt_base_url) + ":" + str(opt_base_port)
-                auth = requestsbak.auth.HTTPBasicAuth(
-                    opt_username, opt_password)
-                verify = False
-                cluster_enabled = (api['data']['filterType'] == "cluster.name")
-                return url, auth, verify, cluster_enabled
-            else:
-                raise Exception('API not found')
-        except Exception as e:
-            raise e
 
     def getSelfAdminStanza(self):
         """Get the configuration from a stanza.
@@ -854,23 +716,11 @@ class api(controllers.BaseController):
     def exec_request(self, kwargs):
         self.logger.debug("api::exec_request() called")
         try:
-            # Get current API data
-            if not 'id' in kwargs:
-                raise Exception("Missing API Key")
+            endpoint = utils.get_parameter(kwargs, 'endpoint')
 
-            api_id = kwargs['id']
-            current_api_json = jsonbak.loads(self.db.get(api_id))['data']
+            api_id = utils.get_parameter(kwargs, 'id')
+            api: API_model = API_services.get_api_by_id(api_id)
 
-            opt_username = str(current_api_json['userapi'])
-            opt_password = str(current_api_json['passapi'])
-            opt_base_url = str(current_api_json['url'])
-            opt_base_port = str(current_api_json['portapi'])
-
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-
-            if 'endpoint' not in kwargs:
-                raise Exception("Missing endpoint")
             if 'method' not in kwargs:
                 method = 'GET'
             elif kwargs['method'] == 'GET':
@@ -887,11 +737,10 @@ class api(controllers.BaseController):
                 method = kwargs['method']
                 del kwargs['method']
 
-            opt_endpoint = kwargs['endpoint']
             del kwargs['id']
             del kwargs['endpoint']
 
-            if not check_daemons(current_api_json):
+            if not check_daemons(api):
                 return jsonbak.dumps(
                     {
                         "status": "200",
@@ -901,11 +750,9 @@ class api(controllers.BaseController):
                 )
             response = self.wz_api.make_request(
                 method=method,
-                api_url=url,
-                endpoint_url=opt_endpoint,
+                endpoint_url=endpoint,
                 kwargs=kwargs,
-                auth=auth,
-                current_api=current_api_json
+                current_api=api
             )
             self.logger.info(response)
             result = jsonbak.dumps(response)

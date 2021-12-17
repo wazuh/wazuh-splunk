@@ -15,7 +15,8 @@ Find more information about this on the LICENSE file.
 import json
 import time
 
-import requestsbak
+import requestsbak as requests
+from API_model import API_model
 from log import log
 from wazuhtoken import wazuhtoken
 
@@ -32,7 +33,7 @@ class Wazuh_API():
         try:
             self.logger = log()
             self.wztoken = wazuhtoken()
-            self.session = requestsbak.Session()
+            self.session = requests.Session()
             self.session.trust_env = False
         except Exception as e:
             self.logger.error(
@@ -41,11 +42,9 @@ class Wazuh_API():
     def make_request(
         self,
         method: str,
-        api_url: str,
         endpoint_url: str,
         kwargs,
-        auth: requestsbak.auth.HTTPBasicAuth,
-        current_api: dict,
+        current_api: API_model,
         counter: int = 3
     ):
         """
@@ -56,16 +55,14 @@ class Wazuh_API():
         it fails.
 
         :param method
-        :param api_url
         :param endpoint_url
         :param kwargs
-        :param auth
         :param current_api
         :param counter
         """
 
         def catch_exceptions(
-            response: requestsbak.models.Response
+            response: requests.models.Response
         ) -> dict:
             """
             Auxiliar function. Controls some of the response's status codes.
@@ -79,7 +76,7 @@ class Wazuh_API():
 
             Parameters
             ----------
-            response : requestsbak.models.Response
+            response : requests.models.Response
                 A response object.
 
             Returns
@@ -99,10 +96,8 @@ class Wazuh_API():
                         self.wztoken.refresh()
                         return self.make_request(
                             method=method,
-                            api_url=api_url,
                             endpoint_url=endpoint_url,
                             kwargs=kwargs,
-                            auth=auth,
                             current_api=current_api,
                             counter=counter - 1
                         )
@@ -120,20 +115,18 @@ class Wazuh_API():
             finally:
                 return response.json()
 
-        verify = False
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
-            wazuh_token = self.wztoken.get_auth_token(
-                api_url, auth, current_api)
+            wazuh_token = self.wztoken.get_auth_token(current_api)
             if method == 'GET':
                 if 'origin' in kwargs:
                     if kwargs['origin'] == 'xmlreader':
                         response_xml = self.session.get(
-                            url=api_url + endpoint_url,
+                            url=current_api.get_url() + endpoint_url,
                             headers={
                                 'Authorization': f'Bearer {wazuh_token}'
                             },
-                            verify=verify
+                            verify=False
                         ).content
                         # FIXME dumps + loads ???
                         response = {
@@ -147,11 +140,11 @@ class Wazuh_API():
                         # response = json.loads(json_response)
                     if kwargs['origin'] == 'raw':
                         response = self.session.get(
-                            url=api_url + endpoint_url,
+                            url=current_api.get_url() + endpoint_url,
                             headers={
                                 'Authorization': f'Bearer {wazuh_token}'
                             },
-                            verify=verify
+                            verify=False
                         )
                         response = {
                             'data': response.content.decode("utf-8")
@@ -165,12 +158,12 @@ class Wazuh_API():
                         # )
                 else:
                     response = self.session.get(
-                        url=api_url + endpoint_url,
+                        url=current_api.get_url() + endpoint_url,
                         params=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
-                        verify=verify
+                        verify=False
                     )
                     response = catch_exceptions(response)
 
@@ -193,20 +186,20 @@ class Wazuh_API():
                         }
                     kwargs = str(kwargs['content'])
                     response = self.session.post(
-                        url=api_url + endpoint_url,
+                        url=current_api.get_url() + endpoint_url,
                         data=kwargs,
-                        verify=verify,
+                        verify=False,
                         headers=headers
                     )
                     response = catch_exceptions(response)
                 else:
                     response = self.session.post(
-                        url=api_url + endpoint_url,
+                        url=current_api.get_url() + endpoint_url,
                         data=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
-                        verify=verify
+                        verify=False
                     )
                     response = catch_exceptions(response)
 
@@ -229,48 +222,48 @@ class Wazuh_API():
                         }
                     kwargs = str(kwargs['content'])
                     response = self.session.put(
-                        url=api_url + endpoint_url,
+                        url=current_api.get_url() + endpoint_url,
                         data=kwargs,
-                        verify=verify,
+                        verify=False,
                         headers=headers
                     )
                     response = catch_exceptions(response)
 
                 elif endpoint_url == '/agents/group':
                     response = self.session.put(
-                        url=api_url + endpoint_url,
+                        url=current_api.get_url() + endpoint_url,
                         params=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
-                        verify=verify
+                        verify=False
                     )
                     response = catch_exceptions(response)
 
                 else:
                     response = self.session.put(
-                        url=api_url + endpoint_url,
+                        url=current_api.get_url() + endpoint_url,
                         data=kwargs,
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
-                        verify=verify
+                        verify=False
                     )
                     response = catch_exceptions(response)
 
             if method == 'DELETE':
                 response = self.session.delete(
-                    url=api_url + endpoint_url,
+                    url=current_api.get_url() + endpoint_url,
                     data=kwargs,
                     headers={
                         'Authorization': f'Bearer {wazuh_token}'
                     },
-                    verify=verify
+                    verify=False
                 )
                 response = catch_exceptions(response)
 
             self.logger.debug(
-                f"{self.__class__.__name__}: {method} {api_url} {endpoint_url} {kwargs}"
+                f"{self.__class__.__name__}: {method} {current_api.get_url()} {endpoint_url} {kwargs}"
             )
 
             if 'error' in response and response['error'] in socket_errors:
@@ -281,10 +274,8 @@ class Wazuh_API():
                     time.sleep(0.5)
                     return self.make_request(
                         method=method,
-                        api_url=api_url,
                         endpoint_url=endpoint_url,
                         kwargs=kwargs,
-                        auth=auth,
                         current_api=current_api,
                         counter=counter - 1
                     )

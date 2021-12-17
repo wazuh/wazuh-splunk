@@ -16,8 +16,9 @@ import json
 
 import splunk.auth as splunk_auth
 
-import requestsbak
+import requestsbak as requests
 import utils
+from API_model import API_model
 from cache import cache
 from log import log
 
@@ -33,14 +34,12 @@ class wazuhtoken():
         """Constructor."""
         try:
             self.logger = log()
-            self.session = requestsbak.Session()
+            self.session = requests.Session()
             self.session.trust_env = False
             self.cache = cache()
             self.__refresh = False
 
-            self.api_url = None
-            self.api_auth = None
-            self.api_object = dict()
+            self.api = API_model()
         except Exception as e:
             self.logger.error(
                 "wazuh-token: error in the constructor: %s" % (e))
@@ -54,9 +53,7 @@ class wazuhtoken():
 
     def get_auth_token(
         self,
-        api_url: str,
-        api_auth: requestsbak.auth.HTTPBasicAuth,
-        api_object: dict = None
+        api: API_model = None
     ) -> str:
         """
         Fetches a new authorization token for the given manager API and API user.
@@ -66,30 +63,26 @@ class wazuhtoken():
         This token will expire after auth_token_exp_timeout seconds (default: 900).
         This value can be changed using PUT /security/config
 
-        :param api_url: Manager URL --> {protocol}://{host}:{port}
-        :param api_auth: HttpBasicAuth (e.g: wazuh:wazuh, user:password...)
-        :param api_object: API registry (as stored in the DB)
+        :param api: API registry (as stored in the DB)
         :return: String with the authorization token from the Wazuh API
         """
         self.logger.debug("wazuh-token::get_auth_token() called")
-        if api_object is None:
+        if api is None:
             error = "Missing API object"
             self.logger.error(f"wazuh-token: {error}")
             raise Exception(error)
         else:
             self.logger.debug(
                 "wazuh-token: API object provided\n" +
-                json.dumps(api_object, sort_keys=True, indent=4)
+                json.dumps(api.__dict__, sort_keys=True, indent=4)
             )
 
         # Init values
-        self.api_url = api_url
-        self.api_auth = api_auth
-        self.api_object = api_object
+        self.api = api
         # Inject Splunk user (to ensure an unique token per user)
-        self.api_object['_user'] = splunk_auth.getCurrentUser()['name']
-
-        token_key = utils.dict_hash(self.api_object)
+        self.api._user = splunk_auth.getCurrentUser()['name']
+        # Generate an unique key (MD5 hash)
+        token_key = utils.dict_hash(self.api.__dict__)
 
         try:
             # Return cached token, if it exists. Check if a refresh is required.
@@ -114,7 +107,7 @@ class wazuhtoken():
             self.logger.error("wazuh-token: error on get_auth_token: %s" % (e))
             raise e
 
-    def _get_token_request(self) -> requestsbak.models.Response:
+    def _get_token_request(self) -> requests.models.Response:
         """
         This method should be called to get an API token. Performs a request on
         the Wazuh API to get the token. If allowed, an authorization context
@@ -124,14 +117,13 @@ class wazuhtoken():
         """
         self.logger.debug("wazuh-token::get_token_request() called")
         try:
-            api_run_as: bool = (self.api_object["runAs"] == "true")
 
-            if api_run_as:
+            if self.api.run_as:
                 response = self._auth_context_login()
                 # If it fails, use the basic auth
                 if response.status_code != 200:
                     self.logger.error(
-                        f"wazuh-token: allow_run_as not enabled for user {self.api_auth}\n"
+                        f"wazuh-token: allow_run_as not enabled for user {self.api.get_auth()}\n"
                         + "API response:\n"
                         + f"Request failed with code {response.status_code}"
                         + json.dumps(response.json(), indent=4)
@@ -144,7 +136,7 @@ class wazuhtoken():
             self.logger.error("wazuh-token::get_token_request() - " + str(e))
             raise e
 
-    def _basic_auth_login(self) -> requestsbak.models.Response:
+    def _basic_auth_login(self) -> requests.models.Response:
         """
         This method should be called to get an API token.
 
@@ -153,8 +145,8 @@ class wazuhtoken():
         self.logger.debug("wazuh-token: using basic auth")
         try:
             return self.session.get(
-                f"{self.api_url}/security/user/authenticate",
-                auth=self.api_auth,
+                f"{self.api.get_url()}/security/user/authenticate",
+                auth=self.api.get_auth(),
                 timeout=20,
                 verify=False
             )
@@ -163,7 +155,7 @@ class wazuhtoken():
                 "wazuh-token: error on basic_auth_login: %s" % (e))
             raise e
 
-    def _auth_context_login(self) -> requestsbak.models.Response:
+    def _auth_context_login(self) -> requests.models.Response:
         """
         This method should be called to get an API token using an
         authorization context body.
@@ -173,9 +165,9 @@ class wazuhtoken():
         # Obtain Splunk's user context.
         users: str = splunk_auth.listUsers().__str__()
         users: dict = utils.to_json(users)
-        auth_context = users[self.api_object['_user']]
-        auth_context['name'] = self.api_object['_user']
-        auth_context['user_name'] = self.api_object['_user']
+        auth_context = users[self.api._user]
+        auth_context['name'] = self.api._user
+        auth_context['user_name'] = self.api._user
 
         self.logger.debug(
             "wazuh-token: using auth context\n"
@@ -183,8 +175,8 @@ class wazuhtoken():
         )
         try:
             return self.session.post(
-                f"{self.api_url}/security/user/authenticate/run_as",
-                auth=self.api_auth,
+                f"{self.api.get_url()}/security/user/authenticate/run_as",
+                auth=self.api.get_auth(),
                 json=auth_context,
                 timeout=20,
                 verify=False
