@@ -32,13 +32,17 @@ def get_api_by_id(id: int):
         api_as_json = json.loads(db.get(id))['data']
 
         return API_model(
-            api_as_json['url'],
-            api_as_json['portapi'],
-            api_as_json['userapi'],
-            api_as_json['passapi'],
-            api_as_json['managerName'],
-            api_as_json['filterName'],
-            api_as_json['runAs']
+            address=api_as_json['url'],
+            port=api_as_json['portapi'],
+            user=api_as_json['userapi'],
+            password=api_as_json['passapi'],
+            name=api_as_json['managerName'],
+            alias=None, # FIXME when the ALIAS stuff is merged
+            filter_name=api_as_json['filterName'],
+            filter_type=api_as_json['filterType'],
+            run_as=api_as_json['runAs'],
+            _user=api_as_json['_user'],
+            _key=api_as_json['_key']
         )
 
     except KeyError:
