@@ -44,12 +44,12 @@
 }
 
 /* Style to mark active or when-hover buttons on the toolbar */
-.wz-menu-button.wz-menu-active{
+.wz-menu-button.wz-menu-active {
   border-bottom: 6px solid rgb(57, 110, 62);
   color: #5cc05c !important;
 }
 
-.wz-menu-button-settings.wz-menu-active{
+.wz-menu-button-settings.wz-menu-active {
   width: 36px !important;
   background: rgb(57, 110, 62) !important;
 }
@@ -57,7 +57,6 @@
 .wz-menu-button:not([disabled]):hover {
   background-color: rgba(49, 49, 49, 0.71);
 }
-
 
 /* Style for index-pattern selector */
 .wz-menu-select {
