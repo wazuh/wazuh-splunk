@@ -4,14 +4,15 @@
     <div class="wz-breadcrumb-margin">
       <a class="wz-text-link cursor-pointer" ui-sref="agents">Agents</a>
       <span> / </span>
-      <span ng-if="!agent.error" class="wz-text-link cursor-pointer"
-        >{{agent.name}} ({{agent.id}})</span
-      >
+      <span ng-if="!agent.error" class="wz-text-link cursor-pointer">
+        {{agent.name}} ({{agent.id}})
+      </span>
       <span ng-if="agent.error">Unknown agent</span>
       <span ng-if="agent && agent.status">
         <span class="no-wrap wz-padding-left-8" aria-hidden="false">
-          <wz-svg icon="agent-{{agent.status}}"></wz-svg> </span
-        >{{formatAgentStatus(agent.status)}}
+          <wz-svg icon="agent-{{agent.status}}"></wz-svg>
+        </span>
+        {{formatAgentStatus(agent.status)}}
       </span>
     </div>
     <div flex></div>
@@ -30,17 +31,18 @@
       </button>
       <!-- Restart button -->
       <div ng-show="confirmingRestart" style="text-align: right">
-        <span style="padding-top: 8px"
-          >The {{ agent.name}}({{agent.id}}) will be restarted.</span
-        >
+        <span style="padding-top: 8px">
+          The {{ agent.name}}({{agent.id}}) will be restarted.
+        </span>
         <button
           style="height: 30px"
           ng-click="switchRestart()"
           class="btn wz-button-cancel pull-right wz-margin-left-10"
         >
-          <span
-            ><i aria-hidden="true" class="wz-margin-left-10"></i>Cancel</span
-          >
+          <span>
+            <i aria-hidden="true" class="wz-margin-left-10"></i>
+            Cancel
+          </span>
         </button>
         <button
           style="height: 30px"
@@ -48,13 +50,13 @@
           ng-click="restart(); switchRestart()"
           class="btn wz-button-empty pull-right wz-margin-left-10"
         >
-          <span
-            ><i
+          <span>
+            <i
               aria-hidden="true"
               class="fa fa-fw fa-check wz-margin-left-10"
-            ></i
-            >Confirm</span
-          >
+            ></i>
+            Confirm
+          </span>
         </button>
       </div>
       <div ng-show="!confirmingRestart">
@@ -165,8 +167,8 @@
     <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
       <md-card-content>
         <div layout="row" ng-if="agent.group">
-          <span class="font-size-17"
-            >Groups
+          <span class="font-size-17">
+            Groups
             <wz-svg
               ng-if="userHasPermissionsSecurityActionWithAgent('agent:modify_group',agent)"
               ng-click="switchGroupEdit()"
@@ -199,8 +201,9 @@
             ng-repeat="group in groups"
             class="wz-text-bold wz-text-link"
             ng-click="showConfirmAddGroup(group)"
-            >{{ group }}&nbsp;</span
           >
+            {{ group }}&nbsp;
+          </span>
         </div>
 
         <div
@@ -210,23 +213,25 @@
           <div layout="row">
             <span class="font-size-12 wz-padding-left-8">
               Agent {{agent.name}}({{agent.id}}) will be added to group
-              {{addingGroupToAgent}}.</span
-            >
+              {{addingGroupToAgent}}.
+            </span>
           </div>
           <div layout="row">
             <md-button
               class="cancelBtn"
               type="button"
               ng-click="cancelAddGroup()"
-              >Cancel</md-button
             >
+              Cancel
+            </md-button>
             <md-button
               class="agreeBtn"
               type="button"
               ng-click="confirmAddGroup(addingGroupToAgent)"
-              ><i aria-hidden="true" class="fa fa-fw fa-check"></i>
-              Confirm</md-button
             >
+              <i aria-hidden="true" class="fa fa-fw fa-check"></i>
+              Confirm
+            </md-button>
           </div>
         </div>
         <div
@@ -238,8 +243,9 @@
             ng-repeat="group in agent.group"
             class="wz-text-bold wz-text-link font-size-15"
             ng-click="goGroups(group)"
-            >{{ group }}&nbsp;</span
           >
+            {{ group }}&nbsp;
+          </span>
         </div>
       </md-card-content>
     </md-card>
@@ -320,9 +326,9 @@
             Auditing and Policy Monitoring
           </h3>
           <div class="extensions-eye">
-            <md-tooltip class="wz-tooltip" md-direction="bottom"
-              >Show extensions list</md-tooltip
-            >
+            <md-tooltip class="wz-tooltip" md-direction="bottom">
+              Show extensions list
+            </md-tooltip>
             <wz-svg
               ng-click="showExtensionsLists('auditing')"
               icon="eye"
@@ -339,24 +345,24 @@
                   switch-model="extensions.audit"
                   switch-change="toggleExtension('audit',!extensions.audit)"
                 >
-                </wz-kbn-switch
-                ><span>System auditing</span>
+                </wz-kbn-switch>
+                <span>System auditing</span>
               </li>
               <li ng-if="checkModules('oscap')">
                 <wz-kbn-switch
                   switch-model="extensions.oscap"
                   switch-change="toggleExtension('oscap',!extensions.oscap)"
                 >
-                </wz-kbn-switch
-                ><span>OpenSCAP</span>
+                </wz-kbn-switch>
+                <span>OpenSCAP</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.ciscat"
                   switch-change="toggleExtension('ciscat',!extensions.ciscat)"
                 >
-                </wz-kbn-switch
-                ><span>CIS-CAT</span>
+                </wz-kbn-switch>
+                <span>CIS-CAT</span>
               </li>
             </ul>
           </div>
@@ -429,9 +435,9 @@
             Threat Detection and Response
           </h3>
           <div class="extensions-eye">
-            <md-tooltip class="wz-tooltip" md-direction="bottom"
-              >Show extensions list</md-tooltip
-            >
+            <md-tooltip class="wz-tooltip" md-direction="bottom">
+              Show extensions list
+            </md-tooltip>
             <wz-svg
               ng-click="showExtensionsLists('threadDetection')"
               icon="eye"
@@ -535,9 +541,9 @@
             Regulatory Compliance
           </h3>
           <div class="extensions-eye">
-            <md-tooltip class="wz-tooltip" md-direction="bottom"
-              >Show extensions list</md-tooltip
-            >
+            <md-tooltip class="wz-tooltip" md-direction="bottom">
+              Show extensions list
+            </md-tooltip>
             <wz-svg
               ng-click="showExtensionsLists('regulatory')"
               icon="eye"
@@ -553,32 +559,32 @@
                   switch-model="extensions.pci"
                   switch-change="toggleExtension('pci',!extensions.pci)"
                 >
-                </wz-kbn-switch
-                ><span>PCI DSS</span>
+                </wz-kbn-switch>
+                <span>PCI DSS</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.gdpr"
                   switch-change="toggleExtension('gdpr',!extensions.gdpr)"
                 >
-                </wz-kbn-switch
-                ><span>GDPR</span>
+                </wz-kbn-switch>
+                <span>GDPR</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.hipaa"
                   switch-change="toggleExtension('hipaa',!extensions.hipaa)"
                 >
-                </wz-kbn-switch
-                >HIPAA
+                </wz-kbn-switch>
+                <span>HIPAA</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.nist"
                   switch-change="toggleExtension('nist',!extensions.nist)"
                 >
-                </wz-kbn-switch
-                ><span>NIST 800-53</span>
+                </wz-kbn-switch>
+                <span>NIST 800-53</span>
               </li>
             </ul>
           </div>
@@ -633,9 +639,9 @@
             >
               <div class="euiCallOutHeader">
                 <wz-svg icon="callOutHeader"></wz-svg>
-                <span class="euiCallOutHeader__title"
-                  >Click the <wz-svg icon="eye"></wz-svg> icon to show
-                  regulatory compliance extensions.
+                <span class="euiCallOutHeader__title">
+                  Click the <wz-svg icon="eye"></wz-svg> icon to show regulatory
+                  compliance extensions.
                 </span>
               </div>
             </div>
