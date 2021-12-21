@@ -113,7 +113,7 @@ define([
                   if (!$scope.menuSkipRefresh) $window.location.reload();
                 }
               } catch (error) {
-                notificationService.showErrorToast(error);
+                $notificationService.showErrorToast(error);
               }
             })
           );
