@@ -25,6 +25,8 @@ define([
       this.scope.editUserRoles = [];
       this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
 
+      this.scope.isAllowed = this.scope.userHasPermissions({'security:read': ['user:id:*']})
+
       this.scope.roleData = this.getRoleList(roleData.data.data.affected_items || []);
     }
 

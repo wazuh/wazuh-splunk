@@ -29,7 +29,7 @@ define(
         this.$requirementService = $requirementService
         this.$validationService = $validationService
         this.userPermissions = userPermissions
-      };
+      }
 
       /**
        * Wrapper method for the requirementsService.
@@ -38,6 +38,7 @@ define(
        * @returns a requirement object for the action, to match the
        * corresponding user policy.
        */
+      // DEPRECATED
       _generateRequirementsObject(enumAction) {
         return this.$requirementService
           .generateRequirementFactory(enumAction)
@@ -51,6 +52,7 @@ define(
        * @returns {Boolean} true if the user has a policy that allows the view's
        * requirement.
        */
+      // DEPRECATED
       _validateRequirementsObject(controllerRequirements, userPolicies) {
         return this.$validationService
           .validatePermissions(controllerRequirements, userPolicies)
@@ -110,6 +112,7 @@ define(
        * @returns {{[key: string]: boolean}} object with each action required 
        * by the controller and if the user can perform it or not.
        */
+      // DEPRECATED
       async getRequirementsOfController(controllerName) {
 
         try {
@@ -137,7 +140,15 @@ define(
        * @returns {Boolean} the user can/can't perform the action.
        */
       userHasPermissions(requirements) {
-        return validatePermissions(requirements, this.userPermissions.get())
+        // return this.$validationService.validatePermissions(requirements, this.userPermissions.get())
+        const requirement_name = Object.keys(requirements)[0]
+        return this.matchActionsInPolicies(requirements)
+          .filter(item => {
+            if (item.action === requirement_name)
+              return item.isAllowed
+            else
+              return false
+          }).length > 0
       }
 
       /**
@@ -161,9 +172,31 @@ define(
         )
       }
 
-      /**
-       * Update the user policies in the userPermissions factory.
-       */
+      // Step 1: matching by actions
+      matchActionsInPolicies(actions/*, policies = this.getUserPolicies()*/) {
+        const policies = this.userPermissions.get()
+        const rbac_mode_allows = policies['rbac_mode'] === 'black'
+        const required_actions = Object.keys(actions)
+        const policies_actions = Object.keys(policies)
+
+        var actions_permissions = new Array()
+
+        required_actions.forEach(action => {
+          actions_permissions.push(
+            {
+              'action': action,
+              'isAllowed': policies_actions.includes(action) || rbac_mode_allows
+            }
+          )
+        })
+
+        return actions_permissions
+      }
+      /*
+      
+            /**
+             * Update the user policies in the userPermissions factory.
+             */
       async updateUserPermissions() {
         try {
           const userPolicies = await this.getUserPolicies()
