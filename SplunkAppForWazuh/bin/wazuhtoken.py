@@ -38,6 +38,7 @@ class wazuhtoken():
             self.session.trust_env = False
             self.cache = cache()
             self.__refresh = False
+            self.timeout = int(self.config['timeout'])
 
             self.api = API_model()
         except Exception as e:
@@ -147,7 +148,7 @@ class wazuhtoken():
             return self.session.get(
                 f"{self.api.get_url()}/security/user/authenticate",
                 auth=self.api.get_auth(),
-                timeout=20,
+                timeout=self.timeout,
                 verify=False
             )
         except Exception as e:
@@ -178,7 +179,7 @@ class wazuhtoken():
                 f"{self.api.get_url()}/security/user/authenticate/run_as",
                 auth=self.api.get_auth(),
                 json=auth_context,
-                timeout=20,
+                timeout=self.timeout,
                 verify=False
             )
         except Exception as e:
