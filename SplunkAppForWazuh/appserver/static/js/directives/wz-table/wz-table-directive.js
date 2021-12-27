@@ -86,8 +86,10 @@ define([
         /**
          * Init variables
          */
-        $scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
-        $scope.userHasPermissionsSecurityActionWithAgent = $security_service.userHasPermissionsSecurityActionWithAgent.bind($security_service)
+
+        $scope.isAllowed = (action, resource, params = "*") => {
+          return $security_service.getPolicy(action, resource, params).isAllowed
+        }
         $scope.showingChecks = false
         let realTime = false
         const instance = new $dataService(

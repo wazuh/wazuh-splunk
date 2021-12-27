@@ -2,13 +2,19 @@ define([
   "../../module",
   "splunkjs/mvc/searchmanager",
   "splunkjs/mvc/multidropdownview",
-  "splunkjs/mvc"
-], function (controllers, SearchManager, MultiDropdownView, mvc) {
-  'use strict'
+  "splunkjs/mvc",
+], function(controllers, SearchManager, MultiDropdownView, mvc) {
+  "use strict";
 
   class Users {
-    constructor($scope, roleData, $notificationService, $userService, $security_service) {
-      this.scope = $scope
+    constructor(
+      $scope,
+      roleData,
+      $notificationService,
+      $userService,
+      $security_service
+    ) {
+      this.scope = $scope;
       this.notification = $notificationService;
       this.userService = $userService;
       this.scope.isEditingUser = false;
@@ -23,17 +29,26 @@ define([
       this.scope.userAllowRunAs = false;
       this.scope.userRoles = [];
       this.scope.editUserRoles = [];
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
 
-      this.scope.isAllowed = this.scope.userHasPermissions({'security:read': ['user:id:*']})
+      this.isAllowed = (action, resource, params = "*") => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
 
-      this.scope.roleData = this.getRoleList(roleData.data.data.affected_items || []);
+      this.scope.canReadUsers = this.isAllowed('SECURITY_READ', ['USER_ID'])
+      this.scope.canCreateUers = this.isAllowed('SECURITY_CREATE_USER', ['RESOURCELESS'])
+      this.scope.canEditRunAs = this.isAllowed('SECURITY_EDIT_RUN_AS', ['RESOURCELESS'])
+      this.scope.canUpdateUser = (id) => this.isAllowed('SECURITY_UPDATE', ['USER_ID'], [id])
+      
+      this.scope.roleData = this.getRoleList(
+        roleData.data.data.affected_items || []
+      );
     }
 
     $onInit() {
       this.scope.saveUser = () => this.saveUser();
       this.scope.editUser = () => this.editUser();
-      this.scope.checkPasswordStrength = (val) => this.checkPasswordStrength(val);
+      this.scope.checkPasswordStrength = (val) =>
+        this.checkPasswordStrength(val);
       this.scope.addNewUser = () => this.addNewUser();
       this.scope.reloadNewUser = (val) => this.reloadNewUser(val);
       this.scope.enableSave = () => this.enableSave();
@@ -47,20 +62,23 @@ define([
         id: "roles-dropdown",
         managerid: "roles-search",
         choices: this.scope.roleData,
-        el: $("#roles-dropdown-view")
+        el: $("#roles-dropdown-view"),
       }).render();
 
       this.searchManager = new SearchManager({
         id: "roles-search",
         search:
-          "| eventcount summarize=false index=* index=_* | dedup index | fields index"
+          "| eventcount summarize=false index=* index=_* | dedup index | fields index",
       });
 
-      this.dropdown.on("change", newValue => {
+      this.dropdown.on("change", (newValue) => {
         if (this.scope.editUserRoles == newValue) {
           this.scope.overwrite = false;
         }
-        if (this.scope.editUserRoles != newValue && (this.scope.editUserRoles != [] && newValue != [])) {
+        if (
+          this.scope.editUserRoles != newValue &&
+          this.scope.editUserRoles != [] && newValue != []
+        ) {
           this.scope.overwrite = true;
         }
         if (newValue && this.dropdown) {
@@ -78,9 +96,9 @@ define([
 
       this.scope.$on("viewUserContent", (ev, parameters) => {
         this.scope.isViewUser = true;
-        this.dropdown.settings.set("disabled", true)
+        this.dropdown.settings.set("disabled", true);
         ev.stopPropagation();
-      })
+      });
 
       this.scope.$on("openUserFromList", (ev, parameters) => {
         this.scope.isAddNewUser = true;
@@ -93,7 +111,7 @@ define([
         this.scope.userRoles = parameters.user.roles;
         this.scope.editUserRoles = parameters.user.roles;
 
-        this.dropdown.settings.set("disabled", false)
+        this.dropdown.settings.set("disabled", false);
 
         this.dropdown.val(this.scope.userRoles);
         ev.stopPropagation();
@@ -101,44 +119,56 @@ define([
     }
 
     enableSave() {
-      if ((this.scope.editUserRoles != this.dropdown.val()) ||
-        (this.scope.userPassword == "" && this.scope.userPasswordConfirm == "")
-        || (this.scope.userPassword != "" && this.scope.userPasswordConfirm != "")) {
+      if (
+        this.scope.editUserRoles != this.dropdown.val() ||
+        (this.scope.userPassword == "" &&
+          this.scope.userPasswordConfirm == "") ||
+        (this.scope.userPassword != "" && this.scope.userPasswordConfirm != "")
+      ) {
         this.scope.overwrite = true;
       }
     }
 
     checkPasswordStrength(password) {
-      return /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[#?!@$%^&*\-_]).{8,}$/.test(password);
+      return /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[#?!@$%^&*\-_]).{8,}$/.test(
+        password
+      );
     }
 
     async saveUser() {
       try {
         if (this.scope.userName == "" || /.* .*/.test(this.scope.userName)) {
-          throw new Error("Username can't contain empty spaces")
+          throw new Error("Username can't contain empty spaces");
         }
         if (this.scope.userName === "" || this.scope.userName === undefined) {
-          throw new Error("Username can't be empty")
+          throw new Error("Username can't be empty");
         }
-        if (this.scope.userPassword === undefined || this.scope.userPassword === "" ||
-          this.scope.userPasswordConfirm === undefined || this.scope.userPasswordConfirm === "") {
-          throw new Error("Password can't be empty")
+        if (
+          this.scope.userPassword === undefined ||
+          this.scope.userPassword === "" ||
+          this.scope.userPasswordConfirm === undefined ||
+          this.scope.userPasswordConfirm === ""
+        ) {
+          throw new Error("Password can't be empty");
         }
         if (this.scope.userPassword != this.scope.userPasswordConfirm) {
-          throw new Error("Both password must be equals")
+          throw new Error("Both password must be equals");
         }
 
-        let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
+        let checkedPass = this.scope.checkPasswordStrength(
+          this.scope.userPassword
+        );
         if (!checkedPass) {
           throw new Error(
-            "Password must contain at least one upper case, one number and one special character. Also, the length must be greater than 8")
+            "Password must contain at least one upper case, one number and one special character. Also, the length must be greater than 8"
+          );
         }
 
         //add user
         let newUserData = await this.userService.addUser(
           this.scope.userName,
           this.scope.userPassword
-        )
+        );
 
         if (newUserData.data.error != 0) {
           throw new Error(newUserData.data.message || "Invalid username");
@@ -148,64 +178,67 @@ define([
         await this.userService.addRunAs(
           newUserData.data.data.affected_items[0].id,
           this.scope.userAllowRunAs
-        )
+        );
         //add roles
         await this.userService.addRoles(
           newUserData.data.data.affected_items[0].id,
           this.scope.userRoles
-        )
+        );
 
         this.notification.showSuccessToast(`User created successfully.`);
         this.cancelAddUser();
         this.scope.$applyAsync();
       } catch (error) {
         this.notification.showErrorToast("Error adding a new user: " + error);
-      } finally {
       }
     }
 
     async editUser() {
       try {
-        let checkedPass = this.scope.checkPasswordStrength(this.scope.userPassword)
+        let checkedPass = this.scope.checkPasswordStrength(
+          this.scope.userPassword
+        );
         if (this.scope.userPassword === this.scope.userPasswordConfirm) {
           if (this.scope.userPassword != "") {
             if (checkedPass) {
               await this.userService.editPassword(
                 this.scope.userId,
                 this.scope.userPassword
-              )
+              );
               await this.userService.deleteRoles(
                 this.scope.userId,
                 this.scope.editUserRoles
-              )
+              );
               //allow run as if needed
               await this.userService.addRunAs(
                 this.scope.userId,
                 this.scope.userAllowRunAs
-              )
+              );
               //add roles
               await this.userService.addRoles(
                 this.scope.userId,
                 this.scope.userRoles
-              )
+              );
             } else {
-              throw Error("Password must have at least one upper case, one number and one special character");
+              throw Error(
+                "Password must have at least one upper case, one number and one special character"
+              );
             }
           } else {
             await this.userService.deleteRoles(
               this.scope.userId,
               this.scope.editUserRoles
-            )
+            );
             //allow run as if needed
             await this.userService.addRunAs(
               this.scope.userId,
               this.scope.userAllowRunAs
-            )
+            );
             //add roles
             await this.userService.addRoles(
               this.scope.userId,
               this.scope.userRoles
-            )
+            );
           }
         } else {
           throw Error("Password must be equals");
@@ -222,7 +255,7 @@ define([
     }
 
     getRoleList(roleData) {
-      return roleData.map(roles => {
+      return roleData.map((roles) => {
         return { label: roles.name, value: roles.id };
       });
     }
@@ -249,7 +282,8 @@ define([
 
     addNewUser() {
       try {
-        this.notification.showWarningToast(`Password must contain at least one upper case, 
+        this.notification
+          .showWarningToast(`Password must contain at least one upper case, 
         one number and one special character. Also, the length must be greater than 8`);
 
         this.scope.isAddNewUser = true;
@@ -261,8 +295,7 @@ define([
         this.notification.showErrorToast("Cannot add new User.");
       }
     }
-
   }
-  controllers.controller('usersCtrl', Users)
-  return Users
-})
+  controllers.controller("usersCtrl", Users);
+  return Users;
+});

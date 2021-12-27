@@ -1,7 +1,7 @@
-define(["../module"], function (module) {
+define(["../module"], function(module) {
   "use strict";
 
-  module.service("$requirementService", function () {
+  module.service("$requirementService", function() {
     /**
      * Gets a valid resource string with an optional parameter,
      * returns a wildcard resource if no param is specified
@@ -24,7 +24,7 @@ define(["../module"], function (module) {
      */
     const getResource = (resource, param = "*") => {
       const resourceDic = {
-        RESOURCELESS: "*:*",
+        RESOURCELESS: "*:*:*",
         AGENT_GROUP: `agent:group:${param}`,
         AGENT_ID: `agent:id:${param}`,
         GROUP_ID: `group:id:${param}`,
@@ -163,7 +163,7 @@ define(["../module"], function (module) {
     };
 
     /**
-     * Generates an object from an action with the resources used by that 
+     * Generates an object from an action with the resources used by that
      * action and a method to construct a requirements object for that action
      * @param {
      * "ACTIVE_RESPONSE_COMMAND" |
@@ -275,9 +275,9 @@ define(["../module"], function (module) {
           resources: ["RESOURCELESS"],
           action: "CLUSTER_STATUS",
         },
-        CLUSTER_UPDATE_CONFIG: { 
-          resources: ["NODE_ID"], 
-          action: "CLUSTER_UPDATE_CONFIG" 
+        CLUSTER_UPDATE_CONFIG: {
+          resources: ["NODE_ID"],
+          action: "CLUSTER_UPDATE_CONFIG",
         },
         DECODERS_READ: { resources: ["DECODER_FILE"], action: "DECODERS_READ" },
         DECODERS_UPDATE: {

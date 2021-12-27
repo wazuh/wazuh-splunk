@@ -100,7 +100,6 @@ define(['../module'], function(module) {
           'os.minor': 'OS version minor',
           'os.platform': 'OS platform',
           'os.uname': 'OS uname',
-          event: 'Event',
           euser: 'Effective user',
           egroup: 'Effective group',
           vm_size: 'VM size',
@@ -111,11 +110,7 @@ define(['../module'], function(module) {
           ppid: 'Parent PID',
           argvs: 'Argvs',
           nice: 'Priority',
-          size: 'Size',
           inode: 'Inode',
-          uid: 'User ID',
-          gid: 'Group ID',
-          mtime: 'Last modified',
           priority: 'Priority',
           cmd: 'CMD',
           nlwp: 'NLWP',
@@ -148,7 +143,6 @@ define(['../module'], function(module) {
           'policy.resources' : 'Resources',
           'policies' : 'Policies',
           'policy.effect': 'Effect',
-          'roles': 'Roles',
         }
       }
     }
