@@ -1,6 +1,6 @@
 <!-- About card section -->
-<wz-forbidden ng-if="!userHasPermissions({'security:read': ['role:id:*']})"></wz-forbidden>
-<div ng-show="userHasPermissions({'security:read': ['role:id:*']})">
+<wz-forbidden ng-if="!canReadRoles"></wz-forbidden>
+<div ng-show="canReadRoles">
   <div
     layout="row"
     style="margin-top:16px; margin-left: 10px; margin-right: 10px;"
@@ -17,7 +17,7 @@
           <span flex="" class="flex"></span>
   
           <span
-            ng-show="!addingNewRole && userHasPermissions({'security:update': ['role:id:*']})"
+            ng-show="!addingNewRole && canCreateRoles"
             ng-click="addNewRole()"
             class="wz-color-text cursor-pointer link-table"
           >
@@ -65,7 +65,7 @@
                     class="btn wz-button-empty pull-right wz-margin-left-10"
                     ng-click="saveRole()"
                     ng-disabled="saveIncomplete || overwrite || !roleName || policies.length < 1 || reservedRole"
-                    ng-if="userHasPermissions({'security:update': ['role:id:' + roleName]})"
+                    ng-if="canUpdateRole(roleId)"
                   >
                     <i
                       ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"

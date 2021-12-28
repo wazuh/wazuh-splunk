@@ -42,7 +42,6 @@ define([
       $security_service
     ) {
       this.scope = $scope;
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.scope.actionData = this.getActionList(actionData.data.data || []);
       this.scope.actionList = actionData.data.data;
       this.notification = $notificationService;
@@ -56,6 +55,20 @@ define([
       this.buildActionsMultiDropdown();
       this.buildEffectOptionsDropDown();
       this.buildResourcesDropdown();
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+
+      this.scope.canReadPolicies = this.isAllowed("SECURITY_READ", [
+        "POLICY_ID",
+      ]);
+      this.scope.canCreatePolicies = this.isAllowed("SECURITY_CREATE", [
+        "RESOURCELESS",
+      ]);
+      this.scope.canUpdatePolicy = (id) =>
+        this.isAllowed("SECURITY_UPDATE", ["POLICY_ID"], [id]);
     }
 
     buildEffectOptionsDropDown() {
@@ -130,7 +143,7 @@ define([
       let result = [];
       for (let x of newValue) {
         Object.keys(this.scope.actionList)
-          .map((name, idx) => {
+          .map((name) => {
             return (this.scope.actionData[x] || []).label === name
               ? result.push(
                 this.scope.actionList[name].resources.map(

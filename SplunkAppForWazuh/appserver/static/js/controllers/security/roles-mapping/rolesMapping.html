@@ -1,8 +1,8 @@
 <!-- Roles mapping card section -->
 <wz-forbidden 
-   ng-if="!userHasPermissions({'security:read': ['rule:id:*']})">
+   ng-if="!canReadRules">
 </wz-forbidden>
-<div ng-show="userHasPermissions({'security:read': ['rule:id:*']})">
+<div ng-show="canReadRules">
    <div
       layout="row"
       style="margin-top:16px; margin-left: 10px; margin-right: 10px;">
@@ -17,7 +17,7 @@
                </span>
                <span flex="" class="flex"></span>
                <span
-                  ng-show="!addingNewRoleMapping && userHasPermissions({'security:update': ['rule:id:*']})"
+                  ng-show="!addingNewRoleMapping && canCreateRules"
                   ng-click="addNewRoleMapping()"
                   class="wz-color-text cursor-pointer link-table">
                   <wz-svg icon="plus"></wz-svg>
@@ -215,7 +215,7 @@
                               class="btn wz-button-empty pull-right wz-margin-left-10"
                               ng-click="saveRoleMapping()"
                               ng-disabled="saveIncomplete || overwrite || !roleMappingName"
-                              ng-if="userHasPermissions({'security:update': ['rule:id:' + roleMappingName]})">
+                              ng-if="canUpdateRule(ruleId)">
                               <i
                                  ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                                  aria-hidden="true">

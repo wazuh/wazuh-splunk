@@ -30,14 +30,20 @@ define([
       this.scope.userRoles = [];
       this.scope.editUserRoles = [];
 
-      this.isAllowed = (action, resource, params = "*") => {
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
 
-      this.scope.canReadUsers = this.isAllowed('SECURITY_READ', ['USER_ID'])
-      this.scope.canCreateUers = this.isAllowed('SECURITY_CREATE_USER', ['RESOURCELESS'])
-      this.scope.canEditRunAs = this.isAllowed('SECURITY_EDIT_RUN_AS', ['RESOURCELESS'])
-      this.scope.canUpdateUser = (id) => this.isAllowed('SECURITY_UPDATE', ['USER_ID'], [id])
+      this.scope.canReadUsers = this.isAllowed("SECURITY_READ", ["USER_ID"]);
+      this.scope.canCreateUsers = this.isAllowed("SECURITY_CREATE_USER", [
+        "RESOURCELESS",
+      ]);
+      this.scope.canEditRunAs = this.isAllowed("SECURITY_EDIT_RUN_AS", [
+        "RESOURCELESS",
+      ]);
+      this.scope.canUpdateUser = (id) =>
+        this.isAllowed("SECURITY_UPDATE", ["USER_ID"], [id]);
       
       this.scope.roleData = this.getRoleList(
         roleData.data.data.affected_items || []

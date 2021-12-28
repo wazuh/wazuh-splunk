@@ -39,7 +39,6 @@ define([
       $security_service
     ) {
       this.scope = $scope;
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.scope.policyData = this.getPolicyList(
         policyData.data.data.affected_items || []
       );
@@ -70,6 +69,18 @@ define([
           this.scope.$applyAsync();
         }
       });
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+
+      this.scope.canReadRoles = this.isAllowed("SECURITY_READ", ["ROLE_ID"]);
+      this.scope.canCreateRoles = this.isAllowed("SECURITY_CREATE", [
+        "RESOURCELESS",
+      ]);
+      this.scope.canUpdateRole = (id) =>
+        this.isAllowed("SECURITY_UPDATE", ["ROLE_ID"], [id]);
     }
 
     async deletePolicy(policyId) {

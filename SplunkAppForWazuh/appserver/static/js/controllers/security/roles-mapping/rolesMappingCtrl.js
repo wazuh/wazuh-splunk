@@ -36,7 +36,6 @@ define([
       $security_service,
     ) {
       this.scope = $scope
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.scope.roles = this.getRolesList(
         roles.data.data.affected_items || []
       );
@@ -109,6 +108,17 @@ define([
         }
       });
 
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+
+      this.scope.canReadRules = this.isAllowed("SECURITY_READ", ["RULE_ID"]);
+      this.scope.canCreateRules = this.isAllowed("SECURITY_CREATE", [
+        "RESOURCELESS",
+      ]);
+      this.scope.canUpdateRule = (id) =>
+        this.isAllowed("SECURITY_UPDATE", ["RULE_ID"], [id]);
     }
 
     /**
@@ -137,16 +147,16 @@ define([
           `Please set all fields for the custom rule.`
         );
       }
-    };
+    }
 
     onSelectorChange(value) {
       this.scope.selectedOperator = value;
-    };
+    }
 
     removeRule(id) {
       this.scope.customRules.splice(id, 1);
       this.updateJsonRules();
-    };
+    }
 
     updateJsonRules() {
       const ruleObject = this.getJsonFromRule(
@@ -201,7 +211,7 @@ define([
         }
       }
       return ruleObject;
-    };
+    }
 
     refreshJsonEditor(newJsonRule) {
       this.jsonCodeBox.setValue(newJsonRule ? JSON.stringify(newJsonRule, null, 2) : "");
@@ -233,7 +243,7 @@ define([
 
     formatRules(rulesArray) {
       let wrongFormat = false;
-      const tmpRules = rulesArray.map((item, idx) => {
+      const tmpRules = rulesArray.map((item) => {
         if (Object.keys(item).length !== 1 || Array.isArray(item[Object.keys(item)[0]])) {
           wrongFormat = true;
         }
@@ -252,13 +262,13 @@ define([
       });
 
       return { tmpRules, wrongFormat };
-    };
+    }
 
     hasInternalUsers(rules, internalUsers) {
       return rules.every(rule => {
         return internalUsers.some(user => user === rule.value);
       });
-    };
+    }
 
     getFormatedRules(rulesArray, internalUsers) {
       let customRules = [];
@@ -280,9 +290,8 @@ define([
           }
           break;
         case 2: // internal users and custom rules
-          let operator;
           // get internal users rules
-          operator = Object.keys(rulesArray[0])[0];
+          var operator = Object.keys(rulesArray[0])[0];
           formatedRules = this.formatRules(rulesArray[0][operator]);
           wrongFormat = formatedRules.wrongFormat;
           if (!wrongFormat && this.hasInternalUsers(formatedRules.tmpRules, internalUsers)) {
@@ -317,7 +326,7 @@ define([
         wrongFormat,
         logicalOperator
       };
-    };
+    }
 
     decodeJsonRule(jsonRule, internalUsers) {
       try {
@@ -350,7 +359,7 @@ define([
           wrongFormat: true
         };
       }
-    };
+    }
 
     changeOperator(operator) {
       this.scope.selectedOperator = operator

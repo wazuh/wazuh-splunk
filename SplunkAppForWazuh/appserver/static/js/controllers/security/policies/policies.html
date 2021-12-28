@@ -1,9 +1,9 @@
 <!-- About card section -->
 <wz-forbidden 
-  ng-if="!userHasPermissions({'security:read': ['policy:id:*']})">
+  ng-if="!canReadPolicies">
 </wz-forbidden>
 
-<div ng-show="userHasPermissions({'security:read': ['policy:id:*']})">
+<div ng-show="canReadPolicies">
   <div
     layout="row"
     style="margin-top:16px; margin-left: 10px; margin-right: 10px;"
@@ -20,7 +20,7 @@
           <span flex="" class="flex"></span>
   
           <span
-            ng-show="!addingNewPolicy && userHasPermissions({'security:update': ['policy:id:*']})"
+            ng-show="!addingNewPolicy && canCreatePolicies"
             ng-click="addNewPolicy()"
             class="wz-color-text cursor-pointer link-table"
           >
@@ -161,7 +161,7 @@
                     class="btn wz-button-empty pull-right wz-margin-left-10"
                     ng-click="savePolicy()"
                     ng-disabled="saveIncomplete || overwrite || !policyName"
-                    ng-if="userHasPermissions({'security:update': ['policy:id:' + policyName]})"
+                    ng-if="canUpdatePolicy(policyId)"
                   >
                     <i
                       ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
