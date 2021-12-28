@@ -48,7 +48,10 @@ define(['../../module', 'FileSaver'], function(controllers) {
       this.scope.editingFile = false
       this.scope.loadingRing = false
       this.scope.exportConfig = false
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.canCreateGroup = $security_service.isAllowed('GROUP_CREATE', ['RESOURCELESS']);  
+      this.scope.canUpdateConfigGroup = (group) =>  $security_service.isAllowed('GROUP_UPDATE_CONFIG', ['GROUP_ID'], [group]);  
+      this.scope.canModifyAssignmentGroup = (group) =>  $security_service.isAllowed('GROUP_MODIFY_ASSIGNMENT', ['GROUP_ID'], [group]);  
+
       this.scope.selectedOptions = {
         groupConf: true,
         agentsList: true

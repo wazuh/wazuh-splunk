@@ -44,7 +44,7 @@
   
                       <span flex="" class="flex"></span>
 
-                      <span ng-if="userHasPermissions({'lists:update': ['*:*:*']})" ng-click="addNewFile()" class="wz-color-text cursor-pointer link-table">
+                      <span ng-if="canUpdateList" ng-click="addNewFile()" class="wz-color-text cursor-pointer link-table">
                         <wz-svg icon="plus"></wz-svg>
                         Add new list
                       </span>
@@ -52,7 +52,7 @@
                         <wz-svg icon="import"></wz-svg>
                         Export formatted
                       </span>
-                      <span ng-if="userHasPermissions({'lists:update': ['*:*:*']})" ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer link-table">
+                      <span ng-if="canUpdateList" ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer link-table">
                           <wz-svg icon="export"></wz-svg>
                         Import files
                       </span>
@@ -142,7 +142,7 @@
                         </button>
                         <button class="btn wz-button-empty pull-right wz-margin-left-10" ng-click="saveList()"
                           ng-disabled="saveIncomplete || items.length === 0 || !items || overwrite || !currentList.details.file"
-                          ng-if="userHasPermissions({'lists:update': ['*:*:*']})">
+                          ng-if="canUpdateList">
                           <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                             aria-hidden='true'></i>
                           Save

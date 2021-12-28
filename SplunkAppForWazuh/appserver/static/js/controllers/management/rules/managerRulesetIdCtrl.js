@@ -48,7 +48,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.requestService = $requestService
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.canUpdateRulesetFile = (filename) => $security_service.isAllowed('RULES_UPDATE', ['RULE_FILE'], [filename]);
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {

@@ -18,9 +18,9 @@
         <div layout="row">
           <span class="font-size-18">
             <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> Groups</span>
-          <span ng-if="userHasPermissions({'group:create': ['*:*:*']})" class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><wz-svg class="wz-margin-left-10" icon="plus"></wz-svg></span>
+          <span ng-if="canCreateGroup" class="font-size-18 wz-text-link" ng-click="switchAddingGroup()"><wz-svg class="wz-margin-left-10" icon="plus"></wz-svg></span>
         </div>
-        <div layout="row" ng-if="userHasPermissions({'group:create': ['*:*:*']}) && addingGroup">
+        <div layout="row" ng-if="canCreateGroup && addingGroup">
           <input placeholder="Group name..." ng-model="groupToBeAdded" type="text" class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
             aria-invalid="false">
           <button type="submit" aria-label="Search" class="kuiLocalSearchButton addGroupBtn height-20" ng-click="createGroup(groupToBeAdded)">
@@ -57,9 +57,9 @@
             <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
           </button>
           <button ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</button>
-          <button ng-if="userHasPermissions({'group:update_config': ['group:id:' + currentGroup.name]})" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='doSaveGroupAgentConfig()'
+          <button ng-if="canUpdateConfigGroup(currentGroup.name)" ng-disabled='xmlHasErrors || saveIncomplete' ng-click='doSaveGroupAgentConfig()'
             class='btn wz-button-empty pull-right wz-margin-left-10'>
-            <span ng-show="!xmlHasErrors && userHasPermissions({'group:update_config': ['group:id:' + currentGroup.name]})"><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+            <span ng-show="!xmlHasErrors && canUpdateConfigGroup(currentGroup.name)"><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                 aria-hidden='true'></i>
               Save file</span>
             <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true' class='fa fa-fw fa-exclamation-triangle'></i>
@@ -97,11 +97,11 @@
           </button>
           <div ng-if="(lookingGroup && groupsSelectedTab==='agents') || (lookingGroup && groupsSelectedTab==='files')"
             class="btns-separator"></div>
-          <button ng-if="lookingGroup && groupsSelectedTab==='agents' && lookingGroup && currentGroup && userHasPermissions({'group:modify_assigment': ['group:id:' + currentGroup.name]})"
+          <button ng-if="lookingGroup && groupsSelectedTab==='agents' && lookingGroup && currentGroup && canModifyAssignmentGroup(currentGroup.name)"
             ng-click='addMultipleAgents(true)' class='btn height-40 wz-button-empty'><wz-svg icon="plus"></wz-svg>
             Add or remove agents
           </button>
-          <button ng-if="lookingGroup && groupsSelectedTab==='files' && lookingGroup && currentGroup && userHasPermissions({'group:modify_assigment': ['group:id:' + currentGroup.name]})"
+          <button ng-if="lookingGroup && groupsSelectedTab==='files' && lookingGroup && currentGroup && canModifyAssignmentGroup(currentGroup.name)"
             ng-click='editGroupAgentConfig(currentGroup)' class='btn height-40 wz-button-empty'><wz-svg icon="pencil"></wz-svg>
             Edit group configuration
           </button>
@@ -184,7 +184,7 @@
               <!-- Group files table -->
               <div layout="row" ng-if="lookingGroup && groupsSelectedTab==='files' && !fileViewer && currentGroup"
                 class="md-padding">
-                <wazuh-table extra-limit="100" flex path="'/groups/' + currentGroup.name + '/files'" userHasPermissions="userHasPermissions"
+                <wazuh-table extra-limit="100" flex path="'/groups/' + currentGroup.name + '/files'"
                   keys="[{value:'filename',size:2},{value:'hash',size:6}]" allow-click="true" row-sizes="[10,8,6,4]">
                 </wazuh-table>
               </div>

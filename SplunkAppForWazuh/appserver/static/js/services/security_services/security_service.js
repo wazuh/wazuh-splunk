@@ -36,7 +36,6 @@ define(
         this.$requirementService = $requirementService
         this.$validationService = $validationService
         this.userPermissions = userPermissions
-        
         this.getUserPolicies()
           .then(data => {console.log(data);this.userPolicies = data})
       }
@@ -119,6 +118,10 @@ define(
           this.userPermissions.set({})
         }
       }
+
+      isAllowed(action, resource, params = "*"){
+        return this.getPolicy(action, resource, params).isAllowed
+      } 
 
     }
 

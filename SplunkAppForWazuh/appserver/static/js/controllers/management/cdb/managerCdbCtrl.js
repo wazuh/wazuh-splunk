@@ -43,7 +43,7 @@ define([
       this.checkGap = checkGap
       this.cdbEditor = $cdbEditor
       this.restartService = $restartService
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.canUpdateList = $security_service.isAllowed('LISTS_UPDATE', ['RESOURCELESS']);  
     }
 
     /**

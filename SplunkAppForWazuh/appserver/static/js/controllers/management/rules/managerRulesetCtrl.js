@@ -1,4 +1,8 @@
-define(['../../module', './ruleset'], function(controllers, Ruleset) {
+
+define([
+  '../../module', 
+  './ruleset'
+], function(controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
@@ -36,7 +40,10 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $restartService,
         $fileEditor
       )
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      //this.scope.canUpdateRules = this.isAllowed($security_service.ACTIONS_DIC.RULES_UPDATE, ['RESOURCELESS']);
+      this.scope.canUpdateRules = $security_service.isAllowed('RULES_UPDATE', ['RESOURCELESS']);
+      this.scope.canUpdateRulesetFile = (filename) => $security_service.isAllowed('RULES_UPDATE', ['RULE_FILE'], [filename]);
+  
     }
 
     /**

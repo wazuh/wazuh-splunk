@@ -50,7 +50,7 @@ define([
       this.pagination = pagination
       this.checkGap = checkGap
       this.restartService = $restartService
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.canUpdateList = $security_service.isAllowed('LISTS_UPDATE', ['LIST_FILE']);  
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
