@@ -62,7 +62,6 @@ define([
       this.api = this.currentDataService.getApi();
       this.scope.loadingVizz = false;
       this.scope.extensions = extensions
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
       )
@@ -98,6 +97,17 @@ define([
       } catch (error) {
         this.agentReportData = false
       }
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params)
+          .isAllowed;
+      };
+      this.scope.canReadVulnerabilities = this.isAllowed(
+        "VULNERABILITY_READ",
+        ["AGENT_ID"],
+        [this.agent.id]
+      );
     }
 
     /**

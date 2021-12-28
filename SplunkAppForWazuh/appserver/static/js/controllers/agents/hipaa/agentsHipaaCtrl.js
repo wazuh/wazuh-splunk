@@ -31,7 +31,6 @@ define([
      * @param {*} pciExtensionEnabled
      * @param {*} gdprExtensionEnabled
      * @param {*} nistExtensionEnabled
-     * @param {*} $security_service
      */
     constructor(
       $urlTokenModel,
@@ -45,7 +44,6 @@ define([
       pciExtensionEnabled,
       gdprExtensionEnabled,
       nistExtensionEnabled,
-      $security_service
     ) {
       super(
         $scope,
@@ -59,7 +57,6 @@ define([
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.hipaaTabs = hipaaTabs ? hipaaTabs : false
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
 
       this.scope.expandArray = [false, false, false, false, false]
 

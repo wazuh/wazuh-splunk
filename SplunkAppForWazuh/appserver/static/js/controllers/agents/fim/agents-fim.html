@@ -48,8 +48,8 @@
       data</md-nav-item>
   </md-nav-bar>
 
-
-  <div>
+  <wz-forbidden ng-show="!canReadSyscheck"></wz-forbidden>
+  <div ng-show="canReadSyscheck">
     <!-- Filter bar -->
     <wazuh-bar></wazuh-bar>
 
@@ -195,8 +195,17 @@
                 </button>
               </div>
               <div layout="row" ng-if="agent" class="agents-fim-table wz-margin-top-10 wz-margin-bottom-40-inv">
-                <wazuh-table-server-side allow-click="true" is-registry-value="true" agent-id="agent.id" flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'registry_key'}]"
-                  row-sizes="[6,6,6]" extra-limit="true" keys="['file','sha1','md5']">
+                <wazuh-table-server-side 
+                  allow-click="true" 
+                  is-registry-value="true" 
+                  agent-id="agent.id" 
+                  flex 
+                  path="'/syscheck/' + agent.id" 
+                  implicit-filter="[{name:'type',value:'registry_key'}]"
+                  row-sizes="[6,6,6]" 
+                  extra-limit="true" 
+                  keys="['file','sha1','md5']"
+                >
                 </wazuh-table-server-side>
                 </div>
               <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
@@ -228,9 +237,15 @@
                 </button>
               </div>
               <div layout="row" ng-if="agent" class="agents-fim-table wz-margin-top-10 wz-margin-bottom-40-inv">
-                <wazuh-table-server-side allow-click="true" flex path="'/syscheck/' + agent.id" implicit-filter="[{name:'type',value:'file'}]"
-                  row-sizes="[6,6,6]" extra-limit="true"
-                  keys="['file', 'size', 'uname', 'perm','sha256','uid','mtime']">
+                <wazuh-table-server-side 
+                  allow-click="true" 
+                  flex 
+                  path="'/syscheck/' + agent.id" 
+                  implicit-filter="[{name:'type',value:'file'}]"
+                  row-sizes="[6,6,6]" 
+                  extra-limit="true"
+                  keys="['file', 'size', 'uname', 'perm','sha256','uid','mtime']"
+                >
                 </wazuh-table-server-side>
               </div>
               <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
@@ -261,8 +276,15 @@
                 </button>
               </div>
               <div layout="row" ng-if="agent" class="agents-fim-table wz-margin-top-10 wz-margin-bottom-40-inv">
-                <wazuh-table-server-side allow-click="true" custom-columns="true" flex path="'/syscheck/' + agent.id" row-sizes="[12,10,8]"
-                  extra-limit="true" keys="['file','size','gname','uname','perm','sha256','uid','gid','mtime']">
+                <wazuh-table-server-side 
+                  allow-click="true" 
+                  custom-columns="true" 
+                  flex 
+                  path="'/syscheck/' + agent.id" 
+                  row-sizes="[12,10,8]"
+                  extra-limit="true" 
+                  keys="['file','size','gname','uname','perm','sha256','uid','gid','mtime']"
+                >
                 </wazuh-table-server-side>
               </div>
               <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
@@ -278,5 +300,6 @@
         </div>
       </div>
     </div>
+    
   </div>
 </md-content>

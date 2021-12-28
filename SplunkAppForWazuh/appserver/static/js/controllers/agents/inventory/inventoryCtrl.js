@@ -42,7 +42,6 @@ define(['../../module', 'FileSaver'], function(module) {
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.data = syscollector
       this.httpReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
@@ -57,6 +56,7 @@ define(['../../module', 'FileSaver'], function(module) {
       this.api = $currentDataService.getApi()
       this.csvReq = $csvRequestService
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
+      this.$security_service = $security_service
     }
 
     /**
@@ -113,7 +113,16 @@ define(['../../module', 'FileSaver'], function(module) {
 
         this.scope.setBrowserOffset = date => this.setBrowserOffset(date)
 
-        return
+        /* RBAC flags */
+        this.isAllowed = (action, resource, params = ["*"]) => {
+          return this.$security_service.getPolicy(action, resource, params)
+            .isAllowed;
+        };
+        this.scope.canReadSysCollector = this.isAllowed(
+          "SYSCOLLECTOR_READ",
+          ["AGENT_ID"],
+          [this.scope.agent.id]
+        );
       } catch (error) {
         this.notification.showErrorToast(error.message || error)
       }

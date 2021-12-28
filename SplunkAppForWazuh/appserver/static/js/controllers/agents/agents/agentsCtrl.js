@@ -54,7 +54,6 @@ define([
       $dateDiffService,
     ) {
       this.scope = $scope;
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
       this.submittedTokenModel.set('activeAgentToken', '-')
       this.currentDataService = $currentDataService
@@ -170,6 +169,15 @@ define([
         'loadingSearch',
         this.notification
       )
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+      this.scope.canReadAgents = this.isAllowed("AGENT_READ", [
+        "AGENT_ID",
+        "AGENT_GROUP",
+      ]);
 
       this.scope.expandChartAgent = false;
       this.scope.$applyAsync();

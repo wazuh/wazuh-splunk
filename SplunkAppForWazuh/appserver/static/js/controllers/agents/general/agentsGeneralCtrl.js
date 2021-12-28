@@ -45,7 +45,6 @@ define([
      * @param {Object} $dateDiffService
      * @param {*} $reportingService
      * @param {*} reportingEnabled
-     * @param {*} $security_service
      */
 
     constructor(
@@ -60,7 +59,6 @@ define([
       $dateDiffService,
       $reportingService,
       reportingEnabled,
-      $security_service
     ) {
       super(
         $scope,
@@ -70,7 +68,6 @@ define([
         $urlTokenModel
       )
       this.scope.reportingEnabled = reportingEnabled
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.requestService = $requestService
       this.notification = $notificationService
       this.stateParams = $stateParams

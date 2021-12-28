@@ -66,7 +66,6 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.wzTableFilter = $tableFilterService
       this.agent = agent
       this.api = this.currentDataService.getApi()
@@ -223,6 +222,17 @@ define([
           this.tableResults,
           this.agentReportData
         )
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params)
+          .isAllowed;
+      };
+      this.scope.canReadSyscheck = this.isAllowed(
+        "SYSCHECK_READ",
+        ["AGENT_ID"],
+        [this.agent.id]
+      );
     }
 
     /**

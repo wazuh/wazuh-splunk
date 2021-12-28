@@ -34,7 +34,6 @@ define(['../../module', '../../../dashboardMain'], function(
      * @param {*} BASE_URL
      * @param {*} extensions
      * @param {*} $dateDiffService
-     * @param {*} $security_service
      */
 
     constructor(
@@ -52,14 +51,12 @@ define(['../../module', '../../../dashboardMain'], function(
       reportingEnabled,
       BASE_URL,
       extensions,
-      $dateDiffService,
-      $security_service
+      $dateDiffService
     ) {
       super($scope, null, $state, $currentDataService, $urlTokenModel)
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.apiReq = $requestService.apiReq
       this.agent = agent
       this.configAssess = configAssess

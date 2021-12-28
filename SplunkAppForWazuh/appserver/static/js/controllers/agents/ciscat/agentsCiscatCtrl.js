@@ -70,7 +70,6 @@ define([
 
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.agent = agent
       this.scope.expandArray = [false, false, false]
 

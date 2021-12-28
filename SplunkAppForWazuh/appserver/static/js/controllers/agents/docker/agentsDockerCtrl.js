@@ -39,7 +39,6 @@ define([
      * @param {*} $reportingService
      * @param {*} reportingEnabled
      * @param {*} extensions
-     * @param {*} $security_service
      */
 
     constructor(
@@ -52,7 +51,6 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      $security_service
     ) {
       super(
         $scope,
@@ -63,7 +61,6 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.notification = $notificationService
       this.currentDataService.addFilter(
         `{"rule.groups{}":"docker", "implicit":true}`

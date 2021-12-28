@@ -38,52 +38,54 @@
       ui-sref="ag-docker" name="docker">Docker listener</md-nav-item>
   </md-nav-bar>
 
+  <wz-rbac-prompt permissions="canReadVulnerabilities">
+    <div>
+      <!-- Filter bar -->
+      <wazuh-bar></wazuh-bar>
 
-  <div>
-    <!-- Filter bar -->
-    <wazuh-bar></wazuh-bar>
-
-    <div ng-show="loadingVizz">
-      <div align='center'>
-        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      <div ng-show="loadingVizz">
+        <div align='center'>
+          Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+        </div>
       </div>
-    </div>
-    
-    <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
-      <md-card flex="" class="wz-md-card _md flex">
-        <md-card-content>
-          <span class="wz-headline-title">Vulnerabilities</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
-            <label class="wz-icon-loupe">
-              <input flex placeholder="Filter vulnerabilities..." ng-model="filesSearch" type="text"
-                class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
-                aria-invalid="false" wz-enter="search(filesSearch)">
-            </label>
-            <button type="submit" aria-label="Search"
-              class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr" 
-              ng-click="search(filesSearch)">
-              <span>Search</span>
-            </button>
-          </div>
-          <div layout="row" ng-if="agent" class="agents-fim-table wz-margin-top-10 wz-margin-bottom-40-inv">
-            <wazuh-table-server-side custom-columns="true" allow-click="true"
-              flex path="'/vulnerability/' + agent.id" row-sizes="[12,10,8]"
-              extra-limit="true" keys="['cve','name','version','architecture']">
-            </wazuh-table-server-side>
-          </div>
-          <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
-            <span flex></span>
-            <a class="small formatted-color" id="btnDownload"
-              ng-click="downloadCsv('/vulnerability/' + agent.id, 'cve.csv')">
-              <wz-svg icon="download"></wz-svg>
-              &nbsp;Formatted
-            </a>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
+      
+      <div layout="row" class="wz-padding-top-0" ng-if="agent && agent.os">
+        <md-card flex="" class="wz-md-card _md flex">
+          <md-card-content>
+            <span class="wz-headline-title">Vulnerabilities</span>
+            <md-divider class="wz-margin-top-10"></md-divider>
+            <div layout="row" class="wz-margin-top-10 wz-margin-right-10">
+              <label class="wz-icon-loupe">
+                <input flex placeholder="Filter vulnerabilities..." ng-model="filesSearch" type="text"
+                  class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-40"
+                  aria-invalid="false" wz-enter="search(filesSearch)">
+              </label>
+              <button type="submit" aria-label="Search"
+                class="btn height-40 wz-button-empty wz-margin-left-10 less-12-mr" 
+                ng-click="search(filesSearch)">
+                <span>Search</span>
+              </button>
+            </div>
+            <div layout="row" ng-if="agent" class="agents-fim-table wz-margin-top-10 wz-margin-bottom-40-inv">
+              <wazuh-table-server-side custom-columns="true" allow-click="true"
+                flex path="'/vulnerability/' + agent.id" row-sizes="[12,10,8]"
+                extra-limit="true" keys="['cve','name','version','architecture']">
+              </wazuh-table-server-side>
+            </div>
+            <div layout="row" class="ruleset-csv-formater" style="margin:-20px; padding:15px;">
+              <span flex></span>
+              <a class="small formatted-color" id="btnDownload"
+                ng-click="downloadCsv('/vulnerability/' + agent.id, 'cve.csv')">
+                <wz-svg icon="download"></wz-svg>
+                &nbsp;Formatted
+              </a>
+            </div>
+          </md-card-content>
+        </md-card>
+      </div>
 
     </div>
+  </wz-rbac-prompt>
+
   </div>
 </md-content>

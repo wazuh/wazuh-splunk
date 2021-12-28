@@ -16,7 +16,6 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/rawTableData/rawTableDataService'
 ], function(
@@ -25,7 +24,6 @@ define([
   ColumnChart,
   PieChart,
   Table,
-  TimePicker,
   Dropdown,
   RawTableDataService
 ) {
@@ -45,7 +43,6 @@ define([
      * @param {*} pciExtensionEnabled
      * @param {*} hipaaExtensionEnabled
      * @param {*} nistExtensionEnabled
-     * @param {*} $security_service
      */
 
     constructor(
@@ -59,8 +56,7 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled,
-      $security_service
+      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -73,7 +69,6 @@ define([
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
       this.scope.nistExtensionEnabled = nistExtensionEnabled
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.state = $state
       this.currentDataService = $currentDataService
       this.reportingService = $reportingService

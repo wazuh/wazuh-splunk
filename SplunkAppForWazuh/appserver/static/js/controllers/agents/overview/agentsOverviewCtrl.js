@@ -47,12 +47,6 @@ define(["../../module"], function (app) {
     ) {
       this.stateParams = $stateParams;
       this.scope = $scope;
-      this.scope.userHasPermissions =
-        $security_service.userHasPermissions.bind($security_service);
-      this.scope.userHasPermissionsSecurityActionWithAgent =
-        $security_service.userHasPermissionsSecurityActionWithAgent.bind(
-          $security_service
-        );
       this.requestService = $requestService;
       this.state = $state;
       this.notification = $notificationService;
@@ -82,6 +76,19 @@ define(["../../module"], function (app) {
         darwin: ["audit", "oscap", "vuls", "docker"],
         other: ["audit", "oscap", "vuls", "docker"],
       };
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+      this.scope.canRestartAgent = this.isAllowed("AGENT_RESTART", [
+        "AGENT_ID",
+        "AGENT_GROUP",
+      ], [this.agent.id]);
+      this.scope.canModifyGroup = this.isAllowed("AGENT_MODIFY_GROUP", [
+        "AGENT_ID",
+        "AGENT_GROUP",
+      ], [this.agent.id]);
     }
 
     /**

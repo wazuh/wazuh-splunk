@@ -40,7 +40,6 @@ define([
      * @param {*} $reportingService
      * @param {*} reportingEnabled
      * @param {*} extensions
-     * @param {*} $security_service
      */
 
     constructor(
@@ -51,8 +50,7 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions,
-      $security_service
+      extensions
     ) {
       super(
         $scope,
@@ -63,7 +61,6 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.agent = agent
       this.currentDataService.addFilter(
         `{"rule.groups{}":"audit", "implicit":true}`

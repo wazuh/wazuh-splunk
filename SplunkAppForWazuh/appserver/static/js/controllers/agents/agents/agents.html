@@ -1,5 +1,5 @@
 <!-- End loading ring -->
-<wz-rbac-prompt permissions="userHasPermissions({'agent:read': ['agent:id:*', 'agent:group:*']})">
+<wz-rbac-prompt permissions="canReadAgents">
   <div flex ng-if="!loading && !noAgents && !addingAgents" class="md-padding" layout="column"
     layout-align="start space-around">
 
@@ -153,7 +153,9 @@
     <div class="wz-margin-auto title-register-agent" ng-if="!wazuhNotReadyYet">
       <span ng-if="noAgents" class="font-size-20">There are no agents registered</span>
       <span ng-if="addingAgents" class="font-size-20">Add a new agent</span>
-      <span ng-if="addingAgents" class="close-register-agent cursor-pointer" ng-click="closeAddAgent()"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;close</span>
+      <span ng-if="addingAgents" class="close-register-agent cursor-pointer" ng-click="closeAddAgent()">
+        <i class="fa fa-times" aria-hidden="true"></i>&nbsp;close
+      </span>
     </div>
     <wz-register-agent></wz-register-agent>
   </div>

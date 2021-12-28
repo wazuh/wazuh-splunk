@@ -46,7 +46,7 @@
         </button>
         <button
           style="height: 30px"
-          ng-if="userHasPermissionsSecurityActionWithAgent('agent:restart',agent) && !clusterEnabled"
+          ng-if="canRestartAgent && !clusterEnabled"
           ng-click="restart(); switchRestart()"
           class="btn wz-button-empty pull-right wz-margin-left-10"
         >
@@ -61,7 +61,7 @@
       </div>
       <div ng-show="!confirmingRestart">
         <button
-          ng-if="userHasPermissionsSecurityActionWithAgent('agent:restart',agent) && agent.status === 'Active'"
+          ng-if="canRestartAgent && agent.status === 'Active'"
           ng-click="switchRestart()"
           ng-disabled="restartInProgress"
           class="btn wz-button-empty pull-right ng-scope"
@@ -170,7 +170,7 @@
           <span class="font-size-17">
             Groups
             <wz-svg
-              ng-if="userHasPermissionsSecurityActionWithAgent('agent:modify_group',agent)"
+              ng-if="canModifyGroup"
               ng-click="switchGroupEdit()"
               svg-tooltip="Add group"
               icon="plus"

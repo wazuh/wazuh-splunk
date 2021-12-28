@@ -291,7 +291,7 @@
               svg-tooltip="Remove this group"
             ></wz-svg>
             <wz-svg
-              ng-if="removingGroup !== item.name && isAllowed('GROUP_UPDATE_CONFIG', ['GROUP_ID'], [item.name]))"
+              ng-if="removingGroup !== item.name && isAllowed('GROUP_UPDATE_CONFIG', ['GROUP_ID'], [item.name])"
               ng-click="editGroup(item); $event.stopPropagation()"
               icon="pencil"
               color="#396e3e"
