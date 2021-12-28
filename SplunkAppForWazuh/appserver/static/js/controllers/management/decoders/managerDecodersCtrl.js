@@ -38,7 +38,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       )
       this.scope.typeFilter = 'all'
       this.restartService = $restartService
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.canUpdateDecoder = $security_service.isAllowed('DECODERS_UPDATE', ['RESOURCELESS']);
+      this.scope.canUpdateDecoderFile = (filename) => $security_service.isAllowed('DECODERS_UPDATE', ['DECODER_FILE'], [filename]);
     }
 
     /**

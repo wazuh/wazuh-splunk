@@ -49,7 +49,7 @@
     </div>
 
     <div layout="row">
-      <button ng-if="userHasPermissions({'lists:update': ['list:files:*']})" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items"
+      <button ng-if="canUpdateList" ng-click='saveList()' ng-disabled="saveIncomplete || items.length === 0 || !items"
         class='btn wz-button pull-right wz-margin-left-10 wz-margin-left-20'>
         <span><i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
             aria-hidden='true'></i>Save list</span>

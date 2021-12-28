@@ -49,7 +49,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.restartService = $restartService
       this.requestService = $requestService
       this.currentDecoder = currentDecoder
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
+      this.scope.canUpdateDecoderFile = (filename) => $security_service.isAllowed('DECODERS_UPDATE', ['DECODER_FILE'], [filename]);
+
     }
 
     /**
