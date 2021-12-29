@@ -629,7 +629,7 @@ class api(controllers.BaseController):
                     syscollectorData['processesDate'] = 'Unknown'
 
             # Netiface
-            endpoint_netiface = F'/syscollector/{agentId}netiface'
+            endpoint_netiface = F'/syscollector/{agentId}/netiface'
             netiface_data = self.wz_api.make_request(
                 method='GET',
                 endpoint_url=endpoint_netiface,
