@@ -71,7 +71,6 @@ define([
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
       this.scope.nistExtensionEnabled = nistExtensionEnabled
       this.scope.pciTabs = pciTabs ? pciTabs : false
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
 
       this.scope.expandArray = [false, false, false, false, false]
 

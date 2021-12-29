@@ -99,12 +99,23 @@ define(
 
       /**
        * Checks if the user has an administrator role.
-       * @returns {Boolean} true is de user hsa the administrator role,
+       * @returns {Boolean} true is de user has the administrator role,
        *                    false otherwise.
        */
       async isWazuhAdmin() {
         const userInfo = await this.getUserInfo()
         return userInfo.roles.some(role => role.name === 'administrator')
+      }
+      
+      /**
+       * Checks if the user has an cluster_all role.
+       * @returns {Boolean} true is de user has the cluster_all role,
+       *                    false otherwise.
+       */
+
+      async isClusterAll() {
+        const userInfo = await this.getUserInfo()
+        return userInfo.roles.some(role => role.name === 'cluster_all')
       }
 
       /**

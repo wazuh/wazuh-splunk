@@ -61,7 +61,6 @@ define([
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       //Add filer for VirusTotal
       this.currentDataService.addFilter(
         `{"rule.groups{}":"virustotal", "implicit":true}`

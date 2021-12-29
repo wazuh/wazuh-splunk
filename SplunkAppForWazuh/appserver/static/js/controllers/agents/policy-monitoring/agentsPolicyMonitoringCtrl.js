@@ -71,7 +71,6 @@ define([
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.apiReq = $requestService.apiReq
       this.scope.showPolicies = false
       this.agent = agent

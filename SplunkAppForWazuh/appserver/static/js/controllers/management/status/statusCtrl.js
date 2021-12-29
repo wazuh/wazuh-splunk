@@ -23,9 +23,14 @@ define(['../../module'], function(controllers) {
     ) {
       this.scope = $scope
       this.scope.load = true
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
+      // add agents read permissions
+      this.scope.canReadCluster = $security_service.isAllowed('CLUSTER_READ', ['RESOURCELESS']);
+      this.scope.canRestartCluster = $security_service.isAllowed('CLUSTER_RESTART', ['RESOURCELESS']);
+      this.scope.canReadManager = $security_service.isAllowed('MANAGER_READ', ['RESOURCELESS']);
+      this.scope.canRestartManager = $security_service.isAllowed('MANAGER_RESTART', ['RESOURCELESS']);
+
       const parsedStatusData = statusData.map(item =>
         item && item.data && item.data.data ? item.data.data : item
       )
@@ -80,10 +85,10 @@ define(['../../module'], function(controllers) {
       this.scope.restart = () => this.restart()
       this.bindStatus()
 
-      if (this.nodeStatus) {
-        this.scope.daemons = this.objToArr(this.nodeStatus.affected_items[0])
+      if (this.nodeStatus.affected_items) {
+        this.scope.daemons = this.objToArr(this.nodeStatus?.affected_items[0] || {})
       }
-      if (this.nodeInfo) {
+      if (this.nodeInfo.affected_items) {
         this.scope.managerInfo = this.nodeInfo.affected_items[0]
       }
 

@@ -25,8 +25,6 @@ define(['../../module', '../../../utils/config-handler'], function(
       $security_service
     ) {
       this.scope = $scope
-      this.scope.userHasPermissions = $security_service.userHasPermissions.bind($security_service)
-      this.scope.userHasPermissionsSecurityActionWithAgent = $security_service.userHasPermissionsSecurityActionWithAgent.bind($security_service)
       this.notification = $notificationService
       this.apiReq = $requestService
       this.scope.load = false
@@ -49,10 +47,11 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.currentSections = false
       this.currentWodle = false
       this.currentSubTab = false
+      //this.scope.canReadConfiguration = await $security_service.isClusterAll();
     }
 
     $onInit() {
-      try {
+      try {        
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           if (this.clusterInfo.clusterEnabled) {
