@@ -10,16 +10,6 @@
  * Find more information about this on the LICENSE file.
  */
 
-// import { calcTableRows } from ;
-// import { parseValue } from './lib/parse-value';
-// import * as pagination from './lib/pagination';
-// import { sort } from './lib/sort';
-// import * as listeners from './lib/listeners';
-// import { searchData, filterData } from './lib/data';
-// import { clickAction } from './lib/click-action';
-// import { initTable } from './lib/init';
-// import { checkGap } from './lib/check-gap';
-
 define([
   '../module',
   './lib/rows',
@@ -71,6 +61,7 @@ define([
         $currentDataService,
         $notificationService,
         $tableFilterService,
+        $security_service,
         $window,
         $groupHandler,
         $sce,
@@ -82,6 +73,9 @@ define([
          * Init variables
          */
 
+        $scope.isAllowed = (action, resource, params = "*") => {
+          return $security_service.getPolicy(action, resource, params).isAllowed
+        }
         $scope.showingChecks = false
         let realTime = false
         const instance = new $dataService(
