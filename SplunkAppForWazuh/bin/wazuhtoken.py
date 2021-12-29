@@ -118,7 +118,7 @@ class wazuhtoken():
         self.logger.debug("wazuh-token::get_token_request() called")
         try:
 
-            if self.api.run_as:
+            if self.api.can_use_run_as():
                 response = self._auth_context_login()
                 # If it fails, use the basic auth
                 if response.status_code != 200:
