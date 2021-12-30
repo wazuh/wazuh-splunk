@@ -1,8 +1,8 @@
-define(["../../module"], function (module) {
+define(["../../module"], function(module) {
   "use strict";
 
-  module.service("$userService", function ($requestService, $state) {
-    const removeUser = async users => {
+  module.service("$userService", function($requestService) {
+    const removeUser = async (users) => {
       try {
         const result = await $requestService.apiReq(
           `/security/users?user_ids=${users}`,
@@ -36,7 +36,7 @@ define(["../../module"], function (module) {
           "/security/users",
           {
             content: JSON.stringify({ username: user, password: pass }),
-            origin: "json"
+            origin: "json",
           },
           "POST"
         );
@@ -95,7 +95,7 @@ define(["../../module"], function (module) {
           `/security/users/${user}`,
           {
             content: JSON.stringify({ password: pass }),
-            origin: "json"
+            origin: "json",
           },
           "PUT"
         );
@@ -113,7 +113,7 @@ define(["../../module"], function (module) {
       getRoles: getRoles,
       editPassword: editPassword,
       deleteRoles: deleteRoles,
-      removeUser: removeUser
+      removeUser: removeUser,
     };
   });
 });
