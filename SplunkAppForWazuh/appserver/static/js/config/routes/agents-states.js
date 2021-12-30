@@ -25,7 +25,6 @@ define(['../module'], function (module) {
             ],
             agentData: [
               '$requestService',
-              '$state',
               async ($requestService) => {
                 try {
                   const agentsSummary = await $requestService.apiReq(
@@ -39,7 +38,6 @@ define(['../module'], function (module) {
             ],
             clusterInfo: [
               '$requestService',
-              '$state',
               async ($requestService) => {
                 try {
                   const clusterData = await $requestService.apiReq(
@@ -1088,7 +1086,6 @@ define(['../module'], function (module) {
             ],
             pciTabs: [
               '$requestService',
-              '$state',
               async ($requestService) => {
                 try {
                   const pciTabs = []
@@ -1102,7 +1099,7 @@ define(['../module'], function (module) {
                   }
                   return pciTabs
                 } catch (err) {
-                  return fals
+                  return false
                 }
               }
             ],
@@ -1166,12 +1163,10 @@ define(['../module'], function (module) {
               '$requestService',
               '$stateParams',
               '$currentDataService',
-              '$state',
               async (
                 $requestService,
                 $stateParams,
                 $currentDataService,
-                $state
               ) => {
                 try {
                   const id =

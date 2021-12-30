@@ -57,7 +57,6 @@ define(
           r, 
           this.userPermissions.get()
         );
-        console.log("getPolicy: " + v)
         return new Policy(r, v)
       }
 
@@ -98,24 +97,18 @@ define(
       }
 
       /**
-       * Checks if the user has an administrator role.
-       * @returns {Boolean} true is de user has the administrator role,
+       * Checks if the user has a given role.
+       * 
+       * The default roles on Wazuh are the following:
+       *  [administrator, agents_admin, agents_readonly, cluster_admin, 
+       *  cluster_readonly, readonly, users_admin]
+       * 
+       * @returns {Boolean} true if the user has the given role,
        *                    false otherwise.
        */
-      async isWazuhAdmin() {
+       async hasWazuhRole(required_role) {
         const userInfo = await this.getUserInfo()
-        return userInfo.roles.some(role => role.name === 'administrator')
-      }
-      
-      /**
-       * Checks if the user has an cluster_all role.
-       * @returns {Boolean} true is de user has the cluster_all role,
-       *                    false otherwise.
-       */
-
-      async isClusterAll() {
-        const userInfo = await this.getUserInfo()
-        return userInfo.roles.some(role => role.name === 'cluster_all')
+        return userInfo.roles.some(role => role.name === required_role)
       }
 
       /**

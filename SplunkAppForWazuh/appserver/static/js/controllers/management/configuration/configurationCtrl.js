@@ -47,7 +47,7 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.currentSections = false
       this.currentWodle = false
       this.currentSubTab = false
-      //this.scope.canReadConfiguration = await $security_service.isClusterAll();
+      // this.scope.canReadConfiguration = await $security_service.hasWazuhRole("cluster_all");
     }
 
     $onInit() {

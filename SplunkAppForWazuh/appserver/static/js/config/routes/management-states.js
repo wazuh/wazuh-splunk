@@ -34,7 +34,6 @@ define(['../module'], function(module) {
             ],
             monitoringInfo: [
               '$requestService',
-              '$state',
               async ($requestService) => {
                 try {
                   const checkCluster = await $requestService.apiReq('/cluster/status');
@@ -92,7 +91,6 @@ define(['../module'], function(module) {
             ],
             logs: [
               '$requestService',
-              '$state',
               async ($requestService) => {
                 try {
                   const result = await $requestService.apiReq(
@@ -341,8 +339,7 @@ define(['../module'], function(module) {
             ],
             clusterInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const info = {}
                   const clusterStatus = await $requestService.apiReq(
@@ -389,8 +386,7 @@ define(['../module'], function(module) {
             ],
             clusterInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const info = {}
                   const clusterStatus = await $requestService.apiReq(
@@ -575,7 +571,7 @@ define(['../module'], function(module) {
               '$security_service',
               async $security_service => {
                 try{
-                  return await $security_service.isWazuhAdmin()
+                  return await $security_service.hasWazuhRole("administrator")
                 }catch(error){
                   return false;
                 }

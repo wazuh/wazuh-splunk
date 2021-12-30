@@ -22,7 +22,7 @@ define(['../module'], function(module) {
               '$security_service',
               async $security_service => {
                 try{
-                  return await $security_service.isWazuhAdmin()
+                  return await $security_service.hasWazuhRole("administrator")
                 }catch(error){
                   return false;
                 }
