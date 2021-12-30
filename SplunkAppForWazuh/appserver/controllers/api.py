@@ -98,19 +98,8 @@ class api(controllers.BaseController):
             api_id = utils.get_parameter(kwargs, 'apiId')
             api: API_model = API_services.get_api_by_id(api_id)
 
-            if 'method' not in kwargs:
-                method = 'GET'
-            elif kwargs['method'] == 'GET':
-                del kwargs['method']
-                method = 'GET'
-            else:
-                if str(self.getSelfAdminStanza()['admin']) != 'true':
-                    self.logger.error('api: Admin mode is disabled.')
-                    return jsonbak.dumps(
-                        {
-                            'error': 'Forbidden. Enable admin mode.'
-                        }
-                    )
+            method = 'GET'
+            if 'method' in kwargs:
                 method = kwargs['method']
                 del kwargs['method']
 
@@ -668,15 +657,6 @@ class api(controllers.BaseController):
     #   Utility methods
     # ------------------------------------------------------------ #
 
-    def getSelfAdminStanza(self):
-        """Get the configuration from a stanza.
-        """
-        try:
-            apikeyconf = cli.getConfStanza('config', 'configuration')
-        except Exception as e:
-            raise e
-        return apikeyconf
-
     def format_output(self, arr):
         """Format the data for the CSV file generation.
 
@@ -721,19 +701,8 @@ class api(controllers.BaseController):
             api_id = utils.get_parameter(kwargs, 'id')
             api: API_model = API_services.get_api_by_id(api_id)
 
-            if 'method' not in kwargs:
-                method = 'GET'
-            elif kwargs['method'] == 'GET':
-                del kwargs['method']
-                method = 'GET'
-            else:
-                if str(self.getSelfAdminStanza()['admin']) != 'true':
-                    self.logger.error('Admin mode is disabled.')
-                    return jsonbak.dumps(
-                        {
-                            'error': 'Forbidden. Enable admin mode.'
-                        }
-                    )
+            method = 'GET'
+            if 'method' in kwargs:
                 method = kwargs['method']
                 del kwargs['method']
 

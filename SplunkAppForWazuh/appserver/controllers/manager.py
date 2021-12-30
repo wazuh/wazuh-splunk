@@ -30,68 +30,6 @@ from splunk.clilib import cli_common as cli
 from splunk.clilib.control_exceptions import ParsingError
 from wazuh_api import Wazuh_API
 
-splunk_home = os.path.normpath(os.environ['SPLUNK_HOME'])
-
-
-def getLocalConfPath(file):
-    return os.path.join(
-        splunk_home,
-        "etc",
-        "apps",
-        "SplunkAppForWazuh",
-        "local",
-        file + ".conf"
-    )
-
-
-def getSelfConfStanza(file, stanza):
-    """
-    Get the configuration from a stanza.
-
-    Parameters
-    ----------
-    stanza : unicode
-        The selected stanza
-    """
-    try:
-        apikeyconf = cli.getConfStanza(file, stanza)
-        parsed_data = jsonbak.dumps(apikeyconf)
-    except Exception as e:
-        raise e
-    return parsed_data
-
-
-def getConfStanzaById(file, id):
-    extConf = getLocalConfPath(file)
-    try:
-        stanzas = cli.readConfFile(extConf)
-        if id in stanzas:
-            return jsonbak.dumps(stanzas[id])
-        else:
-            raise ParsingError("No custom setting for id %s" % id)
-    except Exception as e:
-        raise e
-
-
-def putConfStanza(file, stanzaDict):
-    extConf = getLocalConfPath(file)
-    try:
-        cli.mergeConfFile(extConf, stanzaDict)
-    except Exception as e:
-        raise e
-    return {'error': False}
-
-
-def rmConfStanza(file, stanza):
-    try:
-        conf = cli.readConfFile(getLocalConfPath(file))
-        response = stanza in conf
-        if response:
-            conf.pop(stanza)
-        cli.writeConfFile(getLocalConfPath(file), conf)
-        return response
-    except Exception as e:
-        raise e
 
 
 def diff_keys_dic_update_api(kwargs_dic):
@@ -174,9 +112,9 @@ class manager(controllers.BaseController):
         if id:
             try:
                 self.logger.debug("manager: Getting extensions for %s" % (id))
-                stanza = getConfStanzaById("extensions", id)
+                stanza = utils.getConfStanzaById("extensions", id)
             except ParsingError as e:
-                stanza = getSelfConfStanza("config", "extensions")
+                stanza = utils.getSelfConfStanza("config", "extensions")
             except Exception as e:
                 return jsonbak.dumps(
                     {
@@ -187,7 +125,7 @@ class manager(controllers.BaseController):
         else:
             try:
                 self.logger.debug("manager: Getting extensions.")
-                stanza = getSelfConfStanza("config", "extensions")
+                stanza = utils.getSelfConfStanza("config", "extensions")
                 data_temp = stanza
             except Exception as e:
                 return jsonbak.dumps(
@@ -202,7 +140,7 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug("manager: Removing extensions.")
             id = kwargs['id']
-            response = rmConfStanza("extensions", id)
+            response = utils.rmConfStanza("extensions", id)
             return response
         except Exception as e:
             return {'error': str(e)}
@@ -222,7 +160,7 @@ class manager(controllers.BaseController):
             id = kwargs['id']
             extensions = kwargs['extensions']
             response = {}
-            putConfStanza(
+            utils.putConfStanza(
                 "extensions",
                 {
                     id: jsonbak.loads(extensions)
@@ -249,7 +187,7 @@ class manager(controllers.BaseController):
         """
         try:
             self.logger.debug("manager: Getting admin extensions.")
-            stanza = getSelfConfStanza("config", "admin_extensions")
+            stanza = utils.getSelfConfStanza("config", "admin_extensions")
             data_temp = stanza
         except Exception as e:
             return jsonbak.dumps(
@@ -272,7 +210,7 @@ class manager(controllers.BaseController):
         try:
             self.logger.debug(
                 "manager: Getting configuration on memory from frontend.")
-            stanza = getSelfConfStanza("config", "configuration")
+            stanza = utils.getSelfConfStanza("config", "configuration")
             data_temp = stanza
         except Exception as e:
             return jsonbak.dumps(
@@ -777,7 +715,7 @@ class manager(controllers.BaseController):
     def get_config_on_memory(self):
         try:
             self.logger.debug("manager: Getting configuration on memory.")
-            config_str = getSelfConfStanza("config", "configuration")
+            config_str = utils.getSelfConfStanza("config", "configuration")
             config = jsonbak.loads(config_str)
             return config
         except Exception as e:
