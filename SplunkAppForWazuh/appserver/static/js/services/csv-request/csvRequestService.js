@@ -38,8 +38,8 @@ define(['../module'], function(app) {
           filterStr = null
         }
         const payload = filterStr
-          ? { endpoint: path, id: id, filters: filterStr }
-          : { endpoint: path, id: id }
+          ? { endpoint: path, apiId: id, filters: filterStr }
+          : { endpoint: path, apiId: id }
         const output = await this.httpReq('POST', '/api/csv', payload)
         if (output.data.error) {
           throw Error(output.data.error)

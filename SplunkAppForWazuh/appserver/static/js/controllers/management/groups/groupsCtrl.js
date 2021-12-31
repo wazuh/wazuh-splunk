@@ -290,11 +290,9 @@ define(["../../module", "FileSaver"], function (controllers) {
         )
         const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
-        return
       } catch (error) {
         this.notification.showErrorToast("Error downloading CSV")
       }
-      return
     }
 
     /**
