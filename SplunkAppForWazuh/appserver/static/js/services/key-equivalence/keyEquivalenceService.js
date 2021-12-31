@@ -24,8 +24,6 @@ define(['../module'], function(module) {
           description: 'Description',
           tag: 'Tag',
           level: 'Level',
-          conf_sum: 'Group MD5 sum',
-          merged_sum: 'Group sum',
           hash: 'Checksum',
           filename: 'File',
           file: 'File',
