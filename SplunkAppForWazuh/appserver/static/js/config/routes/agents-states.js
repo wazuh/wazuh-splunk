@@ -546,12 +546,6 @@ define(['../module'], function (module) {
           controller: 'configurationAgentCtrl',
           params: { id: null },
           resolve: {
-            updateUserPermissions: [
-              '$security_service',
-              async $security_service => {
-                return await $security_service.updateUserPermissions()
-              }
-            ],
             data: [
               '$requestService',
               '$stateParams',
