@@ -55,11 +55,7 @@ define(["../../module"], function(controllers) {
       this.scope.canRestartManager = this.isAllowed("MANAGER_RESTART", [
         "RESOURCELESS",
       ]);
-      this.scope.canReadManager = this.isAllowed("MANAGER_READ", [
-        "RESOURCELESS",
-      ]);
 
-      this.scope.userHasPermission = true
     }
     /**
      * On controller loads
