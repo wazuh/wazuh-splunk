@@ -620,6 +620,13 @@ class manager(controllers.BaseController):
             }
         }
 
+        # A little cheat to force the use of a basic token. This solves the
+        # situation when an user has no permissions to fetch the cluster's or
+        # manager's information. These requests below are required for internal
+        # usage (to set the filters), and are not triggered by the user's 
+        # activity on the frontend.
+        api.run_as = False
+
         # Get manager's name
         endpoint = "/agents?q=id=000&select=name"
         response = self.wz_api.make_request(
