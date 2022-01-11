@@ -10,13 +10,13 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function(module) {
-  'use strict'
+define(["../../module", "FileSaver"], function (module) {
+  "use strict"
   class Inventory {
     /**
      * Class Inventory
      * @param {*} $requestService
-     * @param {*} syscollector
+     * @param {*} agent
      * @param {*} $rootScope
      * @param {*} $notificationService
      * @param {*} $scope
@@ -29,7 +29,7 @@ define(['../../module', 'FileSaver'], function(module) {
      */
     constructor(
       $requestService,
-      syscollector,
+      agent,
       $rootScope,
       $notificationService,
       $scope,
@@ -38,11 +38,11 @@ define(['../../module', 'FileSaver'], function(module) {
       $currentDataService,
       $csvRequestService,
       $dateDiffService,
-      $security_service,
+      $security_service
     ) {
       this.scope = $scope
       this.scope.reportingEnabled = reportingEnabled
-      this.data = syscollector
+      this.agent = agent.data.data.affected_items[0]
       this.httpReq = $requestService.httpReq
       this.apiReq = $requestService.apiReq
       this.root = $rootScope
@@ -65,64 +65,65 @@ define(['../../module', 'FileSaver'], function(module) {
      * @param {String} specificPath
      */
     search(term, specificPath) {
-      this.scope.$broadcast('wazuhSearch', { term, specificPath })
+      this.scope.$broadcast("wazuhSearch", { term, specificPath })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      try { 
+      try {
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-        this.scope.hasSize = obj =>
-          obj && typeof obj === 'object' && Object.keys(obj).length
+        this.scope.hasSize = (obj) =>
+          obj && typeof obj === "object" && Object.keys(obj).length
 
-        const agentData = (((this.data || {})[1] || {}).data || {}).data.affected_items[0]
-
-        this.scope.agent = agentData ? agentData : { error: true }
-
+        this.scope.agent = this.agent
         // Capitalize Status
-        if(this.scope.agent && this.scope.agent.status){
-          this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+        if (this.scope.agent && this.scope.agent.status) {
+          this.scope.agent.status =
+            this.scope.agent.status.charAt(0).toUpperCase() +
+            this.scope.agent.status.slice(1)
         }
 
         this.scope.search = (term, specificPath) => {
           this.search(term, specificPath)
         }
-        this.scope.getAgentStatusClass = agentStatus =>
-          agentStatus === 'Active' ? 'teal' : 'red'
-        this.scope.formatAgentStatus = agentStatus => {
-          return ['Active', 'Disconnected'].includes(agentStatus)
+        this.scope.getAgentStatusClass = (agentStatus) =>
+          agentStatus === "Active" ? "teal" : "red"
+        this.scope.formatAgentStatus = (agentStatus) => {
+          return ["Active", "Disconnected"].includes(agentStatus)
             ? agentStatus
-            : 'Never connected'
+            : "Never connected"
         }
-
-        this.init()
 
         this.scope.startVis2Png = () =>
           this.reportingService.reportInventoryData(this.scope.agent.id)
 
-        this.scope.$on('loadingReporting', (event, data) => {
+        this.scope.$on("loadingReporting", (event, data) => {
           this.scope.loadingReporting = data.status
         })
 
-        this.scope.$on('loadingContent', (event, data) => {
+        this.scope.$on("loadingContent", (event, data) => {
           this.scope.loadingContent = data.status
           event.preventDefault()
         })
 
-        this.scope.setBrowserOffset = date => this.setBrowserOffset(date)
+        this.scope.setBrowserOffset = (date) => this.setBrowserOffset(date)
 
         /* RBAC flags */
         this.isAllowed = (action, resource, params = ["*"]) => {
           return this.$security_service.getPolicy(action, resource, params)
-            .isAllowed;
-        };
+            .isAllowed
+        }
         this.scope.canReadSysCollector = this.isAllowed(
           "SYSCOLLECTOR_READ",
           ["AGENT_ID"],
           [this.scope.agent.id]
-        );
+        )
+
+        if (this.scope.canReadSysCollector) {
+          this.getSyscollectorData()
+        }
       } catch (error) {
         this.notification.showErrorToast(error.message || error)
       }
@@ -131,18 +132,23 @@ define(['../../module', 'FileSaver'], function(module) {
     /**
      * Initializes the syscollector data
      */
-    async init() {
+    async getSyscollectorData() {
       try {
-        const syscollector = ((this.data || {})[0] || {}).data || {}
+        // FIXME SYSCOLLECTOR REQUEST
+        const apiId = this.api["_key"]
+        const agentId = this.agent.id
+        const syscollector = await this.httpReq(
+          "GET",
+          `/api/getSyscollector?apiId=${apiId}&agentId=${agentId}`
+        )
 
         this.scope.syscollector = {
-          ...syscollector,
-          hardware: syscollector.hardware.affected_items[0] || {},
-          os: syscollector.os.affected_items[0] || {},
+          ...syscollector.data,
+          hardware: syscollector.data.hardware.affected_items[0] || {},
+          os: syscollector.data.os.affected_items[0] || {},
         }
 
         this.scope.$applyAsync()
-        return
       } catch (error) {
         throw new Error(error.message || error)
       }
@@ -154,19 +160,17 @@ define(['../../module', 'FileSaver'], function(module) {
     async downloadCsv(path, name) {
       try {
         this.notification.showSimpleToast(
-          'Your download should begin automatically...'
+          "Your download should begin automatically..."
         )
-        const currentApi = this.api['_key']
+        const currentApi = this.api["_key"]
         const output = await this.csvReq.fetch(path, currentApi)
-        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
-        return
       } catch (error) {
-        this.notification.showErrorToast('Error downloading CSV')
+        this.notification.showErrorToast("Error downloading CSV")
       }
-      return
     }
   }
   // Logs controller
-  module.controller('inventoryCtrl', Inventory)
+  module.controller("inventoryCtrl", Inventory)
 })

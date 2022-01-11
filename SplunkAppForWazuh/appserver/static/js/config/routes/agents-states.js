@@ -131,7 +131,7 @@ define(['../module'], function (module) {
                 return await $security_service.updateUserPermissions()
               }
             ],
-            syscollector: [
+            agent: [
               '$requestService',
               '$stateParams',
               '$currentDataService',
@@ -147,19 +147,11 @@ define(['../module'], function (module) {
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
-                  const apiId = $currentDataService.getApi()
-                  const currentApi = apiId['_key']
-                  const results = await Promise.all([
-                    $requestService.httpReq(
-                      'GET',
-                      `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`
-                    ),
-                    $requestService.apiReq(`/agents?q=id=${id}`)
-                  ])
-
-                  return results
+                  const result = await $requestService.apiReq(`/agents?q=id=${id}`)
+                  return result
                 } catch (err) {
-                  return false
+                  console.error(err)
+                  return {}
                 }
               }
             ],

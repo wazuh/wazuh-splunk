@@ -533,13 +533,13 @@ class api(controllers.BaseController):
             api = API_services.get_api_by_id(api_id)
 
             syscollectorData = {
-                'hardware': False,
-                'os': False,
-                'netiface': False,
-                'ports': False,
-                'netaddr': False,
-                'packagesDate': False,
-                'processesDate': False
+                'hardware': {},
+                'os': {},
+                'netiface': {},
+                'ports': {},
+                'netaddr': {},
+                'packagesDate': {},
+                'processesDate': {}
             }
 
             # FIXME USE A FOR LOOP
@@ -596,8 +596,6 @@ class api(controllers.BaseController):
                     len(packages_data['data']['affected_items']) > 0 and
                         'scan' in packages_data['data']['affected_items'][0]):
                     syscollectorData['packagesDate'] = packages_data['data']['affected_items'][0]['scan']['time']
-                else:
-                    syscollectorData['packagesDate'] = 'Unknown'
 
             # Processes
             endpoint_processes = f'/syscollector/{agentId}/processes'
@@ -614,8 +612,6 @@ class api(controllers.BaseController):
                     len(processes_data['data']['affected_items']) > 0 and
                         'scan' in processes_data['data']['affected_items'][0]):
                     syscollectorData['processesDate'] = processes_data['data']['affected_items'][0]['scan']['time']
-                else:
-                    syscollectorData['processesDate'] = 'Unknown'
 
             # Netiface
             endpoint_netiface = F'/syscollector/{agentId}/netiface'
