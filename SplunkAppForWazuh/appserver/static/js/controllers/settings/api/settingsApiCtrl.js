@@ -116,6 +116,10 @@ define(['../../module'], function (controllers) {
           this.scope.loadingVizz = false
           this.notification.showSuccessToast('Manager was removed')
           this.scope.$emit('updatedAPI', () => { })
+
+          // Turn off the isEditing mode
+          this.scope.edit = false
+          this.scope.showForm = false
         }
         this.currentDataService.removeExtensionsById(entry['_key'])
       } catch (err) {
