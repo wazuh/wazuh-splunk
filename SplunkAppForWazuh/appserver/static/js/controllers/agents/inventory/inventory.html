@@ -68,8 +68,8 @@
     >
   </md-nav-bar>
 
-  <wz-forbidden ng-show="!canReadSysCollector"></wz-forbidden>
-  <div ng-show="canReadSysCollector">
+  <wz-forbidden ng-if="!canReadSysCollector"></wz-forbidden>
+  <div ng-if="canReadSysCollector">
     <div
       layout="row"
       class="layout-padding"
