@@ -31,6 +31,14 @@ def get_api_by_id(id: int):
         logger.debug(f"get_api_by_id() called with ID {id}")
         api_as_json = json.loads(db.get(id))['data']
 
+        # Ensure backwards compatibility (add the new fields to the registries)
+        if not 'runAs' in api_as_json or not 'alias' in api_as_json:
+            if not 'runAs' in api_as_json:
+                api_as_json['runAs'] = False
+            if not 'alias' in api_as_json:
+                api_as_json['alias'] = f"manager-{id}"
+            db.update(api_as_json)
+
         return API_model(
             address=api_as_json['url'],
             port=api_as_json['portapi'],
@@ -45,7 +53,7 @@ def get_api_by_id(id: int):
             _key=api_as_json['_key']
         )
 
-    except KeyError:
-        msg = "get_api_by_id(): no ID provided"
+    except KeyError as e:
+        msg = f"get_api_by_id(): missing {str(e)} field"
         logger.error(msg)
         raise KeyError(msg)
