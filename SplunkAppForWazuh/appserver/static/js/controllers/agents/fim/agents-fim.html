@@ -48,8 +48,8 @@
       data</md-nav-item>
   </md-nav-bar>
 
-  <wz-forbidden ng-if="!canReadSyscheck"></wz-forbidden>
-  <div ng-if="canReadSyscheck">
+  <wz-forbidden ng-show="!canReadSyscheck"></wz-forbidden>
+  <div ng-show="canReadSyscheck">
     <!-- Filter bar -->
     <wazuh-bar></wazuh-bar>
 
