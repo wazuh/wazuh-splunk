@@ -377,6 +377,7 @@
         <div layout="row" layout-align="center center" class="wz-padding-top-10">
           <button
             ng-show='!edit && apiList.length > 0 || currentEntryKey'
+            ng-if="isWazuhAdmin"
             ng-click='addNewApiClick()'
             class="btn wz-button"
             aria-label="Add new API button" >
