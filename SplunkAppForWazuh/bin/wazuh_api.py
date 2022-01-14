@@ -94,7 +94,7 @@ class Wazuh_API():
                     if catch_exceptions.attempts == 0:
                         catch_exceptions.attempts += 1
                         self.wztoken.refresh()
-                        return self.make_request(
+                        response = self.make_request(
                             method=method,
                             endpoint_url=endpoint_url,
                             kwargs=kwargs,
@@ -102,10 +102,13 @@ class Wazuh_API():
                             counter=counter - 1
                         )
                 elif status_code != 200:
+                    response = response.json()
                     raise Exception(
                         f"{method} {endpoint_url} request failed with status {status_code}\n"
                         + json.dumps(response.json(), indent=4)
                     )
+                else:
+                    response = response.json()
                 catch_exceptions.attempts = 0
             except Exception as e:
                 self.logger.error(
@@ -113,7 +116,7 @@ class Wazuh_API():
                 )
                 raise e
             finally:
-                return response.json()
+                return response
 
         try:
             socket_errors = (1013, 1014, 1017, 1018, 1019)
