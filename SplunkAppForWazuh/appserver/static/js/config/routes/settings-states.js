@@ -75,6 +75,16 @@ define(['../module'], function(module) {
                   console.error('Could not fetch API list')
                 }
               }
+            ], 
+            isSplunkAdmin: [
+              '$splunkUsers',
+              async $splunkUsers => {
+                try {
+                  return await $splunkUsers.isAdmin()
+                } catch (err) {
+                  return { error: 'Cannot fetch Splunk users from API', detail: err }
+                }
+              }
             ]
           }
         })

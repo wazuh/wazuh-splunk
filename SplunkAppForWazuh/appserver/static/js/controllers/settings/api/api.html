@@ -142,7 +142,7 @@
               </span>
               <span
                 ng-click="removeManager(entry)"
-                ng-if="isWazuhAdmin"
+                ng-if="isSplunkAdmin"
                 class="cursor-pointer wz-margin-left-16"
                 aria-hidden="true">
                 <wz-svg icon="trash" color="#da2062"></wz-svg>
@@ -152,7 +152,7 @@
               </span>
               <span
                 ng-click="editEntry(entry)"
-                ng-if="isWazuhAdmin"
+                ng-if="isSplunkAdmin"
                 class="cursor-pointer wz-margin-left-16"
                 aria-hidden="true">
                 <wz-svg icon="wrench" color="#0b3b98"></wz-svg>
@@ -377,7 +377,7 @@
         <div layout="row" layout-align="center center" class="wz-padding-top-10">
           <button
             ng-show='!edit && apiList.length > 0 || currentEntryKey'
-            ng-if="isWazuhAdmin"
+            ng-if="isSplunkAdmin"
             ng-click='addNewApiClick()'
             class="btn wz-button"
             aria-label="Add new API button" >
@@ -389,8 +389,23 @@
 
       <!-- Show form if there are no APIs -->
       <md-card-content ng-if="apiList.length < 1">
+        <div layout="column" ng-if="!isSplunkAdmin">
+        <!-- <div layout="column"> -->
+          <h2 class="wz-headline-title">
+            <i class="fa fa-exclamation" aria-hidden="true"></i>
+            Oops, it looks like there is nothing to show here
+          </h2>
+          <p class="layout-padding">
+            No Wazuh Manager (API) has been added to this installation yet. Only 
+            the Splunk administrators can add, modify or delete Wazuh Managers, 
+            as write permissions are required. Please, get in contact with the 
+            administrator or log in with an administrator user.
+          </p>
+        </div>        
+        
         <!-- Add API form -->
-        <div layout="row">
+        <div layout="row" ng-if="isSplunkAdmin">
+        <!-- <div layout="row"> -->
           <form
             flex
             layout="row"

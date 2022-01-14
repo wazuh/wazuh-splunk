@@ -9,7 +9,7 @@ define(['../../module'], function (controllers) {
      * @param {*} apiList
      * @param {*} $notificationService
      */
-    constructor($scope, $currentDataService, apiList, $notificationService) {
+    constructor($scope, $currentDataService, apiList, isSplunkAdmin, $notificationService) {
       this.scope = $scope
       this.scope.addManagerContainer = false
       this.scope.isEditing = false
@@ -28,6 +28,7 @@ define(['../../module'], function (controllers) {
       this.notification = $notificationService
       this.savingApi = false
       this.scope.runAs = false;
+      this.scope.isSplunkAdmin = isSplunkAdmin
     }
 
     /**
