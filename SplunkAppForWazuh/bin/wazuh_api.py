@@ -105,7 +105,7 @@ class Wazuh_API():
                     response = response.json()
                     raise Exception(
                         f"{method} {endpoint_url} request failed with status {status_code}\n"
-                        + json.dumps(response.json(), indent=4)
+                        + json.dumps(response, indent=4)
                     )
                 else:
                     response = response.json()
