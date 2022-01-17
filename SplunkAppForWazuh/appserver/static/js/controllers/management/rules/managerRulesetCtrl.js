@@ -40,10 +40,18 @@ define([
         $restartService,
         $fileEditor
       )
-      //this.scope.canUpdateRules = this.isAllowed($security_service.ACTIONS_DIC.RULES_UPDATE, ['RESOURCELESS']);
-      this.scope.canUpdateRules = $security_service.isAllowed('RULES_UPDATE', ['RESOURCELESS']);
-      this.scope.canUpdateRulesetFile = (filename) => $security_service.isAllowed('RULES_UPDATE', ['RULE_FILE'], [filename]);
-  
+
+      /* RBAC flags */
+      this.scope.canReadRules = $security_service.isAllowed(
+        "RULES_READ",
+        ["RULE_FILE"],
+        ["*"]
+      )
+      this.scope.canUpdateRules = $security_service.isAllowed("RULES_UPDATE", [
+        "RESOURCELESS",
+      ])
+      this.scope.canUpdateRulesetFile = (filename) =>
+        $security_service.isAllowed("RULES_UPDATE", ["RULE_FILE"], [filename])
     }
 
     /**

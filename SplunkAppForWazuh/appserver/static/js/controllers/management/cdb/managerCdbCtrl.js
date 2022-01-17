@@ -43,7 +43,16 @@ define([
       this.checkGap = checkGap
       this.cdbEditor = $cdbEditor
       this.restartService = $restartService
-      this.scope.canUpdateList = $security_service.isAllowed('LISTS_UPDATE', ['RESOURCELESS']);  
+
+      /* RBAC flags */
+      this.scope.canReadLists = $security_service.isAllowed(
+        "LISTS_READ",
+        ["LIST_FILE"],
+        ["*"]
+      )
+      this.scope.canUpdateLists = $security_service.isAllowed("LISTS_UPDATE", [
+        "RESOURCELESS",
+      ])
     }
 
     /**

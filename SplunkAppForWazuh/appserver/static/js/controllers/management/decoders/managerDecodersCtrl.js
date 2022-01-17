@@ -38,8 +38,18 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       )
       this.scope.typeFilter = 'all'
       this.restartService = $restartService
-      this.scope.canUpdateDecoder = $security_service.isAllowed('DECODERS_UPDATE', ['RESOURCELESS']);
-      this.scope.canUpdateDecoderFile = (filename) => $security_service.isAllowed('DECODERS_UPDATE', ['DECODER_FILE'], [filename]);
+
+      /* RBAC flags */
+      this.scope.canReadDecoders = $security_service.isAllowed(
+        "DECODERS_READ",
+        ["DECODER_FILE"],
+        ["*"]
+      )
+      this.scope.canUpdateDecoders = $security_service.isAllowed("DECODERS_UPDATE", [
+        "RESOURCELESS",
+      ])
+      this.scope.canUpdateDecoderFile = (filename) =>
+        $security_service.isAllowed("DECODERS_UPDATE", ["DECODER_FILE"], [filename])
     }
 
     /**
