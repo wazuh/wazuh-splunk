@@ -94,6 +94,8 @@ define(["../../module", "../../../utils/config-handler"], function(
         integrityMonitoringConf: true,
       };
 
+      this.$scope.isManager = false
+      this.$scope.canReadAgents = true // controlled on the parent view (agents)
       this.$scope.$on("loadingReporting", (event, data) => {
         this.$scope.loadingReporting = data.status;
       });

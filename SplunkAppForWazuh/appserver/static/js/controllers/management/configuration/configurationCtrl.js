@@ -48,6 +48,7 @@ define(["../../module", "../../../utils/config-handler"], function(
       this.currentWodle = false;
       this.currentSubTab = false;
 
+      this.scope.isManager = true
       /* RBAC flags */
       this.isAllowed = (action, resource, params = ["*"]) => {
         return $security_service.getPolicy(action, resource, params).isAllowed;
@@ -142,6 +143,9 @@ define(["../../module", "../../../utils/config-handler"], function(
             );
           else return this.isAllowed("MANAGER_UPDATE_CONFIG", ["RESOURCELESS"]);
         };
+
+        // True if the request on the resolver was successful
+        this.scope.canReadCluster = (this.clusterInfo != false)
       } catch (error) {
         this.notification.showErrorToast(error);
       }
