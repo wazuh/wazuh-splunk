@@ -223,7 +223,7 @@ define([
           dateAdd: this.agentData.dateAdd,
           agentOS: `${this.agentData.os.name} ${this.agentData.os.codename} ${this.agentData.os.version}`,
           syscheck: this.agent[1].data.data.affected_items[0],
-          rootcheck: this.agent[2].data.data || {}
+          rootcheck: this.agent[2].data.data || {}
         }
 
         this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(
@@ -317,7 +317,7 @@ define([
         this.scope.agentInfo = {
           id: this.agentInfo.id,
           name: this.agentInfo.name,
-          status: 'Never connected'
+          status: this.agentData.status
         }
         this.agentInfo.id && this.agentInfo.name
           ? (this.agentInfo.error = false)
