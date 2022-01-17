@@ -840,18 +840,18 @@ kbn-vis .vis-container {
 
 
 @supports not (-moz-appearance:none) {
-  @media (min-width: 1060px) {      
-      .wz-logo{        
-          content: url("../images/wazuh/png/wazuh_white_full.png");
-      } 
+  @media (min-width: 1060px) {
+      .wz-logo{
+          content: url("../images/wazuh/svg/wazuh_white_full.svg");
+      }
       .wz-logo-container {
           width: 150px;
           max-width: 150px;
       }
   }
-  @media (max-width: 1059px) {    
-      .wz-logo{         
-         content: url("../images/wazuh/png/wazuh_white_iso.png");
+  @media (max-width: 1059px) {
+      .wz-logo{
+         content: url("../images/wazuh/svg/wazuh_white_iso.svg");
          max-height: 45px;
          max-width: 28px;
      } 
@@ -864,28 +864,28 @@ kbn-vis .vis-container {
 }
 
 @supports (-moz-appearance:none) {
-  @media (min-width: 1060px) {      
-      .wz-logo::after{        
-        content: url("../images/wazuh/png/wazuh_white_full.png");
+  @media (min-width: 1060px) {
+      .wz-logo::after{
+        content: url("../images/wazuh/svg/wazuh_white_full.svg");
         display: flex;
       } 
       .wz-logo-container {
           width: 185px;
-          content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png");
+          content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_full.svg");
 
           max-width: 185px;
       }
   }
-  @media (max-width: 1059px) {    
-      .wz-logo{         
-          content: url("../images/wazuh/png/wazuh_white_iso.png") ;
+  @media (max-width: 1059px) {
+      .wz-logo{
+          content: url("../images/wazuh/svg/wazuh_white_iso.svg") ;
           display: flex;
           max-height: 45px;
           max-width: 28px;
       } 
       .wz-logo-container {
               min-width: 20px;
-              content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_iso.png");
+              content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_iso.svg");
 
               max-width: 30px;
               margin-right: 5px;
