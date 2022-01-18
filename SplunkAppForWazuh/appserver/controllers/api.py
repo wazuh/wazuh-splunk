@@ -520,11 +520,11 @@ class api(controllers.BaseController):
                 }
             )
 
-    """
-    Get basic syscollector information for a given agent.
-    """
     @expose_page(must_login=False, methods=['GET'])
     def getSyscollector(self, **kwargs):
+        """
+        Get basic syscollector information for a given agent.
+        """
         self.logger.debug("api::getSysCollector() called")
         try:
             agentId = utils.get_parameter(kwargs, 'agentId')
