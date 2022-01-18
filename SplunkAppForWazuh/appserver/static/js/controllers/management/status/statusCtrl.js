@@ -25,11 +25,22 @@ define(['../../module'], function(controllers) {
       this.scope.load = true
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-      // add agents read permissions
-      this.scope.canReadCluster = $security_service.isAllowed('CLUSTER_READ', ['RESOURCELESS']);
-      this.scope.canRestartCluster = $security_service.isAllowed('CLUSTER_RESTART', ['RESOURCELESS']);
-      this.scope.canReadManager = $security_service.isAllowed('MANAGER_READ', ['RESOURCELESS']);
-      this.scope.canRestartManager = $security_service.isAllowed('MANAGER_RESTART', ['RESOURCELESS']);
+    
+      /* RBAC flags */
+      this.scope.canReadCluster = $security_service.isAllowed("CLUSTER_READ", [
+        "RESOURCELESS",
+      ])
+      this.scope.canRestartCluster = $security_service.isAllowed(
+        "CLUSTER_RESTART",
+        ["RESOURCELESS"]
+      )
+      this.scope.canReadManager = $security_service.isAllowed("MANAGER_READ", [
+        "RESOURCELESS",
+      ])
+      this.scope.canRestartManager = $security_service.isAllowed(
+        "MANAGER_RESTART",
+        ["RESOURCELESS"]
+      )
 
       const parsedStatusData = statusData.map(item =>
         item && item.data && item.data.data ? item.data.data : item
@@ -53,7 +64,7 @@ define(['../../module'], function(controllers) {
       this.rules = rules
       this.decoders = decoders
       this.scope.clusterEnabled = masterNode || false
-      this.agentInfo = agentInfo.data.data
+      this.agentInfo = agentInfo && agentInfo.data.data
       this.restartService = $restartService
     }
 
@@ -165,7 +176,10 @@ define(['../../module'], function(controllers) {
 
         this.scope.totalRules = this.rules.total_affected_items
         this.scope.totalDecoders = this.decoders.total_affected_items
-        this.scope.agentInfo = this.agentInfo.affected_items[0]
+        this.scope.agentInfo =
+          this.agentInfo &&
+          this.agentInfo.affected_items &&
+          this.agentInfo.affected_items[0]
       } catch (err) {
         this.notification.showErrorToast(err.message || err)
       }

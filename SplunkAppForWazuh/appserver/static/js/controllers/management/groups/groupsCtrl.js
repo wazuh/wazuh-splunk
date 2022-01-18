@@ -48,6 +48,12 @@ define(["../../module", "FileSaver"], function (controllers) {
       this.scope.editingFile = false
       this.scope.loadingRing = false
       this.scope.exportConfig = false
+
+      /* RBAC flags */
+      this.scope.canReadGroups = $security_service.isAllowed("GROUP_READ", 
+        ["GROUP_ID"]
+      )
+
       this.scope.canCreateGroup = $security_service.isAllowed("GROUP_CREATE", [
         "RESOURCELESS",
       ])
