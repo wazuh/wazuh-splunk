@@ -36,16 +36,21 @@ define(
         this.$requirementService = $requirementService
         this.$validationService = $validationService
         this.userPermissions = userPermissions
+        // TODO delete me
         this.getUserPolicies()
-          .then(data => {console.log(data);this.userPolicies = data})
+          .then(data => { console.log(data); this.userPolicies = data })
       }
 
       /**
+       * Creates a policy object given its action, resources and resources' 
+       * identifiers.
        * 
-       * @param {*} action 
-       * @param {*} resources 
-       * @param {*} params 
-       * @returns 
+       * This object is also compared with the user's policies.
+       * 
+       * @param {String} action a RBAC action, from the requirements service
+       * @param {Array} resources resources for the given action
+       * @param {Array} params resource identifiers
+       * @returns {Policy} a well formed policy object
        */
       getPolicy(action, resources, params = []) {
         const r = this.$requirementService.generateRequirement(
@@ -54,7 +59,7 @@ define(
           params
         );
         const v = this.$validationService.validatePermissions(
-          r, 
+          r,
           this.userPermissions.get()
         );
         return new Policy(r, v)
@@ -106,7 +111,7 @@ define(
        * @returns {Boolean} true if the user has the given role,
        *                    false otherwise.
        */
-       async hasWazuhRole(required_role) {
+      async hasWazuhRole(required_role) {
         const userInfo = await this.getUserInfo()
         return userInfo.roles.some(role => role.name === required_role)
       }
@@ -123,9 +128,20 @@ define(
         }
       }
 
-      isAllowed(action, resource, params = "*"){
+      /**
+       * Checks if the user is allowed to perform the given action on the given
+       * resources.
+       * @see getPolicy
+       * 
+       * @param {String} action a RBAC action, from the requirements service
+       * @param {Array} resources resources for the given action
+       * @param {Array} params resource identifiers
+       * @returns {Boolean} true if the user is authorized to perform the action
+       * on the given resources, false otherwise.
+       */
+      isAllowed(action, resource, params = "*") {
         return this.getPolicy(action, resource, params).isAllowed
-      } 
+      }
 
     }
 
