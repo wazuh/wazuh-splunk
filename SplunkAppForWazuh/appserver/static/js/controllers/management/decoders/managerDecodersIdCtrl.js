@@ -12,6 +12,11 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} extensions
+     * @param {*} $fileEditor
+     * @param {*} $restartService
+     * @param {*} $requestService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -26,7 +31,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $fileEditor,
       $restartService,
       $requestService,
-      isAdmin
+      $security_service
     ) {
       super(
         $scope,
@@ -44,7 +49,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.restartService = $restartService
       this.requestService = $requestService
       this.currentDecoder = currentDecoder
-      this.scope.adminMode = isAdmin
+      this.scope.canUpdateDecoderFile = (filename) => $security_service.isAllowed('DECODERS_UPDATE', ['DECODER_FILE'], [filename]);
+
     }
 
     /**
@@ -112,7 +118,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
-        dir: 'decoders',
+        dir: 'etc/decoders',
         overwrite: true
       })
     }

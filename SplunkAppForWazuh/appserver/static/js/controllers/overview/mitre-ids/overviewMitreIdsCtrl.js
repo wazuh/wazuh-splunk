@@ -23,14 +23,16 @@ define([
   class OverviewMitreIds {
     /**
      * Class constructor
-     * @param {Object} $urlTokenModel
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} $state
      * @param {Object} $notificationService
      * @param {Object} $requestService
-     * @param {Object} agentData
-     * @param {*} $reportingService
+     * @param {Object} mitre_tactics
+     * @param {*} $mdDialog
+     * @param {*} $dateDiffService
+     * @param {*} $urlTokenModel
+     * @param {*} extensions
      */
 
     constructor(
@@ -43,7 +45,7 @@ define([
       $mdDialog,
       $dateDiffService,
       $urlTokenModel,
-      extensions
+      extensions,
     ) {
       this.scope = $scope
       this.currentDataService = $currentDataService

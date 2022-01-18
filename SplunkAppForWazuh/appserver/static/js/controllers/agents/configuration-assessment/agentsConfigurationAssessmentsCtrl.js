@@ -20,14 +20,20 @@ define(['../../module', '../../../dashboardMain'], function(
     /**
      * Class Agents Policy-Monitoring
      * @param {Object} $urlTokenModel
+     * @param {Object} $rootScope
      * @param {Object} $scope
      * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
-     * @param {*} $reportingService
+     * @param {Object} configAssess
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} BASE_URL
+     * @param {*} extensions
+     * @param {*} $dateDiffService
      */
 
     constructor(

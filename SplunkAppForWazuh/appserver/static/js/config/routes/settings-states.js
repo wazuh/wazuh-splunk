@@ -18,13 +18,13 @@ define(['../module'], function(module) {
           },
           controller: 'settingsCtrl',
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
+            isWazuhAdmin: [
+              '$security_service',
+              async $security_service => {
+                try{
+                  return await $security_service.hasWazuhRole("administrator")
+                }catch(error){
+                  return false;
                 }
               }
             ]
@@ -73,6 +73,16 @@ define(['../module'], function(module) {
                   return await $currentDataService.getApiList()
                 } catch (error) {
                   console.error('Could not fetch API list')
+                }
+              }
+            ], 
+            isSplunkAdmin: [
+              '$splunkUsers',
+              async $splunkUsers => {
+                try {
+                  return await $splunkUsers.isAdmin()
+                } catch (err) {
+                  return { error: 'Cannot fetch Splunk users from API', detail: err }
                 }
               }
             ]
@@ -139,19 +149,7 @@ define(['../module'], function(module) {
           onEnter: $navigationService => {
             $navigationService.storeRoute('dev-tools')
           },
-          controller: 'devToolsCtrl',
-          resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
-                  return false
-                }
-              }
-            ]
-          }
+          controller: 'devToolsCtrl'
         })
         .state('discover', {
           templateUrl:

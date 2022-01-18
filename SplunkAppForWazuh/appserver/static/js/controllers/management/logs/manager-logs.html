@@ -27,7 +27,9 @@
     <div class="loader"></div>
   </div>
 </div>
-<div>
+
+<wz-forbidden ng-if="!canReadLogs"></wz-forbidden>
+<div ng-if="canReadLogs">
   <!-- Filters and Realtime button section -->
   <div ng-show="!loading" layout="row" layout-align="start start"
     class="wz-margin-left-10 wz-margin-right-600 less-25-side" style="margin-left: 25px !important;">
@@ -102,23 +104,24 @@
     <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true" />
   </div>
   <!-- End Logs section -->
+  <!-- Empty results -->
+
+  <div layout="row" class="wz-margin-20" layout-padding ng-show="emptyResults">
+    <div flex class="euiCallOut euiCallOut--warning wz-margin-top-17">
+      <div class="euiCallOutHeader">
+        <wz-svg icon="callOutHeader"></wz-svg>
+        <span class="euiCallOutHeader__title">No results match your search criteria</span>
+      </div>
+    </div>
+  </div>
+
+  <div layout="row" class="wz-margin-right-20">
+    <span flex></span>
+    <a class="small formatted-color formatted-log" id="btnDownload" ng-click="downloadCsv()">
+      <wz-svg icon="download"></wz-svg>&nbsp;Formatted
+    </a>
+  </div>
 
 </div>
 <!-- End Filters and Realtime button section -->
 
-<!-- Empty results -->
-<div layout="row" class="wz-margin-20" layout-padding ng-show="emptyResults">
-  <div flex class="euiCallOut euiCallOut--warning wz-margin-top-17">
-    <div class="euiCallOutHeader">
-      <wz-svg icon="callOutHeader"></wz-svg>
-      <span class="euiCallOutHeader__title">No results match your search criteria</span>
-    </div>
-  </div>
-</div>
-
-<div layout="row" class="wz-margin-right-20">
-  <span flex></span>
-  <a class="small formatted-color formatted-log" id="btnDownload" ng-click="downloadCsv()">
-    <wz-svg icon="download"></wz-svg>&nbsp;Formatted
-  </a>
-</div>

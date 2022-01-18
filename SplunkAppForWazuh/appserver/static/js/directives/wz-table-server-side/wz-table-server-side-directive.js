@@ -10,16 +10,6 @@
  * Find more information about this on the LICENSE file.
  */
 
-// import { calcTableRows } from ;
-// import { parseValue } from './lib/parse-value';
-// import * as pagination from './lib/pagination';
-// import { sort } from './lib/sort';
-// import * as listeners from './lib/listeners';
-// import { searchData, filterData } from './lib/data';
-// import { clickAction } from './lib/click-action';
-// import { initTable } from './lib/init';
-// import { checkGap } from './lib/check-gap';
-
 define([
   '../module',
   './lib/rows',
@@ -53,7 +43,6 @@ define([
         implicitFilter: '=implicitFilter',
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
-        adminMode: '=adminMode',
         emptyResults: '=emptyResults',
         customColumns: '=customColumns',
         implicitSort: '=implicitSort',
@@ -72,6 +61,7 @@ define([
         $currentDataService,
         $notificationService,
         $tableFilterService,
+        $security_service,
         $window,
         $groupHandler,
         $sce,
@@ -83,6 +73,9 @@ define([
          * Init variables
          */
 
+        $scope.isAllowed = (action, resource, params = "*") => {
+          return $security_service.getPolicy(action, resource, params).isAllowed
+        }
         $scope.showingChecks = false
         let realTime = false
         const instance = new $dataService(
@@ -495,7 +488,7 @@ define([
 
         $scope.isLookingGroup = () => {
           try {
-            const regexp = new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/)
+            const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/)
             $scope.isLookingDefaultGroup =
               instance.path.split('/').pop() === 'default'
             return regexp.test(instance.path)
@@ -532,13 +525,13 @@ define([
 
         $scope.confirmRemoveAgent = async agent => {
           try {
-            const group = instance.path.split('/').pop()
+            const [_, group] = instance.path.match(/^\/groups\/([a-zA-Z0-9_\-\.]*)\/agents$/) || []
             const result = await $groupHandler.removeAgentFromGroup(
               group,
               agent
             )
             $notificationService.showSuccessToast(
-              result || `Success. Agent ${agent} has been removed from ${group}`
+              result.message || `Success. Agent ${agent} has been removed from ${group}`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)

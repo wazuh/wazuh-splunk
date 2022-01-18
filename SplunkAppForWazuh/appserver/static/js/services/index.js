@@ -28,5 +28,11 @@ define([
   './sourceTypeStorageService/sourceTypeStorageService',
   './splunk-services/splunk-users',
   './validationService/validationService',
-  './requirementService/requirementService'
-], function() {})
+  './requirementService/requirementService',
+  './security_services/actions_enum',
+  './security_services/security_service',
+  './security/rule/ruleService',
+  './security/role/roleService',
+  './security/policy/policyService',
+  './security/user/userService'
+], function () { })

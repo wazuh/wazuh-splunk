@@ -31,12 +31,14 @@ define([
     /**
      * Class Agents Docker
      * @param {Object} $urlTokenModel
-     * @param {Object} $state
      * @param {Object} $scope
-     * @param {Object} $currentDataService
-     * @param {Object} $notificationService
      * @param {Object} agent
+     * @param {Object} $notificationService
+     * @param {Object} $currentDataService
+     * @param {Object} $state
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
 
     constructor(
@@ -48,7 +50,7 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
     ) {
       super(
         $scope,

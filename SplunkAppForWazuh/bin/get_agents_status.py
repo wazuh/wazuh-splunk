@@ -13,14 +13,16 @@ Find more information about this on the LICENSE file.
 """
 
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
+import datetime
+import sys
+
 import jsonbak
 import requestsbak
-import datetime
+from API_model import API_model
 from db import database
 from log import log
-import sys
 from wazuhtoken import wazuhtoken
 
 db = database()
@@ -31,7 +33,7 @@ wztoken = wazuhtoken()
 def get_apis():
     """
     Obtain the list of APIs.
-    
+
     Returns
     -------
     string
@@ -56,21 +58,24 @@ def check_status():
         date = str(datetime.datetime.utcnow())[:-7]
         # obtains
         for api in apis:
-            opt_password = api["passapi"]
-            opt_username = api["userapi"]
-            opt_base_url = api["url"]
-            opt_base_port = api["portapi"]
+            api = API_model(
+                address=api['url'],
+                port=api['portapi'],
+                user=api['userapi'],
+                password=api['passapi'],
+            )
+            url = api.get_url()
+            wazuh_token = wztoken.get_auth_token(api)
+
             agent_list = {}
-            url = str(opt_base_url) + ":" + str(opt_base_port)
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            wazuh_token = wztoken.get_auth_token(url, auth)
-            verify = False
             agents_url_total_items = url + '/agents?limit=1&q=id!=000'
             try:
                 request_agents = requestsbak.get(
                     agents_url_total_items,
-                    headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=1,
-                    verify=verify).json()
+                    headers={'Authorization': f'Bearer {wazuh_token}'},
+                    timeout=1,
+                    verify=False
+                ).json()
                 total_items = request_agents["data"]["total_affected_items"]
                 limit = 500
                 offset = 0
@@ -82,7 +87,11 @@ def check_status():
                         '/agents?select=id,ip,manager,status&offset=' + \
                         str(offset)+'&limit='+str(limit)
                     request_agents = requestsbak.get(
-                        agents_url, headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=1, verify=verify).json()
+                        agents_url,
+                        headers={'Authorization': f'Bearer {wazuh_token}'},
+                        timeout=1,
+                        verify=False
+                    ).json()
 
                     agent_list = request_agents["data"]["affected_items"]
                     final_url_cluster = url + '/cluster/status'
@@ -90,15 +99,18 @@ def check_status():
                         final_url_cluster,
                         headers={'Authorization': f'Bearer {wazuh_token}'},
                         timeout=1,
-                        verify=verify).json()
+                        verify=False
+                    ).json()
                     cluster_status = request_cluster_status["data"]["enabled"]
+
                     if request_cluster_status["data"]["enabled"] == "yes":
                         final_url_cluster_name = url + '/cluster/local/info'
                         request_cluster_name = requestsbak.get(
                             final_url_cluster_name,
                             timeout=1,
                             headers={'Authorization': f'Bearer {wazuh_token}'},
-                            verify=verify).json()
+                            verify=False
+                        ).json()
                     offset = offset + limit
                     for item in agent_list:
                         if cluster_status == "yes":
@@ -122,7 +134,7 @@ def check_status():
 
 def getSplunkSessionKey():
     """
-    Get the session key, it needs to configure in the inputs.conf that 
+    Get the session key, it needs to configure in the inputs.conf that
     executes this script the following parameter: passAuth = splunk-system-user
     """
     logger.debug("bin.get_agents_status: Getting Splunk session key.")

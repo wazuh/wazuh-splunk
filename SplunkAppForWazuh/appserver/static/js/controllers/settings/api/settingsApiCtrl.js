@@ -9,7 +9,7 @@ define(['../../module'], function (controllers) {
      * @param {*} apiList
      * @param {*} $notificationService
      */
-    constructor($scope, $currentDataService, apiList, $notificationService) {
+    constructor($scope, $currentDataService, apiList, isSplunkAdmin, $notificationService) {
       this.scope = $scope
       this.scope.addManagerContainer = false
       this.scope.isEditing = false
@@ -28,6 +28,7 @@ define(['../../module'], function (controllers) {
       this.notification = $notificationService
       this.savingApi = false
       this.scope.runAs = false;
+      this.scope.isSplunkAdmin = isSplunkAdmin
     }
 
     /**
@@ -116,6 +117,10 @@ define(['../../module'], function (controllers) {
           this.scope.loadingVizz = false
           this.notification.showSuccessToast('Manager was removed')
           this.scope.$emit('updatedAPI', () => { })
+
+          // Turn off the isEditing mode
+          this.scope.edit = false
+          this.scope.showForm = false
         }
         this.currentDataService.removeExtensionsById(entry['_key'])
       } catch (err) {

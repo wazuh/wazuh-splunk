@@ -1,0 +1,3 @@
+define([
+    './userPermissions'
+  ], function() {})

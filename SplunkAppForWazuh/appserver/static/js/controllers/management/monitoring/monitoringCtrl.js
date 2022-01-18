@@ -14,6 +14,7 @@ define([
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} $requestService
+     * @param {Object} $appVersionService
      * @param {Object} $notificationService
      * @param {Object} monitoringInfo
      */
@@ -25,7 +26,7 @@ define([
       $requestService,
       $appVersionService,
       $notificationService,
-      monitoringInfo
+      monitoringInfo,
     ) {
       this.scope = $scope
       this.urlTokenModel = $urlTokenModel
@@ -90,16 +91,16 @@ define([
         health
       ] = parsedResult
 
-      this.running = status.running
-      this.enabled = status.enabled
+      this.running = status && status.running
+      this.enabled = status && status.enabled
       this.scope.isClusterEnabled =
         $stateParams.isClusterEnabled || this.enabled === 'yes'
       this.scope.isClusterRunning =
         $stateParams.isClusterRunning || this.running === 'yes'
-      this.nodes = this.enabled === 'yes' ? nodes.affected_items[0] : []
-      this.nodesCount = this.enabled === 'yes' ? nodes.total_affected_items : 0
-      this.configuration = this.enabled === 'yes' ? configuration.affected_items[0] : false
-      this.version = version.api_version
+      this.nodes = this.enabled === 'yes' && nodes ? nodes.affected_items[0] : []
+      this.nodesCount = this.enabled === 'yes' && nodes ? nodes.total_affected_items : 0
+      this.configuration = this.enabled === 'yes' && configuration ? configuration.affected_items[0] : false
+      this.version = version ? version.api_version : ''
       this.agents = agents
       this.health = this.enabled === 'yes' ? health.affected_items[0] : false
     }

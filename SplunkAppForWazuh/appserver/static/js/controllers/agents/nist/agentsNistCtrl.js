@@ -30,6 +30,12 @@ define([
      * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} nistTabs
+     * @param {*} reportingEnabled
+     * @param {*} pciExtensionEnabled
+     * @param {*} gdprExtensionEnabled
+     * @param {*} hipaaExtensionEnabled
+     * @param {*} $security_service
      */
     constructor(
       $urlTokenModel,
@@ -42,7 +48,8 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      hipaaExtensionEnabled
+      hipaaExtensionEnabled,
+      $security_service
     ) {
       super(
         $scope,
@@ -56,7 +63,6 @@ define([
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
       this.scope.nistTabs = nistTabs ? nistTabs : false
-
       this.scope.expandArray = [false, false, false, false, false]
 
       this.dropdown = new Dropdown(

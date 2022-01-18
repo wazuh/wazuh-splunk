@@ -34,15 +34,17 @@ define([
   class AgentsGeneral extends DashboardMain {
     /**
      * Class constructor
-     * @param {Object} $scope
-     * @param {Object} $currentDataService
      * @param {Object} $urlTokenModel
+     * @param {Object} $scope
      * @param {Object} $requestService
      * @param {Object} $notificationService
      * @param {Object} $stateParams
-     * @param {Object} $state
+     * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {Object} $state
+     * @param {Object} $dateDiffService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
      */
 
     constructor(
@@ -56,7 +58,7 @@ define([
       $state,
       $dateDiffService,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
     ) {
       super(
         $scope,
@@ -221,7 +223,7 @@ define([
           dateAdd: this.agentData.dateAdd,
           agentOS: `${this.agentData.os.name} ${this.agentData.os.codename} ${this.agentData.os.version}`,
           syscheck: this.agent[1].data.data.affected_items[0],
-          rootcheck: this.agent[2].data.data || {}
+          rootcheck: this.agent[2].data.data || {}
         }
 
         this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(
@@ -315,7 +317,7 @@ define([
         this.scope.agentInfo = {
           id: this.agentInfo.id,
           name: this.agentInfo.name,
-          status: 'Never connected'
+          status: this.agentData.status
         }
         this.agentInfo.id && this.agentInfo.name
           ? (this.agentInfo.error = false)

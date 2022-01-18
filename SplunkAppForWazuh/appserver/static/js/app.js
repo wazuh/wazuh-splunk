@@ -7,6 +7,7 @@ define([
   './directives/index',
   './controllers/index',
   './filters/index',
+  './factories/index',
   './run/index',
   './config/index',
   'chart',
@@ -21,6 +22,7 @@ define([
     'app.directives',
     'app.controllers',
     'app.filter',
+    'app.factories',
     'app.run',
     'app.config'
   ])

@@ -49,8 +49,8 @@
       ui-sref="ag-docker" name="docker">Docker listener</md-nav-item>
   </md-nav-bar>
 
-
-  <div>
+  <wz-forbidden ng-if="!canReadVulnerabilities"></wz-forbidden>
+  <div ng-if="canReadVulnerabilities">
     <!-- Filter bar -->
     <wazuh-bar></wazuh-bar>
 

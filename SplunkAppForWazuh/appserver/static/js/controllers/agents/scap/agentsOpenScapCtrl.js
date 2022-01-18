@@ -40,8 +40,11 @@ define([
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} $state
-     * @param {*} $reportingService
      * @param {Object} agent
+     * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
+     * @param {*} $security_service
      */
 
     constructor(
@@ -52,7 +55,8 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $security_service
     ) {
       super(
         $scope,

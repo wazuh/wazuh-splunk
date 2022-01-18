@@ -10,12 +10,12 @@ define(
 
       /**
        * Constructor
-       * 
-       * @param {*} $requestService 
+       *
+       * @param {*} $requestService
        */
-      constructor($requestService) { 
+      constructor($requestService) {
         this.httpReq = $requestService.httpReq
-      };
+      }
 
       /**
        * @returns {Object} logged in user.
@@ -30,7 +30,7 @@ define(
         } catch (err) {
           return Promise.reject(err)
         }
-      };
+      }
 
       /**
        * @returns {Object} a list with every user registered in Splunk.
@@ -45,7 +45,21 @@ define(
         } catch (err) {
           return Promise.reject(err)
         }
-      };
+      }
+
+      /**
+       * @returns {Boolean} true if the user is a Splunk Admin
+       */
+      async isAdmin() {
+        try {
+          const user = (await this.getCurrentUser()).data.name
+          const roles = (await this.getInternalUsers()).data[user].roles
+
+          return roles.includes("admin")
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      }
 
     }
 

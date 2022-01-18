@@ -1,280 +1,468 @@
-<div ng-cloak flex layout="column" class='wz-white-background'>
+<wz-rbac-prompt permissions="canReadLists">
+  <div ng-cloak flex layout="column" class="wz-white-background">
     <div layout="row" class="layout-row wz-white-background">
-  
       <div layout="column" style="width: 100%">
-          <div layout="row">
-              <div class='wz-breadcrumb-margin'>
-                  <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
-                  <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
-                  <span> / CDB Lists </span>
-                </div>
-                <div flex=""></div>
+        <div layout="row">
+          <div class="wz-breadcrumb-margin">
+            <span class="wz-text-link cursor-pointer" ui-sref="manager"
+              >Management</span
+            >
+            <span class="wz-text-link cursor-pointer" ui-sref="mg-rules">
+              / Ruleset</span
+            >
+            <span> / CDB Lists </span>
           </div>
-          <div layout="row" style="margin-top:15px; margin-left:-15px;">
-              <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-width-100p" md-selected-nav-item="selectedNavTab">
-                  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules</md-nav-item>
-                  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
-                  </md-nav-item>
-                  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="cdbList">Lists</md-nav-item>
-                </md-nav-bar>
-              
-          </div>
-          <div layout="row" style="margin-top:16px;">
-
-            <div class="wz-popover-wrapper">
-              <div ng-show="uploadingFiles" class="wz-popover-content">
-                  <wz-upload-files upload-title="Upload lists" resource="lists"></wz-upload-files>
-              </div>
+          <div flex=""></div>
+        </div>
+        <div layout="row" style="margin-top: 15px; margin-left: -15px">
+          <md-nav-bar
+            class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-width-100p"
+            md-selected-nav-item="selectedNavTab">
+            <md-nav-item
+              class="wz-nav-item"
+              md-nav-click="stopPropagation()"
+              ui-sref="mg-rules"
+              name="rules"
+              >Rules</md-nav-item
+            >
+            <md-nav-item
+              class="wz-nav-item"
+              md-nav-click="stopPropagation()"
+              ui-sref="mg-decoders"
+              name="decoders"
+              >Decoders
+            </md-nav-item>
+            <md-nav-item
+              class="wz-nav-item"
+              md-nav-click="stopPropagation()"
+              name="cdbList"
+              >Lists</md-nav-item
+            >
+          </md-nav-bar>
+        </div>
+        <div layout="row" style="margin-top: 16px">
+          <div class="wz-popover-wrapper">
+            <div ng-show="uploadingFiles" class="wz-popover-content">
+              <wz-upload-files
+                upload-title="Upload lists"
+                resource="lists"></wz-upload-files>
             </div>
-            <!-- Loading content -->
+          </div>
+          <!-- Loading content -->
           <div ng-show="loadingContent">
             <div class="loader-bar" ng-show="loadingContent">
               <div class="loader"></div>
             </div>
           </div>
-          <div style="width:100%;margin-right: 10px;"> 
-            <div ng-if="!addingNewFile && !XMLContent" class="wz-padding-left-16">
-             
+          <div style="width: 100%; margin-right: 10px">
+            <div
+              ng-if="!addingNewFile && !XMLContent"
+              class="wz-padding-left-16">
               <div layout="row">
-                <md-card style="width:100%;" class="wz-md-card no-margin-sides">
-                  <md-card-actions layout="column"
-                    class="wz-card-actions wz-card-actions-top md-actions-ruleset" style="background-color: white; height:110px;">
-                    <div layout="row" style="padding-top: 15px;padding-bottom: 4px;">
-                      <span style="font-size: 28px; padding-right: 10px;"> CDB Lists </span> 
-  
+                <md-card style="width: 100%" class="wz-md-card no-margin-sides">
+                  <md-card-actions
+                    layout="column"
+                    class="wz-card-actions wz-card-actions-top md-actions-ruleset"
+                    style="background-color: white; height: 110px">
+                    <div
+                      layout="row"
+                      style="padding-top: 15px; padding-bottom: 4px">
+                      <span style="font-size: 28px; padding-right: 10px">
+                        CDB Lists
+                      </span>
+
                       <span flex="" class="flex"></span>
 
-                      <span ng-click="addNewFile()" class="wz-color-text cursor-pointer link-table">
+                      <span
+                        ng-if="canUpdateLists"
+                        ng-click="addNewFile()"
+                        class="wz-color-text cursor-pointer link-table">
                         <wz-svg icon="plus"></wz-svg>
                         Add new list
                       </span>
-                      <span ng-click="downloadCsv('/lists','cdb_lists.csv')" class="wz-color-text cursor-pointer link-table">
+                      <span
+                        ng-click="downloadCsv('/lists','cdb_lists.csv')"
+                        class="wz-color-text cursor-pointer link-table">
                         <wz-svg icon="import"></wz-svg>
                         Export formatted
                       </span>
-                      <span ng-click="switchUploadFiles()" class="wz-color-text cursor-pointer link-table">
-                          <wz-svg icon="export"></wz-svg>
+                      <span
+                        ng-if="canUpdateLists"
+                        ng-click="switchUploadFiles()"
+                        class="wz-color-text cursor-pointer link-table">
+                        <wz-svg icon="export"></wz-svg>
                         Import files
                       </span>
-                      <span ng-click="search(customSearch)" class="wz-color-text cursor-pointer link-table">
-                          <wz-svg icon="refresh"></wz-svg>
+                      <span
+                        ng-click="search(customSearch)"
+                        class="wz-color-text cursor-pointer link-table">
+                        <wz-svg icon="refresh"></wz-svg>
                         Refresh
                       </span>
                     </div>
-  
-                    <div class="layout-row" style="padding-top: 15px;">
-                      <div layout="row" class="layout-row" style="width: 100%;">
 
-                          <label class="wz-icon-loupe">
-                              <input placeholder="Filter cdb lists..." ng-model="customSearch" type="text" flex
-                                class="kuiLocalSearchInput height-40" aria-invalid="false" wz-enter="search(customSearch)">
-                            </label>
-                        <button ng-click="search(customSearch)"
-                          class='btn height-40 agreeBtn pull-right wz-margin-left-7' style="max-height:40px !important;">
-                          <span><i aria-hidden='true' class='fa fa-fw fa-search wz-margin-left-10'>&nbsp;</i>Search</span>
+                    <div class="layout-row" style="padding-top: 15px">
+                      <div layout="row" class="layout-row" style="width: 100%">
+                        <label class="wz-icon-loupe">
+                          <input
+                            placeholder="Filter cdb lists..."
+                            ng-model="customSearch"
+                            type="text"
+                            flex
+                            class="kuiLocalSearchInput height-40"
+                            aria-invalid="false"
+                            wz-enter="search(customSearch)" />
+                        </label>
+                        <button
+                          ng-click="search(customSearch)"
+                          class="btn height-40 agreeBtn pull-right wz-margin-left-7"
+                          style="max-height: 40px !important">
+                          <span
+                            ><i
+                              aria-hidden="true"
+                              class="fa fa-fw fa-search wz-margin-left-10"
+                              >&nbsp;</i
+                            >Search</span
+                          >
                         </button>
                       </div>
                     </div>
-                </md-card-actions>
-                <md-card-contents>
-                  <md-chips ng-if="!rulesetFiles" class="wz-chips wz-margin-left-10" readonly="true" ng-show="appliedFilters.length">
-                    <md-chip class="wz-chip" ng-show="includesFilter('file')">
-                      <span>File: {{getFilter('file')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('file')"></i>
-                      </span>
-                    </md-chip>
-                    <md-chip class="wz-chip" ng-show="includesFilter('path')">
-                      <span>Path: {{getFilter('path')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('path')"></i>
-                      </span>
-                    </md-chip>
-                    <md-chip class="wz-chip" ng-show="includesFilter('level')">
-                      <span>Level: {{getFilter('level')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('level')"></i>
-                      </span>
-                    </md-chip>
-                    <md-chip class="wz-chip" ng-show="includesFilter('group')">
-                      <span>Group: {{getFilter('group')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('group')"></i>
-                      </span>
-                    </md-chip>
-                    <md-chip class="wz-chip" ng-show="includesFilter('pci')">
-                      <span>PCI control: {{getFilter('pci')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('pci')"></i>
-                      </span>
-                    </md-chip>
-                    <md-chip class="wz-chip" ng-show="includesFilter('hipaa')">
-                      <span>HIPAA: {{getFilter('hipaa')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('hipaa')"></i>
-                      </span>
-                    </md-chip>
-                    <md-chip class="wz-chip" ng-show="includesFilter('nist-800-53')">
-                      <span>NIST 800-53: {{getFilter('nist-800-53')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('nist-800-53')"></i>
-                      </span>
-                    </md-chip>
-                    <md-chip class="wz-chip" ng-show="includesFilter('gdpr')">
-                      <span>GDPR: {{getFilter('gdpr')}}
-                        <i class="fa fa-fw fa-times cursor-pointer" aria-hidden="true" ng-click="removeFilter('gdpr')"></i>
-                      </span>
-                    </md-chip>
-                  </md-chips>
-                  <div layout="row" layout-padding>
-                    <wazuh-table custom-columns="true" implicit-filter="appliedFilters" flex path="'/lists/files'"
-                      keys="['filename', 'relative_dirname']" allow-click="true" rows-per-page="14" admin-mode="adminMode">
-                    </wazuh-table>
-                  </div>
-                </md-card-contents>
-              </md-card>
+                  </md-card-actions>
+                  <md-card-contents>
+                    <md-chips
+                      ng-if="!rulesetFiles"
+                      class="wz-chips wz-margin-left-10"
+                      readonly="true"
+                      ng-show="appliedFilters.length">
+                      <md-chip class="wz-chip" ng-show="includesFilter('file')">
+                        <span
+                          >File: {{getFilter('file')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('file')"></i>
+                        </span>
+                      </md-chip>
+                      <md-chip class="wz-chip" ng-show="includesFilter('path')">
+                        <span
+                          >Path: {{getFilter('path')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('path')"></i>
+                        </span>
+                      </md-chip>
+                      <md-chip
+                        class="wz-chip"
+                        ng-show="includesFilter('level')">
+                        <span
+                          >Level: {{getFilter('level')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('level')"></i>
+                        </span>
+                      </md-chip>
+                      <md-chip
+                        class="wz-chip"
+                        ng-show="includesFilter('group')">
+                        <span
+                          >Group: {{getFilter('group')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('group')"></i>
+                        </span>
+                      </md-chip>
+                      <md-chip class="wz-chip" ng-show="includesFilter('pci')">
+                        <span
+                          >PCI control: {{getFilter('pci')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('pci')"></i>
+                        </span>
+                      </md-chip>
+                      <md-chip
+                        class="wz-chip"
+                        ng-show="includesFilter('hipaa')">
+                        <span
+                          >HIPAA: {{getFilter('hipaa')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('hipaa')"></i>
+                        </span>
+                      </md-chip>
+                      <md-chip
+                        class="wz-chip"
+                        ng-show="includesFilter('nist-800-53')">
+                        <span
+                          >NIST 800-53: {{getFilter('nist-800-53')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('nist-800-53')"></i>
+                        </span>
+                      </md-chip>
+                      <md-chip class="wz-chip" ng-show="includesFilter('gdpr')">
+                        <span
+                          >GDPR: {{getFilter('gdpr')}}
+                          <i
+                            class="fa fa-fw fa-times cursor-pointer"
+                            aria-hidden="true"
+                            ng-click="removeFilter('gdpr')"></i>
+                        </span>
+                      </md-chip>
+                    </md-chips>
+                    <div layout="row" layout-padding>
+                      <wazuh-table
+                        custom-columns="true"
+                        implicit-filter="appliedFilters"
+                        flex
+                        path="'/lists/files'"
+                        keys="['filename', 'relative_dirname']"
+                        allow-click="true"
+                        rows-per-page="14">
+                      </wazuh-table>
+                    </div>
+                  </md-card-contents>
+                </md-card>
               </div>
             </div>
-            
-              <!-- XML editor for add new rule file-->
-              <div ng-if="addingNewFile">
-                <!-- Table with CDB List info -->
-                <div layout="column" layout-align="start" ng-if="currentList">
-                  <div layout="row" style="width:calc(100% - 32px); margin-right:auto; margin-left:auto;">
-                    <!-- Save and cancel buttons -->
-                    <div>
-                      <span>
-                        <button class="btn wz-button-cancel" ng-click="cancelCdbListEdition()">
-                          Cancel
-                        </button>
-                        <button class="btn wz-button-empty pull-right wz-margin-left-10" ng-click="saveList()"
-                          ng-disabled="saveIncomplete || items.length === 0 || !items || overwrite || !currentList.details.file"
-                          ng-if="adminMode">
-                          <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                            aria-hidden='true'></i>
-                          Save
-                        </button>
-                      </span>
-                    </div>
-                    <!-- End save and cancel buttons-->
-                    <input placeholder="New CDB list file name..." type="text" flex
-                      class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10"
-                      aria-invalid="false" ng-model="currentList.details.file" ng-change="enableSave()">
-                    <!-- End restart button -->
+
+            <!-- XML editor for add new rule file-->
+            <div ng-if="addingNewFile">
+              <!-- Table with CDB List info -->
+              <div layout="column" layout-align="start" ng-if="currentList">
+                <div
+                  layout="row"
+                  style="
+                    width: calc(100% - 32px);
+                    margin-right: auto;
+                    margin-left: auto;
+                  ">
+                  <!-- Save and cancel buttons -->
+                  <div>
+                    <span>
+                      <button
+                        class="btn wz-button-cancel"
+                        ng-click="cancelCdbListEdition()">
+                        Cancel
+                      </button>
+                      <button
+                        class="btn wz-button-empty pull-right wz-margin-left-10"
+                        ng-click="saveList()"
+                        ng-disabled="saveIncomplete || items.length === 0 || !items || overwrite || !currentList.details.file"
+                        ng-if="canUpdateLists">
+                        <i
+                          ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                          aria-hidden="true"></i>
+                        Save
+                      </button>
+                    </span>
                   </div>
-            
-                  <div layout="row" class="wz-padding-left-8 wz-padding-right-8" layout-align="start stretch" ng-if="currentList">
-                    <md-card flex class="wz-md-card">
-                      <md-card-content>
-                        <table
-                          class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">
-                          <thead class="wz-text-bold">
-                            <th class="wz-text-left">Key</th>
-                            <th class="wz-text-left">Value</th>
-                            <th class="wz-text-left">Actions</th>
-                          </thead>
-                          <tbody>
-                            <!-- Add new key tr -->
-                            <tr class="wz-word-wrap" ng-show="!editingKey && !removingEntry">
-                              <td class="td-align-middle">
-                                <input placeholder="New key" type="text" class="wz-height-35 wz-input-text"
-                                  style="margin-bottom: 0 !important;" ng-model="newKey">
-                              </td>
-                              <td class="td-align-middle">
-                                <input placeholder="New value" type="text" class="wz-height-35 wz-input-text"
-                                  style="margin-bottom: 0 !important;" ng-model="newValue">
-                              </td>
-                              <td class="td-align-middle">
-                                <button class="btn btn-as-i" ng-disabled="!newKey"
-                                  ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
-                                  <wz-svg icon="plus" color="#396e3e"></wz-svg>
-                                  <md-tooltip md-direction="bottom" class="wz-tooltip">
-                                    Add new entry
-                                  </md-tooltip>
-                                </button>
-                              </td>
-                            </tr>
-                            <!-- End add new key tr -->
-                            <tr class="wz-word-wrap" ng-repeat="item in pagedItems[currentPage] track by $index"
-                              ng-style="editingKey === item[0] && {'background': '#e2f7ff'}">
-                              <td>{{item[0]}}</td>
-                              <td>
-                                <div ng-show="editingKey === item[0]">
-                                  <input type="text" class="wz-input-text" ng-model="editingNewValue">
-                                </div>
-                                <div ng-show="!editingKey || editingKey !== item[0]">
-                                  <span>{{item[1]}}</span>
-                                </div>
-                              </td>
-                              <td class="action-btn-td wz-width-350">
-                                <div ng-hide="!adminMode">
-                                  <wz-svg ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
-                                    ng-click="setEditingKey(item[0], item[1])" icon="pencil">
-                                  </wz-svg>
-                                  <span ng-show="editingKey === item[0]" class="fa fa-fw fa-times cursor-pointer"
-                                    ng-click="cancelEditingKey()">
-                                    <md-tooltip md-direction="bottom" class="wz-tooltip">
-                                      Cancel
-                                    </md-tooltip>
-                                  </span>
-                                  <span ng-show="editingKey === item[0] && editingNewValue !== ''"
-                                    class="fa fa-fw fa-check cursor-pointer" ng-click="editKey(item[0], editingNewValue)">
-                                    <md-tooltip md-direction="bottom" class="wz-tooltip">
-                                      Apply
-                                    </md-tooltip>
-                                  </span>
-            
-                                  <wz-svg ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
-                                    ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()" icon="trash"
-                                    svg-tooltip="Remove this entry">
-                                  </wz-svg>
-            
-                                  <div ng-if="removingEntry === item[0]" class="confirmEmbedBubble">
-                                    <div layout="row">
-                                      <span class="font-size-12 wz-padding-left-8">This entry will be
-                                        removed</span>
-                                    </div>
-                                    <div layout="row">
-                                      <md-button class="cancelBtn" type="button" ng-click="cancelRemoveEntry()"><i
-                                          aria-hidden='true' class='fa fa-fw fa-close'></i> Cancel</md-button>
-                                      <md-button class="agreeBtn" type="button" ng-click="confirmRemoveEntry(item[0])"><i
-                                          aria-hidden='true' class='fa fa-fw fa-check'></i> Confirm</md-button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <td colspan="3">
-                              <span ng-show="!wazuhTableLoading" class="color-grey">{{ totalItems }} items</span>
-                              <div ng-show="items.length > itemsPerPage" class="pagination pull-right" style="margin:0 !important">
-                                <ul layout="row">
-                                  <li ng-show="currentPage" class="md-padding">
-                                    <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
-                                  </li>
-            
-                                  <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
-                                    ng-class="{'wz-text-active': n == currentPage}" ng-click="setPage(n)" class="md-padding">
-                                    <a href ng-bind="n + 1">1</a>
-                                  </li>
-            
-                                  <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-                                    <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-                                  </li>
-                                </ul>
+                  <!-- End save and cancel buttons-->
+                  <input
+                    placeholder="New CDB list file name..."
+                    type="text"
+                    flex
+                    class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid wz-margin-left-10"
+                    aria-invalid="false"
+                    ng-model="currentList.details.file"
+                    ng-change="enableSave()" />
+                  <!-- End restart button -->
+                </div>
+
+                <div
+                  layout="row"
+                  class="wz-padding-left-8 wz-padding-right-8"
+                  layout-align="start stretch"
+                  ng-if="currentList">
+                  <md-card flex class="wz-md-card">
+                    <md-card-content>
+                      <table
+                        class="table table-striped table-condensed table-layout-fixed table-hover table-vertical-align-middle">
+                        <thead class="wz-text-bold">
+                          <th class="wz-text-left">Key</th>
+                          <th class="wz-text-left">Value</th>
+                          <th class="wz-text-left">Actions</th>
+                        </thead>
+                        <tbody>
+                          <!-- Add new key tr -->
+                          <tr
+                            class="wz-word-wrap"
+                            ng-show="!editingKey && !removingEntry">
+                            <td class="td-align-middle">
+                              <input
+                                placeholder="New key"
+                                type="text"
+                                class="wz-height-35 wz-input-text"
+                                style="margin-bottom: 0 !important"
+                                ng-model="newKey" />
+                            </td>
+                            <td class="td-align-middle">
+                              <input
+                                placeholder="New value"
+                                type="text"
+                                class="wz-height-35 wz-input-text"
+                                style="margin-bottom: 0 !important"
+                                ng-model="newValue" />
+                            </td>
+                            <td class="td-align-middle">
+                              <button
+                                class="btn btn-as-i"
+                                ng-disabled="!newKey"
+                                ng-click="addEntry(newKey, newValue); newKey=''; newValue=''">
+                                <wz-svg icon="plus" color="#396e3e"></wz-svg>
+                                <md-tooltip
+                                  md-direction="bottom"
+                                  class="wz-tooltip">
+                                  Add new entry
+                                </md-tooltip>
+                              </button>
+                            </td>
+                          </tr>
+                          <!-- End add new key tr -->
+                          <tr
+                            class="wz-word-wrap"
+                            ng-repeat="item in pagedItems[currentPage] track by $index"
+                            ng-style="editingKey === item[0] && {'background': '#e2f7ff'}">
+                            <td>{{item[0]}}</td>
+                            <td>
+                              <div ng-show="editingKey === item[0]">
+                                <input
+                                  type="text"
+                                  class="wz-input-text"
+                                  ng-model="editingNewValue" />
+                              </div>
+                              <div
+                                ng-show="!editingKey || editingKey !== item[0]">
+                                <span>{{item[1]}}</span>
                               </div>
                             </td>
-                          </tfoot>
-                        </table>
-                      </md-card-content>
-                    </md-card>
-                  </div>
-                  <div layout="column" layout-align="start"></div>
+                            <td class="action-btn-td wz-width-350">
+                              <wz-svg
+                                ng-show="(!editingKey || editingKey !== item[0]) && removingEntry !== item[0]"
+                                ng-click="setEditingKey(item[0], item[1])"
+                                icon="pencil">
+                              </wz-svg>
+                              <span
+                                ng-show="editingKey === item[0]"
+                                class="fa fa-fw fa-times cursor-pointer"
+                                ng-click="cancelEditingKey()">
+                                <md-tooltip
+                                  md-direction="bottom"
+                                  class="wz-tooltip">
+                                  Cancel
+                                </md-tooltip>
+                              </span>
+                              <span
+                                ng-show="editingKey === item[0] && editingNewValue !== ''"
+                                class="fa fa-fw fa-check cursor-pointer"
+                                ng-click="editKey(item[0], editingNewValue)">
+                                <md-tooltip
+                                  md-direction="bottom"
+                                  class="wz-tooltip">
+                                  Apply
+                                </md-tooltip>
+                              </span>
+
+                              <wz-svg
+                                ng-if="(!removingEntry || removingEntry !== item[0]) && editingKey !== item[0]"
+                                ng-click="showConfirmRemoveEntry($event, item[0]); $event.stopPropagation()"
+                                icon="trash"
+                                svg-tooltip="Remove this entry">
+                              </wz-svg>
+
+                              <div
+                                ng-if="removingEntry === item[0]"
+                                class="confirmEmbedBubble">
+                                <div layout="row">
+                                  <span class="font-size-12 wz-padding-left-8"
+                                    >This entry will be removed</span
+                                  >
+                                </div>
+                                <div layout="row">
+                                  <md-button
+                                    class="cancelBtn"
+                                    type="button"
+                                    ng-click="cancelRemoveEntry()"
+                                    ><i
+                                      aria-hidden="true"
+                                      class="fa fa-fw fa-close"></i>
+                                    Cancel</md-button
+                                  >
+                                  <md-button
+                                    class="agreeBtn"
+                                    type="button"
+                                    ng-click="confirmRemoveEntry(item[0])"
+                                    ><i
+                                      aria-hidden="true"
+                                      class="fa fa-fw fa-check"></i>
+                                    Confirm</md-button
+                                  >
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <td colspan="3">
+                            <span
+                              ng-show="!wazuhTableLoading"
+                              class="color-grey"
+                              >{{ totalItems }} items</span
+                            >
+                            <div
+                              ng-show="items.length > itemsPerPage"
+                              class="pagination pull-right"
+                              style="margin: 0 !important">
+                              <ul layout="row">
+                                <li ng-show="currentPage" class="md-padding">
+                                  <a href ng-click="prevPage()"
+                                    ><i
+                                      class="fa fa-angle-left"
+                                      aria-hidden="true"></i
+                                  ></a>
+                                </li>
+
+                                <li
+                                  ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+                                  ng-class="{'wz-text-active': n == currentPage}"
+                                  ng-click="setPage(n)"
+                                  class="md-padding">
+                                  <a href ng-bind="n + 1">1</a>
+                                </li>
+
+                                <li
+                                  ng-show="currentPage < pagedItems.length - 1"
+                                  class="md-padding">
+                                  <a href ng-click="nextPage()"
+                                    ><i
+                                      class="fa fa-angle-right"
+                                      aria-hidden="true"></i
+                                  ></a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tfoot>
+                      </table>
+                    </md-card-content>
+                  </md-card>
                 </div>
-                <!-- End CDB List table-->
+                <div layout="column" layout-align="start"></div>
               </div>
+              <!-- End CDB List table-->
+            </div>
+          </div>
         </div>
-  
       </div>
-    </div>
-    <!-- Log test side bar--- pending API 
+      <!-- Log test side bar--- pending API 
     <md-sidenav ng-show="showLogtest" ng-class="fullScreen ? 'logtest-fullscreen' : ''" class="md-sidenav-right" style="height: calc(100vh - 85px);border-left: 1px solid #D9D9D9 !important; width:30%;max-width: 30%;" md-is-locked-open="true">
         <wz-logtest full-screen="fullScreen" close-logtest="switchLogtest()"></wz-logtest>
     </md-sidenav>
-    -->
+    --></div>
   </div>
-</div>
+</wz-rbac-prompt>

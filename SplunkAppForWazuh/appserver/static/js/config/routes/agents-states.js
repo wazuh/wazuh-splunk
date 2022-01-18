@@ -1,10 +1,10 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
@@ -17,31 +17,35 @@ define(['../module'], function(module) {
             $navigationService.storeRoute('agents')
           },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agentData: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const agentsSummary = await $requestService.apiReq(
                     '/overview/agents'
                   )
                   return agentsSummary
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
             clusterInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const clusterData = await $requestService.apiReq(
                     '/cluster/status'
                   )
                   return clusterData.data.data;
                 } catch (err) {
-                  $state.go('settings.api');
+                  return false
                 }
               }
             ]
@@ -59,6 +63,12 @@ define(['../module'], function(module) {
           controller: 'agentsOverviewCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -75,24 +85,9 @@ define(['../module'], function(module) {
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
-                  const results = await Promise.all([
-                    $requestService.apiReq(`/agents?q=id=${id}`),
-                    $requestService.apiReq(`/syscheck/${id}/last_scan`),
-                    $requestService.apiReq(`/rootcheck/${id}/last_scan`)
-                  ])
-
+                  const results = $requestService.apiReq(`/agents?q=id=${id}`)
                   return results
                 } catch (err) {
-                  $state.go('agents')
-                }
-              }
-            ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                try {
-                  return await $currentDataService.isAdmin()
-                } catch (error) {
                   return false
                 }
               }
@@ -130,7 +125,13 @@ define(['../module'], function(module) {
           controller: 'inventoryCtrl',
           params: { id: null },
           resolve: {
-            syscollector: [
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
+            agent: [
               '$requestService',
               '$stateParams',
               '$currentDataService',
@@ -146,19 +147,11 @@ define(['../module'], function(module) {
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
                     $state.go('agents')
-                  const apiId = $currentDataService.getApi()
-                  const currentApi = apiId['_key']
-                  const results = await Promise.all([
-                    $requestService.httpReq(
-                      'GET',
-                      `/api/getSyscollector?apiId=${currentApi}&agentId=${id}`
-                    ),
-                    $requestService.apiReq(`/agents?q=id=${id}`)
-                  ])
-
-                  return results
+                  const result = await $requestService.apiReq(`/agents?q=id=${id}`)
+                  return result
                 } catch (err) {
-                  $state.go('agents')
+                  console.error(err)
+                  return {}
                 }
               }
             ],
@@ -182,6 +175,12 @@ define(['../module'], function(module) {
           controller: 'osqueryAgentCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             osquery: [
               '$requestService',
               '$currentDataService',
@@ -203,7 +202,7 @@ define(['../module'], function(module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -226,7 +225,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -260,6 +259,12 @@ define(['../module'], function(module) {
           controller: 'agentsGeneralCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -279,13 +284,11 @@ define(['../module'], function(module) {
                   const results = await Promise.all([
                     $requestService.apiReq(`/agents?q=id=${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
-                    $requestService.apiReq(`/rootcheck/${id}/last_scan`),
-                    $requestService.apiReq(`/syscollector/${id}/hardware`),
-                    $requestService.apiReq(`/syscollector/${id}/os`)
+                    $requestService.apiReq(`/rootcheck/${id}/last_scan`)
                   ])
                   return results
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -309,6 +312,12 @@ define(['../module'], function(module) {
           controller: 'agentsFimCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -328,7 +337,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -352,6 +361,12 @@ define(['../module'], function(module) {
           controller: 'agentsVirusTotalCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -371,7 +386,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -405,6 +420,12 @@ define(['../module'], function(module) {
           controller: 'agentsAuditCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -424,7 +445,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -458,6 +479,12 @@ define(['../module'], function(module) {
           controller: 'agentsOpenScapCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -477,7 +504,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -532,7 +559,7 @@ define(['../module'], function(module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -555,7 +582,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -579,6 +606,12 @@ define(['../module'], function(module) {
           controller: 'agentsGdprCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -598,14 +631,14 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
             gdprTabs: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const gdprTabs = []
                   const data = await $requestService.httpReq(
@@ -618,7 +651,7 @@ define(['../module'], function(module) {
                   }
                   return gdprTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -671,6 +704,12 @@ define(['../module'], function(module) {
           controller: 'agentsHipaaCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -690,14 +729,14 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
             hipaaTabs: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const hipaaTabs = []
                   const data = await $requestService.httpReq(
@@ -710,7 +749,7 @@ define(['../module'], function(module) {
                   }
                   return hipaaTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -763,6 +802,12 @@ define(['../module'], function(module) {
           controller: 'agentsNistCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -782,14 +827,14 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
             nistTabs: [
               '$requestService',
               '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const nistTabs = []
                   const data = await $requestService.httpReq(
@@ -802,7 +847,7 @@ define(['../module'], function(module) {
                   }
                   return nistTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -855,6 +900,12 @@ define(['../module'], function(module) {
           controller: 'agentsPolicyMonitoringCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -874,7 +925,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -908,6 +959,12 @@ define(['../module'], function(module) {
           controller: 'agentsConfigurationAssessmentsCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -927,7 +984,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -950,7 +1007,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/sca/${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -984,6 +1041,12 @@ define(['../module'], function(module) {
           controller: 'agentsPciCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1003,14 +1066,13 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
             pciTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const pciTabs = []
                   const data = await $requestService.httpReq(
@@ -1023,7 +1085,7 @@ define(['../module'], function(module) {
                   }
                   return pciTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -1077,16 +1139,20 @@ define(['../module'], function(module) {
           controller: 'agentsCiscatCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
               '$currentDataService',
-              '$state',
               async (
                 $requestService,
                 $stateParams,
                 $currentDataService,
-                $state
               ) => {
                 try {
                   const id =
@@ -1096,7 +1162,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -1130,6 +1196,12 @@ define(['../module'], function(module) {
           controller: 'agentsVulnerabilitiesCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1149,7 +1221,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -1182,6 +1254,12 @@ define(['../module'], function(module) {
           controller: 'agentsCveCtrl',
           params: { id: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1201,7 +1279,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -1224,7 +1302,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/vulnerability/${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],
@@ -1256,6 +1334,12 @@ define(['../module'], function(module) {
           },
           controller: 'agentsDockerCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agent: [
               '$requestService',
               '$stateParams',
@@ -1275,7 +1359,7 @@ define(['../module'], function(module) {
                   const result = await $requestService.apiReq(`/agents?q=id=${id}`)
                   return result
                 } catch (err) {
-                  $state.go('agents')
+                  return false
                 }
               }
             ],

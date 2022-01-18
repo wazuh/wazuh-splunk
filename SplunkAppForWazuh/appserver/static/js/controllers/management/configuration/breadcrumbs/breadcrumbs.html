@@ -22,7 +22,7 @@
         </div>
         <span flex class="flex"></span>
         <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
-          ng-change="changeNode(selectedNode.name)" ng-if="isAdmin && clusterEnabled"
+          ng-change="changeNode(selectedNode.name)" ng-if="clusterEnabled"
           class="input input-dropdown conf-node-selector wz-button-empty"></select>
       </div>
       <!-- End breadcrumbs -->

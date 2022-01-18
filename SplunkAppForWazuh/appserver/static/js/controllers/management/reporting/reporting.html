@@ -77,7 +77,7 @@
                       Download report
                     </md-tooltip>
                   </a>
-                  <a flex class="wz-text-right cursor-pointer" ng-click="deleteReport(item.name)">
+                  <a ng-if="isWazuhAdmin" flex class="wz-text-right cursor-pointer" ng-click="deleteReport(item.name)">
                     <wz-svg icon="trash"></wz-svg>
                     <md-tooltip md-direction="bottom" class="wz-tooltip">
                       Delete report
