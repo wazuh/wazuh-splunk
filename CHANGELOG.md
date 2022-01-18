@@ -2,14 +2,29 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v4.3.0 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4207
+## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4207
 
 ### Added
+#### Run_As
+- Added a run_as checkbox to the API configuration [#1149](https://github.com/wazuh/wazuh-splunk/issues/1149)
 - Added the ability to use the Authorization Context login method. [#1174](https://github.com/wazuh/wazuh-splunk/pull/1174)
+#### Stategy to map Splunk users with Wazuh users
+- Implemented a service to fetch Wazuh's users and its roles. [#1155](https://github.com/wazuh/wazuh-splunk/issues/1155)
+- Implemented a server to fetch Splunk's users and its roles. [#1156](https://github.com/wazuh/wazuh-splunk/issues/1156)
+#### Services to implement permissions validation on the resources
+- Created a permissions validation service. [#1147](https://github.com/wazuh/wazuh-splunk/issues/1147)
+- Implemented the access control on the App's views. [1164](https://github.com/wazuh/wazuh-splunk/issues/1164)
+#### Management (users, policies, role mapping...)
+- Added a Security Section to manage security related configurations [#1148](https://github.com/wazuh/wazuh-splunk/issues/1148)
 - Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
 - Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
 - Added Crud Role Mapping on security section. [#1169](https://github.com/wazuh/wazuh-splunk/pull/1169)
 - Added Crud Users on security section. [#1173](https://github.com/wazuh/wazuh-splunk/pull/1173)
+## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
+
+### Added
+
+- Support for Wazuh 4.2.5
 
 ## Wazuh v4.2.4 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4205
 
