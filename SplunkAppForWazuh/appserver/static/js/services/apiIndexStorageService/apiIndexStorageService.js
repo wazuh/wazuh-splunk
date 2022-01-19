@@ -70,6 +70,45 @@ define(['../module'], function(app) {
         return Promise.reject(err)
       }
     }
+
+    getExtensionKey(apiId) {
+      try 
+      {
+        if (this.sessionStorage.getItem('extensions')){
+          const parsedExtensions = JSON.parse(this.sessionStorage.getItem('extensions'))
+          if (parsedExtensions[apiId]){
+            return parsedExtensions[apiId]
+          }
+        }
+        throw 'Key not found'
+      } catch (e) {
+        throw e
+      }
+    }
+    setExtensionKey(apiId, extensionKey){
+      try {
+        const prevExtensions = JSON.parse(this.sessionStorage.getItem('extensions')) || {};
+        this.sessionStorage.setItem('extensions', JSON.stringify({...prevExtensions, [apiId]:extensionKey}))
+        return true
+      } catch (e) {
+        throw e
+      }
+
+    }
+    removeExtensionKey(apiId){
+      try
+      {
+          if(this.sessionStorage.getItem('extensions')){
+          const parsedExtensions = JSON.parse(this.sessionStorage.getItem('extensions'))
+          if (apiId in parsedExtensions){
+            delete parsedExtensions[apiId];
+          }
+          this.sessionStorage.setItem('extensions', JSON.stringify({...parsedExtensions}))
+        }
+      } catch (e) {
+        throw e
+      }
+    }
   }
   app.service('$apiIndexStorageService', ApiIndexStorageService)
 })

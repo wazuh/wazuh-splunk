@@ -18,30 +18,31 @@ import splunk
 from splunk import entity, rest
 
 class database():
-    def __init__(self):
+    def __init__(self, entityName):
         self.logger = log()
         self.session = requestsbak.Session()
         self.session.trust_env = False
         self.kvstoreUri = entity.buildEndpoint(
             entityClass=["storage", "collections", "data"],
-            entityName="credentials",
+            entityName=entityName,
             owner="nobody",
             namespace="SplunkAppForWazuh",
             hostPath=rest.makeSplunkdUri().strip("/")
         )
+        self.entityName = entityName
         self.sessionKey = splunk.getSessionKey()
 
     def insert(self, obj):
-        """Insert a new API.
+        """Insert a entry.
 
         Parameters
         ----------
         obj : dict
-            The new API
+            The entry
 
         """
         try:
-            self.logger.debug("bin.db: Inserting API.")
+            self.logger.debug("bin.db: Inserting database entry in %s." % self.entityName)
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             result = self.session.post(kvstoreUri, data=obj, headers={"Authorization": "Splunk %s" % splunk.getSessionKey(), "Content-Type": "application/json"}, verify=False).json()
             if not '_key' in result:
@@ -53,16 +54,16 @@ class database():
             raise e
 
     def update(self, obj):
-        """Update an already inserted API.
+        """Update an already inserted entry.
 
         Parameters
         ----------
         obj : dict
-            The API to edit.
+            The entry to edit.
 
         """
         try:
-            self.logger.debug("bin.db: Updating API.")
+            self.logger.debug("bin.db: Updating entry in %s." % self.entityName)
             if not '_key' in obj:
                 raise Exception('Missing Key')
             id = obj['_key']
@@ -77,16 +78,16 @@ class database():
             raise e
 
     def remove(self, _key):
-        """Remove an API.
+        """Remove an entry.
 
         Parameters
         ----------
         obj : dict
-            The API to be removed.
+            The entry to be removed.
 
         """
         try:
-            self.logger.debug("bin.db: Removing API.")
+            self.logger.debug("bin.db: Removing entry in %s." % self.entityName)
             if not _key:
                 raise Exception('Missing ID in remove DB module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
@@ -99,23 +100,23 @@ class database():
                 raise Exception(text)
             return parsed_result
         except Exception as e:
-            self.logger.error("Error removing an API in DB module: %s" % (e))
+            self.logger.error("Error removing an entry in DB module: %s" % (e))
             raise e
 
     def all(self, session_key=False):
         try:
-            self.logger.debug("bin.db: Getting all APIs .")
+            self.logger.debug("bin.db: Getting all entries in %s ." % self.entityName)
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(kvstoreUri, headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
             return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error('Error returning all API rows in DB module: %s ' % (e))
+            self.logger.error('Error returning all entry rows in DB module: %s ' % (e))
             return jsonbak.dumps({"error": str(e)})
 
     def get(self, id, session_key=False):
         try:
-            self.logger.debug("bin.db: Getting an API.")
+            self.logger.debug("bin.db: Getting an entry from %s." % self.entityName)
             if not id:
                 raise Exception('Missing ID')
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
@@ -123,6 +124,6 @@ class database():
             result = self.session.get(kvstoreUri,headers={"Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
             parsed_result = jsonbak.dumps({'data': result})
         except Exception as e:
-            self.logger.error("Error getting an API in DB module : %s" % (e))
+            self.logger.error("Error getting an entry from DB module : %s" % (e))
             raise e
         return parsed_result
