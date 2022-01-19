@@ -10,6 +10,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 ### Changed
 
+- Wazuh rebranding [#1186](https://github.com/wazuh/wazuh-splunk/pull/1186)
+
 ### Fixed
 
 - Fixed agent's name overflow in the overview [#1137](https://github.com/wazuh/wazuh-splunk/pull/1137)

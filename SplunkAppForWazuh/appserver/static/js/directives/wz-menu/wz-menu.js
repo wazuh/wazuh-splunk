@@ -26,7 +26,7 @@ function(directives, Dropdown, DropdownViz, mvc) {
       ) {
         $scope.logoUrl =
           BASE_URL +
-          '/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'
+          "/static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_full.svg";
 
         $scope.select = item => {
           $scope.menuNavItem = item
