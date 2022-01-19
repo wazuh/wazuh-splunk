@@ -24,10 +24,15 @@ from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
+from splunk.clilib.control_exceptions import ParsingError
 from db import database
 from log import log
 from requestsbak.exceptions import ConnectionError
+import os
 
+splunk_home = os.path.normpath(os.environ["SPLUNK_HOME"])
+def getLocalConfPath(file):
+    return os.path.join(splunk_home, "etc", "apps", "SplunkAppForWazuh", "local", file + ".conf")
 def getSelfConfStanza(file, stanza):
     """Get the configuration from a stanza.
 
@@ -43,7 +48,34 @@ def getSelfConfStanza(file, stanza):
     except Exception as e:
         raise e
     return parsed_data
+def getConfStanzaById(file, id):
+    extConf = getLocalConfPath(file)
+    try:
+        stanzas = cli.readConfFile(extConf)
+        if id in stanzas:
+            return jsonbak.dumps(stanzas[id])
+        else:
+            raise ParsingError("No custom setting for id %s" % id)
+    except Exception as e:
+        raise e
+def putConfStanza(file,stanzaDict):
+    extConf = getLocalConfPath(file)
+    try:
+        cli.mergeConfFile(extConf,stanzaDict)
+    except Exception as e:
+        raise e
+    return { 'error': False }
 
+def rmConfStanza(file,stanza):
+    try:
+        conf = cli.readConfFile(getLocalConfPath(file))
+        response = stanza in conf
+        if response:
+            conf.pop(stanza)
+        cli.writeConfFile(getLocalConfPath(file),conf)
+        return response
+    except Exception as e:
+        raise e
 
 def diff_keys_dic_update_api(kwargs_dic):
     """Get the missing fields for the API entry.
@@ -109,7 +141,7 @@ class manager(controllers.BaseController):
             return jsonbak.dumps({'error': str(e)})
         return data_temp
 
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(must_login=False, methods=['GET', 'POST'])
     def extensions(self, **kwargs):
         """Obtain extension from file.
 
@@ -119,13 +151,55 @@ class manager(controllers.BaseController):
             The request's parameters
 
         """
-        try:
-            self.logger.debug("manager: Getting extensions.")
-            stanza = getSelfConfStanza("config", "extensions")
+        id = kwargs['id']
+        if id:
+            try:
+                self.logger.debug("manager: Getting extensions for %s" % (id))
+                stanza = getConfStanzaById("extensions", id)
+            except ParsingError as e:
+                stanza = getSelfConfStanza("config", "extensions")
+            except Exception as e:
+                return jsonbak.dumps({'error': str(e)})
             data_temp = stanza
+        else:
+            try:
+                self.logger.debug("manager: Getting extensions.")
+                stanza = getSelfConfStanza("config", "extensions")
+                data_temp = stanza
+            except Exception as e:
+                return jsonbak.dumps({'error': str(e)})
+        return data_temp
+    
+    @expose_page(must_login=False, methods=['POST'])
+    def remove_extensions(self, **kwargs):
+        try:
+            self.logger.debug("manager: Removing extensions.")
+            id = kwargs['id']
+            response = rmConfStanza("extensions",id)
+            return response
+        except Exception as e:
+            return {'error':str(e)}
+
+    @expose_page(must_login=False, methods=['POST'])
+    def save_extensions(self, **kwargs):
+        """Save extensions to file
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+        """
+        try:
+            self.logger.debug("manager: Saving extensions.")
+            id = kwargs['id']
+            extensions = kwargs['extensions']
+            response = {}
+            putConfStanza("extensions",{id: jsonbak.loads(extensions)})
+            response[id] = 'Success'
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
-        return data_temp
+        return jsonbak.dumps(response)
+
 
     @expose_page(must_login=False, methods=['GET'])
     def admin_extensions(self, **kwargs):
@@ -453,7 +527,6 @@ class manager(controllers.BaseController):
             verify = False
             auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
             wazuh_token = self.wztoken.get_auth_token(url,auth)
-
             wazuh_version = self.session.get(
                 url + '/', headers={'Authorization': f'Bearer {wazuh_token}'}, timeout=20, verify=verify).json()
             
