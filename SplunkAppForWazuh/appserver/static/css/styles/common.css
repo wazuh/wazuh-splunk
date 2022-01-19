@@ -840,18 +840,18 @@ kbn-vis .vis-container {
 
 
 @supports not (-moz-appearance:none) {
-  @media (min-width: 1060px) {      
-      .wz-logo{        
-          content: url("../images/wazuh/png/wazuh_white_full.png");
-      } 
+  @media (min-width: 1060px) {
+      .wz-logo{
+          content: url("../images/wazuh/svg/wazuh_white_full.svg");
+      }
       .wz-logo-container {
           width: 150px;
           max-width: 150px;
       }
   }
-  @media (max-width: 1059px) {    
-      .wz-logo{         
-         content: url("../images/wazuh/png/wazuh_white_iso.png");
+  @media (max-width: 1059px) {
+      .wz-logo{
+         content: url("../images/wazuh/svg/wazuh_white_iso.svg");
          max-height: 45px;
          max-width: 28px;
      } 
@@ -864,28 +864,28 @@ kbn-vis .vis-container {
 }
 
 @supports (-moz-appearance:none) {
-  @media (min-width: 1060px) {      
-      .wz-logo::after{        
-        content: url("../images/wazuh/png/wazuh_white_full.png");
+  @media (min-width: 1060px) {
+      .wz-logo::after{
+        content: url("../images/wazuh/svg/wazuh_white_full.svg");
         display: flex;
       } 
       .wz-logo-container {
           width: 185px;
-          content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png");
+          content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_full.svg");
 
           max-width: 185px;
       }
   }
-  @media (max-width: 1059px) {    
-      .wz-logo{         
-          content: url("../images/wazuh/png/wazuh_white_iso.png") ;
+  @media (max-width: 1059px) {
+      .wz-logo{
+          content: url("../images/wazuh/svg/wazuh_white_iso.svg") ;
           display: flex;
           max-height: 45px;
           max-width: 28px;
       } 
       .wz-logo-container {
               min-width: 20px;
-              content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_iso.png");
+              content: url("/../static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_iso.svg");
 
               max-width: 30px;
               margin-right: 5px;
@@ -2088,7 +2088,6 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 .agent-name-title {
   text-align: center;
   font-weight: bold;
-  width: 400px;
   font-size: 16px!important;
   text-transform: uppercase;
   background: white;
@@ -2098,11 +2097,28 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
   height: 25px;
   line-height: 1.5;
   margin-bottom: -22px;
+  padding-left: 15px;
+  padding-right: 15px;
+  min-width: 400px;
+}
+
+.wz-agent-name-long {
+  max-width: 500px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.wz-agent-name-position {
+  position: relative !important; 
+  bottom: -6px;
 }
 
 .wz-float-agent {
   float: left;
   width: calc(100% - 8px);
+  display: flex;
 }
 
 .wz-text-align-center { 

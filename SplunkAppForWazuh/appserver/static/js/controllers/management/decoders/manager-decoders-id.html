@@ -184,7 +184,7 @@
         <span ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</span>
         <div ng-show="!readOnly">
           <button ng-if="adminMode && fetchedXML" ng-disabled='xmlHasErrors || saveIncomplete'
-            ng-click='saveDecoderConfig(currentDecoder.file)' class='btn wz-button-empty pull-right wz-margin-left-10'>
+            ng-click='saveDecoderConfig(currentDecoder.filename)' class='btn wz-button-empty pull-right wz-margin-left-10'>
             <span ng-show='!xmlHasErrors && adminMode'>
               <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                 aria-hidden='true'></i>
@@ -198,7 +198,7 @@
       </div>
       <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
         <wz-xml-file-editor style="height: inherit;" file-name='decoder' data="fetchedXML"
-          target-name="currentDecoder.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
+          target-name="currentDecoder.filename" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
         </wz-xml-file-editor>
       </div>
       <div class="wzXmlEditorDivContent wz-margin-left-10" ng-show="XMLContent && readOnly">

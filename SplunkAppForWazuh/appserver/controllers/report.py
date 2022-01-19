@@ -36,8 +36,8 @@ class PDF(FPDF):
         # Logo
         self.image('/opt/splunk/etc/apps/SplunkAppForWazuh/appserver/static/css/images/wazuh/png/logo.png', 10, 10, 65, 0)
         self.set_font('RobotoLight', '', 11)
-        self.set_text_color(75, 179, 204)
-        #Contact info
+        self.set_text_color(37, 107, 209)
+        # Contact info
         self.set_y(12)
         self.cell(150) #Move to the right
         self.cell(0, 5, 'info@wazuh.com', 0, 0, 'R')
@@ -51,7 +51,7 @@ class PDF(FPDF):
         self.year = datetime.datetime.now().strftime('%Y')
         self.copyright = 'Copyright © ' + str(self.year) + ' Wazuh, Inc.'
         self.set_y(-15)
-        self.set_text_color(75, 179, 204)
+        self.set_text_color(37, 107, 209)
         self.set_font('RobotoLight', '', 7)
         # Page number
         self.cell(100, 10, self.copyright, 0, 0, 'L')
@@ -193,8 +193,8 @@ class report(controllers.BaseController):
 
     def setBlueHeaderStyle(self,pdf):
         pdf.set_font('RobotoLight', '', 8)
-        pdf.set_fill_color(120,200,222)
-        pdf.set_text_color(255,255,255)
+        pdf.set_fill_color(73, 156, 254)
+        pdf.set_text_color(255, 255, 255)
 
     def setTableRowStyle(self,pdf):
         pdf.set_text_color(55,55,55)
@@ -204,7 +204,7 @@ class report(controllers.BaseController):
     def setBlueTableTitle(self,pdf):
         pdf.set_font('RobotoLight', '', 14)
         pdf.set_fill_color(255, 255, 255)
-        pdf.set_text_color(120,200,222)
+        pdf.set_text_color(73, 156, 254)
 
     def addKeyValueTable(self,keyList,valueList,pdf):
         """ Creates tables with key - value aspect
@@ -473,7 +473,7 @@ class report(controllers.BaseController):
                                     rows.append(newRow)
                                 directoriesTable['Monitored directories'] = { "fields": fields, "rows": rows}
                                 self.addTables(directoriesTable,pdf,185,10)
-                                pdf.set_text_color(75, 179, 204)
+                                pdf.set_text_color(37, 107, 209)
                                 pdf.cell(0, 5, txt = "Rt: Real Time | Wd: Who-Data | Per: Permission | Mt: Modification Time | Sl: Symbolic link | Rl: Recursion Level ", border = '',ln=1, align = '', fill = False, link = '')
                                 pdf.ln(5)
                             elif value and type(value[0]) is dict:
@@ -695,8 +695,8 @@ class report(controllers.BaseController):
             pdf.alias_nb_pages()
             pdf.add_page()
             pdf.ln(20)
-            #Color WazuhBlue
-            pdf.set_text_color(75, 179, 204)
+            # Color WazuhBlue
+            pdf.set_text_color(37, 107, 209)
             # Title pdf
             pdf.set_font('RobotoLight', '', 25)
             pdf.cell(0,0, section_title , 0, 0, 'L')
@@ -731,7 +731,7 @@ class report(controllers.BaseController):
                                 pdf.ln(20)
                         pdf.set_margins(10, 0, 10)
                         pdf.ln(1)
-                        pdf.set_text_color(120,200,222)
+                        pdf.set_text_color(37, 107, 209)
                         pdf.set_font('RobotoLight', '', 24)
                         pdf.cell(0, 10, txt = n['title'], border = '', ln = 1, align = '', fill = False, link = '')
                         pdf.ln(6)
@@ -927,8 +927,8 @@ class report(controllers.BaseController):
             pdf.alias_nb_pages()
             pdf.add_page()
             pdf.ln(20)
-            #Color WazuhBlue
-            pdf.set_text_color(75, 179, 204)
+            # Color WazuhBlue
+            pdf.set_text_color(37, 107, 209)
             # Title RobotoLight Bold 20
             pdf.set_font('RobotoLight', '', 25)
             pdf.cell(0,0, section_title + ' report' , 0, 0, 'L')
@@ -984,7 +984,7 @@ class report(controllers.BaseController):
                 count = 0
                 n_images = len(saved_images)
                 # Set top margin checking if metrics exist
-                pdf.set_text_color(75, 179, 204)
+                pdf.set_text_color(37, 107, 209)
                 pdf.set_font('RobotoLight', '', 14)
                 pdf.ln(10)
                 #Sort images by width size

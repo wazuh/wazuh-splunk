@@ -41,7 +41,7 @@ class api(controllers.BaseController):
             self.wztoken = wazuhtoken()
             self.config =  self.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
-            self.db = database()
+            self.db = database("credentials")
             controllers.BaseController.__init__(self)
             self.session = requestsbak.Session()
             self.session.trust_env = False
