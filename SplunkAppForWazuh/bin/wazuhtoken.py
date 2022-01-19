@@ -38,15 +38,27 @@ class wazuhtoken():
         
     def get_auth_token(self, url, auth):
         try:
-            if self.cache.get('token') is None :
+            token_key = 'token-' + url + '-' + str(auth)
+            if self.cache.get(token_key) is None :
                 verify = False
-                wazuh_token = self.session.get(
-                url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify).json()
-                token = wazuh_token['data']['token']
-                self.cache.set('token', token, 900)
+                wazuh_token_response = self.session.get(
+                url + '/security/user/authenticate?raw=false', auth=auth, timeout=20, verify=verify)
+                if wazuh_token_response.status_code == 200:
+                    wazuh_token = wazuh_token_response.json()
+                    token = wazuh_token['data']['token']
+                elif wazuh_token_response.status_code >= 400 and wazuh_token_response.status_code <= 499:
+                    wazuh_token = wazuh_token_response.json()
+                    error = wazuh_token['title'] + ': ' + wazuh_token['detail']
+                    raise Exception(error)
+                else:
+                    error = "An error ocurred when authenticating with Wazuh API"
+                    raise Exception(error)
+                self.cache.set(token_key, token, 600)
+                self.logger.debug("api token KEY: %s" % (token_key))
                 return token
             else :
-                return self.cache.get('token')
+                self.logger.debug("cache token: %s" % (token_key))
+                return self.cache.get(token_key)
         except Exception as e:
             self.logger.error("wazuh-token: Error geting auth Wazuh token: %s" % (e))
             raise e

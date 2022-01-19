@@ -2631,3 +2631,53 @@ background-color: white;
 .wz-min-height-40 {
   min-height: 40px !important;
 }
+
+.wz-api-settings-loading {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 5;
+  background-color: #FFFC;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all linear 100ms;
+}
+
+.wz-api-settings-loading.ng-hide {
+  opacity: 0;
+}
+
+.wz-api-settings-loading .animate-ellipsis{
+  width: 89px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.animate-ellipsis:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 900ms infinite;      
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 20px;    
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 20px;    
+  }
+}
+
+/** Workaround to correct visualizations buttons tooltip placement **/
+body > div.tooltip {
+  display: inline-block !important;
+}
