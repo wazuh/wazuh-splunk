@@ -2,6 +2,18 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.3.0 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4301
+
+### Added
+
+- Support for Wazuh 4.3.0
+
+### Changed
+
+### Fixed
+
+- Fixed agent's name overflow in the overview [#1137](https://github.com/wazuh/wazuh-splunk/pull/1137)
+
 ## Wazuh v4.2.2 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4202
 
 ### Added 
@@ -31,7 +43,6 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed missing node name for agent overview [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
 - Fixed missing columns for some tables in reports [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
 - Fixed expand row feature in Agent File Integrity Monitoring [#1112](https://github.com/wazuh/wazuh-splunk/pull/1112)
-- Fixed agent's name overflow in the overview [#1137](https://github.com/wazuh/wazuh-splunk/pull/1137)
 
 ## Wazuh v4.2.1 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4202
 
