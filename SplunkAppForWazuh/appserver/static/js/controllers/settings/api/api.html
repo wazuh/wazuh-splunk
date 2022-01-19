@@ -1,4 +1,4 @@
-<div flex layout="column" layout-align="start stretch">
+<div class="wz-pos-rel" flex layout="column" layout-align="start stretch">
 
   <div layout="row" class="layout-row" ng-show='!edit && apiList.length < 1'>
     <md-card flex="" class="wz-md-card _md flex">
@@ -39,7 +39,11 @@
     <span>Use Wazuh API settings to connect the Splunk app to your Wazuh manager or cluster</span>
   </div>
   <!-- End headline -->
-
+  <div ng-show="loadingVizz" class="wz-api-settings-loading">
+    <div>
+      <div class="animate-ellipsis">please wait</div>
+    </div>
+  </div>
   <!-- API configuration card section -->
   <div layout="row" layout-align="start start">
     <md-card flex class="wz-md-card">
