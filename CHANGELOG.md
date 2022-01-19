@@ -11,6 +11,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Changed
 
 - Wazuh rebranding [#1186](https://github.com/wazuh/wazuh-splunk/pull/1186)
+- Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
 
 ### Fixed
 
