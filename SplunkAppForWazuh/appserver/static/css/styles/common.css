@@ -2088,7 +2088,6 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 .agent-name-title {
   text-align: center;
   font-weight: bold;
-  width: 400px;
   font-size: 16px!important;
   text-transform: uppercase;
   background: white;
@@ -2098,11 +2097,28 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
   height: 25px;
   line-height: 1.5;
   margin-bottom: -22px;
+  padding-left: 15px;
+  padding-right: 15px;
+  min-width: 400px;
+}
+
+.wz-agent-name-long {
+  max-width: 500px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.wz-agent-name-position {
+  position: relative !important; 
+  bottom: -6px;
 }
 
 .wz-float-agent {
   float: left;
   width: calc(100% - 8px);
+  display: flex;
 }
 
 .wz-text-align-center { 

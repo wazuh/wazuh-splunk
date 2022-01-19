@@ -128,7 +128,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
-        dir: 'rules',
+        dir: 'etc/rules',
         overwrite: true
       })
     }
