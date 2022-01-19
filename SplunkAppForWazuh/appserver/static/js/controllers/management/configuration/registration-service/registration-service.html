@@ -74,7 +74,7 @@
               value="currentConfig['auth-auth'].auth.limit_maxagents">
             </wz-config-item>
             <wz-config-item 
-              label="Force registration when using an existing IP address" 
+              label="Toggles forced insertion of an agent if there is a duplicate name or IP address. This will remove the old agent with same name or IP address" 
               value="currentConfig['auth-auth'].auth.force.enabled"
               ng-if="currentConfig['auth-auth'].auth.force">
             </wz-config-item>
@@ -84,7 +84,7 @@
               ng-if="currentConfig['auth-auth'].auth.force && currentConfig['auth-auth'].auth.force.after_registration_time != undefined">
             </wz-config-item>
             <wz-config-item 
-              label="Avoid re-registering agents that already have valid keys" 
+              label="Defines that the agent replacement occurs when the key held by the agent is different from the one registered by the manager" 
               value="currentConfig['auth-auth'].auth.force.key_mismatch"
               ng-if="currentConfig['auth-auth'].auth.force && currentConfig['auth-auth'].auth.force.key_mismatch != undefined">
             </wz-config-item>

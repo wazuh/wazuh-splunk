@@ -2,6 +2,18 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.3.0 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4301
+
+### Added
+
+- Support for Wazuh 4.3.0
+
+### Changed
+
+- Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
+
+### Fixed
+
 ## Wazuh v4.2.4 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4205
 
 ### Added
@@ -29,7 +41,6 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Changed 
 
 - Upgrades jQuery version from 2.1.0 to 3.5.0 [#1118](https://github.com/wazuh/wazuh-splunk/pull/1118)
-- Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
 
 ### Fixed
 
