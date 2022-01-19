@@ -2,6 +2,25 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+
+## Wazuh v4.3.0 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4301
+
+### Added
+
+- Support for Wazuh 4.3.0
+
+### Changed
+
+### Fixed
+
+- Fixed unnecessary table requests when resizing browser window [#1141](https://github.com/wazuh/wazuh-splunk/pull/1141)
+
+## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
+
+### Added
+
+- Support for Wazuh 4.2.5
+
 ## Wazuh v4.2.4 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4205
 
 ### Added
