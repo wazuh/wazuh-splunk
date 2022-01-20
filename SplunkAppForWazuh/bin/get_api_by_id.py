@@ -25,7 +25,7 @@ def get_api_by_id(id: int):
     Use case. Get API by ID from the Splunk's KV store
     """
     logger = log()
-    db = database()
+    db = database("credentials")
 
     try:
         logger.debug(f"get_api_by_id() called with ID {id}")

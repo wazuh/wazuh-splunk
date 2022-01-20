@@ -44,7 +44,7 @@ class api(controllers.BaseController):
             controllers.BaseController.__init__(self)
             self.logger = log()
             self.wz_api = Wazuh_API()
-            self.db = database()
+            self.db = database("credentials")
         except Exception as e:
             self.logger.error("api: Error in API module constructor: %s" % (e))
 

@@ -123,7 +123,8 @@ class database():
             self.logger.error("Error updating in DB module: %s" % (e))
             raise e
 
-    def remove(self, id: str) -> dict:
+    def remove(self, _key: str) -> dict:
+        # CHECK RBAC PR MERGE
         """
         Remove an API given its ID.
 

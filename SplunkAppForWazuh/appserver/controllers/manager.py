@@ -68,7 +68,8 @@ class manager(controllers.BaseController):
         self.logger = log()
         try:
             controllers.BaseController.__init__(self)
-            self.db = database()
+            self.db = database("credentials")
+            self.extensionsdb = database("extensions")
             self.wz_api = Wazuh_API()
         except Exception as e:
             self.logger.error(
@@ -310,7 +311,7 @@ class manager(controllers.BaseController):
                 # in the database. Remove it when these are no longer supported.
                 if not "alias" in api:
                     api["alias"] = api["url"]
-            result = jsonbak.dumps(parsed_apis)
+            return jsonbak.dumps(parsed_apis)
         except Exception as e:
             error = jsonbak.dumps(
                 {

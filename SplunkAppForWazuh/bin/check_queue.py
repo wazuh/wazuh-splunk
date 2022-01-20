@@ -34,7 +34,6 @@ class CheckQueue():
             self.now = time.time()  # Get the date in seconds
             self.auth_key = sys.stdin.readline().strip()
             self.q = JobsQueue()
-            self.db = database()
             self.wz_api = Wazuh_API()
             self.db = database("credentials")
         except Exception as e:
