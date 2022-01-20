@@ -36,6 +36,7 @@ class CheckQueue():
             self.q = JobsQueue()
             self.db = database()
             self.wz_api = Wazuh_API()
+            self.db = database("credentials")
         except Exception as e:
             self.logger.error(
                 "bin.check_queue: error in the constructor: %s" % (e))

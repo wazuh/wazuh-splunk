@@ -4,8 +4,12 @@
     <div class="wz-breadcrumb-margin">
       <a class="wz-text-link cursor-pointer" ui-sref="agents">Agents</a>
       <span> / </span>
-      <span ng-if="!agent.error" class="wz-text-link cursor-pointer">
-        {{agent.name}} ({{agent.id}})
+      <span 
+        ng-if="!agent.error" 
+        class="wz-text-link cursor-pointer wz-agent-name-long wz-agent-name-position"
+        title="{{agent.name}} ({{agent.id}})"
+        >
+          {{agent.name}} ({{agent.id}})
       </span>
       <span ng-if="agent.error">Unknown agent</span>
       <span ng-if="agent && agent.status">
@@ -81,7 +85,9 @@
     <!-- Agent info -->
     <div layout-padding class="wz-no-padding">
       <div class="wz-float-agent">
-        <div class="wz-lh-32 agent-name-title">{{ agent.name || '-' }}</div>
+        <div class="wz-lh-32 agent-name-title wz-agent-name-long" title="{{agent.name}}">
+          {{ agent.name || '-' }}
+        </div>
       </div>
       <div class="agent-details-box">
         <div

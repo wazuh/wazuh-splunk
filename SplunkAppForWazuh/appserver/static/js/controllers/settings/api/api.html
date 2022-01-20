@@ -77,13 +77,14 @@
       <md-card-content ng-if="apiList.length >= 1">
         <!-- API entries headings section -->
         <div layout="row" class="wz-text-align-center">
-          <p flex="15" class="wz-text-bold">Cluster</p>
+          <p flex="10" class="wz-text-bold">API alias</p>
+          <p flex="10" class="wz-text-bold">Cluster</p>
           <p flex="20" class="wz-text-bold">Manager</p>
-          <p flex="15" class="wz-text-bold">API URL</p>
+          <p flex="20" class="wz-text-bold">API URL</p>
           <p flex="10" class="wz-text-bold">API Port</p>
           <p flex="10" class="wz-text-bold">User</p>
-          <p flex="10" class="wz-text-bold">Run as</p>
-          <p flex="20" class="wz-text-bold">Actions</p>
+          <p flex="5" class="wz-text-bold">Run as</p>
+          <p flex="15" class="wz-text-bold">Actions</p>
         </div>
         <md-divider></md-divider>
         <!-- End API entries headings section -->
@@ -94,22 +95,25 @@
           <div
             layout="row" layout-align="space-between center"
             class="wz-padding-top-10 wz-text-align-center">
-            <p flex="15">
-              <i
-                ng-show="entry.selected"
-                class="fa fa-star wz-color-orange"
+            <p flex="10">
+              <i 
+                ng-show="entry.selected" 
+                class="fa fa-star wz-color-orange" 
                 aria-hidden="true">
               </i>
-              {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
+              {{entry.alias}}
               <md-tooltip md-direction="right" class="wz-tooltip">
                 This is the default Manager
               </md-tooltip>
             </p>
+            <p flex="10">
+              {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
+            </p>
             <p flex="20" class="wz-word-wrap">{{entry.managerName}}</p>
-            <p flex="15" class="wz-word-wrap">{{entry.url}}</p>
+            <p flex="20" class="wz-word-wrap">{{entry.url}}</p>
             <p flex="10" class="wz-word-wrap">{{entry.portapi}}</p>
             <p flex="10" class="wz-word-wrap">{{entry.userapi}}</p>
-            <p flex="10" class="wz-word-wrap">
+            <p flex="5" class="wz-word-wrap">
               <i
                 ng-class="getIconAndTooltip(entry).class"
                 aria-hidden="true">
@@ -121,7 +125,7 @@
                 </md-tooltip>
             </p>
             <!-- Actions -->
-            <p flex="20">
+            <p flex="15">
               <span
                 ng-click="selectManager(entry['_key'])"
                 class="cursor-pointer"
@@ -179,6 +183,17 @@
               class="margin-top-30">
               <!-- Input section -->
               <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">API alias</label>
+                <input
+                  class="wz-height-35 wz-input-text"
+                  ng-model="alias"
+                  type="text" 
+                  placeholder="A tag for the API"
+                  aria-label="alias"
+                  required
+                />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
                 <label class="api-label">Username</label>
                 <input
                   class="wz-height-35 wz-input-text"
@@ -226,7 +241,7 @@
                 class="wz-input-container wz-margin-left-7 wz-min-width-55">
                 <label class="api-label">Run as</label>
                 <md-checkbox
-                  class="wz-height-35 wz-width-55"
+                  class="wz-height-35 wz-min-width-55"
                   ng-model="runAs"
                   ng-checked="{{ runAs }}"
                   type="checkbox"
@@ -246,7 +261,7 @@
                   type="submit"
                   class="btn wz-button"
                   ng-if='edit'
-                  ng-click='updateEntry(user, pass, url, port, runAs)'
+                  ng-click='updateEntry(user, pass, url, port, alias, runAs)'
                   aria-label="Save API button" >
                   <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
                   Update
@@ -284,6 +299,16 @@
             style="padding-top: 20px; margin-bottom: auto;" >
             <!-- Input section -->
             <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label" >API alias</label>
+              <input 
+                class="wz-height-35 wz-input-text"
+                ng-model="alias"
+                type="text"
+                placeholder="A tag for the API"
+                aria-label="alias"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
               <label class="api-label" >Username</label>
               <input
                 class="wz-height-35 wz-input-text"
@@ -331,7 +356,7 @@
               class="wz-input-container wz-margin-left-7 wz-min-width-55" >
               <label class="api-label">Run as</label>
               <md-checkbox
-                class="wz-height-35 wz-width-55"
+                class="wz-height-35 wz-min-width-55"
                 ng-model="runAs"
                 type="checkbox"
                 placeholder=""
@@ -349,7 +374,7 @@
                 type="button"
                 class="btn wz-button"
                 ng-if='!edit'
-                ng-click='submitApiForm(user, pass, url, port, runAs)'
+                ng-click='submitApiForm(user, pass, url, port, alias, runAs)'
                 aria-label="Save API button" >
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
                 Save
@@ -381,7 +406,8 @@
             ng-click='addNewApiClick()'
             class="btn wz-button"
             aria-label="Add new API button" >
-            <wz-svg icon="plus"></wz-svg> Add new
+            <wz-svg icon="plus"></wz-svg>
+            Add new
           </button>
         </div>
         <!-- End add API button section -->
@@ -412,6 +438,16 @@
             layout-align="space-around stretch"
             class="wz-margin-20" >
             <!-- Input section -->
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">API alias</label>
+              <input 
+                class="wz-height-35 wz-input-text" 
+                ng-model="alias" 
+                type="text" 
+                placeholder="" 
+                aria-label="alias"
+                required />
+            </md-input-container>
             <md-input-container class="wz-input-container wz-margin-left-7">
               <label class="api-label" >Username</label>
               <input
@@ -460,7 +496,7 @@
               class="wz-input-container wz-margin-left-7 wz-min-width-55" >
               <label class="api-label">Run as</label>
               <md-checkbox
-                class="wz-height-35 wz-width-55"
+                class="wz-height-35 wz-min-width-55"
                 ng-model="runAs"
                 type="checkbox"
                 placeholder=""
@@ -479,7 +515,7 @@
                 type="button"
                 class="btn wz-button"
                 ng-if='!edit'
-                ng-click='submitApiForm(user, pass, url, port, runAs)'
+                ng-click='submitApiForm(user, pass, url, port, alias, runAs)'
                 aria-label="Save API button" >
                 <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
                 Save

@@ -25,7 +25,7 @@ from db import database
 from log import log
 from wazuhtoken import wazuhtoken
 
-db = database()
+db = database("credentials")
 logger = log()
 wztoken = wazuhtoken()
 

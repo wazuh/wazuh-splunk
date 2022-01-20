@@ -31,6 +31,12 @@ from splunk.clilib.control_exceptions import ParsingError
 from wazuh_api import Wazuh_API
 
 
+def getDefaultExtensions():
+    try:
+        stanza = utils.getSelfConfStanza("config", "extensions")
+        return stanza
+    except Exception as e:
+        return jsonbak.dumps({'error': str(e)})
 
 def diff_keys_dic_update_api(kwargs_dic):
     """
@@ -108,39 +114,44 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
-        id = kwargs['id']
-        if id:
-            try:
-                self.logger.debug("manager: Getting extensions for %s" % (id))
-                stanza = utils.getConfStanzaById("extensions", id)
-            except ParsingError as e:
-                stanza = utils.getSelfConfStanza("config", "extensions")
-            except Exception as e:
-                return jsonbak.dumps(
-                    {
-                        'error': str(e)
-                    }
-                )
-            data_temp = stanza
-        else:
-            try:
-                self.logger.debug("manager: Getting extensions.")
-                stanza = utils.getSelfConfStanza("config", "extensions")
-                data_temp = stanza
-            except Exception as e:
-                return jsonbak.dumps(
-                    {
-                        'error': str(e)
-                    }
-                )
-        return data_temp
 
+        try:
+            self.logger.debug('Fetching extensions with kwargs %s' % jsonbak.dumps(kwargs))
+            #If we are provided with a key for a db entry, it is retrieved
+            if '_key' in kwargs:
+                key = kwargs['_key']
+                self.logger.debug("manager: Getting extensions from db for %s" % (key))
+                stanza = jsonbak.dumps(jsonbak.loads(self.extensionsdb.get(key))['data'])
+            
+            #if no key is provided, we check whether there is a value in the db that matches the api
+            elif 'api' in kwargs:
+                stanzas = {}
+                api = kwargs['api']
+                self.logger.debug("manager: Getting extensions for %s" % (api))
+                stanzas = jsonbak.loads(self.extensionsdb.all())
+                filtered = [s for s in stanzas if s['api'] == api]
+                if filtered:
+                    data_temp = filtered[0]
+                    stanza = jsonbak.dumps(data_temp)
+                #if no value matches, we create an entry for that API and return the stanza
+                else:
+                    data_temp = jsonbak.loads(getDefaultExtensions())
+                    data_temp['api'] = api
+                    key = self.extensionsdb.insert(jsonbak.dumps(data_temp))
+                    stanza = jsonbak.dumps(jsonbak.loads(self.extensionsdb.get(key))['data'])
+            else:
+                stanza = getDefaultExtensions()
+            return stanza
+        except Exception as e:
+            return jsonbak.dumps({'error': str(e)})
+    
     @expose_page(must_login=False, methods=['POST'])
     def remove_extensions(self, **kwargs):
         try:
             self.logger.debug("manager: Removing extensions.")
-            id = kwargs['id']
-            response = utils.rmConfStanza("extensions", id)
+
+            key = kwargs['_key']
+            response = self.extensionsdb.remove(key)
             return response
         except Exception as e:
             return {'error': str(e)}
@@ -157,16 +168,9 @@ class manager(controllers.BaseController):
         """
         try:
             self.logger.debug("manager: Saving extensions.")
-            id = kwargs['id']
-            extensions = kwargs['extensions']
-            response = {}
-            utils.putConfStanza(
-                "extensions",
-                {
-                    id: jsonbak.loads(extensions)
-                }
-            )
-            response[id] = 'Success'
+
+            extensions = jsonbak.loads(kwargs['extensions'])
+            response = self.extensionsdb.update(extensions)
         except Exception as e:
             return jsonbak.dumps(
                 {
@@ -258,11 +262,20 @@ class manager(controllers.BaseController):
         # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Getting API info from _key.")
-            
-            api_id = utils.get_parameter(kwargs, 'apiId')
-            api = self.db.get(api_id)
-            
-            return jsonbak.dumps(api)
+            if 'apiId' not in kwargs:
+                return jsonbak.dumps({'error': 'Missing ID.'})
+            id = kwargs['apiId']
+
+            # TODO: This conditional statement is done to ensure 
+            # retrocompatibility with registered managers that do 
+            # not have an alias. Replace the following 4 lines with 
+            # data_temp=self.db.get(id) when these are no longer supported.
+            data_temp = jsonbak.loads(self.db.get(id))["data"]
+            if not "alias" in data_temp:
+                data_temp["alias"] = data_temp["url"]
+            data_temp = jsonbak.dumps({"data" : data_temp})
+
+            parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
             self.logger.error("manager::get_api(): %s" % (e))
             return jsonbak.dumps(
@@ -291,9 +304,13 @@ class manager(controllers.BaseController):
             # Remove the password from the list of apis
             for api in parsed_apis:
                 if "passapi" in api:
-                    del api['passapi']
-            
-            return jsonbak.dumps(parsed_apis)
+                    del api["passapi"]
+                # TODO: This conditional is put in place in order to support 
+                # previous installations that did not have the "alias" field 
+                # in the database. Remove it when these are no longer supported.
+                if not "alias" in api:
+                    api["alias"] = api["url"]
+            result = jsonbak.dumps(parsed_apis)
         except Exception as e:
             error = jsonbak.dumps(
                 {
@@ -318,8 +335,8 @@ class manager(controllers.BaseController):
             self.logger.debug("manager: Adding a new API.")
             record = kwargs
             self.logger.debug(record)
-            keys_list = ['url', 'portapi', 'userapi', 'passapi',
-                         'managerName', 'filterType', 'filterName', 'runAs']
+            keys_list = ['url', 'portapi', 'userapi', 'passapi', 'managerName',
+                         'filterType', 'filterName', 'alias', 'runAs']
             if set(record.keys()) == set(keys_list):
                 key = self.db.insert(jsonbak.dumps(record))
                 parsed_data = jsonbak.dumps(
@@ -387,19 +404,16 @@ class manager(controllers.BaseController):
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
-                api_id = utils.get_parameter(entry, '_key')
-                api = jsonbak.loads(self.db.get(api_id))['data']
-
-                entry['passapi'] = api['passapi']
-            keys_list = ['_key', 'url', 'portapi', 'userapi', 'passapi',
-                         'filterName', 'filterType', 'managerName', 'runAs']
+                opt_id = entry["_key"]
+                data_temp = self.db.get(opt_id)
+                current_api = jsonbak.loads(data_temp)
+                current_api = current_api["data"]
+                entry["passapi"] = current_api["passapi"]
+            keys_list = ['_key', 'url', 'portapi', 'userapi', 'passapi', 'filterName',
+                          'filterType', 'managerName', 'alias', 'runAs']
             if set(entry.keys()) == set(keys_list):
-                self.db.update(entry)
-                return jsonbak.dumps(
-                    {
-                        'data': 'success'
-                    }
-                )
+                result = self.db.update(entry)
+                # CHECK RBAC PR MERGE
             else:
                 missing_params = diff_keys_dic_update_api(entry)
                 raise Exception(
@@ -408,11 +422,8 @@ class manager(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "manager: Error in update_api endpoint: %s" % (e))
-            return jsonbak.dumps(
-                {
-                    'error': str(e)
-                }
-            )
+            return jsonbak.dumps({"error": str(e)})
+        return result
 
     @expose_page(must_login=False, methods=['GET'])
     def get_log_lines(self, **kwargs):
@@ -518,6 +529,7 @@ class manager(controllers.BaseController):
         self.logger.debug("manager::check_connection_by_id() called")
         try:
             api_id = utils.get_parameter(kwargs, 'apiId')
+            # CHECK RBAC PR MERGE
             api: API_model = API_services.get_api_by_id(api_id)
             # NOTE the frontend expects a different interface, so the API_model
             # cannot be used yet.

@@ -155,20 +155,21 @@
         <div
           role="group"
           aria-labelledby="label-views-shared-controls-controlgroup-view63"
-          class="controls controls-join"
-        >
+          class="controls controls-join ">
           <!-- Case more than 1 API -->
+          <!-- CHECK RBAC PR MERGE -->
           <div
-            ng-show="theresAPI&&apiList.length>1"
+            id="menuSelectAPI" 
             style="background: white !important"
             class="input-dropdown"
-            id="menuSelectAPI"
-            ng-title="currentAPI.managerName"
-          ></div>
+            ng-show="theresAPI&&apiList.length>1"
+            ng-title="currentAPI.alias">
+          </div>
           <!-- Case just 1 API -->
-          <span ng-show="theresAPI&&apiList.length==1" class="small"
-            >{{currentAPI.managerName}}</span
-          >
+          <span
+            ng-show="theresAPI&&apiList.length==1"
+            class="small">{{currentAPI.alias}}
+          </span>
         </div>
       </div>
       <!---Index Selector--->

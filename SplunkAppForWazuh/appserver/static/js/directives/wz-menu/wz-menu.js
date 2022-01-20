@@ -30,7 +30,7 @@ define([
       ) {
         $scope.logoUrl =
           BASE_URL +
-          "/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png";
+          "/static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_full.svg";
 
         $scope.select = (item) => {
           $scope.menuNavItem = item;
@@ -77,11 +77,25 @@ define([
           setTimeout(() => document.body.removeChild(overlay), 100);
         };
 
-        let dropdownAPI;
-        let dropdownIndex;
-        let dropdownSourceType;
+          $scope.openModal = () => {
+            const modal = document.getElementById('quick-settings-modal');
+            const overlay = document.createElement('div');
+            overlay.id = 'quick-settings-overlay';
+            document.body.appendChild(overlay);
+            overlay.classList.add('modal-backdrop', 'fade');
+            overlay.onclick = () => $scope.closeModal();
+            setTimeout(() => {
+              overlay.classList.add('in')
+              modal.classList.remove('fade')
+              modal.classList.replace('hide', 'show');
+            }, 100);
+          }
 
-        let onChangeListeners = [];
+          let dropdownAPI;
+          let dropdownIndex;
+          let dropdownSourceType;
+  
+          let onChangeListeners = [];
 
         const onChangeDropdownAPI = () => {
           onChangeListeners.push(

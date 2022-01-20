@@ -183,6 +183,7 @@ define([
         const rowSizes = $scope.rowSizes || [15, 13, 11]
         let doit
         let resizing = false
+        let itemsPerPage 
         if (!$scope.wzConfigViewer) {
           $window.onresize = () => {
             if (resizing || $scope.resizingColumns) return
@@ -191,13 +192,19 @@ define([
             doit = setTimeout(() => {
               $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
               $scope.itemsPerPage = $scope.rowsPerPage
-              init()
-                .then(() => {
-                  $scope.setColResizable()
+              if(itemsPerPage != $scope.itemsPerPage){
+                itemsPerPage = $scope.itemsPerPage
+                init()
+                  .then(() => {
+                    $scope.setColResizable()
+                    resizing = false
+                  })
+                  .catch(() => (resizing = false))
+                } else {
                   resizing = false
-                })
-                .catch(() => (resizing = false))
-            }, 150)
+                }
+            }, 1300)
+              
           }
         }
         $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)

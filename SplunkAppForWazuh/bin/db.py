@@ -29,22 +29,24 @@ class database():
     on the collections.conf file.
     """
 
-    def __init__(self):
+    def __init__(self, entityName):
         self.logger = log()
         self.session = requestsbak.Session()
         self.session.trust_env = False
         self.kvstoreUri = entity.buildEndpoint(
             entityClass=["storage", "collections", "data"],
-            entityName="credentials",
+            entityName=entityName,
             owner="nobody",
             namespace="SplunkAppForWazuh",
             hostPath=rest.makeSplunkdUri().strip("/")
         )
+        self.entityName = entityName
         self.sessionKey = splunk.getSessionKey()
 
     def insert(self, obj: dict) -> str:
         """
         Insert a new API.
+
 
         Parameters
         ----------
@@ -57,8 +59,8 @@ class database():
         """
         self.logger.debug("bin.db: inserting a new API")
         try:
-            kvstoreUri = self._build_kvstore_uri()
-
+            self.logger.debug("bin.db: Inserting database entry in %s." % self.entityName)
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
             result = self.session.post(
                 url=kvstoreUri,
                 data=obj,
@@ -93,6 +95,7 @@ class database():
         """
         self.logger.debug("bin.db: updating existing API")
         try:
+            self.logger.debug("bin.db: Updating entry in %s." % self.entityName)
             if not '_key' in obj:
                 raise Exception('Missing API ID')
 
@@ -135,10 +138,10 @@ class database():
         """
         self.logger.debug("bin.db: Removing API.")
         try:
-            if not id:
-                raise Exception('Missing API ID')
-
-            kvstoreUri = self._build_kvstore_uri(id)
+            self.logger.debug("bin.db: Removing entry in %s." % self.entityName)
+            if not _key:
+                raise Exception('Missing ID in remove DB module')
+            kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
             result = self.session.delete(
                 url=kvstoreUri,
                 headers={
@@ -160,7 +163,7 @@ class database():
 
             return parsed_result
         except Exception as e:
-            self.logger.error("Error removing an API in DB module: %s" % (e))
+            self.logger.error("Error removing an entry in DB module: %s" % (e))
             raise e
 
     def all(self, session_key=False) -> dict:
@@ -179,7 +182,8 @@ class database():
         """
         self.logger.debug("bin.db: Getting all APIs .")
         try:
-            kvstoreUri = self._build_kvstore_uri()
+            self.logger.debug("bin.db: Getting all entries in %s ." % self.entityName)
+            kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(
                 url=kvstoreUri,
@@ -191,6 +195,7 @@ class database():
             ).json()
             return jsonbak.dumps(result)
         except Exception as e:
+
             self.logger.error(
                 'Error returning all API rows in DB module: %s ' % (e))
             return jsonbak.dumps(
@@ -214,6 +219,7 @@ class database():
         """
         self.logger.debug("bin.db: Getting an API.")
         try:
+            self.logger.debug("bin.db: Getting an entry from %s." % self.entityName)
             if not id:
                 raise Exception('Missing API ID')
 
@@ -233,7 +239,7 @@ class database():
                 }
             )
         except Exception as e:
-            self.logger.error("Error getting an API in DB module : %s" % (e))
+            self.logger.error("Error getting an entry from DB module : %s" % (e))
             raise e
         return parsed_result
 
