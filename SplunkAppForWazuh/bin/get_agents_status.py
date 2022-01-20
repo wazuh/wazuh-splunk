@@ -23,7 +23,7 @@ from log import log
 import sys
 from wazuhtoken import wazuhtoken
 
-db = database()
+db = database("credentials")
 logger = log()
 wztoken = wazuhtoken()
 

@@ -84,6 +84,12 @@ def rmConfStanza(file, stanza):
         return response
     except Exception as e:
         raise e
+def getDefaultExtensions():
+    try:
+        stanza = getSelfConfStanza("config", "extensions")
+        return stanza
+    except Exception as e:
+        return jsonbak.dumps({'error': str(e)})
 
 
 def diff_keys_dic_update_api(kwargs_dic):
@@ -116,7 +122,8 @@ class manager(controllers.BaseController):
         self.logger = log()
         try:
             controllers.BaseController.__init__(self)
-            self.db = database()
+            self.db = database("credentials")
+            self.extensionsdb = database("extensions")
             self.wztoken = wazuhtoken()
             self.config = self.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
@@ -161,31 +168,44 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
-        id = kwargs['id']
-        if id:
-            try:
-                self.logger.debug("manager: Getting extensions for %s" % (id))
-                stanza = getConfStanzaById("extensions", id)
-            except ParsingError as e:
-                stanza = getSelfConfStanza("config", "extensions")
-            except Exception as e:
-                return jsonbak.dumps({'error': str(e)})
-            data_temp = stanza
-        else:
-            try:
-                self.logger.debug("manager: Getting extensions.")
-                stanza = getSelfConfStanza("config", "extensions")
-                data_temp = stanza
-            except Exception as e:
-                return jsonbak.dumps({'error': str(e)})
-        return data_temp
 
+        try:
+            self.logger.debug('Fetching extensions with kwargs %s' % jsonbak.dumps(kwargs))
+            #If we are provided with a key for a db entry, it is retrieved
+            if '_key' in kwargs:
+                key = kwargs['_key']
+                self.logger.debug("manager: Getting extensions from db for %s" % (key))
+                stanza = jsonbak.dumps(jsonbak.loads(self.extensionsdb.get(key))['data'])
+            
+            #if no key is provided, we check whether there is a value in the db that matches the api
+            elif 'api' in kwargs:
+                stanzas = {}
+                api = kwargs['api']
+                self.logger.debug("manager: Getting extensions for %s" % (api))
+                stanzas = jsonbak.loads(self.extensionsdb.all())
+                filtered = [s for s in stanzas if s['api'] == api]
+                if filtered:
+                    data_temp = filtered[0]
+                    stanza = jsonbak.dumps(data_temp)
+                #if no value matches, we create an entry for that API and return the stanza
+                else:
+                    data_temp = jsonbak.loads(getDefaultExtensions())
+                    data_temp['api'] = api
+                    key = self.extensionsdb.insert(jsonbak.dumps(data_temp))
+                    stanza = jsonbak.dumps(jsonbak.loads(self.extensionsdb.get(key))['data'])
+            else:
+                stanza = getDefaultExtensions()
+            return stanza
+        except Exception as e:
+            return jsonbak.dumps({'error': str(e)})
+    
     @expose_page(must_login=False, methods=['POST'])
     def remove_extensions(self, **kwargs):
         try:
             self.logger.debug("manager: Removing extensions.")
-            id = kwargs['id']
-            response = rmConfStanza("extensions", id)
+
+            key = kwargs['_key']
+            response = self.extensionsdb.remove(key)
             return response
         except Exception as e:
             return {'error': str(e)}
@@ -202,11 +222,9 @@ class manager(controllers.BaseController):
         """
         try:
             self.logger.debug("manager: Saving extensions.")
-            id = kwargs['id']
-            extensions = kwargs['extensions']
-            response = {}
-            putConfStanza("extensions", {id: jsonbak.loads(extensions)})
-            response[id] = 'Success'
+
+            extensions = jsonbak.loads(kwargs['extensions'])
+            response = self.extensionsdb.update(extensions)
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
         return jsonbak.dumps(response)

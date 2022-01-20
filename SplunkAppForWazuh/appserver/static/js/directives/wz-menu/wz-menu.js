@@ -9,6 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
+
 define([
   '../module',
   'splunkjs/mvc/simpleform/input/dropdown',
@@ -31,7 +32,8 @@ define([
         ) {
           $scope.logoUrl =
             BASE_URL +
-            '/static/app/SplunkAppForWazuh/css/images/wazuh/png/wazuh_white_full.png'
+            '/static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_full.svg';
+
 
           $scope.select = item => {
             $scope.menuNavItem = item
