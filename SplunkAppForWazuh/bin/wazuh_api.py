@@ -35,6 +35,7 @@ class Wazuh_API():
             self.wztoken = wazuhtoken()
             self.session = requests.Session()
             self.session.trust_env = False
+            self.config = self.logger.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
         except Exception as e:
             self.logger.error(
