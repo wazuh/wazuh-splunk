@@ -38,6 +38,7 @@ class wazuhtoken():
             self.session.trust_env = False
             self.cache = cache()
             self.__refresh = False
+            self.config = self.logger.get_config_on_memory()
             self.timeout = int(self.config['timeout'])
 
             self.api = API_model()
