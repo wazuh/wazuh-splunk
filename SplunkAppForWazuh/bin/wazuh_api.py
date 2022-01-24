@@ -35,6 +35,7 @@ class Wazuh_API():
             self.wztoken = wazuhtoken()
             self.session = requests.Session()
             self.session.trust_env = False
+            self.timeout = int(self.config['timeout'])
         except Exception as e:
             self.logger.error(
                 "wazuh-api: error in the constructor: %s" % (e))
@@ -129,6 +130,7 @@ class Wazuh_API():
                             headers={
                                 'Authorization': f'Bearer {wazuh_token}'
                             },
+                            timeout=self.timeout,
                             verify=False
                         ).content
                         # FIXME dumps + loads ???
@@ -147,6 +149,7 @@ class Wazuh_API():
                             headers={
                                 'Authorization': f'Bearer {wazuh_token}'
                             },
+                            timeout=self.timeout,
                             verify=False
                         )
                         response = {
@@ -166,6 +169,7 @@ class Wazuh_API():
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
+                        timeout=self.timeout,
                         verify=False
                     )
                     response = catch_exceptions(response)
@@ -191,6 +195,7 @@ class Wazuh_API():
                     response = self.session.post(
                         url=current_api.get_url() + endpoint_url,
                         data=kwargs,
+                        timeout=self.timeout,
                         verify=False,
                         headers=headers
                     )
@@ -202,6 +207,7 @@ class Wazuh_API():
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
+                        timeout=self.timeout,
                         verify=False
                     )
                     response = catch_exceptions(response)
@@ -228,6 +234,7 @@ class Wazuh_API():
                         url=current_api.get_url() + endpoint_url,
                         data=kwargs,
                         verify=False,
+                        timeout=self.timeout,
                         headers=headers
                     )
                     response = catch_exceptions(response)
@@ -239,6 +246,7 @@ class Wazuh_API():
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
+                        timeout=self.timeout,
                         verify=False
                     )
                     response = catch_exceptions(response)
@@ -250,6 +258,7 @@ class Wazuh_API():
                         headers={
                             'Authorization': f'Bearer {wazuh_token}'
                         },
+                        timeout=self.timeout,
                         verify=False
                     )
                     response = catch_exceptions(response)
@@ -261,6 +270,7 @@ class Wazuh_API():
                     headers={
                         'Authorization': f'Bearer {wazuh_token}'
                     },
+                    timeout=self.timeout,
                     verify=False
                 )
                 response = catch_exceptions(response)
