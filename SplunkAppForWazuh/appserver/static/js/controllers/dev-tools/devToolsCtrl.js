@@ -49,7 +49,6 @@ define([
      * @param {*} appState
      * @param {*} $notificationService
      * @param {*} $document
-     * @param {*} isAdmin
      */
     constructor(
       $scope,
@@ -58,8 +57,7 @@ define([
       $navigationService,
       $notificationService,
       $appVersionService,
-      $document,
-      isAdmin
+      $document
     ) {
       this.$scope = $scope
       this.appDocuVersion = $appVersionService.getDocumentationVersion()
@@ -72,7 +70,6 @@ define([
       this.linesWithClass = []
       this.widgets = []
       this.multipleKeyPressed = []
-      this.admin = isAdmin
     }
 
     /**
@@ -394,7 +391,7 @@ define([
       const currentState = this.appState.getCurrentDevTools()
       if (!currentState) {
         const demoStr =
-          'GET /agents?status=Active\n\n#Example comment\nGET /manager/info\n\nGET /syscollector/000/packages?search=ssh\n' +
+          'GET /agents?status=active\n\n#Example comment\nGET /manager/info\n\nGET /syscollector/000/packages?search=ssh\n' +
           JSON.stringify({ limit: 5 }, null, 2)
 
         this.appState.setCurrentDevTools(demoStr)
@@ -706,22 +703,16 @@ define([
             return
           }
 
-          let method = ''
-          if (this.admin) {
-            method = desiredGroup.requestText.startsWith('GET')
-              ? 'GET'
-              : desiredGroup.requestText.startsWith('POST')
-                ? 'POST'
-                : desiredGroup.requestText.startsWith('PUT')
-                  ? 'PUT'
-                  : desiredGroup.requestText.startsWith('DELETE')
-                    ? 'DELETE'
-                    : 'GET'
-          } else {
-            if (desiredGroup.requestText.startsWith('GET')) method = 'GET'
-            else
-              return this.apiOutputBox.setValue('3029 - Allowed method: [GET]')
-          }
+          const method = desiredGroup.requestText.startsWith('GET')
+          ? 'GET'
+          : desiredGroup.requestText.startsWith('POST')
+            ? 'POST'
+            : desiredGroup.requestText.startsWith('PUT')
+              ? 'PUT'
+              : desiredGroup.requestText.startsWith('DELETE')
+                ? 'DELETE'
+                : 'GET';
+
           let requestCopy = desiredGroup.requestText.includes(method)
             ? desiredGroup.requestText.split(method)[1].trim()
             : desiredGroup.requestText

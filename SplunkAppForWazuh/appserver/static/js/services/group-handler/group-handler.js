@@ -25,8 +25,8 @@ define(['../module'], function(module) {
           {},
           'DELETE'
         )
-        if (result && result.data && result.data.data && !result.data.error) {
-          return result.data.data
+        if (result && result.data  && !result.data.error) {
+          return result.data
         } else {
           throw new Error(result.data.message)
         }

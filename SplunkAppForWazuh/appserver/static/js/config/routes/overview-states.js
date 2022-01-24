@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
   module.paths = {
     root: `${window.location.href.split(/\/[a-z][a-z]-[A-Z][A-Z]\//)[0]}/`
@@ -10,7 +10,7 @@ define(['../module'], function(module) {
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
-    function(
+    function (
       $mdIconProvider,
       $locationProvider,
       $stateProvider,
@@ -33,14 +33,19 @@ define(['../module'], function(module) {
             'static/app/SplunkAppForWazuh/js/controllers/overview/welcome/overview-welcome.html',
           controller: 'overviewWelcomeCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             agentsInfo: [
               '$requestService',
-              '$state',
               async $requestService => {
                 try {
                   const result = await $requestService.apiReq('/agents/summary/status')
                   return result
-                } catch (err) {} //eslint-disable-line
+                } catch (err) { } //eslint-disable-line
               }
             ],
             extensions: [
@@ -66,10 +71,15 @@ define(['../module'], function(module) {
           },
           controller: 'overviewGeneralCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             pollingState: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const result = await $requestService.httpReq(
                     `GET`,
@@ -77,7 +87,7 @@ define(['../module'], function(module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -109,6 +119,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewPolicyMonitoringCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -126,7 +142,8 @@ define(['../module'], function(module) {
               }
             ]
           }
-        }) // Overview - SCA Security Configuration Assessment
+        })
+        // Overview - SCA Security Configuration Assessment
         .state('ow-sca', {
           templateUrl:
             BASE_URL +
@@ -136,6 +153,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewSCACtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -164,6 +187,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewFimCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -192,17 +221,22 @@ define(['../module'], function(module) {
           },
           controller: 'osqueryCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             osquery: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const result = await $requestService.apiReq(
                     `/agents/000/config/wmodules/wmodules`
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -234,6 +268,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewAuditCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -262,6 +302,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewOpenScapCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -290,10 +336,15 @@ define(['../module'], function(module) {
           },
           controller: 'overviewPciCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             pciTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const pciTabs = []
                   const data = await $requestService.httpReq(
@@ -306,7 +357,7 @@ define(['../module'], function(module) {
                   }
                   return pciTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -358,10 +409,15 @@ define(['../module'], function(module) {
           },
           controller: 'overviewGdprCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             gdprTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const gdprTabs = []
                   const data = await $requestService.httpReq(
@@ -374,7 +430,7 @@ define(['../module'], function(module) {
                   }
                   return gdprTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -415,7 +471,8 @@ define(['../module'], function(module) {
               }
             ]
           }
-        }) // Overview - HIPAA
+        })
+        // Overview - HIPAA
         .state('ow-hipaa', {
           templateUrl:
             BASE_URL +
@@ -425,10 +482,15 @@ define(['../module'], function(module) {
           },
           controller: 'overviewHipaaCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             hipaaTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const hipaaTabs = []
                   const data = await $requestService.httpReq(
@@ -441,7 +503,7 @@ define(['../module'], function(module) {
                   }
                   return hipaaTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -493,10 +555,15 @@ define(['../module'], function(module) {
           },
           controller: 'overviewNistCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             nistTabs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const nistTabs = []
                   const data = await $requestService.httpReq(
@@ -509,7 +576,7 @@ define(['../module'], function(module) {
                   }
                   return nistTabs
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
               }
             ],
@@ -561,6 +628,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewVulnerabilitiesCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -589,6 +662,12 @@ define(['../module'], function(module) {
           },
           controller: 'ciscatCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -604,7 +683,7 @@ define(['../module'], function(module) {
                   return false
                 }
               }
-            ]
+            ],
           }
         })
         // Overview - VirusTotal
@@ -617,6 +696,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewVirusTotal',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -645,6 +730,12 @@ define(['../module'], function(module) {
           },
           controller: 'awsCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -663,6 +754,12 @@ define(['../module'], function(module) {
           },
           controller: 'dockerCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -691,6 +788,12 @@ define(['../module'], function(module) {
           },
           controller: 'overviewMitreCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             reportingEnabled: [
               '$currentDataService',
               async $currentDataService => {
@@ -719,26 +822,30 @@ define(['../module'], function(module) {
           },
           controller: 'overviewMitreIdsCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async $security_service => {
+                return await $security_service.updateUserPermissions()
+              }
+            ],
             mitre_tactics: [
               '$requestService',
-              '$state',
               async (
                 $requestService,
-                $state
               ) => {
                 try {
                   const results = await $requestService.apiReq(`/mitre?select=phase_name`)
                   const data = results.data.data.affected_items
-                  
-                  const tactics = data.reduce((parsed, item)=>{
-                    parsed[item.phase_name[0]]=0
+
+                  const tactics = data.reduce((parsed, item) => {
+                    parsed[item.phase_name[0]] = 0
                     return parsed
-                  },{})
+                  }, {})
 
                   return tactics
 
                 } catch (err) {
-                  $state.go('overview')
+                  return false
                 }
               }
             ],

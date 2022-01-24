@@ -35,6 +35,8 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} awsExtensionEnabled
      */
     constructor(
       $urlTokenModel,

@@ -36,11 +36,13 @@ define([
   class OverviewVirusTotal extends DashboardMain {
     /**
      * Class Overview Virus Total
-     * @param {*} $urlTokenModel
      * @param {*} $scope
+     * @param {*} $urlTokenModel
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $scope,
@@ -49,7 +51,7 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
     ) {
       super(
         $scope,

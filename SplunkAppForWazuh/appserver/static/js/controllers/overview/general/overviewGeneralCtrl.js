@@ -41,6 +41,8 @@ define([
      * @param {Object} pollingState
      * @param {*} $reportingService
      * @param {*} $rootScope
+     * @param {*} reportingEnabled
+     * @param {*} awsExtensionEnabled
      */
     constructor(
       $urlTokenModel,
@@ -53,7 +55,7 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
-      awsExtensionEnabled
+      awsExtensionEnabled,
     ) {
       super(
         $scope,

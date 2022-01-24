@@ -38,6 +38,12 @@ define([
      * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} pciTabs
+     * @param {*} reportingEnabled
+     * @param {*} gdprExtensionEnabled
+     * @param {*} hipaaExtensionEnabled
+     * @param {*} nistExtensionEnabled
+     * @param {*} $security_service
      */
     constructor(
       $urlTokenModel,
@@ -50,7 +56,8 @@ define([
       reportingEnabled,
       gdprExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled
+      nistExtensionEnabled,
+      $security_service
     ) {
       super(
         $scope,

@@ -11,14 +11,15 @@ define([
      * @param {Object} $scope
      * @param {Object} $notificationService
      * @param {Object} $requestService
-     * @param {Array} reportsList
+     * @param {Object} $dateDiffService
+     * @param {Object} isWazuhAdmin
      */
     constructor(
       $scope,
       $notificationService,
       $requestService,
-      reportsList,
-      $dateDiffService
+      $dateDiffService,
+      isWazuhAdmin
     ) {
       this.scope = $scope
       this.notification = $notificationService
@@ -27,9 +28,9 @@ define([
       this.itemsPerPage = 15
       this.scope.pagedItems = []
       this.scope.currentPage = 0
+      this.scope.isWazuhAdmin = isWazuhAdmin
       this.items = []
       this.scope.gap = 0
-      this.items = reportsList.data.data
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       this.pagination = pagination
       this.checkGap = checkGap
@@ -53,7 +54,6 @@ define([
         this.scope.currentPage = n
         this.scope.nextPage(n)
       }
-      this.checkGap(this.scope, this.items)
       this.scope.load = () => this.load()
       this.scope.range = (size, start, end) =>
           this.pagination.range(size, start, end, this.scope.gap)

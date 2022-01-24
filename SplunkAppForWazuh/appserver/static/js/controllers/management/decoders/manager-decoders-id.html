@@ -70,7 +70,7 @@
 
     <!-- Edit button -->
     <div layout="row" ng-if="!editingFile">
-      <button ng-if="currentDecoder.filename && isLocal && adminMode" ng-click="editDecoder(currentDecoder.filename)"
+      <button ng-if="currentDecoder.filename && isLocal && canUpdateDecoderFile(currentDecoder.filename)" ng-click="editDecoder(currentDecoder.filename)"
         class="btn wz-button-empty btn-ruleset ng-scope">
         <wz-svg icon="pencil"></wz-svg>
         Edit {{currentDecoder.filename}}
@@ -183,13 +183,13 @@
       <div layout="row" class="md-padding wz-padding-top-0">
         <span ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</span>
         <div ng-show="!readOnly">
-          <button ng-if="adminMode && fetchedXML" ng-disabled='xmlHasErrors || saveIncomplete'
+          <button ng-if="canUpdateDecoderFile(currentDecoder.filename) && fetchedXML" ng-disabled='xmlHasErrors || saveIncomplete'
             ng-click='saveDecoderConfig(currentDecoder.filename)' class='btn wz-button-empty pull-right wz-margin-left-10'>
-            <span ng-show='!xmlHasErrors && adminMode'>
+            <span ng-show='!xmlHasErrors'>
               <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
                 aria-hidden='true'></i>
               Save file</span>
-            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true'
+            <span ng-show='xmlHasErrors' class='btn-danger'><i aria-hidden='true'
                 class='fa fa-fw fa-exclamation-triangle'></i>
               XML format error</span>
           </button>

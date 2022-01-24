@@ -35,6 +35,8 @@ define([
      * @param {*} $notificationService
      * @param {*} $reportingService
      * @param {*} $rootScope
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -45,7 +47,7 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
-      extensions
+      extensions,
     ) {
       super(
         $scope,

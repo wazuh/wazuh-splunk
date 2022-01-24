@@ -45,6 +45,9 @@ define([
       )
       this.tableResults = {}
       this.initialize()
+      // Prevent DashBoardMain from transforming an undefinded value 
+      // (calls to map(), filter(), ...)
+      this.vizz = []
     }
 
     /**

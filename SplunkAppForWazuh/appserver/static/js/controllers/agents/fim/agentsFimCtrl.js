@@ -34,12 +34,16 @@ define([
     /**
      * Class constructor
      * @param {Object} $urlTokenModel
-     * @param {Object} $state
      * @param {Object} $scope
+     * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {Object} $tableFilterService
+     * @param {Object} $csvRequestService
      * @param {Object} $notificationService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} $security_service
      */
 
     constructor(
@@ -52,7 +56,8 @@ define([
       $csvRequestService,
       $notificationService,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      $security_service
     ) {
       super(
         $scope,
@@ -217,6 +222,17 @@ define([
           this.tableResults,
           this.agentReportData
         )
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params)
+          .isAllowed;
+      };
+      this.scope.canReadSyscheck = this.isAllowed(
+        "SYSCHECK_READ",
+        ["AGENT_ID"],
+        [this.agent.id]
+      );
     }
 
     /**

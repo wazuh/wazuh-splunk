@@ -12,13 +12,13 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
+import time
+
 import jsonbak
 import splunk.appserver.mrsparkle.controllers as controllers
-from splunk.appserver.mrsparkle.lib.decorators import expose_page
-from log import log
 from jobs_queue import JobsQueue
-
-import time
+from log import log
+from splunk.appserver.mrsparkle.lib.decorators import expose_page
 
 
 class Queue(controllers.BaseController):
@@ -35,7 +35,9 @@ class Queue(controllers.BaseController):
             self.logger = log()
             controllers.BaseController.__init__(self)
         except Exception as e:
-            self.logger.error("queue: Error in Jobs queue module constructor: %s" % (e))
+            self.logger.error(
+                "queue: Error in Jobs queue module constructor: %s" % (e))
+
     @expose_page(must_login=False, methods=['POST'])
     def add_job(self, **kwargs):
         """Add job to the queue.
@@ -50,9 +52,22 @@ class Queue(controllers.BaseController):
             now = time.time()
             exec_time = now + float(kwargs['delay'])
             del kwargs['delay']
-            job = {"job": kwargs, "added": now, "exec_time": exec_time, "done": 0}
+            job = {
+                "job": kwargs,
+                "added": now,
+                "exec_time": exec_time,
+                "done": 0
+            }
             self.queue.insert_job(job)
-            return jsonbak.dumps({"data": "Job added to the queue.", "error": 0})
+            return jsonbak.dumps(
+                {
+                    "data": "Job added to the queue.", "error": 0
+                }
+            )
         except Exception as e:
             self.logger.error("queue: Error adding job: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )

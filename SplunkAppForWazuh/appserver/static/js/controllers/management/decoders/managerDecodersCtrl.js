@@ -10,6 +10,9 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $restartService
+     * @param {*} $fileEditor
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -19,8 +22,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       $restartService,
-      isAdmin,
-      $fileEditor
+      $fileEditor,
+      $security_service
     ) {
       super(
         $scope,
@@ -34,15 +37,25 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         $fileEditor
       )
       this.scope.typeFilter = 'all'
-      this.isAdmin = isAdmin
       this.restartService = $restartService
+
+      /* RBAC flags */
+      this.scope.canReadDecoders = $security_service.isAllowed(
+        "DECODERS_READ",
+        ["DECODER_FILE"],
+        ["*"]
+      )
+      this.scope.canUpdateDecoders = $security_service.isAllowed("DECODERS_UPDATE", [
+        "RESOURCELESS",
+      ])
+      this.scope.canUpdateDecoderFile = (filename) =>
+        $security_service.isAllowed("DECODERS_UPDATE", ["DECODER_FILE"], [filename])
     }
 
     /**
      * On controller load
      */
     $onInit() {
-      this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })

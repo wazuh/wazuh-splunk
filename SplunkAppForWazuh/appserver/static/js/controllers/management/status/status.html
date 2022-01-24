@@ -25,7 +25,8 @@
     <div class="loader"></div>
   </div>
 </div>
-<div>
+<wz-forbidden ng-if="!canReadCluster && !canReadManager"></wz-forbidden>
+<div ng-if="canReadCluster && canReadManager">
   <!-- Cluster nodes if cluster is enable -->
   <div layout="row" layout-padding style="padding-left: 10px; padding-right: 10px;">
     <select ng-show="clusterEnabled" class="kuiSelect cursor-pointer max-height-35" id="categoryBox" ng-model="nodeId"
@@ -35,22 +36,22 @@
     <span class="flex"></span>
     <!-- Restart button -->
     <div ng-show="!confirmingRestart">
-      <button style="height: 30px; padding-top: 4px;" ng-if="isAdmin" ng-click="switchRestart()"
+      <button style="height: 30px; padding-top: 4px;" ng-if="clusterEnabled ? canRestartCluster : canRestartManager" ng-click="switchRestart()"
         ng-disabled="restartInProgress || wazuhNotReadyYet" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i
+        <span><i
             ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
             aria-hidden='true'></i>Restart
           {{clusterEnabled ? "cluster" : "manager"}}</span>
       </button></div>
     <div ng-show="confirmingRestart" style="display: flex; float:right;">
       <span style="padding-top: 8px;">The {{clusterEnabled ? "cluster" : "manager"}} will be restarted.</span>
-      <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
+      <button style="height: 30px;" ng-click="switchRestart()"
         class='btn wz-button-cancel pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+        <span><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
       </button>
-      <button style="height: 30px;" ng-if="isAdmin" ng-click="restart(); switchRestart"
+      <button style="height: 30px;" ng-if="clusterEnabled ? canRestartCluster : canRestartManager" ng-click="restart(); switchRestart()"
         class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+        <span><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
       </button>
     </div>
   </div>
@@ -61,7 +62,7 @@
   </div>
 
 
-  <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
+  <div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load && canReadCluster">
     <div flex class="euiCallOut euiCallOut--warning">
       <div class="euiCallOutHeader">
         <wz-svg icon="callOutHeader"></wz-svg>
@@ -71,7 +72,7 @@
   </div>
 
   <!-- Daemons status section -->
-  <div layout="row" ng-if="!load && !clusterError">
+  <div layout="row" ng-if="!load && !clusterError && canReadManager">
     <md-card flex class="wz-md-card wz-margin-bottom-25 wz-margin-top-15">
       <md-card-content class="daemons-card">
         <div ng-repeat="daemon in daemons" class="daemon-label">

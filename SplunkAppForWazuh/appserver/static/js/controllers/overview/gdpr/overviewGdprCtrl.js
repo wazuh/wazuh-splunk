@@ -26,6 +26,10 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} gdprTabs
+     * @param {*} reportingEnabled
+     * @param {*} pciExtensionEnabled
+     * @param {*} nistExtensionEnabled
      */
     constructor(
       $urlTokenModel,

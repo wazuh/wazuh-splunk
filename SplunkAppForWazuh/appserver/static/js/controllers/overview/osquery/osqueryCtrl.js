@@ -37,6 +37,8 @@ define([
      * @param {*} $notificationService
      * @param {*} osquery
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -47,7 +49,7 @@ define([
       osquery,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
     ) {
       super(
         $scope,

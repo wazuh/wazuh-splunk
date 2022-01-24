@@ -18,7 +18,7 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
   '../../../services/rawTableData/rawTableDataService'
-], function(
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -35,6 +35,9 @@ define([
      * @param {*} $scope
      * @param {*} $currentDataService
      * @param {*} $state
+     * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -43,7 +46,7 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
     ) {
       super(
         $scope,

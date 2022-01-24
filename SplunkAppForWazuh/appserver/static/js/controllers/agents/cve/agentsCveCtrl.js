@@ -33,6 +33,7 @@ define([
      * @param {Object} $notificationService
      * @param {*} $reportingService
      * @param {Object} extensions
+     * @param {Object} $security_service
      */
 
     constructor(
@@ -45,7 +46,8 @@ define([
       $csvRequestService,
       $notificationService,
       $reportingService,
-      extensions
+      extensions,
+      $security_service
     ) {
       super(
         $scope,
@@ -95,6 +97,17 @@ define([
       } catch (error) {
         this.agentReportData = false
       }
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params)
+          .isAllowed;
+      };
+      this.scope.canReadVulnerabilities = this.isAllowed(
+        "VULNERABILITY_READ",
+        ["AGENT_ID"],
+        [this.agent.id]
+      );
     }
 
     /**

@@ -155,6 +155,8 @@ define(['./module'], function(module) {
           $rootScope.$broadcast('stateChanged', 'manager')
         } else if (to.startsWith('settings')) {
           $rootScope.$broadcast('stateChanged', 'settings')
+        } else if (to.startsWith('security')) {
+          $rootScope.$broadcast('stateChanged', 'security')
         }
         // This selects "api" tab when there some state transition error.
         // It solves that another setting tab could appear as selected when show the view of "api" tab.

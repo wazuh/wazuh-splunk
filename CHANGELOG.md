@@ -2,12 +2,24 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+
 ## Wazuh v4.3.0 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4301
 
 ### Added
 
 - Support for Wazuh 4.3.0
 - Added Alias field to API to facilitate distinguishing between different managers [#1166](https://github.com/wazuh/wazuh-splunk/pull/1166)
+- Added a Security Section to manage security related configurations [#1148](https://github.com/wazuh/wazuh-splunk/issues/1148)
+- Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
+- Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
+- Added Crud Role Mapping on security section. [#1169](https://github.com/wazuh/wazuh-splunk/pull/1169)
+- Added Crud Users on security section. [#1173](https://github.com/wazuh/wazuh-splunk/pull/1173)
+- Created a permissions validation service. [#1147](https://github.com/wazuh/wazuh-splunk/issues/1147)
+- Implemented the access control on the App's views. [1164](https://github.com/wazuh/wazuh-splunk/issues/1164)
+- Implemented a service to fetch Wazuh's users and its roles. [#1155](https://github.com/wazuh/wazuh-splunk/issues/1155)
+- Implemented a server to fetch Splunk's users and its roles. [#1156](https://github.com/wazuh/wazuh-splunk/issues/1156)
+- Added a run_as checkbox to the API configuration [#1149](https://github.com/wazuh/wazuh-splunk/issues/1149)
+- Added the ability to use the Authorization Context login method. [#1174](https://github.com/wazuh/wazuh-splunk/pull/1174)
 
 ### Changed
 
@@ -48,6 +60,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Support for Splunk v8.1.4
 - Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
 - Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
+- Added requirement service [#1162](https://github.com/wazuh/wazuh-splunk/pull/1162)
 - Support for Splunk v8.2.2
 
 ### Changed 
@@ -109,6 +122,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
 - Added persitence to modules in overview panel [#1134](https://github.com/wazuh/wazuh-splunk/pull/1134) [#1135](https://github.com/wazuh/wazuh-splunk/pull/1135) [#1146](https://github.com/wazuh/wazuh-splunk/pull/1146)
 - Added Agent status visualization on Agents main view [#1140](https://github.com/wazuh/wazuh-splunk/pull/1140)
+- Added validation service to compare user permissions to requirements [#1158](https://github.com/wazuh/wazuh-splunk/pull/1158)
 
 ### Fixed 
 

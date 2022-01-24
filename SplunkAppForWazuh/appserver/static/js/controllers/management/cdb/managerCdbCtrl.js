@@ -14,6 +14,9 @@ define([
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $cdbEditor
+     * @param {*} $restartService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -22,9 +25,9 @@ define([
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      isAdmin,
       $cdbEditor,
-      $restartService
+      $restartService,
+      $security_service
     ) {
       super(
         $scope,
@@ -38,9 +41,18 @@ define([
       )
       this.pagination = pagination
       this.checkGap = checkGap
-      this.isAdmin = isAdmin
       this.cdbEditor = $cdbEditor
       this.restartService = $restartService
+
+      /* RBAC flags */
+      this.scope.canReadLists = $security_service.isAllowed(
+        "LISTS_READ",
+        ["LIST_FILE"],
+        ["*"]
+      )
+      this.scope.canUpdateLists = $security_service.isAllowed("LISTS_UPDATE", [
+        "RESOURCELESS",
+      ])
     }
 
     /**
@@ -51,7 +63,6 @@ define([
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.selectedNavTab = 'cdbList'
-      this.scope.adminMode = this.isAdmin
 
       /**
        * Functions to edit a CDB lists binded to the scope

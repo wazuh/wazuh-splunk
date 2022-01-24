@@ -1,4 +1,8 @@
-define(['../../module', './ruleset'], function(controllers, Ruleset) {
+
+define([
+  '../../module', 
+  './ruleset'
+], function(controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
@@ -10,6 +14,9 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $restartService
+     * @param {*} $fileEditor
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -19,8 +26,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       $restartService,
-      isAdmin,
-      $fileEditor
+      $fileEditor,
+      $security_service
     ) {
       super(
         $scope,
@@ -33,14 +40,24 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $restartService,
         $fileEditor
       )
-      this.isAdmin = isAdmin
+
+      /* RBAC flags */
+      this.scope.canReadRules = $security_service.isAllowed(
+        "RULES_READ",
+        ["RULE_FILE"],
+        ["*"]
+      )
+      this.scope.canUpdateRules = $security_service.isAllowed("RULES_UPDATE", [
+        "RESOURCELESS",
+      ])
+      this.scope.canUpdateRulesetFile = (filename) =>
+        $security_service.isAllowed("RULES_UPDATE", ["RULE_FILE"], [filename])
     }
 
     /**
      * On controller load
      */
     $onInit() {
-      this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })

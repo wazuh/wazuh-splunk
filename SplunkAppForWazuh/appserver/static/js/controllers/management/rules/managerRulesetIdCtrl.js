@@ -12,7 +12,11 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} extensions
      * @param {*} $fileEditor
+     * @param {*} $restartService
+     * @param {*} $requestService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -27,7 +31,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       $fileEditor,
       $restartService,
       $requestService,
-      isAdmin
+      $security_service
     ) {
       super(
         $scope,
@@ -44,7 +48,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.requestService = $requestService
-      this.scope.adminMode = isAdmin
+      this.scope.canUpdateRulesetFile = (filename) => $security_service.isAllowed('RULES_UPDATE', ['RULE_FILE'], [filename]);
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {
@@ -74,7 +78,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>
         this.addDetailFilter(name, value)
-      this.scope.isLocal = this.scope.ruleInfo.path === 'etc/rules'
+      this.scope.isLocal = this.scope.ruleInfo.relative_dirname === 'etc/rules'
       this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
       this.scope.editRule = fileName => this.editRule(fileName)

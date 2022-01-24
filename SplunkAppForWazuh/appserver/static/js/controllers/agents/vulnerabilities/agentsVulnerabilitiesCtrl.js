@@ -38,6 +38,9 @@ define([
      * @param {Object} $state
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
+     * @param {*} $security_service
      */
 
     constructor(
@@ -48,7 +51,8 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $security_service
     ) {
       super(
         $scope,
@@ -62,7 +66,6 @@ define([
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
       )
-
       this.agent = agent
       this.scope.expandArray = [false, false, false, false, false, false]
 
@@ -71,10 +74,14 @@ define([
         this.agent.data &&
         this.agent.data.data &&
         this.agent.data.data.affected_items[0].id
-      )
+      ){
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
+        const agentId = this.agent.data.data.affected_items[0].id
+        this.scope.canReadVulnerabilities = $security_service.isAllowed("VULNERABILITY_READ",["AGENT_ID"],[agentId]);
+
+      }
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
       }

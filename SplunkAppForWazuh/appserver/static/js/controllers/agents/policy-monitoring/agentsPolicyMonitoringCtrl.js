@@ -39,6 +39,10 @@ define([
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
+     * @param {*} $security_service
      */
 
     constructor(
@@ -54,7 +58,8 @@ define([
       $csvRequestService,
       $tableFilterService,
       reportingEnabled,
-      extensions
+      extensions,
+      $security_service
     ) {
       super(
         $scope,
@@ -178,8 +183,6 @@ define([
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
-      this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data

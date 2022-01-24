@@ -207,21 +207,6 @@ define(['../module'], function(module) {
     }
 
     /**
-     * Checks if is admin
-     */
-    const isAdmin = async () => {
-      try {
-        const config = await $requestService.httpReq(
-          `GET`,
-          `/manager/configuration`
-        )
-        return config.data.admin === 'true'
-      } catch (error) {
-        return Promise.reject(error)
-      }
-    }
-
-    /**
      * Checks if an extension is enabled
      */
     const extensionIsEnabled = async ext => {
@@ -317,7 +302,6 @@ define(['../module'], function(module) {
       extensionIsEnabled: extensionIsEnabled,
       setExtensionsById: setExtensionsById,
       addApi: addApi,
-      isAdmin: isAdmin,
       getReportingStatus: getReportingStatus,
       checkWazuhVersion: checkWazuhVersion,
       getSourceType: getSourceType,

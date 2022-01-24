@@ -29,6 +29,7 @@ define([
      * @param {Object} $requestService
      * @param $csvRequestService
      * @param $tableFilterService
+     * @param {Object} $security_service
      * @param {Object} agentData
      * @param clusterInfo
      * @param $mdDialog
@@ -45,11 +46,12 @@ define([
       $requestService,
       $csvRequestService,
       $tableFilterService,
+      $security_service,
       agentData,
       clusterInfo,
       $mdDialog,
       $groupHandler,
-      $dateDiffService
+      $dateDiffService,
     ) {
       this.scope = $scope;
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
@@ -157,7 +159,7 @@ define([
 
       this.topAgent = new SearchHandler(
         'searchTopAgent',
-        `index=wazuh ${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
+        `${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
         'activeAgentToken',
         '$result.agent.name$',
         'mostActiveAgent',
@@ -167,6 +169,15 @@ define([
         'loadingSearch',
         this.notification
       )
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ["*"]) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+      this.scope.canReadAgents = this.isAllowed("AGENT_READ", [
+        "AGENT_ID",
+        "AGENT_GROUP",
+      ]);
 
       this.scope.expandChartAgent = false;
       this.scope.$applyAsync();

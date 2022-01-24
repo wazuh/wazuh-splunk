@@ -31,7 +31,8 @@ define(['../../module', 'FileSaver'], function(app) {
       $notificationService,
       $currentDataService,
       $csvRequestService,
-      logs
+      logs,
+      $security_service,
     ) {
       this.scope = $scope
       this.scope.realtime = false
@@ -45,6 +46,8 @@ define(['../../module', 'FileSaver'], function(app) {
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
+      this.scope.canReadLogs = $security_service.isAllowed("MANAGER_READ",["RESOURCELESS"]);
+        
     }
 
     /**
@@ -60,8 +63,9 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.playRealtime = () => this.playRealtime()
         this.scope.summary = this.logs.data.data
         this.scope.downloadCsv = () => this.downloadCsv()
-        this.initialize()
-
+        if(this.scope.canReadLogs){
+          this.initialize()
+        }
         this.scope.sort = () => this.sort()
 
         this.scope.$on('wazuhFetched', (ev, params) => {

@@ -7,13 +7,15 @@ define(['../../module'], function(controllers) {
      * @param {*} $scope
      * @param {Object} agentsInfo
      * @param {Object} extensions
+     * @param {Object} $notificationService
+     * @param {Object} $currentDataService
      */
     constructor(
       $scope,
       agentsInfo,
       extensions,
       $notificationService,
-      $currentDataService
+      $currentDataService,
     ) {
       this.scope = $scope
       this.notificationService = $notificationService
