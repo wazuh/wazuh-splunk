@@ -430,6 +430,10 @@ border-bottom: 1px solid;
   margin-right: 10px;
 }
 
+.wz-margin-top-10 {
+  margin-top: 10px;
+}
+
 .euiButtonIcon--primary {
   color: rgba(34, 129, 55, 0.767);
 }
