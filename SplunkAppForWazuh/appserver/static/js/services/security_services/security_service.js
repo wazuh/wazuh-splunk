@@ -38,7 +38,7 @@ define(
         this.userPermissions = userPermissions
         // TODO delete me
         this.getUserPolicies()
-          .then(data => { console.log(data); this.userPolicies = data })
+          .then(data => this.userPolicies = data)
       }
 
       /**
