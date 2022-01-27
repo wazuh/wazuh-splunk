@@ -199,7 +199,7 @@ define([
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
       this.scope.$on('$destroy', () => {
-        this.linearChartAgent.destroy();
+        this.linearChartAgent && this.linearChartAgent.destroy();
         this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
