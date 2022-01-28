@@ -178,6 +178,7 @@ define([
         "AGENT_ID",
         "AGENT_GROUP",
       ]);
+      this.scope.canAddAgents = this.isAllowed('AGENT_CREATE', ['RESOURCELESS'])
 
       this.scope.expandChartAgent = false;
       this.scope.$applyAsync();
