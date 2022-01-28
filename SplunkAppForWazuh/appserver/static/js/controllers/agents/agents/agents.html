@@ -125,6 +125,7 @@
     <md-card class="wz-md-card wz-margin-top-15">
       <!-- Table -->
       <md-card-actions layout="row" layout-align="start center"
+        ng-if='canAddAgents'
         class="layout-align-start-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
         <a class="cursor-pointer green-href" ng-click="addNewAgent()">Add new agent</a>
       </md-card-actions>

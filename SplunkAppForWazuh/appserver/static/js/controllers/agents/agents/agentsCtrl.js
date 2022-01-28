@@ -178,6 +178,7 @@ define([
         "AGENT_ID",
         "AGENT_GROUP",
       ]);
+      this.scope.canAddAgents = this.isAllowed('AGENT_CREATE', ['RESOURCELESS'])
 
       this.scope.expandChartAgent = false;
       this.scope.$applyAsync();
@@ -199,7 +200,7 @@ define([
       this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
       this.scope.$on('$destroy', () => {
-        this.linearChartAgent.destroy();
+        this.linearChartAgent && this.linearChartAgent.destroy();
         this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
