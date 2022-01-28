@@ -36,9 +36,6 @@ define(
         this.$requirementService = $requirementService
         this.$validationService = $validationService
         this.userPermissions = userPermissions
-        // TODO delete me
-        this.getUserPolicies()
-          .then(data => { console.log(data); this.userPolicies = data })
       }
 
       /**
