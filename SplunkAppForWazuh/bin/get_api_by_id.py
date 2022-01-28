@@ -32,16 +32,12 @@ def get_api_by_id(id: int):
         api_as_json = json.loads(db.get(id))['data']
 
         # Ensure backwards compatibility (add the new fields to the registries)
-        if not 'runAs' in api_as_json:
-            api_as_json['runAs'] = False
+        if not 'runAs' in api_as_json or not 'alias' in api_as_json:
+            if not 'runAs' in api_as_json:
+                api_as_json['runAs'] = False
+            if not 'alias' in api_as_json:
+                api_as_json['alias'] = f"manager-{id}"
             db.update(api_as_json)
-        # FIXME use this code when the ALIAS stuff is merged
-        # if not 'runAs' in api_as_json or not 'alias' in api_as_json:
-        #     if not 'runAs' in api_as_json:
-        #         api_as_json['runAs'] = False
-        #     if not 'alias' in api_as_json:
-        #         api_as_json['alias'] = f"manager-{id}"
-        #     db.update(api_as_json)
 
         return API_model(
             address=api_as_json['url'],

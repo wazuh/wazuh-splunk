@@ -77,25 +77,11 @@ define([
           setTimeout(() => document.body.removeChild(overlay), 100);
         };
 
-          $scope.openModal = () => {
-            const modal = document.getElementById('quick-settings-modal');
-            const overlay = document.createElement('div');
-            overlay.id = 'quick-settings-overlay';
-            document.body.appendChild(overlay);
-            overlay.classList.add('modal-backdrop', 'fade');
-            overlay.onclick = () => $scope.closeModal();
-            setTimeout(() => {
-              overlay.classList.add('in')
-              modal.classList.remove('fade')
-              modal.classList.replace('hide', 'show');
-            }, 100);
-          }
+        let dropdownAPI;
+        let dropdownIndex;
+        let dropdownSourceType;
 
-          let dropdownAPI;
-          let dropdownIndex;
-          let dropdownSourceType;
-  
-          let onChangeListeners = [];
+        let onChangeListeners = [];
 
         const onChangeDropdownAPI = () => {
           onChangeListeners.push(
