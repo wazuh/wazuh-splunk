@@ -9,6 +9,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Support for Wazuh 4.3.0
 - Added Alias field to API to facilitate distinguishing between different managers [#1166](https://github.com/wazuh/wazuh-splunk/pull/1166)
+- Ensure backwards compatibility [#1126](https://github.com/wazuh/wazuh-splunk/pull/1226)
 - Added a Security Section to manage security related configurations [#1148](https://github.com/wazuh/wazuh-splunk/issues/1148)
 - Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
 - Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
