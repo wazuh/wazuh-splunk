@@ -27,7 +27,7 @@
     "prettier": "^1.14.3"
   },
   "scripts": {
-    "pretty": "prettier --single-quote --semi=false --write SplunkAppForWazuh/**/*.js !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
+    "pretty": "prettier --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
     "lint": "eslint . --ext .js -c .eslintrc.json",
     "test": "mocha tests/manager.js",
     "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../..",
