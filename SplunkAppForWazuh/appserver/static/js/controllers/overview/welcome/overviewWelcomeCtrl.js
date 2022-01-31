@@ -13,6 +13,7 @@ define(['../../module'], function(controllers) {
      */
     constructor(
       $scope,
+      isSplunkAdmin,
       agentsInfo,
       extensions,
       $notificationService,
@@ -35,6 +36,7 @@ define(['../../module'], function(controllers) {
         "AGENT_ID",
         "AGENT_GROUP",
       ]);
+      this.scope.isSplunkAdmin = isSplunkAdmin
       
       try {
         this.scope.agentsCountTotal = agentsInfo.data.data.total

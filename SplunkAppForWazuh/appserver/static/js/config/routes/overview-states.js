@@ -39,6 +39,16 @@ define(['../module'], function (module) {
                 return await $security_service.updateUserPermissions()
               }
             ],
+            isSplunkAdmin: [
+              '$splunkUsers',
+              async $splunkUsers => {
+                try {
+                  return await $splunkUsers.isAdmin()
+                } catch (err) {
+                  return { error: 'Cannot fetch Splunk users from API', detail: err }
+                }
+              }
+            ],
             agentsInfo: [
               '$requestService',
               async $requestService => {
