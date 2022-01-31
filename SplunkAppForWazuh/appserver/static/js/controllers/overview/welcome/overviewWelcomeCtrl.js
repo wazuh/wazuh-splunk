@@ -9,6 +9,7 @@ define(['../../module'], function(controllers) {
      * @param {Object} extensions
      * @param {Object} $notificationService
      * @param {Object} $currentDataService
+     * @param {Object} $security_service
      */
     constructor(
       $scope,
@@ -16,6 +17,7 @@ define(['../../module'], function(controllers) {
       extensions,
       $notificationService,
       $currentDataService,
+      $security_service
     ) {
       this.scope = $scope
       this.notificationService = $notificationService
@@ -27,6 +29,13 @@ define(['../../module'], function(controllers) {
         threadDetection: false,
         regulatory: false
       }
+
+      /* RBAC flags */
+      this.scope.canReadAgents = $security_service.isAllowed("AGENT_READ", [
+        "AGENT_ID",
+        "AGENT_GROUP",
+      ]);
+      
       try {
         this.scope.agentsCountTotal = agentsInfo.data.data.total
         this.scope.agentsCountActive = agentsInfo.data.data.active
