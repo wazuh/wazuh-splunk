@@ -21,6 +21,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Implemented a server to fetch Splunk's users and its roles. [#1156](https://github.com/wazuh/wazuh-splunk/issues/1156)
 - Added a run_as checkbox to the API configuration [#1149](https://github.com/wazuh/wazuh-splunk/issues/1149)
 - Added the ability to use the Authorization Context login method. [#1174](https://github.com/wazuh/wazuh-splunk/pull/1174)
+- Extensions now can only be changed by Splunk Admins [#1228](https://github.com/wazuh/wazuh-splunk/issues/1228)
 
 ### Changed
 

@@ -48,7 +48,7 @@
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">Security Information Management</h3>
-          <div class="extensions-eye">
+          <div class="extensions-eye" ng-show="isSplunkAdmin">
             <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
             <wz-svg ng-click="showExtensionsLists('security')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
           </div>
@@ -82,7 +82,7 @@
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">Auditing and Policy Monitoring</h3>
-          <div class="extensions-eye">
+          <div class="extensions-eye" ng-show="isSplunkAdmin">
             <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
             <wz-svg ng-click="showExtensionsLists('auditing')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
           </div>
@@ -127,7 +127,7 @@
     <div class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
         <h3 class="euiTitle wc-title welcome-card-main-title">Threat Detection and Response</h3>
-        <div class="extensions-eye">
+        <div class="extensions-eye" ng-show="isSplunkAdmin">
           <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
           <wz-svg ng-click="showExtensionsLists('threadDetection')" icon="eye" color="#396e3e" class="pull-right">
           </wz-svg>
@@ -190,7 +190,7 @@
     <div class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
         <h3 class="euiTitle wc-title welcome-card-main-title">Regulatory Compliance</h3>
-        <div class="extensions-eye">
+        <div class="extensions-eye" ng-show="isSplunkAdmin">
           <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
           <wz-svg ng-click="showExtensionsLists('regulatory')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
         </div>
