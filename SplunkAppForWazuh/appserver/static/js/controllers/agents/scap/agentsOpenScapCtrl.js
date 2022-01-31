@@ -44,7 +44,6 @@ define([
      * @param {*} $reportingService
      * @param {*} reportingEnabled
      * @param {*} extensions
-     * @param {*} $security_service
      */
 
     constructor(
@@ -55,8 +54,7 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions,
-      $security_service
+      extensions
     ) {
       super(
         $scope,

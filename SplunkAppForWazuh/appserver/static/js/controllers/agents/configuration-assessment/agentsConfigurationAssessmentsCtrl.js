@@ -137,6 +137,7 @@ define(["../../module", "../../../dashboardMain"], function (
 
       this.scope.loadCharts = (policy) => {
         setTimeout(function () {
+          // eslint-disable-next-line no-undef
           const chart = new Chart(document.getElementById(policy.policy_id), {
             type: "doughnut",
             data: {

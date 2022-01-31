@@ -101,7 +101,7 @@ define([
         this.searchManager = null
       })
 
-      this.scope.$on("viewUserContent", (ev, parameters) => {
+      this.scope.$on("viewUserContent", (ev, _parameters) => {
         this.scope.isViewUser = true
         this.dropdown.settings.set("disabled", true)
         ev.stopPropagation()

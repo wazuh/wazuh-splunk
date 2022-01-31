@@ -22,7 +22,6 @@ define(["../../module"], function (controllers) {
 
     $onInit() {
       try {
-        const id = this.currentApi["_key"]
         this.scope.configuration = this.configuration.data.data
         this.dropDownValue = false
         this.editingNewValue = false

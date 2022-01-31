@@ -67,6 +67,7 @@ define(["../module", "Dropzone"], function (app, Dropzone) {
                 ),
                 _isArray7 = Array.isArray(_iterator7),
                 _i7 = 0,
+                // eslint-disable-next-line no-redeclare
                 _iterator7 = _isArray7
                   ? _iterator7
                   : _iterator7[Symbol.iterator]();
@@ -96,8 +97,7 @@ define(["../module", "Dropzone"], function (app, Dropzone) {
           }
         })
 
-        $scope.myDropzone.on("error", function (file, jsonResponse) {
-          var errorMessage = "Could not upload document: "
+        $scope.myDropzone.on("error", function (_file, jsonResponse) {
           if (jsonResponse["ValidationMessage"] != null) {
             $scope.errorMessage += jsonResponse["ValidationMessage"]
           } else {
@@ -105,7 +105,7 @@ define(["../module", "Dropzone"], function (app, Dropzone) {
           }
         })
 
-        $scope.myDropzone.on("removedfile", function (file) {
+        $scope.myDropzone.on("removedfile", function (_file) {
           if ($scope.myDropzone.files.length === 0) {
             $scope.noFilesAdded = true
             $scope.$applyAsync()

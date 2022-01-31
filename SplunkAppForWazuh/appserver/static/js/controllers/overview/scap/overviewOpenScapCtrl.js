@@ -45,6 +45,7 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} $notificationService
      * @param {*} reportingEnabled
      * @param {*} extensions
      */
@@ -54,6 +55,7 @@ define([
       $currentDataService,
       $state,
       $reportingService,
+      $notificationService,
       reportingEnabled,
       extensions
     ) {
@@ -64,6 +66,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.currentDataService.addFilter(
@@ -219,7 +222,9 @@ define([
             this.reportMetrics,
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
 
     /**

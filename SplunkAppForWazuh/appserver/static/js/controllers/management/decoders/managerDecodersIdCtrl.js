@@ -134,12 +134,14 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
         const readOnly = !(
           this.scope.currentDecoder.relative_dirname === "etc/decoders"
         )
-        const result = await this.fetchFileContent(
+        await this.fetchFileContent(
           fileName,
           this.scope.currentDecoder.relative_dirname,
           readOnly
         )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
       return
     }
 

@@ -18,7 +18,7 @@ define(["../module"], function (directives) {
       scope: {
         callBack: "&iframeOnload",
       },
-      link: function (scope, element, attrs) {
+      link: function (scope, element, _attrs) {
         element.on("load", function () {
           return scope.callBack()
         })

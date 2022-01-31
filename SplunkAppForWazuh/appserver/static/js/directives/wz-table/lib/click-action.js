@@ -22,7 +22,7 @@ define([], function () {
   ) {
     if (
       instance.path === "/agents" ||
-      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path) || //FIXME: This endpoint doesn't exist in the current API versions. This should be checked and removed if is not necessary
+      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/).test(instance.path) || //FIXME: This endpoint doesn't exist in the current API versions. This should be checked and removed if is not necessary
       new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/).test(instance.path) // eslint-disable-line
     ) {
       // Go to and store an agent details

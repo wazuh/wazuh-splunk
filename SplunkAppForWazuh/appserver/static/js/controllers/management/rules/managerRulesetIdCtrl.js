@@ -147,7 +147,9 @@ define(["../../module", "./ruleset"], function (controllers, Ruleset) {
           this.scope.ruleInfo.relative_dirname,
           readOnly
         )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
       return
     }
 

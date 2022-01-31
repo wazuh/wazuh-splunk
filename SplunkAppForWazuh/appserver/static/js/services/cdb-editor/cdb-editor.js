@@ -45,7 +45,7 @@ define(["../module"], function (module) {
       }
     }
 
-    async getConfiguration(file, path) {
+    async getConfiguration(file, _path) {
       try {
         const url = `/lists/files/${file}?raw=true`
         const result = await this.apiReq(url, { origin: "raw" })

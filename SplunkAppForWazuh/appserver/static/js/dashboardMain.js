@@ -24,14 +24,17 @@ define([
      * @param {*} $state
      * @param {*} $currentDataService
      * @param {*} $urlTokenModel
+     * @param {*} $notificationService
      */
     constructor(
       $scope,
       $reportingService,
       $state,
       $currentDataService,
-      $urlTokenModel
+      $urlTokenModel,
+      $notificationService
     ) {
+      this.notificationService = $notificationService
       this.scope = $scope
       this.reportingService = $reportingService
       this.state = $state
@@ -81,7 +84,9 @@ define([
             try {
               // There's not always metrics to set.
               this.setReportMetrics()
-            } catch (error) {}
+            } catch (error) {
+              this.notification.showErrorToast(error.message || error)
+            }
           } else {
             this.vizz.map((v) => {
               if (v.constructor.name === "RawTableData") {
@@ -111,15 +116,19 @@ define([
           // Agents configuration assesment has not visualizations, this prevent an error
           try {
             this.vizz.map((vizz) => vizz.destroy())
-          } catch (error) {}
+          } catch (error) {
+            this.notification.showErrorToast(error.message || error)
+          }
 
           // There's not always a dropdown.
           try {
             this.dropdown.destroy()
-          } catch (error) {}
+          } catch (error) {
+            this.notification.showErrorToast(error.message || error)
+          }
         })
       } catch (error) {
-        console.error("Error initializing DashboardMain: ", error)
+        this.notification.showErrorToast("Error initializing DashboardMain: ", error.message || error)
       }
     }
 

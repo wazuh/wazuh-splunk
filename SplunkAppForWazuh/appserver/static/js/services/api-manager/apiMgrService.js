@@ -339,7 +339,6 @@ define(["../module"], function (module) {
           })
           if (!equal) {
             await $splunkStoreService.update(updatedApi)
-          } else {
           }
           delete updatedApi["passapi"]
           return updatedApi

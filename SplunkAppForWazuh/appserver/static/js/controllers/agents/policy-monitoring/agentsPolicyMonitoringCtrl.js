@@ -42,7 +42,6 @@ define([
      * @param {*} $tableFilterService
      * @param {*} reportingEnabled
      * @param {*} extensions
-     * @param {*} $security_service
      */
 
     constructor(
@@ -58,8 +57,7 @@ define([
       $csvRequestService,
       $tableFilterService,
       reportingEnabled,
-      extensions,
-      $security_service
+      extensions
     ) {
       super(
         $scope,

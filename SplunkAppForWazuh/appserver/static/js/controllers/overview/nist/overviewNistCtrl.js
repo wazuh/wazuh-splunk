@@ -29,6 +29,7 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} $notificationService
      * @param {*} nistTabs
      * @param {*} reportingEnabled
      * @param {*} gdprExtensionEnabled
@@ -40,6 +41,7 @@ define([
       $currentDataService,
       $state,
       $reportingService,
+      $notificationService,
       nistTabs,
       reportingEnabled,
       pciExtensionEnabled,
@@ -53,6 +55,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
@@ -164,7 +167,9 @@ define([
             {}, //Metrics
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
   }
   app.controller("overviewNistCtrl", Nist)

@@ -56,7 +56,7 @@ define(["../module"], function (module) {
       }
     }
 
-    async getConfiguration(file, dir, node, readOnly = false) {
+    async getConfiguration(file, dir, node, _readOnly = false) {
       try {
         const typeFile = this.typeFilesByPath[dir]
         let url = `/${typeFile}/files/${file}?raw=true`
@@ -65,10 +65,10 @@ define(["../module"], function (module) {
           url = `/${nodeUrl}/configuration?raw=true`
         }
 
-        let path = dir ? `${dir}/${file}` : file
-        if (!readOnly) {
-          path = path.startsWith("etc/") ? path : `etc/${path}`
-        }
+        // let path = dir ? `${dir}/${file}` : file
+        // if (!readOnly) {
+        //   path = path.startsWith("etc/") ? path : `etc/${path}`
+        // }
         const result = await this.apiReq(url, { origin: "xmlreader" })
         if (!result || !result.data) {
           throw new Error(`Error fetching ${file} content.`)

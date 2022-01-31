@@ -27,6 +27,7 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} $notificationService
      * @param {*} pciTabs
      * @param {*} reportingEnabled
      * @param {*} gdprExtensionEnabled
@@ -36,6 +37,7 @@ define([
       $urlTokenModel,
       $scope,
       $currentDataService,
+      $notificationService,
       $state,
       $reportingService,
       pciTabs,
@@ -51,6 +53,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
@@ -138,7 +141,9 @@ define([
             {}, //Metrics
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
   }
 

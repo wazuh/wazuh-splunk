@@ -43,7 +43,6 @@ define([
      * @param {*} gdprExtensionEnabled
      * @param {*} hipaaExtensionEnabled
      * @param {*} nistExtensionEnabled
-     * @param {*} $security_service
      */
     constructor(
       $urlTokenModel,
@@ -56,8 +55,7 @@ define([
       reportingEnabled,
       gdprExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled,
-      $security_service
+      nistExtensionEnabled
     ) {
       super(
         $scope,

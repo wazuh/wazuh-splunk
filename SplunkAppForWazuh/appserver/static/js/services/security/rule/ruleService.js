@@ -14,7 +14,7 @@
 define(["../../module"], function (module) {
   "use strict"
 
-  module.service("$ruleService", function ($requestService, $state) {
+  module.service("$ruleService", function ($requestService, _$state) {
     const fetchNewRule = async (rulePayload) => {
       return await $requestService.apiReq(
         "/security/rules",

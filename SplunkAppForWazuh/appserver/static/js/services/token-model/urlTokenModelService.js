@@ -23,6 +23,7 @@ define([
 
       this.urlTokenModel.on("url:navigate", () => {
         this.defaultTokenModel.set(this.urlTokenModel.toJSON())
+        // eslint-disable-next-line no-undef
         if (typeof _.isEmpty !== "undefined") {
           //eslint-disable-line
           if (

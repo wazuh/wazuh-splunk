@@ -29,6 +29,7 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} $notificationService
      * @param {*} hipaaTabs
      * @param {*} reportingEnabled
      * @param {*} pciExtensionEnabled
@@ -41,6 +42,7 @@ define([
       $currentDataService,
       $state,
       $reportingService,
+      $notificationService,
       hipaaTabs,
       reportingEnabled,
       pciExtensionEnabled,
@@ -54,6 +56,7 @@ define([
         $currentDataService,
         $urlTokenModel
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
@@ -174,7 +177,9 @@ define([
             {}, //Metrics
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
   }
   app.controller("overviewHipaaCtrl", Hipaa)

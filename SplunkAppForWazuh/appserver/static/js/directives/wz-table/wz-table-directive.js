@@ -498,7 +498,7 @@ define([
 
         $scope.isLookingGroup = () => {
           try {
-            const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/)
+            const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-.]*\/agents$/)
             $scope.isLookingDefaultGroup =
               instance.path.split("/").pop() === "default"
             return regexp.test(instance.path)
@@ -639,8 +639,9 @@ define([
 
         $scope.confirmRemoveAgent = async (agent) => {
           try {
+            // eslint-disable-next-line no-unused-vars
             const [_, group] =
-              instance.path.match(/^\/groups\/([a-zA-Z0-9_\-\.]*)\/agents$/) ||
+              instance.path.match(/^\/groups\/([a-zA-Z0-9_\-.]*)\/agents$/) ||
               []
             const result = await $groupHandler.removeAgentFromGroup(
               group,
@@ -762,7 +763,7 @@ define([
         }
 
         $scope.loadRegistryValueDetails = async (item) => {
-          var parentEl = angular.element(document.body)
+          var parentEl = angular.element(document.body)  // eslint-disable-line
           $mdDialog.show({
             parent: parentEl,
             template: `<md-dialog aria-label="List dialog">
