@@ -8,7 +8,7 @@
     "jquery" : true
   },
   "parserOptions": {
-    "ecmaVersion": 9,
+    "ecmaVersion": 2018,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
@@ -27,7 +27,8 @@
     "node/no-unsupported-features": 0,
     "node/no-unsupported-features/es-syntax": 0,
     "no-extra-boolean-cast": 0,
-    "no-cond-assign": 0
+    "no-cond-assign": 0,
+    "no-unused-vars": ["error", {"argsIgnorePattern": "^_|_"}]
   },
   "plugins": [
     "node",
