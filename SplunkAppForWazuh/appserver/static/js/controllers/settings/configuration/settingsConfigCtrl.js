@@ -7,10 +7,12 @@ define(['../../module'], function(controllers) {
       $currentDataService,
       $notificationService,
       configuration,
-      $requestService
+      $requestService,
+      isWazuhAdmin
     ) {
       this.scope = $scope
       this.scope.extensions = {}
+      this.scope.isWazuhAdmin = isWazuhAdmin
       this.notification = $notificationService
       this.currentApi = $currentDataService.getApi()
       this.getCurrentConfiguration = $currentDataService.getCurrentConfiguration
@@ -22,7 +24,6 @@ define(['../../module'], function(controllers) {
       try {
         const id = this.currentApi['_key']
         this.scope.configuration = this.configuration.data.data
-
         this.dropDownValue = false
         this.editingNewValue = false
         this.scope.logLevelOptions = ['info', 'debug']
