@@ -52,7 +52,7 @@ define(["../../module"], function (app) {
       this.notification = $notificationService
       this.agent = agent
       this.extensions = extensions
-      this.scope.extensions = angular.copy(this.extensions)  // eslint-disable-line
+      this.scope.extensions = angular.copy(this.extensions) // eslint-disable-line
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
       this.scope.showRootcheckScan = false

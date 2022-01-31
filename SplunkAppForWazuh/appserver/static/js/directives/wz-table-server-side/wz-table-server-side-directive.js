@@ -640,7 +640,7 @@ define([
         }
 
         $scope.loadRegistryValueDetails = async (item) => {
-          var parentEl = angular.element(document.body)  // eslint-disable-line
+          var parentEl = angular.element(document.body) // eslint-disable-line
           $mdDialog.show({
             parent: parentEl,
             template: `<md-dialog aria-label="List dialog">

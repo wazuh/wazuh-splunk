@@ -49,7 +49,7 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       super(
         $scope,

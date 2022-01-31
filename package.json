@@ -24,7 +24,7 @@
     "esprima": "^4.0.1",
     "mocha": "^5.2.0",
     "needle": "^2.2.4",
-    "prettier": "^1.14.3"
+    "prettier": "^2.5.1"
   },
   "scripts": {
     "pretty": "prettier --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",

@@ -128,7 +128,10 @@ define([
           }
         })
       } catch (error) {
-        this.notification.showErrorToast("Error initializing DashboardMain: ", error.message || error)
+        this.notification.showErrorToast(
+          "Error initializing DashboardMain: ",
+          error.message || error
+        )
       }
     }
 

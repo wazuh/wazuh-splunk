@@ -47,7 +47,7 @@ define(["../../module"], function (controllers) {
       } catch (error) {} //eslint-disable-line
       try {
         this.extensions = extensions
-        this.scope.extensions = angular.copy(this.extensions)  // eslint-disable-line
+        this.scope.extensions = angular.copy(this.extensions) // eslint-disable-line
         this.api = this.currentApi["_key"]
       } catch (error) {} //eslint-disable-line
     }
