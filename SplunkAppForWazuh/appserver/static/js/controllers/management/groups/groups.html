@@ -1,12 +1,13 @@
 <wz-rbac-prompt permissions="canReadGroups">
-
   <div
     flex
     layout="column"
     class="mozilla-table-size-85 wz-white-background"
-    ng-class="{'cursor-wait': multipleSelectorLoading}"
-  >
-    <md-content flex layout="column" class="overflow-hidden wz-white-background">
+    ng-class="{'cursor-wait': multipleSelectorLoading}">
+    <md-content
+      flex
+      layout="column"
+      class="overflow-hidden wz-white-background">
       <div layout="row" class="layout-row layout-align-end wz-white-background">
         <div class="wz-breadcrumb-margin">
           <span class="wz-text-link cursor-pointer" ui-sref="manager"
@@ -29,8 +30,7 @@
         ng-show="!loadingRing"
         layout="column"
         layout-padding
-        ng-if="!currentGroup || !currentGroup.name"
-      >
+        ng-if="!currentGroup || !currentGroup.name">
         <div layout="row">
           <span class="font-size-18">
             <i class="fa fa-fw fa-object-group" aria-hidden="true"></i>
@@ -39,8 +39,7 @@
           <span
             ng-if="canCreateGroup"
             class="font-size-18 wz-text-link"
-            ng-click="switchAddingGroup()"
-          >
+            ng-click="switchAddingGroup()">
             <wz-svg class="wz-margin-left-10" icon="plus"></wz-svg>
           </span>
         </div>
@@ -50,14 +49,12 @@
             ng-model="groupToBeAdded"
             type="text"
             class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-            aria-invalid="false"
-          />
+            aria-invalid="false" />
           <button
             type="submit"
             aria-label="Search"
             class="kuiLocalSearchButton addGroupBtn height-20"
-            ng-click="createGroup(groupToBeAdded)"
-          >
+            ng-click="createGroup(groupToBeAdded)">
             <span class="fa fa-save fa-fw" aria-hidden="true"></span>
           </button>
         </div>
@@ -70,7 +67,10 @@
       <div flex layout="column" layout-align="start stretch" ng-show="!load">
         <!-- MD5 Sums and Details cards -->
 
-        <div layout="row" class="md-padding-h wz-width-100" ng-if="lookingGroup">
+        <div
+          layout="row"
+          class="md-padding-h wz-width-100"
+          ng-if="lookingGroup">
           <div layout="row" style="padding: 25px 0 10px 0">
             <span class="font-size-18">
               <i class="fa fa-fw fa-object-group" aria-hidden="true"></i>
@@ -82,8 +82,7 @@
         <md-nav-bar
           ng-if="lookingGroup && currentGroup && !addingAgents && !editingFile"
           class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-margin-bottom-15"
-          md-selected-nav-item="groupsSelectedTab"
-        >
+          md-selected-nav-item="groupsSelectedTab">
           <md-nav-item
             class="wz-nav-item"
             md-nav-click="goBackToAgents()"
@@ -104,8 +103,7 @@
             <button
               class="md-icon-button cursor-pointer"
               aria-label="Back"
-              ng-click="goBackFiles()"
-            >
+              ng-click="goBackFiles()">
               <i class="fa fa-fw fa-close" aria-hidden="true"></i>
               <md-tooltip md-direction="bottom" class="wz-tooltip"
                 >Close file</md-tooltip
@@ -118,21 +116,18 @@
               ng-if="canUpdateConfigGroup(currentGroup.name)"
               ng-disabled="xmlHasErrors || saveIncomplete"
               ng-click="doSaveGroupAgentConfig()"
-              class="btn wz-button-empty pull-right wz-margin-left-10"
-            >
+              class="btn wz-button-empty pull-right wz-margin-left-10">
               <span
                 ng-show="!xmlHasErrors && canUpdateConfigGroup(currentGroup.name)"
                 ><i
                   ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                  aria-hidden="true"
-                ></i>
+                  aria-hidden="true"></i>
                 Save file</span
               >
               <span ng-show="xmlHasErrors" class="btn-danger"
                 ><i
                   aria-hidden="true"
-                  class="fa fa-fw fa-exclamation-triangle"
-                ></i>
+                  class="fa fa-fw fa-exclamation-triangle"></i>
                 XML format error</span
               >
             </button>
@@ -144,26 +139,25 @@
               data="fetchedXML"
               target-name="currentGroup.name"
               valid-fn="xmlIsValid(valid)"
-              close-fn="closeEditingFile()"
-            >
+              close-fn="closeEditingFile()">
             </wz-xml-file-editor>
           </div>
         </div>
         <!-- XML editor for group agents -->
 
         <div ng-if="!editingFile" class="md-padding-h">
-          <div layout="row" ng-if="lookingGroup && currentGroup && addingAgents">
+          <div
+            layout="row"
+            ng-if="lookingGroup && currentGroup && addingAgents">
             <button
               ng-click="addMultipleAgents(false)"
-              class="btn wz-button-cancel"
-            >
+              class="btn wz-button-cancel">
               Cancel
             </button>
             <button
               ng-hide="moreThan500"
               ng-click="saveAddAgents()"
-              class="btn wz-button-empty wz-margin-left-8 wz-margin-left-5"
-            >
+              class="btn wz-button-empty wz-margin-left-8 wz-margin-left-5">
               <i aria-hidden="true" class="fa fa-fw fa-save"></i> Apply changes
             </button>
             <span class="error-msg" ng-show="moreThan500"
@@ -181,34 +175,29 @@
                 type="text"
                 class="kuiLocalSearchInput height-40 wz-width-100"
                 aria-invalid="false"
-                wz-enter="search(custom_search)"
-              />
+                wz-enter="search(custom_search)" />
             </label>
             <button
               type="submit"
               aria-label="Search"
               class="btn height-40 wz-button-empty wz-margin-left-10"
-              ng-click="search(custom_search)"
-            >
+              ng-click="search(custom_search)">
               <span>Search</span>
             </button>
             <div
               ng-if="lookingGroup && (groupsSelectedTab === 'agents' || groupsSelectedTab === 'files')"
-              class="btns-separator"
-            ></div>
+              class="btns-separator"></div>
             <button
               ng-if="groupsSelectedTab === 'agents' && lookingGroup && currentGroup && canModifyAssignmentGroup(currentGroup.name)"
               ng-click="addMultipleAgents(true)"
-              class="btn height-40 wz-button-empty"
-            >
+              class="btn height-40 wz-button-empty">
               <wz-svg icon="plus"></wz-svg>
               Add or remove agents
             </button>
             <button
               ng-if="groupsSelectedTab === 'files' && lookingGroup && currentGroup && canModifyAssignmentGroup(currentGroup.name)"
               ng-click="editGroupAgentConfig(currentGroup)"
-              class="btn height-40 wz-button-empty"
-            >
+              class="btn height-40 wz-button-empty">
               <wz-svg icon="pencil"></wz-svg>
               Edit group configuration
             </button>
@@ -219,13 +208,11 @@
           <div class="wzXmlEditorError" ng-show="errorsEditingGroup">
             <md-card
               flex=""
-              class="no-margin-left wz-md-card _md flex lateral-margin-15"
-            >
+              class="no-margin-left wz-md-card _md flex lateral-margin-15">
               <md-list role="list" class="mdListXmlError">
                 <md-list-item
                   style="color: #ff645c !important; margin-bottom: -30px"
-                  ng-repeat="groupErr in errorsEditingGroup track by $index"
-                >
+                  ng-repeat="groupErr in errorsEditingGroup track by $index">
                   Agents (<span ng-repeat="err in groupErr"
                     >{{err.id}}{{$last ? '):&nbsp;' : ',&nbsp;'}}</span
                   >
@@ -239,21 +226,18 @@
           <md-card
             class="wz-md-card no-margin-sides"
             style="min-height: 225px"
-            ng-if="(!addingAgents || !lookingGroup) && !file"
-          >
+            ng-if="(!addingAgents || !lookingGroup) && !file">
             <!-- Export group config -->
             <md-card-actions
               layout-align="end center"
               class="wz-card-actions wz-card-actions-top md-actions-conf"
-              ng-show="!file && lookingGroup && currentGroup && !addingAgents && !editingFile"
-            >
+              ng-show="!file && lookingGroup && currentGroup && !addingAgents && !editingFile">
               <button
                 ng-class="{'link-disabled': loadingReporting }"
                 class="btn wz-button-empty btn-export-agent"
                 id="btnDownload"
                 ng-click="showModulesToExport()"
-                ng-disabled="loadingReporting "
-              >
+                ng-disabled="loadingReporting ">
                 <div ng-show="!loadingReporting">
                   <wz-svg icon="download" ng-show="!loadingReporting"></wz-svg
                   >&nbsp;PDF
@@ -262,20 +246,19 @@
                   <i
                     ng-show="loadingReporting"
                     class="fa fa-fw fa-spin fa-spinner"
-                    aria-hidden="true"
-                  ></i
+                    aria-hidden="true"></i
                   >&nbsp;PDF
                 </div>
               </button>
               <div ng-if="exportConfig" class="agent-config-popover">
                 <ul class="noDot ul-extensions">
-                  <li ng-repeat="(key, value) in selectedOptions track by $index">
+                  <li
+                    ng-repeat="(key, value) in selectedOptions track by $index">
                     <md-checkbox
                       class="wz-margin-bottom--5"
                       ng-checked="selectedOptions[key]"
                       ng-model="selectedOptions[key]"
-                      aria-label="key"
-                    >
+                      aria-label="key">
                       {{keyEquivalences(key)}}
                     </md-checkbox>
                   </li>
@@ -288,8 +271,7 @@
                   ng-disabled="checkAllDisabled()"
                   class="btn wz-button btn-agent-report"
                   ng-click="initReportConfig()"
-                  aria-label="Init report"
-                >
+                  aria-label="Init report">
                   Generate PDF report
                 </button>
               </div>
@@ -303,8 +285,7 @@
                   path="'/groups'"
                   keys="['name','count','mergedSum']"
                   allow-click="true"
-                  row-sizes="[20,15,10]"
-                >
+                  row-sizes="[20,15,10]">
                 </wazuh-table>
               </div>
               <!-- End groups table -->
@@ -313,14 +294,12 @@
               <div
                 layout="row"
                 class="ruleset-csv-formater"
-                ng-if="!lookingGroup"
-              >
+                ng-if="!lookingGroup">
                 <span flex></span>
                 <a
                   class="small formatted-color"
                   id="btnDownload"
-                  ng-click="downloadCsv('/groups', 'groups.csv')"
-                >
+                  ng-click="downloadCsv('/groups', 'groups.csv')">
                   <wz-svg icon="download"></wz-svg>&nbsp;Formatted
                 </a>
               </div>
@@ -331,8 +310,7 @@
                 <div
                   layout="row"
                   ng-if="lookingGroup && groupsSelectedTab==='agents' && currentGroup"
-                  class="md-padding"
-                >
+                  class="md-padding">
                   <wazuh-table
                     flex
                     path="'/groups/' + currentGroup.name + '/agents'"
@@ -340,8 +318,7 @@
                     allow-click="true"
                     row-sizes="[20,15,10]"
                     custom-columns="true"
-                    empty-results="'No agents were added to this group.'"
-                  />
+                    empty-results="'No agents were added to this group.'" />
                 </div>
                 <!-- End Group agents table -->
 
@@ -349,14 +326,12 @@
                 <div
                   layout="row"
                   class="ruleset-csv-formater"
-                  ng-if="lookingGroup && groupsSelectedTab==='agents'"
-                >
+                  ng-if="lookingGroup && groupsSelectedTab==='agents'">
                   <span flex></span>
                   <a
                     class="small formatted-color"
                     id="btnDownload"
-                    ng-click="downloadCsv('/groups/' + currentGroup.name + '/agents', currentGroup.name + '-group-agents.csv')"
-                  >
+                    ng-click="downloadCsv('/groups/' + currentGroup.name + '/agents', currentGroup.name + '-group-agents.csv')">
                     <wz-svg icon="download"></wz-svg>&nbsp;Formatted
                   </a>
                 </div>
@@ -365,16 +340,14 @@
                 <div
                   layout="row"
                   ng-if="lookingGroup && groupsSelectedTab==='files' && !fileViewer && currentGroup"
-                  class="md-padding"
-                >
+                  class="md-padding">
                   <wazuh-table
                     extra-limit="100"
                     flex
                     path="'/groups/' + currentGroup.name + '/files'"
                     keys="[{value:'filename',size:2},{value:'hash',size:6}]"
                     allow-click="false"
-                    row-sizes="[10,8,6,4]"
-                  >
+                    row-sizes="[10,8,6,4]">
                   </wazuh-table>
                 </div>
                 <!-- End Group files table -->
@@ -382,14 +355,12 @@
                 <div
                   layout="row"
                   class="ruleset-csv-formater"
-                  ng-if="lookingGroup && groupsSelectedTab==='files' && !file"
-                >
+                  ng-if="lookingGroup && groupsSelectedTab==='files' && !file">
                   <span flex></span>
                   <a
                     class="small formatted-color"
                     id="btnDownload"
-                    ng-click="downloadCsv('/groups/' + currentGroup.name + '/files', currentGroup.name + '-group-files.csv')"
-                  >
+                    ng-click="downloadCsv('/groups/' + currentGroup.name + '/files', currentGroup.name + '-group-files.csv')">
                     <wz-svg icon="download"></wz-svg>&nbsp;Formatted
                   </a>
                 </div>
@@ -403,8 +374,7 @@
             flex
             layout="column"
             class="md-padding"
-            ng-if="lookingGroup && groupsSelectedTab==='files' && file"
-          >
+            ng-if="lookingGroup && groupsSelectedTab==='files' && file">
             <div flex layout="column">
               <div layout="row" class="wz-padding-bottom-14">
                 <span flex class="wz-headline-title">{{ filename }}</span>
@@ -422,8 +392,7 @@
               <div flex layout="column">
                 <pre
                   flex
-                  class="wz-pre groupContentViewer wzXmlEditor wz-overflow-y-auto"
-                ><code wz-dynamic="file"></code></pre>
+                  class="wz-pre groupContentViewer wzXmlEditor wz-overflow-y-auto"><code wz-dynamic="file"></code></pre>
               </div>
             </div>
           </div>
@@ -432,8 +401,7 @@
         <div
           layout="row"
           class="md-padding wz-margin-left-5"
-          ng-if="addingAgents"
-        >
+          ng-if="addingAgents">
           <span
             ng-show="!multipleSelectorLoading"
             class="wzMultipleSelectorCounter"
@@ -450,8 +418,7 @@
             title-selected-items="Current agents in the group"
             total-selected-items="totalSelectedAgents"
             reload-scroll="reload(element, searchTerm, 499, start)"
-            limit="checkLimit()"
-          >
+            limit="checkLimit()">
           </wz-multiple-selector>
         </div>
       </div>

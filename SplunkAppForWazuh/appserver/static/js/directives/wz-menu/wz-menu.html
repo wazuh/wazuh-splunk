@@ -4,8 +4,7 @@
     <!-- Wazuh app logo -->
     <a
       class="cursor-pointer wz-logo-container wz-margin-right-15"
-      ui-sref="overview"
-    >
+      ui-sref="overview">
       <img class="wz-responsive-img wz-logo" aria-hidden="true" />
     </a>
 
@@ -17,8 +16,7 @@
       ui-sref="overview"
       ng-click="select('overview')"
       ng-class="{'wz-menu-active': menuNavItem === 'overview' }"
-      aria-label="Overview tab"
-    >
+      aria-label="Overview tab">
       <wz-svg icon="chart"></wz-svg>
       Overview
     </md-button>
@@ -29,8 +27,7 @@
       ui-sref="manager"
       ng-click="select('manager')"
       ng-class="{'wz-menu-active': menuNavItem === 'manager' }"
-      aria-label="Cluster tab"
-    >
+      aria-label="Cluster tab">
       <wz-svg icon="cloud"></wz-svg>
       Management
     </md-button>
@@ -41,8 +38,7 @@
       ui-sref="agents"
       ng-click="select('agents')"
       ng-class="{'wz-menu-active': menuNavItem === 'agents' }"
-      aria-label="Agents tab"
-    >
+      aria-label="Agents tab">
       <i class="fa fa-fw fa-tv" aria-hidden="true"></i>
       Agents
     </md-button>
@@ -52,8 +48,7 @@
       class="wz-menu-button md-button md-ink-ripple"
       ng-click="openDiscover()"
       ng-class="{'wz-menu-active': menuNavItem === 'discover' }"
-      aria-label="Discover"
-    >
+      aria-label="Discover">
       <wz-svg icon="compass"></wz-svg>
       Discover
     </a>
@@ -64,8 +59,7 @@
       ui-sref="dev-tools"
       ng-click="select('dev-tools')"
       ng-class="{'wz-menu-active': menuNavItem === 'dev-tools' }"
-      aria-label="Dev Tools tab"
-    >
+      aria-label="Dev Tools tab">
       <wz-svg icon="console"></wz-svg>
       Dev tools
     </md-button>
@@ -76,8 +70,7 @@
       ui-sref="security.users"
       ng-click="select('security')"
       ng-class="{'wz-menu-active': menuNavItem === 'security' }"
-      aria-label="Security tab"
-    >
+      aria-label="Security tab">
       <wz-svg icon="shield"></wz-svg>
       Security
     </md-button>
@@ -110,8 +103,7 @@
         class="view---simplexml---dev---18scF triangleDownSmall---simplexml---dev---2oEma"
         data-icon="triangleDownSmall"
         data-render-time="0"
-        style="font-size: 1em"
-      ></i
+        style="font-size: 1em"></i
     ></a>
     <!-- Settings tab button -->
     <md-button
@@ -119,8 +111,7 @@
       ui-sref="settings.api"
       ng-click="select('settings')"
       ng-class="{'wz-menu-active': menuNavItem === 'settings' }"
-      aria-label="Settings tab"
-    >
+      aria-label="Settings tab">
       <wz-svg icon="settings"></wz-svg>
       <md-tooltip md-direction="bottom" class="wz-tooltip">
         Settings
@@ -138,8 +129,7 @@
       class="close"
       data-dismiss="modal"
       aria-hidden="true"
-      ng-click="closeModal()"
-    >
+      ng-click="closeModal()">
       &times;
     </button>
     <h3>Quick settings</h3>
@@ -149,64 +139,55 @@
       <!---Wazuh API selector--->
       <div
         class="control-group shared-controls-controlgroup control-group-default"
-        data-view="views/shared/controls/ControlGroup"
-      >
+        data-view="views/shared/controls/ControlGroup">
         <label class="control-label"> Wazuh API </label>
         <div
           role="group"
           aria-labelledby="label-views-shared-controls-controlgroup-view63"
-          class="controls controls-join ">
+          class="controls controls-join">
           <!-- Case more than 1 API -->
           <!-- CHECK RBAC PR MERGE -->
           <div
-            id="menuSelectAPI" 
+            id="menuSelectAPI"
             style="background: white !important"
             class="input-dropdown"
             ng-show="theresAPI&&apiList.length>1"
-            ng-title="currentAPI.alias">
-          </div>
+            ng-title="currentAPI.alias"></div>
           <!-- Case just 1 API -->
-          <span
-            ng-show="theresAPI&&apiList.length==1"
-            class="small">{{currentAPI.alias}}
+          <span ng-show="theresAPI&&apiList.length==1" class="small"
+            >{{currentAPI.alias}}
           </span>
         </div>
       </div>
       <!---Index Selector--->
       <div
         class="control-group shared-controls-controlgroup control-group-default"
-        data-view="views/shared/controls/ControlGroup"
-      >
+        data-view="views/shared/controls/ControlGroup">
         <label class="control-label"> Index </label>
         <div
           role="group"
           aria-labelledby="label-views-shared-controls-controlgroup-view63"
-          class="controls controls-join"
-        >
+          class="controls controls-join">
           <div
             style="background: white !important"
             class="input-dropdown"
             id="menuSelectIndex"
-            ng-title="currentAPI.managerName"
-          ></div>
+            ng-title="currentAPI.managerName"></div>
         </div>
       </div>
       <!---SourceType Selector--->
       <div
-        class="control-group shared-controls-controlgroup control-group-default"
-      >
+        class="control-group shared-controls-controlgroup control-group-default">
         <label class="control-label"> Source type </label>
         <div
           role="group"
           aria-labelledby="label-views-shared-controls-controlgroup-view63"
-          class="controls controls-join"
-        >
+          class="controls controls-join">
           <div
             style="background: white !important"
             class="input-dropdown"
             id="menuSelectSourceType"
-            ng-title="currentAPI.managerName"
-          ></div>
+            ng-title="currentAPI.managerName"></div>
         </div>
       </div>
     </div>

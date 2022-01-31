@@ -1,23 +1,47 @@
-<div ng-cloak flex layout="column" class='wz-white-background'>
+<div ng-cloak flex layout="column" class="wz-white-background">
   <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-breadcrumb-margin'>
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+    <div class="wz-breadcrumb-margin">
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / Logs </span>
     </div>
     <div flex></div>
-    <div style="margin-right:7px;" id='input1'></div>
+    <div style="margin-right: 7px" id="input1"></div>
   </div>
-
 </div>
 
 <!-- Nav bar -->
-<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status
+<md-nav-bar
+  class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"
+  md-selected-nav-item="selectedNavTab">
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-status"
+    name="status"
+    >Status
   </md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-logs"
+    name="logs"
+    >Logs</md-nav-item
+  >
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-monitoring"
+    name="monitoring"
+    >Cluster
   </md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-reporting"
+    name="reporting"
+    >Reporting
   </md-nav-item>
 </md-nav-bar>
 
@@ -31,18 +55,37 @@
 <wz-forbidden ng-if="!canReadLogs"></wz-forbidden>
 <div ng-if="canReadLogs">
   <!-- Filters and Realtime button section -->
-  <div ng-show="!loading" layout="row" layout-align="start start"
-    class="wz-margin-left-10 wz-margin-right-600 less-25-side" style="margin-left: 25px !important;">
-
-
-    <select class="input input-dropdown " flex id="categoryBox" ng-disabled="realtime" ng-model="category"
-      ng-change="filter({name:'tag',value:category})" aria-label="Logs category">
+  <div
+    ng-show="!loading"
+    layout="row"
+    layout-align="start start"
+    class="wz-margin-left-10 wz-margin-right-600 less-25-side"
+    style="margin-left: 25px !important">
+    <select
+      class="input input-dropdown"
+      flex
+      id="categoryBox"
+      ng-disabled="realtime"
+      ng-model="category"
+      ng-change="filter({name:'tag',value:category})"
+      aria-label="Logs category">
       <option value="">All daemons</option>
-      <option ng-repeat="daemon in daemons | orderObjectBy: 'title'" value="{{daemon.title}}">{{daemon.title}}</option>
+      <option
+        ng-repeat="daemon in daemons | orderObjectBy: 'title'"
+        value="{{daemon.title}}">
+        {{daemon.title}}
+      </option>
     </select>
 
-    <select class="input input-dropdown wz-margin-left-10" flex id="levelBox" ng-disabled="realtime" ng-model="type_log"
-      placeholder="Log level" class="md-no-underline" ng-change="filter({name:'level',value:type_log})"
+    <select
+      class="input input-dropdown wz-margin-left-10"
+      flex
+      id="levelBox"
+      ng-disabled="realtime"
+      ng-model="type_log"
+      placeholder="Log level"
+      class="md-no-underline"
+      ng-change="filter({name:'level',value:type_log})"
       aria-label="Logs level">
       <option value="">All log levels</option>
       <option value="info">Info</option>
@@ -52,52 +95,85 @@
       <option value="debug">Debug</option>
     </select>
 
-    <select flex ng-show='nodeList && nodeList.length' class="input input-dropdown wz-margin-left-10" id="categoryBox"
-      ng-model="selectedNode" ng-change="changeNode(selectedNode)" aria-label="Logs category">
+    <select
+      flex
+      ng-show="nodeList && nodeList.length"
+      class="input input-dropdown wz-margin-left-10"
+      id="categoryBox"
+      ng-model="selectedNode"
+      ng-change="changeNode(selectedNode)"
+      aria-label="Logs category">
       <option ng-repeat="node in nodeList" value="{{node}}">{{node}}</option>
     </select>
 
-
     <!-- Switch to sort by timestamp -->
-    <wz-kbn-switch class="switch-log" switch-model="sortFilter" switch-change="sort()" switch-text="Descending sort">
+    <wz-kbn-switch
+      class="switch-log"
+      switch-model="sortFilter"
+      switch-change="sort()"
+      switch-text="Descending sort">
     </wz-kbn-switch>
-
   </div>
 
   <div layout="row" class="less-15-side">
     <!-- Search and play realtime buttons -->
 
-    <label class="wz-icon-loupe wz-margin-left-10 wz-margin-top-4" style="margin-bottom: -11px;">
-      <input flex placeholder="Filter logs..." ng-model="custom_search" type="text"
-        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-36" aria-invalid="false"
-        wz-enter="search(custom_search)">
+    <label
+      class="wz-icon-loupe wz-margin-left-10 wz-margin-top-4"
+      style="margin-bottom: -11px">
+      <input
+        flex
+        placeholder="Filter logs..."
+        ng-model="custom_search"
+        type="text"
+        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid height-36"
+        aria-invalid="false"
+        wz-enter="search(custom_search)" />
     </label>
-    <button type="submit" aria-label="Search" class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-5"
+    <button
+      type="submit"
+      aria-label="Search"
+      class="btn height-32 wz-button-empty wz-margin-left-10 wz-margin-5"
       ng-click="search(custom_search)">
       <span>Search</span>
     </button>
 
-    <div ng-show="!realtime" class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
-      <button class="btn height-32 wz-button-empty " ng-click="playRealtime()" aria-label="Play realtime button">
+    <div
+      ng-show="!realtime"
+      class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
+      <button
+        class="btn height-32 wz-button-empty"
+        ng-click="playRealtime()"
+        aria-label="Play realtime button">
         <i class="fa fa-play fa-fw" aria-hidden="true"></i>
         Play realtime
       </button>
     </div>
 
-    <div ng-show="realtime" class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
-      <button class="btn height-32 wz-button-empty " ng-click="stopRealtime()" aria-label="Stop realtime button">
+    <div
+      ng-show="realtime"
+      class="wz-margin-left-10 wz-margin-right-10 wz-margin-5">
+      <button
+        class="btn height-32 wz-button-empty"
+        ng-click="stopRealtime()"
+        aria-label="Stop realtime button">
         <i class="fa fa-stop fa-fw" aria-hidden="true"></i>
         Stop realtime
       </button>
     </div>
-
   </div>
   <!-- End Filters and Realtime button section -->
 
   <!-- Logs section -->
   <div layout="row" layout-padding ng-if="logsPath" ng-hide="true">
-    <wazuh-table flex extra-limit="100" path="logsPath" implicit-sort="'timestamp'" wz-config-viewer="true"
-      keys="['timestamp',{value:'tag',size:2},'level',{value:'description',size:4,nosortable:true}]" rows-per-page="15">
+    <wazuh-table
+      flex
+      extra-limit="100"
+      path="logsPath"
+      implicit-sort="'timestamp'"
+      wz-config-viewer="true"
+      keys="['timestamp',{value:'tag',size:2},'level',{value:'description',size:4,nosortable:true}]"
+      rows-per-page="15">
     </wazuh-table>
   </div>
   <div layout="row" layout-padding ng-show="XMLContent && !emptyResults">
@@ -110,18 +186,21 @@
     <div flex class="euiCallOut euiCallOut--warning wz-margin-top-17">
       <div class="euiCallOutHeader">
         <wz-svg icon="callOutHeader"></wz-svg>
-        <span class="euiCallOutHeader__title">No results match your search criteria</span>
+        <span class="euiCallOutHeader__title"
+          >No results match your search criteria</span
+        >
       </div>
     </div>
   </div>
 
   <div layout="row" class="wz-margin-right-20">
     <span flex></span>
-    <a class="small formatted-color formatted-log" id="btnDownload" ng-click="downloadCsv()">
+    <a
+      class="small formatted-color formatted-log"
+      id="btnDownload"
+      ng-click="downloadCsv()">
       <wz-svg icon="download"></wz-svg>&nbsp;Formatted
     </a>
   </div>
-
 </div>
 <!-- End Filters and Realtime button section -->
-

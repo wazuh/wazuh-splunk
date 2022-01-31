@@ -1,14 +1,24 @@
-<div class="euiFlexItem wz-wc-item hover-mini-card" style="min-height: 64px;">
+<div class="euiFlexItem wz-wc-item hover-mini-card" style="min-height: 64px">
   <div flex class="synopsis">
-    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive mini-card">
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive mini-card">
       <div class="euiFlexItem euiFlexItem--flexGrowZero">
-        <img ng-if="finalUrl" class="wz-margin-top-10 synopsisIcon wz-icon" ng-src="{{finalUrl}}" alt="">
+        <img
+          ng-if="finalUrl"
+          class="wz-margin-top-10 synopsisIcon wz-icon"
+          ng-src="{{finalUrl}}"
+          alt="" />
       </div>
-      <div class="euiFlexItem synopsisContent " ng-click="callSwitchTab()">
-        <h4 class="euiTitle euiTitle--small synopsisTitle wz-text-link wc-sub-title">{{ subTitle }}</h4>
+      <div class="euiFlexItem synopsisContent" ng-click="callSwitchTab()">
+        <h4
+          class="euiTitle euiTitle--small synopsisTitle wz-text-link wc-sub-title">
+          {{ subTitle }}
+        </h4>
         <div class="euiText synopsisBody cursor-pointer" ng-if="description">
           <p>
-            <span class="euiTextColor euiTextColor--subdued color-grey">{{ description }}</span>
+            <span class="euiTextColor euiTextColor--subdued color-grey"
+              >{{ description }}</span
+            >
           </p>
         </div>
       </div>

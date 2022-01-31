@@ -1,67 +1,90 @@
 <div flex="auto" ng-init="switchConfigurationTab('welcome')">
-  <div">
-
+  <div>
     <!-- Breadcrumbs for nodes configuration -->
-    <div ng-if='!currentAgent' class="wz-full-width">
+    <div ng-if="!currentAgent" class="wz-full-width">
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
-      <div layout="row" class="wz-breadcrumb-margin" ng-class="{'wz-height-20':configurationTab !== 'welcome' }">
+      <div
+        layout="row"
+        class="wz-breadcrumb-margin"
+        ng-class="{'wz-height-20':configurationTab !== 'welcome' }">
         <!-- Welcome section -->
         <div ng-if="configurationTab === 'welcome'">
-          <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+          <span class="wz-text-link cursor-pointer" ui-sref="manager"
+            >Management</span
+          >
           <span> / </span>
           <span>Configuration</span>
         </div>
         <!-- First-level section -->
         <div ng-if="configurationTab !== 'welcome'">
-          <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+          <span class="wz-text-link cursor-pointer" ui-sref="manager"
+            >Management</span
+          >
           <span> / </span>
-          <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+          <span
+            class="wz-text-link cursor-pointer"
+            ng-click="switchConfigurationTab('welcome')"
+            >Configuration</span
+          >
           <span> / </span>
           <span>{{ configurationTab }}</span>
         </div>
         <span flex class="flex"></span>
-        <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
-          ng-change="changeNode(selectedNode.name)" ng-if="clusterEnabled"
+        <select
+          ng-options="n.name for n in nodes"
+          ng-model="selectedNode"
+          ng-init="selectedNode=nodes[0]"
+          ng-change="changeNode(selectedNode.name)"
+          ng-if="clusterEnabled"
           class="input input-dropdown conf-node-selector wz-button-empty"></select>
       </div>
       <!-- End breadcrumbs -->
     </div>
 
-
     <!-- Breadcrumbs for agents configuration -->
-    <div ng-if='currentAgent'>
+    <div ng-if="currentAgent">
       <!-- Navigation section (Breadcrumbs, etc) -->
       <!-- Breadcrumbs -->
       <div layout="row" class="wz-breadcrumb-margin">
         <!-- If you're not on the Welcome tab, show a functional breadcrumb -->
         <div>
-          <a class="wz-text-link cursor-pointer" ui-sref='agents'>Agents</a>
+          <a class="wz-text-link cursor-pointer" ui-sref="agents">Agents</a>
           <span> / </span>
-          <span ui-sref='agent-overview({id:currentAgent.id})' class="wz-text-link cursor-pointer">{{currentAgent.name}}
-            ({{currentAgent.id}})</span>
+          <span
+            ui-sref="agent-overview({id:currentAgent.id})"
+            class="wz-text-link cursor-pointer"
+            >{{currentAgent.name}} ({{currentAgent.id}})</span
+          >
           <span> / </span>
           <!-- Welcome section -->
           <span ng-if="configurationTab === 'welcome'">Configuration</span>
           <!-- First-level section -->
           <span ng-if="configurationTab !== 'welcome'">
-            <span class="wz-text-link cursor-pointer" ng-click="switchConfigurationTab('welcome')">Configuration</span>
+            <span
+              class="wz-text-link cursor-pointer"
+              ng-click="switchConfigurationTab('welcome')"
+              >Configuration</span
+            >
             <span> / </span>
-            <span>{{ configurationTab === 'alerts' ? 'Labels' : configurationTab }}</span>
+            <span
+              >{{ configurationTab === 'alerts' ? 'Labels' : configurationTab
+              }}</span
+            >
           </span>
           <div flex></div>
         </div>
         <!-- Agent status -->
-        <div ng-if="currentAgent.status" style="margin-left: 5px;">
+        <div ng-if="currentAgent.status" style="margin-left: 5px">
           <span class="no-wrap wz-padding-left-8" aria-hidden="false">
-              <wz-svg icon="agent-{{currentAgent.status}}"></wz-svg>
-          </span>{{formatAgentStatus(currentAgent.status)}}
+            <wz-svg icon="agent-{{currentAgent.status}}"></wz-svg> </span
+          >{{formatAgentStatus(currentAgent.status)}}
         </div>
       </div>
     </div>
     <!-- Separator -->
     <span flex></span>
     <!-- End separator -->
-</div>
-<!-- End navigation section -->
+  </div>
+  <!-- End navigation section -->
 </div>

@@ -1,37 +1,86 @@
-<div style="padding: 15px 10px 0 10px;">
-
-<div ng-show="!fullScreen">
-    <span style="margin:10px 5px 5px 5px" class="font-size-25">Logtest</span>
-    <div layout="row" style="margin-top:10px;">
-        <textarea ng-model="inputLog" class="euiTextArea euiTextArea--resizeVertical euiTextArea--fullWidth" rows="6" id="rrp4iamu" placeholder="log" style="margin-top: 0px; margin-bottom: 0px; width: 100%; height: 167px;"></textarea>
+<div style="padding: 15px 10px 0 10px">
+  <div ng-show="!fullScreen">
+    <span style="margin: 10px 5px 5px 5px" class="font-size-25">Logtest</span>
+    <div layout="row" style="margin-top: 10px">
+      <textarea
+        ng-model="inputLog"
+        class="euiTextArea euiTextArea--resizeVertical euiTextArea--fullWidth"
+        rows="6"
+        id="rrp4iamu"
+        placeholder="log"
+        style="
+          margin-top: 0px;
+          margin-bottom: 0px;
+          width: 100%;
+          height: 167px;
+        "></textarea>
     </div>
-    <div layout="row" style="padding-top:10px;padding-bottom:15px;" >
-        <span class="action-btn-td cursor-pointer" style="position:absolute; right: 21px; padding-top: 10px !important;" ng-click="switchFullScreen()">
-            <wz-svg icon="full-screen"></wz-svg>
-        </span>
-        <span class="action-btn-td cursor-pointer" style="position:absolute; right: 21px; margin-top: 30px !important;" ng-click="toClipboard('logResultId')">
-            <wz-svg icon="copy"></wz-svg>
-        </span>
-        <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto wz-scrollbar" style="background-color: #fafafa;height: calc(100vh - 385px) !important; max-height: calc(100vh - 385px) !important; margin-bottom:0;padding-right: 25px;"><code id="logResultId" wz-dynamic="logResult"></code></pre>
+    <div layout="row" style="padding-top: 10px; padding-bottom: 15px">
+      <span
+        class="action-btn-td cursor-pointer"
+        style="position: absolute; right: 21px; padding-top: 10px !important"
+        ng-click="switchFullScreen()">
+        <wz-svg icon="full-screen"></wz-svg>
+      </span>
+      <span
+        class="action-btn-td cursor-pointer"
+        style="position: absolute; right: 21px; margin-top: 30px !important"
+        ng-click="toClipboard('logResultId')">
+        <wz-svg icon="copy"></wz-svg>
+      </span>
+      <pre
+        flex
+        class="wz-pre wzXmlEditor wz-overflow-y-auto wz-scrollbar"
+        style="
+          background-color: #fafafa;
+          height: calc(100vh - 385px) !important;
+          max-height: calc(100vh - 385px) !important;
+          margin-bottom: 0;
+          padding-right: 25px;
+        "><code id="logResultId" wz-dynamic="logResult"></code></pre>
     </div>
-    <div layout="row" style="margin: 8px; ">
-        <button class="btn height-40 wz-button-empty wz-margin-right-10" ng-click="closeLogtest()">
-            Cancel
-        </button>
-        <span flex="" class="flex"></span>
-        
-        <button ng-click="search(customSearch)" ng-disabled="!inputLog"
-            class='btn height-40 agreeBtn pull-right' style="max-height:40px !important;">
-        <span><i aria-hidden='true' class='fa fa-fw fa-play'>&nbsp;</i>Test</span>
+    <div layout="row" style="margin: 8px">
+      <button
+        class="btn height-40 wz-button-empty wz-margin-right-10"
+        ng-click="closeLogtest()">
+        Cancel
       </button>
+      <span flex="" class="flex"></span>
 
+      <button
+        ng-click="search(customSearch)"
+        ng-disabled="!inputLog"
+        class="btn height-40 agreeBtn pull-right"
+        style="max-height: 40px !important">
+        <span
+          ><i aria-hidden="true" class="fa fa-fw fa-play">&nbsp;</i>Test</span
+        >
+      </button>
     </div>
-</div>
-<div ng-show="fullScreen" id="fullScreenLogResult">
-<span class="action-btn-td cursor-pointer" style="z-index:100; position:absolute; right: 21px; padding-top: 10px !important;" ng-click="switchFullScreen()">
-    <wz-svg icon="cross"></wz-svg>
-</span>
-    <pre flex class="wz-pre wzXmlEditor wz-overflow-y-auto" style="margin: 10px !important; position:fixed; top:0 !important; padding-top:27px; left:0 !important; height:98%; width:auto !important;"><code wz-dynamic="logResult"></code></pre>
-</div>
-
+  </div>
+  <div ng-show="fullScreen" id="fullScreenLogResult">
+    <span
+      class="action-btn-td cursor-pointer"
+      style="
+        z-index: 100;
+        position: absolute;
+        right: 21px;
+        padding-top: 10px !important;
+      "
+      ng-click="switchFullScreen()">
+      <wz-svg icon="cross"></wz-svg>
+    </span>
+    <pre
+      flex
+      class="wz-pre wzXmlEditor wz-overflow-y-auto"
+      style="
+        margin: 10px !important;
+        position: fixed;
+        top: 0 !important;
+        padding-top: 27px;
+        left: 0 !important;
+        height: 98%;
+        width: auto !important;
+      "><code wz-dynamic="logResult"></code></pre>
+  </div>
 </div>
