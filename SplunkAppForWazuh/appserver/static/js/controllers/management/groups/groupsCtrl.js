@@ -506,8 +506,8 @@ define(["../../module", "FileSaver"], function (controllers) {
             await this.scope.loadSelectedAgents()
             this.scope.selectedAgents.offset += 499
           }
+          // eslint-disable-next-line
           this.scope.firstSelectedList = angular.copy(
-            // eslint-disable-line
             this.scope.selectedAgents.data
           )
           await this.scope.loadAllAgents()
