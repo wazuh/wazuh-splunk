@@ -29,9 +29,13 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Fixed
 
 - Fixed agent's name overflow in the overview [#1137](https://github.com/wazuh/wazuh-splunk/pull/1137)
-- Fixed unnecessary table requests when resizing browser window [#1141](https://github.com/wazuh/wazuh-splunk/pull/1141)
 - Fixed on save rules or decoders files [#1138](https://github.com/wazuh/wazuh-splunk/pull/1138)
-- fixed not being able to see actions after adding first API [#1230](https://github.com/wazuh/wazuh-splunk/pull/1230)
+- Fixed unnecessary table requests when resizing browser window [#1141](https://github.com/wazuh/wazuh-splunk/pull/1141)
+- Agent counters are now centered [#1215](https://github.com/wazuh/wazuh-splunk/pull/1215)
+- Fixed being able to add an agent without create permissions [#1216](https://github.com/wazuh/wazuh-splunk/pull/1216)
+- Fixed the underlapping navigation bar for Security options [#1217](https://github.com/wazuh/wazuh-splunk/pull/1217)
+- Fixed error when agents view is re-initialized [#1223](https://github.com/wazuh/wazuh-splunk/pull/1223)
+- Fixed not being able to see actions after adding first API [#1230](https://github.com/wazuh/wazuh-splunk/pull/1230)
 
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 
