@@ -10,11 +10,11 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', '../../../dashboardMain'], function(
+define(["../../module", "../../../dashboardMain"], function (
   app,
   DashboardMain
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsCA extends DashboardMain {
     /**
@@ -69,7 +69,7 @@ define(['../../module', '../../../dashboardMain'], function(
         try {
           return text + this.setBrowserOffset(time)
         } catch (error) {
-          return ''
+          return ""
         }
       }
 
@@ -107,7 +107,7 @@ define(['../../module', '../../../dashboardMain'], function(
 
     $onInit() {
       this.scope.searchRootcheck = (term, specificFilter) =>
-        this.scope.$broadcast('wazuhSearch', { term, specificFilter })
+        this.scope.$broadcast("wazuhSearch", { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
 
       this.scope.switchVisualizations = () => this.switchVisualizations()
@@ -121,42 +121,43 @@ define(['../../module', '../../../dashboardMain'], function(
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-        
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
 
       this.scope.refreshScans = () => this.refreshScans()
-      this.scope.search = term => this.search(term)
+      this.scope.search = (term) => this.search(term)
 
-      this.scope.loadCharts = policy => {
-        setTimeout(function() {
+      this.scope.loadCharts = (policy) => {
+        setTimeout(function () {
           const chart = new Chart(document.getElementById(policy.policy_id), {
-            type: 'doughnut',
+            type: "doughnut",
             data: {
-              labels: ['pass', 'fail', 'not applicable'],
+              labels: ["pass", "fail", "not applicable"],
               datasets: [
                 {
-                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
-                  data: [policy.pass, policy.fail, policy.invalid]
-                }
-              ]
+                  backgroundColor: ["#46BFBD", "#F7464A", "#949FB1"],
+                  data: [policy.pass, policy.fail, policy.invalid],
+                },
+              ],
             },
             options: {
               cutoutPercentage: 85,
               legend: {
                 display: true,
-                position: 'right'
+                position: "right",
               },
               tooltips: {
-                displayColors: false
-              }
-            }
+                displayColors: false,
+              },
+            },
           })
           chart.update()
         }, 250)
@@ -168,7 +169,7 @@ define(['../../module', '../../../dashboardMain'], function(
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === "Active" ? "teal" : "red"
     }
 
     /**
@@ -176,9 +177,9 @@ define(['../../module', '../../../dashboardMain'], function(
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ['Active', 'Disconnected'].includes(agentStatus)
+      return ["Active", "Disconnected"].includes(agentStatus)
         ? agentStatus
-        : 'Never connected'
+        : "Never connected"
     }
 
     /**
@@ -186,7 +187,7 @@ define(['../../module', '../../../dashboardMain'], function(
      * @param {String} term
      */
     search(term) {
-      this.scope.$broadcast('wazuhSearch', { term })
+      this.scope.$broadcast("wazuhSearch", { term })
     }
 
     /**
@@ -195,19 +196,19 @@ define(['../../module', '../../../dashboardMain'], function(
     async downloadCsv() {
       try {
         this.notification.showSimpleToast(
-          'Your download should begin automatically...'
+          "Your download should begin automatically..."
         )
         const currentApi = this.api.id
         const output = await this.csvReq.fetch(
-          '/agents',
+          "/agents",
           currentApi,
           this.wzTableFilter.get()
         )
-        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-        saveAs(blob, 'agents.csv') // eslint-disable-line
+        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
+        saveAs(blob, "agents.csv") // eslint-disable-line
         return
       } catch (error) {
-        this.notification.showErrorToast('Error downloading CSV')
+        this.notification.showErrorToast("Error downloading CSV")
       }
       return
     }
@@ -246,5 +247,5 @@ define(['../../module', '../../../dashboardMain'], function(
     }
   }
 
-  app.controller('agentsConfigurationAssessmentsCtrl', AgentsCA)
+  app.controller("agentsConfigurationAssessmentsCtrl", AgentsCA)
 })

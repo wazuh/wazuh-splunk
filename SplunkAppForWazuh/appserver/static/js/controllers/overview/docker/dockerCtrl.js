@@ -11,13 +11,13 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/chart/linear-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -25,7 +25,7 @@ define([
   Table,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class Docker extends DashboardMain {
     /**
@@ -46,7 +46,7 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       super(
         $scope,
@@ -68,45 +68,45 @@ define([
          * Visualizations
          */
         new PieChart(
-          'top5images',
+          "top5images",
           `${this.filters} | stats count by data.docker.id`,
-          'top5images',
+          "top5images",
           this.scope
         ),
         new LinearChart(
-          'eventsOcurred',
+          "eventsOcurred",
           `${this.filters} data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
-          'eventsOcurred',
+          "eventsOcurred",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new PieChart(
-          'top5actions',
+          "top5actions",
           `${this.filters}  | top data.docker.Action limit=5`,
-          'top5actions',
+          "top5actions",
           this.scope
         ),
         new Table(
-          'alertsSummary',
+          "alertsSummary",
           `${this.filters}  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
-          'alertsSummary',
+          "alertsSummary",
           this.scope
         ),
         new LinearChart(
-          'resourceUsage',
+          "resourceUsage",
           `${this.filters} data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
-          'resourceUsage',
+          "resourceUsage",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new RawTableDataService(
-          'alertsSummaryRawTable',
+          "alertsSummaryRawTable",
           `${this.filters}  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
-          'alertsSummaryRawTableToken',
-          '$result$',
+          "alertsSummaryRawTableToken",
+          "$result$",
           this.scope,
-          'Alerts summary'
-        )
+          "Alerts summary"
+        ),
       ]
     }
 
@@ -120,18 +120,18 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'ow-docker',
-            'Docker',
+            "ow-docker",
+            "Docker",
             this.filters,
-            ['top5images', 'eventsOcurred', 'top5actions', 'resourceUsage'],
+            ["top5images", "eventsOcurred", "top5actions", "resourceUsage"],
             {}, //Metrics
             this.tableResults
           )
       } catch (error) {
-        console.error('Error onInit ', error)
+        console.error("Error onInit ", error)
       }
     }
   }
 
-  app.controller('dockerCtrl', Docker)
+  app.controller("dockerCtrl", Docker)
 })

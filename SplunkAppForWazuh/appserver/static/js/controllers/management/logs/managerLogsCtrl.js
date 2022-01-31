@@ -10,8 +10,8 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function(app) {
-  'use strict'
+define(["../../module", "FileSaver"], function (app) {
+  "use strict"
 
   class Logs {
     /**
@@ -32,22 +32,23 @@ define(['../../module', 'FileSaver'], function(app) {
       $currentDataService,
       $csvRequestService,
       logs,
-      $security_service,
+      $security_service
     ) {
       this.scope = $scope
       this.scope.realtime = false
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-      this.scope.type_log = ''
-      this.scope.category = ''
+      this.scope.type_log = ""
+      this.scope.category = ""
       this.scope.sortFilter = false
       this.api = $currentDataService.getApi()
       this.logs = logs
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
-      this.path = '/manager/logs'
-      this.scope.canReadLogs = $security_service.isAllowed("MANAGER_READ",["RESOURCELESS"]);
-        
+      this.path = "/manager/logs"
+      this.scope.canReadLogs = $security_service.isAllowed("MANAGER_READ", [
+        "RESOURCELESS",
+      ])
     }
 
     /**
@@ -55,47 +56,47 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     $onInit() {
       try {
-        this.scope.selectedNavTab = 'logs'
-        this.scope.search = term => this.search(term)
-        this.scope.filter = term => this.filter(term)
-        this.scope.changeNode = node => this.changeNode(node)
+        this.scope.selectedNavTab = "logs"
+        this.scope.search = (term) => this.search(term)
+        this.scope.filter = (term) => this.filter(term)
+        this.scope.changeNode = (node) => this.changeNode(node)
         this.scope.stopRealtime = () => this.stopRealtime()
         this.scope.playRealtime = () => this.playRealtime()
         this.scope.summary = this.logs.data.data
         this.scope.downloadCsv = () => this.downloadCsv()
-        if(this.scope.canReadLogs){
+        if (this.scope.canReadLogs) {
           this.initialize()
         }
         this.scope.sort = () => this.sort()
 
-        this.scope.$on('wazuhFetched', (ev, params) => {
+        this.scope.$on("wazuhFetched", (ev, params) => {
           ev.stopPropagation()
           this.scope.emptyResults = false
           if (params.items.length < 1) {
             this.scope.emptyResults = true
           } else {
             this.scope.XMLContent = this.parseLogsToText(params.items)
-            this.scope.$broadcast('XMLContentReady', {
+            this.scope.$broadcast("XMLContentReady", {
               data: this.scope.XMLContent,
-              logs: true
+              logs: true,
             })
           }
 
-          this.scope.$on('scrolledToBottom', (ev, parameters) => {
+          this.scope.$on("scrolledToBottom", (ev, parameters) => {
             ev.stopPropagation()
             if (!this.scope.realtime)
-              this.scope.$broadcast('increaseLogs', { lines: parameters.lines })
+              this.scope.$broadcast("increaseLogs", { lines: parameters.lines })
           })
 
           this.scope.$applyAsync()
         })
 
-        this.scope.$on('loadingContent', (event, data) => {
+        this.scope.$on("loadingContent", (event, data) => {
           this.scope.loadingContent = data.status
           event.preventDefault()
         })
       } catch (err) {
-        this.notification.showErrorToast('Cannot fetch logs data from server')
+        this.notification.showErrorToast("Cannot fetch logs data from server")
       }
     }
 
@@ -105,17 +106,17 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     parseLogsToText(logs) {
       try {
-        let result = ''
-        logs.map(log => {
+        let result = ""
+        logs.map((log) => {
           if (log) {
             result += `${log.timestamp} ${log.tag} ${(
-              log.level || ''
+              log.level || ""
             ).toUpperCase()}:  ${log.description}\n`
           }
         })
         return result
       } catch (error) {
-        this.notification.showErrorToast('Cannot parse logs.')
+        this.notification.showErrorToast("Cannot parse logs.")
       }
     }
 
@@ -123,7 +124,7 @@ define(['../../module', 'FileSaver'], function(app) {
      * Sorts logs by timestamp
      */
     sort() {
-      this.scope.$broadcast('wazuhSort', { field: 'timestamp' })
+      this.scope.$broadcast("wazuhSort", { field: "timestamp" })
     }
 
     /**
@@ -132,9 +133,9 @@ define(['../../module', 'FileSaver'], function(app) {
     async downloadCsv() {
       try {
         this.notification.showSimpleToast(
-          'Your download should begin automatically...'
+          "Your download should begin automatically..."
         )
-        const currentApi = this.api['_key']
+        const currentApi = this.api["_key"]
         if (this.clusterEnabled) {
           this.path = `/cluster/${this.scope.selectedNode}/logs`
         }
@@ -144,14 +145,14 @@ define(['../../module', 'FileSaver'], function(app) {
           this.wzTableFilter.get()
         )
         if (output.length > 0) {
-          const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
-          saveAs(blob, 'logs.csv') // eslint-disable-line
+          const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
+          saveAs(blob, "logs.csv") // eslint-disable-line
         } else {
-          this.notification.showWarningToast('Empty results.')
+          this.notification.showWarningToast("Empty results.")
         }
         return
       } catch (error) {
-        this.notification.showErrorToast('Error downloading CSV')
+        this.notification.showErrorToast("Error downloading CSV")
       }
       return
     }
@@ -161,15 +162,15 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async initialize() {
       try {
-        this.clusterStatus = await this.apiReq('/cluster/status')
+        this.clusterStatus = await this.apiReq("/cluster/status")
         this.clusterEnabled =
           this.clusterStatus &&
           this.clusterStatus.data &&
           this.clusterStatus.data.data &&
-          this.clusterStatus.data.data.running === 'yes' &&
-          this.clusterStatus.data.data.enabled === 'yes'
+          this.clusterStatus.data.data.running === "yes" &&
+          this.clusterStatus.data.data.enabled === "yes"
         if (this.clusterEnabled) {
-          const nodeList = await this.apiReq('/cluster/nodes')
+          const nodeList = await this.apiReq("/cluster/nodes")
           if (
             nodeList &&
             nodeList.data &&
@@ -177,32 +178,32 @@ define(['../../module', 'FileSaver'], function(app) {
             Array.isArray(nodeList.data.data.affected_items)
           ) {
             this.scope.nodeList = nodeList.data.data.affected_items
-              .map(item => item.name)
+              .map((item) => item.name)
               .reverse()
             this.scope.selectedNode = nodeList.data.data.affected_items.filter(
-              item => item.type === 'master'
+              (item) => item.type === "master"
             )[0].name
           }
         }
 
         this.scope.logsPath = this.clusterEnabled
           ? `/cluster/${this.scope.selectedNode}/logs`
-          : '/manager/logs'
+          : "/manager/logs"
 
         const data = this.clusterEnabled
           ? await this.apiReq(
               `/cluster/${this.scope.selectedNode}/logs/summary`
             )
-          : await this.apiReq('/manager/logs/summary')
+          : await this.apiReq("/manager/logs/summary")
         const daemons = data.data.data.affected_items
 
         this.scope.daemons = daemons.map((item) => ({
-          title: Object.keys(item)[0]
+          title: Object.keys(item)[0],
         }))
         this.scope.$applyAsync()
         return
       } catch (err) {
-        this.notification.showErrorToast('Error initializing data')
+        this.notification.showErrorToast("Error initializing data")
       }
       return
     }
@@ -213,21 +214,21 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     async changeNode(node) {
       try {
-        this.scope.type_log = ''
-        this.scope.category = ''
+        this.scope.type_log = ""
+        this.scope.category = ""
         this.scope.selectedNode = node
         this.scope.custom_search = null
-        this.scope.$broadcast('wazuhUpdateInstancePath', {
-          path: `/cluster/${node}/logs`
+        this.scope.$broadcast("wazuhUpdateInstancePath", {
+          path: `/cluster/${node}/logs`,
         })
         const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
         const daemons = summary.data.data.affected_items
         this.scope.daemons = daemons.map((item) => ({
-          title: Object.keys(item)[0]
+          title: Object.keys(item)[0],
         }))
         this.scope.$applyAsync()
       } catch (error) {
-        this.notification.showErrorToast('Error at fetching logs')
+        this.notification.showErrorToast("Error at fetching logs")
       }
     }
 
@@ -236,7 +237,7 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {String} term
      */
     search(term) {
-      this.scope.$broadcast('wazuhSearch', { term })
+      this.scope.$broadcast("wazuhSearch", { term })
       return
     }
 
@@ -245,7 +246,7 @@ define(['../../module', 'FileSaver'], function(app) {
      * @param {Object} filter
      */
     async filter(filter) {
-      this.scope.$broadcast('wazuhFilter', { filter })
+      this.scope.$broadcast("wazuhFilter", { filter })
       return
     }
 
@@ -254,7 +255,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     playRealtime() {
       this.scope.realtime = true
-      this.scope.$broadcast('wazuhPlayRealTime')
+      this.scope.$broadcast("wazuhPlayRealTime")
       return
     }
 
@@ -263,9 +264,9 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     stopRealtime() {
       this.scope.realtime = false
-      this.scope.$broadcast('wazuhStopRealTime')
+      this.scope.$broadcast("wazuhStopRealTime")
       return
     }
   }
-  app.controller('managerLogsCtrl', Logs)
+  app.controller("managerLogsCtrl", Logs)
 })

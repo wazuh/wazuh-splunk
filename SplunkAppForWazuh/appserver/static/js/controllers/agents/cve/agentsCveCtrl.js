@@ -10,15 +10,11 @@
  * Find more information about this on the LICENSE file.
  */
 
-define([
-  '../../module',
-  '../../../dashboardMain',
-  'FileSaver'
-], function(
+define(["../../module", "../../../dashboardMain", "FileSaver"], function (
   app,
-  DashboardMain,
+  DashboardMain
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsVulnerabilitiesCVE extends DashboardMain {
     /**
@@ -56,18 +52,18 @@ define([
         $currentDataService,
         $urlTokenModel
       )
-      this.wzTableFilter = $tableFilterService;
-      this.csvReq = $csvRequestService;
-      this.notification = $notificationService;
-      this.api = this.currentDataService.getApi();
-      this.scope.loadingVizz = false;
+      this.wzTableFilter = $tableFilterService
+      this.csvReq = $csvRequestService
+      this.notification = $notificationService
+      this.api = this.currentDataService.getApi()
+      this.scope.loadingVizz = false
       this.scope.extensions = extensions
       this.currentDataService.addFilter(
         `{"rule.groups{}":"vulnerability-detector", "implicit":true, "onlyShow":true}`
       )
       this.agent = agent
       this.filters = this.getFilters()
-      
+
       if (
         this.agent &&
         this.agent.data &&
@@ -78,7 +74,7 @@ define([
           `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
       if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go('overview')
+        this.state.go("overview")
       }
 
       // Set agent info
@@ -92,7 +88,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -100,14 +96,13 @@ define([
 
       /* RBAC flags */
       this.isAllowed = (action, resource, params = ["*"]) => {
-        return $security_service.getPolicy(action, resource, params)
-          .isAllowed;
-      };
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
       this.scope.canReadVulnerabilities = this.isAllowed(
         "VULNERABILITY_READ",
         ["AGENT_ID"],
         [this.agent.id]
-      );
+      )
     }
 
     /**
@@ -120,14 +115,18 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = 
-          this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.search = term => this.scope.$broadcast('wazuhSearch', { term })
-      this.scope.formatAgentStatus = agentStatus => this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus => this.getAgentStatusClass(agentStatus)
+
+      this.scope.search = (term) =>
+        this.scope.$broadcast("wazuhSearch", { term })
+      this.scope.formatAgentStatus = (agentStatus) =>
+        this.formatAgentStatus(agentStatus)
+      this.scope.getAgentStatusClass = (agentStatus) =>
+        this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
     }
 
@@ -136,9 +135,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ['Active', 'Disconnected'].includes(agentStatus)
+      return ["Active", "Disconnected"].includes(agentStatus)
         ? agentStatus
-        : 'Never connected'
+        : "Never connected"
     }
 
     /**
@@ -146,31 +145,31 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === "Active" ? "teal" : "red"
     }
 
     /**
      * Exports the table in CSV format
      */
-     async downloadCsv(path, name) {
+    async downloadCsv(path, name) {
       try {
         this.notification.showSimpleToast(
-          'Your download should begin automatically...'
+          "Your download should begin automatically..."
         )
-        const currentApi = this.api['_key']
+        const currentApi = this.api["_key"]
         const output = await this.csvReq.fetch(
           path,
           currentApi,
           this.wzTableFilter.get()
         )
-        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.notification.showErrorToast('Error downloading CSV')
+        this.notification.showErrorToast("Error downloading CSV")
       }
       return
     }
   }
-  app.controller('agentsCveCtrl', AgentsVulnerabilitiesCVE);
+  app.controller("agentsCveCtrl", AgentsVulnerabilitiesCVE)
 })

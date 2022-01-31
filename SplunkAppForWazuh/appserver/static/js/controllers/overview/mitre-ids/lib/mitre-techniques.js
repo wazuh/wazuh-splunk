@@ -1,5 +1,5 @@
-define([], function(){
-  return { 
+define([], function () {
+  return {
     T1001: { name: "Data Obfuscation" },
     T1002: { name: "Data Compressed" },
     T1003: { name: "Credential Dumping" },
@@ -265,6 +265,6 @@ define([], function(){
     T1536: { name: "Revert Cloud Instance" },
     T1537: { name: "Transfer Data to Cloud Account" },
     T1538: { name: "Cloud Service Dashboard" },
-    T1539: { name: "Steal Web Session Cookie" }
+    T1539: { name: "Steal Web Session Cookie" },
   }
 })

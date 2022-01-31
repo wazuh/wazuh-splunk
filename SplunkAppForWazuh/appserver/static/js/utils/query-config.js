@@ -4,8 +4,8 @@
  * @param {Array<object>} sections Array that includes sections to be fetched
  * @param {object} apiReq API request service reference
  */
-define([], function() {
-  'use strict'
+define([], function () {
+  "use strict"
   return async function queryConfig(
     sections,
     apiReq,
@@ -14,14 +14,14 @@ define([], function() {
   ) {
     try {
       if (
-        (agentId && typeof agentId !== 'string') ||
-        (node && typeof node !== 'string') ||
+        (agentId && typeof agentId !== "string") ||
+        (node && typeof node !== "string") ||
         !sections ||
         !sections.length ||
-        typeof sections !== 'object' ||
+        typeof sections !== "object" ||
         !Array.isArray(sections)
       ) {
-        throw new Error('Invalid parameters')
+        throw new Error("Invalid parameters")
       }
 
       const result = {}
@@ -29,11 +29,11 @@ define([], function() {
         const { component, configuration } = section
         if (
           !component ||
-          typeof component !== 'string' ||
+          typeof component !== "string" ||
           !configuration ||
-          typeof configuration !== 'string'
+          typeof configuration !== "string"
         ) {
-          throw new Error('Invalid section')
+          throw new Error("Invalid section")
         }
 
         // Gets manager, node or agent config
@@ -51,25 +51,32 @@ define([], function() {
             `/manager/configuration/${component}/${configuration}`
           )
         } else {
-          throw new Error('Invalid host instance.')
+          throw new Error("Invalid host instance.")
         }
 
-        if(partialResult.data.error == 0){
+        if (partialResult.data.error == 0) {
           result[`${component}-${configuration}`] =
-          (partialResult.data.data.affected_items && partialResult.data.data.affected_items[0])
-          ? partialResult.data.data.affected_items[0]
-          : partialResult.data.data;
-        } 
-        else if (partialResult.data.error) {
-          const isModuleConnectionError = typeof partialResult.data.error == 'string' && partialResult.data.error.includes("Error connecting with socket");
-          
-          if ((((partialResult.data.data || {}).failed_items || []).length && partialResult.data.data.failed_items[0].error.code == 1116) ||
-            isModuleConnectionError) //Error 1121 - Module not configured in ossec.conf
-            result[`${component}-${configuration}`] = 'not-present';
-          else if(partialResult.data.detail || partialResult.data.message)
-            result[`${component}-${configuration}`] = partialResult.data.detail || partialResult.data.message;
-          else 
-            result[`${component}-${configuration}`] = partialResult.data.error;
+            partialResult.data.data.affected_items &&
+            partialResult.data.data.affected_items[0]
+              ? partialResult.data.data.affected_items[0]
+              : partialResult.data.data
+        } else if (partialResult.data.error) {
+          const isModuleConnectionError =
+            typeof partialResult.data.error == "string" &&
+            partialResult.data.error.includes("Error connecting with socket")
+
+          if (
+            (((partialResult.data.data || {}).failed_items || []).length &&
+              partialResult.data.data.failed_items[0].error.code == 1116) ||
+            isModuleConnectionError
+          )
+            //Error 1121 - Module not configured in ossec.conf
+            result[`${component}-${configuration}`] = "not-present"
+          else if (partialResult.data.detail || partialResult.data.message)
+            result[`${component}-${configuration}`] =
+              partialResult.data.detail || partialResult.data.message
+          else
+            result[`${component}-${configuration}`] = partialResult.data.error
         }
       }
       return result

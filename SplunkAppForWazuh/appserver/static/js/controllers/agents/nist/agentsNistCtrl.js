@@ -1,14 +1,14 @@
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/chart/single-value',
-  '../../../services/visualizations/chart/bar-chart',
-  '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/column-chart",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/chart/single-value",
+  "../../../services/visualizations/chart/bar-chart",
+  "../../../services/visualizations/inputs/dropdown-input",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -19,7 +19,7 @@ define([
   Dropdown,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsNist extends DashboardMain {
     /**
@@ -66,15 +66,15 @@ define([
       this.scope.expandArray = [false, false, false, false, false]
 
       this.dropdown = new Dropdown(
-        'dropDownInput',
+        "dropDownInput",
         `${this.filters} rule.nist_800_53{}="*"| stats count by "rule.nist_800_53{}" | sort "rule.nist_800_53{}" ASC | fields - count`,
-        'rule.nist_800_53{}',
-        '$form.nist$',
-        'dropDownInput',
+        "rule.nist_800_53{}",
+        "$form.nist$",
+        "dropDownInput",
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on("change", (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -95,51 +95,51 @@ define([
          * Visualizations
          */
         new SingleValue(
-          'maxRuleLevel',
+          "maxRuleLevel",
           `${this.filters} rule.nist_800_53{}="$nist$" | top rule.level | sort - rule.level`,
-          'maxRuleLevel',
+          "maxRuleLevel",
           this.scope
         ),
         new SingleValue(
-          'totalAlerts',
+          "totalAlerts",
           `${this.filters} rule.nist_800_53{}="$nist$" | stats count`,
-          'totalAlerts',
+          "totalAlerts",
           this.scope
         ),
         new PieChart(
-          'top10Requirements',
+          "top10Requirements",
           `${this.filters} rule.nist_800_53{}="$nist$" | top limit=10 rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as Requirement`,
-          'top10Requirements',
+          "top10Requirements",
           this.scope
         ),
         new BarChart(
-          'requirementsDistributedByLevel',
+          "requirementsDistributedByLevel",
           `${this.filters} rule.nist_800_53{}="$nist$" | chart count(rule.nist_800_53{}) by rule.level,rule.nist_800_53{} | rename count as "Count" , rule.level as "Level", rule.nist_800_53{} as "Requirement"`,
-          'requirementsDistributedByLevel',
+          "requirementsDistributedByLevel",
           this.scope,
-          { stackMode: 'stacked' }
+          { stackMode: "stacked" }
         ),
         new ColumnChart(
-          'requirementsOverTime',
+          "requirementsOverTime",
           `${this.filters} rule.nist_800_53{}="$nist$" | timechart count by rule.nist_800_53{} | rename count as "Count", rule.nist_800_53{} as "Requirement"`,
-          'requirementsOverTime',
+          "requirementsOverTime",
           this.scope,
-          { stackMode: 'stacked' }
+          { stackMode: "stacked" }
         ),
         new Table(
-          'alertsSummary',
+          "alertsSummary",
           `${this.filters} rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{},rule.level,rule.description | sort count DESC |  rename rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
-          'alertsSummary',
+          "alertsSummary",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters} rule.nist_800_53{}="$nist$"  | stats count by rule.nist_800_53{},rule.level,rule.description | sort count DESC |  rename rule.nist_800_53{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
 
       // Set agent info
@@ -153,7 +153,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -164,35 +164,35 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-nist',
-          'NIST 800-53',
+          "agents-nist",
+          "NIST 800-53",
           this.filters,
           [
-            'maxRuleLevel',
-            'totalAlerts',
-            'top10Requirements',
-            'requirementsDistributedByLevel',
-            'requirementsOverTime',
-            'alertsSummary'
+            "maxRuleLevel",
+            "totalAlerts",
+            "top10Requirements",
+            "requirementsDistributedByLevel",
+            "requirementsOverTime",
+            "alertsSummary",
           ],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData
         )
 
-      this.scope.$on('loadingReporting', (event, data) => {
+      this.scope.$on("loadingReporting", (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
+      this.scope.$on("checkReportingStatus", () => {
+        this.vizzReady = !this.vizz.filter((v) => {
           return v.finish === false
         }).length
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
-          this.vizz.map(v => {
-            if (v.constructor.name === 'RawTableData') {
+          this.vizz.map((v) => {
+            if (v.constructor.name === "RawTableData") {
               this.tableResults[v.name] = v.results
             }
           })
@@ -211,15 +211,17 @@ define([
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data.affected_items[0]
           : { error: true }
-    
+
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 
@@ -228,7 +230,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === "Active" ? "teal" : "red"
     }
 
     /**
@@ -236,10 +238,10 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ['Active', 'Disconnected'].includes(agentStatus)
+      return ["Active", "Disconnected"].includes(agentStatus)
         ? agentStatus
-        : 'Never connected'
+        : "Never connected"
     }
   }
-  app.controller('agentsNistCtrl', AgentsNist)
+  app.controller("agentsNistCtrl", AgentsNist)
 })

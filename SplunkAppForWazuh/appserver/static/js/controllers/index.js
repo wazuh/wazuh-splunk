@@ -1,18 +1,18 @@
 define([
   //Overview
-  './overview/index',
+  "./overview/index",
   //Agents
-  './agents/index',
+  "./agents/index",
   //Settings
-  './settings/index',
+  "./settings/index",
   //Management
-  './management/index',
+  "./management/index",
   //Dev-tools
-  './dev-tools/devToolsCtrl',
+  "./dev-tools/devToolsCtrl",
   // Main
-  './main/mainCtrl',
+  "./main/mainCtrl",
   //Discover
-  './discover/discoverCtrl',
+  "./discover/discoverCtrl",
   //Security
-  './security/index'
-], function() {})
+  "./security/index",
+], function () {})

@@ -9,36 +9,35 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
-  'use strict'
-  directives.directive('wzLogtest', function(BASE_URL) {
+define(["../module"], function (directives) {
+  "use strict"
+  directives.directive("wzLogtest", function (BASE_URL) {
     return {
-      restrict: 'E',
+      restrict: "E",
       scope: {
-        fullScreen: '=fullScreen',
-        closeLogtest: '&',
+        fullScreen: "=fullScreen",
+        closeLogtest: "&",
       },
       replace: true,
-      controller($scope,$document,$notificationService) {
-        
+      controller($scope, $document, $notificationService) {
         $scope.switchFullScreen = () => {
           $scope.fullScreen = !$scope.fullScreen
         }
 
         /** Bind ESCAPE key to close the full screen box */
-        $($document).keyup(function(e) {
-          if(e.which == 27) {
-            $scope.fullScreen = false;
+        $($document).keyup(function (e) {
+          if (e.which == 27) {
+            $scope.fullScreen = false
             $scope.$applyAsync()
           }
-        });
+        })
 
         /** Remove key up bind */
-        $scope.$on('$destroy', () => {
+        $scope.$on("$destroy", () => {
           $($document).unbind()
         })
 
-        $scope.toClipboard = element => {
+        $scope.toClipboard = (element) => {
           try {
             const el = $document[0].getElementById(element)
             const range = $document[0].createRange()
@@ -46,15 +45,14 @@ define(['../module'], function(directives) {
             const sel = window.getSelection()
             sel.removeAllRanges()
             sel.addRange(range)
-            $document[0].execCommand('copy')
-            $notificationService.showSimpleToast('Content has been copied')
+            $document[0].execCommand("copy")
+            $notificationService.showSimpleToast("Content has been copied")
           } catch (error) {
             $notificationService.showErrorToast(
-              'Cannot copy the selected content'
+              "Cannot copy the selected content"
             )
           }
         }
-
 
         $scope.inputLog = ""
         $scope.logResult = `**Phase 1: Completed pre-decoding.
@@ -72,7 +70,7 @@ define(['../module'], function(directives) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-logtest/wz-logtest.html'
+        "/static/app/SplunkAppForWazuh/js/directives/wz-logtest/wz-logtest.html",
     }
   })
 })

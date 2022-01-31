@@ -9,20 +9,19 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
-  'use strict'
+define([], function () {
+  "use strict"
   return {
-    setPage: async function($scope, errorHandler, fetch) {
+    setPage: async function ($scope, errorHandler, fetch) {
       try {
         $scope.error = false
-               
+
         $scope.wazuhTableLoading = true
-        const offset = $scope.itemsPerPage * $scope.currentPage;
+        const offset = $scope.itemsPerPage * $scope.currentPage
 
         await fetch({ offset, limit: $scope.itemsPerPage })
-        $scope.wazuhTableLoading = false        
+        $scope.wazuhTableLoading = false
         $scope.$applyAsync()
-
       } catch (error) {
         $scope.wazuhTableLoading = false
         $scope.error = `Error paginating table - ${error.message || error}.`
@@ -31,7 +30,7 @@ define([], function() {
         )
       }
     },
-    nextPage: async function($scope, errorHandler, fetch) {
+    nextPage: async function ($scope, errorHandler, fetch) {
       if ($scope.currentPage < $scope.totalPages) {
         $scope.currentPage++
       }
@@ -50,13 +49,11 @@ define([], function() {
       return ret
     },
 
-
-    prevPage: async function($scope, errorHandler, fetch) {
+    prevPage: async function ($scope, errorHandler, fetch) {
       if ($scope.currentPage > 0) {
         $scope.currentPage--
       }
       await this.setPage($scope, errorHandler, fetch)
     },
-
   }
 })

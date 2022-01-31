@@ -9,12 +9,12 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
-  'use strict'
-  directives.directive('wazuhBar', function($notificationService, BASE_URL) {
+define(["../module"], function (directives) {
+  "use strict"
+  directives.directive("wazuhBar", function ($notificationService, BASE_URL) {
     return {
-      restrict: 'E',
-      controller: function($scope, $currentDataService) {
+      restrict: "E",
+      controller: function ($scope, $currentDataService) {
         /**
          * Prettifies filters for md-chips
          * @returns {Array}
@@ -25,8 +25,8 @@ define(['../module'], function(directives) {
           if (uglyFilters && uglyFilters.length > 0) {
             for (const filter of uglyFilters) {
               const key = Object.keys(filter)[0]
-              const cleanKey = key.replace('{}', '')
-              if (key !== 'index' && key !== 'sourcetype') {
+              const cleanKey = key.replace("{}", "")
+              if (key !== "index" && key !== "sourcetype") {
                 prettyFilters.push(`${cleanKey}:${filter[key]}`)
               }
             }
@@ -43,17 +43,17 @@ define(['../module'], function(directives) {
          */
         function filterStatic(filter) {
           let keyStatic = false
-          const key = filter.split(':')[0]
+          const key = filter.split(":")[0]
           const staticTrue = $currentDataService
             .getFilters()
-            .filter(item => !!item.implicit)
-          staticTrue.map(item => {
+            .filter((item) => !!item.implicit)
+          staticTrue.map((item) => {
             let k = Object.keys(item)[0]
-            if (k.endsWith('{}')) {
+            if (k.endsWith("{}")) {
               k = k.substring(0, k.length - 2)
             }
             if (k === key) {
-              keyStatic = item['implicit']
+              keyStatic = item["implicit"]
             }
           })
           return keyStatic
@@ -63,35 +63,35 @@ define(['../module'], function(directives) {
          * Removes a filter on click
          * @param {String}: The filter to be removed
          */
-        $scope.removeFilter = filter => {
+        $scope.removeFilter = (filter) => {
           const index = $scope.filters.indexOf(filter)
           if (index > -1) {
             $currentDataService.removeFilter($scope.filters[index])
             $scope.filters.splice(index, 1)
           }
-          $scope.$emit('deletedFilter', {})
+          $scope.$emit("deletedFilter", {})
         }
 
         /**
          * Applies the written filter to visualizations
          * @param {Object | String} filter
          */
-        $scope.applyFilters = customSearch => {
+        $scope.applyFilters = (customSearch) => {
           try {
             if (
               !customSearch ||
-              customSearch.split(':').length !== 2 ||
-              customSearch.split(':')[1].length === 0
+              customSearch.split(":").length !== 2 ||
+              customSearch.split(":")[1].length === 0
             ) {
-              throw new Error('Incorrent format. Please use key:value syntax')
+              throw new Error("Incorrent format. Please use key:value syntax")
             }
             $currentDataService.addFilter(
-              `{"${customSearch.split(':')[0]}":"${
-                customSearch.split(':')[1]
+              `{"${customSearch.split(":")[0]}":"${
+                customSearch.split(":")[1]
               }"}`
             )
             $scope.filters = getPrettyFilters()
-            $scope.$emit('barFilter', {})
+            $scope.$emit("barFilter", {})
             $scope.$applyAsync()
           } catch (err) {
             $notificationService.showErrorToast(err.message || err)
@@ -102,11 +102,11 @@ define(['../module'], function(directives) {
          * Change chip showing pin and trash icons
          * @param {Object | String} chip
          */
-         $scope.editChip = chip => {
+        $scope.editChip = (chip) => {
           const chipIsStatic = filterStatic(chip)
           if (!chipIsStatic) {
             $scope.editingChip = chip
-            if($scope.finishChipTimer) clearTimeout($scope.finishChipTimer);
+            if ($scope.finishChipTimer) clearTimeout($scope.finishChipTimer)
           }
         }
 
@@ -115,11 +115,11 @@ define(['../module'], function(directives) {
          * @param {Object | String} chip
          */
         $scope.finishChipEdition = () => {
-          $scope.finishChipTimer = setTimeout(function(){
-            $scope.editingChip = false;
-            clearTimeout($scope.finishChipTimer);
+          $scope.finishChipTimer = setTimeout(function () {
+            $scope.editingChip = false
+            clearTimeout($scope.finishChipTimer)
             $scope.$applyAsync()
-          },500)
+          }, 500)
         }
 
         /**
@@ -127,25 +127,25 @@ define(['../module'], function(directives) {
          * @param {Object | String} chip
          */
         function filterPined(filter) {
-          const key = filter.split(':')[0]
+          const key = filter.split(":")[0]
           const staticTrue = $currentDataService
             .getFilters()
-            .filter(item => !!item.pined)
+            .filter((item) => !!item.pined)
           const isIncluded = staticTrue.filter(
-            item => typeof item[getUnformatedFilterKey(key)] !== 'undefined'
+            (item) => typeof item[getUnformatedFilterKey(key)] !== "undefined"
           )
           return !!isIncluded.length
         }
-        $scope.filterPined = chip => filterPined(chip)
+        $scope.filterPined = (chip) => filterPined(chip)
 
         /**
          * Pin the filter
          * @param {Object | String} chip
          */
-        $scope.pinFilter = filter => {
+        $scope.pinFilter = (filter) => {
           try {
-            const key = filter.split(':')[0]
-            const value = filter.split(':')[1]
+            const key = filter.split(":")[0]
+            const value = filter.split(":")[1]
             if (filterPined(filter)) {
               $currentDataService.pinFilter(
                 `{"${getUnformatedFilterKey(key)}":"${value}", "pined":true}`
@@ -163,19 +163,22 @@ define(['../module'], function(directives) {
         }
 
         /**
-         * Searchs the filter key with '{}' at the end of the key in filtered fields. If found returns the unformated key, otherwise returns the original key 
-         * @param {String} key 
+         * Searchs the filter key with '{}' at the end of the key in filtered fields. If found returns the unformated key, otherwise returns the original key
+         * @param {String} key
          * @returns {String}
          */
         const getUnformatedFilterKey = (key) => {
-          const unformatedKey = $currentDataService.getFilters().some(item => item[`${key}{}`] !== undefined) ? `${key}{}` : key
+          const unformatedKey = $currentDataService
+            .getFilters()
+            .some((item) => item[`${key}{}`] !== undefined)
+            ? `${key}{}`
+            : key
           return unformatedKey
         }
-
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html'
+        "/static/app/SplunkAppForWazuh/js/directives/wz-bar/wz-bar.html",
     }
   })
 })

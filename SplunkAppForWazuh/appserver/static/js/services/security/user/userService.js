@@ -1,34 +1,34 @@
-define(["../../module"], function(module) {
-  "use strict";
+define(["../../module"], function (module) {
+  "use strict"
 
-  module.service("$userService", function($requestService) {
+  module.service("$userService", function ($requestService) {
     const removeUser = async (users) => {
       try {
         const result = await $requestService.apiReq(
           `/security/users?user_ids=${users}`,
           {},
           "DELETE"
-        );
+        )
         if (result.data.error !== 0) {
-          throw new Error(result.data.message);
+          throw new Error(result.data.message)
         }
-        return result;
+        return result
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const getRoles = async () => {
       try {
-        const result = await $requestService.apiReq(`/security/roles`);
+        const result = await $requestService.apiReq(`/security/roles`)
         if (result.data.error !== 0) {
-          throw new Error(result.data.message);
+          throw new Error(result.data.message)
         }
-        return result;
+        return result
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const addUser = async (user, pass) => {
       try {
@@ -39,13 +39,13 @@ define(["../../module"], function(module) {
             origin: "json",
           },
           "POST"
-        );
-        return data;
+        )
+        return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding user: " + error);
-        return Promise.reject(error);
+        this.notification.showErrorToast("Error adding user: " + error)
+        return Promise.reject(error)
       }
-    };
+    }
 
     const addRunAs = async (user, status) => {
       try {
@@ -53,13 +53,13 @@ define(["../../module"], function(module) {
           `/security/users/${user}/run_as?allow_run_as=${status}`,
           {},
           "PUT"
-        );
-        return data;
+        )
+        return data
       } catch (error) {
-        this.notification.showErrorToast("Error modifying run as: " + error);
-        return Promise.reject(error);
+        this.notification.showErrorToast("Error modifying run as: " + error)
+        return Promise.reject(error)
       }
-    };
+    }
 
     const addRoles = async (user, roles) => {
       try {
@@ -67,13 +67,13 @@ define(["../../module"], function(module) {
           `/security/users/${user}/roles?role_ids=${roles}`,
           {},
           "POST"
-        );
-        return data;
+        )
+        return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding roles: " + error);
-        return Promise.reject(error);
+        this.notification.showErrorToast("Error adding roles: " + error)
+        return Promise.reject(error)
       }
-    };
+    }
 
     const deleteRoles = async (user, roles) => {
       try {
@@ -81,13 +81,13 @@ define(["../../module"], function(module) {
           `/security/users/${user}/roles?role_ids=${roles}`,
           {},
           "DELETE"
-        );
-        return data;
+        )
+        return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding roles: " + error);
-        return Promise.reject(error);
+        this.notification.showErrorToast("Error adding roles: " + error)
+        return Promise.reject(error)
       }
-    };
+    }
 
     const editPassword = async (user, pass) => {
       try {
@@ -98,13 +98,13 @@ define(["../../module"], function(module) {
             origin: "json",
           },
           "PUT"
-        );
-        return data;
+        )
+        return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding roles: " + error);
-        return Promise.reject(error);
+        this.notification.showErrorToast("Error adding roles: " + error)
+        return Promise.reject(error)
       }
-    };
+    }
 
     return {
       addUser: addUser,
@@ -114,6 +114,6 @@ define(["../../module"], function(module) {
       editPassword: editPassword,
       deleteRoles: deleteRoles,
       removeUser: removeUser,
-    };
-  });
-});
+    }
+  })
+})

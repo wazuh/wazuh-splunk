@@ -11,14 +11,14 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/column-chart",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/inputs/dropdown-input",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -27,7 +27,7 @@ define([
   Dropdown,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsPCI extends DashboardMain {
     /**
@@ -75,15 +75,15 @@ define([
       this.scope.expandArray = [false, false, false, false, false]
 
       this.dropdown = new Dropdown(
-        'dropDownInput',
+        "dropDownInput",
         `${this.filters} rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
-        'rule.pci_dss{}',
-        '$form.pci$',
-        'dropDownInput',
+        "rule.pci_dss{}",
+        "$form.pci$",
+        "dropDownInput",
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on("change", (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -105,55 +105,55 @@ define([
          * Visualizations
          */
         new ColumnChart(
-          'pciReqSearchVizz',
+          "pciReqSearchVizz",
           `${this.filters} rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
-          'pciReqSearchVizz',
+          "pciReqSearchVizz",
           this.scope
         ),
         new PieChart(
-          'groupsVizz',
+          "groupsVizz",
           `${this.filters} rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
-          'groupsVizz',
+          "groupsVizz",
           this.scope
         ),
         new PieChart(
-          'topRules',
+          "topRules",
           `${this.filters} rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "Requirements"`,
-          'topRules',
+          "topRules",
           this.scope
         ),
         new PieChart(
-          'top5Pcidss',
+          "top5Pcidss",
           `${this.filters} rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
-          'top5Pcidss',
+          "top5Pcidss",
           this.scope
         ),
         new PieChart(
-          'ruleLevelDistribution',
+          "ruleLevelDistribution",
           `${this.filters} rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "Requirements"`,
-          'ruleLevelDistribution',
+          "ruleLevelDistribution",
           this.scope
         ),
         new ColumnChart(
-          'reqByAgentsVizz',
+          "reqByAgentsVizz",
           `${this.filters} rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
-          'reqByAgentsVizz',
+          "reqByAgentsVizz",
           this.scope
         ),
         new Table(
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           `${this.filters} rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters} rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
 
       // Set agent info
@@ -167,7 +167,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -178,17 +178,17 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-pci',
-          'PCI DSS',
+          "agents-pci",
+          "PCI DSS",
           this.filters,
           [
-            'pciReqSearchVizz',
-            'ruleLevelDistribution',
-            'top5Pcidss',
-            'groupsVizz',
-            'topRules',
-            'reqByAgentsVizz',
-            'alertsSummaryVizz'
+            "pciReqSearchVizz",
+            "ruleLevelDistribution",
+            "top5Pcidss",
+            "groupsVizz",
+            "topRules",
+            "reqByAgentsVizz",
+            "alertsSummaryVizz",
           ],
           {}, //Metrics,
           this.tableResults,
@@ -206,13 +206,15 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 
@@ -221,7 +223,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === "Active" ? "teal" : "red"
     }
 
     /**
@@ -229,10 +231,10 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ['Active', 'Disconnected'].includes(agentStatus)
+      return ["Active", "Disconnected"].includes(agentStatus)
         ? agentStatus
-        : 'Never connected'
+        : "Never connected"
     }
   }
-  app.controller('agentsPciCtrl', AgentsPCI)
+  app.controller("agentsPciCtrl", AgentsPCI)
 })

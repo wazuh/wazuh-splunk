@@ -1,29 +1,29 @@
 define([
-  '../module',
-  'splunkjs/mvc',
-  'splunkjs/mvc/simpleform/formutils',
-  'splunkjs/mvc/simplexml/urltokenmodel'
-], function(module, mvc, FormUtils, UrlTokenModel) {
-  'use strict'
+  "../module",
+  "splunkjs/mvc",
+  "splunkjs/mvc/simpleform/formutils",
+  "splunkjs/mvc/simplexml/urltokenmodel",
+], function (module, mvc, FormUtils, UrlTokenModel) {
+  "use strict"
 
   class urlTokenModel {
     /**
      * Encapsulates the Splunk token management
      */
     constructor() {
-      this.urlTokenModel = new UrlTokenModel({ id: 'tokenModel' })
-      this.defaultTokenModel = mvc.Components.getInstance('default', {
-        create: true
+      this.urlTokenModel = new UrlTokenModel({ id: "tokenModel" })
+      this.defaultTokenModel = mvc.Components.getInstance("default", {
+        create: true,
       })
-      this.submittedTokenModel = mvc.Components.getInstance('submitted', {
-        create: true
+      this.submittedTokenModel = mvc.Components.getInstance("submitted", {
+        create: true,
       })
-      mvc.Components.registerInstance('url', this.urlTokenModel)
+      mvc.Components.registerInstance("url", this.urlTokenModel)
       this.defaultTokenModel.set(this.urlTokenModel.toJSON())
 
-      this.urlTokenModel.on('url:navigate', () => {
+      this.urlTokenModel.on("url:navigate", () => {
         this.defaultTokenModel.set(this.urlTokenModel.toJSON())
-        if (typeof _.isEmpty !== 'undefined') {
+        if (typeof _.isEmpty !== "undefined") {
           //eslint-disable-line
           if (
             !_.isEmpty(this.urlTokenModel.toJSON()) && // eslint-disable-line
@@ -99,7 +99,7 @@ define([
      */
     onChange(event, cb) {
       this.submittedTokenModel.on(
-        'change:' + event,
+        "change:" + event,
         (model, authSuccessToken, opts) => {
           return cb(
             model,
@@ -112,5 +112,5 @@ define([
     }
   }
 
-  module.service('$urlTokenModel', urlTokenModel)
+  module.service("$urlTokenModel", urlTokenModel)
 })

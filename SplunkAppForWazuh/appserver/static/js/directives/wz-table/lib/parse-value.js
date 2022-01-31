@@ -10,16 +10,16 @@
  * Find more information about this on the LICENSE file.
  */
 
-define([], function() {
-  'use strict'
+define([], function () {
+  "use strict"
   /**
    * Splits an array in parts
    * @param {Array} array
    */
-  const splitArray = array => {
+  const splitArray = (array) => {
     if (Array.isArray(array)) {
       if (!array.length) return false
-      let str = ''
+      let str = ""
       for (const item of array) str += `${item}, `
       str = str.substring(0, str.length - 2)
       return str
@@ -31,8 +31,8 @@ define([], function() {
    * Checks if an item is already in the array
    * @param {*} item
    */
-  const checkIfArray = item => {
-    return typeof item === 'object' ? splitArray(item) : item == 0 ? '0' : item
+  const checkIfArray = (item) => {
+    return typeof item === "object" ? splitArray(item) : item == 0 ? "0" : item
   }
 
   /**
@@ -51,14 +51,14 @@ define([], function() {
     dateDiffService = null
   ) {
     if (
-      (key === 'event' || (key.value && key.value === 'event')) &&
-      instancePath.includes('rootcheck') &&
+      (key === "event" || (key.value && key.value === "event")) &&
+      instancePath.includes("rootcheck") &&
       $sce
     ) {
-      if (typeof (item || {}).event === 'string') {
+      if (typeof (item || {}).event === "string") {
         const urlRegex = new RegExp(
           /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/,
-          'g'
+          "g"
         )
 
         const matched = item.event.match(urlRegex)
@@ -84,24 +84,24 @@ define([], function() {
       }
     }
 
-    if (key === 'state' && instancePath.includes('processes')) {
-      return ProcessEquivalence[item.state] || 'Unknown'
+    if (key === "state" && instancePath.includes("processes")) {
+      return ProcessEquivalence[item.state] || "Unknown"
     }
     if (
-      (key === 'description' || (key.value && key.value === 'description')) &&
+      (key === "description" || (key.value && key.value === "description")) &&
       !item.description
     ) {
-      return '-'
+      return "-"
     }
-    const isComposedString = typeof key === 'string' && key.includes('.')
+    const isComposedString = typeof key === "string" && key.includes(".")
     const isComposedObject =
-      typeof key === 'object' && key.value && key.value.includes('.')
+      typeof key === "object" && key.value && key.value.includes(".")
     if (isComposedString || isComposedObject) {
-      const split = isComposedString ? key.split('.') : key.value.split('.')
+      const split = isComposedString ? key.split(".") : key.value.split(".")
       const [first, second] = split
-      return item[first] && item[first][second] ? item[first][second] : '-'
+      return item[first] && item[first][second] ? item[first][second] : "-"
     } else {
-      return checkIfArray(item[key.value || key]) || '-'
+      return checkIfArray(item[key.value || key]) || "-"
     }
   }
 })

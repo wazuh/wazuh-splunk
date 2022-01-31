@@ -11,18 +11,18 @@
  */
 
 define(["../module"], function (directives) {
-  "use strict";
+  "use strict"
   directives.directive("iframeOnload", function () {
     return {
-      restrict: 'A',
+      restrict: "A",
       scope: {
         callBack: "&iframeOnload",
       },
       link: function (scope, element, attrs) {
-        element.on('load', function () {
-          return scope.callBack();
-        });
+        element.on("load", function () {
+          return scope.callBack()
+        })
       },
-    };
-  });
-});
+    }
+  })
+})

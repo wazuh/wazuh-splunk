@@ -1,7 +1,7 @@
-define(["../module"], function(module) {
-  "use strict";
+define(["../module"], function (module) {
+  "use strict"
 
-  module.service("$requirementService", function() {
+  module.service("$requirementService", function () {
     /**
      * Gets a valid resource string with an optional parameter,
      * returns a wildcard resource if no param is specified
@@ -36,12 +36,12 @@ define(["../module"], function(module) {
         ROLE_ID: `role:id:${param}`,
         RULE_ID: `rule:id:${param}`,
         USER_ID: `user:id:${param}`,
-      };
-      if (!(resource in resourceDic)) {
-        throw "Invalid resource";
       }
-      return resourceDic[resource];
-    };
+      if (!(resource in resourceDic)) {
+        throw "Invalid resource"
+      }
+      return resourceDic[resource]
+    }
 
     /**
      * Returns a valid action string
@@ -155,12 +155,12 @@ define(["../module"], function(module) {
         SYSCOLLECTOR_READ: "syscollector:read",
         TASK_STATUS: "task:status",
         VULNERABILITY_READ: "vulnerability:read",
-      };
-      if (!(action in actionDict)) {
-        throw "Invalid action";
       }
-      return actionDict[action];
-    };
+      if (!(action in actionDict)) {
+        throw "Invalid action"
+      }
+      return actionDict[action]
+    }
 
     /**
      * Generates an object from an action with the resources used by that
@@ -441,14 +441,14 @@ define(["../module"], function(module) {
           resources: ["AGENT_ID", "AGENT_GROUP"],
           action: "VULNERABILITY_READ",
         },
-      };
-      const { action, resources } = actionResourcesDict[actionKey];
+      }
+      const { action, resources } = actionResourcesDict[actionKey]
       return {
         resourceKeys: resources,
         generateRequirement: (params = []) =>
           generateRequirement(action, resources, params),
-      };
-    };
+      }
+    }
     /**
      * This function generates a requirement object that may be used with the validation service.
      * @param {string} action Action key to parse
@@ -459,14 +459,14 @@ define(["../module"], function(module) {
     const generateRequirement = (action, resources, params = []) => {
       const resourcesStr = resources.map((resource, key) =>
         getResource(resource, params[key])
-      );
-      return { [getAction(action)]: resourcesStr };
-    };
+      )
+      return { [getAction(action)]: resourcesStr }
+    }
     return {
       getAction,
       getResource,
       generateRequirement,
       generateRequirementFactory,
-    };
-  });
-});
+    }
+  })
+})

@@ -11,13 +11,13 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/chart/area-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -25,7 +25,7 @@ define([
   Table,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class OsqueryAgents extends DashboardMain {
     /**
@@ -91,51 +91,51 @@ define([
          * Visualizations
          */
         new PieChart(
-          'mostCommonPacks',
+          "mostCommonPacks",
           `${this.filters}  | top data.osquery.pack limit=5`,
-          'mostCommonPacks',
+          "mostCommonPacks",
           this.scope
         ),
         new AreaChart(
-          'alertsPacksOverTime',
+          "alertsPacksOverTime",
           `${this.filters} data.osquery.pack="*" | timechart span=1h count by data.osquery.pack`,
-          'alertsPacksOverTime',
+          "alertsPacksOverTime",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new PieChart(
-          'mostCommonActions',
+          "mostCommonActions",
           `${this.filters}  | top data.osquery.action limit=5`,
-          'mostCommonActions',
+          "mostCommonActions",
           this.scope
         ),
         new Table(
-          'topRules',
+          "topRules",
           `${this.filters}  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'topRules',
+          "topRules",
           this.scope
         ),
         new AreaChart(
-          'alertsOverTime',
+          "alertsOverTime",
           `${this.filters} | timechart span=1h count`,
-          'alertsOverTime',
+          "alertsOverTime",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new Table(
-          'alertsSummary',
+          "alertsSummary",
           `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
-          'alertsSummary',
+          "alertsSummary",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts summary'
-        )
+          "Alerts summary"
+        ),
       ]
 
       // Set agent info
@@ -149,7 +149,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -160,16 +160,16 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-osquery',
-          'Osquery',
+          "agents-osquery",
+          "Osquery",
           this.filters,
           [
-            'mostCommonPacks',
-            'alertsPacksOverTime',
-            'mostCommonActions',
-            'topRules',
-            'alertsOverTime',
-            'alertsSummary'
+            "mostCommonPacks",
+            "alertsPacksOverTime",
+            "mostCommonActions",
+            "topRules",
+            "alertsOverTime",
+            "alertsSummary",
           ],
           {}, //Metrics,
           this.tableResults,
@@ -187,29 +187,31 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-        
+
       try {
         this.wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = this.wodles.filter(
-          item => item.osquery
+          (item) => item.osquery
         )[0].osquery
       } catch (err) {
         this.notification.showErrorToast(
-          'Cannot load wodle configuration. Osquery not configured.'
+          "Cannot load wodle configuration. Osquery not configured."
         )
       }
 
-      this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus)
+      this.scope.getAgentStatusClass = (agentStatus) =>
+        agentStatus === "Active" ? "teal" : "red"
+      this.scope.formatAgentStatus = (agentStatus) => {
+        return ["Active", "Disconnected"].includes(agentStatus)
           ? agentStatus
-          : 'Never connected'
+          : "Never connected"
       }
     }
   }
-  app.controller('osqueryAgentCtrl', OsqueryAgents)
+  app.controller("osqueryAgentCtrl", OsqueryAgents)
 })

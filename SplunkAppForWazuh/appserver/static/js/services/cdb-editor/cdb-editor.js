@@ -10,8 +10,8 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(module) {
-  'use strict'
+define(["../module"], function (module) {
+  "use strict"
 
   class CDBEditor {
     constructor($requestService) {
@@ -24,8 +24,8 @@ define(['../module'], function(module) {
         const url = `/lists/files/${file}?overwrite=${overwrite}`
         const result = await this.apiReq(
           `${url}`,
-          { content, origin: 'raw' },
-          'PUT'
+          { content, origin: "raw" },
+          "PUT"
         )
         if (
           !result ||
@@ -36,7 +36,7 @@ define(['../module'], function(module) {
           if (result.data.error === 1905) {
             return result
           } else {
-            throw new Error(result.data.message || 'Cannot send this file.')
+            throw new Error(result.data.message || "Cannot send this file.")
           }
         }
         return result
@@ -48,15 +48,9 @@ define(['../module'], function(module) {
     async getConfiguration(file, path) {
       try {
         const url = `/lists/files/${file}?raw=true`
-        const result = await this.apiReq(
-          url,
-          { origin:"raw" }
-        )
-        if (
-          !result ||
-          !result.data
-        ) {
-          throw new Error('Error fetching cdb list content')
+        const result = await this.apiReq(url, { origin: "raw" })
+        if (!result || !result.data) {
+          throw new Error("Error fetching cdb list content")
         }
         return result.data.data
       } catch (error) {
@@ -64,5 +58,5 @@ define(['../module'], function(module) {
       }
     }
   }
-  module.service('$cdbEditor', CDBEditor)
+  module.service("$cdbEditor", CDBEditor)
 })

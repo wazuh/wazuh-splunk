@@ -1,13 +1,13 @@
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/linear-chart",
+  "../../../services/visualizations/chart/column-chart",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/inputs/dropdown-input",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -17,7 +17,7 @@ define([
   Dropdown,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
   class OverviewGDPR extends DashboardMain {
     /**
      * Class GDPR
@@ -57,16 +57,16 @@ define([
       this.scope.gdprTabs = gdprTabs ? gdprTabs : false
 
       this.dropdown = new Dropdown(
-        'dropDownInputAgent',
+        "dropDownInputAgent",
         `${this.filters} rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
-        'rule.gdpr{}',
-        '$form.gdpr$',
-        'dropDownInput',
+        "rule.gdpr{}",
+        "$form.gdpr$",
+        "dropDownInput",
         this.scope
       )
 
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on("change", (newValue) => {
         if (newValue && this.dropdownInstance) {
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
@@ -81,44 +81,44 @@ define([
          * Visualizations
          */
         new ColumnChart(
-          'gdprRequirements',
+          "gdprRequirements",
           `${this.filters} rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'gdprRequirements',
+          "gdprRequirements",
           this.scope
         ),
         new LinearChart(
-          'evoViz',
+          "evoViz",
           `${this.filters} rule.gdpr{}="*" | timechart count by rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements"  `,
-          'evoViz',
+          "evoViz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new PieChart(
-          'agentsViz',
+          "agentsViz",
           `${this.filters} rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'agentsViz',
+          "agentsViz",
           this.scope
         ),
         new ColumnChart(
-          'requirementsByAgents',
+          "requirementsByAgents",
           `${this.filters} rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          'requirementsByAgents',
+          "requirementsByAgents",
           this.scope
         ),
         new Table(
-          'alertsSummaryViz',
+          "alertsSummaryViz",
           `${this.filters} rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryViz',
+          "alertsSummaryViz",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryVizTable',
+          "alertsSummaryVizTable",
           `${this.filters} rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-          'alertsSummaryVizTableToken',
-          '$result$',
+          "alertsSummaryVizTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
     }
 
@@ -129,15 +129,15 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-gdpr',
-            'GDPR',
+            "overview-gdpr",
+            "GDPR",
             this.filters,
             [
-              'gdprRequirements',
-              'groupsViz',
-              'agentsViz',
-              'requirementsByAgents',
-              'alertsSummaryViz'
+              "gdprRequirements",
+              "groupsViz",
+              "agentsViz",
+              "requirementsByAgents",
+              "alertsSummaryViz",
             ],
             {}, //Metrics,
             this.tableResults
@@ -146,5 +146,5 @@ define([
     }
   }
 
-  app.controller('overviewGdprCtrl', OverviewGDPR)
+  app.controller("overviewGdprCtrl", OverviewGDPR)
 })

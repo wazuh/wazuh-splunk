@@ -11,13 +11,13 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/chart/area-chart',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/chart/area-chart",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -25,7 +25,7 @@ define([
   AreaChart,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsVirusTotal extends DashboardMain {
     /**
@@ -85,32 +85,32 @@ define([
          */
 
         new PieChart(
-          'lastScannedFiles',
+          "lastScannedFiles",
           `${this.filters} | top limit=5 data.virustotal.source.file`,
-          'lastScannedFiles',
+          "lastScannedFiles",
           this.scope
         ),
         new AreaChart(
-          'maliciousEventsOverTimeElement',
+          "maliciousEventsOverTimeElement",
           `${this.filters} data.virustotal.positives="*" | timechart span=12h count by data.virustotal.positives  `,
-          'maliciousEventsOverTimeElement',
+          "maliciousEventsOverTimeElement",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new Table(
-          'lastFiles',
+          "lastFiles",
           `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
-          'lastFiles',
+          "lastFiles",
           this.scope
         ),
         new RawTableDataService(
-          'lastFilesTable',
+          "lastFilesTable",
           `${this.filters} | stats count by data.virustotal.source.file,data.virustotal.permalink | sort count DESC | rename  data.virustotal.source.file as File,data.virustotal.permalink as Link, count as Count`,
-          'lastFilesToken',
-          '$result$',
+          "lastFilesToken",
+          "$result$",
           this.scope,
-          'Last Files'
-        )
+          "Last Files"
+        ),
       ]
 
       // Set agent info
@@ -124,7 +124,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -135,10 +135,10 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-virustotal',
-          'VirusTotal',
+          "agents-virustotal",
+          "VirusTotal",
           this.filters,
-          ['lastScannedFiles', 'maliciousEventsOverTimeElement', 'lastFiles'],
+          ["lastScannedFiles", "maliciousEventsOverTimeElement", "lastFiles"],
           this.reportMetrics,
           this.tableResults,
           this.agentReportData
@@ -154,16 +154,18 @@ define([
           ? this.agent.data.data.affected_items[0]
           : { error: true }
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
 
-      this.scope.getAgentStatusClass = agentStatus =>
-        agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
-        return ['Active', 'Disconnected'].includes(agentStatus)
+      this.scope.getAgentStatusClass = (agentStatus) =>
+        agentStatus === "Active" ? "teal" : "red"
+      this.scope.formatAgentStatus = (agentStatus) => {
+        return ["Active", "Disconnected"].includes(agentStatus)
           ? agentStatus
-          : 'Never connected'
+          : "Never connected"
       }
     }
 
@@ -172,11 +174,11 @@ define([
      */
     setReportMetrics() {
       this.reportMetrics = {
-        'Files added': this.scope.filesAdded,
-        'Files modified': this.scope.filesModified,
-        'Files deleted': this.scope.filesDeleted
+        "Files added": this.scope.filesAdded,
+        "Files modified": this.scope.filesModified,
+        "Files deleted": this.scope.filesDeleted,
       }
     }
   }
-  app.controller('agentsVirusTotalCtrl', AgentsVirusTotal)
+  app.controller("agentsVirusTotalCtrl", AgentsVirusTotal)
 })

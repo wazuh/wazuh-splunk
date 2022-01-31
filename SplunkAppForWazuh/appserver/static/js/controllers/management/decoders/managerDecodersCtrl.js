@@ -1,5 +1,5 @@
-define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
-  'use strict'
+define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
+  "use strict"
 
   class Decoders extends Ruleset {
     /**
@@ -29,14 +29,14 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         $scope,
         $sce,
         $notificationService,
-        'decoders',
+        "decoders",
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
         $restartService,
         $fileEditor
       )
-      this.scope.typeFilter = 'all'
+      this.scope.typeFilter = "all"
       this.restartService = $restartService
 
       /* RBAC flags */
@@ -45,11 +45,16 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         ["DECODER_FILE"],
         ["*"]
       )
-      this.scope.canUpdateDecoders = $security_service.isAllowed("DECODERS_UPDATE", [
-        "RESOURCELESS",
-      ])
+      this.scope.canUpdateDecoders = $security_service.isAllowed(
+        "DECODERS_UPDATE",
+        ["RESOURCELESS"]
+      )
       this.scope.canUpdateDecoderFile = (filename) =>
-        $security_service.isAllowed("DECODERS_UPDATE", ["DECODER_FILE"], [filename])
+        $security_service.isAllowed(
+          "DECODERS_UPDATE",
+          ["DECODER_FILE"],
+          [filename]
+        )
     }
 
     /**
@@ -58,30 +63,30 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
     $onInit() {
       this.scope.localFilter = false
       // Reloading event listener
-      this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
+      this.scope.$broadcast("wazuhSearch", { term: "", removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
+      this.scope.onlyParents = (typeFilter) => this.onlyParents(typeFilter)
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveRuleConfig = (fileName, dir, overwrite) =>
         this.saveRuleConfig(fileName, dir, overwrite)
 
-      this.scope.selectedNavTab = 'decoders'
+      this.scope.selectedNavTab = "decoders"
 
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', event => {
+      this.scope.$on("loadedTable", (event) => {
         event.stopPropagation()
         try {
           if (window.localStorage.decoders) {
             const parsedFilter = JSON.parse(window.localStorage.decoders)
             this.scope.appliedFilters = parsedFilter
             if (this.filter.length > 0)
-              this.scope.$broadcast('wazuhFilter', { filter: this.filter })
+              this.scope.$broadcast("wazuhFilter", { filter: this.filter })
           }
         } catch (err) {
-          this.notification.showErrorToast('Error applying filter')
+          this.notification.showErrorToast("Error applying filter")
         }
       })
     }
@@ -95,13 +100,13 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       if (window.localStorage.decoders) {
         delete window.localStorage.decoders
       }
-      if (typeFilter === 'all') {
+      if (typeFilter === "all") {
         this.scope.onlyParentDecoders = false
-        this.scope.$broadcast('wazuhUpdateInstancePath', { path: '/decoders' })
+        this.scope.$broadcast("wazuhUpdateInstancePath", { path: "/decoders" })
       } else {
         this.scope.onlyParentDecoders = true
-        this.scope.$broadcast('wazuhUpdateInstancePath', {
-          path: '/decoders/parents'
+        this.scope.$broadcast("wazuhUpdateInstancePath", {
+          path: "/decoders/parents",
         })
       }
     }
@@ -114,7 +119,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.addingNewFile = true
       this.scope.editingFile = {
         file: ``,
-        dir: `decoders`
+        dir: `decoders`,
       }
       this.scope.fetchedXML = `<!-- Configure your local decoders here -->`
     }
@@ -128,28 +133,28 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       try {
         const containsBlanks = /.* .*/
         fileName = this.scope.editingFile.file
-        fileName = fileName.endsWith('.xml') ? fileName : `${fileName}.xml`
+        fileName = fileName.endsWith(".xml") ? fileName : `${fileName}.xml`
         if (containsBlanks.test(fileName)) {
           this.notification.showErrorToast(
-            'Error creating a new file. The filename can not contain white spaces.'
+            "Error creating a new file. The filename can not contain white spaces."
           )
         } else {
-          if (fileName !== '.xml') {
+          if (fileName !== ".xml") {
             this.scope.saveIncomplete = true
-            this.scope.$broadcast('saveXmlFile', {
+            this.scope.$broadcast("saveXmlFile", {
               file: fileName,
               dir,
-              overwrite
+              overwrite,
             })
           } else {
             throw new Error('The name cannot be ".xml"')
           }
         }
       } catch (error) {
-        this.notification.showWarningToast('Please set a valid name')
+        this.notification.showWarningToast("Please set a valid name")
       }
     }
   }
-  controllers.controller('managerDecodersCtrl', Decoders)
+  controllers.controller("managerDecodersCtrl", Decoders)
   return Decoders
 })

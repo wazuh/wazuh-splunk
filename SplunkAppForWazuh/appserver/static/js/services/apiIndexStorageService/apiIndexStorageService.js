@@ -1,5 +1,5 @@
-define(['../module'], function(app) {
-  'use strict'
+define(["../module"], function (app) {
+  "use strict"
 
   class ApiIndexStorageService {
     constructor() {
@@ -28,7 +28,7 @@ define(['../module'], function(app) {
     getIndex() {
       if (this.sessionStorage.selectedIndex) {
         return JSON.parse(this.sessionStorage.selectedIndex)
-      } else return { index: 'wazuh' }
+      } else return { index: "wazuh" }
     }
 
     /**
@@ -49,7 +49,7 @@ define(['../module'], function(app) {
     setApi(Api) {
       try {
         delete this.sessionStorage.selectedAPI
-        if (typeof Api === 'object') {
+        if (typeof Api === "object") {
           this.sessionStorage.selectedAPI = JSON.stringify(Api)
         }
       } catch (error) {
@@ -72,43 +72,51 @@ define(['../module'], function(app) {
     }
 
     getExtensionKey(apiId) {
-      try 
-      {
-        if (this.sessionStorage.getItem('extensions')){
-          const parsedExtensions = JSON.parse(this.sessionStorage.getItem('extensions'))
-          if (parsedExtensions[apiId]){
+      try {
+        if (this.sessionStorage.getItem("extensions")) {
+          const parsedExtensions = JSON.parse(
+            this.sessionStorage.getItem("extensions")
+          )
+          if (parsedExtensions[apiId]) {
             return parsedExtensions[apiId]
           }
         }
-        throw 'Key not found'
+        throw "Key not found"
       } catch (e) {
         throw e
       }
     }
-    setExtensionKey(apiId, extensionKey){
+    setExtensionKey(apiId, extensionKey) {
       try {
-        const prevExtensions = JSON.parse(this.sessionStorage.getItem('extensions')) || {};
-        this.sessionStorage.setItem('extensions', JSON.stringify({...prevExtensions, [apiId]:extensionKey}))
+        const prevExtensions =
+          JSON.parse(this.sessionStorage.getItem("extensions")) || {}
+        this.sessionStorage.setItem(
+          "extensions",
+          JSON.stringify({ ...prevExtensions, [apiId]: extensionKey })
+        )
         return true
       } catch (e) {
         throw e
       }
-
     }
-    removeExtensionKey(apiId){
-      try
-      {
-          if(this.sessionStorage.getItem('extensions')){
-          const parsedExtensions = JSON.parse(this.sessionStorage.getItem('extensions'))
-          if (apiId in parsedExtensions){
-            delete parsedExtensions[apiId];
+    removeExtensionKey(apiId) {
+      try {
+        if (this.sessionStorage.getItem("extensions")) {
+          const parsedExtensions = JSON.parse(
+            this.sessionStorage.getItem("extensions")
+          )
+          if (apiId in parsedExtensions) {
+            delete parsedExtensions[apiId]
           }
-          this.sessionStorage.setItem('extensions', JSON.stringify({...parsedExtensions}))
+          this.sessionStorage.setItem(
+            "extensions",
+            JSON.stringify({ ...parsedExtensions })
+          )
         }
       } catch (e) {
         throw e
       }
     }
   }
-  app.service('$apiIndexStorageService', ApiIndexStorageService)
+  app.service("$apiIndexStorageService", ApiIndexStorageService)
 })

@@ -1,12 +1,12 @@
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/column-chart",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/inputs/dropdown-input",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -15,7 +15,7 @@ define([
   Dropdown,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsHipaa extends DashboardMain {
     /**
@@ -43,7 +43,7 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      nistExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -61,15 +61,15 @@ define([
       this.scope.expandArray = [false, false, false, false, false]
 
       this.dropdown = new Dropdown(
-        'dropDownInput',
+        "dropDownInput",
         `${this.filters} rule.hipaa{}="*"| stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
-        'rule.hipaa{}',
-        '$form.hipaa$',
-        'dropDownInput',
+        "rule.hipaa{}",
+        "$form.hipaa$",
+        "dropDownInput",
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on("change", (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -90,39 +90,39 @@ define([
          * Visualizations
          */
         new ColumnChart(
-          'requirementsOverTime',
+          "requirementsOverTime",
           `${this.filters} rule.hipaa{}="$hipaa$" | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirement"`,
-          'requirementsOverTime',
+          "requirementsOverTime",
           this.scope,
-          { stackMode: 'stacked' }
+          { stackMode: "stacked" }
         ),
         new PieChart(
-          'top10Requirements',
+          "top10Requirements",
           `${this.filters} rule.hipaa{}="$hipaa$" | top limit=10 rule.hipaa{} | rename rule.hipaa{} as "Requirement"`,
-          'top10Requirements',
+          "top10Requirements",
           this.scope
         ),
         new ColumnChart(
-          'requirementsDistributionByLevel',
+          "requirementsDistributionByLevel",
           `${this.filters} rule.hipaa{}="$hipaa$" | chart count(rule.hipaa{}) by rule.level,rule.hipaa{} | rename count as "Count" , rule.level as "Level", rule.hipaa{} as "Requirement"`,
-          'requirementsDistributionByLevel',
+          "requirementsDistributionByLevel",
           this.scope,
-          { stackMode: 'stacked' }
+          { stackMode: "stacked" }
         ),
         new Table(
-          'alertsSummary',
+          "alertsSummary",
           `${this.filters} rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description |  sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
-          'alertsSummary',
+          "alertsSummary",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters} rule.hipaa{}="$hipaa$" | stats count by rule.hipaa{},rule.level,rule.description |  sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count"`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
 
       // Set agent info
@@ -136,7 +136,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -147,14 +147,14 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-hipaa',
-          'HIPAA',
+          "agents-hipaa",
+          "HIPAA",
           this.filters,
           [
-            'requirementsOverTime',
-            'top10Requirements',
-            'requirementsDistributionByLevel',
-            'alertsSummary'
+            "requirementsOverTime",
+            "top10Requirements",
+            "requirementsDistributionByLevel",
+            "alertsSummary",
           ],
           {}, //Metrics,
           this.tableResults,
@@ -172,13 +172,15 @@ define([
           ? this.agent.data.data.affected_items[0]
           : { error: true }
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 
@@ -187,7 +189,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === "Active" ? "teal" : "red"
     }
 
     /**
@@ -195,10 +197,10 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ['Active', 'Disconnected'].includes(agentStatus)
+      return ["Active", "Disconnected"].includes(agentStatus)
         ? agentStatus
-        : 'Never connected'
+        : "Never connected"
     }
   }
-  app.controller('agentsHipaaCtrl', AgentsHipaa)
+  app.controller("agentsHipaaCtrl", AgentsHipaa)
 })

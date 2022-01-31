@@ -1,5 +1,5 @@
-define(['../module'], function(module) {
-  'use strict'
+define(["../module"], function (module) {
+  "use strict"
 
   class FilterService {
     constructor($notificationService) {
@@ -30,7 +30,7 @@ define(['../module'], function(module) {
         if (window.localStorage.filters) {
           const filters = JSON.parse(window.localStorage.filters)
           let isInIt = false
-          filters.map(fil => {
+          filters.map((fil) => {
             let key = Object.keys(filterJson)
             if (key.length > 1) {
               key = key[0]
@@ -43,13 +43,13 @@ define(['../module'], function(module) {
           if (!isInIt) {
             filters.push(filterJson)
           }
-          window.localStorage.setItem('filters', JSON.stringify(filters))
+          window.localStorage.setItem("filters", JSON.stringify(filters))
         } else {
-          window.localStorage.setItem('filters', `[${filter}]`)
+          window.localStorage.setItem("filters", `[${filter}]`)
         }
       } catch (err) {
         this.notification.showErrorToast(
-          'Incorrect format. Please use key:value syntax'
+          "Incorrect format. Please use key:value syntax"
         )
       }
     }
@@ -60,28 +60,30 @@ define(['../module'], function(module) {
      */
     getSerializedFilters(hideOnlyShowFilters = true) {
       try {
-        let filterStr = ' '
+        let filterStr = " "
         let filters = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
           filters = hideOnlyShowFilters
-            ? filters.filter(fil => !fil.onlyShow)
+            ? filters.filter((fil) => !fil.onlyShow)
             : filters
         }
         for (const filter of filters) {
-          if (typeof filter === 'object') {
+          if (typeof filter === "object") {
             const key = Object.keys(filter)[0]
             filterStr += key
-            filterStr += '='
-            filterStr += filter[key].includes(' ') ? `"${filter[key]}"` : filter[key] // If phrase, use quotes
-            filterStr += ' '
+            filterStr += "="
+            filterStr += filter[key].includes(" ")
+              ? `"${filter[key]}"`
+              : filter[key] // If phrase, use quotes
+            filterStr += " "
           } else {
-            filterStr += filter + ' '
+            filterStr += filter + " "
           }
         }
         return filterStr
       } catch (err) {
-        this.notification.showErrorToast('Error when getting filters.')
+        this.notification.showErrorToast("Error when getting filters.")
       }
     }
 
@@ -92,7 +94,7 @@ define(['../module'], function(module) {
     removeFilter(filter) {
       try {
         filter = JSON.parse(
-          `{"${filter.split(':')[0]}":"${filter.split(':')[1]}"}`
+          `{"${filter.split(":")[0]}":"${filter.split(":")[1]}"}`
         )
         const filters = JSON.parse(window.localStorage.filters)
         if (filters.length === 1) {
@@ -100,13 +102,15 @@ define(['../module'], function(module) {
           return
         }
         filters.map((item, index) => {
-          if (Object.keys(item)[0].replace(/{}$/,'') === Object.keys(filter)[0]) {
+          if (
+            Object.keys(item)[0].replace(/{}$/, "") === Object.keys(filter)[0]
+          ) {
             filters.splice(index, 1)
           }
         })
-        window.localStorage.setItem('filters', JSON.stringify(filters))
+        window.localStorage.setItem("filters", JSON.stringify(filters))
       } catch (err) {
-        this.notification.showErrorToast('Error removing filter.')
+        this.notification.showErrorToast("Error removing filter.")
       }
     }
 
@@ -121,16 +125,16 @@ define(['../module'], function(module) {
         const value = filter[key]
         const pined = filter.pined
         let filters = JSON.parse(window.localStorage.filters)
-        filters = filters.filter(fil => Object.keys(fil)[0] != key)
+        filters = filters.filter((fil) => Object.keys(fil)[0] != key)
         if (pined) {
           filter = JSON.parse(`{"${key}":"${value}"}`)
         } else {
           filter = JSON.parse(`{"${key}":"${value}", "pined":"true"}`)
         }
         filters.push(filter)
-        window.localStorage.setItem('filters', JSON.stringify(filters))
+        window.localStorage.setItem("filters", JSON.stringify(filters))
       } catch (err) {
-        this.notification.showErrorToast('Error pinning filter.')
+        this.notification.showErrorToast("Error pinning filter.")
       }
     }
 
@@ -142,9 +146,9 @@ define(['../module'], function(module) {
       try {
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
-          filters = filters.filter(fil => fil.pined)
+          filters = filters.filter((fil) => fil.pined)
           filters = JSON.stringify(filters)
-          window.localStorage.setItem('filters', filters)
+          window.localStorage.setItem("filters", filters)
         }
       } catch (err) {
         delete window.localStorage.filters // In case of error, delete all filters
@@ -160,17 +164,19 @@ define(['../module'], function(module) {
         let pined = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
-          pined = filters.filter(fil => fil.pined)
-          filters = filters.filter(fil => !fil.pined)
-          pined = pined.filter(pin => !Object.keys(pin)[0].startsWith('agent.'))
+          pined = filters.filter((fil) => fil.pined)
+          filters = filters.filter((fil) => !fil.pined)
+          pined = pined.filter(
+            (pin) => !Object.keys(pin)[0].startsWith("agent.")
+          )
           filters.push(...pined)
         }
         filters = JSON.stringify(filters)
-        window.localStorage.setItem('filters', filters)
+        window.localStorage.setItem("filters", filters)
       } catch (err) {
         delete window.localStorage.filters // In case of error, delete all filters
       }
     }
   }
-  module.service('$filterService', FilterService)
+  module.service("$filterService", FilterService)
 })

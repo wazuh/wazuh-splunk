@@ -1,8 +1,8 @@
-define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
+define(["splunkjs/mvc/simplexml/element/chart", "../viz/viz"], function (
   ChartElement,
   Viz
 ) {
-  'use strict'
+  "use strict"
 
   return class PieChart extends Viz {
     /**
@@ -21,13 +21,13 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
           {
             id: `${id}`,
             resizable: true,
-            'charting.drilldown': 'none',
-            'charting.chart': 'pie',
-            'trellis.enabled': trellisEnabled,
+            "charting.drilldown": "none",
+            "charting.chart": "pie",
+            "trellis.enabled": trellisEnabled,
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
-          { tokens: true, tokenNamespace: 'submitted' }
+          { tokens: true, tokenNamespace: "submitted" }
         ).render(),
         id,
         search,

@@ -1,11 +1,11 @@
-define(['../module'], function(module) {
-  'use strict'
-  module.service('$notificationService', function($mdToast, $rootScope) {
+define(["../module"], function (module) {
+  "use strict"
+  module.service("$notificationService", function ($mdToast, $rootScope) {
     let last = {
       bottom: true,
       top: false,
       left: false,
-      right: true
+      right: true,
     }
 
     let toastPosition = angular.extend({}, last) // eslint-disable-line
@@ -14,10 +14,10 @@ define(['../module'], function(module) {
       sanitizePosition()
 
       return Object.keys(toastPosition)
-        .filter(pos => {
+        .filter((pos) => {
           return toastPosition[pos]
         })
-        .join(' ')
+        .join(" ")
     }
 
     let sanitizePosition = () => {
@@ -31,11 +31,11 @@ define(['../module'], function(module) {
       last = angular.extend({}, current) // eslint-disable-line
     }
 
-    let showSuccessToast = text => showSimpleToast(text, 1)
-    let showErrorToast = text => showSimpleToast(text, 2)
-    let showWarningToast = text => showSimpleToast(text, 3)
+    let showSuccessToast = (text) => showSimpleToast(text, 1)
+    let showErrorToast = (text) => showSimpleToast(text, 2)
+    let showWarningToast = (text) => showSimpleToast(text, 3)
 
-    let showSimpleToast = (text, type) => {   
+    let showSimpleToast = (text, type) => {
       if (!wazuhIsNotReady(text)) {
         let pinTo = getToastPosition()
         if (type === 1) {
@@ -43,8 +43,7 @@ define(['../module'], function(module) {
             //Success
             hideDelay: 6000,
             position: pinTo,
-            template:
-              `
+            template: `
               <md-toast 
                 ng-mouseover="overToast = true" 
                 ng-mouseleave="overToast = false" 
@@ -67,15 +66,14 @@ define(['../module'], function(module) {
                   </p>
                 </div>
               </md-toast>
-              `
+              `,
           })
         } else if (type === 2) {
           //Error
           $mdToast.show({
             hideDelay: 30000,
             position: pinTo,
-            template:
-              `
+            template: `
               <md-toast 
                 ng-mouseover="overToast = true" 
                 ng-mouseleave="overToast = false" 
@@ -96,15 +94,14 @@ define(['../module'], function(module) {
                   </p>
                 </div>
               </md-toast>
-              `
+              `,
           })
         } else if (type === 3) {
           //Warning
           $mdToast.show({
             hideDelay: 30000,
             position: pinTo,
-            template:
-              `
+            template: `
               <md-toast 
                 ng-mouseover="overToast = true" 
                 ng-mouseleave="overToast = false" 
@@ -125,15 +122,14 @@ define(['../module'], function(module) {
                     </p>
                   </div>
                 </md-toast>
-              `
+              `,
           })
         } else {
           $mdToast.show({
             //Info
             hideDelay: 6000,
             position: pinTo,
-            template:
-              `
+            template: `
               <md-toast 
               ng-mouseover="overToast = true" 
               ng-mouseleave="overToast = false" 
@@ -154,7 +150,7 @@ define(['../module'], function(module) {
                   </p>
                 </div>
               </md-toast>
-              `
+              `,
           })
         }
       }
@@ -165,17 +161,17 @@ define(['../module'], function(module) {
     }
 
     const showHeadToaster = (type, msg, delay = false) => {
-      $rootScope.$broadcast('showHeadToaster', { type, msg, delay })
+      $rootScope.$broadcast("showHeadToaster", { type, msg, delay })
     }
 
-    const wazuhIsNotReady = text => {
+    const wazuhIsNotReady = (text) => {
       try {
-        if (text instanceof Object && text.message.includes('ERROR3099')) {
-          $rootScope.$broadcast('wazuhNotReadyYet', {})
+        if (text instanceof Object && text.message.includes("ERROR3099")) {
+          $rootScope.$broadcast("wazuhNotReadyYet", {})
           return true
         } else {
-          if (text.includes('ERROR3099')) {
-            $rootScope.$broadcast('wazuhNotReadyYet', {})
+          if (text.includes("ERROR3099")) {
+            $rootScope.$broadcast("wazuhNotReadyYet", {})
             return true
           }
         }
@@ -189,7 +185,7 @@ define(['../module'], function(module) {
       showErrorToast: showErrorToast,
       showSuccessToast: showSuccessToast,
       showWarningToast: showWarningToast,
-      showHeadToaster: showHeadToaster
+      showHeadToaster: showHeadToaster,
     }
   })
 })

@@ -1,8 +1,8 @@
-define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
+define(["splunkjs/mvc/simpleform/input/dropdown", "../viz/viz"], function (
   DropdownInput,
   Viz
 ) {
-  'use strict'
+  "use strict"
 
   return class Dropdown extends Viz {
     /**
@@ -24,24 +24,24 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
       earliestTtime,
       latestTime
     ) {
-      defaultValue = defaultValue ? defaultValue : '*'
+      defaultValue = defaultValue ? defaultValue : "*"
       super(
         new DropdownInput(
           {
             id: `${id}`,
-            choices: [{ label: 'ALL', value: '*' }],
+            choices: [{ label: "ALL", value: "*" }],
             labelField: fieldName,
             valueField: fieldName,
-            initialValue: '*',
+            initialValue: "*",
             default: defaultValue,
             selectFirstChoice: false,
             showClearButton: true,
             value: value,
             searchWhenChanged: true,
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
-          { tokens: true, tokenNamespace: 'submitted' }
+          { tokens: true, tokenNamespace: "submitted" }
         ).render(),
         id,
         search,

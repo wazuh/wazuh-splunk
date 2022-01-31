@@ -9,8 +9,8 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
-  'use strict'
+define([], function () {
+  "use strict"
   return {
     nextPage: async (currentPage, $scope, errorHandler, fetch, last) => {
       try {
@@ -29,13 +29,13 @@ define([], function() {
         ) {
           const copy = $scope.currentPage
           $scope.wazuhTableLoading = true
-          let currentNonNull = $scope.items.filter(item => !!item)
+          let currentNonNull = $scope.items.filter((item) => !!item)
           if (!last) {
             await fetch({ offset: currentNonNull.length })
           } else {
             while (currentNonNull.length < $scope.items.length) {
               await fetch({ offset: currentNonNull.length })
-              currentNonNull = $scope.items.filter(item => !!item)
+              currentNonNull = $scope.items.filter((item) => !!item)
             }
           }
           $scope.wazuhTableLoading = false
@@ -64,12 +64,12 @@ define([], function() {
       return ret
     },
 
-    groupToPages: $scope => {
+    groupToPages: ($scope) => {
       $scope.pagedItems = []
       for (let i = 0; i < $scope.filteredItems.length; i++) {
         if (i % $scope.itemsPerPage === 0) {
           $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [
-            $scope.filteredItems[i]
+            $scope.filteredItems[i],
           ]
         } else {
           $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push(
@@ -79,7 +79,7 @@ define([], function() {
       }
     },
 
-    prevPage: $scope => {
+    prevPage: ($scope) => {
       if ($scope.currentPage > 0) {
         $scope.currentPage--
       }
@@ -90,6 +90,6 @@ define([], function() {
       $scope.currentPage = 0
       // now group by pages
       $scope.groupToPages()
-    }
+    },
   }
 })

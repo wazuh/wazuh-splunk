@@ -9,8 +9,8 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
-  'use strict'
+define([], function () {
+  "use strict"
   return {
     wazuhUpdateInstancePath: (parameters, instance, init) => {
       instance.filters = []
@@ -39,10 +39,10 @@ define([], function() {
 
     wazuhRemoveFilter: (parameters, instance, $tableFilterService, init) => {
       instance.filters = instance.filters.filter(
-        item => item.name !== parameters.filterName
+        (item) => item.name !== parameters.filterName
       )
       $tableFilterService.set(instance.filters)
       return init()
-    }
+    },
   }
 })

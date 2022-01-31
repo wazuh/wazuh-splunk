@@ -9,22 +9,23 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
-  'use strict'
-  directives.directive('wazuhCardSlider', function(BASE_URL) {
+define(["../module"], function (directives) {
+  "use strict"
+  directives.directive("wazuhCardSlider", function (BASE_URL) {
     return {
-      restrict: 'E',
+      restrict: "E",
       scope: {
-        data: '=data'
+        data: "=data",
       },
-      controller: function($scope, $sce) {
+      controller: function ($scope, $sce) {
         $scope.expanded = false
         $scope.currentPos = 0
         $scope.maxCards = 4
-        $scope.data && $scope.data.forEach((item)=>{
-          item.content = $sce.trustAsHtml(item.content)
-        })
-        $scope.canShow = index => {
+        $scope.data &&
+          $scope.data.forEach((item) => {
+            item.content = $sce.trustAsHtml(item.content)
+          })
+        $scope.canShow = (index) => {
           return (
             index >= $scope.currentPos * $scope.maxCards &&
             index < $scope.currentPos * $scope.maxCards + 4
@@ -57,7 +58,7 @@ define(['../module'], function(directives) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-card-slider/wz-card-slider.html'
+        "/static/app/SplunkAppForWazuh/js/directives/wz-card-slider/wz-card-slider.html",
     }
   })
 })

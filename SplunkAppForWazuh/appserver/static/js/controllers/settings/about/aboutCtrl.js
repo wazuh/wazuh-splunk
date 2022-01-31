@@ -1,5 +1,5 @@
-define(['../../module'], function(controllers) {
-  'use strict'
+define(["../../module"], function (controllers) {
+  "use strict"
 
   class About {
     constructor($scope, appInfo) {
@@ -11,5 +11,5 @@ define(['../../module'], function(controllers) {
       this.scope.appInfo = this.appInfo
     }
   }
-  controllers.controller('aboutCtrl', About)
+  controllers.controller("aboutCtrl", About)
 })

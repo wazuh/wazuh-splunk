@@ -10,13 +10,13 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(directives) {
-  'use strict'
-  directives.directive('wzDiscover', function(BASE_URL) {
+define(["../module"], function (directives) {
+  "use strict"
+  directives.directive("wzDiscover", function (BASE_URL) {
     return {
-      restrict: 'E',
+      restrict: "E",
       scope: {
-        breadcrumbs: '=breadcrumbs'
+        breadcrumbs: "=breadcrumbs",
       },
       controller(
         $scope,
@@ -28,30 +28,29 @@ define(['../module'], function(directives) {
         $scope.discoverSection = () => {
           try {
             const hideOnlyShowFilters = false
-            const filters = $currentDataService.getSerializedFilters(
-              hideOnlyShowFilters
-            )
+            const filters =
+              $currentDataService.getSerializedFilters(hideOnlyShowFilters)
             const url = `${BASE_URL}/app/search/search?q=${filters}`
-            localStorage.setItem('urlDiscover', url)
+            localStorage.setItem("urlDiscover", url)
             const lastState = $navigationService.getLastState()
             const fromDashboard = lastState ? true : false // Check if cannot get the lastState, then, cannot back to previous dashboard
             const breadcrumbs =
               lastState && $scope.breadcrumbs ? $scope.breadcrumbs : {}
-            $state.go('discover', {
+            $state.go("discover", {
               fromDashboard: fromDashboard,
               previousState: lastState,
-              breadcrumbs: breadcrumbs
+              breadcrumbs: breadcrumbs,
             })
           } catch (error) {
             $notificationService.showErrorToast(
-              'Cannot open discover over this section.'
+              "Cannot open discover over this section."
             )
           }
         }
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-discover/wz-discover.html'
+        "/static/app/SplunkAppForWazuh/js/directives/wz-discover/wz-discover.html",
     }
   })
 })

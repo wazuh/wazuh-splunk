@@ -1,5 +1,5 @@
-define(['../../module', 'FileSaver'], function(app) {
-  'use strict'
+define(["../../module", "FileSaver"], function (app) {
+  "use strict"
 
   class Ruleset {
     /**
@@ -33,36 +33,36 @@ define(['../../module', 'FileSaver'], function(app) {
       this.sce = $sce
       this.restartService = $restartService
       this.colors = [
-        '#004A65',
-        '#00665F',
-        '#BF4B45',
-        '#BF9037',
-        '#1D8C2E',
-        'BB3ABF',
-        '#00B1F1',
-        '#00F2E2',
-        '#7F322E',
-        '#7F6025',
-        '#104C19',
-        '7C267F',
-        '#396e3e',
-        '#00A69B',
-        '#FF645C',
-        '#FFC04A',
-        '#2ACC43',
-        'F94DFF',
-        '#0082B2',
-        '#00B3A7',
-        '#401917',
-        '#403012',
-        '#2DD947',
-        '3E1340',
-        '#00668B',
-        '#008C83',
-        '#E55A53',
-        '#E5AD43',
-        '#25B23B',
-        'E045E5'
+        "#004A65",
+        "#00665F",
+        "#BF4B45",
+        "#BF9037",
+        "#1D8C2E",
+        "BB3ABF",
+        "#00B1F1",
+        "#00F2E2",
+        "#7F322E",
+        "#7F6025",
+        "#104C19",
+        "7C267F",
+        "#396e3e",
+        "#00A69B",
+        "#FF645C",
+        "#FFC04A",
+        "#2ACC43",
+        "F94DFF",
+        "#0082B2",
+        "#00B3A7",
+        "#401917",
+        "#403012",
+        "#2DD947",
+        "3E1340",
+        "#00668B",
+        "#008C83",
+        "#E55A53",
+        "#E5AD43",
+        "#25B23B",
+        "E045E5",
       ]
       this.fileEditor = $fileEditor
       this.scope.appliedFilters = []
@@ -72,7 +72,7 @@ define(['../../module', 'FileSaver'], function(app) {
         this.filter = []
       }
       this.scope.uploadingFiles = false
-      this.scope.searchTerm = ''
+      this.scope.searchTerm = ""
       this.scope.viewingDetail = false
       this.scope.showLogtest = window.sessionStorage.showLogtest === "true"
       this.scope.fullScreen = false
@@ -86,23 +86,24 @@ define(['../../module', 'FileSaver'], function(app) {
     initialize() {
       this.scope.rulesetFiles = false
       this.setInitialCustomFilters()
-      this.view === 'decoders'
+      this.view === "decoders"
         ? delete window.localStorage.ruleset
         : delete window.localStorage.decoders
-      this.scope.search = term => this.search(term)
-      this.scope.includesFilter = filterName => this.includesFilter(filterName)
-      this.scope.getFilter = filterName => this.getFilter(filterName)
+      this.scope.search = (term) => this.search(term)
+      this.scope.includesFilter = (filterName) =>
+        this.includesFilter(filterName)
+      this.scope.getFilter = (filterName) => this.getFilter(filterName)
       this.scope.switchLogtest = () => this.switchLogtest()
-      this.scope.removeFilter = filterName => this.removeFilter(filterName)
-      this.scope.colorRuleArg = ruleArg => this.colorRegex(ruleArg)
-      this.scope.closeDetailView = clear => this.closeDetailView(clear)
+      this.scope.removeFilter = (filterName) => this.removeFilter(filterName)
+      this.scope.colorRuleArg = (ruleArg) => this.colorRegex(ruleArg)
+      this.scope.closeDetailView = (clear) => this.closeDetailView(clear)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      if (this.view === 'ruleset') {
-        this.scope.colorRuleArg = regex => this.colorRegex(regex)
+      if (this.view === "ruleset") {
+        this.scope.colorRuleArg = (regex) => this.colorRegex(regex)
       } else {
-        this.scope.colorRegex = regex => this.colorRegex(regex)
+        this.scope.colorRegex = (regex) => this.colorRegex(regex)
       }
-      this.scope.colorOrder = order => this.colorOrder(order)
+      this.scope.colorOrder = (order) => this.colorOrder(order)
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
@@ -111,49 +112,48 @@ define(['../../module', 'FileSaver'], function(app) {
 
       this.scope.switchFiles = () => this.switchFiles()
       this.scope.switchUploadFiles = () => this.switchUploadFiles()
-      
 
       this.scope.closeEditingFile = () => this.closeEditingFile()
-      this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
+      this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
       this.scope.saveFile = (file, dir) => this.saveFile(file, dir)
 
-      this.scope.$on('configSavedSuccessfully', event => {
+      this.scope.$on("configSavedSuccessfully", (event) => {
         event.stopPropagation()
         this.scope.overwrite = false
       })
 
-      this.scope.$on('RuleIdContentReady', (event, params) => {
+      this.scope.$on("RuleIdContentReady", (event, params) => {
         event.preventDefault()
-        this.scope.$broadcast('XMLContentReady', {
-          data: params.data
+        this.scope.$broadcast("XMLContentReady", {
+          data: params.data,
         })
       })
-      this.scope.$on('saveComplete', event => {
+      this.scope.$on("saveComplete", (event) => {
         event.stopPropagation()
         this.scope.saveIncomplete = false
       })
-      this.scope.$on('fileAlreadyExists', event => {
+      this.scope.$on("fileAlreadyExists", (event) => {
         event.stopPropagation()
         this.scope.saveIncomplete = false
         this.scope.overwrite = true
         this.scope.$applyAsync()
       })
 
-      this.scope.$on('editFile', (ev, params) => {
+      this.scope.$on("editFile", (ev, params) => {
         ev.stopPropagation()
         this.editFile(params.file, params.path, params.readOnly)
       })
 
-      this.scope.$on('performRestart', event => {
+      this.scope.$on("performRestart", (event) => {
         event.stopPropagation()
         this.restart()
       })
 
-      this.scope.$on('loadingContent', (event, data) => {
+      this.scope.$on("loadingContent", (event, data) => {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
-      this.scope.$on('applyFilter', (event, parameters) => {
+      this.scope.$on("applyFilter", (event, parameters) => {
         this.scope.search(parameters.filter)
       })
     }
@@ -166,7 +166,6 @@ define(['../../module', 'FileSaver'], function(app) {
       this.removeAllFilters()
     }
 
-    
     /**
      * Open or closes the upload files view
      */
@@ -183,23 +182,22 @@ define(['../../module', 'FileSaver'], function(app) {
     async downloadCsv(path, name) {
       try {
         this.notification.showSimpleToast(
-          'Your download should begin automatically...'
+          "Your download should begin automatically..."
         )
-        const currentApi = this.api['_key']
+        const currentApi = this.api["_key"]
         const output = await this.csvReq.fetch(
           path,
           currentApi,
           this.wzTableFilter.get()
         )
-        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.notification.showErrorToast('Error downloading CSV')
+        this.notification.showErrorToast("Error downloading CSV")
       }
       return
     }
-
 
     /**
      * Returns the color
@@ -218,7 +216,7 @@ define(['../../module', 'FileSaver'], function(app) {
                 this.colors[i] +
                 ' ">' +
                 valuesArray[i] +
-                '</span>'
+                "</span>"
             )
           }
         }
@@ -233,7 +231,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     colorOrder(order) {
       order = order.toString()
-      let valuesArray = order.split(',')
+      let valuesArray = order.split(",")
       let coloredString = order
       for (let i = 0, len = valuesArray.length; i < len; i++) {
         coloredString = coloredString.replace(
@@ -242,7 +240,7 @@ define(['../../module', 'FileSaver'], function(app) {
             this.colors[i] +
             ' ">' +
             valuesArray[i] +
-            '</span>'
+            "</span>"
         )
       }
       return this.sce.trustAsHtml(coloredString)
@@ -257,12 +255,11 @@ define(['../../module', 'FileSaver'], function(app) {
           0,
           this.scope.appliedFilters.length - 1
         )
-      this.scope.viewingDetail = false(this.view === 'ruleset')
+      this.scope.viewingDetail = false(this.view === "ruleset")
         ? (this.scope.currentRule = false)
         : (this.scope.currentDecoder = false)
       this.scope.$applyAsync()
     }
-
 
     /**
      * Searches a rule
@@ -270,117 +267,120 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     search(term) {
       let clearInput = true
-      if (!term) term = ''
+      if (!term) term = ""
       if (
-        this.view === 'ruleset' &&
+        this.view === "ruleset" &&
         term &&
-        term.startsWith('group:') &&
-        term.split('group:')[1].trim()
+        term.startsWith("group:") &&
+        term.split("group:")[1].trim()
       ) {
-        this.scope.customSearch = ''
-        const filter = { name: 'group', value: term.split('group:')[1].trim() }
+        this.scope.customSearch = ""
+        const filter = { name: "group", value: term.split("group:")[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'group'
+          (item) => item.name !== "group"
         )
         this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
+        this.scope.$broadcast("wazuhFilter", { filter })
       } else if (
-        this.view === 'ruleset' &&
+        this.view === "ruleset" &&
         term &&
-        term.startsWith('level:') &&
-        term.split('level:')[1].trim()
+        term.startsWith("level:") &&
+        term.split("level:")[1].trim()
       ) {
-        this.scope.customSearch = ''
-        const filter = { name: 'level', value: term.split('level:')[1].trim() }
+        this.scope.customSearch = ""
+        const filter = { name: "level", value: term.split("level:")[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'level'
+          (item) => item.name !== "level"
         )
         this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
+        this.scope.$broadcast("wazuhFilter", { filter })
       } else if (
-        this.view === 'ruleset' &&
+        this.view === "ruleset" &&
         term &&
-        term.startsWith('pci:') &&
-        term.split('pci:')[1].trim()
+        term.startsWith("pci:") &&
+        term.split("pci:")[1].trim()
       ) {
-        this.scope.customSearch = ''
-        const filter = { name: 'pci', value: term.split('pci:')[1].trim() }
+        this.scope.customSearch = ""
+        const filter = { name: "pci", value: term.split("pci:")[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'pci'
+          (item) => item.name !== "pci"
         )
         this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
+        this.scope.$broadcast("wazuhFilter", { filter })
       } else if (
-        this.view === 'ruleset' &&
+        this.view === "ruleset" &&
         term &&
-        term.startsWith('gdpr:') &&
-        term.split('gdpr:')[1].trim()
+        term.startsWith("gdpr:") &&
+        term.split("gdpr:")[1].trim()
       ) {
-        this.scope.customSearch = ''
-        const filter = { name: 'gdpr', value: term.split('gdpr:')[1].trim() }
+        this.scope.customSearch = ""
+        const filter = { name: "gdpr", value: term.split("gdpr:")[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'gdpr'
+          (item) => item.name !== "gdpr"
         )
         this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
+        this.scope.$broadcast("wazuhFilter", { filter })
       } else if (
         term &&
-        term.startsWith('file:') &&
-        term.split('file:')[1].trim()
+        term.startsWith("file:") &&
+        term.split("file:")[1].trim()
       ) {
-        this.scope.customSearch = ''
-        const filter = { name: 'file', value: term.split('file:')[1].trim() }
+        this.scope.customSearch = ""
+        const filter = { name: "file", value: term.split("file:")[1].trim() }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'file'
+          (item) => item.name !== "file"
         )
         this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
+        this.scope.$broadcast("wazuhFilter", { filter })
       } else if (
         term &&
-        term.startsWith('relative_dirname:') &&
-        term.split('relative_dirname:')[1].trim()
+        term.startsWith("relative_dirname:") &&
+        term.split("relative_dirname:")[1].trim()
       ) {
-        this.scope.customSearch = ''
-        const filter = { name: 'relative_dirname', value: term.split('"relative_dirname":')[1].trim() }
-        this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'relative_dirname'
-        )
-        this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
-      } else if (
-        term &&
-        term.startsWith('hipaa:') &&
-        term.split('hipaa:')[1].trim()
-      ) {
-        this.scope.custom_search = ''
-        const filter = { name: 'hipaa', value: term.split('hipaa:')[1].trim() }
-        this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'hipaa'
-        )
-        this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
-      } else if (
-        term &&
-        term.startsWith('nist-800-53:') &&
-        term.split('nist-800-53:')[1].trim()
-      ) {
-        this.scope.custom_search = ''
+        this.scope.customSearch = ""
         const filter = {
-          name: 'nist-800-53',
-          value: term.split('nist-800-53:')[1].trim()
+          name: "relative_dirname",
+          value: term.split('"relative_dirname":')[1].trim(),
         }
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== 'nist-800-53'
+          (item) => item.name !== "relative_dirname"
         )
         this.scope.appliedFilters.push(filter)
-        this.scope.$broadcast('wazuhFilter', { filter })
+        this.scope.$broadcast("wazuhFilter", { filter })
+      } else if (
+        term &&
+        term.startsWith("hipaa:") &&
+        term.split("hipaa:")[1].trim()
+      ) {
+        this.scope.custom_search = ""
+        const filter = { name: "hipaa", value: term.split("hipaa:")[1].trim() }
+        this.scope.appliedFilters = this.scope.appliedFilters.filter(
+          (item) => item.name !== "hipaa"
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast("wazuhFilter", { filter })
+      } else if (
+        term &&
+        term.startsWith("nist-800-53:") &&
+        term.split("nist-800-53:")[1].trim()
+      ) {
+        this.scope.custom_search = ""
+        const filter = {
+          name: "nist-800-53",
+          value: term.split("nist-800-53:")[1].trim(),
+        }
+        this.scope.appliedFilters = this.scope.appliedFilters.filter(
+          (item) => item.name !== "nist-800-53"
+        )
+        this.scope.appliedFilters.push(filter)
+        this.scope.$broadcast("wazuhFilter", { filter })
       } else {
         clearInput = false
-        this.scope.$broadcast('wazuhSearch', { term, removeFilters: false })
+        this.scope.$broadcast("wazuhSearch", { term, removeFilters: false })
       }
       if (clearInput) {
-        const searchBar = $('#search-input-rules')
-        searchBar.val('')
+        const searchBar = $("#search-input-rules")
+        searchBar.val("")
       }
       this.scope.$applyAsync()
       this.applyCustomFilters()
@@ -394,13 +394,13 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     getFilter(filterName) {
       const filtered = this.scope.appliedFilters.filter(
-        item => item.name === filterName
+        (item) => item.name === filterName
       )
-      return filtered.length ? filtered[0].value : ''
+      return filtered.length ? filtered[0].value : ""
     }
 
     /**
-     * Open or closes Logtest 
+     * Open or closes Logtest
      */
     switchLogtest() {
       this.scope.showLogtest = !this.scope.showLogtest
@@ -414,10 +414,10 @@ define(['../../module', 'FileSaver'], function(app) {
     removeFilter(filterName) {
       try {
         this.filter = this.scope.appliedFilters.filter(
-          item => item.name !== filterName
+          (item) => item.name !== filterName
         )
         this.scope.appliedFilters = this.scope.appliedFilters.filter(
-          item => item.name !== filterName
+          (item) => item.name !== filterName
         )
         if (
           window.localStorage[`${this.view}`] &&
@@ -432,9 +432,9 @@ define(['../../module', 'FileSaver'], function(app) {
           })
         }
         this.applyCustomFilters()
-        return this.scope.$broadcast('wazuhRemoveFilter', { filterName })
+        return this.scope.$broadcast("wazuhRemoveFilter", { filterName })
       } catch (err) {
-        this.notification.showErrorToast('Error removing the filter')
+        this.notification.showErrorToast("Error removing the filter")
       }
     }
 
@@ -447,7 +447,7 @@ define(['../../module', 'FileSaver'], function(app) {
         window.localStorage.removeItem(`${this.view}`)
         this.applyCustomFilters()
       } catch (err) {
-        this.notification.showErrorToast('Error removing the filter')
+        this.notification.showErrorToast("Error removing the filter")
       }
     }
 
@@ -456,11 +456,11 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     getPathFromState() {
       try {
-        const state = window.sessionStorage.getItem('params')
-        if (state === 'mg-rules') {
-          return 'etc/rules'
-        } else if (state === 'mg-decoders') {
-          return 'etc/decoders'
+        const state = window.sessionStorage.getItem("params")
+        if (state === "mg-rules") {
+          return "etc/rules"
+        } else if (state === "mg-decoders") {
+          return "etc/decoders"
         }
         return false
       } catch (error) {
@@ -475,10 +475,12 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         const path = this.getPathFromState()
         if (path) {
-          this.scope.appliedCustomFilters = [{ name: 'relative_dirname', value: path }]
+          this.scope.appliedCustomFilters = [
+            { name: "relative_dirname", value: path },
+          ]
         }
       } catch (error) {
-        this.notification.showErrorToast('Cannot initialize custom filters.')
+        this.notification.showErrorToast("Cannot initialize custom filters.")
       }
     }
 
@@ -489,16 +491,16 @@ define(['../../module', 'FileSaver'], function(app) {
       try {
         const path = this.getPathFromState()
         if (path) {
-          const filters = [{ name: 'relative_dirname', value: path }]
+          const filters = [{ name: "relative_dirname", value: path }]
           const restFilters = this.scope.appliedFilters.filter(
-            item => item.name !== 'relative_dirname'
+            (item) => item.name !== "relative_dirname"
           )
           filters.push(...restFilters)
           this.scope.appliedCustomFilters = filters
         }
       } catch (error) {
         this.notification.showErrorToast(
-          'Cannot apply filter for custom rules or decoders files.'
+          "Cannot apply filter for custom rules or decoders files."
         )
       }
     }
@@ -510,7 +512,7 @@ define(['../../module', 'FileSaver'], function(app) {
      */
     includesFilter(filterName) {
       return this.scope.appliedFilters
-        .map(item => item.name)
+        .map((item) => item.name)
         .includes(filterName)
     }
 
@@ -541,7 +543,7 @@ define(['../../module', 'FileSaver'], function(app) {
       this.scope.editingFile = false
       this.scope.addingNewFile = false
       this.scope.overwrite = false
-      this.scope.fetchedXML = ''
+      this.scope.fetchedXML = ""
       this.scope.XMLContent = false
     }
 
@@ -567,23 +569,23 @@ define(['../../module', 'FileSaver'], function(app) {
             null,
             readOnly
           )
-          this.scope.$broadcast('XMLContentReady', {
-            data: this.scope.XMLContent
+          this.scope.$broadcast("XMLContentReady", {
+            data: this.scope.XMLContent,
           })
           this.scope.fileName = file
         } else {
           this.scope.editingRulesetFile = {
             file,
             dir: path,
-            path: `${path}/${file}`
+            path: `${path}/${file}`,
           }
           this.scope.fetchedXML = await this.fileEditor.getConfiguration(
             file,
             path,
             null,
             readOnly
-            )
-          this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
+          )
+          this.scope.$broadcast("fetchedFile", { data: this.scope.fetchedXML })
         }
       } catch (error) {
         this.scope.fetchedXML = null
@@ -597,12 +599,12 @@ define(['../../module', 'FileSaver'], function(app) {
      * Saves the file content
      * @param {String} file
      */
-    saveFile(file,dir) {
+    saveFile(file, dir) {
       this.scope.saveIncomplete = true
-      this.scope.$broadcast('saveXmlFile', {
+      this.scope.$broadcast("saveXmlFile", {
         file,
         dir,
-        overwrite: true
+        overwrite: true,
       })
     }
 
@@ -619,6 +621,6 @@ define(['../../module', 'FileSaver'], function(app) {
       }
     }
   }
-  app.controller('managerRulesetCtrl', Ruleset)
+  app.controller("managerRulesetCtrl", Ruleset)
   return Ruleset
 })

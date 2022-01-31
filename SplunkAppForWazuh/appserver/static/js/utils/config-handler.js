@@ -14,12 +14,17 @@ import XMLBeautifier from './xml-beautifier'
 */
 
 define([
-  './query-config',
-  './remove-hash-key',
-  '../services/xml-beautifier/xml-beautifier',
-  'js2xmlparser'
-], function(queryConfig, objectWithoutProperties, XMLBeautifier, js2xmlparser) {
-  'use strict'
+  "./query-config",
+  "./remove-hash-key",
+  "../services/xml-beautifier/xml-beautifier",
+  "js2xmlparser",
+], function (
+  queryConfig,
+  objectWithoutProperties,
+  XMLBeautifier,
+  js2xmlparser
+) {
+  "use strict"
 
   return class ConfigurationHandler {
     constructor($requestService, beautifier, errorHandler) {
@@ -60,32 +65,30 @@ define([
           node
         )
         $scope.currentConfig = currentConfigReq
-        if (sections[0].component === 'integrator') {
+        if (sections[0].component === "integrator") {
           this.buildIntegrations(
-            $scope.currentConfig['integrator-integration'].integration,
+            $scope.currentConfig["integrator-integration"].integration,
             $scope
           )
-        } else if (sections[0].component === 'logcollector') {
+        } else if (sections[0].component === "logcollector") {
           const logcollector =
-            currentConfigReq['logcollector-localfile'].localfile
-          $scope.currentConfig['logcollector-localfile'][
-            'localfile-logs'
-          ] = logcollector.filter(
-            log =>
-              log.logformat !== 'command' && log.logformat !== 'full_command'
-          )
-          $scope.currentConfig['logcollector-localfile'][
-            'localfile-commands'
-          ] = logcollector.filter(
-            log =>
-              log.logformat === 'command' || log.logformat === 'full_command'
-          )
-          logcollector.map(log => {
+            currentConfigReq["logcollector-localfile"].localfile
+          $scope.currentConfig["logcollector-localfile"]["localfile-logs"] =
+            logcollector.filter(
+              (log) =>
+                log.logformat !== "command" && log.logformat !== "full_command"
+            )
+          $scope.currentConfig["logcollector-localfile"]["localfile-commands"] =
+            logcollector.filter(
+              (log) =>
+                log.logformat === "command" || log.logformat === "full_command"
+            )
+          logcollector.map((log) => {
             const keys = Object.keys(log)
             if (
-              !keys.includes('file') &&
-              !keys.includes('alias') &&
-              !keys.includes('command')
+              !keys.includes("file") &&
+              !keys.includes("alias") &&
+              !keys.includes("command")
             ) {
               log.file = `${log.logformat} - ${log.target[0]}`
             }
@@ -116,7 +119,7 @@ define([
         $scope.configurationTab = wodleName
 
         $scope.currentConfig = await queryConfig(
-          [{ component: 'wmodules', configuration: 'wmodules' }],
+          [{ component: "wmodules", configuration: "wmodules" }],
           this.apiReq,
           agentId,
           node
@@ -127,25 +130,25 @@ define([
         if (
           wodleName &&
           $scope.currentConfig &&
-          $scope.currentConfig['wmodules-wmodules'] &&
-          $scope.currentConfig['wmodules-wmodules'].wmodules
+          $scope.currentConfig["wmodules-wmodules"] &&
+          $scope.currentConfig["wmodules-wmodules"].wmodules
         ) {
-          result = $scope.currentConfig['wmodules-wmodules'].wmodules.filter(
-            item => typeof item[wodleName] !== 'undefined'
+          result = $scope.currentConfig["wmodules-wmodules"].wmodules.filter(
+            (item) => typeof item[wodleName] !== "undefined"
           )
         }
 
         if (result.length) {
           $scope.currentConfig =
-            wodleName === 'command'
-              ? { commands: result.map(item => item.command) }
+            wodleName === "command"
+              ? { commands: result.map((item) => item.command) }
               : result[0]
         }
 
         $scope.load = false
         $scope.$applyAsync()
       } catch (error) {
-        this.errorHandler.showSimpleToast(error, 'Manager')
+        this.errorHandler.showSimpleToast(error, "Manager")
         $scope.load = false
       }
       return
@@ -191,7 +194,7 @@ define([
         try {
           const cleaned = objectWithoutProperties(config)
           $scope.XMLContent = XMLBeautifier(js2xmlparser(cleaned))
-          $scope.$broadcast('XMLContentReady', { data: $scope.XMLContent })
+          $scope.$broadcast("XMLContentReady", { data: $scope.XMLContent })
         } catch (error) {
           $scope.XMLContent = false
         }
@@ -213,7 +216,7 @@ define([
         try {
           const cleaned = objectWithoutProperties(config)
           $scope.JSONContent = JSON.stringify(cleaned, null, 2)
-          $scope.$broadcast('JSONContentReady', { data: $scope.JSONContent })
+          $scope.$broadcast("JSONContentReady", { data: $scope.JSONContent })
         } catch (error) {
           $scope.JSONContent = false
         }
@@ -223,8 +226,8 @@ define([
 
     reset($scope) {
       $scope.currentConfig = null
-      $scope.configurationTab = ''
-      $scope.configurationSubTab = ''
+      $scope.configurationTab = ""
+      $scope.configurationSubTab = ""
       $scope.integrations = {}
       $scope.selectedItem = 0
     }

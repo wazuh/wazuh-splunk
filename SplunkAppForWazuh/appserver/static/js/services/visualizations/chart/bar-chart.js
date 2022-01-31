@@ -1,8 +1,8 @@
-define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
+define(["splunkjs/mvc/simplexml/element/chart", "../viz/viz"], function (
   ChartElement,
   Viz
 ) {
-  'use strict'
+  "use strict"
 
   return class BarChart extends Viz {
     /**
@@ -17,14 +17,14 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
         new ChartElement(
           {
             id: `${id}`,
-            'charting.drilldown': 'none',
-            'charting.chart': 'bar',
-            'charting.chart.stackMode': extraParams.stackMode || 'default',
+            "charting.drilldown": "none",
+            "charting.chart": "bar",
+            "charting.chart.stackMode": extraParams.stackMode || "default",
             resizable: true,
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
-          { tokens: true, tokenNamespace: 'submitted' }
+          { tokens: true, tokenNamespace: "submitted" }
         ).render(),
         id,
         search,

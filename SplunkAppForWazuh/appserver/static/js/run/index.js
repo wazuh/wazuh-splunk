@@ -1,1 +1,1 @@
-define(['./run'], function() {})
+define(["./run"], function () {})

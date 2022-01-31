@@ -10,8 +10,8 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(module) {
-  'use strict'
+define(["../module"], function (module) {
+  "use strict"
 
   class GroupHandler {
     constructor($requestService) {
@@ -23,9 +23,9 @@ define(['../module'], function(module) {
         const result = await this.req.apiReq(
           `/agents/${agentId}/group/${group}`,
           {},
-          'DELETE'
+          "DELETE"
         )
-        if (result && result.data  && !result.data.error) {
+        if (result && result.data && !result.data.error) {
           return result.data
         } else {
           throw new Error(result.data.message)
@@ -40,7 +40,7 @@ define(['../module'], function(module) {
         const result = await this.req.apiReq(
           `/agents/${agentId}/group/${group}`,
           {},
-          'PUT'
+          "PUT"
         )
         return result
       } catch (error) {
@@ -50,7 +50,7 @@ define(['../module'], function(module) {
 
     async modifyGroup() {
       try {
-        throw new Error('Not yet implemented')
+        throw new Error("Not yet implemented")
       } catch (error) {
         return Promise.reject(error)
       }
@@ -61,7 +61,7 @@ define(['../module'], function(module) {
         const result = await this.req.apiReq(
           `/groups?groups_list=${group}`,
           {},
-          'DELETE'
+          "DELETE"
         )
         if (result.data.error != 0) {
           throw new Error(result.data.message)
@@ -74,11 +74,11 @@ define(['../module'], function(module) {
 
     async createGroup(name) {
       try {
-        const content = JSON.stringify({group_id:name});
+        const content = JSON.stringify({ group_id: name })
         const result = await this.req.apiReq(
           `/groups`,
-          {content, origin:'json'},
-          'POST'
+          { content, origin: "json" },
+          "POST"
         )
         if (result.data.error != 0) {
           throw new Error(result.data.message)
@@ -101,5 +101,5 @@ define(['../module'], function(module) {
       }
     }
   }
-  module.service('$groupHandler', GroupHandler)
+  module.service("$groupHandler", GroupHandler)
 })

@@ -1,9 +1,9 @@
 define([
-    '../../module',
-    '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap',
-], function(app, pagination, checkGap) {
-  'use strict'
+  "../../module",
+  "../../../directives/wz-table/lib/pagination",
+  "../../../directives/wz-table/lib/check-gap",
+], function (app, pagination, checkGap) {
+  "use strict"
 
   class Reporting {
     /**
@@ -40,46 +40,46 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.selectedNavTab = 'reporting'
-      this.scope.gap = 0;
+      this.scope.selectedNavTab = "reporting"
+      this.scope.gap = 0
       this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-      this.scope.nextPage = async currentPage =>
-          this.pagination.nextPage(
-              currentPage,
-              this.scope,
-              this.notification,
-              null
-          )
-      this.scope.setPage = n => {
+      this.scope.nextPage = async (currentPage) =>
+        this.pagination.nextPage(
+          currentPage,
+          this.scope,
+          this.notification,
+          null
+        )
+      this.scope.setPage = (n) => {
         this.scope.currentPage = n
         this.scope.nextPage(n)
       }
       this.scope.load = () => this.load()
       this.scope.range = (size, start, end) =>
-          this.pagination.range(size, start, end, this.scope.gap)
-      this.scope.deleteReport = name => this.deleteReport(name)
-      this.scope.changeSorting = column => this.changeSorting(column)
+        this.pagination.range(size, start, end, this.scope.gap)
+      this.scope.deleteReport = (name) => this.deleteReport(name)
+      this.scope.changeSorting = (column) => this.changeSorting(column)
       this.load()
 
-      this.scope.offsetTimestamp = time => {
+      this.scope.offsetTimestamp = (time) => {
         try {
           return this.setBrowserOffset(time)
         } catch (error) {
-          return ''
+          return ""
         }
       }
 
-      this.scope.$on('loadingContent', (event, data) => {
+      this.scope.$on("loadingContent", (event, data) => {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
 
       this.scope.sort = {
-        column: '',
-        descending: false
-      };
+        column: "",
+        descending: false,
+      }
 
-      this.scope.changeSorting('date');
+      this.scope.changeSorting("date")
     }
 
     /**
@@ -92,13 +92,13 @@ define([
     }
 
     async changeSorting(column) {
-      let sort = this.scope.sort;
+      let sort = this.scope.sort
 
       if (sort.column === column) {
-        sort.descending = !sort.descending;
+        sort.descending = !sort.descending
       } else {
-        sort.column = column;
-        sort.descending = false;
+        sort.column = column
+        sort.descending = false
       }
     }
 
@@ -109,11 +109,11 @@ define([
     async deleteReport(name) {
       try {
         this.loading = true
-        await this.genericReq('GET', '/report/remove', { name: name })
+        await this.genericReq("GET", "/report/remove", { name: name })
         await this.load()
-        this.notification.showSuccessToast('Deleted report.')
+        this.notification.showSuccessToast("Deleted report.")
       } catch (error) {
-        this.notification.showErrorToast('Cannot delete the report.')
+        this.notification.showErrorToast("Cannot delete the report.")
       }
     }
 
@@ -126,7 +126,7 @@ define([
       for (let i = 0; i < this.filteredItems.length; i++) {
         if (i % this.itemsPerPage === 0) {
           this.scope.pagedItems[Math.floor(i / this.itemsPerPage)] = [
-            this.filteredItems[i]
+            this.filteredItems[i],
           ]
         } else {
           this.scope.pagedItems[Math.floor(i / this.itemsPerPage)].push(
@@ -142,7 +142,7 @@ define([
     async load() {
       try {
         this.loading = true
-        const reports = await this.genericReq('GET', '/report/reports')
+        const reports = await this.genericReq("GET", "/report/reports")
         this.items = reports.data.data
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
@@ -157,9 +157,9 @@ define([
         this.loading = false
         this.scope.$applyAsync()
       } catch (error) {
-        this.notification.showErrorToast('Error loading reports.')
+        this.notification.showErrorToast("Error loading reports.")
       }
     }
   }
-  app.controller('reportingCtrl', Reporting)
+  app.controller("reportingCtrl", Reporting)
 })

@@ -1,5 +1,5 @@
-define(['../../module'], function(controllers) {
-  'use strict'
+define(["../../module"], function (controllers) {
+  "use strict"
 
   class Status {
     /**
@@ -25,7 +25,7 @@ define(['../../module'], function(controllers) {
       this.scope.load = true
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-    
+
       /* RBAC flags */
       this.scope.canReadCluster = $security_service.isAllowed("CLUSTER_READ", [
         "RESOURCELESS",
@@ -42,7 +42,7 @@ define(['../../module'], function(controllers) {
         ["RESOURCELESS"]
       )
 
-      const parsedStatusData = statusData.map(item =>
+      const parsedStatusData = statusData.map((item) =>
         item && item.data && item.data.data ? item.data.data : item
       )
       const [
@@ -53,7 +53,7 @@ define(['../../module'], function(controllers) {
         decoders,
         masterNode,
         nodes,
-        status
+        status,
       ] = parsedStatusData
       this.masterNode = masterNode
       this.nodes = nodes
@@ -72,38 +72,40 @@ define(['../../module'], function(controllers) {
      * On controller loads
      */
     $onInit() {
-      this.scope.selectedNavTab = 'status'
+      this.scope.selectedNavTab = "status"
       this.scope.confirmingRestart = false
       this.scope.switchRestart = () => this.switchRestart()
       this.scope.restartInProgress = false
       if (this.masterNode && this.masterNode.name) {
         const masterNodeName = this.masterNode.name
         this.scope.nodeId = masterNodeName
-        this.scope.nodes = this.nodes.affected_items.filter(node => node.name)
+        this.scope.nodes = this.nodes.affected_items.filter((node) => node.name)
       }
       if (
         this.status &&
-        this.status.enabled === 'yes' &&
-        this.status.running === 'no'
+        this.status.enabled === "yes" &&
+        this.status.running === "no"
       ) {
         this.scope.clusterError =
-          'This cluster is enabled but not running. Please check your cluster health.'
+          "This cluster is enabled but not running. Please check your cluster health."
         this.scope.load = false
         this.scope.$applyAsync()
       }
 
-      this.scope.changeNode = node => this.changeNode(node)
+      this.scope.changeNode = (node) => this.changeNode(node)
       this.scope.restart = () => this.restart()
       this.bindStatus()
 
       if (this.nodeStatus.affected_items) {
-        this.scope.daemons = this.objToArr(this.nodeStatus?.affected_items[0] || {})
+        this.scope.daemons = this.objToArr(
+          this.nodeStatus?.affected_items[0] || {}
+        )
       }
       if (this.nodeInfo.affected_items) {
         this.scope.managerInfo = this.nodeInfo.affected_items[0]
       }
 
-      this.scope.$on('loadingContent', (event, data) => {
+      this.scope.$on("loadingContent", (event, data) => {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
@@ -130,7 +132,7 @@ define(['../../module'], function(controllers) {
         this.scope.nodeId = node
         const daemonResult = await Promise.all([
           this.apiReq(`/cluster/${node}/status`),
-          this.apiReq(`/cluster/${node}/info`)
+          this.apiReq(`/cluster/${node}/info`),
         ])
         if (
           (daemonResult[0] && daemonResult[0].data.error) ||
@@ -140,14 +142,16 @@ define(['../../module'], function(controllers) {
         }
         if (
           daemonResult[0] &&
-          daemonResult[0].data.data.enabled === 'yes' &&
-          daemonResult[0].data.data.running === 'no'
+          daemonResult[0].data.data.enabled === "yes" &&
+          daemonResult[0].data.data.running === "no"
         ) {
           throw Error(
-            'This cluster is enabled but not running. Please check your cluster health.'
+            "This cluster is enabled but not running. Please check your cluster health."
           )
         }
-        this.scope.daemons = this.objToArr(daemonResult[0].data.data.affected_items[0])
+        this.scope.daemons = this.objToArr(
+          daemonResult[0].data.data.affected_items[0]
+        )
         this.scope.managerInfo = daemonResult[1].data.data.affected_items[0]
       } catch (err) {
         this.scope.clusterError = err.message || err
@@ -163,14 +167,14 @@ define(['../../module'], function(controllers) {
       try {
         this.scope.load = true
 
-        this.scope.getDaemonStatusClass = daemonStatus =>
-          daemonStatus === 'running' ? 'status teal' : 'status red'
+        this.scope.getDaemonStatusClass = (daemonStatus) =>
+          daemonStatus === "running" ? "status teal" : "status red"
         // Once Wazuh core fixes agent 000 issues, this should be adjusted
         const active = this.summary.active
         const total = this.summary.total
         this.scope.agentsCountActive = active
         this.scope.agentsCountDisconnected = this.summary.disconnected
-        this.scope.agentsCountNeverConnected = this.summary['never_connected']
+        this.scope.agentsCountNeverConnected = this.summary["never_connected"]
         this.scope.agentsCountTotal = total
         this.scope.agentsCoverity = (active / total) * 100
 
@@ -208,5 +212,5 @@ define(['../../module'], function(controllers) {
     }
   }
 
-  controllers.controller('statusCtrl', Status)
+  controllers.controller("statusCtrl", Status)
 })

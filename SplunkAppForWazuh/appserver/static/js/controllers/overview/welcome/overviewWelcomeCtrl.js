@@ -1,5 +1,5 @@
-define(['../../module'], function(controllers) {
-  'use strict'
+define(["../../module"], function (controllers) {
+  "use strict"
 
   class OverviewWelcome {
     /**
@@ -28,16 +28,16 @@ define(['../../module'], function(controllers) {
         security: false,
         auditing: false,
         threadDetection: false,
-        regulatory: false
+        regulatory: false,
       }
 
       /* RBAC flags */
       this.scope.canReadAgents = $security_service.isAllowed("AGENT_READ", [
         "AGENT_ID",
         "AGENT_GROUP",
-      ]);
+      ])
       this.scope.isSplunkAdmin = isSplunkAdmin
-      
+
       try {
         this.scope.agentsCountTotal = agentsInfo.data.data.total
         this.scope.agentsCountActive = agentsInfo.data.data.active
@@ -48,7 +48,7 @@ define(['../../module'], function(controllers) {
       try {
         this.extensions = extensions
         this.scope.extensions = angular.copy(this.extensions)
-        this.api = this.currentApi['_key']
+        this.api = this.currentApi["_key"]
       } catch (error) {} //eslint-disable-line
     }
 
@@ -57,7 +57,7 @@ define(['../../module'], function(controllers) {
      */
     $onInit() {
       this.refreshExtensions()
-      this.scope.showExtensionsLists = card => this.showExtensionsLists(card)
+      this.scope.showExtensionsLists = (card) => this.showExtensionsLists(card)
       this.scope.toggleExtension = (extension, state) =>
         this.toggleExtension(extension, state)
       this.scope.$applyAsync()
@@ -72,7 +72,7 @@ define(['../../module'], function(controllers) {
           ? (this.scope.extensionsLists[card] = false)
           : (this.scope.extensionsLists[card] = true)
       } catch (error) {
-        console.error('Error showing or hiding the extensions list ', error)
+        console.error("Error showing or hiding the extensions list ", error)
       }
     }
 
@@ -84,8 +84,13 @@ define(['../../module'], function(controllers) {
     async toggleExtension(extension, state) {
       try {
         this.extensions[extension] = state.toString()
-        await this.currentDataService.setExtensionsById(this.api, this.extensions)
-        this.extensions = await this.currentDataService.getExtensionsById(this.api)
+        await this.currentDataService.setExtensionsById(
+          this.api,
+          this.extensions
+        )
+        this.extensions = await this.currentDataService.getExtensionsById(
+          this.api
+        )
         this.refreshExtensions()
       } catch (error) {
         console.error(error)
@@ -99,7 +104,7 @@ define(['../../module'], function(controllers) {
     refreshExtensions() {
       const keys = Object.keys(this.extensions)
       keys.map(
-        key => (this.scope.extensions[key] = this.extensions[key] === 'true')
+        (key) => (this.scope.extensions[key] = this.extensions[key] === "true")
       )
       /*
       keys.map(key =>
@@ -109,5 +114,5 @@ define(['../../module'], function(controllers) {
       this.scope.$applyAsync()
     }
   }
-  controllers.controller('overviewWelcomeCtrl', OverviewWelcome)
+  controllers.controller("overviewWelcomeCtrl", OverviewWelcome)
 })

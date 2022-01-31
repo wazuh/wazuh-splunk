@@ -9,40 +9,40 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(app) {
-  'use strict'
-  app.directive('wzMultipleSelector', function(BASE_URL) {
+define(["../module"], function (app) {
+  "use strict"
+  app.directive("wzMultipleSelector", function (BASE_URL) {
     return {
-      restrict: 'E',
+      restrict: "E",
       scope: {
-        availableItems: '=',
-        selectedItems: '=',
-        limit: '=',
-        loading: '=',
-        titleSelectedItems: '@',
-        titleAvailableItems: '@',
-        totalSelectedItems: '=',
-        reloadScroll: '&'
+        availableItems: "=",
+        selectedItems: "=",
+        limit: "=",
+        loading: "=",
+        titleSelectedItems: "@",
+        titleAvailableItems: "@",
+        totalSelectedItems: "=",
+        reloadScroll: "&",
       },
       controller($scope) {
-        $scope.moveItem = function(item, from, to, type) {
+        $scope.moveItem = function (item, from, to, type) {
           if (item.length > 0) {
-            item.forEach(function(elem) {
+            item.forEach(function (elem) {
               $scope.moveItem(elem, from, to, type)
             })
           } else {
-            var idx = from.findIndex(x => x.key === item.key)
+            var idx = from.findIndex((x) => x.key === item.key)
             if (idx !== -1) {
               from.splice(idx, 1)
-              item.type = !item.type ? type : ''
+              item.type = !item.type ? type : ""
               to.push(item)
             }
           }
         }
 
         $scope.moveAll = (from, to, type) => {
-          from.forEach(item => {
-            item.type = !item.type ? type : ''
+          from.forEach((item) => {
+            item.type = !item.type ? type : ""
             to.push(item)
           })
           from.length = 0
@@ -54,11 +54,11 @@ define(['../module'], function(app) {
           }
         }
 
-        $scope.sort = a => {
+        $scope.sort = (a) => {
           return parseInt(a.key)
         }
 
-        $('#wzMultipleSelector select').scroll(function(ev) {
+        $("#wzMultipleSelector select").scroll(function (ev) {
           $scope.scrollList(ev.currentTarget)
         })
 
@@ -66,23 +66,23 @@ define(['../module'], function(app) {
           $scope.reloadScroll({
             element: side,
             searchTerm: term,
-            start: fromStart
+            start: fromStart,
           })
         }
-        $scope.scrollList = target => {
+        $scope.scrollList = (target) => {
           let pos = target.scrollTop + target.offsetHeight
           let max = target.scrollHeight
           if (pos >= max) {
             target.parentElement.parentElement.parentElement.className ===
-            'wzMultipleSelectorLeft'
-              ? $scope.doReload('left')
-              : $scope.doReload('right')
+            "wzMultipleSelectorLeft"
+              ? $scope.doReload("left")
+              : $scope.doReload("right")
           }
         }
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selector/wz-multiple-selector.html'
+        "/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selector/wz-multiple-selector.html",
     }
   })
 })

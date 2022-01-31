@@ -1,5 +1,5 @@
-define(['../../module', './ruleset'], function(controllers, Ruleset) {
-  'use strict'
+define(["../../module", "./ruleset"], function (controllers, Ruleset) {
+  "use strict"
 
   class RulesetId extends Ruleset {
     /**
@@ -37,7 +37,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         $scope,
         $sce,
         $notificationService,
-        'ruleset',
+        "ruleset",
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
@@ -48,7 +48,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.fileEditor = $fileEditor
       this.restartService = $restartService
       this.requestService = $requestService
-      this.scope.canUpdateRulesetFile = (filename) => $security_service.isAllowed('RULES_UPDATE', ['RULE_FILE'], [filename]);
+      this.scope.canUpdateRulesetFile = (filename) =>
+        $security_service.isAllowed("RULES_UPDATE", ["RULE_FILE"], [filename])
       try {
         this.filters = JSON.parse(window.localStorage.ruleset) || []
       } catch (err) {
@@ -56,9 +57,10 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       }
 
       //Check if the rule is overwritted
-      const response = (((ruleInfo || {}).data || {}).data || {}).affected_items || []
+      const response =
+        (((ruleInfo || {}).data || {}).data || {}).affected_items || []
       if (response.length) {
-        const result = response.filter(rule => rule.details.overwrite)
+        const result = response.filter((rule) => rule.details.overwrite)
         this.scope.ruleInfo = result.length ? result[0] : response[0]
       } else {
         this.scope.ruleInfo = false
@@ -74,14 +76,14 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
      * On controller loads
      */
     $onInit() {
-      this.scope.isObject = item => typeof item === 'object'
+      this.scope.isObject = (item) => typeof item === "object"
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.addDetailFilter = (name, value) =>
         this.addDetailFilter(name, value)
-      this.scope.isLocal = this.scope.ruleInfo.relative_dirname === 'etc/rules'
-      this.scope.saveRuleConfig = fileName => this.saveRuleConfig(fileName)
+      this.scope.isLocal = this.scope.ruleInfo.relative_dirname === "etc/rules"
+      this.scope.saveRuleConfig = (fileName) => this.saveRuleConfig(fileName)
       this.scope.closeEditingFile = () => this.closeEditingFile()
-      this.scope.editRule = fileName => this.editRule(fileName)
+      this.scope.editRule = (fileName) => this.editRule(fileName)
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
@@ -96,8 +98,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       try {
         const filter = { name: name, value: value }
         this.filters.push(filter)
-        window.localStorage.setItem('ruleset', JSON.stringify(this.filters))
-        this.state.go('mg-rules')
+        window.localStorage.setItem("ruleset", JSON.stringify(this.filters))
+        this.state.go("mg-rules")
       } catch (err) {
         this.notification.showErrorToast(err.message || err)
       }
@@ -110,19 +112,19 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
           `/rules/${this.scope.ruleInfo.id}`
         )
         if (ruleReloaded.data.data.totalItems === 0) {
-          this.state.go('mg-rules')
+          this.state.go("mg-rules")
         }
         //Check if the rule is overwritted
         const response =
           (((ruleReloaded || {}).data || {}).data || {}).items || []
         if (response.length) {
-          const result = response.filter(rule => rule.details.overwrite)
+          const result = response.filter((rule) => rule.details.overwrite)
           this.scope.ruleInfo = result.length ? result[0] : response[0]
         } else {
           this.scope.ruleInfo = false
         }
       } catch (error) {
-        this.state.go('mg-rules')
+        this.state.go("mg-rules")
       }
       this.scope.editingFile = false
       this.scope.$applyAsync()
@@ -130,17 +132,21 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
 
     saveRuleConfig(fileName) {
       this.scope.saveIncomplete = true
-      this.scope.$broadcast('saveXmlFile', {
+      this.scope.$broadcast("saveXmlFile", {
         file: fileName,
-        dir: 'etc/rules',
-        overwrite: true
+        dir: "etc/rules",
+        overwrite: true,
       })
     }
 
     async editRule(fileName) {
       try {
-        const readOnly = !(this.scope.ruleInfo.relative_dirname === 'etc/rules')
-        await this.fetchFileContent(fileName, this.scope.ruleInfo.relative_dirname, readOnly)
+        const readOnly = !(this.scope.ruleInfo.relative_dirname === "etc/rules")
+        await this.fetchFileContent(
+          fileName,
+          this.scope.ruleInfo.relative_dirname,
+          readOnly
+        )
       } catch (error) {}
       return
     }
@@ -150,7 +156,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
         this.scope.editingFile = true
         this.scope.readOnly = readOnly
         if (readOnly) {
-          if (!file.startsWith('ruleset/rules')) {
+          if (!file.startsWith("ruleset/rules")) {
             this.scope.fileName = file
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
               file,
@@ -158,8 +164,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast('RuleIdContentReady', {
-              data: this.scope.XMLContent
+            this.scope.$broadcast("RuleIdContentReady", {
+              data: this.scope.XMLContent,
             })
           } else {
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
@@ -171,7 +177,7 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
             return this.scope.XMLContent
           }
         } else {
-          if (file.startsWith('etc/rules/')) {
+          if (file.startsWith("etc/rules/")) {
             this.scope.fetchedXML = await this.fileEditor.getConfiguration(
               file,
               path,
@@ -186,8 +192,8 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast('fetchedFile', {
-              data: this.scope.fetchedXML
+            this.scope.$broadcast("fetchedFile", {
+              data: this.scope.fetchedXML,
             })
           }
         }
@@ -199,5 +205,5 @@ define(['../../module', './ruleset'], function(controllers, Ruleset) {
       this.scope.$applyAsync()
     }
   }
-  controllers.controller('managerRulesetIdCtrl', RulesetId)
+  controllers.controller("managerRulesetIdCtrl", RulesetId)
 })

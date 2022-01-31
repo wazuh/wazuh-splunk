@@ -11,19 +11,19 @@
  */
 
 define([
-  '../module',
-  '../wz-table/lib/rows',
-  '../wz-table/lib/pagination',
-  '../wz-table/lib/check-gap'
-], function(app, calcTableRows, pagination, checkGap) {
-  'use strict'
+  "../module",
+  "../wz-table/lib/rows",
+  "../wz-table/lib/pagination",
+  "../wz-table/lib/check-gap",
+], function (app, calcTableRows, pagination, checkGap) {
+  "use strict"
 
-  app.directive('wzDataTable', function(BASE_URL) {
+  app.directive("wzDataTable", function (BASE_URL) {
     return {
-      restrict: 'E',
+      restrict: "E",
       scope: {
-        rowSizes: '=rowSizes',
-        data: '='
+        rowSizes: "=rowSizes",
+        data: "=",
       },
       controller($scope, $filter, $notificationService, $window) {
         /**
@@ -65,14 +65,14 @@ define([
             $scope.keys = Object.keys(items[0])
             return
           } catch (error) {
-            $notificationService.showErrorToast(error, 'Error loading table')
+            $notificationService.showErrorToast(error, "Error loading table")
           }
           return
         }
-        $scope.sortValue = ''
+        $scope.sortValue = ""
         $scope.sortReverse = false
-        $scope.searchTerm = ''
-        $scope.sort = key => {
+        $scope.searchTerm = ""
+        $scope.sort = (key) => {
           if (key !== $scope.sortValue) {
             $scope.sortReverse = false
           }
@@ -81,8 +81,8 @@ define([
           $scope.filterTable()
         }
         $scope.filterTable = () => {
-          items = $filter('orderBy')(
-            $filter('filter')($scope.data, $scope.searchTerm),
+          items = $filter("orderBy")(
+            $filter("filter")($scope.data, $scope.searchTerm),
             $scope.sortValue,
             $scope.sortReverse
           )
@@ -113,23 +113,23 @@ define([
         $scope.range = (size, start, end) =>
           pagination.range(size, start, end, $scope.gap)
         $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async currentPage =>
+        $scope.nextPage = async (currentPage) =>
           pagination.nextPage(currentPage, $scope, $notificationService, fetch)
-        $scope.setPage = function() {
+        $scope.setPage = function () {
           $scope.currentPage = this.n
           $scope.nextPage(this.n)
         }
         /**
          * Event listeners
          */
-        $scope.$on('$destroy', () => {
+        $scope.$on("$destroy", () => {
           $window.onresize = null
         })
         init()
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-data-table/wz-data-table.html'
+        "/static/app/SplunkAppForWazuh/js/directives/wz-data-table/wz-data-table.html",
     }
   })
 })

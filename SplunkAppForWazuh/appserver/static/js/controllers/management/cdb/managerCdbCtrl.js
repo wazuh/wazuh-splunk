@@ -1,10 +1,10 @@
 define([
-  '../../module',
-  '../rules/ruleset',
-  '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap'
-], function(controllers, Ruleset, pagination, checkGap) {
-  'use strict'
+  "../../module",
+  "../rules/ruleset",
+  "../../../directives/wz-table/lib/pagination",
+  "../../../directives/wz-table/lib/check-gap",
+], function (controllers, Ruleset, pagination, checkGap) {
+  "use strict"
   class CDBList extends Ruleset {
     /**
      * Class cdb
@@ -33,7 +33,7 @@ define([
         $scope,
         $sce,
         $notificationService,
-        'cbd',
+        "cbd",
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
@@ -61,8 +61,8 @@ define([
     $onInit() {
       this.scope.overwrite = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
-      this.scope.selectedNavTab = 'cdbList'
+      this.scope.$broadcast("wazuhSearch", { term: "", removeFilters: true })
+      this.scope.selectedNavTab = "cdbList"
 
       /**
        * Functions to edit a CDB lists binded to the scope
@@ -74,7 +74,7 @@ define([
         this.showConfirmRemoveEntry(ev, key)
       this.scope.editKey = (key, value) => this.editKey(key, value)
       this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
-      this.scope.confirmRemoveEntry = key => this.confirmRemoveEntry(key)
+      this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
       this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveList = () => this.saveList()
@@ -97,35 +97,35 @@ define([
       this.scope.range = (size, start, end) =>
         this.pagination.range(size, start, end, this.scope.gap)
       this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-      this.scope.nextPage = async currentPage =>
+      this.scope.nextPage = async (currentPage) =>
         this.pagination.nextPage(
           currentPage,
           this.scope,
           this.notification,
           null
         )
-      this.scope.setPage = n => {
+      this.scope.setPage = (n) => {
         this.scope.currentPage = n
         this.scope.nextPage(n)
       }
-      this.scope.filterContent = filter => this.filterContent(filter)
+      this.scope.filterContent = (filter) => this.filterContent(filter)
 
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', event => {
+      this.scope.$on("loadedTable", (event) => {
         event.stopPropagation()
         try {
           if (window.localStorage.cdb) {
             const parsedFilter = JSON.parse(window.localStorage.cdb)
             this.scope.appliedFilters = parsedFilter
             if (this.filter.length > 0) {
-              this.scope.$broadcast('wazuhFilter', { filter: this.filter })
+              this.scope.$broadcast("wazuhFilter", { filter: this.filter })
             }
           }
         } catch (err) {
-          this.notification.showErrorToast('Error applying filter')
+          this.notification.showErrorToast("Error applying filter")
         }
       })
     }
@@ -135,7 +135,7 @@ define([
      * @param {*} filter
      */
     async filterContent(filter) {
-      this.scope.items = this.filter('filter')(this.contentToFilter, filter)
+      this.scope.items = this.filter("filter")(this.contentToFilter, filter)
       this.initPagination()
     }
 
@@ -149,12 +149,12 @@ define([
         this.scope.currentList = {
           list: {},
           details: {
-            file: '',
-            path: 'etc/lists'
-          }
+            file: "",
+            path: "etc/lists",
+          },
         }
       } catch (error) {
-        this.notification.showErrorToast('Cannot add new CDB list file.')
+        this.notification.showErrorToast("Cannot add new CDB list file.")
       }
     }
 
@@ -180,22 +180,22 @@ define([
     async addEntry(key, value) {
       try {
         if (!key) {
-          this.notification.showWarningToast('Cannot send empty fields.')
+          this.notification.showWarningToast("Cannot send empty fields.")
         } else {
           if (!this.scope.currentList.list[key]) {
-            value = value ? value : ''
+            value = value ? value : ""
             this.scope.currentList.list[key] = value
-            this.scope.newKey = ''
-            this.scope.newValue = ''
+            this.scope.newKey = ""
+            this.scope.newValue = ""
             this.refreshCdbList()
           } else {
             this.notification.showErrorToast(
-              'Error adding new entry, the key exists.'
+              "Error adding new entry, the key exists."
             )
           }
         }
       } catch (error) {
-        this.notification.showErrorToast('Error adding entry.')
+        this.notification.showErrorToast("Error adding entry.")
       }
     }
 
@@ -213,7 +213,7 @@ define([
      */
     cancelEditingKey() {
       this.scope.editingKey = false
-      this.scope.editingNewValue = ''
+      this.scope.editingNewValue = ""
     }
 
     /**
@@ -236,7 +236,7 @@ define([
         this.cancelEditingKey()
         this.refreshCdbList()
       } catch (error) {
-        this.notification.showErrorToast('Error editing value.')
+        this.notification.showErrorToast("Error editing value.")
       }
     }
 
@@ -257,7 +257,7 @@ define([
         this.scope.removingEntry = false
         this.refreshCdbList()
       } catch (error) {
-        this.notification.showErrorToast('Error deleting entry.')
+        this.notification.showErrorToast("Error deleting entry.")
       }
     }
 
@@ -280,7 +280,7 @@ define([
         if (fileName) {
           if (constainsBlanks.test(fileName)) {
             this.notification.showErrorToast(
-              'Error creating a new file. The filename can not contain white spaces.'
+              "Error creating a new file. The filename can not contain white spaces."
             )
           } else {
             this.scope.saveIncomplete = true
@@ -292,23 +292,23 @@ define([
               content
             )
             if (result && result.data && result.data.error === 0) {
-              this.notification.showSuccessToast('File saved successfully.')
+              this.notification.showSuccessToast("File saved successfully.")
               this.scope.saveIncomplete = false
               this.scope.$applyAsync()
             } else if (result.data.error === 1905) {
               this.notification.showWarningToast(
-                result.data.message || 'File already exists.'
+                result.data.message || "File already exists."
               )
               this.scope.overwrite = true
               this.scope.saveIncomplete = false
               this.scope.$applyAsync()
             } else {
-              throw new Error(result.data.message || 'Cannot send this file.')
+              throw new Error(result.data.message || "Cannot send this file.")
             }
           }
         } else {
           this.notification.showWarningToast(
-            'Please set a name for the new CDB list.'
+            "Please set a name for the new CDB list."
           )
         }
       } catch (error) {
@@ -330,9 +330,9 @@ define([
      */
     stringToObj(string) {
       let result = {}
-      const splitted = string.split('\n')
-      splitted.forEach(element => {
-        const keyValue = element.split(':')
+      const splitted = string.split("\n")
+      splitted.forEach((element) => {
+        const keyValue = element.split(":")
         if (keyValue[0]) result[keyValue[0]] = keyValue[1]
       })
       return result
@@ -343,7 +343,7 @@ define([
      * @param {Object} obj
      */
     objToString(obj) {
-      let raw = ''
+      let raw = ""
       for (var key in obj) {
         raw = raw.concat(`${key}:${obj[key]}\n`)
       }
@@ -376,6 +376,6 @@ define([
       this.scope.searchTable()
     }
   }
-  controllers.controller('managerCdbCtrl', CDBList)
+  controllers.controller("managerCdbCtrl", CDBList)
   return CDBList
 })

@@ -10,8 +10,8 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'domToImg'], function(app, domToImg) {
-  'use strict'
+define(["../module", "domToImg"], function (app, domToImg) {
+  "use strict"
   class Vis2PNG {
     constructor($rootScope, $currentDataService) {
       this.$rootScope = $rootScope
@@ -28,45 +28,45 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         const len = visArray.length
         let currentCompleted = 0
         await Promise.all(
-          visArray.map(async currentValue => {
-            const tmpNode = $('#' + currentValue + ' .panel-body')
-            const noResults = $('#' + currentValue + ' .panel-body .alert')
+          visArray.map(async (currentValue) => {
+            const tmpNode = $("#" + currentValue + " .panel-body")
+            const noResults = $("#" + currentValue + " .panel-body .alert")
             let error = false
             if (noResults.length > 0) {
               error = true
             }
 
-            let classes = ''
-            let title = ''
+            let classes = ""
+            let title = ""
             try {
               //Try to fetch the title of the visualization
               title = document
                 .getElementById(currentValue)
-                .parentElement.getElementsByTagName('span')[0].innerText
+                .parentElement.getElementsByTagName("span")[0].innerText
 
               classes = document
                 .getElementById(currentValue)
-                .className.split(' ')
+                .className.split(" ")
             } catch (error) {} // eslint-disable-line
 
             try {
-              if (!classes.includes('table')) {
+              if (!classes.includes("table")) {
                 const tmpResult = await domToImg.toPng(
                   error ? noResults[0] : tmpNode[0],
                   {
                     width: tmpNode.width(),
-                    height: tmpNode.height()
+                    height: tmpNode.height(),
                   }
                 )
-                if (tmpResult === 'data:,') {
-                  return Promise.reject('Impossible fetch visualizations')
+                if (tmpResult === "data:,") {
+                  return Promise.reject("Impossible fetch visualizations")
                 }
                 this.rawArray.push({
                   element: tmpResult,
                   width: error ? -1 : tmpNode.width(),
                   height: tmpNode.height(),
                   id: currentValue,
-                  title: title
+                  title: title,
                 })
               }
             } catch (error) {} // eslint-disable-line
@@ -100,5 +100,5 @@ define(['../module', 'domToImg'], function(app, domToImg) {
       this.htmlObject[id] = content
     }
   }
-  app.service('vis2png', Vis2PNG)
+  app.service("vis2png", Vis2PNG)
 })

@@ -11,13 +11,13 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/chart/area-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/search/search-handler",
+  "../../../services/rawTableData/rawTableDataService",
 ], function (
   app,
   DashboardMain,
@@ -27,7 +27,7 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsAudit extends DashboardMain {
     /**
@@ -76,7 +76,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       if (
@@ -99,8 +99,8 @@ define([
           `filesAddedSearch`,
           `${this.filters} rule.id=80790 | stats count`,
           `filesAddedToken`,
-          '$result.count$',
-          'newFiles',
+          "$result.count$",
+          "newFiles",
           this.submittedTokenModel,
           this.scope
         ),
@@ -108,8 +108,8 @@ define([
           `readFilesSearch`,
           `${this.filters} rule.id=80784 | stats count`,
           `readFilesToken`,
-          '$result.count$',
-          'readFiles',
+          "$result.count$",
+          "readFiles",
           this.submittedTokenModel,
           this.scope
         ),
@@ -117,17 +117,17 @@ define([
           `modifiedFiles`,
           `${this.filters} rule.id=80781 | stats count`,
           `filesModifiedToken`,
-          '$result.count$',
-          'filesModifiedToken',
+          "$result.count$",
+          "filesModifiedToken",
           this.submittedTokenModel,
           this.scope
         ),
         new SearchHandler(
           `deletedFiles`,
           `${this.filters} rule.id=80791 | stats count`,
-          'filesDeletedToken',
-          '$result.count$',
-          'filesDeleted',
+          "filesDeletedToken",
+          "$result.count$",
+          "filesDeleted",
           this.submittedTokenModel,
           this.scope
         ),
@@ -135,44 +135,44 @@ define([
          * Visualizations
          */
         new PieChart(
-          'groupsVizz',
+          "groupsVizz",
           `${this.filters} | top rule.groups{}`,
-          'groupsVizz',
+          "groupsVizz",
           this.scope
         ),
         new PieChart(
-          'commandsVizz',
+          "commandsVizz",
           `${this.filters} | top limit=5 data.audit.command`,
-          'commandsVizz',
+          "commandsVizz",
           this.scope
         ),
         new PieChart(
-          'filesVizz',
+          "filesVizz",
           `${this.filters} audit.file.name=* | top audit.file.name`,
-          'filesVizz',
+          "filesVizz",
           this.scope
         ),
         new AreaChart(
-          'alertsOverTimeVizz',
+          "alertsOverTimeVizz",
           `${this.filters} | timechart limit=10 count by rule.description`,
-          'alertsOverTimeVizz',
+          "alertsOverTimeVizz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new Table(
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           `${this.filters} | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters} | stats count sparkline by agent.name,rule.description, audit.exe, audit.type, audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, audit.exe as Command, audit.type as Type, audit.euid as "Effective user id"`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
 
       // Set agent info
@@ -186,7 +186,7 @@ define([
           OS: this.agent.data.data.os.affected_items[0].name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -197,15 +197,15 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-audit',
-          'Audit',
+          "agents-audit",
+          "Audit",
           this.filters,
           [
-            'groupsVizz',
-            'commandsVizz',
-            'filesVizz',
-            'alertsOverTimeVizz',
-            'alertsSummaryVizz'
+            "groupsVizz",
+            "commandsVizz",
+            "filesVizz",
+            "alertsOverTimeVizz",
+            "alertsSummaryVizz",
           ],
           this.reportMetrics,
           this.tableResults,
@@ -224,12 +224,14 @@ define([
 
       // Capitalize Status
       if (this.scope.agent && this.scope.agent.status) {
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
 
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
     }
 
@@ -238,9 +240,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ['Active', 'Disconnected'].includes(agentStatus)
+      return ["Active", "Disconnected"].includes(agentStatus)
         ? agentStatus
-        : 'Never connected'
+        : "Never connected"
     }
 
     /**
@@ -248,7 +250,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === "Active" ? "teal" : "red"
     }
 
     /**
@@ -256,12 +258,12 @@ define([
      */
     setReportMetrics() {
       this.reportMetrics = {
-        'New files': this.scope.newFiles,
-        'Read files': this.scope.readFiles,
-        'Modified files': this.scope.filesModifiedToken,
-        'Removed files': this.scope.filesDeleted
+        "New files": this.scope.newFiles,
+        "Read files": this.scope.readFiles,
+        "Modified files": this.scope.filesModifiedToken,
+        "Removed files": this.scope.filesDeleted,
       }
     }
   }
-  app.controller('agentsAuditCtrl', AgentsAudit)
+  app.controller("agentsAuditCtrl", AgentsAudit)
 })

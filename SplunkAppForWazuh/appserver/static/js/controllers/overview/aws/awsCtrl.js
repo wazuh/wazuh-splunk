@@ -1,13 +1,13 @@
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/map/map',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/chart/area-chart",
+  "../../../services/visualizations/chart/column-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/map/map",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -17,7 +17,7 @@ define([
   Map,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class AWS extends DashboardMain {
     /**
@@ -37,7 +37,7 @@ define([
       $state,
       $notificationService,
       $reportingService,
-      reportingEnabled,
+      reportingEnabled
     ) {
       super(
         $scope,
@@ -60,7 +60,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.filters = this.getFilters()
@@ -70,77 +70,77 @@ define([
          * Visualizations
          */
         new AreaChart(
-          'eventsBySourceVizz',
+          "eventsBySourceVizz",
           `${this.filters} | timechart count by data.aws.source usenull=f`,
-          'eventsBySourceVizz',
+          "eventsBySourceVizz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new ColumnChart(
-          'eventsByS3BucketsVizz',
+          "eventsByS3BucketsVizz",
           `${this.filters} | timechart count by data.aws.log_info.s3bucket usenull=f`,
-          'eventsByS3BucketsVizz',
+          "eventsByS3BucketsVizz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new PieChart(
-          'sourcesVizz',
+          "sourcesVizz",
           `${this.filters} | stats count BY data.aws.source`,
-          'sourcesVizz',
+          "sourcesVizz",
           this.scope
         ),
         new PieChart(
-          'accountsVizz',
+          "accountsVizz",
           `${this.filters} | top data.aws.responseElements.instancesSet.items.instanceId`,
-          'accountsVizz',
+          "accountsVizz",
           this.scope
         ),
         new PieChart(
-          's3BucketsVizz',
+          "s3BucketsVizz",
           `${this.filters} | stats count by data.aws.log_info.s3bucket`,
-          's3BucketsVizz',
+          "s3BucketsVizz",
           this.scope
         ),
         new PieChart(
-          'regionsVizz',
+          "regionsVizz",
           `${this.filters} | top data.aws.awsRegion`,
-          'regionsVizz',
+          "regionsVizz",
           this.scope
         ),
         new Table(
-          'top5Buckets',
+          "top5Buckets",
           `${this.filters} | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
-          'top5Buckets',
+          "top5Buckets",
           this.scope
         ),
         new Table(
-          'top5Rules',
+          "top5Rules",
           `${this.filters} | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'top5Rules',
+          "top5Rules",
           this.scope
         ),
         new RawTableDataService(
-          'top5BucketsTable',
+          "top5BucketsTable",
           `${this.filters} | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
-          'top5BucketsTableToken',
-          '$result$',
+          "top5BucketsTableToken",
+          "$result$",
           this.scope,
-          'Top 5 buckets'
+          "Top 5 buckets"
         ),
         new RawTableDataService(
-          'top5RulesTable',
+          "top5RulesTable",
           `${this.filters} | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'top5RulesTableToken',
-          '$result$',
+          "top5RulesTableToken",
+          "$result$",
           this.scope,
-          'Top 5 Rules'
+          "Top 5 Rules"
         ),
         new Map(
-          'map',
+          "map",
           `${this.filters} | stats count by data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat, data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon as "lon" | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat as "lat" | geostats count`,
-          'map',
+          "map",
           this.scope
-        )
+        ),
       ]
     }
 
@@ -148,27 +148,27 @@ define([
       try {
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-aws',
-            'AWS',
+            "overview-aws",
+            "AWS",
             this.filters,
             [
-              'sourcesVizz',
-              'accountsVizz',
-              's3BucketsVizz',
-              'regionsVizz',
-              'eventsBySourceVizz',
-              'eventsByS3BucketsVizz',
-              'map',
-              'top5Buckets',
-              'top5Rules'
+              "sourcesVizz",
+              "accountsVizz",
+              "s3BucketsVizz",
+              "regionsVizz",
+              "eventsBySourceVizz",
+              "eventsByS3BucketsVizz",
+              "map",
+              "top5Buckets",
+              "top5Rules",
             ],
             {}, //Metrics
             this.tableResults
           )
       } catch (error) {
-        console.error('error on init ', error)
+        console.error("error on init ", error)
       }
     }
   }
-  app.controller('awsCtrl', AWS)
+  app.controller("awsCtrl", AWS)
 })

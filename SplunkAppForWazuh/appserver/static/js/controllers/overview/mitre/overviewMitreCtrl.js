@@ -11,19 +11,13 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/column-chart',
-], function(
-  app,
-  DashboardMain,
-  LinearChart,
-  PieChart,
-  ColumnChart,
-) {
-  'use strict'
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/linear-chart",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/chart/column-chart",
+], function (app, DashboardMain, LinearChart, PieChart, ColumnChart) {
+  "use strict"
 
   class OverviewMitre extends DashboardMain {
     /**
@@ -47,7 +41,7 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       super(
         $scope,
@@ -70,44 +64,43 @@ define([
       this.filters = this.getFilters()
 
       this.vizz = [
-        
         /**
          * Visualizations
          */
         new LinearChart(
-          'alertTecEvoVizz',
+          "alertTecEvoVizz",
           `${this.filters} sourcetype=wazuh rule.mitre.technique{}=* | timechart count | rename count as "Count" rule.mitre.technique{} as "Techniques"`,
-          'alertTecEvoVizz',
+          "alertTecEvoVizz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new PieChart(
-          'alertsTop10Tactic',
+          "alertsTop10Tactic",
           `${this.filters} index=wazuh sourcetype=wazuh | stats count by rule.mitre.tactic{} | rename count as "Count" rule.mitre.tactic{} as "Tactics"`,
-          'alertsTop10Tactic',
+          "alertsTop10Tactic",
           this.scope
         ),
         new ColumnChart(
-          'alertsTechnique',
+          "alertsTechnique",
           `${this.filters} index=wazuh sourcetype=wazuh rule.mitre.technique{}=* rule.mitre.tactic{}=* | chart count over rule.mitre.technique{} by rule.mitre.tactic{} | rename rule.mitre.tactic{} as "Tactic", rule.mitre.technique{} as "Technique"`,
-          'alertsTechnique',
+          "alertsTechnique",
           this.scope,
-          {stackMode: 'stacked'}
+          { stackMode: "stacked" }
         ),
         new ColumnChart(
-          'topTacticsByAgent',
+          "topTacticsByAgent",
           `${this.filters} sourcetype=wazuh rule.mitre.tactic{}=* agent.name=* | chart count(rule.mitre.tactic{}) by agent.name,rule.mitre.tactic{} | rename count as "Count", agent.name as "Agent name", rule.mitre.tactic{} as "Tactics" | sort count DESC limit=10`,
-          'topTacticsByAgent',
+          "topTacticsByAgent",
           this.scope,
-          {stackMode: 'stacked'}
+          { stackMode: "stacked" }
         ),
         new ColumnChart(
-          'techniquesByAgent',
+          "techniquesByAgent",
           `${this.filters} sourcetype=wazuh rule.mitre.technique{}=* agent.name=* | chart count(rule.mitre.technique{}) by agent.name,rule.mitre.technique{} | rename count as "Count", agent.name as "Agent name", rule.mitre.technique{} as "Techniques" | sort count DESC limit=10`,
-          'techniquesByAgent',
+          "techniquesByAgent",
           this.scope,
-          {stackMode: 'stacked100'}
-        )
+          { stackMode: "stacked100" }
+        ),
       ]
     }
 
@@ -116,32 +109,34 @@ define([
      */
     $onInit() {
       try {
-        this.scope.goToInventory = () => { this.goToInventory() }
+        this.scope.goToInventory = () => {
+          this.goToInventory()
+        }
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-mitre',
-            'MITRE ATT&CK',
+            "overview-mitre",
+            "MITRE ATT&CK",
             this.filters,
             [
-              'alertTecEvoVizz',
-              'alertsTop10Tactic',
-              'alertsTechnique',
-              'topTacticsByAgent',
-              'techniquesByAgent'
+              "alertTecEvoVizz",
+              "alertsTop10Tactic",
+              "alertsTechnique",
+              "topTacticsByAgent",
+              "techniquesByAgent",
             ]
           )
       } catch (error) {
-        console.error('error on init ', error)
+        console.error("error on init ", error)
       }
     }
 
     /**
      * Link to Mitre Inventory
      */
-     goToInventory(){
-      this.state.go('ow-mitre-ids', { })
+    goToInventory() {
+      this.state.go("ow-mitre-ids", {})
     }
   }
 
-  app.controller('overviewMitreCtrl', OverviewMitre)
+  app.controller("overviewMitreCtrl", OverviewMitre)
 })

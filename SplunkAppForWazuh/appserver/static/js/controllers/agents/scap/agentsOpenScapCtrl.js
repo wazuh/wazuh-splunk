@@ -11,16 +11,16 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/chart/bar-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/chart/area-chart",
+  "../../../services/visualizations/chart/bar-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/inputs/dropdown-input",
+  "../../../services/visualizations/search/search-handler",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -31,7 +31,7 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class AgentsOpenScap extends DashboardMain {
     /**
@@ -81,7 +81,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       if (
@@ -95,15 +95,15 @@ define([
         )
 
       this.dropdown = new Dropdown(
-        'dropDownInput',
+        "dropDownInput",
         `${this.filters} rule.groups{}!="syslog" data.oscap.scan.profile.title=* | stats count by data.oscap.scan.profile.title | sort data.oscap.scan.profile.title ASC|fields - count`,
-        'data.oscap.scan.profile.title',
-        '$form.profile$',
-        'dropDownInput',
+        "data.oscap.scan.profile.title",
+        "$form.profile$",
+        "dropDownInput",
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on("change", (newValue) => {
         if (newValue && this.dropdownInstance) {
           this.urlTokenModel.handleValueChange(this.dropdownInstance)
         }
@@ -119,8 +119,8 @@ define([
           `lastScapScore`,
           `${this.filters} data.oscap.scan.score=* | stats latest(data.oscap.scan.score)`,
           `latestScapScore`,
-          '$result.latest(data.oscap.scan.score)$',
-          'scapLastScore',
+          "$result.latest(data.oscap.scan.score)$",
+          "scapLastScore",
           this.submittedTokenModel,
           this.scope
         ),
@@ -128,8 +128,8 @@ define([
           `maxScapScore`,
           `${this.filters} data.oscap.scan.score=* | stats max(data.oscap.scan.score)`,
           `maxScapScore`,
-          '$result.max(data.oscap.scan.score)$',
-          'scapHighestScore',
+          "$result.max(data.oscap.scan.score)$",
+          "scapHighestScore",
           this.submittedTokenModel,
           this.scope
         ),
@@ -137,8 +137,8 @@ define([
           `scapLowest`,
           `${this.filters} data.oscap.scan.score=* | stats min(data.oscap.scan.score)`,
           `minScapScore`,
-          '$result.min(data.oscap.scan.score)$',
-          'scapLowestScore',
+          "$result.min(data.oscap.scan.score)$",
+          "scapLowestScore",
           this.submittedTokenModel,
           this.scope
         ),
@@ -147,61 +147,61 @@ define([
          * Visualizations
          */
         new PieChart(
-          'top5Scans',
+          "top5Scans",
           `${this.filters} data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.id`,
-          'top5Scans',
+          "top5Scans",
           this.scope
         ),
         new PieChart(
-          'profilesVizz',
+          "profilesVizz",
           `${this.filters} data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.profile.title`,
-          'profilesVizz',
+          "profilesVizz",
           this.scope
         ),
         new BarChart(
-          'contentVizz',
+          "contentVizz",
           `${this.filters} data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.scan.content`,
-          'contentVizz',
+          "contentVizz",
           this.scope
         ),
         new PieChart(
-          'severityVizz',
+          "severityVizz",
           `${this.filters} data.oscap.check.result="fail" rule.groups{}!="syslog" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.severity`,
-          'severityVizz',
+          "severityVizz",
           this.scope
         ),
         new AreaChart(
-          'top5AgentsSHVizz',
+          "top5AgentsSHVizz",
           `${this.filters} data.oscap.scan.profile.title="$profile$" data.oscap.check.severity="high" | chart count by agent.name`,
-          'top5AgentsSHVizz',
+          "top5AgentsSHVizz",
           this.scope
         ),
         new PieChart(
-          'top5AlertsVizz',
+          "top5AlertsVizz",
           `${this.filters} data.oscap.check.result="fail" rule.groups{}="oscap-result" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
-          'top5AlertsVizz',
+          "top5AlertsVizz",
           this.scope
         ),
         new PieChart(
-          'top5HRAlertsVizz',
+          "top5HRAlertsVizz",
           `${this.filters} data.oscap.check.result="fail" rule.groups{}="oscap-result"  data.oscap.check.severity="high" data.oscap.scan.profile.title="$profile$" | top limit=5 data.oscap.check.title`,
-          'top5HRAlertsVizz',
+          "top5HRAlertsVizz",
           this.scope
         ),
         new Table(
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           `${this.filters} data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, data.oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters} data.oscap.check.result="fail" data.oscap.scan.profile.title="$profile$" | stats count by agent.name, data.oscap.check.title, data.oscap.scan.profile.title, data.oscap.scan.id, data.oscap.scan.content | sort count DESC | rename agent.name as "Agent name", data.oscap.check.title as Title, data.oscap.scan.profile.title as Profile, data.oscap.scan.id as "Scan ID", data.oscap.scan.content as Content`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
 
       // Set agent info
@@ -215,7 +215,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -226,18 +226,18 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          'agents-openscap',
-          'Open SCAP',
+          "agents-openscap",
+          "Open SCAP",
           this.filters,
           [
-            'top5Scans',
-            'profilesVizz',
-            'contentVizz',
-            'severityVizz',
-            'top5AgentsSHVizz',
-            'top5AlertsVizz',
-            'top5HRAlertsVizz',
-            'alertsSummaryVizz'
+            "top5Scans",
+            "profilesVizz",
+            "contentVizz",
+            "severityVizz",
+            "top5AgentsSHVizz",
+            "top5AlertsVizz",
+            "top5HRAlertsVizz",
+            "alertsSummaryVizz",
           ],
           this.reportMetrics,
           this.tableResults,
@@ -254,13 +254,15 @@ define([
           ? this.agent.data.data.affected_items[0]
           : { error: true }
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 
@@ -269,9 +271,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ['Active', 'Disconnected'].includes(agentStatus)
+      return ["Active", "Disconnected"].includes(agentStatus)
         ? agentStatus
-        : 'Never connected'
+        : "Never connected"
     }
 
     /**
@@ -279,7 +281,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === 'Active' ? 'teal' : 'red'
+      return agentStatus === "Active" ? "teal" : "red"
     }
 
     /**
@@ -287,11 +289,11 @@ define([
      */
     setReportMetrics() {
       this.reportMetrics = {
-        'Last score': this.scope.scapLastScore,
-        'Highest score': this.scope.scapHighestScore,
-        'Lowest score': this.scope.scapLowestScore
+        "Last score": this.scope.scapLastScore,
+        "Highest score": this.scope.scapHighestScore,
+        "Lowest score": this.scope.scapLowestScore,
       }
     }
   }
-  app.controller('agentsOpenScapCtrl', AgentsOpenScap)
+  app.controller("agentsOpenScapCtrl", AgentsOpenScap)
 })

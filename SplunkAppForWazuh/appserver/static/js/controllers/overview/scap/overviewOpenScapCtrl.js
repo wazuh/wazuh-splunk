@@ -11,18 +11,18 @@
  */
 
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/chart/area-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
-  '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/linear-chart",
+  "../../../services/visualizations/chart/column-chart",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/chart/area-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/inputs/time-picker",
+  "../../../services/visualizations/inputs/dropdown-input",
+  "../../../services/visualizations/search/search-handler",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -35,7 +35,7 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class OpenSCAP extends DashboardMain {
     /**
@@ -55,7 +55,7 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       super(
         $scope,
@@ -78,21 +78,21 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.dropdown = new Dropdown(
-        'dropDownInput',
+        "dropDownInput",
         `${this.filters}  rule.groups{}="oscap" rule.groups{}!="syslog" oscap.scan.profile.title=* | stats count by oscap.scan.profile.title | sort oscap.scan.profile.title ASC|fields - count`,
-        'oscap.scan.profile.title',
-        '$form.profile$',
-        'dropDownInput',
+        "oscap.scan.profile.title",
+        "$form.profile$",
+        "dropDownInput",
         this.scope
       )
 
       this.dropdownInstance = this.dropdown.getElement()
 
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on("change", (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -107,8 +107,8 @@ define([
           `lastScapScore`,
           `${this.filters} oscap.scan.score=* | stats latest(oscap.scan.score)`,
           `latestScapScore`,
-          '$result.latest(oscap.scan.score)$',
-          'scapLastScore',
+          "$result.latest(oscap.scan.score)$",
+          "scapLastScore",
           this.submittedTokenModel,
           this.scope
         ),
@@ -116,8 +116,8 @@ define([
           `maxScapScore`,
           `${this.filters} oscap.scan.score=* | stats max(oscap.scan.score)`,
           `maxScapScore`,
-          '$result.max(oscap.scan.score)$',
-          'scapHighestScore',
+          "$result.max(oscap.scan.score)$",
+          "scapHighestScore",
           this.submittedTokenModel,
           this.scope
         ),
@@ -125,8 +125,8 @@ define([
           `scapLowest`,
           `${this.filters} oscap.scan.score=* | stats min(oscap.scan.score)`,
           `minScapScore`,
-          '$result.min(oscap.scan.score)$',
-          'scapLowestScore',
+          "$result.min(oscap.scan.score)$",
+          "scapLowestScore",
           this.submittedTokenModel,
           this.scope
         ),
@@ -135,64 +135,64 @@ define([
          * Visualizations
          */
         new PieChart(
-          'agentsVizz',
+          "agentsVizz",
           `${this.filters} oscap.check.result="fail" rule.groups{}="oscap" rule.groups{}!="syslog" oscap.scan.profile.title="$profile$" | top agent.name`,
-          'agentsVizz',
+          "agentsVizz",
           this.scope
         ),
         new LinearChart(
-          'profilesVizz',
+          "profilesVizz",
           `${this.filters} rule.level=*`,
-          'profilesVizz',
+          "profilesVizz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new ColumnChart(
-          'contentVizz',
+          "contentVizz",
           `${this.filters} | timechart span=2h count`,
-          'contentVizz',
+          "contentVizz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new PieChart(
-          'severityVizz',
+          "severityVizz",
           `${this.filters} | top agent.name`,
-          'severityVizz',
+          "severityVizz",
           this.scope
         ),
         new AreaChart(
-          'top5AgentsVizz',
+          "top5AgentsVizz",
           `${this.filters} | timechart span=1h limit=5 useother=f count by agent.name`,
-          'top5AgentsVizz',
+          "top5AgentsVizz",
           this.scope,
-          { customAxisTitleX: 'Time span' }
+          { customAxisTitleX: "Time span" }
         ),
         new PieChart(
-          'top10AlertsVizz',
+          "top10AlertsVizz",
           `${this.filters} oscap.check.result="fail" rule.groups{}="oscap" rule.groups{}="oscap-result" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10AlertsVizz',
+          "top10AlertsVizz",
           this.scope
         ),
         new PieChart(
-          'top10HRisk',
+          "top10HRisk",
           `${this.filters} oscap.check.result="fail" rule.groups{}="oscap" rule.groups{}="oscap-result"  oscap.check.severity="high" oscap.scan.profile.title="$profile$" | top oscap.check.title`,
-          'top10HRisk',
+          "top10HRisk",
           this.scope
         ),
         new Table(
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'alertsSummaryVizz',
+          "alertsSummaryVizz",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
     }
 
@@ -203,18 +203,18 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-oscap',
-            'Open SCAP',
+            "overview-oscap",
+            "Open SCAP",
             this.filters,
             [
-              'agentsVizz',
-              'profilesVizz',
-              'contentVizz',
-              'severityVizz',
-              'top5AgentsVizz',
-              'top10AlertsVizz',
-              'top10HRisk',
-              'alertsSummaryVizz'
+              "agentsVizz",
+              "profilesVizz",
+              "contentVizz",
+              "severityVizz",
+              "top5AgentsVizz",
+              "top10AlertsVizz",
+              "top10HRisk",
+              "alertsSummaryVizz",
             ],
             this.reportMetrics,
             this.tableResults
@@ -227,11 +227,11 @@ define([
      */
     setReportMetrics() {
       this.reportMetrics = {
-        'Last score': this.scope.scapLastScore,
-        'Highest score': this.scope.scapHighestScore,
-        'Lowest score': this.scope.scapLowestScore
+        "Last score": this.scope.scapLastScore,
+        "Highest score": this.scope.scapHighestScore,
+        "Lowest score": this.scope.scapLowestScore,
       }
     }
   }
-  app.controller('overviewOpenScapCtrl', OpenSCAP)
+  app.controller("overviewOpenScapCtrl", OpenSCAP)
 })

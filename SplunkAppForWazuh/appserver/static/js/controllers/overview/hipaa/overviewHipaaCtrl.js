@@ -1,14 +1,14 @@
 define([
-  '../../module',
-  '../../../dashboardMain',
-  '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/chart/pie-chart',
-  '../../../services/visualizations/table/table',
-  '../../../services/visualizations/chart/single-value',
-  '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  "../../module",
+  "../../../dashboardMain",
+  "../../../services/visualizations/chart/linear-chart",
+  "../../../services/visualizations/chart/column-chart",
+  "../../../services/visualizations/chart/pie-chart",
+  "../../../services/visualizations/table/table",
+  "../../../services/visualizations/chart/single-value",
+  "../../../services/visualizations/inputs/dropdown-input",
+  "../../../services/rawTableData/rawTableDataService",
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -19,7 +19,7 @@ define([
   Dropdown,
   RawTableDataService
 ) {
-  'use strict'
+  "use strict"
 
   class Hipaa extends DashboardMain {
     /**
@@ -45,7 +45,7 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      nistExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
@@ -70,83 +70,83 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.dropdown = new Dropdown(
-        'dropDownInput',
+        "dropDownInput",
         `${this.filters} rule.hipaa{}="*" | stats count by "rule.hipaa{}" | sort "rule.hipaa{}" ASC | fields - count`,
-        'rule.hipaa{}',
-        '$form.hipaa$',
-        'dropDownInput',
+        "rule.hipaa{}",
+        "$form.hipaa$",
+        "dropDownInput",
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
 
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on("change", (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
 
       this.vizz = [
         new ColumnChart(
-          'alertsVolumeByAgent',
+          "alertsVolumeByAgent",
           `${this.filters} rule.hipaa{}="$hipaa$"  | chart count by agent.id,rule.hipaa{} | rename agent.id as "Agent ID", rule.hipaa{} as "Requirement", count as "Count"`,
-          'alertsVolumeByAgent',
+          "alertsVolumeByAgent",
           this.scope,
-          { stackMode: 'stacked' }
+          { stackMode: "stacked" }
         ),
         new PieChart(
-          'top10Requirements',
+          "top10Requirements",
           `${this.filters} rule.hipaa{}="*" | top limit=10 rule.hipaa{} | rename rule.hipaa{} as "Requirement"`,
-          'top10Requirements',
+          "top10Requirements",
           this.scope
         ),
         new PieChart(
-          'mostActiveAgents',
+          "mostActiveAgents",
           `${this.filters} rule.hipaa{}="$hipaa$" | top limit=10 agent.name`,
-          'mostActiveAgents',
+          "mostActiveAgents",
           this.scope
         ),
         new SingleValue(
-          'maxRuleLevel',
+          "maxRuleLevel",
           `${this.filters} rule.hipaa{}="$hipaa$" | top rule.level | sort - rule.level`,
-          'maxRuleLevel',
+          "maxRuleLevel",
           this.scope
         ),
         new SingleValue(
-          'totalAlerts',
+          "totalAlerts",
           `${this.filters} rule.hipaa{}="$hipaa$" | stats count`,
-          'totalAlerts',
+          "totalAlerts",
           this.scope
         ),
         new ColumnChart(
-          'requirementsEvolutionOverTime',
+          "requirementsEvolutionOverTime",
           `${this.filters} rule.hipaa{}="$hipaa$" agent.name=* | timechart count by rule.hipaa{} | rename count as "Count", rule.hipaa{} as "Requirement"`,
-          'requirementsEvolutionOverTime',
+          "requirementsEvolutionOverTime",
           this.scope,
-          { stackMode: 'stacked' }
+          { stackMode: "stacked" }
         ),
         new ColumnChart(
-          'requirementsDistributionByAgent',
+          "requirementsDistributionByAgent",
           `${this.filters} rule.hipaa{}="$hipaa$" agent.name=* | chart count(rule.hipaa{}) by agent.name,rule.hipaa{} | rename count as "Count" , agent.name as "Agent name", rule.hipaa{} as "Requirement"`,
-          'requirementsDistributionByAgent',
+          "requirementsDistributionByAgent",
           this.scope
         ),
         new Table(
-          'alertsSummary',
+          "alertsSummary",
           `${this.filters} rule.hipaa{}="$hipaa$" | stats count by agent.name,rule.hipaa{},rule.level,rule.description | sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count", agent.name as "Agent"`,
-          'alertsSummary',
+          "alertsSummary",
           this.scope
         ),
         new RawTableDataService(
-          'alertsSummaryTable',
+          "alertsSummaryTable",
           `${this.filters} rule.hipaa{}="$hipaa$" | stats count by agent.name,rule.hipaa{},rule.level,rule.description | sort count DESC | rename rule.hipaa{} as "Requirement", rule.level as "Level", rule.description as "Description", count as "Count", agent.name as "Agent"`,
-          'alertsSummaryTableToken',
-          '$result$',
+          "alertsSummaryTableToken",
+          "$result$",
           this.scope,
-          'Alerts Summary'
-        )
+          "Alerts Summary"
+        ),
       ]
     }
 
@@ -158,18 +158,18 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            'overview-hipaa',
-            'HIPAA',
+            "overview-hipaa",
+            "HIPAA",
             this.filters,
             [
-              'alertsVolumeByAgent',
-              'top10Requirements',
-              'mostActiveAgents',
-              'maxRuleLevel',
-              'totalAlerts',
-              'requirementsEvolutionOverTime',
-              'requirementsDistributionByAgent',
-              'alertsSummary'
+              "alertsVolumeByAgent",
+              "top10Requirements",
+              "mostActiveAgents",
+              "maxRuleLevel",
+              "totalAlerts",
+              "requirementsEvolutionOverTime",
+              "requirementsDistributionByAgent",
+              "alertsSummary",
             ],
             {}, //Metrics
             this.tableResults
@@ -177,5 +177,5 @@ define([
       } catch (error) {}
     }
   }
-  app.controller('overviewHipaaCtrl', Hipaa)
+  app.controller("overviewHipaaCtrl", Hipaa)
 })

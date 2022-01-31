@@ -9,28 +9,28 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
+define(["../module", "../../libs/codemirror-conv/lib/codemirror"], function (
   app,
   CodeMirror
 ) {
-  'use strict'
+  "use strict"
   class WzConfigViewer {
     /**
      * Class constructor
      */
     constructor(BASE_URL) {
-      this.restrict = 'E'
+      this.restrict = "E"
       this.scope = {
-        getjson: '&',
-        getxml: '&',
-        jsoncontent: '=',
-        xmlcontent: '=',
-        hideHeader: '=',
-        noLocal: '='
+        getjson: "&",
+        getxml: "&",
+        jsoncontent: "=",
+        xmlcontent: "=",
+        hideHeader: "=",
+        noLocal: "=",
       }
       this.templateUrl =
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-config-viewer/wz-config-viewer.html'
+        "/static/app/SplunkAppForWazuh/js/directives/wz-config-viewer/wz-config-viewer.html"
     }
 
     controller($scope, $document) {
@@ -38,37 +38,37 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const setJsonBox = () => {
         $scope.jsonCodeBox = CodeMirror.fromTextArea(
-          $document[0].getElementById('viewer_json_box'),
+          $document[0].getElementById("viewer_json_box"),
           {
             lineNumbers: true,
             autoRefresh: true,
             matchClosing: true,
             matchBrackets: true,
-            mode: { name: 'javascript', json: true },
+            mode: { name: "javascript", json: true },
             readOnly: true,
-            theme: 'ttcn',
+            theme: "ttcn",
             foldGutter: true,
             styleSelectedText: true,
-            gutters: ['CodeMirror-foldgutter']
+            gutters: ["CodeMirror-foldgutter"],
           }
         )
       }
 
       const setXmlBox = () => {
         $scope.xmlCodeBox = CodeMirror.fromTextArea(
-          $document[0].getElementById('viewer_xml_box'),
+          $document[0].getElementById("viewer_xml_box"),
           {
             lineNumbers: true,
             autoRefresh: true,
             lineWrapping: true,
             matchClosing: true,
             matchBrackets: true,
-            mode: 'text/xml',
+            mode: "text/xml",
             readOnly: true,
-            theme: 'ttcn',
+            theme: "ttcn",
             foldGutter: true,
             styleSelectedText: true,
-            gutters: ['CodeMirror-foldgutter']
+            gutters: ["CodeMirror-foldgutter"],
           }
         )
         bindXmlListener()
@@ -76,20 +76,20 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const bindXmlListener = () => {
         const scrollElement = $scope.xmlCodeBox.getScrollerElement()
-        $(scrollElement).bind('scroll', function(e) {
+        $(scrollElement).bind("scroll", function (e) {
           var element = $(e.currentTarget)[0]
           if (
             element.scrollHeight - element.scrollTop ===
             element.clientHeight
           ) {
-            $scope.$emit('scrolledToBottom', {
-              lines: $scope.xmlCodeBox.lineCount()
+            $scope.$emit("scrolledToBottom", {
+              lines: $scope.xmlCodeBox.lineCount(),
             })
           }
         })
       }
 
-      const getPosition = element => {
+      const getPosition = (element) => {
         var xPosition = 0
         var yPosition = 0
 
@@ -104,40 +104,40 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
       }
 
       const dynamicHeight = () => {
-        setTimeout(function() {
-          const editorContainer = $('.wzConfigViewer')
+        setTimeout(function () {
+          const editorContainer = $(".wzConfigViewer")
           const windows = $(window).height()
           const offsetTop = getPosition(editorContainer[0]).y
           const bottom = isLogs ? 50 : 20
-          const headerContainer = $('.wzXmlEditorHeader')
+          const headerContainer = $(".wzXmlEditorHeader")
           const headerContainerHeight = headerContainer.height()
             ? headerContainer.height() + 20
             : isLogs
             ? 0
             : 70
           editorContainer.height(windows - (offsetTop + bottom))
-          $('.wzJsonXmlEditorBody .CodeMirror').height(
+          $(".wzJsonXmlEditorBody .CodeMirror").height(
             windows - (offsetTop + bottom + headerContainerHeight)
           )
         }, 1)
       }
 
       const init = () => {
-        $('.wzConfigViewer').height(0)
+        $(".wzConfigViewer").height(0)
         dynamicHeight()
       }
 
-      const refreshJsonBox = json => {
+      const refreshJsonBox = (json) => {
         $scope.jsoncontent = json
         if (!$scope.jsonCodeBox) {
           setJsonBox()
         }
         if ($scope.jsoncontent != false) {
-          $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, '\\'))
-          setTimeout(function() {
+          $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, "\\"))
+          setTimeout(function () {
             $scope.jsonCodeBox.refresh()
             $scope.$applyAsync()
-            window.dispatchEvent(new Event('resize'))
+            window.dispatchEvent(new Event("resize"))
           }, 300)
         }
       }
@@ -150,10 +150,10 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         }
         if ($scope.xmlcontent != false) {
           $scope.xmlCodeBox.setValue($scope.xmlcontent)
-          setTimeout(function() {
+          setTimeout(function () {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
-            isLogs ? dynamicHeight() : window.dispatchEvent(new Event('resize')) // eslint-disable-line
+            isLogs ? dynamicHeight() : window.dispatchEvent(new Event("resize")) // eslint-disable-line
           }, 300)
         }
       }
@@ -162,15 +162,15 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       $scope.callgetxml = () => $scope.getxml()
 
-      $scope.$on('JSONContentReady', (ev, params) => {
+      $scope.$on("JSONContentReady", (ev, params) => {
         refreshJsonBox(params.data)
       })
 
-      $scope.$on('XMLContentReady', (ev, params) => {
+      $scope.$on("XMLContentReady", (ev, params) => {
         refreshXmlBox(params.data, params.logs)
       })
 
-      $(window).on('resize', function() {
+      $(window).on("resize", function () {
         dynamicHeight()
       })
 
@@ -178,5 +178,5 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
     }
   }
 
-  app.directive('wzConfigViewer', BASE_URL => new WzConfigViewer(BASE_URL))
+  app.directive("wzConfigViewer", (BASE_URL) => new WzConfigViewer(BASE_URL))
 })

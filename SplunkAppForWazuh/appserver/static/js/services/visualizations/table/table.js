@@ -1,8 +1,8 @@
-define(['splunkjs/mvc/simplexml/element/table', '../viz/viz'], function(
+define(["splunkjs/mvc/simplexml/element/table", "../viz/viz"], function (
   TableElement,
   Viz
 ) {
-  'use strict'
+  "use strict"
 
   return class Table extends Viz {
     /**
@@ -17,16 +17,16 @@ define(['splunkjs/mvc/simplexml/element/table', '../viz/viz'], function(
         new TableElement(
           {
             id: `${id}`,
-            dataOverlayMode: 'none',
-            drilldown: 'cell',
-            percentagesRow: 'false',
-            rowNumbers: '10',
-            totalsRow: 'false',
-            wrap: 'true',
+            dataOverlayMode: "none",
+            drilldown: "cell",
+            percentagesRow: "false",
+            rowNumbers: "10",
+            totalsRow: "false",
+            wrap: "true",
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
-          { tokens: true, tokenNamespace: 'submitted' }
+          { tokens: true, tokenNamespace: "submitted" }
         ).render(),
         id,
         search,
