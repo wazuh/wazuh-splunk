@@ -2,7 +2,7 @@
   <!-- End headline -->
 
   <!-- Agent stats -->
-  <div layout-padding class="wz-no-padding">
+  <div layout-padding class="wz-no-padding" ng-show="canReadAgents">
     <div class="agent-stats-box">
       <div
         class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
@@ -43,7 +43,7 @@
     </div>
   </div>
 
-  <div layout="row" layout-padding>
+  <div layout="row" layout-padding ng-class="{ 'wz-margin-top-20': !canReadAgents }">
     <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
