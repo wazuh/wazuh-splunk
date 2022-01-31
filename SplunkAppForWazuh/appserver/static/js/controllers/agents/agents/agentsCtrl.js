@@ -377,6 +377,7 @@ define([
      * Switchs view to add a new agent
      */
     addNewAgent() {
+      this.linearChartAgent && this.linearChartAgent.destroy();
       this.scope.addingAgents = true
       this.scope.$applyAsync()
     }
