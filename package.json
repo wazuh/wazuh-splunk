@@ -1,19 +1,11 @@
 {
-  "name": "wazuh-splunk",
-  "version": "4.3.0",
-  "revision": "4301",
-  "code": "4301-0",
-  "kibana": {
-    "version": "8.2.2"
+  "author": "Wazuh, Inc",
+  "bugs": {
+    "url": "https://github.com/wazuh/wazuh-splunk/issues"
   },
-  "description": "Splunk app for Wazuh",
-  "main": "index.js",
-  "keywords": [
-    "splunk",
-    "wazuh",
-    "ossec"
-  ],
+  "code": "4301-0",
   "dependencies": {},
+  "description": "Splunk app for Wazuh",
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-match": "^1.1.1",
@@ -26,22 +18,30 @@
     "needle": "^2.2.4",
     "prettier": "^2.5.1"
   },
-  "scripts": {
-    "pretty": "prettier --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
-    "lint": "eslint . --ext .js -c .eslintrc.json",
-    "test": "mocha tests/manager.js",
-    "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../..",
-    "prebuild": "node scripts/generate-build-version",
-    "build": "tar -czf SplunkAppForWazuh.tar.gz ./SplunkAppForWazuh"
+  "homepage": "https://github.com/wazuh/wazuh-splunk#readme",
+  "keywords": [
+    "splunk",
+    "wazuh",
+    "ossec"
+  ],
+  "kibana": {
+    "version": "8.2.2"
   },
+  "license": "GPL-2.0",
+  "main": "index.js",
+  "name": "wazuh-splunk",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wazuh/wazuh-splunk.git"
   },
-  "author": "Wazuh, Inc",
-  "license": "GPL-2.0",
-  "bugs": {
-    "url": "https://github.com/wazuh/wazuh-splunk/issues"
+  "revision": "4301",
+  "scripts": {
+    "build": "tar -czf SplunkAppForWazuh.tar.gz ./SplunkAppForWazuh",
+    "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../..",
+    "lint": "eslint . --ext .js -c .eslintrc.json",
+    "prebuild": "node scripts/generate-build-version",
+    "pretty": "prettier --config .prettierrc --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
+    "test": "mocha tests/manager.js"
   },
-  "homepage": "https://github.com/wazuh/wazuh-splunk#readme"
+  "version": "4.3.0"
 }
