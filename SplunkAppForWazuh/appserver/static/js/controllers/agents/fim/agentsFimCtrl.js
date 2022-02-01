@@ -64,7 +64,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.wzTableFilter = $tableFilterService
       this.agent = agent

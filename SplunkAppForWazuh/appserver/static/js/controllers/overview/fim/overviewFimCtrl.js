@@ -45,14 +45,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      awsExtensionEnabled
+      awsExtensionEnabled,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.awsExtensionEnabled = awsExtensionEnabled

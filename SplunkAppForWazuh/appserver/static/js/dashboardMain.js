@@ -54,6 +54,13 @@ define([
     }
 
     /**
+     * Abstract method. Implemention required in subclasess
+     */
+    setReportMetrics() {
+      console.warn('Unimplemented method setReportMetrics()')
+    }
+
+    /**
      * On controller load
      */
     initialize() {
@@ -81,12 +88,8 @@ define([
           }).length
           if (this.vizzReady) {
             this.scope.loadingVizz = false
-            try {
-              // There's not always metrics to set.
-              this.setReportMetrics()
-            } catch (error) {
-              this.notification.showErrorToast(error.message || error)
-            }
+            // There's not always metrics to set.
+            this.setReportMetrics()
           } else {
             this.vizz.map((v) => {
               if (v.constructor.name === 'RawTableData') {
@@ -112,20 +115,10 @@ define([
          */
         this.scope.$on('$destroy', () => {
           this.tableResults = {}
-          this.timePicker.destroy()
-          // Agents configuration assesment has not visualizations, this prevent an error
-          try {
-            this.vizz.map((vizz) => vizz.destroy())
-          } catch (error) {
-            this.notification.showErrorToast(error.message || error)
-          }
-
-          // There's not always a dropdown.
-          try {
-            this.dropdown.destroy()
-          } catch (error) {
-            this.notification.showErrorToast(error.message || error)
-          }
+          // There are now always visualizations
+          this.timePicker?.destroy()
+          this.vizz?.map((vizz) => vizz.destroy())
+          this.dropdown?.destroy()
         })
       } catch (error) {
         this.notification.showErrorToast(

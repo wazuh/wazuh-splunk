@@ -53,7 +53,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled

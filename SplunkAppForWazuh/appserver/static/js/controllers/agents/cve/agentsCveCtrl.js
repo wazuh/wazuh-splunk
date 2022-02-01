@@ -50,7 +50,8 @@ define(['../../module', '../../../dashboardMain', 'FileSaver'], function (
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.wzTableFilter = $tableFilterService
       this.csvReq = $csvRequestService
