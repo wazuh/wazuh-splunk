@@ -34,7 +34,7 @@ define([
       $urlTokenModel,
       $notificationService
     ) {
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.scope = $scope
       this.reportingService = $reportingService
       this.state = $state

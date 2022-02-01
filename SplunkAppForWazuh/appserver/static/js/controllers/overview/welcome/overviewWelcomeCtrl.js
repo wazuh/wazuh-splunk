@@ -21,7 +21,7 @@ define(['../../module'], function (controllers) {
       $security_service
     ) {
       this.scope = $scope
-      this.notificationService = $notificationService
+      this.notification = $notificationService
       this.currentDataService = $currentDataService
       this.currentApi = this.currentDataService.getApi()
       this.scope.extensionsLists = {
@@ -94,7 +94,7 @@ define(['../../module'], function (controllers) {
         this.refreshExtensions()
       } catch (error) {
         console.error(error)
-        this.notificationService.showErrorToast(error)
+        this.notification.showErrorToast(error)
       }
     }
 
