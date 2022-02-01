@@ -40,7 +40,7 @@
     "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../..",
     "lint": "eslint . --ext .js -c .eslintrc.json",
     "prebuild": "node scripts/generate-build-version",
-    "pretty": "prettier --config .prettierrc --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
+    "pretty": "prettier --config .prettierrc --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html SplunkAppForWazuh/**/*.css !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
     "test": "mocha tests/manager.js"
   },
   "version": "4.3.0"
