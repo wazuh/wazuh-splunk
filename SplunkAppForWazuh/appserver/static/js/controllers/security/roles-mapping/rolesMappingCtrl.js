@@ -12,15 +12,15 @@
  */
 
 define([
-  "../../module",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/multidropdownview",
-  "splunkjs/mvc",
-  "../../../libs/codemirror-conv/lib/codemirror",
+  '../../module',
+  'splunkjs/mvc/searchmanager',
+  'splunkjs/mvc/multidropdownview',
+  'splunkjs/mvc',
+  '../../../libs/codemirror-conv/lib/codemirror',
 ], function (controllers, SearchManager, MultiDropdownView, mvc, CodeMirror) {
-  "use strict"
+  'use strict'
 
-  const operators = ["FIND", "$FIND", "MATCH", "$MATCH"]
+  const operators = ['FIND', '$FIND', 'MATCH', '$MATCH']
   class RolesMapping {
     constructor(
       $scope,
@@ -46,53 +46,53 @@ define([
       this.scope.logicalOperator = true
       this.scope.selectedOperator = operators[0]
       this.jsonCodeBox =
-        document.getElementById("viewer_json_box") &&
-        CodeMirror.fromTextArea(document.getElementById("viewer_json_box"), {
+        document.getElementById('viewer_json_box') &&
+        CodeMirror.fromTextArea(document.getElementById('viewer_json_box'), {
           lineNumbers: false,
           autoRefresh: true,
           matchClosing: true,
           matchBrackets: true,
-          mode: { name: "javascript", json: true },
-          theme: "ttcn",
+          mode: { name: 'javascript', json: true },
+          theme: 'ttcn',
           foldGutter: true,
           styleSelectedText: true,
-          gutters: ["CodeMirror-lint-markers"],
+          gutters: ['CodeMirror-lint-markers'],
           lint: true,
         })
       this.dropdownRoles = new MultiDropdownView({
-        id: "roles-dropdown",
-        managerid: "roles-search",
+        id: 'roles-dropdown',
+        managerid: 'roles-search',
         choices: this.scope.roles,
-        el: $("#roles-dropdown-view"),
+        el: $('#roles-dropdown-view'),
       }).render()
 
       this.dropdownSplunkUsers = new MultiDropdownView({
-        id: "splunk-users-dropdown",
-        managerid: "splunk-users-search",
+        id: 'splunk-users-dropdown',
+        managerid: 'splunk-users-search',
         choices: this.scope.splunkUsersDropdown,
-        el: $("#splunk-users-dropdown-view"),
+        el: $('#splunk-users-dropdown-view'),
       }).render()
 
       this.searchManager = new SearchManager({
-        id: "roles-mapping-search",
+        id: 'roles-mapping-search',
         search:
-          "| eventcount summarize=false index=* index=_* | dedup index | fields index",
+          '| eventcount summarize=false index=* index=_* | dedup index | fields index',
       })
 
-      this.dropdownRoles.on("change", (newValue) => {
+      this.dropdownRoles.on('change', (newValue) => {
         if (newValue && this.dropdownRoles) {
           this.scope.roles = newValue
           this.scope.$applyAsync()
         }
       })
 
-      this.dropdownSplunkUsers.on("change", (newValue) => {
+      this.dropdownSplunkUsers.on('change', (newValue) => {
         if (newValue && this.dropdownSplunkUsers) {
           this.scope.splunkUsersDropdown = newValue
           this.scope.tmpInternalUsersRules = newValue.map((user) => {
             return {
-              user_field: "name",
-              searchOperation: "FIND",
+              user_field: 'name',
+              searchOperation: 'FIND',
               value: user,
             }
           })
@@ -102,16 +102,16 @@ define([
       })
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
 
-      this.scope.canReadRules = this.isAllowed("SECURITY_READ", ["RULE_ID"])
-      this.scope.canCreateRules = this.isAllowed("SECURITY_CREATE", [
-        "RESOURCELESS",
+      this.scope.canReadRules = this.isAllowed('SECURITY_READ', ['RULE_ID'])
+      this.scope.canCreateRules = this.isAllowed('SECURITY_CREATE', [
+        'RESOURCELESS',
       ])
       this.scope.canUpdateRule = (id) =>
-        this.isAllowed("SECURITY_UPDATE", ["RULE_ID"], [id])
+        this.isAllowed('SECURITY_UPDATE', ['RULE_ID'], [id])
     }
 
     /**
@@ -119,7 +119,7 @@ define([
      * @param {String} term
      */
     search(term) {
-      this.scope.$broadcast("wazuhSearch", { term })
+      this.scope.$broadcast('wazuhSearch', { term })
     }
 
     addNewCustomRule() {
@@ -130,9 +130,9 @@ define([
           value: this.scope.customValue,
         }
         this.scope.customRules.push(rule)
-        this.scope.customField = ""
+        this.scope.customField = ''
         this.scope.selectedOperator = operators[0]
-        this.scope.customValue = ""
+        this.scope.customValue = ''
         this.updateJsonRules()
         this.scope.$applyAsync()
       } else {
@@ -167,7 +167,7 @@ define([
 
     getJsonFromRule(internalUserRules, rules, operator) {
       const ruleObject = {}
-      const logicalOperator = operator ? "AND" : "OR"
+      const logicalOperator = operator ? 'AND' : 'OR'
       const usersRulesArray = internalUserRules.map((item) => {
         const tmpRule = {}
         tmpRule[item.searchOperation] = {}
@@ -181,7 +181,7 @@ define([
         return tmpRule
       })
       if (usersRulesArray.length && rulesArray.length) {
-        ruleObject["OR"] = [
+        ruleObject['OR'] = [
           {
             OR: usersRulesArray,
           },
@@ -196,7 +196,7 @@ define([
           return usersRulesArray[0]
         } else {
           if (usersRulesArray.length) {
-            ruleObject["OR"] = usersRulesArray
+            ruleObject['OR'] = usersRulesArray
           }
           if (rulesArray.length) {
             ruleObject[logicalOperator] = rulesArray
@@ -208,7 +208,7 @@ define([
 
     refreshJsonEditor(newJsonRule) {
       this.jsonCodeBox.setValue(
-        newJsonRule ? JSON.stringify(newJsonRule, null, 2) : ""
+        newJsonRule ? JSON.stringify(newJsonRule, null, 2) : ''
       )
       setTimeout(() => {
         this.jsonCodeBox.refresh()
@@ -312,7 +312,7 @@ define([
           formatedRules = this.formatRules(rulesArray[1][operator])
           customRules = formatedRules.tmpRules
           wrongFormat = formatedRules.wrongFormat
-          logicalOperator = operator || "AND"
+          logicalOperator = operator || 'AND'
 
           break
         default:
@@ -340,11 +340,11 @@ define([
         var logicalOperator = Object.keys(ruleObject)[0]
 
         var rulesArray
-        if (logicalOperator === "AND" || logicalOperator === "OR") {
+        if (logicalOperator === 'AND' || logicalOperator === 'OR') {
           rulesArray = ruleObject[logicalOperator]
         } else {
           rulesArray = [ruleObject]
-          logicalOperator = "AND"
+          logicalOperator = 'AND'
         }
         const formatedRules = this.getFormatedRules(rulesArray, internalUsers)
 
@@ -385,7 +385,7 @@ define([
       this.scope.isOpenJsonEditor = false
       this.scope.search = (term) => this.search(term)
       // Come from the pencil icon on the roles table
-      this.scope.$on("openRuleFromList", (ev, parameters) => {
+      this.scope.$on('openRuleFromList', (ev, parameters) => {
         ev.stopPropagation()
         const isDisabled = parameters.rule.id === 1 || parameters.rule.id === 2
         this.scope.editingRoleMapping = true
@@ -393,9 +393,9 @@ define([
         this.scope.ruleId = parameters.rule.id
         this.scope.roleMappingName = parameters.rule.name
         this.scope.currentRoles = parameters.rule.roles
-        this.dropdownRoles.settings.set("disabled", isDisabled)
-        this.dropdownSplunkUsers.settings.set("disabled", isDisabled)
-        this.jsonCodeBox.setOption("readOnly", isDisabled)
+        this.dropdownRoles.settings.set('disabled', isDisabled)
+        this.dropdownSplunkUsers.settings.set('disabled', isDisabled)
+        this.jsonCodeBox.setOption('readOnly', isDisabled)
         this.dropdownRoles.val(parameters.rule.roles)
         this.scope.editingRole = isDisabled
         this.scope.overwrite = isDisabled
@@ -407,7 +407,7 @@ define([
           logicalOperator,
         } = this.decodeJsonRule(parameters.rule.rule, this.scope.splunkUsers)
         this.scope.wrongFormat = wrongFormat
-        this.scope.logicalOperator = logicalOperator === "AND" ? true : false
+        this.scope.logicalOperator = logicalOperator === 'AND' ? true : false
         customRules.map((rule) => {
           this.scope.customRules.push(rule)
         })
@@ -417,14 +417,14 @@ define([
         this.scope.$applyAsync()
       })
 
-      this.scope.$on("$destroy", () => {
-        mvc.Components.revokeInstance("roles-dropdown")
-        mvc.Components.revokeInstance("roles-mapping-search")
-        mvc.Components.revokeInstance("splunk-users-dropdown")
+      this.scope.$on('$destroy', () => {
+        mvc.Components.revokeInstance('roles-dropdown')
+        mvc.Components.revokeInstance('roles-mapping-search')
+        mvc.Components.revokeInstance('splunk-users-dropdown')
         this.dropdownRoles = null
         this.dropdownSplunkUsers = null
         this.searchManager = null
-        this.jsonCodeBox.setValue("")
+        this.jsonCodeBox.setValue('')
       })
     }
 
@@ -432,10 +432,10 @@ define([
       try {
         this.clearAll()
         this.scope.addingNewRoleMapping = true
-        this.dropdownRoles.settings.set("disabled", false)
-        this.dropdownSplunkUsers.settings.set("disabled", false)
+        this.dropdownRoles.settings.set('disabled', false)
+        this.dropdownSplunkUsers.settings.set('disabled', false)
       } catch (error) {
-        this.notification.showErrorToast("Cannot add new Role Mapping.")
+        this.notification.showErrorToast('Cannot add new Role Mapping.')
       }
     }
 
@@ -452,17 +452,17 @@ define([
       this.scope.editingRoleMapping = false
       this.scope.editingRole = false
       this.scope.overwrite = false
-      this.scope.roleMappingName = ""
-      this.scope.userField = ""
-      this.scope.customValue = ""
-      this.scope.customField = ""
+      this.scope.roleMappingName = ''
+      this.scope.userField = ''
+      this.scope.customValue = ''
+      this.scope.customField = ''
       this.scope.currentRoles = []
       this.scope.customRules = []
       this.dropdownRoles.val([])
       this.dropdownSplunkUsers.val([])
-      this.jsonCodeBox.setOption("readOnly", false)
+      this.jsonCodeBox.setOption('readOnly', false)
       this.scope.isOpenJsonEditor = false
-      this.jsonCodeBox.setValue("")
+      this.jsonCodeBox.setValue('')
       this.scope.$applyAsync()
     }
 
@@ -482,7 +482,7 @@ define([
         if (roleMappingName && splunkUsers.length && roleIds.length != 0) {
           if (constainsBlanks.test(roleMappingName)) {
             this.notification.showErrorToast(
-              "Error creating a new role mapping. The name can not contain white spaces."
+              'Error creating a new role mapping. The name can not contain white spaces.'
             )
           } else {
             this.scope.saveIncomplete = true
@@ -504,7 +504,7 @@ define([
             ) {
               this.notification.showWarningToast(
                 result.failed_items[0].error.message ||
-                  "Role mapping already exists."
+                  'Role mapping already exists.'
               )
               this.scope.overwrite = true
               this.scope.saveIncomplete = false
@@ -524,7 +524,7 @@ define([
             if (result && result.total_failed_items === 0) {
               this.notification.showSuccessToast(
                 `Role mapping ${result.affected_items[0].name} ${
-                  isEdit ? "updated" : "saved"
+                  isEdit ? 'updated' : 'saved'
                 } successfully.`
               )
               this.scope.saveIncomplete = false
@@ -532,7 +532,7 @@ define([
             } else {
               throw new Error(
                 result.data.message ||
-                  `Cannot ${isEdit ? "updated" : "saved"} this Role mapping.`
+                  `Cannot ${isEdit ? 'updated' : 'saved'} this Role mapping.`
               )
             }
           }
@@ -541,7 +541,7 @@ define([
         } else {
           this.notification.showWarningToast(
             `Please set all fields for the ${
-              isEdit ? "update" : "new"
+              isEdit ? 'update' : 'new'
             } Role mapping.`
           )
         }
@@ -550,5 +550,5 @@ define([
       }
     }
   }
-  controllers.controller("rolesMappingCtrl", RolesMapping)
+  controllers.controller('rolesMappingCtrl', RolesMapping)
 })

@@ -1,3 +1,3 @@
-define(["localjQuery"], function ($) {
+define(['localjQuery'], function ($) {
   return $.noConflict(true)
 })

@@ -11,13 +11,13 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/chart/area-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/search/search-handler",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -27,7 +27,7 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class AgentsVulnerabilities extends DashboardMain {
     /**
@@ -80,13 +80,13 @@ define([
         )
         const agentId = this.agent.data.data.affected_items[0].id
         this.scope.canReadVulnerabilities = $security_service.isAllowed(
-          "VULNERABILITY_READ",
-          ["AGENT_ID"],
+          'VULNERABILITY_READ',
+          ['AGENT_ID'],
           [agentId]
         )
       }
       if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go("overview")
+        this.state.go('overview')
       }
 
       this.filters = this.getFilters()
@@ -135,57 +135,57 @@ define([
          * Visualizations
          */
         new AreaChart(
-          "alertsSeverityOverTimeVizz",
+          'alertsSeverityOverTimeVizz',
           `${this.filters} rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
-          "alertsSeverityOverTimeVizz",
+          'alertsSeverityOverTimeVizz',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
-          "commonRules",
+          'commonRules',
           `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
-          "commonRules",
+          'commonRules',
           this.scope
         ),
         new PieChart(
-          "commonCves",
+          'commonCves',
           `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.cve limit=5`,
-          "commonCves",
+          'commonCves',
           this.scope
         ),
         new PieChart(
-          "severityDistribution",
+          'severityDistribution',
           `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.severity limit=5`,
-          "severityDistribution",
+          'severityDistribution',
           this.scope
         ),
         new PieChart(
-          "commonlyAffectedPackVizz",
+          'commonlyAffectedPackVizz',
           `${this.filters} | top 5 data.vulnerability.package.name`,
-          "commonlyAffectedPackVizz",
+          'commonlyAffectedPackVizz',
           this.scope
         ),
         new Table(
-          "alertsSummaryVizz",
+          'alertsSummaryVizz',
           `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
-          "alertsSummaryVizz",
+          'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts Summary"
+          'Alerts Summary'
         ),
         new RawTableDataService(
-          "commonRulesTable",
+          'commonRulesTable',
           `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          "commonRulesTableToken",
-          "$result$",
+          'commonRulesTableToken',
+          '$result$',
           this.scope,
-          "Common Rules"
+          'Common Rules'
         ),
       ]
 
@@ -211,16 +211,16 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          "agents-vulnerabilities",
-          "Vulnerabilities",
+          'agents-vulnerabilities',
+          'Vulnerabilities',
           this.filters,
           [
-            "alertsSeverityOverTimeVizz",
-            "commonRules",
-            "commonCves",
-            "severityDistribution",
-            "commonlyAffectedPackVizz",
-            "alertsSummaryVizz",
+            'alertsSeverityOverTimeVizz',
+            'commonRules',
+            'commonCves',
+            'severityDistribution',
+            'commonlyAffectedPackVizz',
+            'alertsSummaryVizz',
           ],
           this.reportMetrics,
           this.tableResults,
@@ -255,9 +255,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ["Active", "Disconnected"].includes(agentStatus)
+      return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
-        : "Never connected"
+        : 'Never connected'
     }
 
     /**
@@ -265,7 +265,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === "Active" ? "teal" : "red"
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
@@ -273,12 +273,12 @@ define([
      */
     setReportMetrics() {
       this.reportMetrics = {
-        "Critical severity alerts": this.scope.criticalSeverity,
-        "High severity alerts": this.scope.highSeverity,
-        "Medium severity alerts": this.scope.mediumSeverity,
-        "Low severity alerts": this.scope.lowSeverity,
+        'Critical severity alerts': this.scope.criticalSeverity,
+        'High severity alerts': this.scope.highSeverity,
+        'Medium severity alerts': this.scope.mediumSeverity,
+        'Low severity alerts': this.scope.lowSeverity,
       }
     }
   }
-  app.controller("agentsVulnerabilitiesCtrl", AgentsVulnerabilities)
+  app.controller('agentsVulnerabilitiesCtrl', AgentsVulnerabilities)
 })

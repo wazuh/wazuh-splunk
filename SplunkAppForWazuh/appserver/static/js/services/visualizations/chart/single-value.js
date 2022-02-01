@@ -1,8 +1,8 @@
-define(["splunkjs/mvc/simplexml/element/single", "../viz/viz"], function (
+define(['splunkjs/mvc/simplexml/element/single', '../viz/viz'], function (
   SingleElement,
   Viz
 ) {
-  "use strict"
+  'use strict'
 
   return class SingleValue extends Viz {
     /**
@@ -18,10 +18,10 @@ define(["splunkjs/mvc/simplexml/element/single", "../viz/viz"], function (
           {
             id: `${id}`,
             managerid: `${id}Search`,
-            height: "190",
+            height: '190',
             el: $(`#${attachedElement}`),
           },
-          { tokens: true, tokenNamespace: "submitted" }
+          { tokens: true, tokenNamespace: 'submitted' }
         ).render(),
         id,
         search,

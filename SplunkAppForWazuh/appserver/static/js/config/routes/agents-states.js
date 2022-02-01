@@ -1,34 +1,34 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
 
   module.config([
-    "$stateProvider",
-    "BASE_URL",
+    '$stateProvider',
+    'BASE_URL',
     function ($stateProvider, BASE_URL) {
       $stateProvider
 
         // agents
-        .state("agents", {
+        .state('agents', {
           templateUrl:
             BASE_URL +
-            "/static/app/SplunkAppForWazuh/js/controllers/agents/agents/agents.html",
-          controller: "agentsCtrl",
+            '/static/app/SplunkAppForWazuh/js/controllers/agents/agents/agents.html',
+          controller: 'agentsCtrl',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("agents")
+            $navigationService.storeRoute('agents')
           },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agentData: [
-              "$requestService",
+              '$requestService',
               async ($requestService) => {
                 try {
                   const agentsSummary = await $requestService.apiReq(
-                    "/overview/agents"
+                    '/overview/agents'
                   )
                   return agentsSummary
                 } catch (err) {
@@ -37,11 +37,11 @@ define(["../module"], function (module) {
               },
             ],
             clusterInfo: [
-              "$requestService",
+              '$requestService',
               async ($requestService) => {
                 try {
                   const clusterData = await $requestService.apiReq(
-                    "/cluster/status"
+                    '/cluster/status'
                   )
                   return clusterData.data.data
                 } catch (err) {
@@ -53,27 +53,27 @@ define(["../module"], function (module) {
         })
 
         // agents/:id
-        .state("agent-overview", {
+        .state('agent-overview', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/overview/overview.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/overview/overview.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("agent-overview")
+            $navigationService.storeRoute('agent-overview')
           },
-          controller: "agentsOverviewCtrl",
+          controller: 'agentsOverviewCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -84,7 +84,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const results = $requestService.apiReq(`/agents?q=id=${id}`)
                   return results
                 } catch (err) {
@@ -93,7 +93,7 @@ define(["../module"], function (module) {
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -103,12 +103,12 @@ define(["../module"], function (module) {
               },
             ],
             groups: [
-              "$requestService",
+              '$requestService',
               async ($requestService) => {
                 try {
-                  return await $requestService.apiReq("/groups")
+                  return await $requestService.apiReq('/groups')
                 } catch (err) {
-                  return { error: "Cannot fetch group from API" }
+                  return { error: 'Cannot fetch group from API' }
                 }
               },
             ],
@@ -116,26 +116,26 @@ define(["../module"], function (module) {
         })
 
         // agents/:id
-        .state("ag-inventory", {
+        .state('ag-inventory', {
           templateUrl:
-            "static/app/SplunkAppForWazuh/js/controllers/agents/inventory/inventory.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/inventory/inventory.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-inventory")
+            $navigationService.storeRoute('ag-inventory')
           },
-          controller: "inventoryCtrl",
+          controller: 'inventoryCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -146,7 +146,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -158,7 +158,7 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
@@ -167,27 +167,27 @@ define(["../module"], function (module) {
         })
 
         // Agents - Osquery
-        .state("ag-osquery", {
+        .state('ag-osquery', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/osquery/osquery.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/osquery/osquery.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-osquery")
+            $navigationService.storeRoute('ag-osquery')
           },
-          controller: "osqueryAgentCtrl",
+          controller: 'osqueryAgentCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             osquery: [
-              "$requestService",
-              "$currentDataService",
-              "$stateParams",
-              "$state",
+              '$requestService',
+              '$currentDataService',
+              '$stateParams',
+              '$state',
               async (
                 $requestService,
                 $currentDataService,
@@ -198,7 +198,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents/${id}/config/wmodules/wmodules`
                   )
@@ -209,10 +209,10 @@ define(["../module"], function (module) {
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -223,7 +223,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -234,13 +234,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -253,27 +253,27 @@ define(["../module"], function (module) {
         })
 
         // agents - General
-        .state("ag-general", {
+        .state('ag-general', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/general/agents-general.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/general/agents-general.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-general")
+            $navigationService.storeRoute('ag-general')
           },
-          controller: "agentsGeneralCtrl",
+          controller: 'agentsGeneralCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -284,7 +284,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const results = await Promise.all([
                     $requestService.apiReq(`/agents?q=id=${id}`),
                     $requestService.apiReq(`/syscheck/${id}/last_scan`),
@@ -297,7 +297,7 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
@@ -306,27 +306,27 @@ define(["../module"], function (module) {
         })
 
         // agents - FIM
-        .state("ag-fim", {
+        .state('ag-fim', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/fim/agents-fim.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/fim/agents-fim.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-fim")
+            $navigationService.storeRoute('ag-fim')
           },
-          controller: "agentsFimCtrl",
+          controller: 'agentsFimCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -337,7 +337,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -348,7 +348,7 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
@@ -357,27 +357,27 @@ define(["../module"], function (module) {
         })
 
         // agents - VirusTotal
-        .state("ag-virustotal", {
+        .state('ag-virustotal', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/virustotal/agents-virustotal.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/virustotal/agents-virustotal.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-virustotal")
+            $navigationService.storeRoute('ag-virustotal')
           },
-          controller: "agentsVirusTotalCtrl",
+          controller: 'agentsVirusTotalCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -388,7 +388,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -399,13 +399,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -418,27 +418,27 @@ define(["../module"], function (module) {
         })
 
         // agents - audit
-        .state("ag-audit", {
+        .state('ag-audit', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/audit/agents-audit.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/audit/agents-audit.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-audit")
+            $navigationService.storeRoute('ag-audit')
           },
-          controller: "agentsAuditCtrl",
+          controller: 'agentsAuditCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -449,7 +449,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -460,13 +460,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -479,27 +479,27 @@ define(["../module"], function (module) {
         })
 
         // agents - OpenSCAP
-        .state("ag-os", {
+        .state('ag-os', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/scap/agents-openscap.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/scap/agents-openscap.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-os")
+            $navigationService.storeRoute('ag-os')
           },
-          controller: "agentsOpenScapCtrl",
+          controller: 'agentsOpenScapCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -510,7 +510,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -521,13 +521,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -540,21 +540,21 @@ define(["../module"], function (module) {
         })
 
         // agents - configuration
-        .state("ag-conf", {
+        .state('ag-conf', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html",
+            'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-conf")
+            $navigationService.storeRoute('ag-conf')
           },
-          controller: "configurationAgentCtrl",
+          controller: 'configurationAgentCtrl',
           params: { id: null },
           resolve: {
             data: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -565,7 +565,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents/${id}/group/is_sync`
                   )
@@ -576,10 +576,10 @@ define(["../module"], function (module) {
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -590,7 +590,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -601,7 +601,7 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
@@ -610,27 +610,27 @@ define(["../module"], function (module) {
         })
 
         // agents - GDPR
-        .state("ag-gdpr", {
+        .state('ag-gdpr', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/gdpr/agents-gdpr.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/gdpr/agents-gdpr.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-gdpr")
+            $navigationService.storeRoute('ag-gdpr')
           },
-          controller: "agentsGdprCtrl",
+          controller: 'agentsGdprCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -641,7 +641,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -652,14 +652,14 @@ define(["../module"], function (module) {
               },
             ],
             gdprTabs: [
-              "$requestService",
-              "$state",
+              '$requestService',
+              '$state',
               async ($requestService) => {
                 try {
                   const gdprTabs = []
                   const data = await $requestService.httpReq(
-                    "GET",
-                    "/api/gdpr?requirement=all"
+                    'GET',
+                    '/api/gdpr?requirement=all'
                   )
                   if (!data) return []
                   for (const key in data.data) {
@@ -672,36 +672,36 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             pciExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("pci")
+                  return await $currentDataService.extensionIsEnabled('pci')
                 } catch (err) {
                   return false
                 }
               },
             ],
             hipaaExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("hipaa")
+                  return await $currentDataService.extensionIsEnabled('hipaa')
                 } catch (err) {
                   return false
                 }
               },
             ],
             nistExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("nist")
+                  return await $currentDataService.extensionIsEnabled('nist')
                 } catch (err) {
                   return false
                 }
@@ -710,27 +710,27 @@ define(["../module"], function (module) {
           },
         })
         // agents - HIPAA
-        .state("ag-hipaa", {
+        .state('ag-hipaa', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/hipaa/agents-hipaa.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/hipaa/agents-hipaa.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-hipaa")
+            $navigationService.storeRoute('ag-hipaa')
           },
-          controller: "agentsHipaaCtrl",
+          controller: 'agentsHipaaCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -741,7 +741,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -752,14 +752,14 @@ define(["../module"], function (module) {
               },
             ],
             hipaaTabs: [
-              "$requestService",
-              "$state",
+              '$requestService',
+              '$state',
               async ($requestService) => {
                 try {
                   const hipaaTabs = []
                   const data = await $requestService.httpReq(
-                    "GET",
-                    "/api/hipaa?requirement=all"
+                    'GET',
+                    '/api/hipaa?requirement=all'
                   )
                   if (!data) return []
                   for (const key in data.data) {
@@ -772,36 +772,36 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             pciExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("pci")
+                  return await $currentDataService.extensionIsEnabled('pci')
                 } catch (err) {
                   return false
                 }
               },
             ],
             gdprExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("gdpr")
+                  return await $currentDataService.extensionIsEnabled('gdpr')
                 } catch (err) {
                   return false
                 }
               },
             ],
             nistExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("nist")
+                  return await $currentDataService.extensionIsEnabled('nist')
                 } catch (err) {
                   return false
                 }
@@ -810,27 +810,27 @@ define(["../module"], function (module) {
           },
         })
         // agents - NIST 800-53
-        .state("ag-nist", {
+        .state('ag-nist', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/nist/agents-nist.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/nist/agents-nist.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-nist")
+            $navigationService.storeRoute('ag-nist')
           },
-          controller: "agentsNistCtrl",
+          controller: 'agentsNistCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -841,7 +841,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -852,14 +852,14 @@ define(["../module"], function (module) {
               },
             ],
             nistTabs: [
-              "$requestService",
-              "$state",
+              '$requestService',
+              '$state',
               async ($requestService) => {
                 try {
                   const nistTabs = []
                   const data = await $requestService.httpReq(
-                    "GET",
-                    "/api/nist?requirement=all"
+                    'GET',
+                    '/api/nist?requirement=all'
                   )
                   if (!data) return []
                   for (const key in data.data) {
@@ -872,36 +872,36 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             pciExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("pci")
+                  return await $currentDataService.extensionIsEnabled('pci')
                 } catch (err) {
                   return false
                 }
               },
             ],
             gdprExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("gdpr")
+                  return await $currentDataService.extensionIsEnabled('gdpr')
                 } catch (err) {
                   return false
                 }
               },
             ],
             hipaaExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("hipaa")
+                  return await $currentDataService.extensionIsEnabled('hipaa')
                 } catch (err) {
                   return false
                 }
@@ -910,27 +910,27 @@ define(["../module"], function (module) {
           },
         })
         // agents - policy monitoring
-        .state("ag-pm", {
+        .state('ag-pm', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/policy-monitoring/agents-pm.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/policy-monitoring/agents-pm.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-pm")
+            $navigationService.storeRoute('ag-pm')
           },
-          controller: "agentsPolicyMonitoringCtrl",
+          controller: 'agentsPolicyMonitoringCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -941,7 +941,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -952,13 +952,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -971,27 +971,27 @@ define(["../module"], function (module) {
         })
 
         // agents - configuration assessments
-        .state("ag-ca", {
+        .state('ag-ca', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/configuration-assessment/agents-ca.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/configuration-assessment/agents-ca.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-ca")
+            $navigationService.storeRoute('ag-ca')
           },
-          controller: "agentsConfigurationAssessmentsCtrl",
+          controller: 'agentsConfigurationAssessmentsCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -1002,7 +1002,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -1013,10 +1013,10 @@ define(["../module"], function (module) {
               },
             ],
             configAssess: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -1027,7 +1027,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(`/sca/${id}`)
                   return result
                 } catch (err) {
@@ -1036,13 +1036,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -1055,27 +1055,27 @@ define(["../module"], function (module) {
         })
 
         // agents - PCI-DSS
-        .state("ag-pci", {
+        .state('ag-pci', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/pcidss/agents-pci.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/pcidss/agents-pci.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-pci")
+            $navigationService.storeRoute('ag-pci')
           },
-          controller: "agentsPciCtrl",
+          controller: 'agentsPciCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -1086,7 +1086,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -1097,13 +1097,13 @@ define(["../module"], function (module) {
               },
             ],
             pciTabs: [
-              "$requestService",
+              '$requestService',
               async ($requestService) => {
                 try {
                   const pciTabs = []
                   const data = await $requestService.httpReq(
-                    "GET",
-                    "/api/pci?requirement=all"
+                    'GET',
+                    '/api/pci?requirement=all'
                   )
                   if (!data) return []
                   for (const key in data.data) {
@@ -1116,36 +1116,36 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             gdprExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("gdpr")
+                  return await $currentDataService.extensionIsEnabled('gdpr')
                 } catch (err) {
                   return false
                 }
               },
             ],
             hipaaExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("hipaa")
+                  return await $currentDataService.extensionIsEnabled('hipaa')
                 } catch (err) {
                   return false
                 }
               },
             ],
             nistExtensionEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
-                  return await $currentDataService.extensionIsEnabled("nist")
+                  return await $currentDataService.extensionIsEnabled('nist')
                 } catch (err) {
                   return false
                 }
@@ -1155,32 +1155,32 @@ define(["../module"], function (module) {
         })
 
         // agents - CIS-CAT
-        .state("ag-ciscat", {
+        .state('ag-ciscat', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/ciscat/agents-ciscat.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/ciscat/agents-ciscat.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-ciscat")
+            $navigationService.storeRoute('ag-ciscat')
           },
-          controller: "agentsCiscatCtrl",
+          controller: 'agentsCiscatCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
               async ($requestService, $stateParams, $currentDataService) => {
                 try {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    "000"
+                    '000'
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -1191,13 +1191,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -1210,27 +1210,27 @@ define(["../module"], function (module) {
         })
 
         // agents - Vulnerabilities
-        .state("ag-vul", {
+        .state('ag-vul', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/vulnerabilities/agents-vulnerabilities.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/vulnerabilities/agents-vulnerabilities.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-vul")
+            $navigationService.storeRoute('ag-vul')
           },
-          controller: "agentsVulnerabilitiesCtrl",
+          controller: 'agentsVulnerabilitiesCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -1241,7 +1241,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -1252,13 +1252,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -1270,27 +1270,27 @@ define(["../module"], function (module) {
           },
         })
         // agents - Common Vulnerabilities and Exposures (CVE)
-        .state("ag-cve", {
+        .state('ag-cve', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/cve/agents-cve.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/cve/agents-cve.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-cve")
+            $navigationService.storeRoute('ag-cve')
           },
-          controller: "agentsCveCtrl",
+          controller: 'agentsCveCtrl',
           params: { id: null },
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -1301,7 +1301,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -1312,10 +1312,10 @@ define(["../module"], function (module) {
               },
             ],
             cve: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -1326,7 +1326,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/vulnerability/${id}`
                   )
@@ -1337,13 +1337,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
@@ -1355,26 +1355,26 @@ define(["../module"], function (module) {
           },
         })
         // =========== Docker listener =========== //
-        .state("ag-docker", {
+        .state('ag-docker', {
           templateUrl:
             BASE_URL +
-            "static/app/SplunkAppForWazuh/js/controllers/agents/docker/agents-docker.html",
+            'static/app/SplunkAppForWazuh/js/controllers/agents/docker/agents-docker.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("ag-docker")
+            $navigationService.storeRoute('ag-docker')
           },
-          controller: "agentsDockerCtrl",
+          controller: 'agentsDockerCtrl',
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             agent: [
-              "$requestService",
-              "$stateParams",
-              "$currentDataService",
-              "$state",
+              '$requestService',
+              '$stateParams',
+              '$currentDataService',
+              '$state',
               async (
                 $requestService,
                 $stateParams,
@@ -1385,7 +1385,7 @@ define(["../module"], function (module) {
                   const id =
                     $stateParams.id ||
                     $currentDataService.getCurrentAgent() ||
-                    $state.go("agents")
+                    $state.go('agents')
                   const result = await $requestService.apiReq(
                     `/agents?q=id=${id}`
                   )
@@ -1396,13 +1396,13 @@ define(["../module"], function (module) {
               },
             ],
             reportingEnabled: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 return await $currentDataService.getReportingStatus()
               },
             ],
             extensions: [
-              "$currentDataService",
+              '$currentDataService',
               async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()

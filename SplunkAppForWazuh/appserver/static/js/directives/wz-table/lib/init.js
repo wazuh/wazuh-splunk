@@ -9,8 +9,8 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(["../../../utils/filter-handler"], function (FilterHandler) {
-  "use strict"
+define(['../../../utils/filter-handler'], function (FilterHandler) {
+  'use strict'
 
   return async function initTable(
     $scope,
@@ -23,7 +23,7 @@ define(["../../../utils/filter-handler"], function (FilterHandler) {
     $window
   ) {
     try {
-      if ($scope.path.includes("/rules")) {
+      if ($scope.path.includes('/rules')) {
         try {
           const filterHandler = new FilterHandler(appState.getCurrentPattern())
           const checkGlobalFilters = () => {
@@ -38,11 +38,11 @@ define(["../../../utils/filter-handler"], function (FilterHandler) {
             const ruleIdFilter = filterHandler.ruleIdQuery(ruleId)
             if (globalState.filters.length) {
               globalState.filters = globalState.filters.filter(
-                (item) => item && item.meta && item.meta.key !== "rule.id"
+                (item) => item && item.meta && item.meta.key !== 'rule.id'
               )
             }
             globalState.filters.push(ruleIdFilter)
-            $window.location.href = "#/wazuh-discover"
+            $window.location.href = '#/wazuh-discover'
           }
         } catch (error) {
           return

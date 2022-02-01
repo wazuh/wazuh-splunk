@@ -11,14 +11,14 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/column-chart",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/chart/area-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/search/search-handler",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -29,7 +29,7 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
   class Audit extends DashboardMain {
     /**
      * Class Audit
@@ -90,8 +90,8 @@ define([
           `filesAddedSearch`,
           `${this.filters} rule.id=80790 | stats count`,
           `filesAddedToken`,
-          "$result.count$",
-          "newFiles",
+          '$result.count$',
+          'newFiles',
           this.submittedTokenModel,
           this.scope
         ),
@@ -99,8 +99,8 @@ define([
           `readFilesSearch`,
           `${this.filters} rule.id=80784 | stats count`,
           `readFilesToken`,
-          "$result.count$",
-          "readFiles",
+          '$result.count$',
+          'readFiles',
           this.submittedTokenModel,
           this.scope
         ),
@@ -108,17 +108,17 @@ define([
           `modifiedFiles`,
           `${this.filters} rule.id=80781 | stats count`,
           `filesModifiedToken`,
-          "$result.count$",
-          "filesModifiedToken",
+          '$result.count$',
+          'filesModifiedToken',
           this.submittedTokenModel,
           this.scope
         ),
         new SearchHandler(
           `deletedFiles`,
           `${this.filters} rule.id=80791 | stats count`,
-          "filesDeletedToken",
-          "$result.count$",
-          "filesDeleted",
+          'filesDeletedToken',
+          '$result.count$',
+          'filesDeleted',
           this.submittedTokenModel,
           this.scope
         ),
@@ -126,49 +126,49 @@ define([
          * Visualizations
          */
         new PieChart(
-          "groupsElement",
+          'groupsElement',
           `${this.filters} rule.groups{}="audit" | top limit=5 rule.groups{}`,
-          "groupsElement",
+          'groupsElement',
           this.scope
         ),
         new ColumnChart(
-          "agentsElement",
+          'agentsElement',
           `${this.filters} rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
-          "agentsElement",
+          'agentsElement',
           this.scope
         ),
         new PieChart(
-          "commandsVizz",
+          'commandsVizz',
           `${this.filters} rule.groups{}="audit" | top limit=5 data.audit.command`,
-          "commandsVizz",
+          'commandsVizz',
           this.scope
         ),
         new PieChart(
-          "filesElement",
+          'filesElement',
           `${this.filters} rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
-          "filesElement",
+          'filesElement',
           this.scope
         ),
         new AreaChart(
-          "alertsOverTime",
+          'alertsOverTime',
           `${this.filters} rule.groups{}="audit" | timechart limit=10 count by rule.description`,
-          "alertsOverTimeElement",
+          'alertsOverTimeElement',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
-          "alertsSummary",
+          'alertsSummary',
           `${this.filters} rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
-          "alertsSummaryElement",
+          'alertsSummaryElement',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters} rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts Summary"
+          'Alerts Summary'
         ),
       ]
     }
@@ -176,10 +176,10 @@ define([
     $onInit() {
       try {
         this.reportMetrics = {
-          "New files": this.scope.newFiles,
-          "Read files": this.scope.readFiles,
-          "Modified files": this.scope.filesModifiedToken,
-          "Deleted files": this.scope.filesDeleted,
+          'New files': this.scope.newFiles,
+          'Read files': this.scope.readFiles,
+          'Modified files': this.scope.filesModifiedToken,
+          'Deleted files': this.scope.filesDeleted,
         }
 
         /**
@@ -187,16 +187,16 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            "overview-audit",
-            "Audit",
+            'overview-audit',
+            'Audit',
             this.filters,
             [
-              "groupsElement",
-              "agentsElement",
-              "commandsVizz",
-              "filesElement",
-              "alertsOverTimeElement",
-              "alertsSummaryElement",
+              'groupsElement',
+              'agentsElement',
+              'commandsVizz',
+              'filesElement',
+              'alertsOverTimeElement',
+              'alertsSummaryElement',
             ],
             this.reportMetrics,
             this.tableResults
@@ -206,5 +206,5 @@ define([
       }
     }
   }
-  app.controller("overviewAuditCtrl", Audit)
+  app.controller('overviewAuditCtrl', Audit)
 })

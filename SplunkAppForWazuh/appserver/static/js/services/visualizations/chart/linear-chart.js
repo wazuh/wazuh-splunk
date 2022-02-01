@@ -1,8 +1,8 @@
-define(["splunkjs/mvc/simplexml/element/chart", "../viz/viz"], function (
+define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function (
   ChartElement,
   Viz
 ) {
-  "use strict"
+  'use strict'
 
   return class LinearChart extends Viz {
     /**
@@ -14,7 +14,7 @@ define(["splunkjs/mvc/simplexml/element/chart", "../viz/viz"], function (
      * @param {scope} extraParams
      */
     constructor(id, search, attachedElement, scope, extraParams = {}) {
-      var customAxisTitleX = ""
+      var customAxisTitleX = ''
       if (extraParams.customAxisTitleX)
         customAxisTitleX = extraParams.customAxisTitleX
       super(
@@ -22,13 +22,13 @@ define(["splunkjs/mvc/simplexml/element/chart", "../viz/viz"], function (
           {
             id: `${id}`,
             resizable: true,
-            "charting.drilldown": "none",
-            "charting.chart": "line",
-            "charting.axisTitleX.text": customAxisTitleX,
+            'charting.drilldown': 'none',
+            'charting.chart': 'line',
+            'charting.axisTitleX.text': customAxisTitleX,
             managerid: `${id}Search`,
             el: $(`#${attachedElement}`),
           },
-          { tokens: true, tokenNamespace: "submitted" }
+          { tokens: true, tokenNamespace: 'submitted' }
         ).render(),
         id,
         search,

@@ -1,10 +1,10 @@
 define([
-  "../../module",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/multidropdownview",
-  "splunkjs/mvc",
+  '../../module',
+  'splunkjs/mvc/searchmanager',
+  'splunkjs/mvc/multidropdownview',
+  'splunkjs/mvc',
 ], function (controllers, SearchManager, MultiDropdownView, mvc) {
-  "use strict"
+  'use strict'
 
   class Users {
     constructor(
@@ -22,28 +22,28 @@ define([
       this.scope.isViewUser = false
       this.scope.overwrite = false
 
-      this.scope.userName = ""
-      this.scope.userId = ""
-      this.scope.userPassword = ""
-      this.scope.userPasswordConfirm = ""
+      this.scope.userName = ''
+      this.scope.userId = ''
+      this.scope.userPassword = ''
+      this.scope.userPasswordConfirm = ''
       this.scope.userAllowRunAs = false
       this.scope.userRoles = []
       this.scope.editUserRoles = []
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
 
-      this.scope.canReadUsers = this.isAllowed("SECURITY_READ", ["USER_ID"])
-      this.scope.canCreateUsers = this.isAllowed("SECURITY_CREATE_USER", [
-        "RESOURCELESS",
+      this.scope.canReadUsers = this.isAllowed('SECURITY_READ', ['USER_ID'])
+      this.scope.canCreateUsers = this.isAllowed('SECURITY_CREATE_USER', [
+        'RESOURCELESS',
       ])
-      this.scope.canEditRunAs = this.isAllowed("SECURITY_EDIT_RUN_AS", [
-        "RESOURCELESS",
+      this.scope.canEditRunAs = this.isAllowed('SECURITY_EDIT_RUN_AS', [
+        'RESOURCELESS',
       ])
       this.scope.canUpdateUser = (id) =>
-        this.isAllowed("SECURITY_UPDATE", ["USER_ID"], [id])
+        this.isAllowed('SECURITY_UPDATE', ['USER_ID'], [id])
 
       this.scope.roleData = this.getRoleList(
         roleData.data.data.affected_items || []
@@ -65,19 +65,19 @@ define([
       this.scope.overwrite = false
 
       this.dropdown = new MultiDropdownView({
-        id: "roles-dropdown",
-        managerid: "roles-search",
+        id: 'roles-dropdown',
+        managerid: 'roles-search',
         choices: this.scope.roleData,
-        el: $("#roles-dropdown-view"),
+        el: $('#roles-dropdown-view'),
       }).render()
 
       this.searchManager = new SearchManager({
-        id: "roles-search",
+        id: 'roles-search',
         search:
-          "| eventcount summarize=false index=* index=_* | dedup index | fields index",
+          '| eventcount summarize=false index=* index=_* | dedup index | fields index',
       })
 
-      this.dropdown.on("change", (newValue) => {
+      this.dropdown.on('change', (newValue) => {
         if (this.scope.editUserRoles == newValue) {
           this.scope.overwrite = false
         }
@@ -94,20 +94,20 @@ define([
         }
       })
 
-      this.scope.$on("$destroy", () => {
-        mvc.Components.revokeInstance("roles-dropdown")
-        mvc.Components.revokeInstance("roles-search")
+      this.scope.$on('$destroy', () => {
+        mvc.Components.revokeInstance('roles-dropdown')
+        mvc.Components.revokeInstance('roles-search')
         this.dropdown = null
         this.searchManager = null
       })
 
-      this.scope.$on("viewUserContent", (ev, _parameters) => {
+      this.scope.$on('viewUserContent', (ev, _parameters) => {
         this.scope.isViewUser = true
-        this.dropdown.settings.set("disabled", true)
+        this.dropdown.settings.set('disabled', true)
         ev.stopPropagation()
       })
 
-      this.scope.$on("openUserFromList", (ev, parameters) => {
+      this.scope.$on('openUserFromList', (ev, parameters) => {
         this.scope.isAddNewUser = true
         this.scope.isViewUser = false
         this.scope.isEditingUser = true
@@ -118,7 +118,7 @@ define([
         this.scope.userRoles = parameters.user.roles
         this.scope.editUserRoles = parameters.user.roles
 
-        this.dropdown.settings.set("disabled", false)
+        this.dropdown.settings.set('disabled', false)
 
         this.dropdown.val(this.scope.userRoles)
         ev.stopPropagation()
@@ -128,9 +128,9 @@ define([
     enableSave() {
       if (
         this.scope.editUserRoles != this.dropdown.val() ||
-        (this.scope.userPassword == "" &&
-          this.scope.userPasswordConfirm == "") ||
-        (this.scope.userPassword != "" && this.scope.userPasswordConfirm != "")
+        (this.scope.userPassword == '' &&
+          this.scope.userPasswordConfirm == '') ||
+        (this.scope.userPassword != '' && this.scope.userPasswordConfirm != '')
       ) {
         this.scope.overwrite = true
       }
@@ -144,22 +144,22 @@ define([
 
     async saveUser() {
       try {
-        if (this.scope.userName == "" || /.* .*/.test(this.scope.userName)) {
+        if (this.scope.userName == '' || /.* .*/.test(this.scope.userName)) {
           throw new Error("Username can't contain empty spaces")
         }
-        if (this.scope.userName === "" || this.scope.userName === undefined) {
+        if (this.scope.userName === '' || this.scope.userName === undefined) {
           throw new Error("Username can't be empty")
         }
         if (
           this.scope.userPassword === undefined ||
-          this.scope.userPassword === "" ||
+          this.scope.userPassword === '' ||
           this.scope.userPasswordConfirm === undefined ||
-          this.scope.userPasswordConfirm === ""
+          this.scope.userPasswordConfirm === ''
         ) {
           throw new Error("Password can't be empty")
         }
         if (this.scope.userPassword != this.scope.userPasswordConfirm) {
-          throw new Error("Both password must be equals")
+          throw new Error('Both password must be equals')
         }
 
         let checkedPass = this.scope.checkPasswordStrength(
@@ -167,7 +167,7 @@ define([
         )
         if (!checkedPass) {
           throw new Error(
-            "Password must contain at least one upper case, one number and one special character. Also, the length must be greater than 8"
+            'Password must contain at least one upper case, one number and one special character. Also, the length must be greater than 8'
           )
         }
 
@@ -178,7 +178,7 @@ define([
         )
 
         if (newUserData.data.error != 0) {
-          throw new Error(newUserData.data.message || "Invalid username")
+          throw new Error(newUserData.data.message || 'Invalid username')
         }
 
         //allow run as if needed
@@ -196,7 +196,7 @@ define([
         this.cancelAddUser()
         this.scope.$applyAsync()
       } catch (error) {
-        this.notification.showErrorToast("Error adding a new user: " + error)
+        this.notification.showErrorToast('Error adding a new user: ' + error)
       }
     }
 
@@ -206,7 +206,7 @@ define([
           this.scope.userPassword
         )
         if (this.scope.userPassword === this.scope.userPasswordConfirm) {
-          if (this.scope.userPassword != "") {
+          if (this.scope.userPassword != '') {
             if (checkedPass) {
               await this.userService.editPassword(
                 this.scope.userId,
@@ -228,7 +228,7 @@ define([
               )
             } else {
               throw Error(
-                "Password must have at least one upper case, one number and one special character"
+                'Password must have at least one upper case, one number and one special character'
               )
             }
           } else {
@@ -248,7 +248,7 @@ define([
             )
           }
         } else {
-          throw Error("Password must be equals")
+          throw Error('Password must be equals')
         }
         this.scope.overwrite = false
         this.cancelAddUser()
@@ -257,7 +257,7 @@ define([
       } catch (error) {
         this.scope.overwrite = false
         this.cancelAddUser()
-        this.notification.showErrorToast("Error editing user: " + error)
+        this.notification.showErrorToast('Error editing user: ' + error)
       }
     }
 
@@ -273,17 +273,17 @@ define([
         this.scope.overwrite = false
         this.scope.isViewUser = false
         this.scope.isEditingUser = false
-        this.scope.userId = ""
-        this.scope.userName = ""
-        this.scope.userPassword = ""
-        this.scope.userPasswordConfirm = ""
+        this.scope.userId = ''
+        this.scope.userName = ''
+        this.scope.userPassword = ''
+        this.scope.userPasswordConfirm = ''
         this.scope.userRoles = []
         this.scope.editUserRoles = []
         this.scope.userAllowRunAs = false
         this.dropdown.val([])
         this.scope.$applyAsync()
       } catch (error) {
-        this.notification.showErrorToast("Error closing form.")
+        this.notification.showErrorToast('Error closing form.')
       }
     }
 
@@ -297,12 +297,12 @@ define([
         this.scope.isViewUser = false
         this.scope.overwrite = false
         this.scope.isEditingUser = false
-        this.dropdown.settings.set("disabled", false)
+        this.dropdown.settings.set('disabled', false)
       } catch (error) {
-        this.notification.showErrorToast("Cannot add new User.")
+        this.notification.showErrorToast('Cannot add new User.')
       }
     }
   }
-  controllers.controller("usersCtrl", Users)
+  controllers.controller('usersCtrl', Users)
   return Users
 })

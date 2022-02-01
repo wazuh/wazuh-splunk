@@ -11,12 +11,12 @@
  */
 
 define([
-  "../../module",
-  "../../../services/visualizations/search/search-handler",
-  "../../../services/visualizations/chart/linear-chart",
-  "FileSaver",
+  '../../module',
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/visualizations/chart/linear-chart',
+  'FileSaver',
 ], function (app, SearchHandler, LinearChart) {
-  "use strict"
+  'use strict'
 
   class Agents {
     /**
@@ -55,7 +55,7 @@ define([
     ) {
       this.scope = $scope
       this.submittedTokenModel = $urlTokenModel.getSubmittedTokenModel()
-      this.submittedTokenModel.set("activeAgentToken", "-")
+      this.submittedTokenModel.set('activeAgentToken', '-')
       this.currentDataService = $currentDataService
       this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
@@ -76,7 +76,7 @@ define([
 
         this.scope.noAgents = summary.Total < 1
         this.scope.agentsCountActive = summary.Active
-        this.scope.lastAgent = lastAgent || "Unknown"
+        this.scope.lastAgent = lastAgent || 'Unknown'
         const os = parsedResult.agent_os
           ? parsedResult.agent_os
               .map((item) => item.os)
@@ -90,7 +90,7 @@ define([
         const nodes =
           parsedResult.nodes && parsedResult.nodes
             ? parsedResult.nodes
-                .map((item) => item["node_name"])
+                .map((item) => item['node_name'])
                 .filter((item) => !!item)
             : false
         groups = groups
@@ -105,7 +105,7 @@ define([
 
         this.scope.searchBarModel = {
           name: [],
-          status: ["active", "disconnect", "never_connected"],
+          status: ['active', 'disconnect', 'never_connected'],
           group: groups
             ? groups.sort((a, b) => {
                 return a.toString().localeCompare(b.toString())
@@ -115,28 +115,28 @@ define([
             ? versions.sort((a, b) => {
                 return a.toString().localeCompare(b.toString(), undefined, {
                   numeric: true,
-                  sensitivity: "base",
+                  sensitivity: 'base',
                 })
               })
             : [],
-          "os.platform": os
+          'os.platform': os
             ? os
                 .map((x) => x.platform)
                 .sort((a, b) => {
                   return a.toString().localeCompare(b.toString())
                 })
             : [],
-          "os.version": os
+          'os.version': os
             ? os
                 .map((x) => x.version)
                 .sort((a, b) => {
                   return a.toString().localeCompare(b.toString(), undefined, {
                     numeric: true,
-                    sensitivity: "base",
+                    sensitivity: 'base',
                   })
                 })
             : [],
-          "os.name": os
+          'os.name': os
             ? os
                 .map((x) => x.name)
                 .sort((a, b) => {
@@ -147,35 +147,35 @@ define([
 
         if (
           this.clusterInfo &&
-          this.clusterInfo.enabled === "yes" &&
-          this.clusterInfo.running === "yes"
+          this.clusterInfo.enabled === 'yes' &&
+          this.clusterInfo.running === 'yes'
         ) {
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) {} //eslint-disable-line
 
       this.topAgent = new SearchHandler(
-        "searchTopAgent",
+        'searchTopAgent',
         `${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
-        "activeAgentToken",
-        "$result.agent.name$",
-        "mostActiveAgent",
+        'activeAgentToken',
+        '$result.agent.name$',
+        'mostActiveAgent',
         this.submittedTokenModel,
         this.scope,
         true,
-        "loadingSearch",
+        'loadingSearch',
         this.notification
       )
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
-      this.scope.canReadAgents = this.isAllowed("AGENT_READ", [
-        "AGENT_ID",
-        "AGENT_GROUP",
+      this.scope.canReadAgents = this.isAllowed('AGENT_READ', [
+        'AGENT_ID',
+        'AGENT_GROUP',
       ])
-      this.scope.canAddAgents = this.isAllowed("AGENT_CREATE", ["RESOURCELESS"])
+      this.scope.canAddAgents = this.isAllowed('AGENT_CREATE', ['RESOURCELESS'])
 
       this.scope.expandChartAgent = false
       this.scope.$applyAsync()
@@ -189,14 +189,14 @@ define([
       this.scope.query = (query, search) => this.query(query, search)
       this.scope.showAgent = (agent) => this.showAgent(agent)
       this.scope.isClusterEnabled =
-        this.clusterInfo && this.clusterInfo.status === "enabled"
-      this.scope.status = "all"
-      this.scope.osPlatform = "all"
-      this.scope.version = "all"
-      this.scope.node_name = "all"
-      this.scope.versionModel = "all"
+        this.clusterInfo && this.clusterInfo.status === 'enabled'
+      this.scope.status = 'all'
+      this.scope.osPlatform = 'all'
+      this.scope.version = 'all'
+      this.scope.node_name = 'all'
+      this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.$on("$destroy", () => {
+      this.scope.$on('$destroy', () => {
         this.linearChartAgent && this.linearChartAgent.destroy()
         this.topAgent.destroy()
       })
@@ -209,7 +209,7 @@ define([
         try {
           return text + this.setBrowserOffset(time)
         } catch (error) {
-          return ""
+          return ''
         }
       }
 
@@ -217,12 +217,12 @@ define([
         setTimeout(() => {
           // eslint-disable-next-line no-undef
           const chart = new Chart(document.getElementById(id), {
-            type: "doughnut",
+            type: 'doughnut',
             data: {
-              labels: ["Active", "Disconected", "Never connected"],
+              labels: ['Active', 'Disconected', 'Never connected'],
               datasets: [
                 {
-                  backgroundColor: ["#46BFBD", "#F7464A", "#949FB1"],
+                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
                   data: [
                     this.scope.agentsCountActive,
                     this.scope.agentsCountDisconnected,
@@ -235,7 +235,7 @@ define([
               cutoutPercentage: 85,
               legend: {
                 display: true,
-                position: "right",
+                position: 'right',
               },
               tooltips: {
                 displayColors: false,
@@ -252,25 +252,25 @@ define([
             this.currentDataService.getFilters()[0]
           )[0]
 
-          if (this.clusOrMng === "manager.name") {
+          if (this.clusOrMng === 'manager.name') {
             this.mngName =
-              this.currentDataService.getFilters()[0]["manager.name"]
+              this.currentDataService.getFilters()[0]['manager.name']
             this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
           } else {
             this.clusName =
-              this.currentDataService.getFilters()[0]["cluster.name"]
+              this.currentDataService.getFilters()[0]['cluster.name']
             this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
           }
           // eslint-disable-next-line no-empty
         } catch (error) {}
 
-        this.spanTime = "15m"
+        this.spanTime = '15m'
         this.linearChartAgent = new LinearChart(
           `agentStatusChartHistory`,
           `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
           `agentStatusChart`,
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         )
       }
 
@@ -281,24 +281,24 @@ define([
       this.scope.expand = (id) => {
         this.scope.expandChartAgent = !this.scope.expandChartAgent
         let vis = $(
-          "#" + id + " .panel-body .splunk-view .shared-reportvisualizer"
+          '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
         )
         this.scope.expandChartAgent
-          ? vis.css("height", "calc(100vh - 200px)")
-          : vis.css("height", "250px")
+          ? vis.css('height', 'calc(100vh - 200px)')
+          : vis.css('height', '250px')
 
         document.querySelectorAll('[role="main"]')[0].style.zIndex = this.scope
           .expandChartAgent
           ? 900
-          : ""
+          : ''
 
-        let vis_header = $(".wz-headline-title")
+        let vis_header = $('.wz-headline-title')
         vis_header.dblclick((e) => {
           if (this.scope.expandChartAgent) {
             this.scope.expandChartAgent = !this.scope.expandChartAgent
             this.scope.expandChartAgent
-              ? vis.css("height", "calc(100vh - 200px)")
-              : vis.css("height", "250px")
+              ? vis.css('height', 'calc(100vh - 200px)')
+              : vis.css('height', '250px')
             this.scope.$applyAsync()
           } else {
             e.preventDefault()
@@ -313,21 +313,21 @@ define([
     async downloadCsv() {
       try {
         this.notification.showSimpleToast(
-          "Your download should begin automatically..."
+          'Your download should begin automatically...'
         )
 
         const filters = this.wzTableFilter.get()
         filters.push({
-          name: "q",
-          value: "id!=000",
+          name: 'q',
+          value: 'id!=000',
         })
-        const currentApi = this.api["_key"]
-        const output = await this.csvReq.fetch("/agents", currentApi, filters)
-        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
-        saveAs(blob, "agents.csv") // eslint-disable-line
+        const currentApi = this.api['_key']
+        const output = await this.csvReq.fetch('/agents', currentApi, filters)
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
-        this.notification.showErrorToast("Error downloading CSV")
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -338,7 +338,7 @@ define([
      * @param {String} search
      */
     query(query, search) {
-      this.scope.$broadcast("wazuhQuery", { query, search })
+      this.scope.$broadcast('wazuhQuery', { query, search })
     }
 
     /**
@@ -348,7 +348,7 @@ define([
     async showAgent(agent) {
       try {
         if (agent) {
-          const agentName = typeof agent === "object" ? agent.name : agent
+          const agentName = typeof agent === 'object' ? agent.name : agent
           const agentInfo = await this.apiReq(`/agents`, { name: agentName })
           if (
             !agentInfo ||
@@ -356,19 +356,19 @@ define([
             !agentInfo.data.data ||
             agentInfo.data.error
           ) {
-            throw Error("Error fetching agent data")
+            throw Error('Error fetching agent data')
           }
-          if (agentInfo.data.data.affected_items[0].id !== "000") {
+          if (agentInfo.data.data.affected_items[0].id !== '000') {
             this.state.go(`agent-overview`, {
               id: agentInfo.data.data.affected_items[0].id,
             })
           }
         } else {
-          throw Error("Cannot fetch agent name")
+          throw Error('Cannot fetch agent name')
         }
       } catch (err) {
         this.notification.showErrorToast(
-          err.message || "Error fetching agent data"
+          err.message || 'Error fetching agent data'
         )
       }
     }
@@ -394,7 +394,7 @@ define([
      * Reload list of agents
      */
     reloadList() {
-      this.scope.$broadcast("reloadSearchFilterBar", {})
+      this.scope.$broadcast('reloadSearchFilterBar', {})
     }
 
     /** Parsed Agent Stats */
@@ -408,5 +408,5 @@ define([
       return statusObj
     }
   }
-  app.controller("agentsCtrl", Agents)
+  app.controller('agentsCtrl', Agents)
 })

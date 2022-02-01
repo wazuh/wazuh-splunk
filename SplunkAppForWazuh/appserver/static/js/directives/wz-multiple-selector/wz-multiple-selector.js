@@ -9,20 +9,20 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(["../module"], function (app) {
-  "use strict"
-  app.directive("wzMultipleSelector", function (BASE_URL) {
+define(['../module'], function (app) {
+  'use strict'
+  app.directive('wzMultipleSelector', function (BASE_URL) {
     return {
-      restrict: "E",
+      restrict: 'E',
       scope: {
-        availableItems: "=",
-        selectedItems: "=",
-        limit: "=",
-        loading: "=",
-        titleSelectedItems: "@",
-        titleAvailableItems: "@",
-        totalSelectedItems: "=",
-        reloadScroll: "&",
+        availableItems: '=',
+        selectedItems: '=',
+        limit: '=',
+        loading: '=',
+        titleSelectedItems: '@',
+        titleAvailableItems: '@',
+        totalSelectedItems: '=',
+        reloadScroll: '&',
       },
       controller($scope) {
         $scope.moveItem = function (item, from, to, type) {
@@ -34,7 +34,7 @@ define(["../module"], function (app) {
             var idx = from.findIndex((x) => x.key === item.key)
             if (idx !== -1) {
               from.splice(idx, 1)
-              item.type = !item.type ? type : ""
+              item.type = !item.type ? type : ''
               to.push(item)
             }
           }
@@ -42,7 +42,7 @@ define(["../module"], function (app) {
 
         $scope.moveAll = (from, to, type) => {
           from.forEach((item) => {
-            item.type = !item.type ? type : ""
+            item.type = !item.type ? type : ''
             to.push(item)
           })
           from.length = 0
@@ -58,7 +58,7 @@ define(["../module"], function (app) {
           return parseInt(a.key)
         }
 
-        $("#wzMultipleSelector select").scroll(function (ev) {
+        $('#wzMultipleSelector select').scroll(function (ev) {
           $scope.scrollList(ev.currentTarget)
         })
 
@@ -74,15 +74,15 @@ define(["../module"], function (app) {
           let max = target.scrollHeight
           if (pos >= max) {
             target.parentElement.parentElement.parentElement.className ===
-            "wzMultipleSelectorLeft"
-              ? $scope.doReload("left")
-              : $scope.doReload("right")
+            'wzMultipleSelectorLeft'
+              ? $scope.doReload('left')
+              : $scope.doReload('right')
           }
         }
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selector/wz-multiple-selector.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selector/wz-multiple-selector.html',
     }
   })
 })

@@ -1,5 +1,5 @@
-define(["../../module"], function (controllers) {
-  "use strict"
+define(['../../module'], function (controllers) {
+  'use strict'
 
   class Status {
     /**
@@ -27,19 +27,19 @@ define(["../../module"], function (controllers) {
       this.notification = $notificationService
 
       /* RBAC flags */
-      this.scope.canReadCluster = $security_service.isAllowed("CLUSTER_READ", [
-        "RESOURCELESS",
+      this.scope.canReadCluster = $security_service.isAllowed('CLUSTER_READ', [
+        'RESOURCELESS',
       ])
       this.scope.canRestartCluster = $security_service.isAllowed(
-        "CLUSTER_RESTART",
-        ["RESOURCELESS"]
+        'CLUSTER_RESTART',
+        ['RESOURCELESS']
       )
-      this.scope.canReadManager = $security_service.isAllowed("MANAGER_READ", [
-        "RESOURCELESS",
+      this.scope.canReadManager = $security_service.isAllowed('MANAGER_READ', [
+        'RESOURCELESS',
       ])
       this.scope.canRestartManager = $security_service.isAllowed(
-        "MANAGER_RESTART",
-        ["RESOURCELESS"]
+        'MANAGER_RESTART',
+        ['RESOURCELESS']
       )
 
       const parsedStatusData = statusData.map((item) =>
@@ -72,7 +72,7 @@ define(["../../module"], function (controllers) {
      * On controller loads
      */
     $onInit() {
-      this.scope.selectedNavTab = "status"
+      this.scope.selectedNavTab = 'status'
       this.scope.confirmingRestart = false
       this.scope.switchRestart = () => this.switchRestart()
       this.scope.restartInProgress = false
@@ -83,11 +83,11 @@ define(["../../module"], function (controllers) {
       }
       if (
         this.status &&
-        this.status.enabled === "yes" &&
-        this.status.running === "no"
+        this.status.enabled === 'yes' &&
+        this.status.running === 'no'
       ) {
         this.scope.clusterError =
-          "This cluster is enabled but not running. Please check your cluster health."
+          'This cluster is enabled but not running. Please check your cluster health.'
         this.scope.load = false
         this.scope.$applyAsync()
       }
@@ -105,7 +105,7 @@ define(["../../module"], function (controllers) {
         this.scope.managerInfo = this.nodeInfo.affected_items[0]
       }
 
-      this.scope.$on("loadingContent", (event, data) => {
+      this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
@@ -142,11 +142,11 @@ define(["../../module"], function (controllers) {
         }
         if (
           daemonResult[0] &&
-          daemonResult[0].data.data.enabled === "yes" &&
-          daemonResult[0].data.data.running === "no"
+          daemonResult[0].data.data.enabled === 'yes' &&
+          daemonResult[0].data.data.running === 'no'
         ) {
           throw Error(
-            "This cluster is enabled but not running. Please check your cluster health."
+            'This cluster is enabled but not running. Please check your cluster health.'
           )
         }
         this.scope.daemons = this.objToArr(
@@ -168,13 +168,13 @@ define(["../../module"], function (controllers) {
         this.scope.load = true
 
         this.scope.getDaemonStatusClass = (daemonStatus) =>
-          daemonStatus === "running" ? "status teal" : "status red"
+          daemonStatus === 'running' ? 'status teal' : 'status red'
         // Once Wazuh core fixes agent 000 issues, this should be adjusted
         const active = this.summary.active
         const total = this.summary.total
         this.scope.agentsCountActive = active
         this.scope.agentsCountDisconnected = this.summary.disconnected
-        this.scope.agentsCountNeverConnected = this.summary["never_connected"]
+        this.scope.agentsCountNeverConnected = this.summary['never_connected']
         this.scope.agentsCountTotal = total
         this.scope.agentsCoverity = (active / total) * 100
 
@@ -212,5 +212,5 @@ define(["../../module"], function (controllers) {
     }
   }
 
-  controllers.controller("statusCtrl", Status)
+  controllers.controller('statusCtrl', Status)
 })

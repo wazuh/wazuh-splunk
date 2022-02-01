@@ -1,7 +1,7 @@
 define([
-  "../../module",
-  "../../../services/visualizations/inputs/dropdown-input",
-  "splunkjs/mvc",
+  '../../module',
+  '../../../services/visualizations/inputs/dropdown-input',
+  'splunkjs/mvc',
 ], function (app, Dropdown, mvc) {
   class SettingIndex {
     /**
@@ -21,23 +21,23 @@ define([
       this.currentDataService = $currentDataService
       this.urlTokenModel = $urlTokenModel
       this.notification = $notificationService
-      this.selectedIndex = $currentDataService.getIndex() || "wazuh"
-      this.selectedSourceType = $currentDataService.getSourceType() || "*"
+      this.selectedIndex = $currentDataService.getIndex() || 'wazuh'
+      this.selectedSourceType = $currentDataService.getSourceType() || '*'
 
-      mvc.Components.revokeInstance("inputIndexes")
-      mvc.Components.revokeInstance("inputIndexesSearch")
-      $(`#inputIndexes`).html("")
+      mvc.Components.revokeInstance('inputIndexes')
+      mvc.Components.revokeInstance('inputIndexesSearch')
+      $(`#inputIndexes`).html('')
 
       this.dropdown = new Dropdown(
-        "inputIndexes",
+        'inputIndexes',
         `| metasearch index=* sourcetype=*wazuh* | stats count by index, sourcetype | fields index`,
-        "index",
-        "$form.index$",
-        "inputIndexes",
+        'index',
+        '$form.index$',
+        'inputIndexes',
         this.scope,
         this.selectedIndex,
-        "2017-03-14T10:0:0",
-        "now"
+        '2017-03-14T10:0:0',
+        'now'
       )
 
       this.getSourceTypeQuery = () => {
@@ -45,15 +45,15 @@ define([
       }
 
       this.dropdownSourceType = new Dropdown(
-        "inputSourcetype",
+        'inputSourcetype',
         this.getSourceTypeQuery(),
-        "sourcetype",
-        "$form.sourcetype$",
-        "inputSourcetype",
+        'sourcetype',
+        '$form.sourcetype$',
+        'inputSourcetype',
         this.scope,
         this.selectedSourceType,
-        "2017-03-14T10:0:0",
-        "now"
+        '2017-03-14T10:0:0',
+        'now'
       )
     }
 
@@ -63,7 +63,7 @@ define([
     $onInit() {
       this.onChangeDropdownIndex()
       this.onChangeDropdownSourcetype()
-      this.scope.$on("$destroy", () => {
+      this.scope.$on('$destroy', () => {
         this.dropdown.destroy()
         this.dropdownSourceType.destroy()
       })
@@ -71,7 +71,7 @@ define([
 
     onChangeDropdownIndex() {
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on("change", (newValue) => {
+      this.dropdownInstance.on('change', (newValue) => {
         try {
           if (
             newValue &&
@@ -79,7 +79,7 @@ define([
             this.dropdownInstance
           ) {
             this.currentDataService.setIndex(newValue)
-            this.scope.$emit("updatedAPI", {})
+            this.scope.$emit('updatedAPI', {})
             this.urlTokenModel.handleValueChange(this.dropdownInstance)
             this.selectedIndex = newValue
             this.dropdownSourceType.changeSearch(this.getSourceTypeQuery())
@@ -92,7 +92,7 @@ define([
 
     onChangeDropdownSourcetype() {
       this.dropdownInstanceSourcetype = this.dropdownSourceType.getElement()
-      this.dropdownInstanceSourcetype.on("change", (newValue) => {
+      this.dropdownInstanceSourcetype.on('change', (newValue) => {
         try {
           if (
             newValue &&
@@ -100,7 +100,7 @@ define([
             this.dropdownInstanceSourcetype
           ) {
             this.currentDataService.setSourceType(newValue)
-            this.scope.$emit("updatedAPI", {})
+            this.scope.$emit('updatedAPI', {})
             this.selectedSourceType = newValue
             this.urlTokenModel.handleValueChange(
               this.dropdownInstanceSourcetype
@@ -113,5 +113,5 @@ define([
     }
   }
 
-  app.controller("settingsIndexCtrl", SettingIndex)
+  app.controller('settingsIndexCtrl', SettingIndex)
 })

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 define([], function () {
-  "use strict"
+  'use strict'
   /**
    * Checks the gap of results in order to render valid page numbers
    * @param {*} $scope

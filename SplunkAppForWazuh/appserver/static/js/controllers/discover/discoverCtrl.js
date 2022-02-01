@@ -1,5 +1,5 @@
-define(["../module", "jQuery"], function (app, $) {
-  "use strict"
+define(['../module', 'jQuery'], function (app, $) {
+  'use strict'
 
   class Discover {
     /**
@@ -16,7 +16,7 @@ define(["../module", "jQuery"], function (app, $) {
       this.scope = $scope
       this.state = $state
       this.stateParams = $stateParams
-      this.iframe = $($document[0]).find("#searchAndReporting")
+      this.iframe = $($document[0]).find('#searchAndReporting')
       this.currentDataService = $currentDataService
       this.notification = $notificationService
     }
@@ -33,22 +33,22 @@ define(["../module", "jQuery"], function (app, $) {
         this.scope.backToDashboard = () => this.backToDashboard()
         this.scope.removeIFrameHeader = () => this.removeIFrameHeader()
       } catch (error) {
-        this.notification.showErrorToast("Cannot load discover.")
+        this.notification.showErrorToast('Cannot load discover.')
       }
     }
 
     loadIframeContent() {
-      const url = localStorage.getItem("urlDiscover")
-      this.iframe.attr("src", url)
+      const url = localStorage.getItem('urlDiscover')
+      this.iframe.attr('src', url)
     }
 
     removeIFrameHeader() {
       try {
         const interval = setInterval(() => {
-          if (this.iframe.contents().find("header")) {
-            const header = this.iframe.contents().find("header")
+          if (this.iframe.contents().find('header')) {
+            const header = this.iframe.contents().find('header')
             header.hide()
-            if (header.is(":hidden")) {
+            if (header.is(':hidden')) {
               clearInterval(interval)
               this.scope.loadingRing = false
               this.scope.$applyAsync()
@@ -81,19 +81,19 @@ define(["../module", "jQuery"], function (app, $) {
         //Delete the last div of the input, this div contains a hidden string that is not needed
         const divX = this.iframe
           .contents()
-          .find(".search-field-wrapper pre div:last")
+          .find('.search-field-wrapper pre div:last')
         divX.remove()
         //Get the filters
         let filtersStr = this.iframe
           .contents()
-          .find(".search-field-wrapper")
+          .find('.search-field-wrapper')
           .text()
-        filtersStr = filtersStr.split("|", 1).toString().trim()
-        const parsedFilter = filtersStr.replace(/=\s+/, "=")
-        const filtersArr = parsedFilter.split(" ")
+        filtersStr = filtersStr.split('|', 1).toString().trim()
+        const parsedFilter = filtersStr.replace(/=\s+/, '=')
+        const filtersArr = parsedFilter.split(' ')
         //Format the filters
         filtersArr.map((fil) => {
-          const f = fil.split("=")
+          const f = fil.split('=')
           const key = this.cleanQuotes(f[0])
           const value = this.cleanQuotes(f[1])
           filtersFormatted.push(`{"${key}":"${value}"}`)
@@ -123,5 +123,5 @@ define(["../module", "jQuery"], function (app, $) {
       }
     }
   }
-  app.controller("discoverCtrl", Discover)
+  app.controller('discoverCtrl', Discover)
 })

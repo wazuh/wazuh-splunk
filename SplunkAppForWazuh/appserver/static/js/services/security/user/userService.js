@@ -1,13 +1,13 @@
-define(["../../module"], function (module) {
-  "use strict"
+define(['../../module'], function (module) {
+  'use strict'
 
-  module.service("$userService", function ($requestService) {
+  module.service('$userService', function ($requestService) {
     const removeUser = async (users) => {
       try {
         const result = await $requestService.apiReq(
           `/security/users?user_ids=${users}`,
           {},
-          "DELETE"
+          'DELETE'
         )
         if (result.data.error !== 0) {
           throw new Error(result.data.message)
@@ -33,16 +33,16 @@ define(["../../module"], function (module) {
     const addUser = async (user, pass) => {
       try {
         const data = await $requestService.apiReq(
-          "/security/users",
+          '/security/users',
           {
             content: JSON.stringify({ username: user, password: pass }),
-            origin: "json",
+            origin: 'json',
           },
-          "POST"
+          'POST'
         )
         return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding user: " + error)
+        this.notification.showErrorToast('Error adding user: ' + error)
         return Promise.reject(error)
       }
     }
@@ -52,11 +52,11 @@ define(["../../module"], function (module) {
         const data = await $requestService.apiReq(
           `/security/users/${user}/run_as?allow_run_as=${status}`,
           {},
-          "PUT"
+          'PUT'
         )
         return data
       } catch (error) {
-        this.notification.showErrorToast("Error modifying run as: " + error)
+        this.notification.showErrorToast('Error modifying run as: ' + error)
         return Promise.reject(error)
       }
     }
@@ -66,11 +66,11 @@ define(["../../module"], function (module) {
         const data = await $requestService.apiReq(
           `/security/users/${user}/roles?role_ids=${roles}`,
           {},
-          "POST"
+          'POST'
         )
         return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding roles: " + error)
+        this.notification.showErrorToast('Error adding roles: ' + error)
         return Promise.reject(error)
       }
     }
@@ -80,11 +80,11 @@ define(["../../module"], function (module) {
         const data = await $requestService.apiReq(
           `/security/users/${user}/roles?role_ids=${roles}`,
           {},
-          "DELETE"
+          'DELETE'
         )
         return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding roles: " + error)
+        this.notification.showErrorToast('Error adding roles: ' + error)
         return Promise.reject(error)
       }
     }
@@ -95,13 +95,13 @@ define(["../../module"], function (module) {
           `/security/users/${user}`,
           {
             content: JSON.stringify({ password: pass }),
-            origin: "json",
+            origin: 'json',
           },
-          "PUT"
+          'PUT'
         )
         return data
       } catch (error) {
-        this.notification.showErrorToast("Error adding roles: " + error)
+        this.notification.showErrorToast('Error adding roles: ' + error)
         return Promise.reject(error)
       }
     }

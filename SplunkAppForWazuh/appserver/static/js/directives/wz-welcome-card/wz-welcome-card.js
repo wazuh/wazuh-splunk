@@ -9,17 +9,17 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(["../module"], function (directives) {
-  "use strict"
-  directives.directive("wzWelcomeCard", function (BASE_URL) {
+define(['../module'], function (directives) {
+  'use strict'
+  directives.directive('wzWelcomeCard', function (BASE_URL) {
     return {
-      restrict: "E",
+      restrict: 'E',
       scope: {
-        subTitle: "=subTitle",
-        description: "=description",
-        logo: "=logo",
-        switchTab: "&",
-        currentTab: "=currentTab",
+        subTitle: '=subTitle',
+        description: '=description',
+        logo: '=logo',
+        switchTab: '&',
+        currentTab: '=currentTab',
       },
       replace: true,
       controller($scope) {
@@ -28,7 +28,7 @@ define(["../module"], function (directives) {
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-welcome-card/wz-welcome-card.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-welcome-card/wz-welcome-card.html',
     }
   })
 })

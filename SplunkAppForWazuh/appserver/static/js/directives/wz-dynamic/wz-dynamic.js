@@ -16,11 +16,11 @@
 
 // const app = uiModules.get('app/wazuh', []);
 
-define(["../module"], function (directives) {
-  "use strict"
-  directives.directive("wzDynamic", function ($compile) {
+define(['../module'], function (directives) {
+  'use strict'
+  directives.directive('wzDynamic', function ($compile) {
     return {
-      restrict: "A",
+      restrict: 'A',
       replace: true,
       link: function (scope, ele, attrs) {
         scope.$watch(attrs.wzDynamic, function (html) {

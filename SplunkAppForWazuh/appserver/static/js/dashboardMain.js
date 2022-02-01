@@ -11,10 +11,10 @@
  */
 
 define([
-  "./controllers/module",
-  "./services/visualizations/inputs/time-picker",
+  './controllers/module',
+  './services/visualizations/inputs/time-picker',
 ], function (app, TimePicker) {
-  "use strict"
+  'use strict'
 
   class DashboardMain {
     /**
@@ -43,7 +43,7 @@ define([
       this.urlTokenModel = $urlTokenModel
       this.submittedTokenModel = this.urlTokenModel.getSubmittedTokenModel()
       this.timePicker = new TimePicker(
-        "#timePicker",
+        '#timePicker',
         this.urlTokenModel.handleValueChange
       )
       this.tableResults = {}
@@ -62,12 +62,12 @@ define([
         this.scope.loadingVizz = true
 
         // Listeners
-        this.scope.$on("deletedFilter", (event) => {
+        this.scope.$on('deletedFilter', (event) => {
           event.stopPropagation()
           this.launchSearches()
         })
 
-        this.scope.$on("barFilter", (event) => {
+        this.scope.$on('barFilter', (event) => {
           event.stopPropagation()
           this.launchSearches()
         })
@@ -75,7 +75,7 @@ define([
         // Scope functions
         this.scope.expand = (i, id) => this.expand(i, id)
 
-        this.scope.$on("checkReportingStatus", () => {
+        this.scope.$on('checkReportingStatus', () => {
           this.vizzReady = !this.vizz.filter((v) => {
             return v.finish === false
           }).length
@@ -89,7 +89,7 @@ define([
             }
           } else {
             this.vizz.map((v) => {
-              if (v.constructor.name === "RawTableData") {
+              if (v.constructor.name === 'RawTableData') {
                 this.tableResults[v.name] = v.results
               }
             })
@@ -98,19 +98,19 @@ define([
           this.scope.$applyAsync()
         })
 
-        this.scope.$on("loadingContent", (event, data) => {
+        this.scope.$on('loadingContent', (event, data) => {
           this.scope.loadingContent = data.status
           event.preventDefault()
         })
 
-        this.scope.$on("loadingReporting", (event, data) => {
+        this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
         })
 
         /**
          * On controller destroy
          */
-        this.scope.$on("$destroy", () => {
+        this.scope.$on('$destroy', () => {
           this.tableResults = {}
           this.timePicker.destroy()
           // Agents configuration assesment has not visualizations, this prevent an error
@@ -129,7 +129,7 @@ define([
         })
       } catch (error) {
         this.notification.showErrorToast(
-          "Error initializing DashboardMain: ",
+          'Error initializing DashboardMain: ',
           error.message || error
         )
       }
@@ -151,24 +151,24 @@ define([
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
       let vis = $(
-        "#" + id + " .panel-body .splunk-view .shared-reportvisualizer"
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
       )
       this.scope.expandArray[i]
-        ? vis.css("height", "calc(100vh - 200px)")
-        : vis.css("height", "250px")
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
 
       document.querySelectorAll('[role="main"]')[0].style.zIndex = this.scope
         .expandArray[i]
         ? 900
-        : ""
+        : ''
 
-      let vis_header = $(".wz-headline-title")
+      let vis_header = $('.wz-headline-title')
       vis_header.dblclick((e) => {
         if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
           this.scope.expandArray[i]
-            ? vis.css("height", "calc(100vh - 200px)")
-            : vis.css("height", "250px")
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
           this.scope.$applyAsync()
         } else {
           e.preventDefault()
@@ -176,6 +176,6 @@ define([
       })
     }
   }
-  app.controller("dashboardMain", DashboardMain)
+  app.controller('dashboardMain', DashboardMain)
   return DashboardMain
 })

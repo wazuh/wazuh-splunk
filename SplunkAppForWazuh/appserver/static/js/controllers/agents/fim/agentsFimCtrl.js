@@ -11,14 +11,14 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/column-chart",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/chart/area-chart",
-  "../../../services/rawTableData/rawTableDataService",
-  "FileSaver",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/rawTableData/rawTableDataService',
+  'FileSaver',
 ], function (
   app,
   DashboardMain,
@@ -28,7 +28,7 @@ define([
   AreaChart,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class AgentsFim extends DashboardMain {
     /**
@@ -105,78 +105,78 @@ define([
          * Visualizations
          */
         new AreaChart(
-          "eventsOverTimeElement",
+          'eventsOverTimeElement',
           `${this.filters} sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
-          "eventsOverTimeElement",
+          'eventsOverTimeElement',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new ColumnChart(
-          "topGroupOwnersElement",
+          'topGroupOwnersElement',
           `${this.filters} sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
-          "topGroupOwnersElement",
+          'topGroupOwnersElement',
           this.scope
         ),
         new PieChart(
-          "topUserOwnersElement",
+          'topUserOwnersElement',
           `${this.filters} sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
-          "topUserOwnersElement",
+          'topUserOwnersElement',
           this.scope
         ),
         new PieChart(
-          "topActions",
+          'topActions',
           `${this.filters} sourcetype="wazuh" | stats count by "syscheck.event"`,
-          "topActions",
+          'topActions',
           this.scope
         ),
         new PieChart(
-          "topFileChangesElement",
+          'topFileChangesElement',
           `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
-          "topFileChangesElement",
+          'topFileChangesElement',
           this.scope
         ),
         new PieChart(
-          "rootUserFileChangesElement",
+          'rootUserFileChangesElement',
           `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
-          "rootUserFileChangesElement",
+          'rootUserFileChangesElement',
           this.scope
         ),
         new PieChart(
-          "wordWritableFilesElement",
+          'wordWritableFilesElement',
           `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
-          "wordWritableFilesElement",
+          'wordWritableFilesElement',
           this.scope
         ),
         new Table(
-          "eventsSummaryElement",
+          'eventsSummaryElement',
           `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-          "eventsSummaryElement",
+          'eventsSummaryElement',
           this.scope
         ),
         new RawTableDataService(
-          "eventsSummaryTable",
+          'eventsSummaryTable',
           `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-          "eventsSummaryTableToken",
-          "$result$",
+          'eventsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Events Summary"
+          'Events Summary'
         ),
         new PieChart(
-          "topNewFiles",
+          'topNewFiles',
           `${this.filters} syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
-          "topNewFiles",
+          'topNewFiles',
           this.scope
         ),
         new PieChart(
-          "topModifiedFiles",
+          'topModifiedFiles',
           `${this.filters} syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
-          "topModifiedFiles",
+          'topModifiedFiles',
           this.scope
         ),
         new PieChart(
-          "topDeletedFiles",
+          'topDeletedFiles',
           `${this.filters} syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
-          "topDeletedFiles",
+          'topDeletedFiles',
           this.scope
         ),
       ]
@@ -203,20 +203,20 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          "agents-fim",
-          "File integrity monitoring",
+          'agents-fim',
+          'File integrity monitoring',
           this.filters,
           [
-            "topNewFiles",
-            "topModifiedFiles",
-            "topDeletedFiles",
-            "eventsOverTimeElement",
-            "topGroupOwnersElement",
-            "topActions",
-            "topUserOwnersElement",
-            "topFileChangesElement",
-            "rootUserFileChangesElement",
-            "eventsSummaryElement",
+            'topNewFiles',
+            'topModifiedFiles',
+            'topDeletedFiles',
+            'eventsOverTimeElement',
+            'topGroupOwnersElement',
+            'topActions',
+            'topUserOwnersElement',
+            'topFileChangesElement',
+            'rootUserFileChangesElement',
+            'eventsSummaryElement',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -224,12 +224,12 @@ define([
         )
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
       this.scope.canReadSyscheck = this.isAllowed(
-        "SYSCHECK_READ",
-        ["AGENT_ID"],
+        'SYSCHECK_READ',
+        ['AGENT_ID'],
         [this.agent.id]
       )
     }
@@ -255,7 +255,7 @@ define([
           this.scope.agent.status.slice(1)
       }
       this.scope.search = (term) => {
-        this.scope.$broadcast("wazuhSearch", { term })
+        this.scope.$broadcast('wazuhSearch', { term })
       }
       this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
@@ -282,16 +282,16 @@ define([
         const result = await this.apiReq(
           `/syscheck?q=agents_list=${id}`,
           {},
-          "PUT"
+          'PUT'
         )
         if (result && result.data && !result.data.error) {
-          this.notification.showSuccessToast("Syscheck scan launched.")
+          this.notification.showSuccessToast('Syscheck scan launched.')
         } else {
           throw result.data.message
         }
       } catch (error) {
         this.notification.showErrorToast(
-          error || "Cannot launch syscheck scan."
+          error || 'Cannot launch syscheck scan.'
         )
       }
     }
@@ -301,9 +301,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ["Active", "Disconnected"].includes(agentStatus)
+      return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
-        : "Never connected"
+        : 'Never connected'
     }
 
     /**
@@ -311,7 +311,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === "Active" ? "teal" : "red"
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
@@ -320,22 +320,22 @@ define([
     async downloadCsv(path, name) {
       try {
         this.notification.showSimpleToast(
-          "Your download should begin automatically..."
+          'Your download should begin automatically...'
         )
-        const currentApi = this.api["_key"]
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
           currentApi,
           this.wzTableFilter.get()
         )
-        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.notification.showErrorToast("Error downloading CSV")
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
   }
-  app.controller("agentsFimCtrl", AgentsFim)
+  app.controller('agentsFimCtrl', AgentsFim)
 })

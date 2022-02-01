@@ -1,37 +1,37 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
 
   module.config([
-    "$stateProvider",
-    "BASE_URL",
+    '$stateProvider',
+    'BASE_URL',
     function ($stateProvider, BASE_URL) {
       $stateProvider
-        .state("security", {
+        .state('security', {
           templateUrl:
             BASE_URL +
-            "/static/app/SplunkAppForWazuh/js/controllers/security/main/security.html",
+            '/static/app/SplunkAppForWazuh/js/controllers/security/main/security.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("security.users")
+            $navigationService.storeRoute('security.users')
           },
-          controller: "securityCtrl",
+          controller: 'securityCtrl',
         })
-        .state("security.users", {
+        .state('security.users', {
           templateUrl:
             BASE_URL +
-            "/static/app/SplunkAppForWazuh/js/controllers/security/users/users.html",
+            '/static/app/SplunkAppForWazuh/js/controllers/security/users/users.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("security.users")
+            $navigationService.storeRoute('security.users')
           },
-          controller: "usersCtrl",
+          controller: 'usersCtrl',
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             roleData: [
-              "$userService",
+              '$userService',
               async ($userService) => {
                 try {
                   return await $userService.getRoles()
@@ -42,23 +42,23 @@ define(["../module"], function (module) {
             ],
           },
         })
-        .state("security.roles", {
+        .state('security.roles', {
           templateUrl:
             BASE_URL +
-            "/static/app/SplunkAppForWazuh/js/controllers/security/roles/roles.html",
+            '/static/app/SplunkAppForWazuh/js/controllers/security/roles/roles.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("security.roles")
+            $navigationService.storeRoute('security.roles')
           },
-          controller: "rolesCtrl",
+          controller: 'rolesCtrl',
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             roleData: [
-              "$roleService",
+              '$roleService',
               async ($roleService) => {
                 try {
                   return await $roleService.getRoleData()
@@ -68,7 +68,7 @@ define(["../module"], function (module) {
               },
             ],
             policyData: [
-              "$policyService",
+              '$policyService',
               async ($policyService) => {
                 try {
                   return await $policyService.getPolicyData()
@@ -79,23 +79,23 @@ define(["../module"], function (module) {
             ],
           },
         })
-        .state("security.policies", {
+        .state('security.policies', {
           templateUrl:
             BASE_URL +
-            "/static/app/SplunkAppForWazuh/js/controllers/security/policies/policies.html",
+            '/static/app/SplunkAppForWazuh/js/controllers/security/policies/policies.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("security.policies")
+            $navigationService.storeRoute('security.policies')
           },
-          controller: "policiesCtrl",
+          controller: 'policiesCtrl',
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             resourceData: [
-              "$policyService",
+              '$policyService',
               async ($policyService) => {
                 try {
                   return await $policyService.getResourceData()
@@ -105,7 +105,7 @@ define(["../module"], function (module) {
               },
             ],
             policyData: [
-              "$policyService",
+              '$policyService',
               async ($policyService) => {
                 try {
                   return await $policyService.getPolicyData()
@@ -115,7 +115,7 @@ define(["../module"], function (module) {
               },
             ],
             actionData: [
-              "$policyService",
+              '$policyService',
               async ($policyService) => {
                 try {
                   return await $policyService.getActionData()
@@ -126,23 +126,23 @@ define(["../module"], function (module) {
             ],
           },
         })
-        .state("security.roles-mapping", {
+        .state('security.roles-mapping', {
           templateUrl:
             BASE_URL +
-            "/static/app/SplunkAppForWazuh/js/controllers/security/roles-mapping/rolesMapping.html",
+            '/static/app/SplunkAppForWazuh/js/controllers/security/roles-mapping/rolesMapping.html',
           onEnter: ($navigationService) => {
-            $navigationService.storeRoute("security.roles-mapping")
+            $navigationService.storeRoute('security.roles-mapping')
           },
-          controller: "rolesMappingCtrl",
+          controller: 'rolesMappingCtrl',
           resolve: {
             updateUserPermissions: [
-              "$security_service",
+              '$security_service',
               async ($security_service) => {
                 return await $security_service.updateUserPermissions()
               },
             ],
             roles: [
-              "$roleService",
+              '$roleService',
               async ($roleService) => {
                 try {
                   return await $roleService.getRoleData()
@@ -152,12 +152,12 @@ define(["../module"], function (module) {
               },
             ],
             splunkUsers: [
-              "$splunkUsers",
+              '$splunkUsers',
               async ($splunkUsers) => {
                 try {
                   return await $splunkUsers.getInternalUsers()
                 } catch (err) {
-                  return { error: "Cannot fetch splunk users from API" }
+                  return { error: 'Cannot fetch splunk users from API' }
                 }
               },
             ],

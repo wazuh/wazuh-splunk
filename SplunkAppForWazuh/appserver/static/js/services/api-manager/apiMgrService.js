@@ -1,7 +1,7 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
   module.service(
-    "$apiMgrService",
+    '$apiMgrService',
     function (
       $requestService,
       $apiIndexStorageService,
@@ -58,15 +58,15 @@ define(["../module"], function (module) {
           // if the API is not connecting, then throw error
           const resultRawConnection = await checkRawConnection(record)
           record.managerName = resultRawConnection.data.managerName.name
-          if (resultRawConnection.data.clusterMode.enabled === "yes") {
-            record.filterType = "cluster.name"
+          if (resultRawConnection.data.clusterMode.enabled === 'yes') {
+            record.filterType = 'cluster.name'
             record.filterName = resultRawConnection.data.clusterName.cluster
           } else {
-            record.filterType = "manager.name"
+            record.filterType = 'manager.name'
             record.filterName = resultRawConnection.data.managerName.name
           }
           const key = await $splunkStoreService.insert(record)
-          record["_key"] = key.result
+          record['_key'] = key.result
           return record
         } catch (err) {
           return Promise.reject(err)
@@ -175,8 +175,8 @@ define(["../module"], function (module) {
       const chose = async (id) => {
         try {
           const apiList = await getApiList()
-          const api = apiList.filter((api) => api["_key"] === id)[0]
-          if (api && typeof api === "object") {
+          const api = apiList.filter((api) => api['_key'] === id)[0]
+          if (api && typeof api === 'object') {
             $apiIndexStorageService.setApi(api)
           }
           return
@@ -193,9 +193,9 @@ define(["../module"], function (module) {
         try {
           const currentApi = $apiIndexStorageService.getApi()
           if (!currentApi) {
-            throw new Error("No selected API in sessionStorage.")
+            throw new Error('No selected API in sessionStorage.')
           }
-          const api = await checkApiConnection(currentApi["_key"])
+          const api = await checkApiConnection(currentApi['_key'])
           let selectedIndex = $apiIndexStorageService.getIndex()
           return { api, selectedIndex }
         } catch (err) {
@@ -208,12 +208,12 @@ define(["../module"], function (module) {
        */
       const checkPollingState = async () => {
         try {
-          const getPollingStateRoute = "/manager/polling_state/"
+          const getPollingStateRoute = '/manager/polling_state/'
           const pollingStatus = await $requestService.httpReq(
             `GET`,
             getPollingStateRoute
           )
-          return pollingStatus.disabled === "true" ? false : true
+          return pollingStatus.disabled === 'true' ? false : true
         } catch (err) {
           return Promise.reject(err)
         }
@@ -227,7 +227,7 @@ define(["../module"], function (module) {
         try {
           if (
             api &&
-            typeof api === "object" &&
+            typeof api === 'object' &&
             api.url &&
             api.portapi &&
             api.userapi &&
@@ -236,27 +236,27 @@ define(["../module"], function (module) {
             // Encode user and password, this prevent fails with special charsets
             const user = encodeURIComponent(api.userapi)
             const pass = encodeURIComponent(api.passapi)
-            const clusterEnabled = api.filterType === "cluster.name"
+            const clusterEnabled = api.filterType === 'cluster.name'
             const checkConnectionEndpoint = `/manager/check_connection?ip=${api.url}&port=${api.portapi}&user=${user}&pass=${pass}&cluster=${clusterEnabled}`
             const result = await $requestService.httpReq(
-              "GET",
+              'GET',
               checkConnectionEndpoint
             )
             if (result.data.status === 400 || result.data.error) {
               if (result.data.error === 3099) {
-                throw "ERROR3099 - Wazuh not ready yet."
+                throw 'ERROR3099 - Wazuh not ready yet.'
               } else {
-                throw result.data.error || "Unreachable API."
+                throw result.data.error || 'Unreachable API.'
               }
             }
             return result
           }
           // Otherwise throw a new error
-          throw "Missing API fields."
+          throw 'Missing API fields.'
         } catch (err) {
           if (err.status === 500) {
             throw new Error(
-              "There was an error connecting to the api. Please check your api configuration."
+              'There was an error connecting to the api. Please check your api configuration.'
             )
           }
           return Promise.reject(err)
@@ -271,22 +271,22 @@ define(["../module"], function (module) {
         try {
           const checkConnectionEndpoint = `/manager/check_connection_by_id?apiId=${id}`
           const result = await $requestService.httpReq(
-            "GET",
+            'GET',
             checkConnectionEndpoint
           )
 
           if (result.data.status === 400 || result.data.error) {
             if (result.data.error === 3099) {
-              throw "ERROR3099 - Wazuh not ready yet."
+              throw 'ERROR3099 - Wazuh not ready yet.'
             } else {
-              throw result.data.error || "Unreachable API."
+              throw result.data.error || 'Unreachable API.'
             }
           }
           return result
         } catch (err) {
           if (err.status === 500) {
             throw new Error(
-              "There was an error connecting to the api. Please check your api configuration."
+              'There was an error connecting to the api. Please check your api configuration.'
             )
           }
           return Promise.reject(err)
@@ -307,11 +307,11 @@ define(["../module"], function (module) {
             api.managerName = managerName.name
           }
           // If cluster is disabled, then filter by manager.name
-          if (clusterData.enabled === "yes") {
-            api.filterType = "cluster.name"
+          if (clusterData.enabled === 'yes') {
+            api.filterType = 'cluster.name'
             api.filterName = clusterName.cluster
           } else {
-            api.filterType = "manager.name"
+            api.filterType = 'manager.name'
             api.filterName = api.managerName
           }
           return api
@@ -340,7 +340,7 @@ define(["../module"], function (module) {
           if (!equal) {
             await $splunkStoreService.update(updatedApi)
           }
-          delete updatedApi["passapi"]
+          delete updatedApi['passapi']
           return updatedApi
         } catch (err) {
           return Promise.reject(err)
@@ -352,10 +352,10 @@ define(["../module"], function (module) {
        */
       const checkWazuhVersion = async () => {
         try {
-          const wazuhVersion = await $requestService.apiReq("/version")
+          const wazuhVersion = await $requestService.apiReq('/version')
           const appVersion = await $requestService.httpReq(
-            "GET",
-            "/manager/app_info"
+            'GET',
+            '/manager/app_info'
           )
           if (
             wazuhVersion.data &&
@@ -367,8 +367,8 @@ define(["../module"], function (module) {
           ) {
             const wv = wazuhVersion.data.data
             const av = appVersion.data.version
-            const wazuhSplit = wv.split("v")[1].split(".")
-            const appSplit = av.split(".")
+            const wazuhSplit = wv.split('v')[1].split('.')
+            const appSplit = av.split('.')
 
             if (
               wazuhSplit[0] !== appSplit[0] ||

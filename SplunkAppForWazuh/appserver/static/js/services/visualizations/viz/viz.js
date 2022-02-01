@@ -1,9 +1,9 @@
 define([
-  "splunkjs/mvc",
-  "splunkjs/mvc/utils",
-  "splunkjs/mvc/searchmanager",
+  'splunkjs/mvc',
+  'splunkjs/mvc/utils',
+  'splunkjs/mvc/searchmanager',
 ], function (mvc, utils, SearchManager) {
-  "use strict"
+  'use strict'
 
   return class Viz {
     /**
@@ -16,8 +16,8 @@ define([
 
     constructor(element, id, search, scope, earliestTime, latestTime) {
       this.id = id
-      this.earliestTime = earliestTime ? earliestTime : "$when.earliest$"
-      this.latestTime = latestTime ? latestTime : "$when.latest$"
+      this.earliestTime = earliestTime ? earliestTime : '$when.earliest$'
+      this.latestTime = latestTime ? latestTime : '$when.latest$'
       this.search = new SearchManager(
         {
           id: `${this.id}Search`,
@@ -33,23 +33,23 @@ define([
           tokenDependencies: {},
           runWhenTimeIsUndefined: false,
         },
-        { tokens: true, tokenNamespace: "submitted" }
+        { tokens: true, tokenNamespace: 'submitted' }
       )
       this.element = element
       this.scope = scope
       this.finish = false
-      this.search.on("search:done", () => {
+      this.search.on('search:done', () => {
         this.finish = true
         this.checkVizzStatus()
       })
-      this.search.on("search:start", () => {
+      this.search.on('search:start', () => {
         this.finish = false
         this.checkVizzStatus()
       })
     }
 
     checkVizzStatus() {
-      this.scope.$broadcast("checkReportingStatus", () => {})
+      this.scope.$broadcast('checkReportingStatus', () => {})
     }
 
     changeSearch(newSearch) {
@@ -58,8 +58,8 @@ define([
       this.search = new SearchManager(
         {
           id: `${this.id}Search`,
-          earliest_time: this.earliestTime || "$when.earliest$",
-          latest_time: this.latestTime || "$when.latest$",
+          earliest_time: this.earliestTime || '$when.earliest$',
+          latest_time: this.latestTime || '$when.latest$',
           status_buckets: 0,
           sample_ratio: null,
           cancelOnUnload: true,
@@ -70,7 +70,7 @@ define([
           tokenDependencies: {},
           runWhenTimeIsUndefined: false,
         },
-        { tokens: true, tokenNamespace: "submitted" }
+        { tokens: true, tokenNamespace: 'submitted' }
       )
       this.search.startSearch()
     }

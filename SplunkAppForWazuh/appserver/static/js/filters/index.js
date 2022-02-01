@@ -1,1 +1,1 @@
-define(["./order-object/order-object"], function () {})
+define(['./order-object/order-object'], function () {})

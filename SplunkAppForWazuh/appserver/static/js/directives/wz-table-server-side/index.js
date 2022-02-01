@@ -9,4 +9,4 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(["./wz-table-server-side-directive"], function () {})
+define(['./wz-table-server-side-directive'], function () {})

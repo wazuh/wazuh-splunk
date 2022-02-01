@@ -1,5 +1,5 @@
-define(["./module"], function (app) {
-  app.factory("userPermissions", function () {
+define(['./module'], function (app) {
+  app.factory('userPermissions', function () {
     let userPermissions = {}
     return {
       get: function () {

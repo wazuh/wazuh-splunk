@@ -1,5 +1,5 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
 
   class checkDaemonsService {
     constructor($rootScope, $requestService, $timeout) {
@@ -14,7 +14,7 @@ define(["../module"], function (module) {
       try {
         if (this.busy) return
         this.busy = true
-        window.localStorage.setItem("wazuhIsReady", "false")
+        window.localStorage.setItem('wazuhIsReady', 'false')
         this.rootScope.notReadyMsg = msg
         this.rootScope.wazuhCouldNotBeRecovered = false
         this.rootScope.wazuhNotReadyYet = true
@@ -32,13 +32,13 @@ define(["../module"], function (module) {
             this.rootScope.wazuhNotReadyYet = false
             this.rootScope.wazuhCouldNotBeRecovered = false
             this.rootScope.$applyAsync()
-            window.localStorage.setItem("wazuhIsReady", "true")
+            window.localStorage.setItem('wazuhIsReady', 'true')
             break
           }
         }
 
         if (!wazuhReady) {
-          throw new Error("Not recovered")
+          throw new Error('Not recovered')
         }
       } catch (error) {
         this.tries = 10
@@ -50,5 +50,5 @@ define(["../module"], function (module) {
     }
   }
 
-  module.service("$checkDaemonsService", checkDaemonsService)
+  module.service('$checkDaemonsService', checkDaemonsService)
 })

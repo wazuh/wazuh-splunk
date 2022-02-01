@@ -11,13 +11,13 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/column-chart",
-  "../../../services/visualizations/chart/linear-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/search/search-handler",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/linear-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -27,7 +27,7 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class AgentsCiscat extends DashboardMain {
     /**
@@ -63,7 +63,7 @@ define([
       )
 
       if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go("overview")
+        this.state.go('overview')
       }
 
       this.scope.reportingEnabled = reportingEnabled
@@ -91,8 +91,8 @@ define([
           `lastNotChecked`,
           `${this.filters} | search data.cis.notchecked=* | table data.cis.notchecked | head 1`,
           `filesAddedToken`,
-          "$result.data.cis.notchecked$",
-          "lastNotChecked",
+          '$result.data.cis.notchecked$',
+          'lastNotChecked',
           this.submittedTokenModel,
           this.scope
         ),
@@ -100,8 +100,8 @@ define([
           `lastPass`,
           `${this.filters} | search data.cis.pass=* | table data.cis.pass | head 1`,
           `lastPass`,
-          "$result.data.cis.pass$",
-          "lastPass",
+          '$result.data.cis.pass$',
+          'lastPass',
           this.submittedTokenModel,
           this.scope
         ),
@@ -109,53 +109,53 @@ define([
           `lastScanScore`,
           `${this.filters} | search data.cis.score=* | table data.cis.score | head 1`,
           `lastScanScore`,
-          "$result.data.cis.score$",
-          "lastScanScore",
+          '$result.data.cis.score$',
+          'lastScanScore',
           this.submittedTokenModel,
           this.scope
         ),
         new SearchHandler(
           `lastScanDate`,
           `${this.filters}  | search data.cis.timestamp=* | table data.cis.timestamp | head 1`,
-          "lastScanDate",
-          "$result.data.cis.timestamp$",
-          "lastScanDate",
+          'lastScanDate',
+          '$result.data.cis.timestamp$',
+          'lastScanDate',
           this.submittedTokenModel,
           this.scope
         ),
         new SearchHandler(
           `lastErrors`,
           `${this.filters} | search data.cis.error=* | table data.cis.error | head 1`,
-          "lastErrors",
-          "$result.data.cis.error$",
-          "lastErrors",
+          'lastErrors',
+          '$result.data.cis.error$',
+          'lastErrors',
           this.submittedTokenModel,
           this.scope
         ),
         new SearchHandler(
           `lastFails`,
           `${this.filters} | search data.cis.fail=* | table data.cis.fail | head 1`,
-          "lastFails",
-          "$result.data.cis.fail$",
-          "lastFails",
+          'lastFails',
+          '$result.data.cis.fail$',
+          'lastFails',
           this.submittedTokenModel,
           this.scope
         ),
         new SearchHandler(
           `lastUnknown`,
           `${this.filters} | search data.unknown.fail=* | table data.cis.unknown | head 1`,
-          "lastUnknown",
-          "$result.data.cis.unknown$",
-          "lastUnknown",
+          'lastUnknown',
+          '$result.data.cis.unknown$',
+          'lastUnknown',
           this.submittedTokenModel,
           this.scope
         ),
         new SearchHandler(
           `lastScanBenchmark`,
           `${this.filters} rule.groups{}=ciscat | search data.cis.benchmark=* | table data.cis.benchmark | head 1`,
-          "lastScanBenchmark",
-          "$result.data.cis.benchmark$",
-          "lastScanBenchmark",
+          'lastScanBenchmark',
+          '$result.data.cis.benchmark$',
+          'lastScanBenchmark',
           this.submittedTokenModel,
           this.scope
         ),
@@ -163,31 +163,31 @@ define([
          * Visualizations
          */
         new ColumnChart(
-          "topCiscatGroups",
+          'topCiscatGroups',
           `${this.filters} rule.groups{}="ciscat" | top data.cis.group`,
-          "topCiscatGroups",
+          'topCiscatGroups',
           this.scope
         ),
         new LinearChart(
-          "scanResultEvolution",
+          'scanResultEvolution',
           `${this.filters} rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
-          "scanResultEvolution",
+          'scanResultEvolution',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
-          "alertsSummary",
+          'alertsSummary',
           `${this.filters} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
-          "alertsSummary",
+          'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts Summary"
+          'Alerts Summary'
         ),
       ]
 
@@ -213,10 +213,10 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          "agents-ciscat",
-          "CIS-CAT",
+          'agents-ciscat',
+          'CIS-CAT',
           this.filters,
-          ["topCiscatGroups", "scanResultEvolution", "alertsSummary"],
+          ['topCiscatGroups', 'scanResultEvolution', 'alertsSummary'],
           this.reportMetrics,
           this.tableResults,
           this.agentReportData
@@ -242,7 +242,7 @@ define([
         this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.$on("deletedFilter", (event) => {
+      this.scope.$on('deletedFilter', (event) => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -253,9 +253,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ["Active", "Disconnected"].includes(agentStatus)
+      return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
-        : "Never connected"
+        : 'Never connected'
     }
 
     /**
@@ -263,7 +263,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === "Active" ? "teal" : "red"
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
@@ -271,16 +271,16 @@ define([
      */
     setReportMetrics() {
       this.reportMetrics = {
-        "Last not checked": this.scope.lastNotChecked,
-        "Last pass": this.scope.lastPass,
-        "Last scan score": this.scope.lastScanScore,
-        "Last scan date": this.scope.lastScanDate,
-        "Last errores": this.scope.lastErrors,
-        "Last fails": this.scope.lastFails,
-        "Last unknown": this.scope.lastUnknown,
-        "Last scan benchmark": this.scope.lastScanBenchmark,
+        'Last not checked': this.scope.lastNotChecked,
+        'Last pass': this.scope.lastPass,
+        'Last scan score': this.scope.lastScanScore,
+        'Last scan date': this.scope.lastScanDate,
+        'Last errores': this.scope.lastErrors,
+        'Last fails': this.scope.lastFails,
+        'Last unknown': this.scope.lastUnknown,
+        'Last scan benchmark': this.scope.lastScanBenchmark,
       }
     }
   }
-  app.controller("agentsCiscatCtrl", AgentsCiscat)
+  app.controller('agentsCiscatCtrl', AgentsCiscat)
 })

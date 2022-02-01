@@ -9,13 +9,13 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(["../module"], function (directives) {
-  "use strict"
-  directives.directive("wzHeadToaster", function (BASE_URL) {
+define(['../module'], function (directives) {
+  'use strict'
+  directives.directive('wzHeadToaster', function (BASE_URL) {
     return {
       controller: function ($scope, $checkDaemonsService) {
         // Listen for show toaster
-        $scope.$on("showHeadToaster", (event, data) => {
+        $scope.$on('showHeadToaster', (event, data) => {
           // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
           try {
             if (!$scope.wazuhNotReadyYet) {
@@ -40,7 +40,7 @@ define(["../module"], function (directives) {
         })
 
         // Listen for wazuh not ready event
-        $scope.$on("wazuhNotReadyYet", (event, data) => {
+        $scope.$on('wazuhNotReadyYet', (event, data) => {
           let msg = false
           $scope.showHeadToaster = false
           if (data && data.msg) {
@@ -61,7 +61,7 @@ define(["../module"], function (directives) {
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-head-toaster/wz-head-toaster.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-head-toaster/wz-head-toaster.html',
     }
   })
 })

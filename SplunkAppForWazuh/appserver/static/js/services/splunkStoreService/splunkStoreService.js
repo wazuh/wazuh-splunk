@@ -1,6 +1,6 @@
-define(["../module"], function (module) {
-  "use strict"
-  module.service("$splunkStoreService", function ($requestService) {
+define(['../module'], function (module) {
+  'use strict'
+  module.service('$splunkStoreService', function ($requestService) {
     /**
      * Obtains all APIs
      * @param {Object} id

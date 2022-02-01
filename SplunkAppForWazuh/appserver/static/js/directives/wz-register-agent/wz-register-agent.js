@@ -10,19 +10,19 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../module"], function (directives) {
-  "use strict"
-  directives.directive("wzRegisterAgent", function (BASE_URL) {
+define(['../module'], function (directives) {
+  'use strict'
+  directives.directive('wzRegisterAgent', function (BASE_URL) {
     return {
-      restrict: "E",
+      restrict: 'E',
       scope: {},
       controller($scope, $notificationService, $requestService) {
         const apiReq = $requestService.apiReq
         $scope.config = {
-          osSelected: "redhat",
-          managerIp: "",
-          agentName: "",
-          agentKey: "",
+          osSelected: 'redhat',
+          managerIp: '',
+          agentName: '',
+          agentKey: '',
         }
         $scope.newInstall = true
         $scope.registeredAgent = false
@@ -36,12 +36,12 @@ define(["../module"], function (directives) {
 
         $scope.osEquivalence = (os) => {
           const equivalences = {
-            redhat: "Red Hat / CentOS",
-            debian: "Debian / Ubuntu",
-            windows: "Windows",
-            macos: "MacOS",
+            redhat: 'Red Hat / CentOS',
+            debian: 'Debian / Ubuntu',
+            windows: 'Windows',
+            macos: 'MacOS',
           }
-          return equivalences[os] || "Undefined"
+          return equivalences[os] || 'Undefined'
         }
 
         $scope.selectManagerAddress = (managerAddress) => {
@@ -57,16 +57,16 @@ define(["../module"], function (directives) {
 
         $scope.reset = () => {
           for (let key in $scope.config) {
-            $scope.config[key] = ""
+            $scope.config[key] = ''
           }
-          $scope.managerAddress = ""
+          $scope.managerAddress = ''
           $scope.registeredAgent = false
-          $scope.newInstall = "newInstall"
+          $scope.newInstall = 'newInstall'
           $scope.$applyAsync()
         }
 
         $scope.changeInstall = (install) => {
-          $scope.newInstall = install === "newInstall"
+          $scope.newInstall = install === 'newInstall'
           $scope.$applyAsync()
         }
 
@@ -78,23 +78,23 @@ define(["../module"], function (directives) {
             const sel = window.getSelection()
             sel.removeAllRanges()
             sel.addRange(range)
-            document.execCommand("copy")
-            $notificationService.showSimpleToast("Content has been copied")
+            document.execCommand('copy')
+            $notificationService.showSimpleToast('Content has been copied')
           } catch (error) {
             $notificationService.showErrorToast(
-              "Cannot copy the selected content"
+              'Cannot copy the selected content'
             )
           }
         }
 
         $scope.getVersion = async () => {
-          $scope.wazuhVersion = await $requestService.apiReq("/manager/info")
+          $scope.wazuhVersion = await $requestService.apiReq('/manager/info')
           $scope.wazuhVersion =
             (
               ((($scope.wazuhVersion || {}).data || {}).data || {})
                 .affected_items[0] || {}
             ).version || {}
-          $scope.wazuhVersion = $scope.wazuhVersion.replace("v", "")
+          $scope.wazuhVersion = $scope.wazuhVersion.replace('v', '')
           $scope.$applyAsync()
         }
 
@@ -103,7 +103,7 @@ define(["../module"], function (directives) {
             const response = await apiReq(
               `/agents/${$scope.config.agentName}`,
               {},
-              "PUT"
+              'PUT'
             )
             if (
               response &&
@@ -118,11 +118,11 @@ define(["../module"], function (directives) {
               const error =
                 response.data.message ||
                 response.data.error ||
-                "Cannot add agent"
+                'Cannot add agent'
               throw error
             }
           } catch (error) {
-            $notificationService.showErrorToast(error || "Cannot add agent")
+            $notificationService.showErrorToast(error || 'Cannot add agent')
           }
         }
 
@@ -130,7 +130,7 @@ define(["../module"], function (directives) {
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-register-agent/wz-register-agent.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-register-agent/wz-register-agent.html',
     }
   })
 })

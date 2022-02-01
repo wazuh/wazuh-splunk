@@ -1,5 +1,5 @@
-define(["../module"], function (app) {
-  "use strict"
+define(['../module'], function (app) {
+  'use strict'
 
   class SourceTypeStorageService {
     constructor() {
@@ -23,12 +23,12 @@ define(["../module"], function (app) {
         if (this.sessionStorage.selectedSourceType) {
           return JSON.parse(this.sessionStorage.selectedSourceType)
         } else {
-          return { sourceType: "*" }
+          return { sourceType: '*' }
         }
       } catch (e) {
-        return { sourceType: "*" }
+        return { sourceType: '*' }
       }
     }
   }
-  app.service("$sourceTypeStorageService", SourceTypeStorageService)
+  app.service('$sourceTypeStorageService', SourceTypeStorageService)
 })

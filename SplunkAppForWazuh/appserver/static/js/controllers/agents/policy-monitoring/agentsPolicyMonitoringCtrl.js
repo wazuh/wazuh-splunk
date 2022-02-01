@@ -11,12 +11,12 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/chart/area-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -25,7 +25,7 @@ define([
   Table,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class AgentsPM extends DashboardMain {
     /**
@@ -99,44 +99,44 @@ define([
          * Visualizations
          */
         new AreaChart(
-          "elementOverTime",
+          'elementOverTime',
           `${this.filters} rule.description=* | timechart span=1h count by rule.description  `,
-          "elementOverTime",
+          'elementOverTime',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
-          "ruleDistribution",
+          'ruleDistribution',
           `${this.filters} rule.description=* | top rule.description`,
-          "ruleDistribution",
+          'ruleDistribution',
           this.scope
         ),
         new PieChart(
-          "topPciDss",
+          'topPciDss',
           `${this.filters} rule.pci_dss{}=* | top  rule.pci_dss{}`,
-          "topPciDss",
+          'topPciDss',
           this.scope
         ),
         new AreaChart(
-          "eventsPerAgent",
+          'eventsPerAgent',
           `${this.filters} | timechart span=2h count by agent.name  `,
-          "eventsPerAgent",
+          'eventsPerAgent',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
-          "alertsSummary",
+          'alertsSummary',
           `${this.filters} |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
-          "alertsSummary",
+          'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters} |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts Summary"
+          'Alerts Summary'
         ),
       ]
 
@@ -162,14 +162,14 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          "agents-pm",
-          "Policity monitoring",
+          'agents-pm',
+          'Policity monitoring',
           this.filters,
           [
-            "elementOverTime",
-            "ruleDistribution",
-            "eventsPerAgent",
-            "alertsSummary",
+            'elementOverTime',
+            'ruleDistribution',
+            'eventsPerAgent',
+            'alertsSummary',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -179,7 +179,7 @@ define([
 
     $onInit() {
       this.scope.searchRootcheck = (term, specificFilter) =>
-        this.scope.$broadcast("wazuhSearch", { term, specificFilter })
+        this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
 
       this.scope.agent =
@@ -205,7 +205,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === "Active" ? "teal" : "red"
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
@@ -213,9 +213,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ["Active", "Disconnected"].includes(agentStatus)
+      return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
-        : "Never connected"
+        : 'Never connected'
     }
 
     /**
@@ -224,19 +224,19 @@ define([
     async downloadCsv() {
       try {
         this.notification.showSimpleToast(
-          "Your download should begin automatically..."
+          'Your download should begin automatically...'
         )
         const currentApi = this.api.id
         const output = await this.csvReq.fetch(
-          "/agents",
+          '/agents',
           currentApi,
           this.wzTableFilter.get()
         )
-        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
-        saveAs(blob, "agents.csv") // eslint-disable-line
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
-        this.notification.showErrorToast("Error downloading CSV")
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
@@ -249,7 +249,7 @@ define([
         const result = await this.apiReq(
           `/rootcheck/${this.scope.agent.id}`,
           {},
-          "PUT"
+          'PUT'
         )
         if (result && result.data && result.data.error === 0) {
           this.notification.showSuccessToast(
@@ -261,5 +261,5 @@ define([
       }
     }
   }
-  app.controller("agentsPolicyMonitoringCtrl", AgentsPM)
+  app.controller('agentsPolicyMonitoringCtrl', AgentsPM)
 })

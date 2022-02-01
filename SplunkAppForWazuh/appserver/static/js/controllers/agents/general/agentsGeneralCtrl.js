@@ -11,14 +11,14 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/linear-chart",
-  "../../../services/visualizations/chart/column-chart",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/search/search-handler",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/linear-chart',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/search/search-handler',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -29,7 +29,7 @@ define([
   SearchHandler,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class AgentsGeneral extends DashboardMain {
     /**
@@ -97,8 +97,8 @@ define([
           `totalAlerts`,
           `${this.filters} | stats count`,
           `totalAlertsToken`,
-          "$result.count$",
-          "totalAlerts",
+          '$result.count$',
+          'totalAlerts',
           this.submittedTokenModel,
           this.scope,
           undefined,
@@ -109,8 +109,8 @@ define([
           `searchLevel12`,
           `${this.filters} "rule.level">=12 | chart count`,
           `level12token`,
-          "$result.count$",
-          "levelTwelve",
+          '$result.count$',
+          'levelTwelve',
           this.submittedTokenModel,
           this.scope,
           undefined,
@@ -121,8 +121,8 @@ define([
           `searchAuthFailure`,
           `${this.filters} "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
-          "$result.count$",
-          "authFailure",
+          '$result.count$',
+          'authFailure',
           this.submittedTokenModel,
           this.scope,
           undefined,
@@ -133,8 +133,8 @@ define([
           `searchAuthSuccess`,
           `${this.filters}  "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
-          "$result.count$",
-          "authSuccess",
+          '$result.count$',
+          'authSuccess',
           this.submittedTokenModel,
           this.scope,
           undefined,
@@ -145,64 +145,64 @@ define([
          * Visualizations
          */
         new PieChart(
-          "top5AlertsVizz",
+          'top5AlertsVizz',
           `${this.filters} | top "rule.description" limit=5`,
-          "top5AlertsVizz",
+          'top5AlertsVizz',
           this.scope
         ),
         new PieChart(
-          "top5GroupsVizz",
+          'top5GroupsVizz',
           `${this.filters} | top rule.groups{} limit=5`,
-          "top5GroupsVizz",
+          'top5GroupsVizz',
           this.scope
         ),
         new PieChart(
-          "top5PCIreqVizz",
+          'top5PCIreqVizz',
           `${this.filters} | top rule.pci_dss{} limit=5`,
-          "top5PCIreqVizz",
+          'top5PCIreqVizz',
           this.scope
         ),
         new LinearChart(
-          "alertGroupEvoVizz",
+          'alertGroupEvoVizz',
           `${this.filters} rule.level=*| timechart count by rule.groups{}  `,
-          "alertGroupEvoVizz",
+          'alertGroupEvoVizz',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new ColumnChart(
-          "alertsVizz",
+          'alertsVizz',
           `${this.filters} | timechart span=2h count  `,
-          "alertsVizz",
+          'alertsVizz',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
-          "agentsSummaryVizz",
+          'agentsSummaryVizz',
           `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          "agentsSummaryVizz",
+          'agentsSummaryVizz',
           this.scope
         ),
         new Table(
-          "groupsSummaryVizz",
+          'groupsSummaryVizz',
           `${this.filters} | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
-          "groupsSummaryVizz",
+          'groupsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts Summary"
+          'Alerts Summary'
         ),
         new RawTableDataService(
-          "groupsSummaryTable",
+          'groupsSummaryTable',
           `${this.filters} | stats count by rule.groups{} | sort count DESC  | rename rule.groups{} as "Group", count as Count`,
-          "groupsSummaryTableToken",
-          "$result$",
+          'groupsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Groups Summary"
+          'Groups Summary'
         ),
       ]
     }
@@ -269,27 +269,27 @@ define([
         this.agentMetricsGroup = []
         this.agentInfo.group.map((g) => this.agentMetricsGroup.push(g))
         this.reportMetrics = {
-          "Last syscheck scan": this.agentInfo.syscheck.end
+          'Last syscheck scan': this.agentInfo.syscheck.end
             ? this.agentInfo.syscheck.end
-            : "Unknown",
-          "Last rootcheck scan": this.agentInfo.rootcheck.end
+            : 'Unknown',
+          'Last rootcheck scan': this.agentInfo.rootcheck.end
             ? this.agentInfo.rootcheck.end
-            : "Unknown",
+            : 'Unknown',
         }
 
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            "agents-general",
-            "Security events",
+            'agents-general',
+            'Security events',
             this.filters,
             [
-              "top5AlertsVizz",
-              "top5GroupsVizz",
-              "top5PCIreqVizz",
-              "alertGroupEvoVizz",
-              "alertsVizz",
-              "agentsSummaryVizz",
-              "groupsSummaryVizz",
+              'top5AlertsVizz',
+              'top5GroupsVizz',
+              'top5PCIreqVizz',
+              'alertGroupEvoVizz',
+              'alertsVizz',
+              'agentsSummaryVizz',
+              'groupsSummaryVizz',
             ],
             this.reportMetrics,
             this.tableResults,
@@ -321,7 +321,7 @@ define([
         }
         this.agentInfo.id && this.agentInfo.name
           ? (this.agentInfo.error = false)
-          : (this.agentInfo.error = "Unable to load agent data")
+          : (this.agentInfo.error = 'Unable to load agent data')
       }
 
       this.scope.goGroups = (group) => this.goGroups(group)
@@ -346,11 +346,11 @@ define([
           !this.groupInfo.data.data ||
           this.groupInfo.data.error
         ) {
-          throw Error("Missing fields")
+          throw Error('Missing fields')
         }
         this.state.go(`mg-groups`, { group: this.groupData[0] })
       } catch (err) {
-        this.notification.showErrorToast("Error fetching group data")
+        this.notification.showErrorToast('Error fetching group data')
       }
     }
 
@@ -359,7 +359,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === "Active" ? "teal" : "red"
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
@@ -367,9 +367,9 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ["Active", "Disconnected"].includes(agentStatus)
+      return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
-        : "Never connected"
+        : 'Never connected'
     }
 
     /**
@@ -396,5 +396,5 @@ define([
     }
   }
 
-  app.controller("agentsGeneralCtrl", AgentsGeneral)
+  app.controller('agentsGeneralCtrl', AgentsGeneral)
 })

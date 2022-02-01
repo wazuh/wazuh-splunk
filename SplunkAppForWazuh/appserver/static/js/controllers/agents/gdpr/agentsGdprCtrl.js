@@ -11,13 +11,13 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/column-chart",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/inputs/dropdown-input",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/inputs/dropdown-input',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -27,7 +27,7 @@ define([
   Dropdown,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class AgentsGdpr extends DashboardMain {
     /**
@@ -96,15 +96,15 @@ define([
         )
 
       this.dropdown = new Dropdown(
-        "dropDownInput",
+        'dropDownInput',
         `${this.filters} rule.gdpr{}="*"| stats count by "rule.gdpr{}" | spath "rule.gdpr{}" | fields - count`,
-        "rule.gdpr{}",
-        "$form.gdpr$",
-        "dropDownInput",
+        'rule.gdpr{}',
+        '$form.gdpr$',
+        'dropDownInput',
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on("change", (newValue) => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance) {
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
@@ -118,54 +118,54 @@ define([
          * Visualizations
          */
         new ColumnChart(
-          "gdprRequirementsVizz",
+          'gdprRequirementsVizz',
           `${this.filters} rule.gdpr{}="$gdpr$"  | stats count by rule.gdpr{}  | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          "gdprRequirementsVizz",
+          'gdprRequirementsVizz',
           this.scope
         ),
         new PieChart(
-          "groupsVizz",
+          'groupsVizz',
           `${this.filters} rule.gdpr{}="$gdpr$" | top limit=5 rule.groups{} | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          "groupsVizz",
+          'groupsVizz',
           this.scope
         ),
         new PieChart(
-          "top5GDPR",
+          'top5GDPR',
           `${this.filters} rule.gdpr{}="$gdpr$" | top limit=5 rule.gdpr{} | rename count as "Count", rule.gdpr{} as "Requirements" `,
-          "top5GDPR",
+          'top5GDPR',
           this.scope
         ),
         new PieChart(
-          "rulesVizz",
+          'rulesVizz',
           `${this.filters}  | top limit=5 rule.description | rename count as "Count", rule.gdpr{} as "Requirements" `,
-          "rulesVizz",
+          'rulesVizz',
           this.scope
         ),
         new PieChart(
-          "agentsVizz",
+          'agentsVizz',
           `${this.filters} rule.gdpr{}="$gdpr$" | stats count by agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          "agentsVizz",
+          'agentsVizz',
           this.scope
         ),
         new ColumnChart(
-          "requirementsByAgentVizz",
+          'requirementsByAgentVizz',
           `${this.filters} rule.gdpr{}="$gdpr$" agent.name=*| chart  count(rule.gdpr{}) by rule.gdpr{},agent.name | rename count as "Count", rule.gdpr{} as "Requirements"`,
-          "requirementsByAgentVizz",
+          'requirementsByAgentVizz',
           this.scope
         ),
         new Table(
-          "alertsSummaryVizz",
+          'alertsSummaryVizz',
           `${this.filters} rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-          "alertsSummaryVizz",
+          'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters} rule.gdpr{}="$gdpr$" | stats count sparkline by agent.name, rule.gdpr{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.gdpr{} as Requirement, rule.description as "Rule description", count as Count`,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts Summary"
+          'Alerts Summary'
         ),
       ]
 
@@ -191,17 +191,17 @@ define([
        */
       this.scope.startVis2Png = () =>
         this.reportingService.startVis2Png(
-          "agents-gdpr",
-          "GDPR",
+          'agents-gdpr',
+          'GDPR',
           this.filters,
           [
-            "gdprRequirementsVizz",
-            "groupsVizz",
-            "top5GDPR",
-            "rulesVizz",
-            "agentsVizz",
-            "requirementsByAgentVizz",
-            "alertsSummaryVizz",
+            'gdprRequirementsVizz',
+            'groupsVizz',
+            'top5GDPR',
+            'rulesVizz',
+            'agentsVizz',
+            'requirementsByAgentVizz',
+            'alertsSummaryVizz',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -236,7 +236,7 @@ define([
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === "Active" ? "teal" : "red"
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
@@ -244,10 +244,10 @@ define([
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ["Active", "Disconnected"].includes(agentStatus)
+      return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
-        : "Never connected"
+        : 'Never connected'
     }
   }
-  app.controller("agentsGdprCtrl", AgentsGdpr)
+  app.controller('agentsGdprCtrl', AgentsGdpr)
 })

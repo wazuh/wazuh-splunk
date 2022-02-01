@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(["../module"], function (app) {
+define(['../module'], function (app) {
   class CSVRequest {
     /**
      * Constructor
@@ -27,20 +27,20 @@ define(["../module"], function (app) {
      */
     async fetch(path, id, filters = null) {
       try {
-        let filterStr = "{"
-        if (filters && typeof filters === "object" && filters.length > 0) {
+        let filterStr = '{'
+        if (filters && typeof filters === 'object' && filters.length > 0) {
           filters.map(
             (filter) => (filterStr += `"${filter.name}": "${filter.value}",`)
           )
           filterStr = filterStr.slice(0, -1)
-          filterStr += "}"
+          filterStr += '}'
         } else {
           filterStr = null
         }
         const payload = filterStr
           ? { endpoint: path, apiId: id, filters: filterStr }
           : { endpoint: path, apiId: id }
-        const output = await this.httpReq("POST", "/api/csv", payload)
+        const output = await this.httpReq('POST', '/api/csv', payload)
         if (output.data.error) {
           throw Error(output.data.error)
         }
@@ -51,5 +51,5 @@ define(["../module"], function (app) {
       }
     }
   }
-  app.service("$csvRequestService", CSVRequest)
+  app.service('$csvRequestService', CSVRequest)
 })

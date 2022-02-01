@@ -11,34 +11,34 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function (module) {
-  "use strict"
+define(['../../module'], function (module) {
+  'use strict'
 
-  module.service("$roleService", function ($requestService, $state) {
+  module.service('$roleService', function ($requestService, $state) {
     const getRoleData = async () => {
       try {
-        return await $requestService.apiReq("/security/roles")
+        return await $requestService.apiReq('/security/roles')
       } catch (error) {
-        $state.go("settings.api")
+        $state.go('settings.api')
       }
     }
 
     const fetchNewRole = async (roleName) => {
       return await $requestService.apiReq(
-        "/security/roles",
+        '/security/roles',
         {
           content: JSON.stringify({ name: roleName }),
-          origin: "json",
+          origin: 'json',
         },
-        "POST"
+        'POST'
       )
     }
 
     const fetchEditRole = async (roleId, policies) => {
       return await $requestService.apiReq(
         `/security/roles/${roleId}/policies?policy_ids=${policies.toString()}`,
-        { content: "" },
-        "POST"
+        { content: '' },
+        'POST'
       )
     }
 
@@ -47,7 +47,7 @@ define(["../../module"], function (module) {
         const result = await $requestService.apiReq(
           `/security/roles?role_ids=${role}`,
           {},
-          "DELETE"
+          'DELETE'
         )
 
         if (
@@ -68,12 +68,12 @@ define(["../../module"], function (module) {
 
     const saveRole = async (role, policies) => {
       try {
-        let roleId = ""
+        let roleId = ''
 
         if (!role.id) {
           const result = await fetchNewRole(role.name)
 
-          if (typeof result.data.error === "string") {
+          if (typeof result.data.error === 'string') {
             throw new Error(`Cannot save Role ${role.name}`)
           }
 
@@ -84,7 +84,7 @@ define(["../../module"], function (module) {
             throw new Error(
               result.data.data.failed_items[0].error.message ||
                 result.data.data.message ||
-                "Cannot save Role."
+                'Cannot save Role.'
             )
           }
 
@@ -101,7 +101,7 @@ define(["../../module"], function (module) {
             return result
           } else if (result.data.error) {
             throw new Error(
-              result.data.message || result.data.error || "Cannot save Role."
+              result.data.message || result.data.error || 'Cannot save Role.'
             )
           }
         } else {
@@ -119,7 +119,7 @@ define(["../../module"], function (module) {
         const result = await $requestService.apiReq(
           `/security/roles/${roleId}/policies?policy_ids=${policyId}`,
           {},
-          "DELETE"
+          'DELETE'
         )
 
         if (

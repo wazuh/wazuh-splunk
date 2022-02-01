@@ -1,8 +1,8 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
 
   module.service(
-    "$currentDataService",
+    '$currentDataService',
     function (
       $apiMgrService,
       $filterService,
@@ -134,9 +134,9 @@ define(["../module"], function (module) {
           let payload = {}
           let updateExtensionKey = false
           try {
-            payload["_key"] = $apiIndexStorageService.getExtensionKey(id)
+            payload['_key'] = $apiIndexStorageService.getExtensionKey(id)
           } catch (err) {
-            payload["api"] = id
+            payload['api'] = id
             updateExtensionKey = true
           }
           const ext = await $requestService.httpReq(
@@ -147,7 +147,7 @@ define(["../module"], function (module) {
           Object.assign(result, ext.data)
 
           if (updateExtensionKey) {
-            $apiIndexStorageService.setExtensionKey(id, result["_key"])
+            $apiIndexStorageService.setExtensionKey(id, result['_key'])
           }
           return result
         } catch (err) {
@@ -214,7 +214,7 @@ define(["../module"], function (module) {
       const extensionIsEnabled = async (ext) => {
         try {
           const extensions = await getCurrentExtensions()
-          return extensions[ext] === "true"
+          return extensions[ext] === 'true'
         } catch (error) {
           return Promise.reject(error)
         }
@@ -225,7 +225,7 @@ define(["../module"], function (module) {
        */
       const getCurrentExtensions = async () => {
         try {
-          const id = getApi()["_key"]
+          const id = getApi()['_key']
           return await getExtensionsById(id)
         } catch (error) {
           return Promise.reject(error)
@@ -254,7 +254,7 @@ define(["../module"], function (module) {
       const getReportingStatus = async () => {
         try {
           const result = await getAdminExtensions()
-          const status = result.reporting === "true"
+          const status = result.reporting === 'true'
           return status
         } catch (error) {
           return true

@@ -1,5 +1,5 @@
-define(["../module"], function (app) {
-  app.filter("orderObjectBy", function () {
+define(['../module'], function (app) {
+  app.filter('orderObjectBy', function () {
     return function (items, field, reverse) {
       if (!items) return []
 
@@ -15,8 +15,8 @@ define(["../module"], function (app) {
       const index = (obj, i) => obj[i]
 
       filtered.sort((a, b) => {
-        let reducedA = field.split(".").reduce(index, a)
-        let reducedB = field.split(".").reduce(index, b)
+        let reducedA = field.split('.').reduce(index, a)
+        let reducedB = field.split('.').reduce(index, b)
 
         if (isNumeric(reducedA) && isNumeric(reducedB)) {
           reducedA = Number(reducedA)

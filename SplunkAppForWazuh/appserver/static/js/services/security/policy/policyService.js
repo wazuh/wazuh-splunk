@@ -11,22 +11,22 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function (module) {
-  "use strict"
+define(['../../module'], function (module) {
+  'use strict'
 
-  module.service("$policyService", function ($requestService, $state) {
+  module.service('$policyService', function ($requestService, $state) {
     const getPolicyData = async () => {
       try {
-        return await $requestService.apiReq("/security/policies")
+        return await $requestService.apiReq('/security/policies')
       } catch (error) {
-        $state.go("settings.api")
+        $state.go('settings.api')
       }
     }
 
     const savePolicy = async (policyName, actions, resources, effectValue) => {
       try {
         const result = await $requestService.apiReq(
-          "/security/policies",
+          '/security/policies',
           {
             content: JSON.stringify({
               name: policyName,
@@ -36,9 +36,9 @@ define(["../../module"], function (module) {
                 effect: effectValue,
               },
             }),
-            origin: "json",
+            origin: 'json',
           },
-          "POST"
+          'POST'
         )
 
         return result.data
@@ -59,9 +59,9 @@ define(["../../module"], function (module) {
                 effect: effectValue,
               },
             }),
-            origin: "json",
+            origin: 'json',
           },
-          "PUT"
+          'PUT'
         )
 
         return result.data
@@ -75,7 +75,7 @@ define(["../../module"], function (module) {
         const result = await $requestService.apiReq(
           `/security/policies?policy_ids=${policy}`,
           {},
-          "DELETE"
+          'DELETE'
         )
 
         if (
@@ -96,17 +96,17 @@ define(["../../module"], function (module) {
 
     const getResourceData = async () => {
       try {
-        return await $requestService.apiReq("/security/resources")
+        return await $requestService.apiReq('/security/resources')
       } catch (error) {
-        $state.go("settings.api")
+        $state.go('settings.api')
       }
     }
 
     const getActionData = async () => {
       try {
-        return await $requestService.apiReq("/security/actions")
+        return await $requestService.apiReq('/security/actions')
       } catch (error) {
-        $state.go("settings.api")
+        $state.go('settings.api')
       }
     }
 

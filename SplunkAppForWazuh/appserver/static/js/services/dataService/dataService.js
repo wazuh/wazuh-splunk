@@ -10,12 +10,12 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../module", "splunkjs/mvc"], function (module) {
-  "use strict"
+define(['../module', 'splunkjs/mvc'], function (module) {
+  'use strict'
   /**
    * Class that handles dynamic table methods
    */
-  module.service("$dataService", function ($requestService) {
+  module.service('$dataService', function ($requestService) {
     return class DataFactory {
       /**
        * Class constructor
@@ -61,11 +61,11 @@ define(["../module", "splunkjs/mvc"], function (module) {
        */
       serializeFilters(parameters) {
         if (this.sortValue) {
-          parameters.sort = this.sortDir ? "-" + this.sortValue : this.sortValue
+          parameters.sort = this.sortDir ? '-' + this.sortValue : this.sortValue
         }
 
         for (const filter of this.filters) {
-          if (filter.value !== "") parameters[filter.name] = filter.value
+          if (filter.value !== '') parameters[filter.name] = filter.value
         }
       }
 
@@ -78,7 +78,7 @@ define(["../module", "splunkjs/mvc"], function (module) {
         this.filters = this.filters.filter(
           (filter) => filter.name !== filterName
         )
-        if (typeof value !== "undefined") {
+        if (typeof value !== 'undefined') {
           this.filters.push({
             name: filterName,
             value: value,
@@ -127,8 +127,8 @@ define(["../module", "splunkjs/mvc"], function (module) {
                 : totalItems - this.items.length
 
             // Ignore manager as an agent, once the team solves this issue, review this line
-            if (this.path === "/agents")
-              this.items = this.items.filter((item) => item.id !== "000")
+            if (this.path === '/agents')
+              this.items = this.items.filter((item) => item.id !== '000')
 
             if (!this.isServerSidePagination && remaining > 0)
               this.items.push(...Array(remaining).fill(null))

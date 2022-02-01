@@ -1,9 +1,9 @@
 define([
-  "../../module",
-  "../../../directives/wz-table/lib/pagination",
-  "../../../directives/wz-table/lib/check-gap",
+  '../../module',
+  '../../../directives/wz-table/lib/pagination',
+  '../../../directives/wz-table/lib/check-gap',
 ], function (app, pagination, checkGap) {
-  "use strict"
+  'use strict'
 
   class Reporting {
     /**
@@ -40,7 +40,7 @@ define([
      * On controller loads
      */
     $onInit() {
-      this.scope.selectedNavTab = "reporting"
+      this.scope.selectedNavTab = 'reporting'
       this.scope.gap = 0
       this.scope.prevPage = () => this.pagination.prevPage(this.scope)
       this.scope.nextPage = async (currentPage) =>
@@ -65,21 +65,21 @@ define([
         try {
           return this.setBrowserOffset(time)
         } catch (error) {
-          return ""
+          return ''
         }
       }
 
-      this.scope.$on("loadingContent", (event, data) => {
+      this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
 
       this.scope.sort = {
-        column: "",
+        column: '',
         descending: false,
       }
 
-      this.scope.changeSorting("date")
+      this.scope.changeSorting('date')
     }
 
     /**
@@ -109,11 +109,11 @@ define([
     async deleteReport(name) {
       try {
         this.loading = true
-        await this.genericReq("GET", "/report/remove", { name: name })
+        await this.genericReq('GET', '/report/remove', { name: name })
         await this.load()
-        this.notification.showSuccessToast("Deleted report.")
+        this.notification.showSuccessToast('Deleted report.')
       } catch (error) {
-        this.notification.showErrorToast("Cannot delete the report.")
+        this.notification.showErrorToast('Cannot delete the report.')
       }
     }
 
@@ -142,7 +142,7 @@ define([
     async load() {
       try {
         this.loading = true
-        const reports = await this.genericReq("GET", "/report/reports")
+        const reports = await this.genericReq('GET', '/report/reports')
         this.items = reports.data.data
         const gap = this.items.length / 15
         const gapInteger = parseInt(this.items.length / 15)
@@ -157,9 +157,9 @@ define([
         this.loading = false
         this.scope.$applyAsync()
       } catch (error) {
-        this.notification.showErrorToast("Error loading reports.")
+        this.notification.showErrorToast('Error loading reports.')
       }
     }
   }
-  app.controller("reportingCtrl", Reporting)
+  app.controller('reportingCtrl', Reporting)
 })

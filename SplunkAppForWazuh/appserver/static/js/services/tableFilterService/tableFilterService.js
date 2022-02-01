@@ -1,7 +1,7 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
 
-  module.service("$tableFilterService", function () {
+  module.service('$tableFilterService', function () {
     const filters = []
     return {
       set: (array) => {

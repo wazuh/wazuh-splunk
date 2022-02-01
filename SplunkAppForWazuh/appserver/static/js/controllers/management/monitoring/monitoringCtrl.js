@@ -1,11 +1,11 @@
 define([
-  "../../module",
-  "../../../services/visualizations/chart/linear-chart",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/chart/column-chart",
-  "../../../services/visualizations/inputs/time-picker",
+  '../../module',
+  '../../../services/visualizations/chart/linear-chart',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/column-chart',
+  '../../../services/visualizations/inputs/time-picker',
 ], function (app, LinearChart, PieChart, ColumChart, TimePicker) {
-  "use strict"
+  'use strict'
   class Monitoring {
     /**
      * Constructor class
@@ -39,7 +39,7 @@ define([
       this.filters = this.currentDataService.getSerializedFilters()
       this.currentApi = this.currentDataService.getApi()
       this.timePicker = new TimePicker(
-        "#timePicker",
+        '#timePicker',
         this.urlTokenModel.handleValueChange
       )
 
@@ -51,31 +51,31 @@ define([
 
       this.vizz = [
         new LinearChart(
-          "alertSummary",
+          'alertSummary',
           `${this.filters} | timechart span=1h count`,
-          "alertSummary",
+          'alertSummary',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new LinearChart(
-          "alertNodeSummary",
+          'alertNodeSummary',
           `${this.filters} | timechart span=1h count by cluster.node`,
-          "alertNodeSummary",
+          'alertNodeSummary',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
-          "topNodes",
+          'topNodes',
           `${this.filters} | top cluster.node`,
-          "topNodes",
+          'topNodes',
           this.scope
         ),
         new ColumChart(
-          "overviewNode",
+          'overviewNode',
           `${this.filters} | timechart span=2h count`,
-          "overviewNode",
+          'overviewNode',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
       ]
       const parsedResult = monitoringInfo.map((item) =>
@@ -88,42 +88,42 @@ define([
       this.running = status && status.running
       this.enabled = status && status.enabled
       this.scope.isClusterEnabled =
-        $stateParams.isClusterEnabled || this.enabled === "yes"
+        $stateParams.isClusterEnabled || this.enabled === 'yes'
       this.scope.isClusterRunning =
-        $stateParams.isClusterRunning || this.running === "yes"
+        $stateParams.isClusterRunning || this.running === 'yes'
       this.nodes =
-        this.enabled === "yes" && nodes ? nodes.affected_items[0] : []
+        this.enabled === 'yes' && nodes ? nodes.affected_items[0] : []
       this.nodesCount =
-        this.enabled === "yes" && nodes ? nodes.total_affected_items : 0
+        this.enabled === 'yes' && nodes ? nodes.total_affected_items : 0
       this.configuration =
-        this.enabled === "yes" && configuration
+        this.enabled === 'yes' && configuration
           ? configuration.affected_items[0]
           : false
-      this.version = version ? version.api_version : ""
+      this.version = version ? version.api_version : ''
       this.agents = agents
-      this.health = this.enabled === "yes" ? health.affected_items[0] : false
+      this.health = this.enabled === 'yes' ? health.affected_items[0] : false
     }
 
     /**
      * On controller load
      */
     $onInit() {
-      this.scope.selectedNavTab = "monitoring"
+      this.scope.selectedNavTab = 'monitoring'
       this.scope.currentApi =
         this.currentApi.clusterName || this.currentApi.managerName
       this.scope.search = (term) => this.search(term)
-      this.scope.status = "yes"
+      this.scope.status = 'yes'
       this.scope.reset = () => this.reset()
       this.scope.goConfiguration = () => this.goConfiguration()
       this.scope.goBack = () => this.goBack()
       this.scope.goNodes = () => this.goNodes()
 
-      this.scope.$on("loadingContent", (event, data) => {
+      this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
         event.preventDefault()
       })
 
-      this.scope.$on("wazuhShowClusterNode", async (event, parameters) => {
+      this.scope.$on('wazuhShowClusterNode', async (event, parameters) => {
         event.stopPropagation()
         try {
           if (this.checkStatus()) {
@@ -146,17 +146,17 @@ define([
               this.scope.currentNode.healthCheck.status
             ) {
               this.scope.currentNode.healthCheck.status.last_sync_integrity.duration =
-                "n/a"
+                'n/a'
               this.scope.currentNode.healthCheck.status.last_sync_agentinfo.duration =
-                "n/a"
+                'n/a'
               this.scope.currentNode.healthCheck.status.last_sync_agentgroups.duration =
-                "n/a"
+                'n/a'
 
               if (
                 this.scope.currentNode.healthCheck.status.last_sync_integrity
-                  .date_start_master !== "n/a" &&
+                  .date_start_master !== 'n/a' &&
                 this.scope.currentNode.healthCheck.status.last_sync_integrity
-                  .date_end_master !== "n/a"
+                  .date_end_master !== 'n/a'
               ) {
                 const end = new Date(
                   this.scope.currentNode.healthCheck.status.last_sync_integrity.date_end_master
@@ -171,9 +171,9 @@ define([
 
               if (
                 this.scope.currentNode.healthCheck.status.last_sync_agentinfo
-                  .date_start_master !== "n/a" &&
+                  .date_start_master !== 'n/a' &&
                 this.scope.currentNode.healthCheck.status.last_sync_agentinfo
-                  .date_end_master !== "n/a"
+                  .date_end_master !== 'n/a'
               ) {
                 const end = new Date(
                   this.scope.currentNode.healthCheck.status.last_sync_agentinfo.date_end_master
@@ -188,9 +188,9 @@ define([
 
               if (
                 this.scope.currentNode.healthCheck.status.last_sync_agentgroups
-                  .date_start_master !== "n/a" &&
+                  .date_start_master !== 'n/a' &&
                 this.scope.currentNode.healthCheck.status.last_sync_agentgroups
-                  .date_end_master !== "n/a"
+                  .date_end_master !== 'n/a'
               ) {
                 const end = new Date(
                   this.scope.currentNode.healthCheck.status.last_sync_agentgroups.date_end_master
@@ -223,7 +223,7 @@ define([
       /**
        * When controller is destroyed
        */
-      this.scope.$on("$destroy", () => {
+      this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
         this.vizz.map((viz) => viz.destroy())
       })
@@ -234,7 +234,7 @@ define([
      * @param {String} term
      */
     search(term) {
-      this.scope.$broadcast("wazuhSearch", { term })
+      this.scope.$broadcast('wazuhSearch', { term })
     }
 
     /**
@@ -251,30 +251,30 @@ define([
      * Checks status
      */
     checkStatus() {
-      if (this.enabled === "no") {
+      if (this.enabled === 'no') {
         this.scope.isClusterEnabled = false
-      } else if (this.running === "no") {
+      } else if (this.running === 'no') {
         this.scope.isClusterRunning = false
-        this.scope.status = "no"
-      } else if (this.running === "no" && this.enabled === "yes") {
+        this.scope.status = 'no'
+      } else if (this.running === 'no' && this.enabled === 'yes') {
         this.scope.isClusterRunning = false
-        this.scope.status = "no"
-      } else if (this.running === "yes" && this.enabled === "yes") {
+        this.scope.status = 'no'
+      } else if (this.running === 'yes' && this.enabled === 'yes') {
         this.scope.isClusterEnabled = true
         this.scope.isClusterRunning = true
         this.nodes.name = this.configuration.name
         this.nodes.master_node = this.configuration.node_name
       }
-      return this.running === "yes" && this.enabled === "yes"
+      return this.running === 'yes' && this.enabled === 'yes'
     }
     /**
      * Sets the view conditions
      * @param {String} component
      */
     setBooleans(component) {
-      this.scope.showConfig = component === "showConfig"
-      this.scope.showNodes = component === "showNodes"
-      if (component === "showClusterMonitoring") {
+      this.scope.showConfig = component === 'showConfig'
+      this.scope.showNodes = component === 'showNodes'
+      if (component === 'showClusterMonitoring') {
         this.scope.showConfig = false
         this.scope.showNodes = false
       }
@@ -286,21 +286,21 @@ define([
      * Navigates to the node configuration
      */
     goConfiguration() {
-      this.setBooleans("showConfig")
+      this.setBooleans('showConfig')
     }
 
     /**
      * Navigates to nodes list
      */
     goNodes() {
-      this.setBooleans("showNodes")
+      this.setBooleans('showNodes')
     }
 
     /**
      * Navigates to cluster monitoring
      */
     goBack() {
-      this.setBooleans("showClusterMonitoring")
+      this.setBooleans('showClusterMonitoring')
     }
 
     /**
@@ -315,19 +315,19 @@ define([
     expand(i, id) {
       this.scope.expandArray[i] = !this.scope.expandArray[i]
       let vis = $(
-        "#" + id + " .panel-body .splunk-view .shared-reportvisualizer"
+        '#' + id + ' .panel-body .splunk-view .shared-reportvisualizer'
       )
       this.scope.expandArray[i]
-        ? vis.css("height", "calc(100vh - 200px)")
-        : vis.css("height", "250px")
+        ? vis.css('height', 'calc(100vh - 200px)')
+        : vis.css('height', '250px')
 
-      let vis_header = $(".wz-headline-title")
+      let vis_header = $('.wz-headline-title')
       vis_header.dblclick((e) => {
         if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
           this.scope.expandArray[i]
-            ? vis.css("height", "calc(100vh - 200px)")
-            : vis.css("height", "250px")
+            ? vis.css('height', 'calc(100vh - 200px)')
+            : vis.css('height', '250px')
           this.scope.$applyAsync()
         } else {
           e.preventDefault()
@@ -335,5 +335,5 @@ define([
       })
     }
   }
-  app.controller("monitoringCtrl", Monitoring)
+  app.controller('monitoringCtrl', Monitoring)
 })

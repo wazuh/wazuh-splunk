@@ -10,11 +10,11 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module", "../../../dashboardMain", "FileSaver"], function (
+define(['../../module', '../../../dashboardMain', 'FileSaver'], function (
   app,
   DashboardMain
 ) {
-  "use strict"
+  'use strict'
 
   class AgentsVulnerabilitiesCVE extends DashboardMain {
     /**
@@ -74,7 +74,7 @@ define(["../../module", "../../../dashboardMain", "FileSaver"], function (
           `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
       if (!this.currentDataService.getCurrentAgent()) {
-        this.state.go("overview")
+        this.state.go('overview')
       }
 
       // Set agent info
@@ -95,12 +95,12 @@ define(["../../module", "../../../dashboardMain", "FileSaver"], function (
       }
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
       this.scope.canReadVulnerabilities = this.isAllowed(
-        "VULNERABILITY_READ",
-        ["AGENT_ID"],
+        'VULNERABILITY_READ',
+        ['AGENT_ID'],
         [this.agent.id]
       )
     }
@@ -122,7 +122,7 @@ define(["../../module", "../../../dashboardMain", "FileSaver"], function (
       }
 
       this.scope.search = (term) =>
-        this.scope.$broadcast("wazuhSearch", { term })
+        this.scope.$broadcast('wazuhSearch', { term })
       this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = (agentStatus) =>
@@ -135,9 +135,9 @@ define(["../../module", "../../../dashboardMain", "FileSaver"], function (
      * @param {Array} agentStatus
      */
     formatAgentStatus(agentStatus) {
-      return ["Active", "Disconnected"].includes(agentStatus)
+      return ['Active', 'Disconnected'].includes(agentStatus)
         ? agentStatus
-        : "Never connected"
+        : 'Never connected'
     }
 
     /**
@@ -145,7 +145,7 @@ define(["../../module", "../../../dashboardMain", "FileSaver"], function (
      * @param {String} agentStatus
      */
     getAgentStatusClass(agentStatus) {
-      return agentStatus === "Active" ? "teal" : "red"
+      return agentStatus === 'Active' ? 'teal' : 'red'
     }
 
     /**
@@ -154,22 +154,22 @@ define(["../../module", "../../../dashboardMain", "FileSaver"], function (
     async downloadCsv(path, name) {
       try {
         this.notification.showSimpleToast(
-          "Your download should begin automatically..."
+          'Your download should begin automatically...'
         )
-        const currentApi = this.api["_key"]
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
           currentApi,
           this.wzTableFilter.get()
         )
-        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
         return
       } catch (error) {
-        this.notification.showErrorToast("Error downloading CSV")
+        this.notification.showErrorToast('Error downloading CSV')
       }
       return
     }
   }
-  app.controller("agentsCveCtrl", AgentsVulnerabilitiesCVE)
+  app.controller('agentsCveCtrl', AgentsVulnerabilitiesCVE)
 })

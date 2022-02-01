@@ -11,18 +11,18 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function (module) {
-  "use strict"
+define(['../../module'], function (module) {
+  'use strict'
 
-  module.service("$ruleService", function ($requestService, _$state) {
+  module.service('$ruleService', function ($requestService, _$state) {
     const fetchNewRule = async (rulePayload) => {
       return await $requestService.apiReq(
-        "/security/rules",
+        '/security/rules',
         {
           content: JSON.stringify(rulePayload),
-          origin: "json",
+          origin: 'json',
         },
-        "POST"
+        'POST'
       )
     }
 
@@ -31,25 +31,25 @@ define(["../../module"], function (module) {
         `/security/rules/${id}`,
         {
           content: JSON.stringify(rulePayload),
-          origin: "json",
+          origin: 'json',
         },
-        "PUT"
+        'PUT'
       )
     }
 
     const deleteRoleRules = async (roleId, rules) => {
       return await $requestService.apiReq(
-        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`,
-        { content: "" },
-        "DELETE"
+        `/security/roles/${roleId}/rules?rule_ids=${rules.join(',')}`,
+        { content: '' },
+        'DELETE'
       )
     }
 
     const addRoleRules = async (roleId, rules) => {
       return await $requestService.apiReq(
-        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`,
+        `/security/roles/${roleId}/rules?rule_ids=${rules.join(',')}`,
         {},
-        "POST"
+        'POST'
       )
     }
 
@@ -58,7 +58,7 @@ define(["../../module"], function (module) {
         const result = await $requestService.apiReq(
           `/security/rules?rule_ids=${rule}`,
           {},
-          "DELETE"
+          'DELETE'
         )
 
         if (
@@ -78,7 +78,7 @@ define(["../../module"], function (module) {
     }
 
     const saveRule = async (rule, roles) => {
-      let ruleId = ""
+      let ruleId = ''
       try {
         const result = await fetchNewRule(rule)
         const data = (result.data || {}).data || result
@@ -101,7 +101,7 @@ define(["../../module"], function (module) {
           return result
         } else if (result.data.error) {
           throw new Error(
-            result.data.message || result.data.error || "Cannot save Rule."
+            result.data.message || result.data.error || 'Cannot save Rule.'
           )
         }
       } catch (error) {
@@ -136,7 +136,7 @@ define(["../../module"], function (module) {
           return result
         } else if (result.data.error) {
           throw new Error(
-            result.data.message || result.data.error || "Cannot save Rule."
+            result.data.message || result.data.error || 'Cannot save Rule.'
           )
         }
       } catch (error) {

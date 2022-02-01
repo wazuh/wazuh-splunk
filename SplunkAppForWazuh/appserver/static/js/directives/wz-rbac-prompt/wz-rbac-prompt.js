@@ -1,10 +1,10 @@
-define(["../module"], function (directives) {
-  directives.directive("wzRbacPrompt", function () {
+define(['../module'], function (directives) {
+  directives.directive('wzRbacPrompt', function () {
     return {
-      restrict: "E",
+      restrict: 'E',
       transclude: true,
       scope: {
-        permissions: "=",
+        permissions: '=',
       },
       template: `
 					<wz-forbidden ng-if="!permissions"></wz-forbidden>

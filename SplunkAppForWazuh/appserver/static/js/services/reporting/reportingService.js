@@ -1,5 +1,5 @@
-define(["../module", "jQuery"], function (module, $) {
-  "use strict"
+define(['../module', 'jQuery'], function (module, $) {
+  'use strict'
   class ReportingService {
     constructor(
       $rootScope,
@@ -33,7 +33,7 @@ define(["../module", "jQuery"], function (module, $) {
     betweenDates() {
       try {
         let { earliest_time, latest_time } = JSON.parse(
-          localStorage.getItem("searchTimeRange")
+          localStorage.getItem('searchTimeRange')
         )
         earliest_time = parseFloat(earliest_time)
         latest_time = parseFloat(latest_time)
@@ -112,9 +112,9 @@ define(["../module", "jQuery"], function (module, $) {
     ) {
       try {
         metrics = JSON.stringify(metrics)
-        this.$rootScope.$broadcast("loadingReporting", { status: true })
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
         if (this.vis2png.isWorking()) {
-          this.notification.showSimpleToast("Report in progress")
+          this.notification.showSimpleToast('Report in progress')
           return
         }
         this.$rootScope.$applyAsync()
@@ -129,7 +129,7 @@ define(["../module", "jQuery"], function (module, $) {
         const appliedFilters = this.currentDataService.getSerializedFilters()
 
         const images = await this.vis2png.checkArray(vizz)
-        const name = `wazuh-${isAgents ? "agents" : "overview"}-${tab}-${
+        const name = `wazuh-${isAgents ? 'agents' : 'overview'}-${tab}-${
           (Date.now() / 1000) | 0
         }.pdf`
 
@@ -140,8 +140,8 @@ define(["../module", "jQuery"], function (module, $) {
           timeRange =
             this.betweenDates() ||
             document
-              .getElementById("timePicker")
-              .getElementsByTagName("span")[1].innerHTML
+              .getElementById('timePicker')
+              .getElementsByTagName('span')[1].innerHTML
         } catch (error) {
           timeRange = false
         }
@@ -161,38 +161,38 @@ define(["../module", "jQuery"], function (module, $) {
           searchBar: appliedFilters.searchBar,
           tables: appliedFilters.tables,
           pdfName: tab,
-          section: isAgents ? "agents" : "overview",
+          section: isAgents ? 'agents' : 'overview',
           isAgents,
           timeZone,
         }
-        await this.genericReq("POST", "/report/generate", {
+        await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data),
         })
         this.$rootScope.$applyAsync()
         try {
           const reportingUrl = this.navigationService.updateURLParameter(
             window.location.href,
-            "currentTab",
-            "mg-reporting"
+            'currentTab',
+            'mg-reporting'
           )
           this.notification.showSuccessToast(
             `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
           )
         } catch (error) {
           this.notification.showSuccessToast(
-            "Success. Go to Management ->  Reporting"
+            'Success. Go to Management ->  Reporting'
           )
         }
-        this.$rootScope.$broadcast("loadingReporting", { status: false })
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
         this.$rootScope.reportBusy = false
         this.$rootScope.reportStatus = false
-        this.$rootScope.$broadcast("loadingReporting", { status: false })
-        if (error === "Impossible fetch visualizations") {
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
+        if (error === 'Impossible fetch visualizations') {
           this.notification.showErrorToast(`Reporting error: ${error}.`)
         } else {
-          this.notification.showErrorToast("Reporting error.")
+          this.notification.showErrorToast('Reporting error.')
         }
       }
     }
@@ -201,7 +201,7 @@ define(["../module", "jQuery"], function (module, $) {
       try {
         let tableResults = {}
         let isAgents
-        this.$rootScope.$broadcast("loadingReporting", { status: true })
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
         //Get agent info and formating tables
         try {
           const agent = await Promise.all([
@@ -239,15 +239,15 @@ define(["../module", "jQuery"], function (module, $) {
             group: group.toString(),
           }
         } catch (error) {
-          isAgents = "inventory"
+          isAgents = 'inventory'
         }
 
         //Network interfaces
         const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
-        const networkInterfaceKeys = ["Name", "Mac", "State", "MTU", "Type"]
+        const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
         const networkInterfaceData = netiface.data.data.affected_items.map(
           (i) => {
-            i.mtu = i.mtu ? i.mtu.toString() : "undefined"
+            i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
             return [i.name, i.mac, i.state, i.mtu, i.type]
           }
         )
@@ -255,29 +255,29 @@ define(["../module", "jQuery"], function (module, $) {
           fields: networkInterfaceKeys,
           rows: networkInterfaceData,
         }
-        tableResults["Network interfaces"] = networkInterfaceTable
+        tableResults['Network interfaces'] = networkInterfaceTable
 
         //Network ports
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
-        const networkPortsKeys = ["Local IP", "Local Port", "State", "Protocol"]
+        const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
         const networkPortsData = ports.data.data.affected_items.map((p) => {
-          p.local.port = p.local.port ? p.local.port.toString() : "undefined"
+          p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
           return [p.local.ip, p.local.port, p.state, p.protocol]
         })
         const networkPortsTable = {
           fields: networkPortsKeys,
           rows: networkPortsData,
         }
-        tableResults["Network ports"] = networkPortsTable
+        tableResults['Network ports'] = networkPortsTable
 
         //Network addresses
         const netaddr = await this.apiReq(`/syscollector/${agentId}/netaddr`)
         const networkAdressessKeys = [
-          "Interface",
-          "Address",
-          "Netmask",
-          "Protocol",
-          "Broadcast",
+          'Interface',
+          'Address',
+          'Netmask',
+          'Protocol',
+          'Broadcast',
         ]
         const networkAdressessData = netaddr.data.data.affected_items.map(
           (n) => {
@@ -288,29 +288,29 @@ define(["../module", "jQuery"], function (module, $) {
           fields: networkAdressessKeys,
           rows: networkAdressessData,
         }
-        tableResults["Network addresses"] = networkAdressessTable
+        tableResults['Network addresses'] = networkAdressessTable
 
         //Processes
         const processes = await this.apiReq(
           `/syscollector/${agentId}/processes`
         )
-        const processesKeys = ["Name", "Euser", "Priority", "State"]
+        const processesKeys = ['Name', 'Euser', 'Priority', 'State']
         const processesData = processes.data.data.affected_items.map((n) => {
-          n.nice = n.nice || n.nice === 0 ? n.nice.toString() : "undefined"
+          n.nice = n.nice || n.nice === 0 ? n.nice.toString() : 'undefined'
           n.state = this.keyEquivalence[n.state]
           return [n.name, n.euser, n.nice, n.state]
         })
         const processesTable = { fields: processesKeys, rows: processesData }
-        tableResults["Processes"] = processesTable
+        tableResults['Processes'] = processesTable
 
         //Packages
         const packages = await this.apiReq(`/syscollector/${agentId}/packages`)
-        const packagesKeys = ["Name", "Architecture", "Version", "Description"]
+        const packagesKeys = ['Name', 'Architecture', 'Version', 'Description']
         const packagesData = packages.data.data.affected_items.map((p) => {
           return [p.name, p.architecture, p.version, p.description]
         })
         const packagesTable = { fields: packagesKeys, rows: packagesData }
-        tableResults["Packages"] = packagesTable
+        tableResults['Packages'] = packagesTable
 
         const timeZone = new Date().getTimezoneOffset()
 
@@ -318,77 +318,77 @@ define(["../module", "jQuery"], function (module, $) {
           images: [],
           tableResults,
           timeRange: false,
-          sectionTitle: "Inventory Data",
-          queryFilters: "",
+          sectionTitle: 'Inventory Data',
+          queryFilters: '',
           metrics: {},
-          pdfName: "agents-inventory",
+          pdfName: 'agents-inventory',
           isAgents,
           timeZone,
         }
 
-        await this.genericReq("POST", "/report/generate", {
+        await this.genericReq('POST', '/report/generate', {
           data: JSON.stringify(data),
         })
 
         this.$rootScope.$applyAsync()
         const reportingUrl = this.navigationService.updateURLParameter(
           window.location.href,
-          "currentTab",
-          "mg-reporting"
+          'currentTab',
+          'mg-reporting'
         )
         this.notification.showSuccessToast(
           `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
         )
-        this.$rootScope.$broadcast("loadingReporting", { status: false })
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        this.notification.showErrorToast("Reporting error")
+        this.notification.showErrorToast('Reporting error')
       }
     }
 
     async reportGroupConfiguration(groupName, reportData, apiId) {
       try {
-        this.$rootScope.$broadcast("loadingReporting", { status: true })
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
         const timeZone = new Date().getTimezoneOffset()
 
         const data = {
           images: [],
           apiId: apiId,
           timeRange: false,
-          sectionTitle: "Group " + groupName.name + " configuration",
-          queryFilters: "",
+          sectionTitle: 'Group ' + groupName.name + ' configuration',
+          queryFilters: '',
           metrics: {},
           tableResults: {},
-          pdfName: "group-conf",
+          pdfName: 'group-conf',
           timeZone,
           data: reportData,
           groupName: groupName,
         }
 
-        await this.genericReq("POST", "/report/generateConfigurationReport", {
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
           data: JSON.stringify(data),
         })
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         const reportingUrl = this.navigationService.updateURLParameter(
           window.location.href,
-          "currentTab",
-          "mg-reporting"
+          'currentTab',
+          'mg-reporting'
         )
         this.notification.showSuccessToast(
           `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
         )
-        this.$rootScope.$broadcast("loadingReporting", { status: false })
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
         return
       } catch (error) {
-        this.notification.showErrorToast("Reporting error")
+        this.notification.showErrorToast('Reporting error')
       }
     }
 
     async reportAgentConfiguration(agentId, reportData, apiId) {
       try {
         let isAgents
-        this.$rootScope.$broadcast("loadingReporting", { status: true })
+        this.$rootScope.$broadcast('loadingReporting', { status: true })
         try {
           const agent = await Promise.all([
             this.apiReq(`/agents?q=id=${agentId}`),
@@ -436,26 +436,26 @@ define(["../module", "jQuery"], function (module, $) {
           apiId: apiId,
           timeRange: false,
           sectionTitle: `Agent ${isAgents.ID} configuration`,
-          queryFilters: "",
+          queryFilters: '',
           metrics: {},
           tableResults: {},
-          pdfName: "agent-conf",
+          pdfName: 'agent-conf',
           timeZone,
           data: reportData,
           agentId: agentId,
         }
 
-        await this.genericReq("POST", "/report/generateConfigurationReport", {
+        await this.genericReq('POST', '/report/generateConfigurationReport', {
           data: JSON.stringify(data),
         })
 
-        this.$rootScope.$broadcast("loadingReporting", { status: false })
+        this.$rootScope.$broadcast('loadingReporting', { status: false })
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
         const reportingUrl = this.navigationService.updateURLParameter(
           window.location.href,
-          "currentTab",
-          "mg-reporting"
+          'currentTab',
+          'mg-reporting'
         )
         this.notification.showSuccessToast(
           `Success. Go to Management -> <a href=${reportingUrl}> Reporting </a>`
@@ -464,10 +464,10 @@ define(["../module", "jQuery"], function (module, $) {
 
         return
       } catch (error) {
-        this.notification.showErrorToast("Reporting error")
+        this.notification.showErrorToast('Reporting error')
       }
     }
   }
 
-  module.service("$reportingService", ReportingService)
+  module.service('$reportingService', ReportingService)
 })

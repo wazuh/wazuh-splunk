@@ -10,38 +10,38 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../module", "Dropzone"], function (app, Dropzone) {
-  "use strict"
-  app.directive("wzUploadFiles", function (BASE_URL) {
+define(['../module', 'Dropzone'], function (app, Dropzone) {
+  'use strict'
+  app.directive('wzUploadFiles', function (BASE_URL) {
     return {
-      restrict: "E",
+      restrict: 'E',
       scope: {
-        uploadTitle: "@uploadTitle",
-        allowedExtensions: "=allowedExtensions",
-        refreshList: "&",
-        resource: "@resource",
+        uploadTitle: '@uploadTitle',
+        allowedExtensions: '=allowedExtensions',
+        refreshList: '&',
+        resource: '@resource',
       },
       controller($scope, $currentDataService) {
         $scope.noFilesAdded = true
-        var previewNode = document.querySelector("#template")
-        previewNode.id = ""
+        var previewNode = document.querySelector('#template')
+        previewNode.id = ''
         var previewTemplate = previewNode.parentNode.innerHTML
         setTimeout(() => {
-          previewNode.parentNode.innerHTML = ""
+          previewNode.parentNode.innerHTML = ''
         }, 250)
 
         const apiId = $currentDataService.getApi()
-        const currentApi = apiId["_key"]
+        const currentApi = apiId['_key']
 
-        $scope.myDropzone = new Dropzone("#myDropzone", {
+        $scope.myDropzone = new Dropzone('#myDropzone', {
           url: `en-us/custom/SplunkAppForWazuh/manager/upload_file?apiId=${currentApi}&resource=${$scope.resource}`,
           autoProcessQueue: false,
           parallelUploads: 5,
           maxFiles: 5,
           previewTemplate: previewTemplate,
-          previewsContainer: "#previews",
+          previewsContainer: '#previews',
           acceptedFiles: $scope.allowedExtensions,
-          method: "POST",
+          method: 'POST',
         })
 
         $scope.removeAllFiles = () => {
@@ -56,14 +56,14 @@ define(["../module", "Dropzone"], function (app, Dropzone) {
           }
         }
 
-        $scope.myDropzone.on("success", function (file, message) {
+        $scope.myDropzone.on('success', function (file, message) {
           message = JSON.parse(message)
           if (file.previewElement) {
-            file.previewElement.classList.add("dz-error")
+            file.previewElement.classList.add('dz-error')
 
             for (
               var _iterator7 = file.previewElement.querySelectorAll(
-                  "[data-dz-errormessage]"
+                  '[data-dz-errormessage]'
                 ),
                 _isArray7 = Array.isArray(_iterator7),
                 _i7 = 0,
@@ -87,25 +87,25 @@ define(["../module", "Dropzone"], function (app, Dropzone) {
 
               var node = _ref6
 
-              if (message.status === "200") {
-                node.classList.add("wz-success-message")
+              if (message.status === '200') {
+                node.classList.add('wz-success-message')
               } else {
-                node.classList.add("wz-error-message")
+                node.classList.add('wz-error-message')
               }
-              node.textContent = message.text || "Unknown error"
+              node.textContent = message.text || 'Unknown error'
             }
           }
         })
 
-        $scope.myDropzone.on("error", function (_file, jsonResponse) {
-          if (jsonResponse["ValidationMessage"] != null) {
-            $scope.errorMessage += jsonResponse["ValidationMessage"]
+        $scope.myDropzone.on('error', function (_file, jsonResponse) {
+          if (jsonResponse['ValidationMessage'] != null) {
+            $scope.errorMessage += jsonResponse['ValidationMessage']
           } else {
-            $scope.errorMessage += "unknown error"
+            $scope.errorMessage += 'unknown error'
           }
         })
 
-        $scope.myDropzone.on("removedfile", function (_file) {
+        $scope.myDropzone.on('removedfile', function (_file) {
           if ($scope.myDropzone.files.length === 0) {
             $scope.noFilesAdded = true
             $scope.$applyAsync()
@@ -114,7 +114,7 @@ define(["../module", "Dropzone"], function (app, Dropzone) {
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-upload-files/wz-upload-files.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-upload-files/wz-upload-files.html',
     }
   })
 })

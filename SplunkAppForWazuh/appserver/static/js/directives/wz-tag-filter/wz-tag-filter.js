@@ -10,20 +10,20 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../module"], function (app) {
-  "use strict"
-  app.directive("wzTagFilter", function (BASE_URL) {
+define(['../module'], function (app) {
+  'use strict'
+  app.directive('wzTagFilter', function (BASE_URL) {
     return {
-      restrict: "E",
+      restrict: 'E',
       scope: {
-        path: "=path",
-        queryFn: "&",
-        fieldsModel: "=",
+        path: '=path',
+        queryFn: '&',
+        fieldsModel: '=',
       },
       controller($scope, $timeout, $document, $notificationService) {
         $scope.tagList = []
         $scope.groupedTagList = []
-        $scope.newTag = ""
+        $scope.newTag = ''
         $scope.isAutocomplete = false
         $scope.dataModel = []
         $scope.connectors = []
@@ -33,13 +33,13 @@ define(["../module"], function (app) {
         $scope.addTag = (flag = false) => {
           try {
             const input = $document[0].getElementById(
-              "wz-search-filter-bar-input"
+              'wz-search-filter-bar-input'
             )
             input.blur()
-            const term = $scope.newTag.split(":")
+            const term = $scope.newTag.split(':')
             const obj = {
               name: term[0].trim(),
-              value: term[1] ? term[1].trim() : "",
+              value: term[1] ? term[1].trim() : '',
             }
             const isFilter = obj.value
             if (
@@ -48,16 +48,16 @@ define(["../module"], function (app) {
               (!isFilter && (!obj.name || /^\s*$/.test(obj.name)))
             ) {
               $scope.showAutocomplete(flag)
-              $scope.newTag = ""
+              $scope.newTag = ''
             } else {
               const tag = {
                 id: generateUID(),
                 key: obj.name,
                 value: obj,
-                type: isFilter ? "filter" : "search",
+                type: isFilter ? 'filter' : 'search',
               }
               const idxSearch = $scope.tagList.find(function (x) {
-                return x.type === "search"
+                return x.type === 'search'
               })
               if (!isFilter && idxSearch) {
                 $scope.removeTag(
@@ -71,7 +71,7 @@ define(["../module"], function (app) {
               if (
                 !$scope.tagList.find(function (x) {
                   return (
-                    x.type === "filter" &&
+                    x.type === 'filter' &&
                     x.key === tag.key &&
                     x.value.value.toUpperCase() ===
                       tag.value.value.toUpperCase()
@@ -79,15 +79,15 @@ define(["../module"], function (app) {
                 })
               ) {
                 $scope.tagList.push(tag)
-                $scope.groupedTagList = groupBy($scope.tagList, "key")
+                $scope.groupedTagList = groupBy($scope.tagList, 'key')
                 $scope.connectors = addConnectors($scope.groupedTagList)
                 buildQuery($scope.groupedTagList)
               }
               $scope.showAutocomplete(flag)
-              $scope.newTag = ""
+              $scope.newTag = ''
             }
           } catch (error) {
-            $notificationService.showErrorToast(error, "Error adding filter")
+            $notificationService.showErrorToast(error, 'Error adding filter')
           }
         }
 
@@ -98,11 +98,11 @@ define(["../module"], function (app) {
         const buildQuery = (groups) => {
           try {
             const queryObj = {
-              query: "",
-              search: "",
+              query: '',
+              search: '',
             }
             groups.forEach((group, idx) => {
-              const search = group.find((x) => x.type === "search")
+              const search = group.find((x) => x.type === 'search')
               if (search) {
                 $scope.searchIdx = idx
                 queryObj.search = search.value.name
@@ -114,21 +114,21 @@ define(["../module"], function (app) {
               } else {
                 const twoOrMoreElements = group.length > 1
                 if (twoOrMoreElements) {
-                  queryObj.query += "("
+                  queryObj.query += '('
                 }
                 group
-                  .filter((x) => x.type === "filter")
+                  .filter((x) => x.type === 'filter')
                   .forEach((tag, idx2) => {
                     const value =
-                      tag.value.value === "unknown" ? "null" : tag.value.value
-                    queryObj.query += tag.key + "~" + value
+                      tag.value.value === 'unknown' ? 'null' : tag.value.value
+                    queryObj.query += tag.key + '~' + value
                     if (idx2 != group.length - 1) {
                       queryObj.query +=
                         $scope.connectors[idx].subgroup[idx2].value
                     }
                   })
                 if (twoOrMoreElements) {
-                  queryObj.query += ")"
+                  queryObj.query += ')'
                 }
                 if (idx !== groups.length - 1) {
                   queryObj.query += $scope.connectors[idx].value
@@ -138,7 +138,7 @@ define(["../module"], function (app) {
             $scope.$applyAsync()
             $scope.queryFn({ q: queryObj.query, search: queryObj.search })
           } catch (error) {
-            $notificationService.showErrorToast(error, "Error in query request")
+            $notificationService.showErrorToast(error, 'Error in query request')
           }
         }
 
@@ -155,14 +155,14 @@ define(["../module"], function (app) {
                       ((($scope.connectors || [])[index] || {}).subgroup || [])[
                         idx
                       ] || {}
-                    ).value || ",",
+                    ).value || ',',
                 })
               }
             })
             if (subGroup.length > 0) result[index].subgroup = subGroup
             if (index != groups.length - 1) {
               result[index].value =
-                (($scope.connectors || [])[index] || {}).value || ";"
+                (($scope.connectors || [])[index] || {}).value || ';'
             }
           })
           return result
@@ -174,13 +174,13 @@ define(["../module"], function (app) {
               parentIdx === $scope.searchIdx) &&
             idx === undefined
           ) {
-            $scope.connectors[parentIdx].value = ";"
+            $scope.connectors[parentIdx].value = ';'
           } else {
             if (idx !== undefined) {
-              $scope.connectors[parentIdx].subgroup[idx].value = ","
+              $scope.connectors[parentIdx].subgroup[idx].value = ','
             } else {
               const value = $scope.connectors[parentIdx].value
-              $scope.connectors[parentIdx].value = value === ";" ? "," : ";"
+              $scope.connectors[parentIdx].value = value === ';' ? ',' : ';'
               buildQuery($scope.groupedTagList)
             }
           }
@@ -195,7 +195,7 @@ define(["../module"], function (app) {
           for (; i < collection.length; i++) {
             val = collection[i][property]
             index = values.indexOf(val)
-            if (index > -1 && collection[i].type === "filter")
+            if (index > -1 && collection[i].type === 'filter')
               result[index].push(collection[i])
             else {
               values.push(val)
@@ -205,13 +205,13 @@ define(["../module"], function (app) {
           return result
         }
         $scope.addTagKey = (key) => {
-          $scope.newTag = key + ":"
+          $scope.newTag = key + ':'
           $scope.showAutocomplete(true)
         }
         $scope.addTagValue = (value) => {
           $scope.newTag = $scope.newTag.substring(
             0,
-            $scope.newTag.indexOf(":") + 1
+            $scope.newTag.indexOf(':') + 1
           )
           $scope.newTag += value
           $scope.addTag()
@@ -244,8 +244,8 @@ define(["../module"], function (app) {
           if ($scope.tagList.length <= 1) {
             $scope.connectors = [{}]
           }
-          $scope.groupedTagList = groupBy($scope.tagList, "key")
-          const search = $scope.tagList.find((x) => x.type === "search")
+          $scope.groupedTagList = groupBy($scope.tagList, 'key')
+          const search = $scope.tagList.find((x) => x.type === 'search')
           if (!search) {
             $scope.searchIdx = false
           }
@@ -271,10 +271,10 @@ define(["../module"], function (app) {
           indexAutocomplete(flag)
         }
         $scope.getAutocompleteContent = () => {
-          const term = $scope.newTag.split(":")
-          const isKey = !term[1] && $scope.newTag.indexOf(":") === -1
-          $scope.autocompleteContent = { title: "", isKey: isKey, list: [] }
-          $scope.autocompleteContent.title = isKey ? "Filter keys" : "Values"
+          const term = $scope.newTag.split(':')
+          const isKey = !term[1] && $scope.newTag.indexOf(':') === -1
+          $scope.autocompleteContent = { title: '', isKey: isKey, list: [] }
+          $scope.autocompleteContent.title = isKey ? 'Filter keys' : 'Values'
           if (isKey) {
             for (let key in $scope.fieldsModel) {
               if (key.toUpperCase().includes(term[0].trim().toUpperCase())) {
@@ -283,7 +283,7 @@ define(["../module"], function (app) {
             }
           } else {
             const model = $scope.dataModel.find(function (x) {
-              return x.key === $scope.newTag.split(":")[0].trim()
+              return x.key === $scope.newTag.split(':')[0].trim()
             })
 
             if (model) {
@@ -304,21 +304,21 @@ define(["../module"], function (app) {
         }
         const indexAutocomplete = (flag = true) => {
           $timeout(() => {
-            const bar = $document[0].getElementById("wz-search-filter-bar")
+            const bar = $document[0].getElementById('wz-search-filter-bar')
             const autocomplete = $document[0].getElementById(
-              "wz-search-filter-bar-autocomplete"
+              'wz-search-filter-bar-autocomplete'
             )
             const input = $document[0].getElementById(
-              "wz-search-filter-bar-input"
+              'wz-search-filter-bar-input'
             )
             if (autocomplete) {
-              autocomplete.style.left = input.offsetLeft - bar.scrollLeft + "px"
+              autocomplete.style.left = input.offsetLeft - bar.scrollLeft + 'px'
             }
             if (flag) {
               input.focus()
             }
-            $("#wz-search-filter-bar-autocomplete-list li").removeClass(
-              "selected"
+            $('#wz-search-filter-bar-autocomplete-list li').removeClass(
+              'selected'
             )
           }, 100)
         }
@@ -337,19 +337,19 @@ define(["../module"], function (app) {
           // to ensure the random number provide enough bits.
           let firstPart = (Math.random() * 46656) | 0
           let secondPart = (Math.random() * 46656) | 0
-          firstPart = ("000" + firstPart.toString(36)).slice(-3)
-          secondPart = ("000" + secondPart.toString(36)).slice(-3)
+          firstPart = ('000' + firstPart.toString(36)).slice(-3)
+          secondPart = ('000' + secondPart.toString(36)).slice(-3)
           return firstPart + secondPart
         }
-        $("#wz-search-filter-bar-input").bind("keydown", function (e) {
+        $('#wz-search-filter-bar-input').bind('keydown', function (e) {
           let $current = $(
-            "#wz-search-filter-bar-autocomplete-list li.selected"
+            '#wz-search-filter-bar-autocomplete-list li.selected'
           )
           if ($current.length === 0 && (e.keyCode === 38 || e.keyCode === 40)) {
-            $("#wz-search-filter-bar-autocomplete-list li")
+            $('#wz-search-filter-bar-autocomplete-list li')
               .first()
-              .addClass("selected")
-            $current = $("#wz-search-filter-bar-autocomplete-list li.selected")
+              .addClass('selected')
+            $current = $('#wz-search-filter-bar-autocomplete-list li.selected')
           } else {
             let $next
             switch (e.keyCode) {
@@ -377,19 +377,19 @@ define(["../module"], function (app) {
               (e.keyCode === 38 || e.keyCode === 40)
             ) {
               const input = $document[0].getElementById(
-                "wz-search-filter-bar-input"
+                'wz-search-filter-bar-input'
               )
               input.focus()
-              $("#wz-search-filter-bar-autocomplete-list li").removeClass(
-                "selected"
+              $('#wz-search-filter-bar-autocomplete-list li').removeClass(
+                'selected'
               )
-              $next.addClass("selected")
+              $next.addClass('selected')
             }
           }
         })
-        $("#wz-search-filter-bar-input").attr("autocomplete", "off")
+        $('#wz-search-filter-bar-input').attr('autocomplete', 'off')
 
-        $scope.$on("reloadSearchFilterBar", () => {
+        $scope.$on('reloadSearchFilterBar', () => {
           buildQuery($scope.groupedTagList)
         })
 
@@ -397,7 +397,7 @@ define(["../module"], function (app) {
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-tag-filter/wz-tag-filter.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-tag-filter/wz-tag-filter.html',
     }
   })
 })

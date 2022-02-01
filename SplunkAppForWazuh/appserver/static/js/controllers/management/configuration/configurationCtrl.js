@@ -1,8 +1,8 @@
-define(["../../module", "../../../utils/config-handler"], function (
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
-  "use strict"
+  'use strict'
 
   class ConfigurationController {
     /**
@@ -36,8 +36,8 @@ define(["../../module", "../../../utils/config-handler"], function (
         this.notification
       )
       this.scope.currentConfig = null
-      this.scope.configurationTab = ""
-      this.scope.configurationSubTab = ""
+      this.scope.configurationTab = ''
+      this.scope.configurationSubTab = ''
       this.scope.integrations = {}
       this.scope.selectedItem = 0
       this.clusterInfo = clusterInfo
@@ -50,7 +50,7 @@ define(["../../module", "../../../utils/config-handler"], function (
 
       this.scope.isManager = true
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
     }
@@ -74,10 +74,10 @@ define(["../../module", "../../../utils/config-handler"], function (
         this.scope.showInfo = () => this.showInfo()
         this.scope.getXML = () => this.configurationHandler.getXML(this.scope)
         this.scope.getJSON = () => this.configurationHandler.getJSON(this.scope)
-        this.scope.isString = (item) => typeof item === "string"
+        this.scope.isString = (item) => typeof item === 'string'
         this.scope.changeNode = (node) => this.changeNode(node)
         this.scope.hasSize = (obj) =>
-          obj && typeof obj === "object" && Object.keys(obj).length
+          obj && typeof obj === 'object' && Object.keys(obj).length
         this.scope.switchConfigTab = (configurationTab, sections) => {
           this.currentConfigTab = configurationTab
           this.currentSections = sections
@@ -122,9 +122,9 @@ define(["../../module", "../../../utils/config-handler"], function (
         }
 
         this.scope.formatAzureType = (type) => {
-          if (type === "log_analytics") return "Azure Log Analytics"
-          if (type === "graph") return "Azure Active Directory Graph"
-          if (type === "storage") return "Azure Storage"
+          if (type === 'log_analytics') return 'Azure Log Analytics'
+          if (type === 'graph') return 'Azure Active Directory Graph'
+          if (type === 'storage') return 'Azure Storage'
 
           return type // if it's not one of the above then it's a custom tag
         }
@@ -136,11 +136,11 @@ define(["../../module", "../../../utils/config-handler"], function (
         this.scope.canUpdateConfig = () => {
           if (this.scope.selectedNode)
             return this.isAllowed(
-              "CLUSTER_UPDATE_CONFIG",
-              ["NODE_ID"],
+              'CLUSTER_UPDATE_CONFIG',
+              ['NODE_ID'],
               [this.scope.selectedNode]
             )
-          else return this.isAllowed("MANAGER_UPDATE_CONFIG", ["RESOURCELESS"])
+          else return this.isAllowed('MANAGER_UPDATE_CONFIG', ['RESOURCELESS'])
         }
 
         // True if the request on the resolver was successful
@@ -199,5 +199,5 @@ define(["../../module", "../../../utils/config-handler"], function (
     }
   }
 
-  controllers.controller("configurationCtrl", ConfigurationController)
+  controllers.controller('configurationCtrl', ConfigurationController)
 })

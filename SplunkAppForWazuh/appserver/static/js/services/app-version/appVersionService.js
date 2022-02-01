@@ -1,18 +1,18 @@
 const metadataApp = {
-  version: "4.3.0",
-  revision: "4301",
+  version: '4.3.0',
+  revision: '4301',
 }
 
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
   module.metadata = metadataApp
-  module.constant("APP_META", {
+  module.constant('APP_META', {
     version: module.metadata.version,
     revision: module.metadata.revision,
   })
-  module.service("$appVersionService", function (APP_META) {
-    let appInfo = { revision: "", version: "", splunk_version: "" }
-    let documentationAppVersion = ""
+  module.service('$appVersionService', function (APP_META) {
+    let appInfo = { revision: '', version: '', splunk_version: '' }
+    let documentationAppVersion = ''
     const getAppVersion = () => {
       return appInfo
     }
@@ -22,8 +22,8 @@ define(["../module"], function (module) {
      */
     const setAppInfo = (info) => {
       appInfo = info
-      const [major, minor] = appInfo.version.split(".")
-      documentationAppVersion = [major, minor].join(".")
+      const [major, minor] = appInfo.version.split('.')
+      documentationAppVersion = [major, minor].join('.')
     }
 
     const getDocumentationVersion = () => {

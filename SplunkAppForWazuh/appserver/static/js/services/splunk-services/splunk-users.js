@@ -1,5 +1,5 @@
-define(["../module"], function (app) {
-  "use strict"
+define(['../module'], function (app) {
+  'use strict'
 
   /**
    * Class to handle Splunk's users.
@@ -46,7 +46,7 @@ define(["../module"], function (app) {
         const user = (await this.getCurrentUser()).data.name
         const roles = (await this.getInternalUsers()).data[user].roles
 
-        return roles.includes("admin")
+        return roles.includes('admin')
       } catch (err) {
         return Promise.reject(err)
       }
@@ -54,5 +54,5 @@ define(["../module"], function (app) {
   }
 
   // Register current class as a service
-  app.service("$splunkUsers", SplunkUsers)
+  app.service('$splunkUsers', SplunkUsers)
 })

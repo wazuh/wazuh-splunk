@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-unused-vars */
 /*
  * Wazuh app - Dev tools controller
  * Copyright (C) 2015-2019 Wazuh, Inc.
@@ -10,20 +12,20 @@
  * Find more information about this on the LICENSE file.
  */
 define([
-  "../module",
-  "jQuery",
-  "../../libs/codemirror-conv/lib/codemirror",
-  "../../libs/codemirror-conv/json-lint",
-  "../../libs/codemirror-conv/javascript",
-  "../../libs/codemirror-conv/brace-fold",
-  "../../libs/codemirror-conv/foldcode",
-  "../../libs/codemirror-conv/foldgutter",
-  "../../libs/codemirror-conv/search-cursor",
-  "../../libs/codemirror-conv/mark-selection",
-  "../../libs/codemirror-conv/show-hint",
-  "../../libs/codemirror-conv/querystring-browser/bundle",
-  "../../utils/excluded-devtools-autocomplete-keys",
-  "FileSaver",
+  '../module',
+  'jQuery',
+  '../../libs/codemirror-conv/lib/codemirror',
+  '../../libs/codemirror-conv/json-lint',
+  '../../libs/codemirror-conv/javascript',
+  '../../libs/codemirror-conv/brace-fold',
+  '../../libs/codemirror-conv/foldcode',
+  '../../libs/codemirror-conv/foldgutter',
+  '../../libs/codemirror-conv/search-cursor',
+  '../../libs/codemirror-conv/mark-selection',
+  '../../libs/codemirror-conv/show-hint',
+  '../../libs/codemirror-conv/querystring-browser/bundle',
+  '../../utils/excluded-devtools-autocomplete-keys',
+  'FileSaver',
 ], function (
   app,
   $,
@@ -39,7 +41,7 @@ define([
   queryString,
   ExcludedIntelliSenseTriggerKeys
 ) {
-  "use strict"
+  'use strict'
   class DevToolsController {
     /**
      * Constructor
@@ -92,19 +94,19 @@ define([
         })
 
         // eslint-disable-next-line
-        $(this.$document[0]).keyup((e) => {
+        $(this.$document[0]).keyup((_) => {
           this.multipleKeyPressed = []
         })
         this.apiInputBox = CodeMirror.fromTextArea(
-          this.$document[0].getElementById("api_input"),
+          this.$document[0].getElementById('api_input'),
           {
             lineNumbers: true,
             matchBrackets: true,
-            mode: { name: "javascript", json: true },
-            theme: "ttcn",
+            mode: { name: 'javascript', json: true },
+            theme: 'ttcn',
             foldGutter: true,
             styleSelectedText: true,
-            gutters: ["CodeMirror-foldgutter"],
+            gutters: ['CodeMirror-foldgutter'],
           }
         )
         // Register plugin for code mirror
@@ -114,7 +116,7 @@ define([
           })
         }
 
-        this.apiInputBox.on("change", () => {
+        this.apiInputBox.on('change', () => {
           this.groups = this.analyzeGroups()
           const currentState = this.apiInputBox.getValue().toString()
           this.appState.setCurrentDevTools(currentState)
@@ -129,24 +131,24 @@ define([
           }
         })
 
-        this.apiInputBox.on("cursorActivity", () => {
+        this.apiInputBox.on('cursorActivity', () => {
           const currentGroup = this.calculateWhichGroup()
           this.highlightGroup(currentGroup)
           this.checkJsonParseError()
         })
 
         this.apiOutputBox = CodeMirror.fromTextArea(
-          this.$document[0].getElementById("api_output"),
+          this.$document[0].getElementById('api_output'),
           {
             lineNumbers: true,
             matchBrackets: true,
-            mode: { name: "javascript", json: true },
+            mode: { name: 'javascript', json: true },
             readOnly: true,
             lineWrapping: true,
             styleActiveLine: true,
-            theme: "ttcn",
+            theme: 'ttcn',
             foldGutter: true,
-            gutters: ["CodeMirror-foldgutter"],
+            gutters: ['CodeMirror-foldgutter'],
           }
         )
 
@@ -173,9 +175,9 @@ define([
       try {
         // eslint-disable-next-line
         const blob = new Blob([this.apiOutputBox.getValue()], {
-          type: "application/json",
+          type: 'application/json',
         })
-        saveAs(blob, "export.json") // eslint-disable-line
+        saveAs(blob, 'export.json') // eslint-disable-line
       } catch (error) {
         this.notification.showErrorToast(error.message || error)
       }
@@ -192,15 +194,15 @@ define([
         const tmpgroups = []
         const splitted = currentState
           .split(/[\r\n]+(?=(?:GET|PUT|POST|DELETE|#)\b)/gm)
-          .filter((item) => item.replace(/\s/g, "").length)
+          .filter((item) => item.replace(/\s/g, '').length)
         let start = 0
         let end = 0
         let starts = []
         const slen = splitted.length
         for (let i = 0; i < slen; i++) {
-          let tmp = splitted[i].split("\n")
+          let tmp = splitted[i].split('\n')
           if (Array.isArray(tmp))
-            tmp = tmp.filter((item) => !item.includes("#"))
+            tmp = tmp.filter((item) => !item.includes('#'))
           const cursor = this.apiInputBox.getSearchCursor(splitted[i], null, {
             multiline: true,
           })
@@ -231,19 +233,19 @@ define([
           end = start + tmp.length
 
           const tmpRequestText = tmp[0]
-          let tmpRequestTextJson = ""
+          let tmpRequestTextJson = ''
 
           const tmplen = tmp.length
           for (let j = 1; j < tmplen; ++j) {
-            if (!!tmp[j] && !tmp[j].includes("#")) {
+            if (!!tmp[j] && !tmp[j].includes('#')) {
               tmpRequestTextJson += tmp[j]
             }
           }
 
-          if (tmpRequestTextJson && typeof tmpRequestTextJson === "string") {
+          if (tmpRequestTextJson && typeof tmpRequestTextJson === 'string') {
             let rtjlen = tmp.length
             while (rtjlen--) {
-              if (tmp[rtjlen].trim() === "}") break
+              if (tmp[rtjlen].trim() === '}') break
               else end -= 1
             }
           }
@@ -281,8 +283,8 @@ define([
       for (const line of this.linesWithClass) {
         this.apiInputBox.removeLineClass(
           line,
-          "background",
-          "CodeMirror-styled-background"
+          'background',
+          'CodeMirror-styled-background'
         )
       }
       this.linesWithClass = []
@@ -291,8 +293,8 @@ define([
           this.linesWithClass.push(
             this.apiInputBox.addLineClass(
               group.start,
-              "background",
-              "CodeMirror-styled-background"
+              'background',
+              'CodeMirror-styled-background'
             )
           )
           return
@@ -301,8 +303,8 @@ define([
           this.linesWithClass.push(
             this.apiInputBox.addLineClass(
               i,
-              "background",
-              "CodeMirror-styled-background"
+              'background',
+              'CodeMirror-styled-background'
             )
           )
         }
@@ -324,19 +326,19 @@ define([
             jsonLint.parse(item.requestTextJson)
           } catch (error) {
             affectedGroups.push(item.requestText)
-            const msg = this.$document[0].createElement("div")
+            const msg = this.$document[0].createElement('div')
             msg.id = new Date().getTime() / 1000
-            const icon = msg.appendChild(this.$document[0].createElement("div"))
+            const icon = msg.appendChild(this.$document[0].createElement('div'))
 
-            icon.className = "lint-error-icon"
+            icon.className = 'lint-error-icon'
             icon.id = new Date().getTime() / 1000
             icon.onmouseover = () => {
               const advice = msg.appendChild(
-                this.$document[0].createElement("span")
+                this.$document[0].createElement('span')
               )
               advice.id = new Date().getTime() / 1000
-              advice.innerText = error.message || "Error parsing query"
-              advice.className = "lint-block-wz"
+              advice.innerText = error.message || 'Error parsing query'
+              advice.className = 'lint-block-wz'
             }
 
             icon.onmouseleave = () => {
@@ -362,8 +364,8 @@ define([
     async getAvailableMethods() {
       try {
         const response = await this.request.httpReq(
-          "GET",
-          "/api/autocomplete",
+          'GET',
+          '/api/autocomplete',
           {}
         )
         this.apiInputBox.model = !response.error ? response.data : []
@@ -376,23 +378,23 @@ define([
      * This set some required settings at init
      */
     init() {
-      this.apiInputBox.setSize("auto", "100%")
+      this.apiInputBox.setSize('auto', '100%')
       this.apiInputBox.model = []
       this.getAvailableMethods()
-      this.apiInputBox.on("keyup", function (cm, e) {
+      this.apiInputBox.on('keyup', function (cm, e) {
         if (
           !ExcludedIntelliSenseTriggerKeys[(e.keyCode || e.which).toString()]
         ) {
-          cm.execCommand("autocomplete", null, {
+          cm.execCommand('autocomplete', null, {
             completeSingle: false,
           })
         }
       })
-      this.apiOutputBox.setSize("auto", "100%")
+      this.apiOutputBox.setSize('auto', '100%')
       const currentState = this.appState.getCurrentDevTools()
       if (!currentState) {
         const demoStr =
-          "GET /agents?status=active\n\n#Example comment\nGET /manager/info\n\nGET /syscollector/000/packages?search=ssh\n" +
+          'GET /agents?status=active\n\n#Example comment\nGET /manager/info\n\nGET /syscollector/000/packages?search=ssh\n' +
           JSON.stringify({ limit: 5 }, null, 2)
 
         this.appState.setCurrentDevTools(demoStr)
@@ -405,7 +407,7 @@ define([
       this.highlightGroup(currentGroup)
       const self = this
       // Register our custom Codemirror hint plugin.
-      CodeMirror.registerHelper("hint", "dictionaryHint", function (editor) {
+      CodeMirror.registerHelper('hint', 'dictionaryHint', function (editor) {
         const model = editor.model
         function getDictionary(line, word) {
           let hints = []
@@ -430,7 +432,7 @@ define([
           const inputEndpoint =
             (inputPath &&
               inputPath
-                .split("/")
+                .split('/')
                 .filter((item) => item)
                 .map((item) => item.toLowerCase())) ||
             []
@@ -442,7 +444,7 @@ define([
           const apiEndpoint = inputHttpMethodEndpoints
             .map((endpoint) => ({
               ...endpoint,
-              splitURL: endpoint.name.split("/").filter((item) => item),
+              splitURL: endpoint.name.split('/').filter((item) => item),
             }))
             .filter(
               (endpoint) => endpoint.splitURL.length === inputEndpoint.length
@@ -451,7 +453,7 @@ define([
               endpoint.splitURL.reduce(
                 (accum, str, index) =>
                   accum &&
-                  (str.startsWith(":")
+                  (str.startsWith(':')
                     ? true
                     : str.toLowerCase() === inputEndpoint[index]),
                 true
@@ -462,7 +464,7 @@ define([
             exp[0] &&
             currentGroup &&
             currentGroup.start === editorCursor.line &&
-            !word.includes("{")
+            !word.includes('{')
           ) {
             // Get hints for requests as: http_method api_path?query_params
             if (inputHttpMethod && inputPath && inputQueryParamsStart) {
@@ -470,21 +472,21 @@ define([
               const inputQuery =
                 (inputQueryParams &&
                   inputQueryParams
-                    .split("&")
+                    .split('&')
                     .filter((item) => item)
                     .map((item) => {
-                      const [key, value] = item.split("=")
+                      const [key, value] = item.split('=')
                       return { key, value }
                     })) ||
                 []
               // It is defining query param value query_param=
               const definingQueryParamValue =
-                inputQueryParams && inputQueryParams.includes("&")
-                  ? inputRequest.lastIndexOf("=") >
-                    inputRequest.lastIndexOf("&")
-                  : !!(inputQueryParams || "").includes("?") ||
-                    inputRequest.lastIndexOf("=") >
-                      inputRequest.lastIndexOf("?")
+                inputQueryParams && inputQueryParams.includes('&')
+                  ? inputRequest.lastIndexOf('=') >
+                    inputRequest.lastIndexOf('&')
+                  : !!(inputQueryParams || '').includes('?') ||
+                    inputRequest.lastIndexOf('=') >
+                      inputRequest.lastIndexOf('?')
 
               if (
                 !definingQueryParamValue &&
@@ -505,15 +507,15 @@ define([
                         .filter((query) => query.key && query.value)
                         .reduce(
                           (accum, query, index) =>
-                            `${accum}${index > 0 ? "&" : ""}${query.key}=${
+                            `${accum}${index > 0 ? '&' : ''}${query.key}=${
                               query.value
                             }`,
-                          "?"
+                          '?'
                         )}${
                         inputQuery.filter((query) => query.key && query.value)
                           .length > 0
-                          ? "&"
-                          : ""
+                          ? '&'
+                          : ''
                       }${item.name}=`
                   )
               }
@@ -528,7 +530,7 @@ define([
                 hints = inputHttpMethodEndpoints
                   .map((endpoint) => ({
                     ...endpoint,
-                    splitURL: endpoint.name.split("/").filter((item) => item),
+                    splitURL: endpoint.name.split('/').filter((item) => item),
                   }))
                   .filter((endpoint) =>
                     endpoint.splitURL.reduce((accum, splitPath, index) => {
@@ -536,7 +538,7 @@ define([
                         return accum
                       }
                       if (
-                        splitPath.startsWith(":") ||
+                        splitPath.startsWith(':') ||
                         !inputEndpoint[index] ||
                         (inputEndpoint[index] &&
                           splitPath.startsWith(inputEndpoint[index]))
@@ -549,10 +551,10 @@ define([
                     endpoint.splitURL.reduce(
                       (accum, splitPath, index) =>
                         `${accum}/${
-                          (splitPath.startsWith(":") && inputEndpoint[index]) ||
+                          (splitPath.startsWith(':') && inputEndpoint[index]) ||
                           splitPath
                         }`,
-                      ""
+                      ''
                     )
                   )
               }
@@ -566,16 +568,16 @@ define([
             currentGroup.end > editorCursor.line
           ) {
             const reLineStart = /^(\s*)(?:"|')(\S*)(?::)?$/ // Line starts with
-            const spaceLineStart = (line.match(reLineStart) || [])[1] || ""
-            const inputKeyBodyParam = (line.match(reLineStart) || [])[2] || ""
+            const spaceLineStart = (line.match(reLineStart) || [])[1] || ''
+            const inputKeyBodyParam = (line.match(reLineStart) || [])[2] || ''
 
             const renderBodyParam = (parameter, spaceLineStart) => {
-              let valueBodyParam = ""
-              if (parameter.type === "string") {
+              let valueBodyParam = ''
+              if (parameter.type === 'string') {
                 valueBodyParam = '""'
-              } else if (parameter.type === "array") {
-                valueBodyParam = "[]"
-              } else if (parameter.type === "object") {
+              } else if (parameter.type === 'array') {
+                valueBodyParam = '[]'
+              } else if (parameter.type === 'object') {
                 const paramPropertiesKeys = Object.keys(
                   parameter.properties
                 ).sort()
@@ -588,10 +590,10 @@ define([
                           name: keyProperty,
                           ...parameter.properties[keyProperty],
                         },
-                        spaceLineStart + "\t"
-                      )}${lastIndex !== index ? "," : ""}`
+                        spaceLineStart + '\t'
+                      )}${lastIndex !== index ? ',' : ''}`
                   )
-                  .join("\n")}\n${spaceLineStart}}`
+                  .join('\n')}\n${spaceLineStart}}`
               }
               return `"${parameter.name}": ${valueBodyParam}`
             }
@@ -607,8 +609,8 @@ define([
               ].reduce((jsonBodyKeyCursor, lineNumberRange) => {
                 const editorLineNumber = currentGroup.start + lineNumberRange
                 const editorLineContent = editor.getLine(editorLineNumber)
-                const openBracket = editorLineContent.indexOf("{")
-                const closeBracket = editorLineContent.indexOf("}")
+                const openBracket = editorLineContent.indexOf('{')
+                const closeBracket = editorLineContent.indexOf('}')
                 const keyOpenBracket = (editorLineContent.match(
                   /\s*"(\S+)"\s*:\s*\{/
                 ) || [])[1]
@@ -643,7 +645,7 @@ define([
               if (
                 !object.properties ||
                 !object.properties[key] ||
-                object.properties[key].type !== "object"
+                object.properties[key].type !== 'object'
               ) {
                 return []
               }
@@ -657,7 +659,7 @@ define([
               let inputBodyPreviousKeys
               let paramsBody = apiEndpoint.body
               let requestBodyCursorKeys
-              if (apiEndpoint.body[0].type === "object") {
+              if (apiEndpoint.body[0].type === 'object') {
                 requestBodyCursorKeys = getInnerKeysBodyRequest()
                 const paramInnerBody = getInnerPropertyBodyParamObject(
                   apiEndpoint.body[0],
@@ -672,7 +674,7 @@ define([
               }
               try {
                 const bodySanitizedBodyParam =
-                  currentGroup.requestTextJson.replace(/(,\s*"\S*\s*)\}/g, "}")
+                  currentGroup.requestTextJson.replace(/(,\s*"\S*\s*)\}/g, '}')
                 inputBodyPreviousKeys = Object.keys(
                   (requestBodyCursorKeys || []).reduce(
                     (acumm, key) => acumm[key],
@@ -694,12 +696,12 @@ define([
                 )
                 .map((bodyParam) => ({
                   text: renderBodyParam(bodyParam, spaceLineStart),
-                  _moveCursor: ["string", "array"].includes(bodyParam.type),
+                  _moveCursor: ['string', 'array'].includes(bodyParam.type),
                   displayText: bodyParam.name,
                   bodyParam,
                   hint: (cm, self, data) => {
                     editor.replaceRange(
-                      line.replace(/\S+/, "") + data.text,
+                      line.replace(/\S+/, '') + data.text,
                       { line: editorCursor.line, ch: editorCursor.ch },
                       { line: editorCursor.line, ch: 0 }
                     )
@@ -720,7 +722,7 @@ define([
             let t = 0
             return (chain = chain.replace(/\?/g, (match) => {
               t++
-              return t > 1 ? "" : match
+              return t > 1 ? '' : match
             }))
           })
           return final_hints
@@ -746,32 +748,32 @@ define([
           to: CodeMirror.Pos(cur.line, end),
         }
       })
-      $(".wz-dev-column-separator").mousedown(function (e) {
+      $('.wz-dev-column-separator').mousedown(function (e) {
         e.preventDefault()
-        const leftOrigWidth = $("#wz-dev-left-column").width()
-        const rightOrigWidth = $("#wz-dev-right-column").width()
+        const leftOrigWidth = $('#wz-dev-left-column').width()
+        const rightOrigWidth = $('#wz-dev-right-column').width()
         $(document).mousemove(function (e) {
           const leftWidth = e.pageX - 85 + 14
           let rightWidth = leftOrigWidth - leftWidth
-          $("#wz-dev-left-column").css("width", leftWidth)
-          $("#wz-dev-right-column").css("width", rightOrigWidth + rightWidth)
+          $('#wz-dev-left-column').css('width', leftWidth)
+          $('#wz-dev-right-column').css('width', rightOrigWidth + rightWidth)
         })
       })
       $(document).mouseup(function () {
-        $(document).unbind("mousemove")
+        $(document).unbind('mousemove')
       })
       this.$window.onresize = () => {
-        $("#wz-dev-left-column").attr(
-          "style",
-          "width: calc(30% - 7px); !important"
+        $('#wz-dev-left-column').attr(
+          'style',
+          'width: calc(30% - 7px); !important'
         )
-        $("#wz-dev-right-column").attr(
-          "style",
-          "width: calc(70% - 7px); !important"
+        $('#wz-dev-right-column').attr(
+          'style',
+          'width: calc(70% - 7px); !important'
         )
       }
 
-      setTimeout((x) => {
+      setTimeout((_) => {
         this.apiInputBox.refresh()
         this.apiOutputBox.refresh()
       }, 1)
@@ -798,15 +800,15 @@ define([
           line: desiredGroup[0].start,
           ch: 0,
         })
-        if (!$("#play_button").is(":visible")) $("#play_button").show()
-        if (!$("#wazuh_dev_tools_documentation").is(":visible"))
-          $("#wazuh_dev_tools_documentation").show()
-        const currentPlayButton = $("#play_button").offset()
-        $("#play_button").offset({
+        if (!$('#play_button').is(':visible')) $('#play_button').show()
+        if (!$('#wazuh_dev_tools_documentation').is(':visible'))
+          $('#wazuh_dev_tools_documentation').show()
+        const currentPlayButton = $('#play_button').offset()
+        $('#play_button').offset({
           top: cords.top,
           left: currentPlayButton.left,
         })
-        $("#wazuh_dev_tools_documentation").offset({
+        $('#wazuh_dev_tools_documentation').offset({
           top: cords.top,
         })
         if (firstTime) this.highlightGroup(desiredGroup[0])
@@ -828,7 +830,7 @@ define([
           const inputEndpoint =
             (inputPath &&
               inputPath
-                .split("/")
+                .split('/')
                 .filter((item) => item)
                 .map((item) => item.toLowerCase())) ||
             []
@@ -843,7 +845,7 @@ define([
           const apiEndpoint = inputHttpMethodEndpoints
             .map((endpoint) => ({
               ...endpoint,
-              splitURL: endpoint.name.split("/").filter((item) => item),
+              splitURL: endpoint.name.split('/').filter((item) => item),
             }))
             .filter(
               (endpoint) => endpoint.splitURL.length === inputEndpoint.length
@@ -852,7 +854,7 @@ define([
               endpoint.splitURL.reduce(
                 (accum, str, index) =>
                   accum &&
-                  (str.startsWith(":")
+                  (str.startsWith(':')
                     ? true
                     : str.toLowerCase() === inputEndpoint[index]),
                 true
@@ -860,18 +862,18 @@ define([
             )
           if (apiEndpoint && apiEndpoint.documentation) {
             const docuUrl = apiEndpoint.documentation.replace(
-              "/current/",
+              '/current/',
               `/${this.appDocuVersion}/`
             )
-            $("#wazuh_dev_tools_documentation").attr("href", docuUrl).show()
+            $('#wazuh_dev_tools_documentation').attr('href', docuUrl).show()
           } else {
-            $("#wazuh_dev_tools_documentation").attr("href", "").hide()
+            $('#wazuh_dev_tools_documentation').attr('href', '').hide()
           }
         }
         return desiredGroup[0]
       } catch (error) {
-        $("#play_button").hide()
-        $("#wazuh_dev_tools_documentation").hide()
+        $('#play_button').hide()
+        $('#wazuh_dev_tools_documentation').hide()
         return null
       }
     }
@@ -890,8 +892,8 @@ define([
               line: desiredGroup.start,
               ch: 0,
             })
-            const currentPlayButton = $("#play_button").offset()
-            $("#play_button").offset({
+            const currentPlayButton = $('#play_button').offset()
+            $('#play_button').offset({
               top: cords.top + 35,
               left: currentPlayButton.left,
             })
@@ -902,19 +904,19 @@ define([
             (item) => item === desiredGroup.requestText
           )
           if (filteredAffectedGroups.length) {
-            this.apiOutputBox.setValue("Error parsing JSON query")
+            this.apiOutputBox.setValue('Error parsing JSON query')
             return
           }
 
-          const method = desiredGroup.requestText.startsWith("GET")
-            ? "GET"
-            : desiredGroup.requestText.startsWith("POST")
-            ? "POST"
-            : desiredGroup.requestText.startsWith("PUT")
-            ? "PUT"
-            : desiredGroup.requestText.startsWith("DELETE")
-            ? "DELETE"
-            : "GET"
+          const method = desiredGroup.requestText.startsWith('GET')
+            ? 'GET'
+            : desiredGroup.requestText.startsWith('POST')
+            ? 'POST'
+            : desiredGroup.requestText.startsWith('PUT')
+            ? 'PUT'
+            : desiredGroup.requestText.startsWith('DELETE')
+            ? 'DELETE'
+            : 'GET'
 
           let requestCopy = desiredGroup.requestText.includes(method)
             ? desiredGroup.requestText.split(method)[1].trim()
@@ -922,11 +924,11 @@ define([
 
           // Checks for inline parameters
           let paramsInline = false
-          if (requestCopy.includes("{") && requestCopy.includes("}")) {
-            paramsInline = `{${requestCopy.split("{")[1]}`
-            requestCopy = requestCopy.split("{")[0]
+          if (requestCopy.includes('{') && requestCopy.includes('}')) {
+            paramsInline = `{${requestCopy.split('{')[1]}`
+            requestCopy = requestCopy.split('{')[0]
           }
-          const inlineSplit = requestCopy.split("?")
+          const inlineSplit = requestCopy.split('?')
 
           const extra =
             inlineSplit && inlineSplit[1]
@@ -934,10 +936,10 @@ define([
               : {}
 
           const req = requestCopy
-            ? requestCopy.startsWith("/")
+            ? requestCopy.startsWith('/')
               ? requestCopy
               : `/${requestCopy}`
-            : "/"
+            : '/'
 
           let JSONraw = {}
           try {
@@ -946,14 +948,14 @@ define([
             JSONraw = {}
           }
 
-          if (typeof extra.pretty !== "undefined") delete extra.pretty
-          if (typeof JSONraw.pretty !== "undefined") delete JSONraw.pretty
+          if (typeof extra.pretty !== 'undefined') delete extra.pretty
+          if (typeof JSONraw.pretty !== 'undefined') delete JSONraw.pretty
 
-          let path = ""
-          if (method === "PUT" || method === "POST") {
+          let path = ''
+          if (method === 'PUT' || method === 'POST') {
             // Assign inline parameters
             for (const key in extra) JSONraw[key] = extra[key]
-            path = req.includes("?") ? req.split("?")[0] : req
+            path = req.includes('?') ? req.split('?')[0] : req
           } else {
             if (extra) {
               Object.keys(JSONraw).map((k) => {
@@ -963,8 +965,8 @@ define([
               })
             }
             path =
-              typeof JSONraw === "object" && Object.keys(JSONraw).length
-                ? `${req}${req.includes("?") ? "&" : "?"}${queryString.unescape(
+              typeof JSONraw === 'object' && Object.keys(JSONraw).length
+                ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(
                     queryString.stringify(JSONraw)
                   )}`
                 : req
@@ -977,13 +979,13 @@ define([
             const result = output.data
               ? JSON.stringify((output || {}).data || {}, null, 2).replace(
                   /\\\\/g,
-                  "\\"
+                  '\\'
                 )
-              : output.data.message || "Unkown error"
+              : output.data.message || 'Unkown error'
             this.apiOutputBox.setValue(result)
           }
         }
-        ;(firstTime || !desiredGroup) && this.apiOutputBox.setValue("Welcome!") // eslint-disable-line
+        ;(firstTime || !desiredGroup) && this.apiOutputBox.setValue('Welcome!') // eslint-disable-line
       } catch (error) {
         if ((error || {}).status === -1) {
           return this.apiOutputBox.setValue(
@@ -991,16 +993,16 @@ define([
           )
         } else {
           this.notification.showErrorToast(error)
-          if (typeof error === "string") {
+          if (typeof error === 'string') {
             return this.apiOutputBox.setValue(error)
-          } else if (error && error.data && typeof error.data === "object") {
+          } else if (error && error.data && typeof error.data === 'object') {
             return this.apiOutputBox.setValue(JSON.stringify(error))
           } else {
-            return this.apiOutputBox.setValue("Empty")
+            return this.apiOutputBox.setValue('Empty')
           }
         }
       }
     }
   }
-  app.controller("devToolsCtrl", DevToolsController)
+  app.controller('devToolsCtrl', DevToolsController)
 })

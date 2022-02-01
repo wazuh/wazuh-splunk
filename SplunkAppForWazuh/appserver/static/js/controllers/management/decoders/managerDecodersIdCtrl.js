@@ -1,5 +1,5 @@
-define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
-  "use strict"
+define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
+  'use strict'
 
   class DecodersId extends Ruleset {
     /**
@@ -37,7 +37,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
         $scope,
         $sce,
         $notificationService,
-        "decoders",
+        'decoders',
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
@@ -51,8 +51,8 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
       this.currentDecoder = currentDecoder
       this.scope.canUpdateDecoderFile = (filename) =>
         $security_service.isAllowed(
-          "DECODERS_UPDATE",
-          ["DECODER_FILE"],
+          'DECODERS_UPDATE',
+          ['DECODER_FILE'],
           [filename]
         )
     }
@@ -73,7 +73,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
         this.scope.addDetailFilter = (name, value) =>
           this.addDetailFilter(name, value)
         this.scope.isLocal =
-          this.scope.currentDecoder.relative_dirname === "etc/decoders"
+          this.scope.currentDecoder.relative_dirname === 'etc/decoders'
         this.scope.saveDecoderConfig = (fileName) =>
           this.saveDecoderConfig(fileName)
         this.scope.closeEditingFile = () => this.closeEditingFile()
@@ -83,7 +83,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
         this.scope.closeRestartConfirmation = () =>
           this.closeRestartConfirmation()
       } catch (error) {
-        this.state.go("mg-decoders")
+        this.state.go('mg-decoders')
       }
     }
 
@@ -96,8 +96,8 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
       try {
         const filter = { name: name, value: value }
         this.filters.push(filter)
-        window.localStorage.setItem("decoders", JSON.stringify(this.filters))
-        this.state.go("mg-decoders")
+        window.localStorage.setItem('decoders', JSON.stringify(this.filters))
+        this.state.go('mg-decoders')
       } catch (err) {
         this.notification.showErrorToast(err.message || err)
       }
@@ -110,11 +110,11 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
           `/decoders?decoder_names=${this.scope.currentDecoder.name}`
         )
         if (result.data.data.totalItems === 0) {
-          this.state.go("mg-decoders")
+          this.state.go('mg-decoders')
         }
         this.scope.currentDecoder = result.data.data.items[0]
       } catch (error) {
-        this.state.go("mg-decoders")
+        this.state.go('mg-decoders')
       }
       this.scope.editingFile = false
       this.scope.$applyAsync()
@@ -122,9 +122,9 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
 
     saveDecoderConfig(fileName) {
       this.scope.saveIncomplete = true
-      this.scope.$broadcast("saveXmlFile", {
+      this.scope.$broadcast('saveXmlFile', {
         file: fileName,
-        dir: "etc/decoders",
+        dir: 'etc/decoders',
         overwrite: true,
       })
     }
@@ -132,7 +132,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
     async editDecoder(fileName) {
       try {
         const readOnly = !(
-          this.scope.currentDecoder.relative_dirname === "etc/decoders"
+          this.scope.currentDecoder.relative_dirname === 'etc/decoders'
         )
         await this.fetchFileContent(
           fileName,
@@ -154,7 +154,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
         this.scope.editingFile = true
         this.scope.readOnly = readOnly
         if (readOnly) {
-          if (!file.startsWith("ruleset/decoders")) {
+          if (!file.startsWith('ruleset/decoders')) {
             this.scope.fileName = file
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
               file,
@@ -162,7 +162,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast("XMLContentReady", {
+            this.scope.$broadcast('XMLContentReady', {
               data: this.scope.XMLContent,
             })
           } else {
@@ -175,7 +175,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
             return this.scope.XMLContent
           }
         } else {
-          if (file.startsWith("etc/decoders/")) {
+          if (file.startsWith('etc/decoders/')) {
             this.scope.fetchedXML = await this.fileEditor.getConfiguration(
               file,
               path,
@@ -190,7 +190,7 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
               null,
               readOnly
             )
-            this.scope.$broadcast("fetchedFile", {
+            this.scope.$broadcast('fetchedFile', {
               data: this.scope.fetchedXML,
             })
           }
@@ -204,5 +204,5 @@ define(["../../module", "../rules/ruleset"], function (controllers, Ruleset) {
       return
     }
   }
-  controllers.controller("managerDecodersIdCtrl", DecodersId)
+  controllers.controller('managerDecodersIdCtrl', DecodersId)
 })

@@ -1,5 +1,5 @@
-define(["../../module"], function (controllers) {
-  "use strict"
+define(['../../module'], function (controllers) {
+  'use strict'
 
   class Configuration {
     constructor(
@@ -25,14 +25,14 @@ define(["../../module"], function (controllers) {
         this.scope.configuration = this.configuration.data.data
         this.dropDownValue = false
         this.editingNewValue = false
-        this.scope.logLevelOptions = ["info", "debug"]
+        this.scope.logLevelOptions = ['info', 'debug']
         this.scope.getDescription = (key) => this.getDescription(key)
         this.scope.switchEdit = (key, value) => this.switchEdit(key, value)
         this.scope.cancelEdition = () => this.cancelEdition()
         this.scope.setValue = (key) => this.setValue(key)
         this.scope.selectValue = (value) => this.selectValue(value)
       } catch (error) {
-        console.error("onInit err : ", error)
+        console.error('onInit err : ', error)
       }
     }
 
@@ -43,10 +43,10 @@ define(["../../module"], function (controllers) {
     getDescription(key) {
       try {
         const description = {
-          "log.level":
-            "Set the app logging level, allowed values are info and debug.",
+          'log.level':
+            'Set the app logging level, allowed values are info and debug.',
           timeout:
-            "Define the maximum time in seconds the app will wait for an API response when making a request to it.",
+            'Define the maximum time in seconds the app will wait for an API response when making a request to it.',
         }
         return description[key]
       } catch (error) {
@@ -62,7 +62,7 @@ define(["../../module"], function (controllers) {
       try {
         this.scope.editingKey = key
         this.editingNewValue = value
-        if (key !== "log.level") {
+        if (key !== 'log.level') {
           this.inputEnabled = true
         }
       } catch (error) {
@@ -90,14 +90,14 @@ define(["../../module"], function (controllers) {
         this.validateValue(key, value)
         this.scope.configuration[key] = value
         const result = await this.req.httpReq(
-          "POST",
-          "/config/update_config",
+          'POST',
+          '/config/update_config',
           this.scope.configuration
         )
         if (result.data && result.data.data && !result.data.data.error) {
           this.notification.showSuccessToast(
             result.data.data.data ||
-              "Configuration updated. Restart Splunk to apply changes."
+              'Configuration updated. Restart Splunk to apply changes.'
           )
           this.cancelEdition()
           this.refreshConfig()
@@ -106,7 +106,7 @@ define(["../../module"], function (controllers) {
         }
       } catch (error) {
         this.notification.showErrorToast(
-          error || "Error updating the configuration."
+          error || 'Error updating the configuration.'
         )
       }
     }
@@ -138,13 +138,13 @@ define(["../../module"], function (controllers) {
      * @param {String} key
      */
     validateValue(key, value) {
-      if (key === "timeout") {
+      if (key === 'timeout') {
         if (!Number(value)) {
-          throw "Incorrect format"
+          throw 'Incorrect format'
         }
       }
       return
     }
   }
-  controllers.controller("settingsConfigCtrl", Configuration)
+  controllers.controller('settingsConfigCtrl', Configuration)
 })

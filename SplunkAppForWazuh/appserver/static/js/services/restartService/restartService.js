@@ -1,6 +1,6 @@
-define(["../module"], function (module) {
-  "use strict"
-  module.service("$restartService", function ($requestService) {
+define(['../module'], function (module) {
+  'use strict'
+  module.service('$restartService', function ($requestService) {
     const restart = async () => {
       try {
         const clusterEnabled = await clusterIsEnabled()
@@ -16,16 +16,16 @@ define(["../module"], function (module) {
 
     const restartManager = async () => {
       try {
-        await checkConfig("/manager")
+        await checkConfig('/manager')
         const result = await $requestService.apiReq(
-          "/manager/restart",
+          '/manager/restart',
           {},
-          "PUT"
+          'PUT'
         )
         if (result && result.data && !result.data.error) {
-          return "Restarting manager."
+          return 'Restarting manager.'
         } else {
-          throw "Cannot send restart signal to the manager."
+          throw 'Cannot send restart signal to the manager.'
         }
       } catch (error) {
         return Promise.reject(error)
@@ -34,22 +34,22 @@ define(["../module"], function (module) {
 
     const restartCluster = async () => {
       try {
-        await checkConfig("/cluster")
+        await checkConfig('/cluster')
         const result = await $requestService.apiReq(
-          "/cluster/restart",
+          '/cluster/restart',
           { delay: 15 },
-          "PUT"
+          'PUT'
         )
         if (result && result.data && result.data.error !== 0) {
           throw (
             result.data.message ||
             result.data.error ||
-            "Cannot restart the cluster."
+            'Cannot restart the cluster.'
           )
         }
-        return "Restarting cluster, it will take up to 30 seconds."
+        return 'Restarting cluster, it will take up to 30 seconds.'
       } catch (error) {
-        return Promise.reject("Cannot restart the cluster.: " + error)
+        return Promise.reject('Cannot restart the cluster.: ' + error)
       }
     }
 
@@ -61,7 +61,7 @@ define(["../module"], function (module) {
           const result = await $requestService.apiReq(
             `/cluster/restart?nodes_list=${node}`,
             {},
-            "PUT"
+            'PUT'
           )
           if (result && result.data && !result.data.error) {
             return `Restarting node ${node}, please wait.`
@@ -79,12 +79,12 @@ define(["../module"], function (module) {
 
     const clusterIsEnabled = async () => {
       try {
-        const response = await $requestService.apiReq("/cluster/status")
+        const response = await $requestService.apiReq('/cluster/status')
         const result = ((response || {}).data || {}).data || {}
-        const status = result.enabled === "yes" && result.running === "yes"
+        const status = result.enabled === 'yes' && result.running === 'yes'
         return status
       } catch (error) {
-        return Promise.reject(error || "Cannot send restart signal")
+        return Promise.reject(error || 'Cannot send restart signal')
       }
     }
 
@@ -96,23 +96,23 @@ define(["../module"], function (module) {
             )
           : await $requestService.apiReq(`${node}/configuration/validation`)
         if (check && check.data && !check.data.error) {
-          if (check.data.data.affected_items[0].status === "OK") {
-            return "OK"
+          if (check.data.data.affected_items[0].status === 'OK') {
+            return 'OK'
           } else {
             if (Array.isArray(check.data.data.details)) {
               const msgErr = check.data.data.details.join()
               return Promise.reject(msgErr)
             } else {
-              return Promise.reject("Bad configuration, restart aborted.")
+              return Promise.reject('Bad configuration, restart aborted.')
             }
           }
         } else {
           return Promise.reject(
-            check.data.message || "Cannot check configuration."
+            check.data.message || 'Cannot check configuration.'
           )
         }
       } catch (error) {
-        return Promise.reject(error || "Bad configuration, restart aborted.")
+        return Promise.reject(error || 'Bad configuration, restart aborted.')
       }
     }
 

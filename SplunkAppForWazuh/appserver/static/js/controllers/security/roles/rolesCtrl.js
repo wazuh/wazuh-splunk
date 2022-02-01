@@ -12,21 +12,21 @@
  */
 
 define([
-  "../../module",
-  "splunkjs/mvc/searchmanager",
-  "splunkjs/mvc/multidropdownview",
-  "splunkjs/mvc",
+  '../../module',
+  'splunkjs/mvc/searchmanager',
+  'splunkjs/mvc/multidropdownview',
+  'splunkjs/mvc',
 ], function (controllers, SearchManager, MultiDropdownView, mvc) {
-  "use strict"
+  'use strict'
 
   const RESERVED_ROLES = [
-    "administrator",
-    "readonly",
-    "users_admin",
-    "agents_readonly",
-    "agents_admin",
-    "cluster_readonly",
-    "cluster_admin",
+    'administrator',
+    'readonly',
+    'users_admin',
+    'agents_readonly',
+    'agents_admin',
+    'cluster_readonly',
+    'cluster_admin',
   ]
 
   class Roles {
@@ -44,23 +44,23 @@ define([
       )
       this.notification = $notificationService
       this.roleService = $roleService
-      this.scope.roleName = ""
+      this.scope.roleName = ''
       this.scope.addingNewRole = false
       this.scope.editingRole = false
 
       this.dropdown = new MultiDropdownView({
-        id: "policies-dropdown",
-        managerid: "policies-search",
+        id: 'policies-dropdown',
+        managerid: 'policies-search',
         choices: this.scope.policyData,
-        el: $("#policies-dropdown-view"),
+        el: $('#policies-dropdown-view'),
       }).render()
       this.searchManager = new SearchManager({
-        id: "policies-search",
+        id: 'policies-search',
         search:
-          "| eventcount summarize=false index=* index=_* | dedup index | fields index",
+          '| eventcount summarize=false index=* index=_* | dedup index | fields index',
       })
 
-      this.dropdown.on("change", (newValue) => {
+      this.dropdown.on('change', (newValue) => {
         if (newValue && this.dropdown) {
           this.deletePolicy(
             this.scope.policies.filter(
@@ -73,16 +73,16 @@ define([
       })
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
 
-      this.scope.canReadRoles = this.isAllowed("SECURITY_READ", ["ROLE_ID"])
-      this.scope.canCreateRoles = this.isAllowed("SECURITY_CREATE", [
-        "RESOURCELESS",
+      this.scope.canReadRoles = this.isAllowed('SECURITY_READ', ['ROLE_ID'])
+      this.scope.canCreateRoles = this.isAllowed('SECURITY_CREATE', [
+        'RESOURCELESS',
       ])
       this.scope.canUpdateRole = (id) =>
-        this.isAllowed("SECURITY_UPDATE", ["ROLE_ID"], [id])
+        this.isAllowed('SECURITY_UPDATE', ['ROLE_ID'], [id])
     }
 
     async deletePolicy(policyId) {
@@ -92,7 +92,7 @@ define([
           policyId
         )
         if (result && result.data.error === 0) {
-          this.notification.showSuccessToast("Policy was removed successfully.")
+          this.notification.showSuccessToast('Policy was removed successfully.')
         }
       }
     }
@@ -113,7 +113,7 @@ define([
       this.scope.reservedRole = false
 
       // Come from the pencil icon on the roles table
-      this.scope.$on("openRoleFromList", (ev, parameters) => {
+      this.scope.$on('openRoleFromList', (ev, parameters) => {
         ev.stopPropagation()
         this.scope.addingNewRole = true
         this.scope.editingRole = true
@@ -121,16 +121,16 @@ define([
         this.scope.roleName = parameters.role.name
         this.scope.policies = parameters.role.policies
         this.dropdown.settings.set(
-          "disabled",
+          'disabled',
           RESERVED_ROLES.includes(parameters.role.name)
         )
         this.scope.reservedRole = RESERVED_ROLES.includes(parameters.role.name)
         this.dropdown.val(this.scope.policies)
       })
 
-      this.scope.$on("$destroy", () => {
-        mvc.Components.revokeInstance("policies-dropdown")
-        mvc.Components.revokeInstance("policies-search")
+      this.scope.$on('$destroy', () => {
+        mvc.Components.revokeInstance('policies-dropdown')
+        mvc.Components.revokeInstance('policies-search')
         this.dropdown = null
         this.searchManager = null
       })
@@ -141,7 +141,7 @@ define([
      * @param {String} term
      */
     search(term) {
-      this.scope.$broadcast("wazuhSearch", { term })
+      this.scope.$broadcast('wazuhSearch', { term })
     }
 
     /**
@@ -153,16 +153,16 @@ define([
         this.scope.overwrite = false
         this.scope.addingNewRole = true
         this.scope.policies = []
-        this.dropdown.settings.set("disabled", false)
+        this.dropdown.settings.set('disabled', false)
       } catch (error) {
-        this.notification.showErrorToast("Cannot add new Role.")
+        this.notification.showErrorToast('Cannot add new Role.')
       }
     }
 
     clearAll() {
       this.scope.policies = []
-      this.scope.roleName = ""
-      this.scope.roleId = ""
+      this.scope.roleName = ''
+      this.scope.roleId = ''
       this.dropdown.val([])
       this.scope.addingNewRole = false
       this.scope.editingRole = false
@@ -196,7 +196,7 @@ define([
         if (roleName) {
           if (constainsBlanks.test(roleName)) {
             this.notification.showErrorToast(
-              "Error creating a new role. The name can not contain white spaces."
+              'Error creating a new role. The name can not contain white spaces.'
             )
           } else {
             this.scope.saveIncomplete = true
@@ -213,7 +213,7 @@ define([
             ) {
               this.notification.showWarningToast(
                 result.data.datafailed_items[0].error.message ||
-                  "Role already exists."
+                  'Role already exists.'
               )
               this.scope.overwrite = true
               this.scope.saveIncomplete = false
@@ -227,16 +227,16 @@ define([
                 result.data.data.failed_items[0] &&
                 result.data.data.failed_items[0].error.code === 4011)
             ) {
-              this.notification.showSuccessToast("Role saved successfully.")
+              this.notification.showSuccessToast('Role saved successfully.')
               this.scope.saveIncomplete = false
               this.scope.$applyAsync()
             } else {
-              throw new Error(result.data.message || "Cannot save this Role.")
+              throw new Error(result.data.message || 'Cannot save this Role.')
             }
           }
         } else {
           this.notification.showWarningToast(
-            "Please set a name for the new Role."
+            'Please set a name for the new Role.'
           )
         }
       } catch (error) {
@@ -248,6 +248,6 @@ define([
     }
   }
 
-  controllers.controller("rolesCtrl", Roles)
+  controllers.controller('rolesCtrl', Roles)
   return Roles
 })

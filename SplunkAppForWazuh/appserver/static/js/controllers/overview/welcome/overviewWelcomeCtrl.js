@@ -1,5 +1,5 @@
-define(["../../module"], function (controllers) {
-  "use strict"
+define(['../../module'], function (controllers) {
+  'use strict'
 
   class OverviewWelcome {
     /**
@@ -32,9 +32,9 @@ define(["../../module"], function (controllers) {
       }
 
       /* RBAC flags */
-      this.scope.canReadAgents = $security_service.isAllowed("AGENT_READ", [
-        "AGENT_ID",
-        "AGENT_GROUP",
+      this.scope.canReadAgents = $security_service.isAllowed('AGENT_READ', [
+        'AGENT_ID',
+        'AGENT_GROUP',
       ])
       this.scope.isSplunkAdmin = isSplunkAdmin
 
@@ -48,7 +48,7 @@ define(["../../module"], function (controllers) {
       try {
         this.extensions = extensions
         this.scope.extensions = angular.copy(this.extensions) // eslint-disable-line
-        this.api = this.currentApi["_key"]
+        this.api = this.currentApi['_key']
       } catch (error) {} //eslint-disable-line
     }
 
@@ -72,7 +72,7 @@ define(["../../module"], function (controllers) {
           ? (this.scope.extensionsLists[card] = false)
           : (this.scope.extensionsLists[card] = true)
       } catch (error) {
-        console.error("Error showing or hiding the extensions list ", error)
+        console.error('Error showing or hiding the extensions list ', error)
       }
     }
 
@@ -104,7 +104,7 @@ define(["../../module"], function (controllers) {
     refreshExtensions() {
       const keys = Object.keys(this.extensions)
       keys.map(
-        (key) => (this.scope.extensions[key] = this.extensions[key] === "true")
+        (key) => (this.scope.extensions[key] = this.extensions[key] === 'true')
       )
       /*
       keys.map(key =>
@@ -114,5 +114,5 @@ define(["../../module"], function (controllers) {
       this.scope.$applyAsync()
     }
   }
-  controllers.controller("overviewWelcomeCtrl", OverviewWelcome)
+  controllers.controller('overviewWelcomeCtrl', OverviewWelcome)
 })

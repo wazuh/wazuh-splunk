@@ -1,5 +1,5 @@
-define(["../module"], function (app) {
-  "use strict"
+define(['../module'], function (app) {
+  'use strict'
 
   class ApiIndexStorageService {
     constructor() {
@@ -28,7 +28,7 @@ define(["../module"], function (app) {
     getIndex() {
       if (this.sessionStorage.selectedIndex) {
         return JSON.parse(this.sessionStorage.selectedIndex)
-      } else return { index: "wazuh" }
+      } else return { index: 'wazuh' }
     }
 
     /**
@@ -49,7 +49,7 @@ define(["../module"], function (app) {
     setApi(Api) {
       try {
         delete this.sessionStorage.selectedAPI
-        if (typeof Api === "object") {
+        if (typeof Api === 'object') {
           this.sessionStorage.selectedAPI = JSON.stringify(Api)
         }
       } catch (error) {
@@ -73,15 +73,15 @@ define(["../module"], function (app) {
 
     getExtensionKey(apiId) {
       try {
-        if (this.sessionStorage.getItem("extensions")) {
+        if (this.sessionStorage.getItem('extensions')) {
           const parsedExtensions = JSON.parse(
-            this.sessionStorage.getItem("extensions")
+            this.sessionStorage.getItem('extensions')
           )
           if (parsedExtensions[apiId]) {
             return parsedExtensions[apiId]
           }
         }
-        throw "Key not found"
+        throw 'Key not found'
       } catch (e) {
         throw e
       }
@@ -89,9 +89,9 @@ define(["../module"], function (app) {
     setExtensionKey(apiId, extensionKey) {
       try {
         const prevExtensions =
-          JSON.parse(this.sessionStorage.getItem("extensions")) || {}
+          JSON.parse(this.sessionStorage.getItem('extensions')) || {}
         this.sessionStorage.setItem(
-          "extensions",
+          'extensions',
           JSON.stringify({ ...prevExtensions, [apiId]: extensionKey })
         )
         return true
@@ -101,15 +101,15 @@ define(["../module"], function (app) {
     }
     removeExtensionKey(apiId) {
       try {
-        if (this.sessionStorage.getItem("extensions")) {
+        if (this.sessionStorage.getItem('extensions')) {
           const parsedExtensions = JSON.parse(
-            this.sessionStorage.getItem("extensions")
+            this.sessionStorage.getItem('extensions')
           )
           if (apiId in parsedExtensions) {
             delete parsedExtensions[apiId]
           }
           this.sessionStorage.setItem(
-            "extensions",
+            'extensions',
             JSON.stringify({ ...parsedExtensions })
           )
         }
@@ -118,5 +118,5 @@ define(["../module"], function (app) {
       }
     }
   }
-  app.service("$apiIndexStorageService", ApiIndexStorageService)
+  app.service('$apiIndexStorageService', ApiIndexStorageService)
 })

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 define([], function () {
-  "use strict"
+  'use strict'
   return {
     wazuhUpdateInstancePath: (parameters, instance, init) => {
       instance.filters = []

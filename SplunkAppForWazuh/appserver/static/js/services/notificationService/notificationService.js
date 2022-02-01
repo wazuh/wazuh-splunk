@@ -1,6 +1,6 @@
-define(["../module"], function (module) {
-  "use strict"
-  module.service("$notificationService", function ($mdToast, $rootScope) {
+define(['../module'], function (module) {
+  'use strict'
+  module.service('$notificationService', function ($mdToast, $rootScope) {
     let last = {
       bottom: true,
       top: false,
@@ -17,7 +17,7 @@ define(["../module"], function (module) {
         .filter((pos) => {
           return toastPosition[pos]
         })
-        .join(" ")
+        .join(' ')
     }
 
     let sanitizePosition = () => {
@@ -161,17 +161,17 @@ define(["../module"], function (module) {
     }
 
     const showHeadToaster = (type, msg, delay = false) => {
-      $rootScope.$broadcast("showHeadToaster", { type, msg, delay })
+      $rootScope.$broadcast('showHeadToaster', { type, msg, delay })
     }
 
     const wazuhIsNotReady = (text) => {
       try {
-        if (text instanceof Object && text.message.includes("ERROR3099")) {
-          $rootScope.$broadcast("wazuhNotReadyYet", {})
+        if (text instanceof Object && text.message.includes('ERROR3099')) {
+          $rootScope.$broadcast('wazuhNotReadyYet', {})
           return true
         } else {
-          if (text.includes("ERROR3099")) {
-            $rootScope.$broadcast("wazuhNotReadyYet", {})
+          if (text.includes('ERROR3099')) {
+            $rootScope.$broadcast('wazuhNotReadyYet', {})
             return true
           }
         }

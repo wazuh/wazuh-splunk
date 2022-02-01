@@ -11,12 +11,12 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/chart/area-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -25,7 +25,7 @@ define([
   Table,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
   class PM extends DashboardMain {
     /**
      *
@@ -68,44 +68,44 @@ define([
          * Visualizations
          */
         new AreaChart(
-          "elementOverTime",
+          'elementOverTime',
           `${this.filters} rule.description=* | timechart span=1h count by rule.description`,
-          "elementOverTime",
+          'elementOverTime',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
-          "ruleDistribution",
+          'ruleDistribution',
           `${this.filters} rule.level=* | top rule.level`,
-          "ruleDistribution",
+          'ruleDistribution',
           this.scope
         ),
         new PieChart(
-          "topAgents",
+          'topAgents',
           `${this.filters} agent.name=* | top agent.name`,
-          "topAgents",
+          'topAgents',
           this.scope
         ),
         new AreaChart(
-          "eventsPerAgent",
+          'eventsPerAgent',
           `${this.filters} | timechart span=2h count by data.title`,
-          "eventsPerAgent",
+          'eventsPerAgent',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new Table(
-          "alertsSummary",
+          'alertsSummary',
           `${this.filters} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
-          "alertsSummary",
+          'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts Summary"
+          'Alerts Summary'
         ),
       ]
     }
@@ -117,15 +117,15 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            "overview-pm",
-            "Policity monitoring",
+            'overview-pm',
+            'Policity monitoring',
             this.filters,
             [
-              "elementOverTime",
-              "ruleDistribution",
-              "topAgents",
-              "eventsPerAgent",
-              "alertsSummary",
+              'elementOverTime',
+              'ruleDistribution',
+              'topAgents',
+              'eventsPerAgent',
+              'alertsSummary',
             ],
             {}, //Metrics
             this.tableResults
@@ -133,5 +133,5 @@ define([
       } catch (error) {} //eslint-disable-line
     }
   }
-  app.controller("overviewPolicyMonitoringCtrl", PM)
+  app.controller('overviewPolicyMonitoringCtrl', PM)
 })

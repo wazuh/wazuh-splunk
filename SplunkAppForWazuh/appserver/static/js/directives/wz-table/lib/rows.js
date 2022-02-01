@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 define([], function () {
-  "use strict"
+  'use strict'
   /**
    * Calculates the number of rows
    * @param {Number} windowHeight

@@ -1,5 +1,5 @@
-define(["../module"], function (app) {
-  "use strict"
+define(['../module'], function (app) {
+  'use strict'
 
   class Policy {
     constructor(policy, isAllowed) {
@@ -68,7 +68,7 @@ define(["../module"], function (app) {
      */
     async getUserPolicies() {
       try {
-        const response = await this.apiReq("/security/users/me/policies")
+        const response = await this.apiReq('/security/users/me/policies')
         return response.data.data
       } catch (err) {
         return Promise.reject(err)
@@ -88,7 +88,7 @@ define(["../module"], function (app) {
      */
     async getUserInfo() {
       try {
-        const response = await this.apiReq("/security/users/me")
+        const response = await this.apiReq('/security/users/me')
         return response.data.data.affected_items[0]
       } catch (err) {
         return Promise.reject(err)
@@ -133,11 +133,11 @@ define(["../module"], function (app) {
      * @returns {Boolean} true if the user is authorized to perform the action
      * on the given resources, false otherwise.
      */
-    isAllowed(action, resource, params = "*") {
+    isAllowed(action, resource, params = '*') {
       return this.getPolicy(action, resource, params).isAllowed
     }
   }
 
   // Register current class as a service
-  app.service("$security_service", RBAC)
+  app.service('$security_service', RBAC)
 })

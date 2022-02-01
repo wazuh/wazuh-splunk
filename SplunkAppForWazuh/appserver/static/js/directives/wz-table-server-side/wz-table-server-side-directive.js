@@ -11,16 +11,16 @@
  */
 
 define([
-  "../module",
-  "./lib/rows",
-  "./lib/parse-value",
-  "./lib/pagination",
-  "./lib/sort",
-  "./lib/listeners",
-  "./lib/data",
-  "./lib/click-action",
-  "./lib/check-gap",
-  "JqueryUI",
+  '../module',
+  './lib/rows',
+  './lib/parse-value',
+  './lib/pagination',
+  './lib/sort',
+  './lib/listeners',
+  './lib/data',
+  './lib/click-action',
+  './lib/check-gap',
+  'JqueryUI',
 ], function (
   app,
   calcTableRows,
@@ -32,23 +32,23 @@ define([
   clickAction,
   checkGap
 ) {
-  "use strict"
-  app.directive("wazuhTableServerSide", function (BASE_URL) {
+  'use strict'
+  app.directive('wazuhTableServerSide', function (BASE_URL) {
     return {
-      restrict: "E",
+      restrict: 'E',
       scope: {
-        path: "=path",
-        keys: "=keys",
-        allowClick: "=allowClick",
-        implicitFilter: "=implicitFilter",
-        rowSizes: "=rowSizes",
-        extraLimit: "=extraLimit",
-        emptyResults: "=emptyResults",
-        customColumns: "=customColumns",
-        implicitSort: "=implicitSort",
-        wzConfigViewer: "=wzConfigViewer",
-        isRegistryValue: "=isRegistryValue",
-        agentId: "=agentId",
+        path: '=path',
+        keys: '=keys',
+        allowClick: '=allowClick',
+        implicitFilter: '=implicitFilter',
+        rowSizes: '=rowSizes',
+        extraLimit: '=extraLimit',
+        emptyResults: '=emptyResults',
+        customColumns: '=customColumns',
+        implicitSort: '=implicitSort',
+        wzConfigViewer: '=wzConfigViewer',
+        isRegistryValue: '=isRegistryValue',
+        agentId: '=agentId',
       },
       controller(
         $rootScope,
@@ -73,7 +73,7 @@ define([
          * Init variables
          */
 
-        $scope.isAllowed = (action, resource, params = "*") => {
+        $scope.isAllowed = (action, resource, params = '*') => {
           return $security_service.getPolicy(action, resource, params).isAllowed
         }
         $scope.showingChecks = false
@@ -85,22 +85,22 @@ define([
           true // server-side pagination
         )
 
-        $scope.isVulnerabilities = instance.path.startsWith("/vulnerability")
+        $scope.isVulnerabilities = instance.path.startsWith('/vulnerability')
         $scope.isPolicyMonitoring =
-          instance.path.includes("sca") && instance.path.includes("/checks")
-        $scope.isSyschecks = instance.path.startsWith("/syscheck")
+          instance.path.includes('sca') && instance.path.includes('/checks')
+        $scope.isSyschecks = instance.path.startsWith('/syscheck')
 
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.totalItems = 0
         $scope.wazuhTableLoading = true
         $scope.items = []
         $scope.customEmptyResults =
-          $scope.emptyResults && typeof $scope.emptyResults === "string"
+          $scope.emptyResults && typeof $scope.emptyResults === 'string'
             ? $scope.emptyResults
-            : "Empty results for this table."
+            : 'Empty results for this table.'
 
         $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
-        $scope.scapepath = $scope.path.split("/").join("")
+        $scope.scapepath = $scope.path.split('/').join('')
 
         $scope.updateColumns = (key) => {
           if (!$scope.isLastKey(key)) {
@@ -137,7 +137,7 @@ define([
                   }
                 } catch (error) {
                   $notificationService.showWarningToast(
-                    "Cannot recover column."
+                    'Cannot recover column.'
                   )
                 }
               }
@@ -164,7 +164,7 @@ define([
           try {
             if ($scope.customColumns) {
               $(`#table${$scope.scapepath} th`).resizable({
-                handles: "e",
+                handles: 'e',
                 minWidth: 75,
                 start: () => {
                   $scope.resizingColumns = true
@@ -233,10 +233,10 @@ define([
           try {
             if ((instance.filters || []).length) {
               $scope.customEmptyResults =
-                "No results match your search criteria"
+                'No results match your search criteria'
             } else {
               $scope.customEmptyResults =
-                $scope.emptyResults || "Empty results for this table."
+                $scope.emptyResults || 'Empty results for this table.'
             }
             const result = await instance.fetch(options)
             $scope.time = result.time
@@ -252,16 +252,16 @@ define([
               $scope.currentPage + $scope.gap,
               $scope.gap
             )
-            $scope.$emit("wazuhFetched", { items: $scope.items })
+            $scope.$emit('wazuhFetched', { items: $scope.items })
             return
           } catch (error) {
             if (
               error &&
               !error.data &&
               error.status === -1 &&
-              error.xhrStatus === "abort"
+              error.xhrStatus === 'abort'
             ) {
-              return Promise.reject("Request took too long, aborted")
+              return Promise.reject('Request took too long, aborted')
             }
             return Promise.reject(error)
           }
@@ -269,10 +269,10 @@ define([
 
         $scope.canFilter = (keyTmp) => {
           return (
-            ($scope.path === "/rules" &&
-              (keyTmp === "level" || keyTmp === "file" || keyTmp === "path")) ||
-            ($scope.path === "/decoders" &&
-              (keyTmp === "path" || keyTmp === "file"))
+            ($scope.path === '/rules' &&
+              (keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path')) ||
+            ($scope.path === '/decoders' &&
+              (keyTmp === 'path' || keyTmp === 'file'))
           )
         }
 
@@ -283,18 +283,18 @@ define([
         $scope.handleClick = (key, item, ev) => {
           const value = $scope.parseValue(key, item)
           let keyTmp = $scope.parseKey(key)
-          const valueTmp = typeof value !== "string" ? value.toString() : value
+          const valueTmp = typeof value !== 'string' ? value.toString() : value
           const canFilter = $scope.canFilter(keyTmp)
           if (canFilter) {
-            if (value !== "-" && keyTmp !== "file") {
+            if (value !== '-' && keyTmp !== 'file') {
               const filter = `${keyTmp}:${valueTmp}`
-              $scope.$emit("applyFilter", { filter })
-            } else if (keyTmp === "file") {
+              $scope.$emit('applyFilter', { filter })
+            } else if (keyTmp === 'file') {
               const readOnly = !(
-                item.relative_dirname === "etc/rules" ||
-                item.relative_dirname === "etc/decoders"
+                item.relative_dirname === 'etc/rules' ||
+                item.relative_dirname === 'etc/decoders'
               )
-              $scope.$emit("editFile", {
+              $scope.$emit('editFile', {
                 file: item.filename,
                 path: item.relative_dirname,
                 readOnly,
@@ -313,8 +313,8 @@ define([
          * @param {Boolean} removeFilters
          */
         const search = async (term, removeFilters) => {
-          if (term && typeof term === "string") {
-            $scope.customEmptyResults = "No results match your search criteria."
+          if (term && typeof term === 'string') {
+            $scope.customEmptyResults = 'No results match your search criteria.'
           }
 
           data.searchData(
@@ -387,7 +387,7 @@ define([
             }.`
             $notificationService.handle(
               `Real time feature aborted. ${error.message || error}`,
-              "Data factory"
+              'Data factory'
             )
           }
           return
@@ -415,7 +415,7 @@ define([
         $scope.nextPage = async () =>
           pagination.nextPage($scope, $notificationService, fetch)
         $scope.setPage = function (page = false) {
-          $scope.currentPage = typeof page == "number" ? page : this.n
+          $scope.currentPage = typeof page == 'number' ? page : this.n
           pagination.setPage($scope, $notificationService, fetch)
         }
         $scope.getFirstPage = () => {
@@ -434,7 +434,7 @@ define([
             $scope.error = false
             $scope.setPage(0)
             $tableFilterService.set(instance.filters)
-            $scope.$emit("loadedTable")
+            $scope.$emit('loadedTable')
             $scope.$applyAsync()
             setTimeout(() => {
               $scope.setColResizable()
@@ -453,27 +453,27 @@ define([
          * Event listeners
          */
 
-        $scope.$on("increaseLogs", async (event, parameters) => {
+        $scope.$on('increaseLogs', async (event, parameters) => {
           $scope.setPage(parseInt(parameters.lines / $scope.itemsPerPage))
         })
 
-        $scope.$on("wazuhUpdateInstancePath", (event, parameters) =>
+        $scope.$on('wazuhUpdateInstancePath', (event, parameters) =>
           listeners.wazuhUpdateInstancePath(parameters, instance, init)
         )
 
-        $scope.$on("wazuhFilter", (event, parameters) =>
+        $scope.$on('wazuhFilter', (event, parameters) =>
           listeners.wazuhFilter(parameters, filter)
         )
 
-        $scope.$on("wazuhSearch", (event, parameters) =>
+        $scope.$on('wazuhSearch', (event, parameters) =>
           listeners.wazuhSearch(parameters, instance, search)
         )
 
-        $scope.$on("wazuhSort", (event, parameters) =>
+        $scope.$on('wazuhSort', (event, parameters) =>
           $scope.sort(parameters.field)
         )
 
-        $scope.$on("wazuhRemoveFilter", (event, parameters) =>
+        $scope.$on('wazuhRemoveFilter', (event, parameters) =>
           listeners.wazuhRemoveFilter(
             parameters,
             instance,
@@ -482,22 +482,22 @@ define([
           )
         )
 
-        $scope.$on("wazuhQuery", (event, parameters) => {
+        $scope.$on('wazuhQuery', (event, parameters) => {
           $scope.wazuhTableLoading = true
           listeners.wazuhQuery(parameters, query)
         })
 
-        $scope.$on("wazuhPlayRealTime", () => {
+        $scope.$on('wazuhPlayRealTime', () => {
           realTime = true
           return realTimeFunction()
         })
 
-        $scope.$on("wazuhStopRealTime", () => {
+        $scope.$on('wazuhStopRealTime', () => {
           realTime = false
           return init()
         })
 
-        $scope.$on("$destroy", () => {
+        $scope.$on('$destroy', () => {
           $window.onresize = null
           realTime = null
           $tableFilterService.set([])
@@ -509,7 +509,7 @@ define([
           try {
             const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-.]*\/agents$/)
             $scope.isLookingDefaultGroup =
-              instance.path.split("/").pop() === "default"
+              instance.path.split('/').pop() === 'default'
             return regexp.test(instance.path)
           } catch (error) {
             return false
@@ -517,7 +517,7 @@ define([
         }
 
         $scope.editGroupAgentConfig = (ev, group) => {
-          $rootScope.$broadcast("editXmlFile", { target: group })
+          $rootScope.$broadcast('editXmlFile', { target: group })
         }
 
         $scope.showConfirmRemoveGroup = (ev, group) => {
@@ -539,7 +539,7 @@ define([
         }
 
         $scope.editGroup = (group) => {
-          $scope.$emit("openGroupFromList", { group })
+          $scope.$emit('openGroupFromList', { group })
         }
 
         $scope.confirmRemoveAgent = async (agent) => {
@@ -579,7 +579,7 @@ define([
          * Edits a file
          */
         $scope.editFile = (file, path, readOnly = false) => {
-          $scope.$emit("editFile", { file, path, readOnly })
+          $scope.$emit('editFile', { file, path, readOnly })
         }
 
         /**
@@ -611,11 +611,11 @@ define([
 
         $scope.getWitdh = (key) => {
           try {
-            if (key.includes("id") || key.includes("level")) {
-              return "wz-width-85"
+            if (key.includes('id') || key.includes('level')) {
+              return 'wz-width-85'
             }
-            if (key.includes("pci") || key.includes("gdpr")) {
-              return "wz-width-150"
+            if (key.includes('pci') || key.includes('gdpr')) {
+              return 'wz-width-150'
             }
           } catch (error) {} // eslint-disable-line
         }
@@ -623,7 +623,7 @@ define([
         const checkIsWindows = () => {
           try {
             const agent = $scope.$parent.$parent.$parent.agent
-            return (agent.os || {}).platform === "windows"
+            return (agent.os || {}).platform === 'windows'
           } catch (error) {
             return false
           }
@@ -652,8 +652,8 @@ define([
                   flex
                   path="'/syscheck/${$scope.agentId}'"
                   implicit-filter="[{name:'type',value:'registry_value'},{name:'file',value:'${item.file.replaceAll(
-                    "\\",
-                    "\\\\"
+                    '\\',
+                    '\\\\'
                   )}'}]"
                   row-sizes="[6,6,6]"
                   extra-limit="true"
@@ -670,7 +670,7 @@ define([
               items: item,
             },
             controller: DialogController,
-            controllerAs: "ctrl",
+            controllerAs: 'ctrl',
           })
           function DialogController($mdDialog) {
             this.closeDialog = function () {
@@ -687,7 +687,7 @@ define([
             $scope.cleanKeys = {}
             $scope.keys.map((key) => {
               const k = key.value || key
-              let storedKeys = sessionStorage[$scope.path].split(";")
+              let storedKeys = sessionStorage[$scope.path].split(';')
               $scope.cleanKeys[k] = storedKeys.indexOf(k) !== -1
             })
           } else {
@@ -703,7 +703,7 @@ define([
          * Launch an event to open the discover with the agent id
          */
         $scope.launchAgentDiscover = (agentId) => {
-          $scope.$emit("openDiscover", agentId)
+          $scope.$emit('openDiscover', agentId)
         }
 
         cleanKeys()
@@ -727,7 +727,7 @@ define([
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-table-server-side/wz-table-server-side.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-table-server-side/wz-table-server-side.html',
     }
   })
 })

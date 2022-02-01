@@ -1,9 +1,9 @@
 define([
-  "splunkjs/mvc",
-  "splunkjs/mvc/simplexml/searcheventhandler",
-  "../visualizations/viz/viz",
+  'splunkjs/mvc',
+  'splunkjs/mvc/simplexml/searcheventhandler',
+  '../visualizations/viz/viz',
 ], function (mvc, SearchEventHandler, Viz) {
-  "use strict"
+  'use strict'
 
   return class RawTableData extends Viz {
     /**
@@ -20,12 +20,12 @@ define([
         new SearchEventHandler({
           id: id,
           managerid: `${id}Search`,
-          event: "done",
+          event: 'done',
           conditions: [
             {
-              attr: "any",
-              value: "*",
-              actions: [{ type: "set", token: token, value: value }],
+              attr: 'any',
+              value: '*',
+              actions: [{ type: 'set', token: token, value: value }],
             },
           ],
         }),
@@ -38,35 +38,35 @@ define([
       this.name = name
       this.results = {}
 
-      this.getSearch().on("search:failed", () => {
+      this.getSearch().on('search:failed', () => {
         this.results = {}
-        console.error("Failed search")
+        console.error('Failed search')
       })
 
-      this.getSearch().on("search:cancelled", () => {
+      this.getSearch().on('search:cancelled', () => {
         this.results = {}
-        console.error("Cancelled search")
+        console.error('Cancelled search')
       })
 
-      this.getSearch().on("search:error", (error) => {
+      this.getSearch().on('search:error', (error) => {
         this.results = {}
         console.error(error)
       })
 
-      this.getSearch().on("search:start", () => {
+      this.getSearch().on('search:start', () => {
         this.results = {}
       })
 
-      this.getSearch().on("search:progress", () => {})
+      this.getSearch().on('search:progress', () => {})
 
-      this.getSearch().on("search:done", () => {
+      this.getSearch().on('search:done', () => {
         this.getSearch().finish = false
         const tableResults = mvc.Components.getInstance(`${this.id}Search`)
-        const tableData = tableResults.data("results", {
-          output_mode: "json_rows",
+        const tableData = tableResults.data('results', {
+          output_mode: 'json_rows',
           count: 20,
         })
-        tableData.on("data", (data) => {
+        tableData.on('data', (data) => {
           try {
             if (data._data) {
               this.results.fields = tableData._data.fields
@@ -77,10 +77,10 @@ define([
               this.getSearch().finish = false
             }
           } catch (err) {
-            console.error("Error fetching table data ", err)
+            console.error('Error fetching table data ', err)
           }
         })
-        tableData.on("error", (err) => {
+        tableData.on('error', (err) => {
           console.error(err)
         })
       })
@@ -96,12 +96,12 @@ define([
      * On class destroy
      */
     destroy() {
-      this.getSearch().off("search:done")
-      this.getSearch().off("search:error")
-      this.getSearch().off("search:cancelled")
-      this.getSearch().off("search:failed")
-      this.getSearch().off("search:start")
-      this.getSearch().off("search:progress")
+      this.getSearch().off('search:done')
+      this.getSearch().off('search:error')
+      this.getSearch().off('search:cancelled')
+      this.getSearch().off('search:failed')
+      this.getSearch().off('search:start')
+      this.getSearch().off('search:progress')
       super.destroy()
     }
   }

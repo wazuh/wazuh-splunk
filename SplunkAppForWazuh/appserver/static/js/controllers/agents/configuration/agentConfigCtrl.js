@@ -10,11 +10,11 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module", "../../../utils/config-handler"], function (
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
-  "use strict"
+  'use strict'
 
   class ConfigurationController {
     /**
@@ -59,8 +59,8 @@ define(["../../module", "../../../utils/config-handler"], function (
         this.errorHandler
       )
       this.$scope.currentConfig = null
-      this.$scope.configurationTab = ""
-      this.$scope.configurationSubTab = ""
+      this.$scope.configurationTab = ''
+      this.$scope.configurationSubTab = ''
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
       this.$scope.isSynchronized =
@@ -72,9 +72,9 @@ define(["../../module", "../../../utils/config-handler"], function (
         data.data.data.affected_items[0].synced
       this.excludeModulesByOs = {
         linux: [],
-        windows: ["audit", "oscap", "docker"],
-        darwin: ["audit", "oscap", "vuls", "docker"],
-        other: ["audit", "oscap", "vuls", "docker"],
+        windows: ['audit', 'oscap', 'docker'],
+        darwin: ['audit', 'oscap', 'vuls', 'docker'],
+        other: ['audit', 'oscap', 'vuls', 'docker'],
       }
 
       this.$scope.selectedOptions = {
@@ -96,7 +96,7 @@ define(["../../module", "../../../utils/config-handler"], function (
 
       this.$scope.isManager = false
       this.$scope.canReadAgents = true // controlled on the parent view (agents)
-      this.$scope.$on("loadingReporting", (event, data) => {
+      this.$scope.$on('loadingReporting', (event, data) => {
         this.$scope.loadingReporting = data.status
       })
     }
@@ -127,17 +127,17 @@ define(["../../module", "../../../utils/config-handler"], function (
       }
 
       this.$scope.getAgentStatusClass = (agentStatus) =>
-        agentStatus === "Active" ? "teal" : "red"
+        agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = (agentStatus) => {
-        return ["Active", "Disconnected"].includes(agentStatus)
+        return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
-          : "Never connected"
+          : 'Never connected'
       }
       this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
       this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
-      this.$scope.isString = (item) => typeof item === "string"
+      this.$scope.isString = (item) => typeof item === 'string'
       this.$scope.hasSize = (obj) =>
-        obj && typeof obj === "object" && Object.keys(obj).length
+        obj && typeof obj === 'object' && Object.keys(obj).length
       this.$scope.switchConfigTab = (configurationTab, sections) =>
         this.configurationHandler.switchConfigTab(
           configurationTab,
@@ -149,7 +149,7 @@ define(["../../module", "../../../utils/config-handler"], function (
       this.$scope.switchWodle = (wodleName) =>
         this.configurationHandler.switchWodle(wodleName, this.$scope, this.id)
       this.$scope.switchConfigurationTab = async (configurationTab) => {
-        if (configurationTab === "welcome") {
+        if (configurationTab === 'welcome') {
           this.$scope.isSynchronized = await this.checkAgentSync()
         }
         this.configurationHandler.switchConfigurationTab(
@@ -187,11 +187,11 @@ define(["../../module", "../../../utils/config-handler"], function (
           !groupInfo.data.data ||
           groupInfo.data.error
         ) {
-          throw Error("Missing fields")
+          throw Error('Missing fields')
         }
         this.state.go(`mg-groups`, { group: groupData[0] })
       } catch (err) {
-        this.errorHandler.showSimpleToast("Error fetching group data")
+        this.errorHandler.showSimpleToast('Error fetching group data')
       }
     }
 
@@ -236,9 +236,9 @@ define(["../../module", "../../../utils/config-handler"], function (
       /**
        * If it's not Linux, docker and openscape are set to false by default so these configurations are not printed.
        */
-      if (this.$scope.agentPlatform !== "linux") {
-        this.$scope.selectedOptions["dockerListenerConf"] = false
-        this.$scope.selectedOptions["openscapConf"] = false
+      if (this.$scope.agentPlatform !== 'linux') {
+        this.$scope.selectedOptions['dockerListenerConf'] = false
+        this.$scope.selectedOptions['openscapConf'] = false
       }
 
       if (!this.$scope.loadingReporting)
@@ -259,7 +259,7 @@ define(["../../module", "../../../utils/config-handler"], function (
           this.$scope.selectedOptions[key] = value
         })
       } catch (error) {
-        this.$notificationService.showErrorToast("Cannot select the modules")
+        this.$notificationService.showErrorToast('Cannot select the modules')
       }
     }
 
@@ -274,7 +274,7 @@ define(["../../module", "../../../utils/config-handler"], function (
         return !result
       } catch (error) {
         this.$notificationService.showErrorToast(
-          "Error checking selected options"
+          'Error checking selected options'
         )
       }
     }
@@ -298,7 +298,7 @@ define(["../../module", "../../../utils/config-handler"], function (
      */
     setAgentPlatform() {
       try {
-        this.$scope.agentPlatform = "other"
+        this.$scope.agentPlatform = 'other'
         let agentPlatformLinux = (
           ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {})
             .os || {}
@@ -307,17 +307,17 @@ define(["../../module", "../../../utils/config-handler"], function (
           ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {})
             .os || {}
         ).platform
-        if (agentPlatformLinux && agentPlatformLinux.includes("Linux")) {
-          this.$scope.agentPlatform = "linux"
+        if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
+          this.$scope.agentPlatform = 'linux'
         }
-        if (agentPlatformOther && agentPlatformOther === "windows") {
-          this.$scope.agentPlatform = "windows"
+        if (agentPlatformOther && agentPlatformOther === 'windows') {
+          this.$scope.agentPlatform = 'windows'
         }
-        if (agentPlatformOther && agentPlatformOther === "darwin") {
-          this.$scope.agentPlatform = "darwin"
+        if (agentPlatformOther && agentPlatformOther === 'darwin') {
+          this.$scope.agentPlatform = 'darwin'
         }
       } catch (error) {
-        this.errorHandler.showErrorToast("Cannot set OS platform.")
+        this.errorHandler.showErrorToast('Cannot set OS platform.')
       }
     }
 
@@ -325,8 +325,8 @@ define(["../../module", "../../../utils/config-handler"], function (
      * Returns true
      */
     showConfigCheck(key) {
-      if (key === "dockerListenerConf" || key === "openscapConf") {
-        if (this.$scope.agentPlatform === "linux") {
+      if (key === 'dockerListenerConf' || key === 'openscapConf') {
+        if (this.$scope.agentPlatform === 'linux') {
           return true
         } else {
           return false
@@ -341,24 +341,24 @@ define(["../../module", "../../../utils/config-handler"], function (
      */
     keyEquivalences(key) {
       const options = {
-        globalConf: "Global configuration",
-        communicationConf: "Communication",
-        antiFloodingConf: "Anti-flooding settings",
-        labels: "Labels",
-        pmConf: "Policy monitoring",
-        openscapConf: "OpenSCAP",
-        ciscatConf: "CIS-CAT",
-        osqueryConf: "Osquery",
-        inventoryConf: "Inventory data",
-        activeResponseConf: "Active response",
-        commandsConf: "Commands",
-        dockerListenerConf: "Docker listener",
-        logCollectionConf: "Log collection",
-        integrityMonitoringConf: "Integrity monitoring",
+        globalConf: 'Global configuration',
+        communicationConf: 'Communication',
+        antiFloodingConf: 'Anti-flooding settings',
+        labels: 'Labels',
+        pmConf: 'Policy monitoring',
+        openscapConf: 'OpenSCAP',
+        ciscatConf: 'CIS-CAT',
+        osqueryConf: 'Osquery',
+        inventoryConf: 'Inventory data',
+        activeResponseConf: 'Active response',
+        commandsConf: 'Commands',
+        dockerListenerConf: 'Docker listener',
+        logCollectionConf: 'Log collection',
+        integrityMonitoringConf: 'Integrity monitoring',
       }
       return options[key] || key
     }
   }
 
-  controllers.controller("configurationAgentCtrl", ConfigurationController)
+  controllers.controller('configurationAgentCtrl', ConfigurationController)
 })

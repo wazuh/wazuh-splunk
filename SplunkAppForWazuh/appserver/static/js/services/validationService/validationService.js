@@ -44,15 +44,15 @@ const validatePermissions = (requirements, policy) => {
           // since later entries have priority, we only read the last one.
           return (
             final &&
-            permissions[action][filtered[filtered.length - 1]] === "allow"
+            permissions[action][filtered[filtered.length - 1]] === 'allow'
           )
         } else {
-          return final && rbac_mode === "black"
+          return final && rbac_mode === 'black'
         }
       }, true)
       return final && result
     } else {
-      return final && rbac_mode === "black"
+      return final && rbac_mode === 'black'
     }
   }, true)
   return result
@@ -72,8 +72,8 @@ const validatePermissions = (requirements, policy) => {
  * @returns {boolean}
  */
 const isMatching = (requirement, permission) => {
-  const reqArr = requirement.split(":")
-  const perArr = permission.split(":")
+  const reqArr = requirement.split(':')
+  const perArr = permission.split(':')
 
   if (reqArr.length !== perArr.length) {
     return false
@@ -81,7 +81,7 @@ const isMatching = (requirement, permission) => {
 
   let result = true
   reqArr.forEach((value, index) => {
-    if (!(value === "*" || value === perArr[index] || perArr[index] === "*")) {
+    if (!(value === '*' || value === perArr[index] || perArr[index] === '*')) {
       result = false
     }
   })
@@ -97,18 +97,18 @@ const isMatching = (requirement, permission) => {
  * @returns {object}
  */
 const resourceToObject = (resource, isAllowed) => {
-  const arr = resource.split(":")
+  const arr = resource.split(':')
   if (arr.length === 1) {
     return { [arr[0]]: isAllowed }
   } else {
     return {
-      [arr[0]]: resourceToObject(arr.slice(1, arr.length).join(":"), isAllowed),
+      [arr[0]]: resourceToObject(arr.slice(1, arr.length).join(':'), isAllowed),
     }
   }
 }
 
-define(["../module"], function (module) {
-  module.service("$validationService", function () {
+define(['../module'], function (module) {
+  module.service('$validationService', function () {
     return {
       validatePermissions,
       isMatching,

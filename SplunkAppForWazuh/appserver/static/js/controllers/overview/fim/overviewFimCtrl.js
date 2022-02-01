@@ -11,12 +11,12 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/chart/linear-chart",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/chart/linear-chart',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -25,7 +25,7 @@ define([
   LinearChart,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class OverviewFIM extends DashboardMain {
     /**
@@ -69,50 +69,50 @@ define([
          * Visualizations
          */
         new LinearChart(
-          "alertsByActionOverTime",
+          'alertsByActionOverTime',
           `${this.filters} rule.groups{}=syscheck  | timechart count by syscheck.event`,
-          "alertsByActionOverTime",
+          'alertsByActionOverTime',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
-          "top5Agents",
+          'top5Agents',
           `${this.filters} rule.groups{}=syscheck  | top agent.name limit=5`,
-          "top5Agents",
+          'top5Agents',
           this.scope
         ),
         new LinearChart(
-          "eventsSummary",
+          'eventsSummary',
           `${this.filters} rule.groups{}=syscheck  | timechart count`,
-          "eventsSummary",
+          'eventsSummary',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
-          "ruleDistribution",
+          'ruleDistribution',
           `${this.filters} rule.groups{}=syscheck  | top limit=5 rule.description`,
-          "ruleDistribution",
+          'ruleDistribution',
           this.scope
         ),
         new PieChart(
-          "topActions",
+          'topActions',
           `${this.filters} rule.groups{}=syscheck  | top limit=5 syscheck.event`,
-          "topActions",
+          'topActions',
           this.scope
         ),
         new Table(
-          "topUsers",
+          'topUsers',
           `${this.filters} rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
-          "topUsers",
+          'topUsers',
           this.scope
         ),
         new RawTableDataService(
-          "topUsersTable",
+          'topUsersTable',
           `${this.filters} rule.groups{}=syscheck  | top limit=5 agent.id,agent.name,syscheck.uname_after | rename agent.id as "Agent ID", agent.name as "Agent name", syscheck.uname_after as "Top User", count as "Count"`,
-          "topUsersTableToken",
-          "$result$",
+          'topUsersTableToken',
+          '$result$',
           this.scope,
-          "Top users"
+          'Top users'
         ),
       ]
     }
@@ -124,25 +124,25 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            "overview-fim",
-            "File integrity monitoring",
+            'overview-fim',
+            'File integrity monitoring',
             this.filters,
             [
-              "alertsByActionOverTime",
-              "top5Agents",
-              "eventsSummary",
-              "ruleDistribution",
-              "topActions",
-              "topUsers",
+              'alertsByActionOverTime',
+              'top5Agents',
+              'eventsSummary',
+              'ruleDistribution',
+              'topActions',
+              'topUsers',
             ],
             {}, //Metrics
             this.tableResults
           )
       } catch (error) {
-        console.error("error on init ", error)
+        console.error('error on init ', error)
       }
     }
   }
 
-  app.controller("overviewFimCtrl", OverviewFIM)
+  app.controller('overviewFimCtrl', OverviewFIM)
 })

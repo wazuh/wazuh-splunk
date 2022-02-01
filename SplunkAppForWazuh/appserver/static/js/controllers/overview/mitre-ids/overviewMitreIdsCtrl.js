@@ -11,14 +11,14 @@
  * Find more information about this on the LICENSE file.
  */
 define([
-  "../../module",
-  "./lib/mitre-techniques",
-  "./lib/discover-search-helper",
-  "../../../services/visualizations/table/table",
-  "../../../services/visualizations/inputs/time-picker",
-  "FileSaver",
+  '../../module',
+  './lib/mitre-techniques',
+  './lib/discover-search-helper',
+  '../../../services/visualizations/table/table',
+  '../../../services/visualizations/inputs/time-picker',
+  'FileSaver',
 ], function (app, mitre_techniques, SearchHelper, Table, TimePicker) {
-  "use strict"
+  'use strict'
 
   class OverviewMitreIds {
     /**
@@ -74,22 +74,22 @@ define([
         this.scope.$applyAsync()
         // Initialize time tokens to default
         if (
-          !this.urlTokenModel.has("earliest") &&
-          !this.urlTokenModel.has("latest")
+          !this.urlTokenModel.has('earliest') &&
+          !this.urlTokenModel.has('latest')
         ) {
-          this.urlTokenModel.set({ earliest: "0", latest: "" })
+          this.urlTokenModel.set({ earliest: '0', latest: '' })
         }
-        this.timePicker = new TimePicker("#timePicker", this.reloadFilters)
+        this.timePicker = new TimePicker('#timePicker', this.reloadFilters)
         if (
-          !this.urlTokenModel.has("form.when.earliest") &&
-          !this.urlTokenModel.has("form.when.latest")
+          !this.urlTokenModel.has('form.when.earliest') &&
+          !this.urlTokenModel.has('form.when.latest')
         ) {
           this.urlTokenModel.set({
-            "form.when.earliest": "0",
-            "form.when.latest": "",
+            'form.when.earliest': '0',
+            'form.when.latest': '',
           })
         }
-        if (this.clusterInfo && this.clusterInfo.status === "enabled") {
+        if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) {
@@ -135,12 +135,12 @@ define([
         this.scope.$applyAsync()
         this.cleanModalTable()
         const table = new Table(
-          "mitre-technique-details-vizz",
+          'mitre-technique-details-vizz',
           `index=wazuh ${this.filters} sourcetype=wazuh rule.mitre.id{}=${this.scope.selectedItem[0]} | stats count by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          "mitre-technique-details-vizz",
+          'mitre-technique-details-vizz',
           this.scope
         )
-        table.search.on("search:done", () => {
+        table.search.on('search:done', () => {
           this.scope.loadingModalData = false
           if (this.modalOpen) this.modalInitialized = true
           this.scope.$applyAsync()
@@ -159,15 +159,15 @@ define([
       this.scope.techniques = Object.assign({}, this.mitre_techniques)
       for (let id in this.scope.techniques) this.scope.techniques[id].count = 0
       if (
-        typeof earliest_time == "undefined" &&
-        typeof latest_time == "undefined"
+        typeof earliest_time == 'undefined' &&
+        typeof latest_time == 'undefined'
       ) {
-        earliest_time = this.urlTokenModel.get("form.when.earliest")
-        latest_time = this.urlTokenModel.get("form.when.latest")
+        earliest_time = this.urlTokenModel.get('form.when.earliest')
+        latest_time = this.urlTokenModel.get('form.when.latest')
       }
       this.scope.sortedTechniques = Object.entries(this.scope.techniques)
       this.tacticsSearch = new SearchHelper({
-        id: "tacticsCount",
+        id: 'tacticsCount',
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
         onData: this.onDataTactics,
         scope: this.scope,
@@ -176,7 +176,7 @@ define([
       })
 
       this.techniquesSearch = new SearchHelper({
-        id: "techniquesCount",
+        id: 'techniquesCount',
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
         onData: this.onDataTechniques,
         scope: this.scope,
@@ -187,7 +187,7 @@ define([
 
     reloadFilters(input) {
       const { earliest_time, latest_time } =
-        typeof input == "object"
+        typeof input == 'object'
           ? input.settings.attributes
           : this.timePicker.input.settings.attributes
 
@@ -210,14 +210,14 @@ define([
       this.scope.loadRegistryValueDetails = (item) =>
         this.loadRegistryValueDetails(item)
       this.scope.isClusterEnabled =
-        this.clusterInfo && this.clusterInfo.status === "enabled"
-      this.scope.status = "all"
-      this.scope.osPlatform = "all"
-      this.scope.version = "all"
-      this.scope.node_name = "all"
-      this.scope.versionModel = "all"
+        this.clusterInfo && this.clusterInfo.status === 'enabled'
+      this.scope.status = 'all'
+      this.scope.osPlatform = 'all'
+      this.scope.version = 'all'
+      this.scope.node_name = 'all'
+      this.scope.versionModel = 'all'
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.$on("$destroy", () => {
+      this.scope.$on('$destroy', () => {
         this.destroy()
         this.cleanModalTable()
         this.timePicker.destroy()
@@ -226,21 +226,21 @@ define([
       this.loadTacticsTechniques()
 
       // Listeners
-      this.scope.$on("deletedFilter", (event) => {
+      this.scope.$on('deletedFilter', (event) => {
         event.stopPropagation()
         this.reloadFilters()
       })
 
-      this.scope.$on("barFilter", (event) => {
+      this.scope.$on('barFilter', (event) => {
         event.stopPropagation()
-        event.currentScope.custom_search = ""
+        event.currentScope.custom_search = ''
         this.reloadFilters()
       })
       this.scope.offsetTimestamp = (text, time) => {
         try {
           return text + this.setBrowserOffset(time)
         } catch (error) {
-          return ""
+          return ''
         }
       }
     }
@@ -320,13 +320,13 @@ define([
           },
           onComplete: () => {
             this.timePicker = new TimePicker(
-              "#timePickerModal",
+              '#timePickerModal',
               this.reloadFilters
             )
             this.modalOpen = true
           },
           controller: DialogController,
-          controllerAs: "ctrl",
+          controllerAs: 'ctrl',
         })
         function DialogController($mdDialog, $scope) {
           this.$scope = $scope
@@ -348,8 +348,8 @@ define([
      * Link to Mitre Dashboard
      */
     goToDashboard() {
-      this.state.go("ow-mitre", {})
+      this.state.go('ow-mitre', {})
     }
   }
-  app.controller("overviewMitreIdsCtrl", OverviewMitreIds)
+  app.controller('overviewMitreIdsCtrl', OverviewMitreIds)
 })

@@ -1,10 +1,10 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
 
-  module.service("$requestService", [
-    "$http",
-    "$apiIndexStorageService",
-    "$q",
+  module.service('$requestService', [
+    '$http',
+    '$apiIndexStorageService',
+    '$q',
     function ($https, $apiIndexStorageService, $q) {
       constructor
       /**
@@ -35,25 +35,25 @@ define(["../module"], function (module) {
       const httpReq = async (method, endpoint, payload = {}) => {
         try {
           if (!method || !endpoint) {
-            throw new Error("Missing parameters")
+            throw new Error('Missing parameters')
           }
           const tmpUrl = getWellFormedUri(endpoint)
           const data = {}
 
           // Set content type to form urlencoded
-          $https.defaults.headers.post["Content-Type"] =
-            "application/x-www-form-urlencoded"
+          $https.defaults.headers.post['Content-Type'] =
+            'application/x-www-form-urlencoded'
           // GET METHOD
-          if (method === "GET")
+          if (method === 'GET')
             Object.assign(data, await $https.get(tmpUrl, { params: payload }))
           // PUT METHOD
-          else if (method === "PUT")
+          else if (method === 'PUT')
             Object.assign(data, await $https.post(tmpUrl, $.param(payload)))
           // POST METHOD
-          else if (method === "POST")
+          else if (method === 'POST')
             Object.assign(data, await $https.post(tmpUrl, $.param(payload)))
           // DELETE METHOD
-          else if (method === "DELETE") {
+          else if (method === 'DELETE') {
             Object.assign(data, await $https.post(tmpUrl, $.param(payload)))
           }
           if (!data) {
@@ -61,12 +61,12 @@ define(["../module"], function (module) {
               `Error doing a request to ${tmpUrl}, method: ${method}.`
             )
           }
-          if (data.error && data.error !== "0") {
-            throw new Error("HTTP error from server: ", data.error)
+          if (data.error && data.error !== '0') {
+            throw new Error('HTTP error from server: ', data.error)
           }
           return $q.resolve(data)
         } catch (error) {
-          console.error("error in request ", error)
+          console.error('error in request ', error)
           return $q.reject(error)
         }
       }
@@ -76,46 +76,46 @@ define(["../module"], function (module) {
        * @param {String} endpoint
        * @param {Object} opts
        */
-      const apiReq = async (endpoint, opts = null, method = "GET") => {
+      const apiReq = async (endpoint, opts = null, method = 'GET') => {
         try {
-          $https.defaults.headers.post["Content-Type"] =
-            "application/x-www-form-urlencoded"
+          $https.defaults.headers.post['Content-Type'] =
+            'application/x-www-form-urlencoded'
           const currentApi = $apiIndexStorageService.getApi()
           const apiId =
-            currentApi && currentApi["_key"] ? currentApi["_key"] : opts["_key"]
+            currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
           const payload = { apiId, endpoint, method }
           if (opts && typeof opts === `object`) {
             Object.assign(payload, opts)
           }
-          const backPoint = payload.delay ? "/queue/add_job" : "/api/request"
-          const result = await httpReq("POST", backPoint, payload)
+          const backPoint = payload.delay ? '/queue/add_job' : '/api/request'
+          const result = await httpReq('POST', backPoint, payload)
           if (
             result &&
             result.data &&
             result.data.error &&
             result.data.error === 3099
           ) {
-            throw new Error("ERROR3099 - Wazuh not ready yet.")
+            throw new Error('ERROR3099 - Wazuh not ready yet.')
           }
           return result
         } catch (err) {
           return Promise.reject(
-            "Cannot access to selected API, please check your API configuration."
+            'Cannot access to selected API, please check your API configuration.'
           )
         }
       }
 
       const wazuhIsReady = async (opts = null) => {
         try {
-          $https.defaults.headers.post["Content-Type"] =
-            "application/x-www-form-urlencoded"
+          $https.defaults.headers.post['Content-Type'] =
+            'application/x-www-form-urlencoded'
           const currentApi = $apiIndexStorageService.getApi()
           const apiId =
-            currentApi && currentApi["_key"] ? currentApi["_key"] : opts["_key"]
-          const endpoint = "/api/wazuh_ready"
-          const method = "GET"
+            currentApi && currentApi['_key'] ? currentApi['_key'] : opts['_key']
+          const endpoint = '/api/wazuh_ready'
+          const method = 'GET'
           const payload = { apiId, method }
-          const result = await httpReq("POST", endpoint, payload)
+          const result = await httpReq('POST', endpoint, payload)
           return result
         } catch (err) {
           return Promise.reject(err)
@@ -126,8 +126,8 @@ define(["../module"], function (module) {
         try {
           const result = await apiReq(
             `${url}`,
-            { content, origin: "raw" },
-            "PUT"
+            { content, origin: 'raw' },
+            'PUT'
           )
           if (
             !result ||
@@ -139,7 +139,7 @@ define(["../module"], function (module) {
               return result
             } else {
               throw new Error(
-                result.data.message || result.data.error || "Cannot send file."
+                result.data.message || result.data.error || 'Cannot send file.'
               )
             }
           }
@@ -153,8 +153,8 @@ define(["../module"], function (module) {
         try {
           const result = await apiReq(
             `${url}`,
-            { content, origin: "xmleditor" },
-            "PUT"
+            { content, origin: 'xmleditor' },
+            'PUT'
           )
 
           if (!result || !result.data || result.data.error !== 0) {
@@ -162,7 +162,7 @@ define(["../module"], function (module) {
               return result
             } else {
               throw new Error(
-                result.data.message || result.data.error || "Cannot send file."
+                result.data.message || result.data.error || 'Cannot send file.'
               )
             }
           }
@@ -176,7 +176,7 @@ define(["../module"], function (module) {
         try {
           const result = await apiReq(url)
           if (!result || !result.data || result.data.error !== 0) {
-            throw new Error("Cannot get file.")
+            throw new Error('Cannot get file.')
           }
           return result
         } catch (error) {

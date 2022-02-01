@@ -1,10 +1,10 @@
 define([
-  "../../module",
-  "../rules/ruleset",
-  "../../../directives/wz-table/lib/pagination",
-  "../../../directives/wz-table/lib/check-gap",
+  '../../module',
+  '../rules/ruleset',
+  '../../../directives/wz-table/lib/pagination',
+  '../../../directives/wz-table/lib/check-gap',
 ], function (controllers, Ruleset, pagination, checkGap) {
-  "use strict"
+  'use strict'
   class CdbListId extends Ruleset {
     /**
      * Class CdbList-ID
@@ -37,7 +37,7 @@ define([
         $scope,
         $sce,
         $notificationService,
-        "cdb",
+        'cdb',
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
@@ -50,8 +50,8 @@ define([
       this.pagination = pagination
       this.checkGap = checkGap
       this.restartService = $restartService
-      this.scope.canUpdateList = $security_service.isAllowed("LISTS_UPDATE", [
-        "LIST_FILE",
+      this.scope.canUpdateList = $security_service.isAllowed('LISTS_UPDATE', [
+        'LIST_FILE',
       ])
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
@@ -126,7 +126,7 @@ define([
         this.scope.closeRestartConfirmation = () =>
           this.closeRestartConfirmation()
       } catch (error) {
-        this.notification.showErrorToast("Error editing CDB list")
+        this.notification.showErrorToast('Error editing CDB list')
       }
     }
 
@@ -142,22 +142,22 @@ define([
     async addEntry(key, value) {
       try {
         if (!key) {
-          this.notification.showWarningToast("Cannot send empty fields.")
+          this.notification.showWarningToast('Cannot send empty fields.')
         } else {
           if (!this.scope.currentList.list[key]) {
-            value = value ? value : ""
+            value = value ? value : ''
             this.scope.currentList.list[key] = value
-            this.scope.newKey = ""
-            this.scope.newValue = ""
+            this.scope.newKey = ''
+            this.scope.newValue = ''
             this.refreshCdbList()
           } else {
             this.notification.showErrorToast(
-              "Error adding new entry, the key exists."
+              'Error adding new entry, the key exists.'
             )
           }
         }
       } catch (error) {
-        this.notification.showErrorToast("Error adding entry.")
+        this.notification.showErrorToast('Error adding entry.')
       }
     }
 
@@ -180,7 +180,7 @@ define([
      */
     cancelEditingKey() {
       this.scope.editingKey = false
-      this.scope.editingNewValue = ""
+      this.scope.editingNewValue = ''
     }
 
     showConfirmRemoveEntry(ev, key) {
@@ -193,7 +193,7 @@ define([
         this.cancelEditingKey()
         this.refreshCdbList()
       } catch (error) {
-        this.notification.showErrorToast("Error editing value.")
+        this.notification.showErrorToast('Error editing value.')
       }
     }
 
@@ -213,7 +213,7 @@ define([
             : currentPage - 1
         this.scope.setPage(currentPage)
       } catch (error) {
-        this.notification.showErrorToast("Error deleting entry.")
+        this.notification.showErrorToast('Error deleting entry.')
       }
     }
 
@@ -236,7 +236,7 @@ define([
         this.scope.items = this.cdbToArr()
         this.contentToFilter = this.scope.items
         this.initPagination()
-        this.notification.showSuccessToast("File saved successfully.")
+        this.notification.showSuccessToast('File saved successfully.')
         this.scope.saveIncomplete = false
         this.scope.$applyAsync()
       } catch (error) {
@@ -247,16 +247,16 @@ define([
 
     stringToObj(string) {
       let result = {}
-      const splitted = string.split("\n")
+      const splitted = string.split('\n')
       splitted.forEach((element) => {
-        const keyValue = element.split(":")
+        const keyValue = element.split(':')
         if (keyValue[0]) result[keyValue[0]] = keyValue[1]
       })
       return result
     }
 
     objToString(obj) {
-      let raw = ""
+      let raw = ''
       for (var key in obj) {
         raw = raw.concat(`${key}:${obj[key]}\n`)
       }
@@ -279,5 +279,5 @@ define([
       this.scope.searchTable()
     }
   }
-  controllers.controller("managerCdbIdCtrl", CdbListId)
+  controllers.controller('managerCdbIdCtrl', CdbListId)
 })

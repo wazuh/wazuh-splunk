@@ -11,12 +11,12 @@
  */
 
 define([
-  "../../module",
-  "../../../dashboardMain",
-  "../../../services/visualizations/chart/pie-chart",
-  "../../../services/visualizations/chart/area-chart",
-  "../../../services/visualizations/table/table",
-  "../../../services/rawTableData/rawTableDataService",
+  '../../module',
+  '../../../dashboardMain',
+  '../../../services/visualizations/chart/pie-chart',
+  '../../../services/visualizations/chart/area-chart',
+  '../../../services/visualizations/table/table',
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -25,7 +25,7 @@ define([
   Table,
   RawTableDataService
 ) {
-  "use strict"
+  'use strict'
 
   class Osquery extends DashboardMain {
     /**
@@ -75,58 +75,58 @@ define([
          * Visualizations
          */
         new AreaChart(
-          "alertsPacksOverTime",
+          'alertsPacksOverTime',
           `${this.filters} | timechart span=1h count by data.osquery.pack`,
-          "alertsPacksOverTime",
+          'alertsPacksOverTime',
           this.scope,
-          { customAxisTitleX: "Time span" }
+          { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
-          "topOsqueryAdded",
+          'topOsqueryAdded',
           `${this.filters} data.osquery.action="added"  | top data.osquery.name limit=5`,
-          "topOsqueryAdded",
+          'topOsqueryAdded',
           this.scope
         ),
         new PieChart(
-          "topOsqueryRemoved",
+          'topOsqueryRemoved',
           `${this.filters} data.osquery.action="removed"  | top data.osquery.name limit=5`,
-          "topOsqueryRemoved",
+          'topOsqueryRemoved',
           this.scope
         ),
         new PieChart(
-          "mostCommonPacks",
+          'mostCommonPacks',
           `${this.filters}  | top data.osquery.pack limit=5`,
-          "mostCommonPacks",
+          'mostCommonPacks',
           this.scope
         ),
         new Table(
-          "alertsSummary",
+          'alertsSummary',
           `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
-          "alertsSummary",
+          'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
-          "alertsSummaryTable",
+          'alertsSummaryTable',
           `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
-          "alertsSummaryTableToken",
-          "$result$",
+          'alertsSummaryTableToken',
+          '$result$',
           this.scope,
-          "Alerts summary"
+          'Alerts summary'
         ),
         new Table(
-          "topRules",
+          'topRules',
           `${this.filters}  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          "topRules",
+          'topRules',
           this.scope
         ),
 
         new RawTableDataService(
-          "topRulesTable",
+          'topRulesTable',
           `${this.filters}  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          "topRulesTableToken",
-          "$result$",
+          'topRulesTableToken',
+          '$result$',
           this.scope,
-          "Top 5 Rules"
+          'Top 5 Rules'
         ),
       ]
     }
@@ -145,27 +145,27 @@ define([
          */
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
-            "ow-osquery",
-            "Osquery",
+            'ow-osquery',
+            'Osquery',
             this.filters,
             [
-              "alertsPacksOverTime",
-              "topOsqueryAdded",
-              "topOsqueryRemoved",
-              "mostCommonPacks",
-              "alertsSummary",
-              "topRules",
+              'alertsPacksOverTime',
+              'topOsqueryAdded',
+              'topOsqueryRemoved',
+              'mostCommonPacks',
+              'alertsSummary',
+              'topRules',
             ],
             {}, //Metrics
             this.tableResults
           )
       } catch (err) {
         this.notification.showErrorToast(
-          "Cannot load wodle configuration. Osquery is not configured."
+          'Cannot load wodle configuration. Osquery is not configured.'
         )
       }
     }
   }
 
-  app.controller("osqueryCtrl", Osquery)
+  app.controller('osqueryCtrl', Osquery)
 })

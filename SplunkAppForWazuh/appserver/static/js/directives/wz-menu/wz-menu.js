@@ -10,13 +10,13 @@
  * Find more information about this on the LICENSE file.
  */
 define([
-  "../module",
-  "splunkjs/mvc/simpleform/input/dropdown",
-  "../../services/visualizations/inputs/dropdown-input",
-  "splunkjs/mvc",
+  '../module',
+  'splunkjs/mvc/simpleform/input/dropdown',
+  '../../services/visualizations/inputs/dropdown-input',
+  'splunkjs/mvc',
 ], function (directives, Dropdown, DropdownViz, mvc) {
-  "use strict"
-  directives.directive("wzMenu", function (BASE_URL) {
+  'use strict'
+  directives.directive('wzMenu', function (BASE_URL) {
     return {
       controller: function (
         $scope,
@@ -30,7 +30,7 @@ define([
       ) {
         $scope.logoUrl =
           BASE_URL +
-          "/static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_full.svg"
+          '/static/app/SplunkAppForWazuh/css/images/wazuh/svg/wazuh_white_full.svg'
 
         $scope.select = (item) => {
           $scope.menuNavItem = item
@@ -38,42 +38,42 @@ define([
         }
 
         $scope.openDiscover = (agentId) => {
-          $scope.menuNavItem = "discover"
-          $scope.$broadcast("stateChanged", "discover")
+          $scope.menuNavItem = 'discover'
+          $scope.$broadcast('stateChanged', 'discover')
           $scope.$applyAsync()
-          const index = $currentDataService.getIndex().index || "wazuh"
+          const index = $currentDataService.getIndex().index || 'wazuh'
           //Generate url
           let url = `${BASE_URL}/app/search/search?q=index=${index}`
           url = agentId ? `${url} agent.id=${agentId}` : url
-          localStorage.setItem("urlDiscover", url)
-          $state.go("discover", { fromDashboard: false })
+          localStorage.setItem('urlDiscover', url)
+          $state.go('discover', { fromDashboard: false })
         }
 
-        $scope.$on("openDiscover", (event, data) => {
+        $scope.$on('openDiscover', (event, data) => {
           event.stopPropagation()
           $scope.openDiscover(data)
         })
 
         $scope.openModal = () => {
-          const modal = document.getElementById("quick-settings-modal")
-          const overlay = document.createElement("div")
-          overlay.id = "quick-settings-overlay"
+          const modal = document.getElementById('quick-settings-modal')
+          const overlay = document.createElement('div')
+          overlay.id = 'quick-settings-overlay'
           document.body.appendChild(overlay)
-          overlay.classList.add("modal-backdrop", "fade")
+          overlay.classList.add('modal-backdrop', 'fade')
           overlay.onclick = () => $scope.closeModal()
           setTimeout(() => {
-            overlay.classList.add("in")
-            modal.classList.remove("fade")
-            modal.classList.replace("hide", "show")
+            overlay.classList.add('in')
+            modal.classList.remove('fade')
+            modal.classList.replace('hide', 'show')
           }, 100)
         }
 
         $scope.closeModal = () => {
-          const modal = document.getElementById("quick-settings-modal")
-          const overlay = document.getElementById("quick-settings-overlay")
-          overlay.classList.remove("in")
-          modal.classList.add("fade")
-          modal.classList.replace("show", "hide")
+          const modal = document.getElementById('quick-settings-modal')
+          const overlay = document.getElementById('quick-settings-overlay')
+          overlay.classList.remove('in')
+          modal.classList.add('fade')
+          modal.classList.replace('show', 'hide')
           setTimeout(() => document.body.removeChild(overlay), 100)
         }
 
@@ -85,7 +85,7 @@ define([
 
         const onChangeDropdownAPI = () => {
           onChangeListeners.push(
-            dropdownAPI.on("change", (newValue) => {
+            dropdownAPI.on('change', (newValue) => {
               try {
                 if (newValue && $scope.currentAPI._key != newValue) {
                   selectAPI(newValue)
@@ -100,7 +100,7 @@ define([
         const onChangeDropdownIndex = () => {
           const dropdownInstance = dropdownIndex.getElement()
           onChangeListeners.push(
-            dropdownInstance.on("change", (newValue) => {
+            dropdownInstance.on('change', (newValue) => {
               try {
                 if (
                   newValue &&
@@ -122,7 +122,7 @@ define([
         const onChangeDropdownSourceType = () => {
           const dropdownInstance = dropdownSourceType.getElement()
           onChangeListeners.push(
-            dropdownInstance.on("change", (newValue) => {
+            dropdownInstance.on('change', (newValue) => {
               try {
                 if (
                   newValue &&
@@ -142,8 +142,8 @@ define([
         }
 
         const renderDropdownAPI = () => {
-          mvc.Components.revokeInstance("menuSelectAPI")
-          document.getElementById(`menuSelectAPI`).innerHTML = ""
+          mvc.Components.revokeInstance('menuSelectAPI')
+          document.getElementById(`menuSelectAPI`).innerHTML = ''
 
           dropdownAPI = new Dropdown(
             {
@@ -164,21 +164,21 @@ define([
           if (dropdownIndex) {
             dropdownIndex.destroy()
           } else {
-            mvc.Components.revokeInstance("menuSelectIndex")
-            mvc.Components.revokeInstance("menuSelectIndex")
+            mvc.Components.revokeInstance('menuSelectIndex')
+            mvc.Components.revokeInstance('menuSelectIndex')
           }
-          document.getElementById(`menuSelectIndex`).innerHTML = ""
+          document.getElementById(`menuSelectIndex`).innerHTML = ''
 
           dropdownIndex = new DropdownViz(
-            "menuSelectIndex",
+            'menuSelectIndex',
             `| metasearch index=* sourcetype=*wazuh* | stats count by index, sourcetype | fields index`,
-            "index",
-            "$form.index$",
-            "menuSelectIndex",
+            'index',
+            '$form.index$',
+            'menuSelectIndex',
             $scope,
             $scope.menuCurrentIndex,
-            "2017-03-14T10:0:0",
-            "now"
+            '2017-03-14T10:0:0',
+            'now'
           )
         }
 
@@ -186,21 +186,21 @@ define([
           if (dropdownSourceType) {
             dropdownSourceType.destroy()
           } else {
-            mvc.Components.revokeInstance("menuSelectSourceType")
-            mvc.Components.revokeInstance("menuSelectSourceTypeSearch")
+            mvc.Components.revokeInstance('menuSelectSourceType')
+            mvc.Components.revokeInstance('menuSelectSourceTypeSearch')
           }
-          document.getElementById(`menuSelectSourceType`).innerHTML = ""
+          document.getElementById(`menuSelectSourceType`).innerHTML = ''
 
           dropdownSourceType = new DropdownViz(
-            "menuSelectSourceType",
+            'menuSelectSourceType',
             `| metasearch index=${$scope.menuCurrentIndex} sourcetype=* | stats count by index, sourcetype | fields sourcetype`,
-            "sourcetype",
-            "$form.sourcetype$",
-            "menuSelectSourceType",
+            'sourcetype',
+            '$form.sourcetype$',
+            'menuSelectSourceType',
             $scope,
             $scope.menuCurrentSourceType,
-            "2017-03-14T10:0:0",
-            "now"
+            '2017-03-14T10:0:0',
+            'now'
           )
         }
 
@@ -211,7 +211,7 @@ define([
 
         const init = async () => {
           update()
-          $scope.$on("$destroy", () => {
+          $scope.$on('$destroy', () => {
             clearListeners()
             dropdownAPI.destroy()
             dropdownIndex.destroy()
@@ -229,10 +229,10 @@ define([
             if (!$scope.menuSkipRefresh) {
               $window.location.reload()
             } else {
-              $rootScope.$broadcast("APIChanged", key)
+              $rootScope.$broadcast('APIChanged', key)
             }
           } catch (err) {
-            $notificationService.showErrorToast(err || "Could not select API")
+            $notificationService.showErrorToast(err || 'Could not select API')
           }
         }
 
@@ -241,7 +241,7 @@ define([
             const lastState = $navigationService.getLastState()
             if (lastState)
               if (
-                (lastState !== "" && lastState.includes(prefix)) ||
+                (lastState !== '' && lastState.includes(prefix)) ||
                 lastState.includes(state)
               ) {
                 return true
@@ -261,27 +261,27 @@ define([
             const index = $currentDataService.getIndex()
             const sourceType = $currentDataService.getSourceType()
             const api = $currentDataService.getApi()
-            $scope.menuCurrentIndex = !index ? "wazuh" : index.index
+            $scope.menuCurrentIndex = !index ? 'wazuh' : index.index
             $scope.menuCurrentSourceType = !sourceType
-              ? "*"
+              ? '*'
               : sourceType.sourceType
-            $scope.currentAPI = !api ? { managerName: "---", _key: "-" } : api
+            $scope.currentAPI = !api ? { managerName: '---', _key: '-' } : api
             $scope.theresAPI = !!api
 
-            if (checkLastState("ow-", "overview")) {
-              $scope.menuNavItem = "overview"
-            } else if (checkLastState("mg-", "manager")) {
-              $scope.menuNavItem = "manager"
-            } else if (checkLastState("ag-", "agents")) {
-              $scope.menuNavItem = "agents"
-            } else if (checkLastState("api.", "settings")) {
-              $scope.menuNavItem = "settings"
-            } else if (checkLastState("dev-tools", "dev-tools")) {
-              $scope.menuNavItem = "dev-tools"
-            } else if (checkLastState("discover", "discover")) {
-              $scope.menuNavItem = "discover"
-            } else if (checkLastState("security", "security")) {
-              $scope.menuNavItem = "security"
+            if (checkLastState('ow-', 'overview')) {
+              $scope.menuNavItem = 'overview'
+            } else if (checkLastState('mg-', 'manager')) {
+              $scope.menuNavItem = 'manager'
+            } else if (checkLastState('ag-', 'agents')) {
+              $scope.menuNavItem = 'agents'
+            } else if (checkLastState('api.', 'settings')) {
+              $scope.menuNavItem = 'settings'
+            } else if (checkLastState('dev-tools', 'dev-tools')) {
+              $scope.menuNavItem = 'dev-tools'
+            } else if (checkLastState('discover', 'discover')) {
+              $scope.menuNavItem = 'discover'
+            } else if (checkLastState('security', 'security')) {
+              $scope.menuNavItem = 'security'
             }
 
             if ($scope.theresAPI && $scope.apiList.length > 1) {
@@ -294,28 +294,28 @@ define([
             onChangeDropdownSourceType()
             $scope.$applyAsync()
           } catch (error) {
-            console.error("wz-menu:error", error)
-            $state.go("settings.api")
+            console.error('wz-menu:error', error)
+            $state.go('settings.api')
           }
         }
 
         // Listens for changes in the selected API
-        $scope.$on("updatedAPI", (event) => {
+        $scope.$on('updatedAPI', (event) => {
           event.stopPropagation && event.stopPropagation()
           update()
         })
 
         //Listens for changes in states
-        $scope.$on("stateChanged", (event, data) => {
+        $scope.$on('stateChanged', (event, data) => {
           $scope.select(data)
-          $scope.menuSkipRefresh = data.indexOf("settings") > -1
+          $scope.menuSkipRefresh = data.indexOf('settings') > -1
         })
 
         init()
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-menu/wz-menu.html',
     }
   })
 })

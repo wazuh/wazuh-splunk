@@ -9,13 +9,13 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(["../module"], function (directives) {
-  "use strict"
-  directives.directive("wazuhCardSlider", function (BASE_URL) {
+define(['../module'], function (directives) {
+  'use strict'
+  directives.directive('wazuhCardSlider', function (BASE_URL) {
     return {
-      restrict: "E",
+      restrict: 'E',
       scope: {
-        data: "=data",
+        data: '=data',
       },
       controller: function ($scope, $sce) {
         $scope.expanded = false
@@ -58,7 +58,7 @@ define(["../module"], function (directives) {
       },
       templateUrl:
         BASE_URL +
-        "/static/app/SplunkAppForWazuh/js/directives/wz-card-slider/wz-card-slider.html",
+        '/static/app/SplunkAppForWazuh/js/directives/wz-card-slider/wz-card-slider.html',
     }
   })
 })

@@ -1,1 +1,1 @@
-define(["./userPermissions"], function () {})
+define(['./userPermissions'], function () {})

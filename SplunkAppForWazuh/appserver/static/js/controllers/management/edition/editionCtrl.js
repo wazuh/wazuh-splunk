@@ -1,5 +1,5 @@
-define(["../../module"], function (controllers) {
-  "use strict"
+define(['../../module'], function (controllers) {
+  'use strict'
 
   class Edition {
     /**
@@ -36,24 +36,24 @@ define(["../../module"], function (controllers) {
       this.state = $state
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
+      this.isAllowed = (action, resource, params = ['*']) => {
         return $security_service.getPolicy(action, resource, params).isAllowed
       }
       // Cluster (for each node): Read, Restart, UpdateConfig
       this.scope.canUpdateClusterConfigOnNode = (node_id) =>
-        this.isAllowed("CLUSTER_UPDATE_CONFIG", ["NODE_ID"], [node_id])
+        this.isAllowed('CLUSTER_UPDATE_CONFIG', ['NODE_ID'], [node_id])
       this.scope.canRestartClusterNode = (node_id) =>
-        this.isAllowed("CLUSTER_RESTART", ["NODE_ID"], [node_id])
+        this.isAllowed('CLUSTER_RESTART', ['NODE_ID'], [node_id])
       this.scope.canReadClusterNode = (node_id) =>
-        this.isAllowed("CLUSTER_READ", ["NODE_ID"], [node_id])
+        this.isAllowed('CLUSTER_READ', ['NODE_ID'], [node_id])
 
       // Manager: Read, Restart, UpdateConfig
       this.scope.canUpdateManagerConfig = this.isAllowed(
-        "MANAGER_UPDATE_CONFIG",
-        ["RESOURCELESS"]
+        'MANAGER_UPDATE_CONFIG',
+        ['RESOURCELESS']
       )
-      this.scope.canRestartManager = this.isAllowed("MANAGER_RESTART", [
-        "RESOURCELESS",
+      this.scope.canRestartManager = this.isAllowed('MANAGER_RESTART', [
+        'RESOURCELESS',
       ])
     }
     /**
@@ -89,26 +89,26 @@ define(["../../module"], function (controllers) {
          *  Listeners
          */
 
-        this.scope.$on("saveComplete", (event) => {
+        this.scope.$on('saveComplete', (event) => {
           event.stopPropagation()
           this.scope.saveIncomplete = false
         })
       } catch (error) {
         this.notification.showErrorToast(error)
-        this.state.go("manager")
+        this.state.go('manager')
       }
     }
 
-    async editNode(nodeName = "manager") {
+    async editNode(nodeName = 'manager') {
       try {
-        const file = "ossec.conf"
+        const file = 'ossec.conf'
         const dir = false
         const content = !this.clusterInfo.clusterEnabled
           ? await this.fileEditor.getConfiguration(file, dir)
           : await this.fileEditor.getConfiguration(file, dir, nodeName)
         this.scope.editingNode = nodeName
         this.scope.fetchedXML = content
-        this.scope.$broadcast("fetchedFile", { data: content })
+        this.scope.$broadcast('fetchedFile', { data: content })
         this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast(`Error editing node: ${error}`)
@@ -121,10 +121,10 @@ define(["../../module"], function (controllers) {
 
     saveOssecConfig() {
       const node =
-        this.scope.editingNode === "manager" ? false : this.scope.editingNode
+        this.scope.editingNode === 'manager' ? false : this.scope.editingNode
       this.scope.saveIncomplete = true
-      this.scope.$broadcast("saveXmlFile", {
-        file: "ossec.conf",
+      this.scope.$broadcast('saveXmlFile', {
+        file: 'ossec.conf',
         dir: false,
         node: node,
         overwrite: true,
@@ -138,30 +138,30 @@ define(["../../module"], function (controllers) {
 
     async restart(node = false) {
       try {
-        this.scope.$broadcast("removeRestartMsg", {})
+        this.scope.$broadcast('removeRestartMsg', {})
 
         this.scope.restartInProgress = true
-        let result = ""
+        let result = ''
         if (this.clusterInfo.clusterEnabled && node) {
           result = await this.restartService.restartNode(node)
         } else {
           result = await this.restartService.restart()
         }
-        if (result.startsWith("Restarting cluster")) {
-          this.rootScope.$broadcast("showHeadToaster", {
-            type: "info",
+        if (result.startsWith('Restarting cluster')) {
+          this.rootScope.$broadcast('showHeadToaster', {
+            type: 'info',
             msg: result,
             delay: true,
             spinner: false,
           })
         } else {
-          this.rootScope.$broadcast("wazuhNotReadyYet", { msg: result })
+          this.rootScope.$broadcast('wazuhNotReadyYet', { msg: result })
         }
         //this.notification.showSimpleToast(result)
         this.scope.restartInProgress = false
       } catch (error) {
-        this.rootScope.$broadcast("showHeadToaster", {
-          type: "error",
+        this.rootScope.$broadcast('showHeadToaster', {
+          type: 'error',
           msg: error || `Cannot restart.`,
           delay: false,
           spinner: false,
@@ -177,5 +177,5 @@ define(["../../module"], function (controllers) {
     }
   }
 
-  controllers.controller("editionCtrl", Edition)
+  controllers.controller('editionCtrl', Edition)
 })

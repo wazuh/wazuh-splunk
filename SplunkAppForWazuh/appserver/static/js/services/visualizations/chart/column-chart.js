@@ -1,8 +1,8 @@
-define(["splunkjs/mvc/simplexml/element/chart", "../viz/viz"], function (
+define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function (
   ChartElement,
   Viz
 ) {
-  "use strict"
+  'use strict'
 
   return class ColumnChart extends Viz {
     /**
@@ -19,15 +19,15 @@ define(["splunkjs/mvc/simplexml/element/chart", "../viz/viz"], function (
           {
             id: `${id}`,
             resizable: true,
-            "charting.drilldown": "none",
-            "charting.chart": "column",
-            "charting.chart.stackMode": extraParams.stackMode || "default",
-            "charting.axisTitleX.text": extraParams.customAxisTitleX || "",
-            "charting.chart.orientation": extraParams.chartOrientation || "y",
+            'charting.drilldown': 'none',
+            'charting.chart': 'column',
+            'charting.chart.stackMode': extraParams.stackMode || 'default',
+            'charting.axisTitleX.text': extraParams.customAxisTitleX || '',
+            'charting.chart.orientation': extraParams.chartOrientation || 'y',
             managerid: `${id}Search`,
             el: $(`#${attachedElement}`),
           },
-          { tokens: true, tokenNamespace: "submitted" }
+          { tokens: true, tokenNamespace: 'submitted' }
         ).render(),
         id,
         search,

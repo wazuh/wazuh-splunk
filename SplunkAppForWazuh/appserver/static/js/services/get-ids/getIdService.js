@@ -1,5 +1,5 @@
-define(["../module"], function (module) {
-  "use strict"
+define(['../module'], function (module) {
+  'use strict'
 
   class GetIdService {
     constructor($requestService) {
@@ -13,11 +13,11 @@ define(["../module"], function (module) {
      */
     async agent(agent) {
       try {
-        if (agent && typeof agent === "string") {
+        if (agent && typeof agent === 'string') {
           const data = await this.req(`/agents?name=${agent}`)
           return data.data.data.items[0].id
         } else {
-          throw Error("Invalid agent format")
+          throw Error('Invalid agent format')
         }
       } catch (err) {
         return Promise.reject(err.message || err)
@@ -25,5 +25,5 @@ define(["../module"], function (module) {
     }
   }
 
-  module.service("$getIdService", GetIdService)
+  module.service('$getIdService', GetIdService)
 })
