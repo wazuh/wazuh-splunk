@@ -123,6 +123,7 @@ define([
     }
     cleanModalTable() {
       this.vizz.forEach((vizz) => {
+        // eslint-disable-next-line no-undef
         angular.element(vizz.element.el).empty()
         vizz.destroy()
       })
@@ -262,6 +263,7 @@ define([
           q: `id=${this.scope.selectedItem[0]}`,
         })
         const mitreData = newRequestMitre.data.data.affected_items[0]
+        // eslint-disable-next-line no-undef
         var parentEl = angular.element(document.body)
         const ParentCtrl = this
 
@@ -325,18 +327,17 @@ define([
             )
             this.modalOpen = true
           },
-          controller: DialogController,
+          controller: ($mdDialog, $scope) => {
+            this.$scope = $scope
+            this.closeDialog = () => {
+              ParentCtrl.modalOpen = false
+              ParentCtrl.modalInitialized = false
+              ParentCtrl.cleanModalTable()
+              $mdDialog.hide()
+            }
+          },
           controllerAs: 'ctrl',
         })
-        function DialogController($mdDialog, $scope) {
-          this.$scope = $scope
-          this.closeDialog = () => {
-            ParentCtrl.modalOpen = false
-            ParentCtrl.modalInitialized = false
-            ParentCtrl.cleanModalTable()
-            $mdDialog.hide()
-          }
-        }
 
         this.scope.$applyAsync()
       } catch (err) {

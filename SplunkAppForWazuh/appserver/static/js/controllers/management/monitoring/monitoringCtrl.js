@@ -256,9 +256,6 @@ define([
       } else if (this.running === 'no') {
         this.scope.isClusterRunning = false
         this.scope.status = 'no'
-      } else if (this.running === 'no' && this.enabled === 'yes') {
-        this.scope.isClusterRunning = false
-        this.scope.status = 'no'
       } else if (this.running === 'yes' && this.enabled === 'yes') {
         this.scope.isClusterEnabled = true
         this.scope.isClusterRunning = true

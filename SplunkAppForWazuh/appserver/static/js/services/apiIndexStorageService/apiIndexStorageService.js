@@ -2,8 +2,9 @@ define(['../module'], function (app) {
   'use strict'
 
   class ApiIndexStorageService {
-    constructor() {
+    constructor($notificationService) {
       this.sessionStorage = sessionStorage
+      this.notification = $notificationService
     }
 
     /**
@@ -37,8 +38,10 @@ define(['../module'], function (app) {
     removeAPI() {
       try {
         delete this.sessionStorage.selectedAPI
-      } catch (err) {
-        return
+      } catch (error) {
+        this.notification.showErrorToast(
+          'Error removing API:' + (error.message || error)
+        )
       }
     }
 
@@ -53,7 +56,9 @@ define(['../module'], function (app) {
           this.sessionStorage.selectedAPI = JSON.stringify(Api)
         }
       } catch (error) {
-        return
+        this.notification.showErrorToast(
+          'Error selecting API: ' + (error.message || error)
+        )
       }
     }
 
@@ -83,9 +88,12 @@ define(['../module'], function (app) {
         }
         throw 'Key not found'
       } catch (e) {
-        throw e
+        this.notification.showErrorToast(
+          'Extensions management failed: ' + (e.message || e)
+        )
       }
     }
+
     setExtensionKey(apiId, extensionKey) {
       try {
         const prevExtensions =
@@ -96,9 +104,13 @@ define(['../module'], function (app) {
         )
         return true
       } catch (e) {
-        throw e
+        this.notification.showErrorToast(
+          'Extensions management failed: ' + (e.message || e)
+        )
+        return false
       }
     }
+
     removeExtensionKey(apiId) {
       try {
         if (this.sessionStorage.getItem('extensions')) {
@@ -114,7 +126,9 @@ define(['../module'], function (app) {
           )
         }
       } catch (e) {
-        throw e
+        this.notification.showErrorToast(
+          'Extensions management failed: ' + (e.message || e)
+        )
       }
     }
   }
