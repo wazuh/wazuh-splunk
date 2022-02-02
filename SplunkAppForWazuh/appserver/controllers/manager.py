@@ -38,6 +38,7 @@ def getDefaultExtensions():
     except Exception as e:
         return jsonbak.dumps({'error': str(e)})
 
+
 def diff_keys_dic_update_api(kwargs_dic):
     """
     Get the missing fields for the API entry.
@@ -117,14 +118,18 @@ class manager(controllers.BaseController):
         """
 
         try:
-            self.logger.debug('Fetching extensions with kwargs %s' % jsonbak.dumps(kwargs))
-            #If we are provided with a key for a db entry, it is retrieved
+            self.logger.debug('Fetching extensions with kwargs %s' %
+                              jsonbak.dumps(kwargs))
+            # If we are provided with a key for a db entry, it is retrieved
             if '_key' in kwargs:
                 key = kwargs['_key']
-                self.logger.debug("manager: Getting extensions from db for %s" % (key))
-                stanza = jsonbak.dumps(jsonbak.loads(self.extensionsdb.get(key))['data'])
-            
-            #if no key is provided, we check whether there is a value in the db that matches the api
+                self.logger.debug(
+                    "manager: Getting extensions from db for %s" % (key))
+                stanza = jsonbak.dumps(jsonbak.loads(
+                    self.extensionsdb.get(key))['data'])
+
+            # if no key is provided, we check whether there is a value in the
+            # db that matches the api
             elif 'api' in kwargs:
                 stanzas = {}
                 api = kwargs['api']
@@ -134,18 +139,20 @@ class manager(controllers.BaseController):
                 if filtered:
                     data_temp = filtered[0]
                     stanza = jsonbak.dumps(data_temp)
-                #if no value matches, we create an entry for that API and return the stanza
+                # if no value matches, we create an entry for that API and
+                # return the stanza
                 else:
                     data_temp = jsonbak.loads(getDefaultExtensions())
                     data_temp['api'] = api
                     key = self.extensionsdb.insert(jsonbak.dumps(data_temp))
-                    stanza = jsonbak.dumps(jsonbak.loads(self.extensionsdb.get(key))['data'])
+                    stanza = jsonbak.dumps(jsonbak.loads(
+                        self.extensionsdb.get(key))['data'])
             else:
                 stanza = getDefaultExtensions()
             return stanza
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
-    
+
     @expose_page(must_login=False, methods=['POST'])
     def remove_extensions(self, **kwargs):
         try:
@@ -267,14 +274,14 @@ class manager(controllers.BaseController):
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['apiId']
 
-            # TODO: This conditional statement is done to ensure 
-            # retrocompatibility with registered managers that do 
-            # not have an alias. Replace the following 4 lines with 
+            # TODO: This conditional statement is done to ensure
+            # retrocompatibility with registered managers that do
+            # not have an alias. Replace the following 4 lines with
             # data_temp=self.db.get(id) when these are no longer supported.
             data_temp = jsonbak.loads(self.db.get(id))["data"]
             if not "alias" in data_temp:
                 data_temp["alias"] = data_temp["url"]
-            data_temp = jsonbak.dumps({"data" : data_temp})
+            data_temp = jsonbak.dumps({"data": data_temp})
 
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
@@ -298,16 +305,16 @@ class manager(controllers.BaseController):
         # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Getting API list.")
-            
+
             apis = self.db.all()
             parsed_apis = jsonbak.loads(apis)
-            
+
             # Remove the password from the list of apis
             for api in parsed_apis:
                 if "passapi" in api:
                     del api["passapi"]
-                # TODO: This conditional is put in place in order to support 
-                # previous installations that did not have the "alias" field 
+                # TODO: This conditional is put in place in order to support
+                # previous installations that did not have the "alias" field
                 # in the database. Remove it when these are no longer supported.
                 if not "alias" in api:
                     api["alias"] = api["url"]
@@ -411,10 +418,9 @@ class manager(controllers.BaseController):
                 current_api = current_api["data"]
                 entry["passapi"] = current_api["passapi"]
             keys_list = ['_key', 'url', 'portapi', 'userapi', 'passapi', 'filterName',
-                          'filterType', 'managerName', 'alias', 'runAs']
+                         'filterType', 'managerName', 'alias', 'runAs']
             if set(entry.keys()) == set(keys_list):
                 result = self.db.update(entry)
-                # CHECK RBAC PR MERGE
             else:
                 missing_params = diff_keys_dic_update_api(entry)
                 raise Exception(
@@ -530,7 +536,6 @@ class manager(controllers.BaseController):
         self.logger.debug("manager::check_connection_by_id() called")
         try:
             api_id = utils.get_parameter(kwargs, 'apiId')
-            # CHECK RBAC PR MERGE
             api: API_model = API_services.get_api_by_id(api_id)
             # NOTE the frontend expects a different interface, so the API_model
             # cannot be used yet.
@@ -541,7 +546,7 @@ class manager(controllers.BaseController):
 
             # Hide API password
             api.hide_password()
-            del current_api_json['passapi'] # FIXME
+            del current_api_json['passapi']  # FIXME
 
             output['api'] = {
                 "data": current_api_json
@@ -636,7 +641,7 @@ class manager(controllers.BaseController):
         # A little cheat to force the use of a basic token. This solves the
         # situation when an user has no permissions to fetch the cluster's or
         # manager's information. These requests below are required for internal
-        # usage (to set the filters), and are not triggered by the user's 
+        # usage (to set the filters), and are not triggered by the user's
         # activity on the frontend.
         api.run_as = False
 
@@ -656,7 +661,7 @@ class manager(controllers.BaseController):
                 f"manager::get_cluster_info(): {endpoint} did not return any data\n"
                 + json.dumps(response, indent=4)
             )
-            return response # API error response
+            return response  # API error response
         else:
             output['managerName']['name'] = manager_name
 
@@ -716,7 +721,8 @@ class manager(controllers.BaseController):
                 current_api=api
             )
 
-            wazuh_version = utils.get_parameter(response, 'data')['api_version']
+            wazuh_version = utils.get_parameter(
+                response, 'data')['api_version']
             v_split = wazuh_version.split('.')
             wazuh_version = str(v_split[0]+"."+v_split[1])
 

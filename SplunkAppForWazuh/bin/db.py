@@ -59,7 +59,8 @@ class database():
         """
         self.logger.debug("bin.db: inserting a new API")
         try:
-            self.logger.debug("bin.db: Inserting database entry in %s." % self.entityName)
+            self.logger.debug(
+                "bin.db: Inserting database entry in %s." % self.entityName)
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             result = self.session.post(
                 url=kvstoreUri,
@@ -95,7 +96,8 @@ class database():
         """
         self.logger.debug("bin.db: updating existing API")
         try:
-            self.logger.debug("bin.db: Updating entry in %s." % self.entityName)
+            self.logger.debug("bin.db: Updating entry in %s." %
+                              self.entityName)
             if not '_key' in obj:
                 raise Exception('Missing API ID')
 
@@ -124,7 +126,6 @@ class database():
             raise e
 
     def remove(self, _key: str) -> dict:
-        # CHECK RBAC PR MERGE
         """
         Remove an API given its ID.
 
@@ -139,7 +140,8 @@ class database():
         """
         self.logger.debug("bin.db: Removing API.")
         try:
-            self.logger.debug("bin.db: Removing entry in %s." % self.entityName)
+            self.logger.debug("bin.db: Removing entry in %s." %
+                              self.entityName)
             if not _key:
                 raise Exception('Missing ID in remove DB module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
@@ -183,7 +185,8 @@ class database():
         """
         self.logger.debug("bin.db: Getting all APIs .")
         try:
-            self.logger.debug("bin.db: Getting all entries in %s ." % self.entityName)
+            self.logger.debug(
+                "bin.db: Getting all entries in %s ." % self.entityName)
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(
@@ -220,7 +223,8 @@ class database():
         """
         self.logger.debug("bin.db: Getting an API.")
         try:
-            self.logger.debug("bin.db: Getting an entry from %s." % self.entityName)
+            self.logger.debug(
+                "bin.db: Getting an entry from %s." % self.entityName)
             if not id:
                 raise Exception('Missing API ID')
 
@@ -240,7 +244,8 @@ class database():
                 }
             )
         except Exception as e:
-            self.logger.error("Error getting an entry from DB module : %s" % (e))
+            self.logger.error(
+                "Error getting an entry from DB module : %s" % (e))
             raise e
         return parsed_result
 
