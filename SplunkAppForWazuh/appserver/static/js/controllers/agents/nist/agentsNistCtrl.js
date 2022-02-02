@@ -7,8 +7,8 @@ define([
   '../../../services/visualizations/chart/single-value',
   '../../../services/visualizations/chart/bar-chart',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -35,7 +35,6 @@ define([
      * @param {*} pciExtensionEnabled
      * @param {*} gdprExtensionEnabled
      * @param {*} hipaaExtensionEnabled
-     * @param {*} $security_service
      */
     constructor(
       $urlTokenModel,
@@ -49,14 +48,15 @@ define([
       pciExtensionEnabled,
       gdprExtensionEnabled,
       hipaaExtensionEnabled,
-      $security_service
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
@@ -74,7 +74,7 @@ define([
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -139,7 +139,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -153,7 +153,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -173,7 +173,7 @@ define([
             'top10Requirements',
             'requirementsDistributedByLevel',
             'requirementsOverTime',
-            'alertsSummary'
+            'alertsSummary',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -185,13 +185,13 @@ define([
       })
 
       this.scope.$on('checkReportingStatus', () => {
-        this.vizzReady = !this.vizz.filter(v => {
+        this.vizzReady = !this.vizz.filter((v) => {
           return v.finish === false
         }).length
         if (this.vizzReady) {
           this.scope.loadingVizz = false
         } else {
-          this.vizz.map(v => {
+          this.vizz.map((v) => {
             if (v.constructor.name === 'RawTableData') {
               this.tableResults[v.name] = v.results
             }
@@ -211,15 +211,17 @@ define([
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data.affected_items[0]
           : { error: true }
-    
+
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 

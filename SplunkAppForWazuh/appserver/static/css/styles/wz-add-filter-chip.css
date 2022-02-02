@@ -2,39 +2,39 @@
 /* ------------------ Wazuh add chip filter stylesheet ---------------------- */
 /* -------------------------------------------------------------------------- */
 
-.open-chips{
-    position: relative;
-    right: 20px;
-    width: 0;
+.open-chips {
+  position: relative;
+  right: 20px;
+  width: 0;
 }
 
-.chips-dropdown{
-    width: 200px!important;
-    position: absolute;
-    margin-left: -200px!important;
-    margin-top: 12px!important;
+.chips-dropdown {
+  width: 200px !important;
+  position: absolute;
+  margin-left: -200px !important;
+  margin-top: 12px !important;
 }
 
-.chips-dropdown .dropdown-menu{
-    display: block !important;
+.chips-dropdown .dropdown-menu {
+  display: block !important;
 }
 
-.ui-select-choices-row:hover{
-    background: #f3f3f3;
+.ui-select-choices-row:hover {
+  background: #f3f3f3;
 }
 
 .ui-select-choices-row-inner {
-    cursor: pointer;
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: 400;
-    line-height: 1.42857143;
-    color: #333;
-    white-space: nowrap;
+  cursor: pointer;
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
 }
 
 .filter-icon {
-    margin-top: 14px !important;
-    color: #00445a !important;
+  margin-top: 14px !important;
+  color: #00445a !important;
 }

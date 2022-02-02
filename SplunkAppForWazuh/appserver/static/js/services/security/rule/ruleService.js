@@ -11,143 +11,144 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function (module) {
-  "use strict";
+define(['../../module'], function (module) {
+  'use strict'
 
-  module.service("$ruleService", function ($requestService, $state) {
-    const fetchNewRule = async rulePayload => {
+  // eslint-disable-next-line no-unused-vars
+  module.service('$ruleService', function ($requestService, $state) {
+    const fetchNewRule = async (rulePayload) => {
       return await $requestService.apiReq(
-        "/security/rules",
+        '/security/rules',
         {
           content: JSON.stringify(rulePayload),
-          origin: "json"
+          origin: 'json',
         },
-        "POST"
-      );
-    };
+        'POST'
+      )
+    }
 
     const editRule = async (id, rulePayload) => {
       return await $requestService.apiReq(
         `/security/rules/${id}`,
         {
           content: JSON.stringify(rulePayload),
-          origin: "json"
+          origin: 'json',
         },
-        "PUT"
-      );
-    };
+        'PUT'
+      )
+    }
 
     const deleteRoleRules = async (roleId, rules) => {
       return await $requestService.apiReq(
-        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`,
-        { content: "" },
-        "DELETE"
-      );
-    };
+        `/security/roles/${roleId}/rules?rule_ids=${rules.join(',')}`,
+        { content: '' },
+        'DELETE'
+      )
+    }
 
     const addRoleRules = async (roleId, rules) => {
       return await $requestService.apiReq(
-        `/security/roles/${roleId}/rules?rule_ids=${rules.join(",")}`,
+        `/security/roles/${roleId}/rules?rule_ids=${rules.join(',')}`,
         {},
         'POST'
-      );
-    };
+      )
+    }
 
-    const removeRule = async rule => {
+    const removeRule = async (rule) => {
       try {
         const result = await $requestService.apiReq(
           `/security/rules?rule_ids=${rule}`,
           {},
-          "DELETE"
-        );
+          'DELETE'
+        )
 
         if (
           result.data.data.failed_items.length &&
           result.data.data.failed_items[0].error.code === 4008
         ) {
-          throw new Error(result.data.data.failed_items[0].error.message);
+          throw new Error(result.data.data.failed_items[0].error.message)
         }
 
         if (result.data.error !== 0) {
-          throw new Error(result.data.message);
+          throw new Error(result.data.message)
         }
-        return result;
+        return result
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const saveRule = async (rule, roles) => {
-      let ruleId = "";
+      let ruleId = ''
       try {
-        const result = await fetchNewRule(rule);
-        const data = (result.data || {}).data || result;
+        const result = await fetchNewRule(rule)
+        const data = (result.data || {}).data || result
         if (data.error) {
-          return data;
+          return data
         }
         if (data.failed_items && data.failed_items.length) {
-          return data;
+          return data
         }
 
         if (data.affected_items && data.affected_items) {
-          ruleId = data.affected_items[0].id;
+          ruleId = data.affected_items[0].id
           await Promise.all(
-            roles.map(async role => await addRoleRules(role, [ruleId]))
-          );
-          return data;
+            roles.map(async (role) => await addRoleRules(role, [ruleId]))
+          )
+          return data
         }
 
         if (result.data.error === 1905) {
-          return result;
+          return result
         } else if (result.data.error) {
           throw new Error(
-            result.data.message || result.data.error || "Cannot save Rule."
-          );
+            result.data.message || result.data.error || 'Cannot save Rule.'
+          )
         }
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const updateRule = async (id, rule, currentRoles, newRoles) => {
       try {
-        const result = await editRule(id, rule);
-        const data = (result.data || {}).data || result;
+        const result = await editRule(id, rule)
+        const data = (result.data || {}).data || result
         if (data.error) {
-          return data;
+          return data
         }
         if (data.failed_items && data.failed_items.length) {
-          return data;
+          return data
         }
 
         if (data.affected_items && data.affected_items) {
-          currentRoles.map(async role => {
+          currentRoles.map(async (role) => {
             if (!newRoles.includes(role)) {
-              await deleteRoleRules(role, [id]);
+              await deleteRoleRules(role, [id])
             }
-          });
-          newRoles.map(async role => {
-            if (!currentRoles.includes(role)) await addRoleRules(role, [id]);
-          });
-          return data;
+          })
+          newRoles.map(async (role) => {
+            if (!currentRoles.includes(role)) await addRoleRules(role, [id])
+          })
+          return data
         }
 
         if (result.data.error === 1905) {
-          return result;
+          return result
         } else if (result.data.error) {
           throw new Error(
-            result.data.message || result.data.error || "Cannot save Rule."
-          );
+            result.data.message || result.data.error || 'Cannot save Rule.'
+          )
         }
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     return {
       removeRule: removeRule,
       saveRule: saveRule,
-      updateRule: updateRule
-    };
-  });
-});
+      updateRule: updateRule,
+    }
+  })
+})

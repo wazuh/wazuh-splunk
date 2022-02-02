@@ -51,8 +51,8 @@ class Configuration(controllers.BaseController):
             return jsonbak.dumps(
                 {
                     "data": result, "error": 0
-                    }
-                )
+                }
+            )
         except Exception as e:
             self.logger.error(
                 "config: Error updating the configuration: %s" % (e))
@@ -77,8 +77,8 @@ class Configuration(controllers.BaseController):
             return jsonbak.dumps(
                 {
                     "data": config, "error": 0
-                    }
-                )
+                }
+            )
         except Exception as e:
             self.logger.error(
                 "config: Error getting the configuration: %s" % (e))

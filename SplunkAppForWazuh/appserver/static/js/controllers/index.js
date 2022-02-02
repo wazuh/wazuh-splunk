@@ -14,5 +14,5 @@ define([
   //Discover
   './discover/discoverCtrl',
   //Security
-  './security/index'
-], function() {})
+  './security/index',
+], function () {})

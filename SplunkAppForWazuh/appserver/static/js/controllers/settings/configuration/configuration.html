@@ -13,8 +13,7 @@
     <md-card class="wz-md-card">
       <md-card-actions
         layout="row"
-        class="layout-row wz-card-actions wz-card-actions-top md-actions-ruleset"
-      >
+        class="layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
         <i class="fa fa-file-o" aria-hidden="true"></i>&nbsp;
         <span class="wz-margin-top--3">Current configuration</span>
       </md-card-actions>
@@ -40,8 +39,7 @@
                   <input
                     class="wz-margin-zero"
                     type="text"
-                    ng-model="vm.editingNewValue"
-                  />
+                    ng-model="vm.editingNewValue" />
                 </div>
                 <!-- Log dropdown -->
                 <div ng-show="editingKey === key && key === 'log.level'">
@@ -50,9 +48,7 @@
                     ng-model="vm.dropDownValue"
                     ng-init="vm.dropDownValue = logLevelOptions[0]"
                     ng-change="selectValue(vm.dropDownValue)"
-                    class="input input-dropdown conf-node-selector wz-button-empty wz-margin-zero"
-                  >
-                  </select>
+                    class="input input-dropdown conf-node-selector wz-button-empty wz-margin-zero"></select>
                 </div>
               </td>
               <!-- end value -->
@@ -63,8 +59,7 @@
                   <wz-svg
                     icon="pencil"
                     color="#396e3e"
-                    ng-click="switchEdit(key, val)"
-                  >
+                    ng-click="switchEdit(key, val)">
                     <md-tooltip md-direction="bottom" class="wz-tooltip">
                       Edit
                     </md-tooltip>
@@ -74,16 +69,14 @@
                   <span style="color: #396e3e">
                     <i
                       ng-click="cancelEdition()"
-                      class="fa fa-fw fa-times cursor-pointer"
-                    >
+                      class="fa fa-fw fa-times cursor-pointer">
                       <md-tooltip md-direction="bottom" class="wz-tooltip">
                         Cancel
                       </md-tooltip>
                     </i>
                     <i
                       ng-click="setValue(key)"
-                      class="fa fa-fw fa-check cursor-pointer"
-                    >
+                      class="fa fa-fw fa-check cursor-pointer">
                       <md-tooltip md-direction="bottom" class="wz-tooltip">
                         Apply
                       </md-tooltip>

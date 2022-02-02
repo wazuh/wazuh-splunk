@@ -66,7 +66,7 @@ const enumActions = {
   SYSCHECK_RUN: 'SYSCHECK_RUN',
   SYSCOLLECTOR_READ: 'SYSCOLLECTOR_READ',
   TASK_STATUS: 'TASK_STATUS',
-  VULNERABILITY_READ: 'VULNERABILITY_READ'
+  VULNERABILITY_READ: 'VULNERABILITY_READ',
 }
 
 /**
@@ -103,7 +103,7 @@ const mapActionsControllers = {
   'ag-inventory': [
     enumActions.AGENT_READ,
     enumActions.SYSCHECK_READ,
-    enumActions.SYSCOLLECTOR_READ
+    enumActions.SYSCOLLECTOR_READ,
   ],
   // Agent > NIST 800-53
   'ag-nist': [enumActions.AGENT_READ],
@@ -127,24 +127,25 @@ const mapActionsControllers = {
     enumActions.GROUP_MODIFY_ASSIGNMENT,
     enumActions.GROUP_READ,
     enumActions.ROOTCHECK_READ,
-    enumActions.SYSCHECK_READ],
-  'agents': [enumActions.AGENT_READ, enumActions.CLUSTER_READ],
+    enumActions.SYSCHECK_READ,
+  ],
+  agents: [enumActions.AGENT_READ, enumActions.CLUSTER_READ],
   // Discover
   // 'discover': [enumActions.AGENT_READ],
-  'manager': [enumActions.MANAGER_READ],
+  manager: [enumActions.MANAGER_READ],
   // Management > Configuration
   // Management > Decoders
   'mg-cdb': [
     enumActions.LISTS_READ,
     enumActions.LISTS_UPDATE,
-    enumActions.LISTS_DELETE
+    enumActions.LISTS_DELETE,
   ],
   'mg-conf': [enumActions.CLUSTER_READ],
   // Management > Decoders
   'mg-decoders': [
     enumActions.DECODERS_READ,
     enumActions.DECODERS_UPDATE,
-    enumActions.DECODERS_DELETE
+    enumActions.DECODERS_DELETE,
   ],
   // Management > Configuration > Edit
   'mg-editConfig': [
@@ -153,7 +154,7 @@ const mapActionsControllers = {
     enumActions.MANAGER_READ,
     enumActions.MANAGER_RESTART,
     enumActions.MANAGER_UPDATE_CONFIG,
-    enumActions.CLUSTER_UPDATE_CONFIG
+    enumActions.CLUSTER_UPDATE_CONFIG,
   ],
   // Management > Groups
   'mg-groups': [
@@ -161,24 +162,21 @@ const mapActionsControllers = {
     enumActions.AGENT_READ,
     enumActions.GROUP_CREATE,
     enumActions.GROUP_MODIFY_ASSIGNMENT,
-    enumActions.GROUP_READ
+    enumActions.GROUP_READ,
   ],
   // Management > Lists
   'mg-list': [
     enumActions.LISTS_READ,
     enumActions.LISTS_UPDATE,
-    enumActions.LISTS_DELETE
+    enumActions.LISTS_DELETE,
   ],
   // Management > Logs
-  'mg-logs': [
-    enumActions.CLUSTER_STATUS,
-    enumActions.MANAGER_READ
-  ],
+  'mg-logs': [enumActions.CLUSTER_STATUS, enumActions.MANAGER_READ],
   // Management > Cluster
   'mg-monitoring': [
     enumActions.AGENT_READ,
     enumActions.CLUSTER_READ,
-    enumActions.CLUSTER_STATUS
+    enumActions.CLUSTER_STATUS,
   ],
   // Management > Reporting
   'mg-reporting': [],
@@ -186,7 +184,7 @@ const mapActionsControllers = {
   'mg-rules': [
     enumActions.RULES_DELETE,
     enumActions.RULES_READ,
-    enumActions.RULES_UPDATE
+    enumActions.RULES_UPDATE,
   ],
   // Management > Status
   'mg-status': [
@@ -197,10 +195,10 @@ const mapActionsControllers = {
     enumActions.DECODERS_READ,
     enumActions.MANAGER_RESTART,
     enumActions.MANAGER_READ,
-    enumActions.RULES_READ
+    enumActions.RULES_READ,
   ],
   // Overview
-  'overview': [enumActions.AGENT_READ],
+  overview: [enumActions.AGENT_READ],
   // Overview > Audit
   'ow-audit': [enumActions.AGENT_READ],
   // =========== AWS =========== //
@@ -214,10 +212,7 @@ const mapActionsControllers = {
   // Overview > GDPR
   'ow-gdpr': [enumActions.AGENT_READ],
   // Overview > General
-  'ow-general': [
-    enumActions.AGENT_READ,
-    enumActions.ROOTCHECK_READ
-  ],
+  'ow-general': [enumActions.AGENT_READ, enumActions.ROOTCHECK_READ],
   // Overview > HIPAA
   'ow-hipaa': [enumActions.AGENT_READ],
   // Overview > MITRE ATT&CK
@@ -239,20 +234,15 @@ const mapActionsControllers = {
   // Overview > VirusTotal
   'ow-virustotal': [enumActions.AGENT_READ],
   // Overview > Vulnerabilities
-  'ow-vul': [
-    enumActions.AGENT_READ,
-    enumActions.VULNERABILITY_READ
-  ]
+  'ow-vul': [enumActions.AGENT_READ, enumActions.VULNERABILITY_READ],
 }
 
 /**
  * Export default
  */
 define(['../module'], function (app) {
-  app.constant(
-    'ACTIONS', {
-    'ACTIONS_ENUM': enumActions,
-    'ACTIONS_MAP': mapActionsControllers
-  }
-  )
+  app.constant('ACTIONS', {
+    ACTIONS_ENUM: enumActions,
+    ACTIONS_MAP: mapActionsControllers,
+  })
 })

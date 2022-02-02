@@ -1,5 +1,5 @@
-define(["../../module", "FileSaver"], function (controllers) {
-  "use strict"
+define(['../../module', 'FileSaver'], function (controllers) {
+  'use strict'
   class Groups {
     /**
      * Class Groups
@@ -43,30 +43,30 @@ define(["../../module", "FileSaver"], function (controllers) {
       this.wzTableFilter = $tableFilterService
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-      this.mainGroup = ""
+      this.mainGroup = ''
       this.scope.lookingGroup = false
       this.scope.editingFile = false
       this.scope.loadingRing = false
       this.scope.exportConfig = false
 
       /* RBAC flags */
-      this.scope.canReadGroups = $security_service.isAllowed("GROUP_READ", 
-        ["GROUP_ID"]
-      )
+      this.scope.canReadGroups = $security_service.isAllowed('GROUP_READ', [
+        'GROUP_ID',
+      ])
 
-      this.scope.canCreateGroup = $security_service.isAllowed("GROUP_CREATE", [
-        "RESOURCELESS",
+      this.scope.canCreateGroup = $security_service.isAllowed('GROUP_CREATE', [
+        'RESOURCELESS',
       ])
       this.scope.canUpdateConfigGroup = (group) =>
         $security_service.isAllowed(
-          "GROUP_UPDATE_CONFIG",
-          ["GROUP_ID"],
+          'GROUP_UPDATE_CONFIG',
+          ['GROUP_ID'],
           [group]
         )
       this.scope.canModifyAssignmentGroup = (group) =>
         $security_service.isAllowed(
-          "GROUP_MODIFY_ASSIGNMENT",
-          ["GROUP_ID"],
+          'GROUP_MODIFY_ASSIGNMENT',
+          ['GROUP_ID'],
           [group]
         )
 
@@ -78,7 +78,7 @@ define(["../../module", "FileSaver"], function (controllers) {
       this.scope.keyEquivalences = (key) => this.keyEquivalences(key)
       this.scope.selectAll = (value) => this.selectAll(value)
       this.scope.checkAllDisabled = () => this.checkAllDisabled()
-      this.scope.$watch("lookingGroup", (value) => {
+      this.scope.$watch('lookingGroup', (value) => {
         this.scope.availableAgents = {
           loaded: false,
           data: [],
@@ -100,7 +100,7 @@ define(["../../module", "FileSaver"], function (controllers) {
       this.extensions = extensions
       this.scope.addingGroup = false
       this.scope.addingAgents = false
-      this.scope.$on("groupsIsReloaded", () => {
+      this.scope.$on('groupsIsReloaded', () => {
         this.scope.groupsSelectedTab = false
         this.scope.currentGroup = false
         this.scope.lookingGroup = false
@@ -109,39 +109,39 @@ define(["../../module", "FileSaver"], function (controllers) {
       })
 
       // Come from the pencil icon on the groups table
-      this.scope.$on("openGroupFromList", (ev, parameters) => {
+      this.scope.$on('openGroupFromList', (ev, parameters) => {
         ev.stopPropagation()
         this.scope.editingFile = true
-        this.scope.groupsSelectedTab = "files"
+        this.scope.groupsSelectedTab = 'files'
         return this.scope
           .loadGroup(parameters.group)
           .then(() => this.scope.editGroupAgentConfig())
       })
 
-      this.scope.$on("loadingReporting", (event, data) => {
+      this.scope.$on('loadingReporting', (event, data) => {
         this.scope.loadingReporting = data.status
       })
 
-      this.scope.$on("wazuhShowGroup", (event, parameters) => {
+      this.scope.$on('wazuhShowGroup', (event, parameters) => {
         event.stopPropagation()
         this.goBackToAgents()
         return this.loadGroup(parameters.group)
       })
 
-      this.scope.$on("configurationSuccess", () => {
+      this.scope.$on('configurationSuccess', () => {
         this.scope.editingFile = false
         this.scope.$applyAsync()
       })
 
-      this.scope.$on("wazuhShowGroupFile", (event, parameters) => {
+      this.scope.$on('wazuhShowGroupFile', (event, parameters) => {
         event.stopPropagation()
-        if (((parameters || {}).fileName || "").includes("agent.conf")) {
+        if (((parameters || {}).fileName || '').includes('agent.conf')) {
           return this.scope.editGroupAgentConfig()
         }
         return this.showFile(parameters.groupName, parameters.fileName)
       })
 
-      this.scope.$on("updateGroupInformation", async (event, parameters) => {
+      this.scope.$on('updateGroupInformation', async (event, parameters) => {
         try {
           event.stopPropagation()
           if (this.scope.currentGroup) {
@@ -174,16 +174,16 @@ define(["../../module", "FileSaver"], function (controllers) {
         return
       })
 
-      this.scope.$on("openGroupFromList", (ev, parameters) => {
+      this.scope.$on('openGroupFromList', (ev, parameters) => {
         ev.stopPropagation()
         this.scope.editingFile = true
-        this.scope.groupsSelectedTab = "files"
+        this.scope.groupsSelectedTab = 'files'
         return this.scope
           .loadGroup(parameters.group)
           .then(() => this.scope.editGroupAgentConfig())
       })
 
-      this.scope.$on("saveComplete", (event) => {
+      this.scope.$on('saveComplete', (event) => {
         event.stopPropagation()
         this.scope.saveIncomplete = false
       })
@@ -195,7 +195,7 @@ define(["../../module", "FileSaver"], function (controllers) {
     $onInit() {
       try {
         this.scope.search = (term) => {
-          this.scope.$broadcast("wazuhSearch", { term })
+          this.scope.$broadcast('wazuhSearch', { term })
         }
 
         this.scope.switchAddingGroup = () => {
@@ -212,12 +212,12 @@ define(["../../module", "FileSaver"], function (controllers) {
             // refresh the table when a new group is created
             this.scope.$applyAsync()
             this.scope.search = (term) => {
-              this.scope.$broadcast("wazuhSearch", { term })
+              this.scope.$broadcast('wazuhSearch', { term })
             }
           } catch (error) {
             this.notification.showErrorToast(`${error.message || error}`)
           }
-          this.scope.$broadcast("wazuhSearch", {})
+          this.scope.$broadcast('wazuhSearch', {})
         }
 
         this.scope.loadGroup = (group, firstLoad) =>
@@ -235,7 +235,7 @@ define(["../../module", "FileSaver"], function (controllers) {
           if (
             this.stateParams &&
             this.stateParams.group &&
-            typeof this.stateParams.group === "object"
+            typeof this.stateParams.group === 'object'
           ) {
             this.mainGroup = this.stateParams.group
             this.loadGroup(this.mainGroup)
@@ -275,8 +275,8 @@ define(["../../module", "FileSaver"], function (controllers) {
 
         this.scope.$applyAsync()
       } catch (err) {
-        console.error("err ", err)
-        this.notification.showErrorToast("Error loading groups information")
+        console.error('err ', err)
+        this.notification.showErrorToast('Error loading groups information')
       }
     }
 
@@ -286,18 +286,18 @@ define(["../../module", "FileSaver"], function (controllers) {
     async downloadCsv(path, name) {
       try {
         this.notification.showSimpleToast(
-          "Your download should begin automatically..."
+          'Your download should begin automatically...'
         )
-        const currentApi = this.api["_key"]
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(
           path,
           currentApi,
           this.wzTableFilter.get()
         )
-        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
       } catch (error) {
-        this.notification.showErrorToast("Error downloading CSV")
+        this.notification.showErrorToast('Error downloading CSV')
       }
     }
 
@@ -318,7 +318,7 @@ define(["../../module", "FileSaver"], function (controllers) {
           this.scope.selectedOptions[key] = value
         })
       } catch (error) {
-        this.$notificationService.showErrorToast("Cannot select the modules")
+        this.$notificationService.showErrorToast('Cannot select the modules')
       }
     }
 
@@ -333,7 +333,7 @@ define(["../../module", "FileSaver"], function (controllers) {
         return !result
       } catch (error) {
         this.$notificationService.showErrorToast(
-          "Error checking selected options"
+          'Error checking selected options'
         )
       }
     }
@@ -355,7 +355,7 @@ define(["../../module", "FileSaver"], function (controllers) {
         this.mainGroup = group
         this.scope.$applyAsync()
       } catch (error) {
-        this.notification.showErrorToast("Cannot load group data")
+        this.notification.showErrorToast('Cannot load group data')
       }
       this.scope.load = false
     }
@@ -364,13 +364,13 @@ define(["../../module", "FileSaver"], function (controllers) {
       try {
         const data = await this.apiReq(
           `/groups/${this.scope.currentGroup.name}/files/agent.conf/xml`,
-          { origin: "xmlreader" }
+          { origin: 'xmlreader' }
         )
         const xml = (data || {}).data || {} || false
         if (!xml.data && xml.error !== 0) {
-          throw new Error("Could not fetch agent.conf file")
+          throw new Error('Could not fetch agent.conf file')
         } else if (!xml.data) {
-          xml.data = " " // Force to print the XML editor
+          xml.data = ' ' // Force to print the XML editor
         }
         return xml.data
       } catch (error) {
@@ -380,7 +380,7 @@ define(["../../module", "FileSaver"], function (controllers) {
 
     async reloadScope(element, searchTerm, addOffset, start) {
       try {
-        if (element === "left") {
+        if (element === 'left') {
           if (!this.scope.availableAgents.loadedAll) {
             this.scope.multipleSelectorLoading = true
             if (start) {
@@ -408,7 +408,7 @@ define(["../../module", "FileSaver"], function (controllers) {
       try {
         let params = {
           offset: !searchTerm ? this.scope.selectedAgents.offset : 0,
-          select: ["id", "name"],
+          select: ['id', 'name'],
         }
         if (searchTerm) {
           params.search = searchTerm
@@ -445,20 +445,20 @@ define(["../../module", "FileSaver"], function (controllers) {
         const params = {
           limit: 500,
           offset: !searchTerm ? this.scope.availableAgents.offset : 0,
-          select: "id,name",
+          select: 'id,name',
         }
         if (searchTerm) {
           params.search = searchTerm
           this.scope.availableAgents.offset = 0
         }
-        const req = await this.apiReq("/agents/", params)
+        const req = await this.apiReq('/agents/', params)
         this.scope.totalAgents = req.data.data.total_affected_items
         const mapped = req.data.data.affected_items
           .filter((item) => {
             return (
               this.scope.selectedAgents.data.filter((selected) => {
                 return selected.key == item.id
-              }).length == 0 && item.id !== "000"
+              }).length == 0 && item.id !== '000'
             )
           })
           .map((item) => {
@@ -506,6 +506,7 @@ define(["../../module", "FileSaver"], function (controllers) {
             await this.scope.loadSelectedAgents()
             this.scope.selectedAgents.offset += 499
           }
+          // eslint-disable-next-line
           this.scope.firstSelectedList = angular.copy(
             this.scope.selectedAgents.data
           )
@@ -513,7 +514,7 @@ define(["../../module", "FileSaver"], function (controllers) {
           this.scope.multipleSelectorLoading = false
         }
       } catch (err) {
-        this.notification.showErrorToast("Error adding agents.")
+        this.notification.showErrorToast('Error adding agents.')
       }
       this.scope.$applyAsync()
       return
@@ -546,7 +547,7 @@ define(["../../module", "FileSaver"], function (controllers) {
           }
         }
       } catch (error) {
-        this.notification.showErrorToast(error.message || error, "Groups")
+        this.notification.showErrorToast(error.message || error, 'Groups')
       }
       this.scope.$applyAsync()
       return
@@ -568,7 +569,7 @@ define(["../../module", "FileSaver"], function (controllers) {
               agents_list: itemsToSave.addedIds.join(),
               group_id: this.scope.currentGroup.name,
             },
-            "PUT"
+            'PUT'
           )
           if (response.data.error !== 0) {
             // in this new api exist failed_items, each have error message
@@ -587,7 +588,7 @@ define(["../../module", "FileSaver"], function (controllers) {
           response = await this.apiReq(
             `/agents/group?group_id=${this.scope.currentGroup.name}&agents_list=${itemsToSave.deletedIds}`,
             {},
-            "DELETE"
+            'DELETE'
           )
           if (response.data.error !== 0) {
             // in this new api exist failed_items, each have error message
@@ -606,7 +607,7 @@ define(["../../module", "FileSaver"], function (controllers) {
             message: ((item || {}).error || {}).message,
           }))
           const groupedFailedIds =
-            this.groupBy(failedErrors, "message") || false
+            this.groupBy(failedErrors, 'message') || false
           this.scope.errorsEditingGroup = groupedFailedIds
           this.notification.showWarningToast(
             `Group has been updated but an error has occurred with ${failedIds.length} agents`
@@ -615,11 +616,11 @@ define(["../../module", "FileSaver"], function (controllers) {
           const responseMsg = (response || {}).data.message
           if (responseMsg) {
             this.notification.showSuccessToast(
-              responseMsg || "Success. Group has been updated"
+              responseMsg || 'Success. Group has been updated'
             )
           } else {
             this.notification.showWarningToast(
-              "No agents were added or removed"
+              'No agents were added or removed'
             )
           }
         }
@@ -632,7 +633,7 @@ define(["../../module", "FileSaver"], function (controllers) {
         this.scope.multipleSelectorLoading = false
         this.notification.showErrorToast(
           err.message || err,
-          "Error applying changes"
+          'Error applying changes'
         )
       }
       this.scope.$applyAsync()
@@ -644,8 +645,8 @@ define(["../../module", "FileSaver"], function (controllers) {
      */
     keyEquivalences(key) {
       const options = {
-        groupConf: "Configurations",
-        agentsList: "Agents in group",
+        groupConf: 'Configurations',
+        agentsList: 'Agents in group',
       }
       return options[key] || key
     }
@@ -654,7 +655,7 @@ define(["../../module", "FileSaver"], function (controllers) {
       try {
         this.scope.editingFile = true
         this.scope.fetchedXML = await this.fetchFile()
-        this.scope.$broadcast("fetchedFile", { data: this.scope.fetchedXML })
+        this.scope.$broadcast('fetchedFile', { data: this.scope.fetchedXML })
       } catch (error) {
         this.scope.fetchedXML = null
         this.notification.showErrorToast(error.message || error)
@@ -666,9 +667,9 @@ define(["../../module", "FileSaver"], function (controllers) {
     async saveGroupAgentConfig(content) {
       try {
         const result = await this.apiReq.request(
-          "POST",
+          'POST',
           `/groups/${this.scope.currentGroup.name}/configuration`,
-          { content, origin: "xmleditor" }
+          { content, origin: 'xmleditor' }
         )
         if (
           !result ||
@@ -676,9 +677,9 @@ define(["../../module", "FileSaver"], function (controllers) {
           !result.data.data ||
           result.data.data.error !== 0
         ) {
-          throw new Error("Error sending file.")
+          throw new Error('Error sending file.')
         }
-        this.scope.$emit("updateGroupInformation", {
+        this.scope.$emit('updateGroupInformation', {
           group: this.scope.currentGroup.name,
         })
       } catch (error) {
@@ -747,7 +748,7 @@ define(["../../module", "FileSaver"], function (controllers) {
 
     doSaveGroupAgentConfig() {
       this.scope.saveIncomplete = true
-      this.scope.$broadcast("saveXmlFile", {
+      this.scope.$broadcast('saveXmlFile', {
         group: this.scope.currentGroup.name,
       })
     }
@@ -755,7 +756,7 @@ define(["../../module", "FileSaver"], function (controllers) {
      * Navigates to agents
      */
     goBackToAgents() {
-      this.scope.groupsSelectedTab = "agents"
+      this.scope.groupsSelectedTab = 'agents'
       this.scope.file = false
       this.scope.filename = false
       this.scope.$applyAsync()
@@ -768,9 +769,9 @@ define(["../../module", "FileSaver"], function (controllers) {
       if (
         this.stateParams &&
         this.stateParams.group &&
-        typeof this.stateParams.group === "object"
+        typeof this.stateParams.group === 'object'
       )
-        this.state.go(".", { group: undefined })
+        this.state.go('.', { group: undefined })
       else this.state.reload()
     }
 
@@ -779,7 +780,7 @@ define(["../../module", "FileSaver"], function (controllers) {
      */
     goBackFiles() {
       this.scope.errorsEditingGroup = false
-      this.scope.groupsSelectedTab = "files"
+      this.scope.groupsSelectedTab = 'files'
       this.scope.addingAgents = false
       this.scope.editingAgents = false
       this.scope.file = false
@@ -807,8 +808,8 @@ define(["../../module", "FileSaver"], function (controllers) {
      */
     async showFile(groupName, fileName) {
       try {
-        if (this.scope.filename) this.scope.filename = ""
-        if (fileName === "../ar.conf") fileName = "ar.conf"
+        if (this.scope.filename) this.scope.filename = ''
+        if (fileName === '../ar.conf') fileName = 'ar.conf'
         this.scope.fileViewer = true
         const tmpName = `/groups/${groupName}/files/${fileName}`
         const data = await this.apiReq(tmpName)
@@ -816,7 +817,7 @@ define(["../../module", "FileSaver"], function (controllers) {
         this.scope.filename = fileName
         this.scope.$applyAsync()
       } catch (error) {
-        this.notification.showErrorToast("Error showing file ")
+        this.notification.showErrorToast('Error showing file ')
       }
       return
     }
@@ -826,10 +827,10 @@ define(["../../module", "FileSaver"], function (controllers) {
         configurations: [
           this.scope.selectedOptions.groupConf
             ? {
-                title: "Main group configurations",
+                title: 'Main group configurations',
                 sections: [
                   {
-                    desc: "agent.conf",
+                    desc: 'agent.conf',
                     groupConfig: true,
                     labels: {},
                   },
@@ -838,10 +839,10 @@ define(["../../module", "FileSaver"], function (controllers) {
             : false,
           this.scope.selectedOptions.agentsList
             ? {
-                title: "Agents ",
+                title: 'Agents ',
                 sections: [
                   {
-                    desc: "agents",
+                    desc: 'agents',
                     agentList: true,
                     labels: {},
                   },
@@ -882,5 +883,5 @@ define(["../../module", "FileSaver"], function (controllers) {
       }
     }
   }
-  controllers.controller("groupsCtrl", Groups)
+  controllers.controller('groupsCtrl', Groups)
 })

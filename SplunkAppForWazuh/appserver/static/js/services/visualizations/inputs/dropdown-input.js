@@ -1,4 +1,4 @@
-define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
+define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function (
   DropdownInput,
   Viz
 ) {
@@ -39,7 +39,7 @@ define(['splunkjs/mvc/simpleform/input/dropdown', '../viz/viz'], function(
             value: value,
             searchWhenChanged: true,
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
           { tokens: true, tokenNamespace: 'submitted' }
         ).render(),

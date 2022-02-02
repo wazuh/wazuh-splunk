@@ -1,8 +1,8 @@
-define(["../../module", "../../../utils/config-handler"], function(
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
-  "use strict";
+  'use strict'
 
   class ConfigurationController {
     /**
@@ -24,130 +24,129 @@ define(["../../module", "../../../utils/config-handler"], function(
       clusterInfo,
       $security_service
     ) {
-      this.scope = $scope;
-      this.notification = $notificationService;
-      this.apiReq = $requestService;
-      this.scope.load = false;
-      this.scope.isArray = Array.isArray;
-      this.scope.appDocuVersion = $appVersionService.getDocumentationVersion();
+      this.scope = $scope
+      this.notification = $notificationService
+      this.apiReq = $requestService
+      this.scope.load = false
+      this.scope.isArray = Array.isArray
+      this.scope.appDocuVersion = $appVersionService.getDocumentationVersion()
       this.configurationHandler = new ConfigHandler(
         this.apiReq,
         $beautifierJson,
         this.notification
-      );
-      this.scope.currentConfig = null;
-      this.scope.configurationTab = "";
-      this.scope.configurationSubTab = "";
-      this.scope.integrations = {};
-      this.scope.selectedItem = 0;
-      this.clusterInfo = clusterInfo;
+      )
+      this.scope.currentConfig = null
+      this.scope.configurationTab = ''
+      this.scope.configurationSubTab = ''
+      this.scope.integrations = {}
+      this.scope.selectedItem = 0
+      this.clusterInfo = clusterInfo
 
       // Save current sections, configTabs and woodles
-      this.currentConfigTab = false;
-      this.currentSections = false;
-      this.currentWodle = false;
-      this.currentSubTab = false;
+      this.currentConfigTab = false
+      this.currentSections = false
+      this.currentWodle = false
+      this.currentSubTab = false
 
       this.scope.isManager = true
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
-        return $security_service.getPolicy(action, resource, params).isAllowed;
-      };
+      this.isAllowed = (action, resource, params = ['*']) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
     }
 
     $onInit() {
       try {
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
-          this.scope.clusterEnabled = this.clusterInfo.clusterEnabled;
+          this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           if (this.clusterInfo.clusterEnabled) {
-            this.scope.nodes = this.clusterInfo.nodes.data.data.affected_items;
-            this.scope.selectedNode = this.scope.nodes[0].name;
+            this.scope.nodes = this.clusterInfo.nodes.data.data.affected_items
+            this.scope.selectedNode = this.scope.nodes[0].name
           }
-          this.changeNode(this.scope.selectedNode);
+          this.changeNode(this.scope.selectedNode)
         } else {
           // If cluster is disabled there is not a node selected
-          this.scope.selectedNode = false;
+          this.scope.selectedNode = false
         }
 
-        this.scope.goToEdition = true;
-        this.scope.showingInfo = false;
-        this.scope.showInfo = () => this.showInfo();
-        this.scope.getXML = () => this.configurationHandler.getXML(this.scope);
-        this.scope.getJSON = () =>
-          this.configurationHandler.getJSON(this.scope);
-        this.scope.isString = (item) => typeof item === "string";
-        this.scope.changeNode = (node) => this.changeNode(node);
+        this.scope.goToEdition = true
+        this.scope.showingInfo = false
+        this.scope.showInfo = () => this.showInfo()
+        this.scope.getXML = () => this.configurationHandler.getXML(this.scope)
+        this.scope.getJSON = () => this.configurationHandler.getJSON(this.scope)
+        this.scope.isString = (item) => typeof item === 'string'
+        this.scope.changeNode = (node) => this.changeNode(node)
         this.scope.hasSize = (obj) =>
-          obj && typeof obj === "object" && Object.keys(obj).length;
+          obj && typeof obj === 'object' && Object.keys(obj).length
         this.scope.switchConfigTab = (configurationTab, sections) => {
-          this.currentConfigTab = configurationTab;
-          this.currentSections = sections;
-          this.currentWodle = false;
+          this.currentConfigTab = configurationTab
+          this.currentSections = sections
+          this.currentWodle = false
           this.configurationHandler.switchConfigTab(
             configurationTab,
             sections,
             this.scope,
             false, //Send agent.id as false
             this.scope.selectedNode // Send selected node
-          );
-        };
+          )
+        }
         this.scope.switchWodle = (wodleName) => {
-          this.currentConfigTab = false;
-          this.currentSections = false;
-          this.currentWodle = wodleName;
+          this.currentConfigTab = false
+          this.currentSections = false
+          this.currentWodle = wodleName
           this.configurationHandler.switchWodle(
             wodleName,
             this.scope,
             false, //Send agent.id as false
             this.scope.selectedNode // Send selected node
-          );
-        };
+          )
+        }
 
         this.scope.switchConfigurationTab = (configurationTab) => {
-          this.currentConfigTab = false;
-          this.currentSections = false;
-          this.currentSubTab = false;
-          this.currentWodle = false;
+          this.currentConfigTab = false
+          this.currentSections = false
+          this.currentSubTab = false
+          this.currentWodle = false
           this.configurationHandler.switchConfigurationTab(
             configurationTab,
             this.scope
-          );
-        };
+          )
+        }
 
         this.scope.switchConfigurationSubTab = (configurationSubTab) => {
-          this.currentSubTab = configurationSubTab;
+          this.currentSubTab = configurationSubTab
           this.configurationHandler.switchConfigurationSubTab(
             configurationSubTab,
             this.scope
-          );
-        };
+          )
+        }
 
         this.scope.formatAzureType = (type) => {
-          if (type === "log_analytics") return "Azure Log Analytics";
-          if (type === "graph") return "Azure Active Directory Graph";
-          if (type === "storage") return "Azure Storage";
+          if (type === 'log_analytics') return 'Azure Log Analytics'
+          if (type === 'graph') return 'Azure Active Directory Graph'
+          if (type === 'storage') return 'Azure Storage'
 
-          return type; // if it's not one of the above then it's a custom tag
-        };
-        this.scope.updateSelectedItem = (i) => (this.scope.selectedItem = i);
+          return type // if it's not one of the above then it's a custom tag
+        }
+        this.scope.updateSelectedItem = (i) => (this.scope.selectedItem = i)
         this.scope.getIntegration = (list) =>
-          this.configurationHandler.getIntegration(list, this.scope);
+          this.configurationHandler.getIntegration(list, this.scope)
 
         /* RBAC flags */
         this.scope.canUpdateConfig = () => {
           if (this.scope.selectedNode)
             return this.isAllowed(
-              "CLUSTER_UPDATE_CONFIG",
-              ["NODE_ID"],
+              'CLUSTER_UPDATE_CONFIG',
+              ['NODE_ID'],
               [this.scope.selectedNode]
-            );
-          else return this.isAllowed("MANAGER_UPDATE_CONFIG", ["RESOURCELESS"]);
-        };
+            )
+          else return this.isAllowed('MANAGER_UPDATE_CONFIG', ['RESOURCELESS'])
+        }
 
         // True if the request on the resolver was successful
-        this.scope.canReadCluster = (this.clusterInfo != false)
+        this.scope.canReadCluster = this.clusterInfo != false
       } catch (error) {
-        this.notification.showErrorToast(error);
+        this.notification.showErrorToast(error)
       }
     }
 
@@ -155,8 +154,8 @@ define(["../../module", "../../../utils/config-handler"], function(
      * Show or hide sidebar with info
      */
     showInfo() {
-      this.scope.showingInfo = !this.scope.showingInfo;
-      this.scope.$applyAsync();
+      this.scope.showingInfo = !this.scope.showingInfo
+      this.scope.$applyAsync()
     }
 
     /**
@@ -166,7 +165,7 @@ define(["../../module", "../../../utils/config-handler"], function(
      */
     changeNode(node) {
       try {
-        this.scope.selectedNode = node;
+        this.scope.selectedNode = node
         if (this.currentConfigTab && !this.currentWodle) {
           this.configurationHandler.switchConfigTab(
             this.currentConfigTab,
@@ -174,31 +173,31 @@ define(["../../module", "../../../utils/config-handler"], function(
             this.scope,
             false, // Send agent.id as false
             node // Send selected node
-          );
+          )
         } else if (!this.currentConfigTab && this.currentWodle) {
           this.configurationHandler.switchWodle(
             this.currentWodle,
             this.scope,
             false, // Send agent.id as false
             node // Send selected node
-          );
+          )
         }
-        // If the current config tab or wodle have sub tabs, this initializes 
+        // If the current config tab or wodle have sub tabs, this initializes
         // the nav bar and loads the data
         if (this.currentSubTab) {
           this.configurationHandler.switchConfigurationSubTab(
             this.currentSubTab,
             this.scope
-          );
+          )
         }
-        this.scope.$applyAsync();
+        this.scope.$applyAsync()
       } catch (error) {
         this.notification.showErrorToast(
           error || `Cannot load ${node} configuration.`
-        );
+        )
       }
     }
   }
 
-  controllers.controller("configurationCtrl", ConfigurationController);
-});
+  controllers.controller('configurationCtrl', ConfigurationController)
+})

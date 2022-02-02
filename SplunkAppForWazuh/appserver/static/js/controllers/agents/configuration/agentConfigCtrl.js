@@ -10,11 +10,11 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module", "../../../utils/config-handler"], function(
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
-  "use strict";
+  'use strict'
 
   class ConfigurationController {
     /**
@@ -42,40 +42,40 @@ define(["../../module", "../../../utils/config-handler"], function(
       data,
       agent
     ) {
-      this.api = $currentDataService.getApi();
-      this.reportingService = $reportingService;
-      this.$scope = $scope;
-      this.agent = agent;
-      this.$scope.currentAgent = this.agent.data.data.affected_items[0];
-      this.errorHandler = $notificationService;
-      this.apiReq = $requestService;
-      this.state = $state;
-      this.$scope.load = false;
-      this.id = $stateParams.id || $currentDataService.getCurrentAgent();
-      this.$scope.isArray = Array.isArray;
+      this.api = $currentDataService.getApi()
+      this.reportingService = $reportingService
+      this.$scope = $scope
+      this.agent = agent
+      this.$scope.currentAgent = this.agent.data.data.affected_items[0]
+      this.errorHandler = $notificationService
+      this.apiReq = $requestService
+      this.state = $state
+      this.$scope.load = false
+      this.id = $stateParams.id || $currentDataService.getCurrentAgent()
+      this.$scope.isArray = Array.isArray
       this.configurationHandler = new ConfigHandler(
         this.apiReq,
         $beautifierJson,
         this.errorHandler
-      );
-      this.$scope.currentConfig = null;
-      this.$scope.configurationTab = "";
-      this.$scope.configurationSubTab = "";
-      this.$scope.integrations = {};
-      this.$scope.selectedItem = 0;
+      )
+      this.$scope.currentConfig = null
+      this.$scope.configurationTab = ''
+      this.$scope.configurationSubTab = ''
+      this.$scope.integrations = {}
+      this.$scope.selectedItem = 0
       this.$scope.isSynchronized =
         data &&
         data.data &&
         data.data.data &&
         data.data.data.affected_items &&
         data.data.data.affected_items.length &&
-        data.data.data.affected_items[0].synced;
+        data.data.data.affected_items[0].synced
       this.excludeModulesByOs = {
         linux: [],
-        windows: ["audit", "oscap", "docker"],
-        darwin: ["audit", "oscap", "vuls", "docker"],
-        other: ["audit", "oscap", "vuls", "docker"],
-      };
+        windows: ['audit', 'oscap', 'docker'],
+        darwin: ['audit', 'oscap', 'vuls', 'docker'],
+        other: ['audit', 'oscap', 'vuls', 'docker'],
+      }
 
       this.$scope.selectedOptions = {
         globalConf: true,
@@ -92,53 +92,52 @@ define(["../../module", "../../../utils/config-handler"], function(
         dockerListenerConf: true,
         logCollectionConf: true,
         integrityMonitoringConf: true,
-      };
+      }
 
       this.$scope.isManager = false
       this.$scope.canReadAgents = true // controlled on the parent view (agents)
-      this.$scope.$on("loadingReporting", (event, data) => {
-        this.$scope.loadingReporting = data.status;
-      });
+      this.$scope.$on('loadingReporting', (event, data) => {
+        this.$scope.loadingReporting = data.status
+      })
     }
 
     /**
      * On controller loads
      */
     $onInit() {
-      this.$scope.showingInfo = false;
-      this.setAgentPlatform();
-      this.$scope.showInfo = () => this.showInfo();
-      this.$scope.showModulesToExport = () => this.showModulesToExport();
-      this.$scope.selectAll = (value) => this.selectAll(value);
-      this.$scope.checkAllDisabled = () => this.checkAllDisabled();
-      this.$scope.keyEquivalences = (key) => this.keyEquivalences(key);
-      this.$scope.showConfigCheck = (key) => this.showConfigCheck(key);
-      this.$scope.goToEdition = false;
+      this.$scope.showingInfo = false
+      this.setAgentPlatform()
+      this.$scope.showInfo = () => this.showInfo()
+      this.$scope.showModulesToExport = () => this.showModulesToExport()
+      this.$scope.selectAll = (value) => this.selectAll(value)
+      this.$scope.checkAllDisabled = () => this.checkAllDisabled()
+      this.$scope.keyEquivalences = (key) => this.keyEquivalences(key)
+      this.$scope.showConfigCheck = (key) => this.showConfigCheck(key)
+      this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data.affected_items[0]
-          : { error: true };
+          : { error: true }
 
       // Capitalize Status
       if (this.$scope.agent && this.$scope.agent.status) {
         this.$scope.agent.status =
           this.$scope.agent.status.charAt(0).toUpperCase() +
-          this.$scope.agent.status.slice(1);
+          this.$scope.agent.status.slice(1)
       }
 
       this.$scope.getAgentStatusClass = (agentStatus) =>
-        agentStatus === "Active" ? "teal" : "red";
+        agentStatus === 'Active' ? 'teal' : 'red'
       this.$scope.formatAgentStatus = (agentStatus) => {
-        return ["Active", "Disconnected"].includes(agentStatus)
+        return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
-          : "Never connected";
-      };
-      this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope);
-      this.$scope.getJSON = () =>
-        this.configurationHandler.getJSON(this.$scope);
-      this.$scope.isString = (item) => typeof item === "string";
+          : 'Never connected'
+      }
+      this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
+      this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
+      this.$scope.isString = (item) => typeof item === 'string'
       this.$scope.hasSize = (obj) =>
-        obj && typeof obj === "object" && Object.keys(obj).length;
+        obj && typeof obj === 'object' && Object.keys(obj).length
       this.$scope.switchConfigTab = (configurationTab, sections) =>
         this.configurationHandler.switchConfigTab(
           configurationTab,
@@ -146,30 +145,30 @@ define(["../../module", "../../../utils/config-handler"], function(
           this.$scope,
           this.id, // Send the agent id
           false // Send node as false
-        );
+        )
       this.$scope.switchWodle = (wodleName) =>
-        this.configurationHandler.switchWodle(wodleName, this.$scope, this.id);
+        this.configurationHandler.switchWodle(wodleName, this.$scope, this.id)
       this.$scope.switchConfigurationTab = async (configurationTab) => {
-        if (configurationTab === "welcome") {
-          this.$scope.isSynchronized = await this.checkAgentSync();
+        if (configurationTab === 'welcome') {
+          this.$scope.isSynchronized = await this.checkAgentSync()
         }
         this.configurationHandler.switchConfigurationTab(
           configurationTab,
           this.$scope
-        );
-      };
+        )
+      }
 
       this.$scope.switchConfigurationSubTab = (configurationSubTab) =>
         this.configurationHandler.switchConfigurationSubTab(
           configurationSubTab,
           this.$scope
-        );
-      this.$scope.updateSelectedItem = (i) => (this.$scope.selectedItem = i);
+        )
+      this.$scope.updateSelectedItem = (i) => (this.$scope.selectedItem = i)
       this.$scope.getIntegration = (list) =>
-        this.configurationHandler.getIntegration(list, this.$scope);
-      this.$scope.goGroups = (group) => this.goGroups(group);
+        this.configurationHandler.getIntegration(list, this.$scope)
+      this.$scope.goGroups = (group) => this.goGroups(group)
 
-      this.$scope.initReportConfig = () => this.initReportConfig();
+      this.$scope.initReportConfig = () => this.initReportConfig()
     }
 
     /**
@@ -178,21 +177,21 @@ define(["../../module", "../../../utils/config-handler"], function(
      */
     async goGroups(group) {
       try {
-        const groupInfo = await this.apiReq.apiReq(`/groups/`);
+        const groupInfo = await this.apiReq.apiReq(`/groups/`)
         const groupData = groupInfo.data.data.affected_items.filter(
           (item) => item.name === group
-        );
+        )
         if (
           !groupInfo ||
           !groupInfo.data ||
           !groupInfo.data.data ||
           groupInfo.data.error
         ) {
-          throw Error("Missing fields");
+          throw Error('Missing fields')
         }
-        this.state.go(`mg-groups`, { group: groupData[0] });
+        this.state.go(`mg-groups`, { group: groupData[0] })
       } catch (err) {
-        this.errorHandler.showSimpleToast("Error fetching group data");
+        this.errorHandler.showSimpleToast('Error fetching group data')
       }
     }
 
@@ -200,16 +199,16 @@ define(["../../module", "../../../utils/config-handler"], function(
      * Show or hide sidebar with info
      */
     showInfo() {
-      this.$scope.showingInfo = !this.$scope.showingInfo;
-      this.$scope.$applyAsync();
+      this.$scope.showingInfo = !this.$scope.showingInfo
+      this.$scope.$applyAsync()
     }
 
     /**
      * Shows the popover to select the modules
      */
     showModulesToExport() {
-      this.$scope.exportConfig = !this.$scope.exportConfig;
-      this.$scope.$applyAsync();
+      this.$scope.exportConfig = !this.$scope.exportConfig
+      this.$scope.$applyAsync()
     }
 
     /**
@@ -237,9 +236,9 @@ define(["../../module", "../../../utils/config-handler"], function(
       /**
        * If it's not Linux, docker and openscape are set to false by default so these configurations are not printed.
        */
-      if (this.$scope.agentPlatform !== "linux") {
-        this.$scope.selectedOptions["dockerListenerConf"] = false;
-        this.$scope.selectedOptions["openscapConf"] = false;
+      if (this.$scope.agentPlatform !== 'linux') {
+        this.$scope.selectedOptions['dockerListenerConf'] = false
+        this.$scope.selectedOptions['openscapConf'] = false
       }
 
       if (!this.$scope.loadingReporting)
@@ -247,8 +246,8 @@ define(["../../module", "../../../utils/config-handler"], function(
           this.id,
           this.$scope.selectedOptions,
           this.api
-        );
-      this.$scope.exportConfig = false;
+        )
+      this.$scope.exportConfig = false
     }
 
     /**
@@ -257,26 +256,26 @@ define(["../../module", "../../../utils/config-handler"], function(
     selectAll(value) {
       try {
         Object.keys(this.$scope.selectedOptions).forEach((key) => {
-          this.$scope.selectedOptions[key] = value;
-        });
+          this.$scope.selectedOptions[key] = value
+        })
       } catch (error) {
-        this.$notificationService.showErrorToast("Cannot select the modules");
+        this.$notificationService.showErrorToast('Cannot select the modules')
       }
     }
 
     checkAllDisabled() {
       try {
-        let result = false;
+        let result = false
         Object.keys(this.$scope.selectedOptions).forEach((key) => {
           if (this.$scope.selectedOptions[key]) {
-            result = true;
+            result = true
           }
-        });
-        return !result;
+        })
+        return !result
       } catch (error) {
         this.$notificationService.showErrorToast(
-          "Error checking selected options"
-        );
+          'Error checking selected options'
+        )
       }
     }
 
@@ -287,10 +286,10 @@ define(["../../module", "../../../utils/config-handler"], function(
       try {
         const sync = await this.apiReq.apiReq(
           `/agents/${this.$scope.agent.id}/group/is_sync`
-        );
-        return sync.data.data.affected_items[0].synced;
+        )
+        return sync.data.data.affected_items[0].synced
       } catch (error) {
-        return false;
+        return false
       }
     }
 
@@ -299,26 +298,26 @@ define(["../../module", "../../../utils/config-handler"], function(
      */
     setAgentPlatform() {
       try {
-        this.$scope.agentPlatform = "other";
+        this.$scope.agentPlatform = 'other'
         let agentPlatformLinux = (
           ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {})
             .os || {}
-        ).uname;
+        ).uname
         let agentPlatformOther = (
           ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {})
             .os || {}
-        ).platform;
-        if (agentPlatformLinux && agentPlatformLinux.includes("Linux")) {
-          this.$scope.agentPlatform = "linux";
+        ).platform
+        if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
+          this.$scope.agentPlatform = 'linux'
         }
-        if (agentPlatformOther && agentPlatformOther === "windows") {
-          this.$scope.agentPlatform = "windows";
+        if (agentPlatformOther && agentPlatformOther === 'windows') {
+          this.$scope.agentPlatform = 'windows'
         }
-        if (agentPlatformOther && agentPlatformOther === "darwin") {
-          this.$scope.agentPlatform = "darwin";
+        if (agentPlatformOther && agentPlatformOther === 'darwin') {
+          this.$scope.agentPlatform = 'darwin'
         }
       } catch (error) {
-        this.errorHandler.showErrorToast("Cannot set OS platform.");
+        this.errorHandler.showErrorToast('Cannot set OS platform.')
       }
     }
 
@@ -326,14 +325,14 @@ define(["../../module", "../../../utils/config-handler"], function(
      * Returns true
      */
     showConfigCheck(key) {
-      if (key === "dockerListenerConf" || key === "openscapConf") {
-        if (this.$scope.agentPlatform === "linux") {
-          return true;
+      if (key === 'dockerListenerConf' || key === 'openscapConf') {
+        if (this.$scope.agentPlatform === 'linux') {
+          return true
         } else {
-          return false;
+          return false
         }
       } else {
-        return true;
+        return true
       }
     }
 
@@ -342,24 +341,24 @@ define(["../../module", "../../../utils/config-handler"], function(
      */
     keyEquivalences(key) {
       const options = {
-        globalConf: "Global configuration",
-        communicationConf: "Communication",
-        antiFloodingConf: "Anti-flooding settings",
-        labels: "Labels",
-        pmConf: "Policy monitoring",
-        openscapConf: "OpenSCAP",
-        ciscatConf: "CIS-CAT",
-        osqueryConf: "Osquery",
-        inventoryConf: "Inventory data",
-        activeResponseConf: "Active response",
-        commandsConf: "Commands",
-        dockerListenerConf: "Docker listener",
-        logCollectionConf: "Log collection",
-        integrityMonitoringConf: "Integrity monitoring",
-      };
-      return options[key] || key;
+        globalConf: 'Global configuration',
+        communicationConf: 'Communication',
+        antiFloodingConf: 'Anti-flooding settings',
+        labels: 'Labels',
+        pmConf: 'Policy monitoring',
+        openscapConf: 'OpenSCAP',
+        ciscatConf: 'CIS-CAT',
+        osqueryConf: 'Osquery',
+        inventoryConf: 'Inventory data',
+        activeResponseConf: 'Active response',
+        commandsConf: 'Commands',
+        dockerListenerConf: 'Docker listener',
+        logCollectionConf: 'Log collection',
+        integrityMonitoringConf: 'Integrity monitoring',
+      }
+      return options[key] || key
     }
   }
 
-  controllers.controller("configurationAgentCtrl", ConfigurationController);
-});
+  controllers.controller('configurationAgentCtrl', ConfigurationController)
+})

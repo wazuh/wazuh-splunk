@@ -11,8 +11,8 @@ define([
   './run/index',
   './config/index',
   'chart',
-  'angularChart'
-], function(ng) {
+  'angularChart',
+], function (ng) {
   'use strict'
   return ng.module('wazuhApp', [
     'ngMaterial',
@@ -24,6 +24,6 @@ define([
     'app.filter',
     'app.factories',
     'app.run',
-    'app.config'
+    'app.config',
   ])
 })

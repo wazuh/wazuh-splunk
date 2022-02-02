@@ -4,12 +4,11 @@
     <div class="wz-breadcrumb-margin">
       <a class="wz-text-link cursor-pointer" ui-sref="agents">Agents</a>
       <span> / </span>
-      <span 
-        ng-if="!agent.error" 
+      <span
+        ng-if="!agent.error"
         class="wz-text-link cursor-pointer wz-agent-name-long wz-agent-name-position"
-        title="{{agent.name}} ({{agent.id}})"
-        >
-          {{agent.name}} ({{agent.id}})
+        title="{{agent.name}} ({{agent.id}})">
+        {{agent.name}} ({{agent.id}})
       </span>
       <span ng-if="agent.error">Unknown agent</span>
       <span ng-if="agent && agent.status">
@@ -22,14 +21,12 @@
     <div flex></div>
     <div
       layout="row"
-      class="wz-no-padding-bottom wz-margin-top-5 wz-margin-right-15"
-    >
+      class="wz-no-padding-bottom wz-margin-top-5 wz-margin-right-15">
       <span flex="" class="flex"></span>
       <button
         class="btn wz-button-empty pull-right ng-scope wz-margin-right-10"
         ng-click="openDiscover(agent.id)"
-        tooltip="Discover"
-      >
+        tooltip="Discover">
         <wz-svg icon="compass"></wz-svg>
         Discover
       </button>
@@ -41,8 +38,7 @@
         <button
           style="height: 30px"
           ng-click="switchRestart()"
-          class="btn wz-button-cancel pull-right wz-margin-left-10"
-        >
+          class="btn wz-button-cancel pull-right wz-margin-left-10">
           <span>
             <i aria-hidden="true" class="wz-margin-left-10"></i>
             Cancel
@@ -52,13 +48,11 @@
           style="height: 30px"
           ng-if="canRestartAgent && !clusterEnabled"
           ng-click="restart(); switchRestart()"
-          class="btn wz-button-empty pull-right wz-margin-left-10"
-        >
+          class="btn wz-button-empty pull-right wz-margin-left-10">
           <span>
             <i
               aria-hidden="true"
-              class="fa fa-fw fa-check wz-margin-left-10"
-            ></i>
+              class="fa fa-fw fa-check wz-margin-left-10"></i>
             Confirm
           </span>
         </button>
@@ -68,8 +62,7 @@
           ng-if="canRestartAgent && agent.status === 'Active'"
           ng-click="switchRestart()"
           ng-disabled="restartInProgress"
-          class="btn wz-button-empty pull-right ng-scope"
-        >
+          class="btn wz-button-empty pull-right ng-scope">
           <span aria-hidden="false">
             <wz-svg icon="refresh"></wz-svg>
             Restart agent
@@ -85,18 +78,18 @@
     <!-- Agent info -->
     <div layout-padding class="wz-no-padding">
       <div class="wz-float-agent">
-        <div class="wz-lh-32 agent-name-title wz-agent-name-long" title="{{agent.name}}">
+        <div
+          class="wz-lh-32 agent-name-title wz-agent-name-long"
+          title="{{agent.name}}">
           {{ agent.name || '-' }}
         </div>
       </div>
       <div class="agent-details-box">
         <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive"
-        >
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
           <div
             class="euiFlexItem euiFlexItem"
-            style="max-width: 80px !important"
-          >
+            style="max-width: 80px !important">
             <div class="euiStat euiStat--leftAligned wz-text-align-center">
               <div class="euiText euiText--small euiStat__description">
                 <p class="agentField">{{ agent.id || '-' }}</p>
@@ -168,8 +161,7 @@
     ng-if="agent.status !== 'Never connected'"
     layout="row"
     layout-padding
-    class="wz-margin-top--15"
-  >
+    class="wz-margin-top--15">
     <md-card flex class="wz-md-card wz-padding-top-0 wz-padding-bottom-0">
       <md-card-content>
         <div layout="row" ng-if="agent.group">
@@ -180,8 +172,7 @@
               ng-click="switchGroupEdit()"
               svg-tooltip="Add group"
               icon="plus"
-              color="#0079a5"
-            >
+              color="#0079a5">
             </wz-svg>
           </span>
         </div>
@@ -189,8 +180,7 @@
         <div
           layout="row"
           class="wz-margin-top-10"
-          ng-if="agent.group && editGroup && !addingGroupToAgent"
-        >
+          ng-if="agent.group && editGroup && !addingGroupToAgent">
           <div class="wz-word-break" flex ng-if="groups && groups.length">
             Available groups:
           </div>
@@ -201,21 +191,18 @@
         </div>
         <div
           ng-if="agent.group && editGroup && !addingGroupToAgent && groups && groups.length"
-          class="wz-margin-top-4"
-        >
+          class="wz-margin-top-4">
           <span
             ng-repeat="group in groups"
             class="wz-text-bold wz-text-link"
-            ng-click="showConfirmAddGroup(group)"
-          >
+            ng-click="showConfirmAddGroup(group)">
             {{ group }}&nbsp;
           </span>
         </div>
 
         <div
           class="wz-margin-top-10 confirmEmbedBubble"
-          ng-if="agent.group && editGroup && addingGroupToAgent"
-        >
+          ng-if="agent.group && editGroup && addingGroupToAgent">
           <div layout="row">
             <span class="font-size-12 wz-padding-left-8">
               Agent {{agent.name}}({{agent.id}}) will be added to group
@@ -226,15 +213,13 @@
             <md-button
               class="cancelBtn"
               type="button"
-              ng-click="cancelAddGroup()"
-            >
+              ng-click="cancelAddGroup()">
               Cancel
             </md-button>
             <md-button
               class="agreeBtn"
               type="button"
-              ng-click="confirmAddGroup(addingGroupToAgent)"
-            >
+              ng-click="confirmAddGroup(addingGroupToAgent)">
               <i aria-hidden="true" class="fa fa-fw fa-check"></i>
               Confirm
             </md-button>
@@ -243,13 +228,11 @@
         <div
           layout="row"
           ng-if="agent.group"
-          class="wz-word-break wz-padding-top-10"
-        >
+          class="wz-word-break wz-padding-top-10">
           <span
             ng-repeat="group in agent.group"
             class="wz-text-bold wz-text-link font-size-15"
-            ng-click="goGroups(group)"
-          >
+            ng-click="goGroups(group)">
             {{ group }}&nbsp;
           </span>
         </div>
@@ -273,8 +256,7 @@
 
   <div layout="row" layout-padding ng-if="!agent.error">
     <div
-      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive"
-    >
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">
@@ -282,16 +264,14 @@
           </h3>
           <div class="euiSpacer euiSpacer--m"></div>
           <div
-            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96"
-          >
+            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card
               class="euiFlexItem"
               logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'"
               sub-title="'Security events'"
               ui-sref="ag-general({id:agent.id})"
               current-tab="'general'"
-              description="'Browse through your security alerts, identifying issues and threats in your environment.'"
-            >
+              description="'Browse through your security alerts, identifying issues and threats in your environment.'">
             </wz-welcome-card>
             <wz-welcome-card
               class="euiFlexItem"
@@ -299,8 +279,7 @@
               sub-title="'Integrity monitoring'"
               ui-sref="ag-fim({id:agent.id})"
               current-tab="'fim'"
-              description="'Alerts related to file changes, including permissions, content, ownership and attributes.'"
-            >
+              description="'Alerts related to file changes, including permissions, content, ownership and attributes.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="!agent.error"
@@ -309,8 +288,7 @@
               sub-title="'Configuration'"
               ui-sref="ag-conf({id:agent.id})"
               current-tab="'configuration'"
-              description="'Check the current agent configuration remotely applied by its group.'"
-            >
+              description="'Check the current agent configuration remotely applied by its group.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="!agent.error"
@@ -320,8 +298,7 @@
               sub-title="'Inventory data'"
               switch-tab="switchTab('syscollector')"
               current-tab="'syscollector'"
-              description="'Applications, network configuration, open ports and processes running on your monitored systems.'"
-            >
+              description="'Applications, network configuration, open ports and processes running on your monitored systems.'">
             </wz-welcome-card>
           </div>
         </div>
@@ -339,8 +316,7 @@
               ng-click="showExtensionsLists('auditing')"
               icon="eye"
               color="#396e3e"
-              class="pull-right"
-            >
+              class="pull-right">
             </wz-svg>
           </div>
 
@@ -349,24 +325,21 @@
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.audit"
-                  switch-change="toggleExtension('audit',!extensions.audit)"
-                >
+                  switch-change="toggleExtension('audit',!extensions.audit)">
                 </wz-kbn-switch>
                 <span>System auditing</span>
               </li>
               <li ng-if="checkModules('oscap')">
                 <wz-kbn-switch
                   switch-model="extensions.oscap"
-                  switch-change="toggleExtension('oscap',!extensions.oscap)"
-                >
+                  switch-change="toggleExtension('oscap',!extensions.oscap)">
                 </wz-kbn-switch>
                 <span>OpenSCAP</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.ciscat"
-                  switch-change="toggleExtension('ciscat',!extensions.ciscat)"
-                >
+                  switch-change="toggleExtension('ciscat',!extensions.ciscat)">
                 </wz-kbn-switch>
                 <span>CIS-CAT</span>
               </li>
@@ -374,16 +347,14 @@
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div
-            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96"
-          >
+            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card
               class="euiFlexItem"
               logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
               sub-title="'Policy monitoring'"
               ui-sref="ag-pm({id:aoc.agent.id})"
               current-tab="'pm'"
-              description="'Configuration to ensure compliance with security policies, standards and hardening guides'"
-            >
+              description="'Configuration to ensure compliance with security policies, standards and hardening guides'">
             </wz-welcome-card>
             <wz-welcome-card
               class="euiFlexItem"
@@ -391,8 +362,7 @@
               sub-title="'Security Configuration Assessment'"
               ui-sref="ag-ca({id:aoc.agent.id})"
               current-tab="'conf-assess'"
-              description="'Scan your assets as part of a configuration assessment audit.'"
-            >
+              description="'Scan your assets as part of a configuration assessment audit.'">
             </wz-welcome-card>
             <wz-welcome-card
               class="euiFlexItem"
@@ -401,8 +371,7 @@
               ui-sref="ag-audit({id:agent.id})"
               ng-if="extensions.audit && checkModules('audit')"
               current-tab="'audit'"
-              description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"
-            >
+              description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.oscap && checkModules('oscap')"
@@ -411,8 +380,7 @@
               sub-title="'Open SCAP'"
               ui-sref="ag-os({id:agent.id})"
               current-tab="'oscap'"
-              description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"
-            >
+              description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.ciscat"
@@ -422,8 +390,7 @@
               sub-title="'CIS-CAT'"
               switch-tab="switchTab('ciscat')"
               current-tab="'ciscat'"
-              description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"
-            >
+              description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'">
             </wz-welcome-card>
           </div>
         </div>
@@ -433,8 +400,7 @@
 
   <div layout="row" layout-padding ng-if="!agent.error">
     <div
-      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive"
-    >
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
           <h3 class="euiTitle wc-title welcome-card-main-title">
@@ -448,34 +414,29 @@
               ng-click="showExtensionsLists('threadDetection')"
               icon="eye"
               color="#396e3e"
-              class="pull-right"
-            >
+              class="pull-right">
             </wz-svg>
           </div>
           <div
             ng-show="extensionsLists.threadDetection"
-            class="extensions-list"
-          >
+            class="extensions-list">
             <ul class="noDot ul-extensions">
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.virustotal"
-                  switch-change="toggleExtension('virustotal',!extensions.virustotal)"
-                ></wz-kbn-switch>
+                  switch-change="toggleExtension('virustotal',!extensions.virustotal)"></wz-kbn-switch>
                 <span>VirusTotal</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.osquery"
-                  switch-change="toggleExtension('osquery',!extensions.osquery)"
-                ></wz-kbn-switch>
+                  switch-change="toggleExtension('osquery',!extensions.osquery)"></wz-kbn-switch>
                 <span>Osquery</span>
               </li>
               <li ng-if="checkModules('docker')">
                 <wz-kbn-switch
                   switch-model="extensions.docker"
-                  switch-change="toggleExtension('docker',!extensions.docker)"
-                >
+                  switch-change="toggleExtension('docker',!extensions.docker)">
                 </wz-kbn-switch
                 ><span>Docker listener</span>
               </li>
@@ -483,8 +444,7 @@
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div
-            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96"
-          >
+            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card
               ng-if="checkModules('vuls')"
               class="euiFlexItem"
@@ -492,8 +452,7 @@
               sub-title="'Vulnerabilities'"
               ui-sref="ag-vul({id:agent.id})"
               current-tab="'vuls'"
-              description="'Discover what applications are affected by well-known vulnerabilities'"
-            >
+              description="'Discover what applications are affected by well-known vulnerabilities'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.virustotal"
@@ -502,8 +461,7 @@
               sub-title="'VirusTotal'"
               ui-sref="ag-virustotal"
               current-tab="'virustotal'"
-              description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'"
-            >
+              description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.osquery"
@@ -512,8 +470,7 @@
               sub-title="'Osquery'"
               ui-sref="ag-osquery"
               current-tab="'osquery'"
-              description="'Osquery allows to expose an operating system as a high-performance relational database.'"
-            >
+              description="'Osquery allows to expose an operating system as a high-performance relational database.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.docker && checkModules('docker')"
@@ -522,14 +479,12 @@
               sub-title="'Docker listener'"
               ui-sref="ag-docker"
               current-tab="'docker'"
-              description="'Collects events on Docker containers such as starting, stopping or pausing.'"
-            >
+              description="'Collects events on Docker containers such as starting, stopping or pausing.'">
             </wz-welcome-card>
             <div
               ng-if="(agentPlatform !== 'linux') && !checkModules('docker') && !extensions.osquery && !extensions.virustotal"
               flex
-              class="euiCallOut euiCallOut--success"
-            >
+              class="euiCallOut euiCallOut--success">
               <div class="euiCallOutHeader">
                 <wz-svg icon="callOutHeader"></wz-svg>
                 <span class="euiCallOutHeader__title"
@@ -554,8 +509,7 @@
               ng-click="showExtensionsLists('regulatory')"
               icon="eye"
               color="#396e3e"
-              class="pull-right"
-            >
+              class="pull-right">
             </wz-svg>
           </div>
           <div ng-show="extensionsLists.regulatory" class="extensions-list">
@@ -563,32 +517,28 @@
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.pci"
-                  switch-change="toggleExtension('pci',!extensions.pci)"
-                >
+                  switch-change="toggleExtension('pci',!extensions.pci)">
                 </wz-kbn-switch>
                 <span>PCI DSS</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.gdpr"
-                  switch-change="toggleExtension('gdpr',!extensions.gdpr)"
-                >
+                  switch-change="toggleExtension('gdpr',!extensions.gdpr)">
                 </wz-kbn-switch>
                 <span>GDPR</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.hipaa"
-                  switch-change="toggleExtension('hipaa',!extensions.hipaa)"
-                >
+                  switch-change="toggleExtension('hipaa',!extensions.hipaa)">
                 </wz-kbn-switch>
                 <span>HIPAA</span>
               </li>
               <li>
                 <wz-kbn-switch
                   switch-model="extensions.nist"
-                  switch-change="toggleExtension('nist',!extensions.nist)"
-                >
+                  switch-change="toggleExtension('nist',!extensions.nist)">
                 </wz-kbn-switch>
                 <span>NIST 800-53</span>
               </li>
@@ -596,8 +546,7 @@
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
           <div
-            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96"
-          >
+            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
             <wz-welcome-card
               ng-if="extensions.pci"
               class="euiFlexItem"
@@ -605,8 +554,7 @@
               sub-title="'PCI DSS'"
               ui-sref="ag-pci({id:agent.id})"
               current-tab="'pci'"
-              description="'Global security standard for entities that process, store or transmit payment cardholder data.'"
-            >
+              description="'Global security standard for entities that process, store or transmit payment cardholder data.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.gdpr"
@@ -615,8 +563,7 @@
               sub-title="'GDPR'"
               ui-sref="ag-gdpr({id:agent.id})"
               current-tab="'gdpr'"
-              description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'"
-            >
+              description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.hipaa"
@@ -625,8 +572,7 @@
               sub-title="'HIPAA'"
               ui-sref="ag-hipaa({id:agent.id})"
               current-tab="'gdpr'"
-              description="'Health Insurance Portability and Accountability Act of 1996 (HIPAA) provides data privacy and security provisions for safeguarding medical information.'"
-            >
+              description="'Health Insurance Portability and Accountability Act of 1996 (HIPAA) provides data privacy and security provisions for safeguarding medical information.'">
             </wz-welcome-card>
             <wz-welcome-card
               ng-if="extensions.nist"
@@ -635,14 +581,12 @@
               sub-title="'NIST 800-53'"
               ui-sref="ag-nist({id:agent.id})"
               current-tab="'gdpr'"
-              description="'National Institute of Standards and Technology Special Publication 800-53 (NIST 800-53) sets guidelines for federal information systems.'"
-            >
+              description="'National Institute of Standards and Technology Special Publication 800-53 (NIST 800-53) sets guidelines for federal information systems.'">
             </wz-welcome-card>
             <div
               ng-if="!extensions.gdpr && !extensions.pci && !extensions.hipaa && !extensions.nist"
               flex
-              class="euiCallOut euiCallOut--success"
-            >
+              class="euiCallOut euiCallOut--success">
               <div class="euiCallOutHeader">
                 <wz-svg icon="callOutHeader"></wz-svg>
                 <span class="euiCallOutHeader__title">

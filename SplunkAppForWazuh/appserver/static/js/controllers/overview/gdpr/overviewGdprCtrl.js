@@ -6,8 +6,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -41,14 +41,16 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled
+      nistExtensionEnabled,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
@@ -66,7 +68,7 @@ define([
       )
 
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance) {
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
@@ -118,7 +120,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -137,7 +139,7 @@ define([
               'groupsViz',
               'agentsViz',
               'requirementsByAgents',
-              'alertsSummaryViz'
+              'alertsSummaryViz',
             ],
             {}, //Metrics,
             this.tableResults

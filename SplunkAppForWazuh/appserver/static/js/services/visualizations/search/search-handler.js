@@ -1,11 +1,12 @@
-define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
+define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
   SearchEventHandler,
   Viz
 ) {
   'use strict'
-  
-  const FORWARDER_ERROR = 'Unable to retrieve results. It may be due to a connection problem with the Splunk forwarder,\nplease try restarting this service.';
-  
+
+  const FORWARDER_ERROR =
+    'Unable to retrieve results. It may be due to a connection problem with the Splunk forwarder,\nplease try restarting this service.'
+
   return class SearchHandler extends Viz {
     /**
      * Builds a SearchHandler (Metrics) instance
@@ -38,9 +39,9 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
             {
               attr: 'any',
               value: '*',
-              actions: [{ type: 'set', token: token, value: value }]
-            }
-          ]
+              actions: [{ type: 'set', token: token, value: value }],
+            },
+          ],
         }),
         id,
         search,
@@ -50,7 +51,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
       this.token = token
       this.loading = loading
       this.loadingBindedValue = loadingBindedValue
-      this.notification =  notification
+      this.notification = notification
 
       this.getSearch().on('search:failed', () => {
         console.error('Failed search')
@@ -59,7 +60,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         console.error('Cancelled search')
       })
 
-      this.getSearch().on('search:error', error => {
+      this.getSearch().on('search:error', (error) => {
         console.error(error)
       })
 

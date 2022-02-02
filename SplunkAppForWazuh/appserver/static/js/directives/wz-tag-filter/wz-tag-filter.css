@@ -20,10 +20,10 @@
 #wz-search-filter-bar > .fa-search {
   padding: 8px 3px;
   float: left;
-  opacity: .5;
+  opacity: 0.5;
   width: calc(0% + 25px);
 }
-.fa-search-margin { 
+.fa-search-margin {
   margin-left: 10px;
   margin-top: 7px;
 }
@@ -99,7 +99,7 @@
   padding: 10px;
 }
 .wz-search-filter-bar-autocomplete ul {
-  list-style: none!important;
+  list-style: none !important;
   margin: 0;
 }
 .wz-search-filter-bar-autocomplete ul li {

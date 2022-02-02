@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../../../utils/filter-handler'], function(FilterHandler) {
+define(['../../../utils/filter-handler'], function (FilterHandler) {
   'use strict'
 
   return async function initTable(
@@ -38,7 +38,7 @@ define(['../../../utils/filter-handler'], function(FilterHandler) {
             const ruleIdFilter = filterHandler.ruleIdQuery(ruleId)
             if (globalState.filters.length) {
               globalState.filters = globalState.filters.filter(
-                item => item && item.meta && item.meta.key !== 'rule.id'
+                (item) => item && item.meta && item.meta.key !== 'rule.id'
               )
             }
             globalState.filters.push(ruleIdFilter)

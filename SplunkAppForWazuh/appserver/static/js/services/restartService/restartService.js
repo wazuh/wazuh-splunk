@@ -1,6 +1,6 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$restartService', function($requestService) {
+  module.service('$restartService', function ($requestService) {
     const restart = async () => {
       try {
         const clusterEnabled = await clusterIsEnabled()
@@ -41,9 +41,11 @@ define(['../module'], function(module) {
           'PUT'
         )
         if (result && result.data && result.data.error !== 0) {
-          throw result.data.message ||
+          throw (
+            result.data.message ||
             result.data.error ||
             'Cannot restart the cluster.'
+          )
         }
         return 'Restarting cluster, it will take up to 30 seconds.'
       } catch (error) {
@@ -51,11 +53,11 @@ define(['../module'], function(module) {
       }
     }
 
-    const restartNode = async node => {
+    const restartNode = async (node) => {
       try {
         const enabled = await clusterIsEnabled()
         if (enabled) {
-          await checkConfig(node,true)
+          await checkConfig(node, true)
           const result = await $requestService.apiReq(
             `/cluster/restart?nodes_list=${node}`,
             {},
@@ -88,12 +90,11 @@ define(['../module'], function(module) {
 
     const checkConfig = async (node, specific_node = false) => {
       try {
-          const check = specific_node ? await $requestService.apiReq(
-            `/cluster/configuration/validation?nodes_list=${node}`
-          ):
-          await $requestService.apiReq(
-            `${node}/configuration/validation`
-          )
+        const check = specific_node
+          ? await $requestService.apiReq(
+              `/cluster/configuration/validation?nodes_list=${node}`
+            )
+          : await $requestService.apiReq(`${node}/configuration/validation`)
         if (check && check.data && !check.data.error) {
           if (check.data.data.affected_items[0].status === 'OK') {
             return 'OK'
@@ -117,7 +118,7 @@ define(['../module'], function(module) {
 
     return {
       restart: restart,
-      restartNode: restartNode
+      restartNode: restartNode,
     }
   })
 })

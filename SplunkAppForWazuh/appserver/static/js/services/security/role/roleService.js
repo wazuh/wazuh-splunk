@@ -11,70 +11,70 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function (module) {
-  "use strict";
+define(['../../module'], function (module) {
+  'use strict'
 
-  module.service("$roleService", function ($requestService, $state) {
+  module.service('$roleService', function ($requestService, $state) {
     const getRoleData = async () => {
       try {
-        return await $requestService.apiReq("/security/roles");
+        return await $requestService.apiReq('/security/roles')
       } catch (error) {
-        $state.go("settings.api");
+        $state.go('settings.api')
       }
-    };
+    }
 
-    const fetchNewRole = async roleName => {
+    const fetchNewRole = async (roleName) => {
       return await $requestService.apiReq(
-        "/security/roles",
+        '/security/roles',
         {
           content: JSON.stringify({ name: roleName }),
-          origin: "json"
+          origin: 'json',
         },
-        "POST"
-      );
-    };
+        'POST'
+      )
+    }
 
     const fetchEditRole = async (roleId, policies) => {
       return await $requestService.apiReq(
         `/security/roles/${roleId}/policies?policy_ids=${policies.toString()}`,
-        { content: "" },
-        "POST"
-      );
-    };
+        { content: '' },
+        'POST'
+      )
+    }
 
-    const removeRole = async role => {
+    const removeRole = async (role) => {
       try {
         const result = await $requestService.apiReq(
           `/security/roles?role_ids=${role}`,
           {},
-          "DELETE"
-        );
+          'DELETE'
+        )
 
         if (
           result.data.data.failed_items.length &&
           result.data.data.failed_items[0].error.code === 4008
         ) {
-          throw new Error(result.data.data.failed_items[0].error.message);
+          throw new Error(result.data.data.failed_items[0].error.message)
         }
 
         if (result.data.error !== 0) {
-          throw new Error(result.data.message);
+          throw new Error(result.data.message)
         }
-        return result;
+        return result
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const saveRole = async (role, policies) => {
       try {
-        let roleId = "";
+        let roleId = ''
 
         if (!role.id) {
-          const result = await fetchNewRole(role.name);
+          const result = await fetchNewRole(role.name)
 
-          if (typeof result.data.error === "string") {
-            throw new Error(`Cannot save Role ${role.name}`);
+          if (typeof result.data.error === 'string') {
+            throw new Error(`Cannot save Role ${role.name}`)
           }
 
           if (
@@ -83,66 +83,66 @@ define(["../../module"], function (module) {
           ) {
             throw new Error(
               result.data.data.failed_items[0].error.message ||
-              result.data.data.message ||
-              "Cannot save Role."
-            );
+                result.data.data.message ||
+                'Cannot save Role.'
+            )
           }
 
-          const data = (result.data || {}).data;
+          const data = (result.data || {}).data
           if (data.failed_items && data.failed_items.length) {
-            return data;
+            return data
           }
 
           if (data.affected_items && data.affected_items) {
-            roleId = data.affected_items[0].id;
+            roleId = data.affected_items[0].id
           }
 
           if (result.data.error === 1905) {
-            return result;
+            return result
           } else if (result.data.error) {
             throw new Error(
-              result.data.message || result.data.error || "Cannot save Role."
-            );
+              result.data.message || result.data.error || 'Cannot save Role.'
+            )
           }
         } else {
-          roleId = role.id;
+          roleId = role.id
         }
 
-        return await fetchEditRole(roleId, policies);
+        return await fetchEditRole(roleId, policies)
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const removePolicyRole = async (roleId, policyId) => {
       try {
         const result = await $requestService.apiReq(
           `/security/roles/${roleId}/policies?policy_ids=${policyId}`,
           {},
-          "DELETE"
-        );
+          'DELETE'
+        )
 
         if (
           result.data.data.failed_items.length &&
           result.data.data.failed_items[0].error
         ) {
-          throw new Error(result.data.data.failed_items[0].error.message);
+          throw new Error(result.data.data.failed_items[0].error.message)
         }
 
         if (result.data.error !== 0) {
-          throw new Error(result.data.message);
+          throw new Error(result.data.message)
         }
-        return result;
+        return result
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     return {
       getRoleData: getRoleData,
       saveRole: saveRole,
       removeRole: removeRole,
-      removePolicyRole: removePolicyRole
-    };
-  });
-});
+      removePolicyRole: removePolicyRole,
+    }
+  })
+})

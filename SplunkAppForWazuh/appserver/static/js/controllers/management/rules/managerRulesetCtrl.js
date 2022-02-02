@@ -1,8 +1,4 @@
-
-define([
-  '../../module', 
-  './ruleset'
-], function(controllers, Ruleset) {
+define(['../../module', './ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class Rules extends Ruleset {
@@ -43,15 +39,15 @@ define([
 
       /* RBAC flags */
       this.scope.canReadRules = $security_service.isAllowed(
-        "RULES_READ",
-        ["RULE_FILE"],
-        ["*"]
+        'RULES_READ',
+        ['RULE_FILE'],
+        ['*']
       )
-      this.scope.canUpdateRules = $security_service.isAllowed("RULES_UPDATE", [
-        "RESOURCELESS",
+      this.scope.canUpdateRules = $security_service.isAllowed('RULES_UPDATE', [
+        'RESOURCELESS',
       ])
       this.scope.canUpdateRulesetFile = (filename) =>
-        $security_service.isAllowed("RULES_UPDATE", ["RULE_FILE"], [filename])
+        $security_service.isAllowed('RULES_UPDATE', ['RULE_FILE'], [filename])
     }
 
     /**
@@ -67,7 +63,7 @@ define([
 
       this.scope.selectedNavTab = 'rules'
 
-      this.scope.$on('loadedTable', event => {
+      this.scope.$on('loadedTable', (event) => {
         event.stopPropagation()
         try {
           if (window.localStorage.ruleset) {
@@ -90,7 +86,7 @@ define([
       this.scope.overwrite = false
       this.scope.editingFile = {
         file: ``,
-        dir: `rules`
+        dir: `rules`,
       }
       this.scope.addingNewFile = true
       this.scope.fetchedXML = `<!-- Configure your local rules here -->`
@@ -116,7 +112,7 @@ define([
             this.scope.$broadcast('saveXmlFile', {
               file: fileName,
               dir,
-              overwrite
+              overwrite,
             })
           } else {
             throw new Error('The name cannot be ".xml"')

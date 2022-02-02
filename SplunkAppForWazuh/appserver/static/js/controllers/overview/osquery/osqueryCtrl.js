@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -49,14 +49,15 @@ define([
       osquery,
       $reportingService,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -127,7 +128,7 @@ define([
           '$result$',
           this.scope,
           'Top 5 Rules'
-        )
+        ),
       ]
     }
 
@@ -137,7 +138,9 @@ define([
     $onInit() {
       try {
         const wodles = this.osquery.data.data.wmodules
-        this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
+        this.scope.osqueryWodle = wodles.filter(
+          (item) => item.osquery
+        )[0].osquery
         /**
          * Generates report
          */
@@ -152,7 +155,7 @@ define([
               'topOsqueryRemoved',
               'mostCommonPacks',
               'alertsSummary',
-              'topRules'
+              'topRules',
             ],
             {}, //Metrics
             this.tableResults

@@ -18,8 +18,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -58,14 +58,15 @@ define([
       $state,
       $dateDiffService,
       $reportingService,
-      reportingEnabled,
+      reportingEnabled
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.requestService = $requestService
@@ -73,7 +74,7 @@ define([
       this.stateParams = $stateParams
       this.agent = agent
       this.scope.expandArray = [false, false, false, false, false, false, false]
-      this.agentData = this.getAgentInfo();
+      this.agentData = this.getAgentInfo()
 
       if (
         this.agent &&
@@ -203,7 +204,7 @@ define([
           '$result$',
           this.scope,
           'Groups Summary'
-        )
+        ),
       ]
     }
 
@@ -223,7 +224,7 @@ define([
           dateAdd: this.agentData.dateAdd,
           agentOS: `${this.agentData.os.name} ${this.agentData.os.codename} ${this.agentData.os.version}`,
           syscheck: this.agent[1].data.data.affected_items[0],
-          rootcheck: this.agent[2].data.data || {}
+          rootcheck: this.agent[2].data.data || {},
         }
 
         this.agentInfo.syscheck.duration = this.dateDiffService.getDateDiff(
@@ -261,20 +262,20 @@ define([
             OS: this.agentInfo.agentOS,
             dateAdd: this.agentInfo.dateAdd,
             lastKeepAlive: this.agentInfo.lastKeepAlive,
-            group: this.agentInfo.group.toString()
+            group: this.agentInfo.group.toString(),
           }
         } catch (error) {
           this.agentReportData = false
         }
         this.agentMetricsGroup = []
-        this.agentInfo.group.map(g => this.agentMetricsGroup.push(g))
+        this.agentInfo.group.map((g) => this.agentMetricsGroup.push(g))
         this.reportMetrics = {
           'Last syscheck scan': this.agentInfo.syscheck.end
             ? this.agentInfo.syscheck.end
             : 'Unknown',
           'Last rootcheck scan': this.agentInfo.rootcheck.end
             ? this.agentInfo.rootcheck.end
-            : 'Unknown'
+            : 'Unknown',
         }
 
         this.scope.startVis2Png = () =>
@@ -289,7 +290,7 @@ define([
               'alertGroupEvoVizz',
               'alertsVizz',
               'agentsSummaryVizz',
-              'groupsSummaryVizz'
+              'groupsSummaryVizz',
             ],
             this.reportMetrics,
             this.tableResults,
@@ -317,17 +318,17 @@ define([
         this.scope.agentInfo = {
           id: this.agentInfo.id,
           name: this.agentInfo.name,
-          status: this.agentData.status
+          status: this.agentData.status,
         }
         this.agentInfo.id && this.agentInfo.name
           ? (this.agentInfo.error = false)
           : (this.agentInfo.error = 'Unable to load agent data')
       }
 
-      this.scope.goGroups = group => this.goGroups(group)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.goGroups = (group) => this.goGroups(group)
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
     /**
@@ -338,7 +339,7 @@ define([
       try {
         this.groupInfo = await this.requestService.apiReq(`/groups/`)
         this.groupData = this.groupInfo.data.data.affected_items.filter(
-          item => item.name === group
+          (item) => item.name === group
         )
         if (
           !this.groupInfo ||
@@ -372,25 +373,27 @@ define([
         : 'Never connected'
     }
 
-
     /**
-     * Returns the Agent Information 
+     * Returns the Agent Information
      */
-    getAgentInfo(){
-
-      if(!this.agent[0].data.data.error){
+    getAgentInfo() {
+      if (!this.agent[0].data.data.error) {
         // Capitalize Status
-        if(this.agent[0].data.data.affected_items && this.agent[0].data.data.affected_items[0].status){
-          this.agent[0].data.data.affected_items[0].status = 
-            this.agent[0].data.data.affected_items[0].status.charAt(0).toUpperCase() + this.agent[0].data.data.affected_items[0].status.slice(1)
+        if (
+          this.agent[0].data.data.affected_items &&
+          this.agent[0].data.data.affected_items[0].status
+        ) {
+          this.agent[0].data.data.affected_items[0].status =
+            this.agent[0].data.data.affected_items[0].status
+              .charAt(0)
+              .toUpperCase() +
+            this.agent[0].data.data.affected_items[0].status.slice(1)
         }
 
         return this.agent[0].data.data.affected_items[0]
       }
 
-
-
-      return {};
+      return {}
     }
   }
 

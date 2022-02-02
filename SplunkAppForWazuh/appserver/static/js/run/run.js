@@ -1,4 +1,4 @@
-define(['./module'], function(module) {
+define(['./module'], function (module) {
   'use strict'
   module.run([
     '$rootScope',
@@ -9,7 +9,7 @@ define(['./module'], function(module) {
     '$requestService',
     '$appVersionService',
     '$notificationService',
-    function(
+    function (
       $rootScope,
       $state,
       $transitions,
@@ -22,24 +22,25 @@ define(['./module'], function(module) {
       //Go to last state or to a specified tab if "currentTab" param is specified in the url
       $navigationService.manageState()
 
-      async function getAppVersion(){
+      async function getAppVersion() {
         try {
           const result = await $requestService.httpReq(
             'GET',
             '/manager/app_info'
           )
-          $appVersionService.setAppInfo(result.data);
+          $appVersionService.setAppInfo(result.data)
           //compare app and backend versions
-          if ($appVersionService.getDiffAppVersions()){
-            $rootScope.$broadcast('showAppVersionsDiff', { hasDiffVersions: true });
+          if ($appVersionService.getDiffAppVersions()) {
+            $rootScope.$broadcast('showAppVersionsDiff', {
+              hasDiffVersions: true,
+            })
           }
-          return result;
+          return result
         } catch (error) {
           $state.go('settings.api')
         }
       }
-      getAppVersion();
-      
+      getAppVersion()
 
       async function checkBeforeTransition(state) {
         try {
@@ -86,7 +87,7 @@ define(['./module'], function(module) {
       }
 
       // Check secondary states when Wazuh is not ready to prevent change the state
-      $transitions.onBefore({}, async trans => {
+      $transitions.onBefore({}, async (trans) => {
         const to = trans.to().name
         if (
           to !== 'overview' &&
@@ -104,7 +105,7 @@ define(['./module'], function(module) {
         }
       })
 
-      $transitions.onStart({}, async trans => {
+      $transitions.onStart({}, async (trans) => {
         $rootScope.$broadcast('loadingMain', { status: true })
         const to = trans.to().name
         const from = trans.from().name
@@ -120,7 +121,7 @@ define(['./module'], function(module) {
         }
       })
 
-      $transitions.onSuccess({}, async trans => {
+      $transitions.onSuccess({}, async (trans) => {
         $rootScope.$broadcast('loadingMain', { status: false })
 
         const to = trans.to().name
@@ -165,7 +166,7 @@ define(['./module'], function(module) {
         }
       })
 
-      $transitions.onError({}, async trans => {
+      $transitions.onError({}, async (trans) => {
         $rootScope.$broadcast('loadingMain', { status: false })
         const err = trans.error()
         if (
@@ -177,7 +178,7 @@ define(['./module'], function(module) {
       })
 
       // When access to a state and Wazuh is not ready is detected, this funcion checks if is a secondary state, if it is, go to primary state
-      const toPrimaryState = to => {
+      const toPrimaryState = (to) => {
         if (to.startsWith('ag-') || to.startsWith('agent-')) {
           $state.go('agents')
           $rootScope.$broadcast('stateChanged', 'agents')
@@ -189,6 +190,6 @@ define(['./module'], function(module) {
           $rootScope.$broadcast('stateChanged', 'manager')
         }
       }
-    }
+    },
   ])
 })

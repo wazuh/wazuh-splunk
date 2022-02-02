@@ -4,4 +4,4 @@ define([
   './roles/rolesCtrl',
   './policies/policiesCtrl',
   './roles-mapping/rolesMappingCtrl',
-], function() {})
+], function () {})

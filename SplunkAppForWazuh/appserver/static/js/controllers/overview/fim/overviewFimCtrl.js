@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -45,14 +45,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      awsExtensionEnabled
+      awsExtensionEnabled,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.awsExtensionEnabled = awsExtensionEnabled
@@ -113,7 +115,7 @@ define([
           '$result$',
           this.scope,
           'Top users'
-        )
+        ),
       ]
     }
 
@@ -133,7 +135,7 @@ define([
               'eventsSummary',
               'ruleDistribution',
               'topActions',
-              'topUsers'
+              'topUsers',
             ],
             {}, //Metrics
             this.tableResults

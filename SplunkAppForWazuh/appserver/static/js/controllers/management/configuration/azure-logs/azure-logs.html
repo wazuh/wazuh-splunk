@@ -1,11 +1,22 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'azure-logs'" ng-init="switchConfigurationSubTab('azure-logs')">
+<div
+  flex="auto"
+  layout="column"
+  ng-if="configurationTab === 'azure-logs'"
+  ng-init="switchConfigurationSubTab('azure-logs')">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
       <span class="font-size-18">Azure Logs</span>
-      <span ng-if="currentConfig['azure-logs'] && currentConfig['azure-logs'].disabled" class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="!currentConfig['azure-logs'] || !currentConfig['azure-logs'].disabled"
-        class="wz-agent-status-indicator small red">Disabled</span>
+      <span
+        ng-if="currentConfig['azure-logs'] && currentConfig['azure-logs'].disabled"
+        class="wz-agent-status-indicator small teal"
+        >Enabled</span
+      >
+      <span
+        ng-if="!currentConfig['azure-logs'] || !currentConfig['azure-logs'].disabled"
+        class="wz-agent-status-indicator small red"
+        >Disabled</span
+      >
     </div>
     <span>Configuration options of the Azure-Logs wodle. </span>
   </div>
@@ -19,24 +30,35 @@
   </md-nav-bar>
  End azure-logs Logs navigation bar -->
 
-<!-- Loading bar -->
-<div class="loader-bar" ng-show="load">
-  <div class="loader"></div>
-</div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="load">
+    <div class="loader"></div>
+  </div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig['azure-logs'] && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['wmodules-wmodules']"
+      ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig && !currentConfig['azure-logs'] && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig && currentConfig['azure-logs']">
-
+    <div
+      class="configuration-margin-top"
+      flex
+      layout="column"
+      ng-if="currentConfig && currentConfig['azure-logs']">
       <!-- Buckets card -->
-      <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'azure-logs' && currentConfig && currentConfig['azure-logs']">
+      <md-card
+        flex="auto"
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'azure-logs' && currentConfig && currentConfig['azure-logs']">
         <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
@@ -46,58 +68,102 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- The container for both list and detail -->
-          <div flex="auto" layout="row" class="wz-margin-top-10" >
-
+          <div flex="auto" layout="row" class="wz-margin-top-10">
             <!-- Detail container -->
-            <div flex layout="column" ng-if="currentConfig['azure-logs']" >
-              <div flex="auto" class="wz-item-detail" style="margin-bottom:50px !important;">
-                <wz-config-item label="Enabled" value="currentConfig['azure-logs'].disabled === 'yes' ? 'no' : 'yes'">
+            <div flex layout="column" ng-if="currentConfig['azure-logs']">
+              <div
+                flex="auto"
+                class="wz-item-detail"
+                style="margin-bottom: 50px !important">
+                <wz-config-item
+                  label="Enabled"
+                  value="currentConfig['azure-logs'].disabled === 'yes' ? 'no' : 'yes'">
                 </wz-config-item>
-                <wz-config-item label="Timeout for each evaluation" value="currentConfig['azure-logs'].timeout">
+                <wz-config-item
+                  label="Timeout for each evaluation"
+                  value="currentConfig['azure-logs'].timeout">
                 </wz-config-item>
-                <wz-config-item label="Day of the month to run the Azure-Logs" value="currentConfig['azure-logs'].day">
+                <wz-config-item
+                  label="Day of the month to run the Azure-Logs"
+                  value="currentConfig['azure-logs'].day">
                 </wz-config-item>
-                <wz-config-item label="Day of the month to run the Azure-Logs" value="currentConfig['azure-logs'].wday">
+                <wz-config-item
+                  label="Day of the month to run the Azure-Logs"
+                  value="currentConfig['azure-logs'].wday">
                 </wz-config-item>
-                <wz-config-item label="Time of the day to run the Azure-Logs." value="currentConfig['azure-logs'].time">
+                <wz-config-item
+                  label="Time of the day to run the Azure-Logs."
+                  value="currentConfig['azure-logs'].time">
                 </wz-config-item>
-                <wz-config-item label="Interval between Azure-Logs executions." value="currentConfig['azure-logs'].interval">
+                <wz-config-item
+                  label="Interval between Azure-Logs executions."
+                  value="currentConfig['azure-logs'].interval">
                 </wz-config-item>
-                <wz-config-item label="Run evaluation immediately when service is started." value="currentConfig['azure-logs'].run_on_start">
+                <wz-config-item
+                  label="Run evaluation immediately when service is started."
+                  value="currentConfig['azure-logs'].run_on_start">
                 </wz-config-item>
               </div>
 
-              <div ng-repeat="currentContent in currentConfig['azure-logs'].content" ng-if="currentContent.type || currentContent.tag">
+              <div
+                ng-repeat="currentContent in currentConfig['azure-logs'].content"
+                ng-if="currentContent.type || currentContent.tag">
                 <div class="wz-margin-top-10">
-                  <span class="font-size-16">{{formatAzureType(currentContent.type || currentContent.tag)}}</span>
+                  <span class="font-size-16"
+                    >{{formatAzureType(currentContent.type ||
+                    currentContent.tag)}}</span
+                  >
                 </div>
-                <md-divider  class="wz-margin-top-15"></md-divider>
-      
+                <md-divider class="wz-margin-top-15"></md-divider>
+
                 <!-- Configuration block -->
-                <div class="wz-padding-top-10" style="margin-bottom: 50px !important">
-                    <wz-config-item label="Application id" value="currentContent.application_id">
-                      </wz-config-item>
-                    <wz-config-item label="Tenant domain" value="currentContent.tenantdomain">
-                      </wz-config-item>
-                    <wz-config-item label="Application key" value="currentContent.application_key">
-                      </wz-config-item>
-                    <wz-config-item label="Account name" value="currentContent.account_name">
-                      </wz-config-item>
-                    <wz-config-item label="Account key" value="currentContent.account_key">
-                      </wz-config-item>
-                    <wz-config-item label="Path of the file that contains the application identifier and the application key" value="currentContent.auth_path">
-                      </wz-config-item>
+                <div
+                  class="wz-padding-top-10"
+                  style="margin-bottom: 50px !important">
+                  <wz-config-item
+                    label="Application id"
+                    value="currentContent.application_id">
+                  </wz-config-item>
+                  <wz-config-item
+                    label="Tenant domain"
+                    value="currentContent.tenantdomain">
+                  </wz-config-item>
+                  <wz-config-item
+                    label="Application key"
+                    value="currentContent.application_key">
+                  </wz-config-item>
+                  <wz-config-item
+                    label="Account name"
+                    value="currentContent.account_name">
+                  </wz-config-item>
+                  <wz-config-item
+                    label="Account key"
+                    value="currentContent.account_key">
+                  </wz-config-item>
+                  <wz-config-item
+                    label="Path of the file that contains the application identifier and the application key"
+                    value="currentContent.auth_path">
+                  </wz-config-item>
                 </div>
                 <!-- End configuration block -->
               </div>
-
             </div>
             <!-- End detail container -->
           </div>
@@ -106,32 +172,49 @@
       </md-card>
       <!-- End buckets card -->
 
-
       <!-- JSON && XML card-->
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/3.10/azure/index.html">Using
-          Wazuh to monitor Microsoft Azure</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/3.10/user-manual/reference/ossec-conf/wodle-azure-logs.html">Azure Logs wodle reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/3.10/azure/index.html"
+          >Using Wazuh to monitor Microsoft Azure</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/3.10/user-manual/reference/ossec-conf/wodle-azure-logs.html"
+          >Azure Logs wodle reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
-
-
 </div>
