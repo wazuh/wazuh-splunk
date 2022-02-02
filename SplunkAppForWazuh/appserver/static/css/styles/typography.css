@@ -19,6 +19,7 @@
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
 } */
 @import './variables.css';
+
 .font-size-12 {
   font-size: 12px !important;
 }
@@ -136,7 +137,7 @@
 /* Class for linkable text elements */
 .wz-text-link {
   cursor: pointer !important;
-  color: rgb(28, 58, 31) !important;
+  color: var(--button-dark-primary) !important;
 }
 
 .wz-text-link:hover {
@@ -144,7 +145,7 @@
 }
 
 .wz-text-active {
-  color: rgb(28, 58, 31);
+  color: var(--button-dark-primary);
   font-weight: bold;
   text-decoration: underline;
 }
