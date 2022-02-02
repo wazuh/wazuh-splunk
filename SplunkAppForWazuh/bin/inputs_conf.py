@@ -10,30 +10,15 @@
 # Find more information about this on the LICENSE file.
 #
 
-import os
 
 from log import log
+from splunk.clilib import cli_common as cli
 
 class EditInputs():
     def __init__(self):
         self.logger = log()
-        self.script_path = os.path.abspath(
-            __file__).split("bin/inputs_conf.py")[0]
-        self.config_path = self.script_path+'default/inputs.conf'
 
-    def read_config_file(self):
-        """
-        Reads the config.conf file
-        """
-        try:
-            self.logger.debug("bin.inputs.conf: Reading inputs.conf file.")
-            f = open(self.config_path)
-            content = f.read()
-            f.close()
-            return content
-        except Exception as e:
-            self.logger.error("Error reading inputs.conf file: %s" % (e))
-            raise e
+
 
     def get_inputs(self):
         """
@@ -41,18 +26,8 @@ class EditInputs():
         """
         try:
             self.logger.debug("bin.inputs_conf: Getting inputs.")
-            content = self.read_config_file()
-            inputs = content.split("[script://$SPLUNK_HOME/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py]")[1]
-            inputs = inputs.split("\n")
-            inputs = filter(None, inputs[1: 7])
-            inputs_dict = {}
-            for c in inputs:
-                if '=' in c:
-                    k, v = c.split("=")
-                    k = k.strip()
-                    v = v.strip()
-                    inputs_dict[k] = v
-            return inputs_dict
+            imports = cli.getConfStanza('inputs', 'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py')
+            return imports
         except Exception as e:
             self.logger.error("Error getting inputs: %s" % (e))
             raise e
