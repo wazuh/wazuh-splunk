@@ -13,6 +13,7 @@
 /* -------------------------------------------------------------------------- */
 /* ----------------------- Wazuh component stylesheet ----------------------- */
 /* -------------------------------------------------------------------------- */
+@import 'variables.css';
 
 .CodeMirror-hints {
   position: absolute;
@@ -59,7 +60,7 @@
 md-dialog-actions button {
   color: white !important;
   transition: none !important;
-  background-color: rgb(63, 126, 67) !important;
+  background-color: var(--primary-color) !important;
 }
 
 .md-chips{
@@ -75,7 +76,7 @@ md-dialog-actions button {
 }
 
 .wz-nav-item button.md-primary {
-  color: rgb(28, 58, 31) !important;
+  color: var(--button-dark-primary) !important;
 }
 
 .wz-nav-item button.md-unselected {
@@ -83,8 +84,8 @@ md-dialog-actions button {
 }
 
 .wz-nav-bar md-nav-ink-bar {
-  color: rgb(28, 58, 31) !important;
-  background: rgb(28, 58, 31) !important;
+  color: var(--button-dark-primary) !important;
+  background: var(--button-dark-primary) !important;
 }
 
 .wz-nav-bar md-nav-ink-bar._md-left,
@@ -141,7 +142,7 @@ md-chip {
   font-family: monospace !important;
   font-size: 12px !important;
   color: white !important;
-  background-color: #396e3e !important;
+  background-color: var(--primary-color) !important;
   height: 26px !important;
   line-height: 26px !important;
   margin: 0 8px 0 0 !important;
@@ -207,7 +208,7 @@ md-chip-template.wz-chip[ng-mouseover="editChip($chip)"]{
   font-family: monospace ;
   font-size: 12px;
   color: white;
-  background-color: #396e3e;
+  background-color: var(--primary-color);
   height: 25px;
   line-height: 26px;
   cursor: default;

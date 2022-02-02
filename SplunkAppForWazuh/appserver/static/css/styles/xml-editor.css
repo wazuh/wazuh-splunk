@@ -14,6 +14,8 @@
  /* ------------------ Wazuh XML file editor stylesheet ---------------------- */
  /* -------------------------------------------------------------------------- */
 
+@import './variables.css';
+
  .wzXmlEditor{
     background: #fff;
     width: 100%;
@@ -57,7 +59,7 @@
 }
 .extraHeaderInfo{
     background: #ecf6fb;
-    border-top: 1px solid rgba(92, 192, 92, 0.161) !important;
-    color: #396e3e !important;
+    border-top: 1px solid var(--primary-lightest-opacity) !important;
+    color: var(--primary-color) !important;
     padding: 12px 15px;
 } 

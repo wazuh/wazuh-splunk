@@ -1,3 +1,5 @@
+@import './variables.css';
+
 .euiSwitch {
     position: relative;
     display: inline-block;
@@ -16,7 +18,7 @@
     pointer-events: none;
     width: 44px;
     height: 20px;
-    background-color: #396e3e;
+    background-color: var(--primary-color);
     display: inline-block;
     position: relative;
     border-radius: 20px;

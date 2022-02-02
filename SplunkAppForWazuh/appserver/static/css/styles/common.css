@@ -14,6 +14,8 @@
 /* ------------------------ Wazuh commons stylesheet ------------------------ */
 /* -------------------------------------------------------------------------- */
 
+@import 'variables.css';
+
 /* Custom healthcheck and blank screen styles */
 
 /* * {
@@ -64,7 +66,7 @@
 }
 
 .addGroupBtn {
-  background-color: #396e3e !important
+  background-color: var(--primary-shade-color) !important
 }
 
 .min-height-300 {
@@ -87,12 +89,12 @@
   max-height: 25px !important;
   line-height: inherit !important;
   color: #ffffff !important;
-  background-color: #396e3e !important;
-  border-color: #396e3e !important;
+  background-color: var(--primary-shade-color) !important;
+  border-color: var(--primary-shade-color) !important;
 }
 
 .agreeBtn:hover {
-  background-color: #43884a !important;
+  background-color: var(--primary-light-shade-color) !important;
 }
 
 .cancelBtn {
@@ -106,8 +108,8 @@
 
 .agreeBtnAgents {
   color: #ffffff !important;
-  background-color: #396e3e !important;
-  border-color: #396e3e !important;
+  background-color: var(--primary-shade-color) !important;
+  border-color: var(--primary-shade-color) !important;
 }
 
 .cancelBtnAgents {
@@ -170,7 +172,7 @@
 md-dialog-actions button {
   color: white !important;
   transition: none !important;
-  background-color: rgb(63, 126, 67) !important;
+  background-color: var(--primary-color) !important;
 }
 
 md-backdrop.md-opaque {
@@ -270,8 +272,8 @@ md-dialog .md-actions, md-dialog md-dialog-actions{
 
 md-dialog .md-button.md-primary:not(.md-cancel-button){
   color: #ffffff;
-  background-color: #396e3e!important;
-  border-color: #396e3e!important;
+  background-color: var(--primary-shade-color)!important;
+  border-color: var(--primary-shade-color)!important;
   border-radius: 4px;
 }
 
@@ -287,7 +289,7 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
 .action-btn-td{
   font-size: 18px;
   padding: 2px!important;
-  color: #396e3e;
+  color: var(--primary-shade-color);
 }
 
 .agents-fim-table .action-show-hide-columns{
@@ -381,7 +383,7 @@ md-dialog .md-button.md-primary:not(.md-cancel-button):hover{
 
 .kuiLocalSearchInput:focus {
   border:none !important;
-  border-bottom: 1px solid rgb(57, 110, 62) !important;
+  border-bottom: 1px solid var(--primary-color) !important;
 }
 
 
@@ -569,8 +571,8 @@ div.uil-ring-css {
 .wz-button {
   color: white !important;
   transition: none !important;
-  background-color: rgb(28, 58, 31) !important;
-  border-color: rgb(28, 58, 31) !important;
+  background-color: var(--button-dark-primary) !important;
+  border-color: var(--button-dark-primary) !important;
 }
 
 .wz-button-flat {
@@ -582,8 +584,8 @@ div.uil-ring-css {
 .wz-button.active,
 .wz-button:not([disabled]):hover,
 .wz-button-flat:not([disabled]):hover {
-  background-color: rgb(63, 126, 67) !important;
-  border-color: rgb(63, 126, 67) !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
   text-decoration: underline !important;
   color: white !important;
 }
@@ -591,7 +593,7 @@ div.uil-ring-css {
 /* Custom reporting button styles */
 
 .wz-report-button:hover {
-  background-color: #396e3e !important;
+  background-color: var(--primary-shade-color) !important;
   color: #F5F5F5;
   border-radius: 0;
 }
@@ -627,7 +629,7 @@ div.uil-ring-css {
 }
 
 .wz-input-container label.md-required:after {
-  color: #396e3e !important;
+  color: var(--primary-shade-color) !important;
 }
 
 .wz-input-container input,
@@ -637,7 +639,7 @@ div.uil-ring-css {
 }
 
 .wz-input-container input.ng-invalid.ng-touched {
-  border-color: rgb(57, 110, 62) !important;
+  border-color: var(--primary-color) !important;
 }
 
 .wz-autocomplete md-autocomplete-wrap {
@@ -674,7 +676,7 @@ div.uil-ring-css {
 }
 
 .blue {
-  background-color: rgb(28, 58, 31);
+  background-color: var(--button-dark-primary);
 }
 
 .grey {
@@ -794,7 +796,7 @@ kbn-vis .vis-container {
 .wz-card-actions {
   margin: 0 !important;
   border-top: 1px solid #D9D9D9 !important;
-  background-color: rgba(92, 192, 92, 0.161);
+  background-color: var(--primary-lightest-opacity);
 }
 
 .wz-select-input {
@@ -1011,7 +1013,7 @@ kbn-vis .vis-container {
   font-size: 14px;
   line-height: 0;
   color: #ffffff;
-  background-color: #396e3e;
+  background-color: var(--primary-shade-color);
   border: 0;
   border-radius: 0 4px 4px 0;
 }
@@ -1022,7 +1024,7 @@ kbn-vis .vis-container {
   font-size: 14px;
   line-height: 0;
   color: #ffffff;
-  background-color: #396e3e;
+  background-color: var(--primary-shade-color);
   border: 0;
   border-radius: 0 4px 4px 0;
 }
@@ -1134,7 +1136,7 @@ md-dialog{
 
 .edit-cancel-button {
   border: none !important;
-  color: rgb(28, 58, 31) !important;
+  color: var(--button-dark-primary) !important;
   background: #fafafa !important;
 }
 
@@ -1167,8 +1169,8 @@ md-dialog .md-actions, md-dialog md-dialog-actions{
 
 md-dialog .md-button.md-primary:not(.md-cancel-button){
   color: #ffffff;
-  background-color: #396e3e!important;
-  border-color: #396e3e!important;
+  background-color: var(--primary-shade-color)!important;
+  border-color: var(--primary-shade-color)!important;
   border-radius: 4px;
 }
 
@@ -1299,7 +1301,7 @@ span.wrong {
 }
 
 .blueLeftBorder {
-  border-left: 3px solid #396e3e;
+  border-left: 3px solid var(--primary-shade-color);
 }
 
 .backgroundSky {
@@ -1381,13 +1383,13 @@ div.inline {
 .ruleset-csv-formater {
   padding-bottom: 10px;
   padding-right: 20px;
-  /*background: #e4f5e6;*/
+  /*background: var(--primary-lightest-color);*/
   margin-top: -36px;
   padding-top: 10px;
 }
 
 .show-checkboxes {
-  background-color: #e4f5e6;
+  background-color: var(--primary-lightest-color);
   margin-left: -16px;
   margin-right: -16px;
   margin-top: -16px;
@@ -1414,7 +1416,7 @@ div.inline {
 }
 
 .table-resizable >thead th:not(:first-child){
-  border-left: 1px dashed rgba(92, 192, 92, 0.161);
+  border-left: 1px dashed var(--primary-lightest-opacity);
   min-width: 75px;
 }
 
@@ -1434,7 +1436,7 @@ div.inline {
 .btn-invisible-conf {
   background: none;
   border: none;
-  color: #396e3e;
+  color: var(--primary-shade-color);
   height: 45px;
   padding-left: 15px;
 }
@@ -1443,7 +1445,7 @@ div.inline {
   background: none;
   border: 0;
   font-weight: bold;
-  color: #396e3e;
+  color: var(--primary-shade-color);
 }
 
 tr.striped {
@@ -1470,7 +1472,7 @@ th.w-350 {
 }
 
 .wz-color-text {
-  color: #396e3e;
+  color: var(--primary-shade-color);
 }
 
 .back-arrow {
@@ -1536,7 +1538,7 @@ th.w-350 {
   font-weight: bold;
   height: 20px;
   padding: 5px;
-  background-color: #396e3e;
+  background-color: var(--primary-shade-color);
   white-space: nowrap;
 }
 
@@ -1555,8 +1557,8 @@ th.w-350 {
 .save-group-button {
   margin: 5px -1px!important;
   border: none !important;
-  background-color: #e4f5e6 !important;
-  color: #396e3e !important;
+  background-color: var(--primary-lightest-color) !important;
+  color: var(--primary-shade-color) !important;
   font-weight: bold !important;
 }
 
@@ -1591,8 +1593,8 @@ tfoot.no-border tr td {
 /* New buttons style */
 .wz-button-empty {
   background: white !important;
-  border-color: rgb(28, 58, 31) !important;
-  color: rgb(28, 58, 31) !important;
+  border-color: var(--button-dark-primary) !important;
+  color: var(--button-dark-primary) !important;
   font-weight: 400 !important;
   border-width: 1px !important;
 }
@@ -1600,8 +1602,8 @@ tfoot.no-border tr td {
 .wz-button-empty.active,
 .wz-button-empty:not([disabled]):hover,
 .wz-button-empty-flat:not([disabled]):hover {
-  background-color: #e4f5e6 !important;
-  color: rgb(28, 58, 31) !important;
+  background-color: var(--primary-lightest-color) !important;
+  color: var(--button-dark-primary) !important;
 }
 
 .wz-button-empty-yellow {
@@ -1615,7 +1617,7 @@ tfoot.no-border tr td {
 .wz-button-empty-yellow.active,
 .wz-button-empty-yellow:not([disabled]):hover,
 .wz-button-empty-yellow-flat:not([disabled]):hover {
-  background-color: #e4f5e6 !important;
+  background-color: var(--primary-lightest-color) !important;
   color: #a9600a !important;
 }
 
@@ -1630,7 +1632,7 @@ tfoot.no-border tr td {
 .wz-button-empty-green.active,
 .wz-button-empty-green:not([disabled]):hover,
 .wz-button-empty-green-flat:not([disabled]):hover {
-  background-color: #e4f5e6 !important;
+  background-color: var(--primary-lightest-color) !important;
   color: #08a74e !important;
 }
 
@@ -1645,7 +1647,7 @@ tfoot.no-border tr td {
 .wz-button-empty-red.active,
 .wz-button-empty-red:not([disabled]):hover,
 .wz-button-empty-red-flat:not([disabled]):hover {
-  background-color: #e4f5e6 !important;
+  background-color: var(--primary-lightest-color) !important;
   color: #930000 !important;
 }
 
@@ -1660,7 +1662,7 @@ tfoot.no-border tr td {
 .wz-button-empty-blue.active,
 .wz-button-empty-blue:not([disabled]):hover,
 .wz-button-empty-blue-flat:not([disabled]):hover {
-  background-color: #e4f5e6 !important;
+  background-color: var(--primary-lightest-color) !important;
   color: #006193 !important;
 }
 
@@ -1694,7 +1696,7 @@ tfoot.no-border tr td {
 
 input:focus {
   height: 30px;
-  border-bottom: 2px solid #396e3e !important;
+  border-bottom: 2px solid var(--primary-shade-color) !important;
 }
 
 
@@ -1704,34 +1706,34 @@ input:focus {
 
 #timePicker button {
   min-width: 100% !important;
-  border: solid 1px #396e3e !important;
-  color: #396e3e !important;
+  border: solid 1px var(--primary-shade-color) !important;
+  color: var(--primary-shade-color) !important;
   background: white !important;
 }
 
 #timePicker button:hover {
-  background: #e4f5e6 !important;
+  background: var(--primary-lightest-color) !important;
 }
 
 #dropDownInput button {
-  border: solid 1px #396e3e !important;
-  color: #396e3e !important;
+  border: solid 1px var(--primary-shade-color) !important;
+  color: var(--primary-shade-color) !important;
   background: white !important;
   }
 
 #dropDownInput button:hover {
-  background: #e4f5e6 !important;
+  background: var(--primary-lightest-color) !important;
 }
 
 #dropDownInputAgent button {
   min-width: 100% !important;
-  border: solid 1px #396e3e !important;
-  color: #396e3e !important;
+  border: solid 1px var(--primary-shade-color) !important;
+  color: var(--primary-shade-color) !important;
   background: white !important;
   }
 
 #dropDownInputAgent button:hover {
-  background: #e4f5e6 !important;
+  background: var(--primary-lightest-color) !important;
 }
 
 .dl-rules {
@@ -1745,9 +1747,9 @@ input:focus {
 
 .ht-info{
   height: 50px !important;
-  background-color: #e4f5e6 !important;
+  background-color: var(--primary-lightest-color) !important;
   border-left: solid 3px !important;
-  border-color:rgb(28, 58, 31) !important;
+  border-color:var(--button-dark-primary) !important;
   color: #006193 !important;
 }
 
@@ -1847,7 +1849,7 @@ input:focus {
 }
 
 .node-will-be-restarted {
-  color: #396e3e !important;
+  color: var(--primary-shade-color) !important;
   line-height: 2 !important;
 }
 
@@ -1880,7 +1882,7 @@ input:focus {
 }
 
 .agentField.active {
-  color: #396e3e !important;
+  color: var(--primary-shade-color) !important;
   background-color: none !important;
 }
 
@@ -1914,7 +1916,7 @@ input:focus {
 }
 
 .formatted-color {
-  color: #396e3e !important;
+  color: var(--primary-shade-color) !important;
 }
 
 .formatted-log {
@@ -1955,7 +1957,7 @@ input:focus {
   left: -200px;
   width: 200px;
   height: 2px;
-  background-color: rgb(57, 110, 62);
+  background-color: var(--primary-color);
   animation: loading 2s linear infinite;
 }
 
@@ -1982,7 +1984,7 @@ input:focus {
   height: 32px;
   border-radius: 50%;
   border: solid 2px #D3DAE6;
-  border-color: #396e3e #D3DAE6 #D3DAE6 #D3DAE6;
+  border-color: var(--primary-shade-color) #D3DAE6 #D3DAE6 #D3DAE6;
   -webkit-animation: euiLoadingSpinner .6s infinite linear;
   animation: euiLoadingSpinner .6s infinite linear;
 }
@@ -2118,11 +2120,11 @@ label.wz-icon-loupe  input {
 }
 
 .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
-  background-color: rgba(200, 239, 172, 0.478) !important;
+  background-color: var(--primary-half-opacity) !important;
 }
 
 md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
-  background-color: rgb(28, 58, 31);
+  background-color: var(--button-dark-primary);
 }
 
 .welcome-card-main-title  {
@@ -2191,11 +2193,11 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 }
 
 a:hover {
-  color: #396e3e !important;
+  color: var(--primary-shade-color) !important;
 }
 
 .pagination>ul>li>a:hover, .pagination>ul>li>span:hover {
-  color: #396e3e !important;
+  color: var(--primary-shade-color) !important;
   background: #ebeeef !important;
   border-color: #c3cbd4 !important;
   text-decoration: none !important;
@@ -2221,7 +2223,7 @@ a:hover {
 }
 
 .bubble {
-  background-color: #396e3e;
+  background-color: var(--primary-shade-color);
   height: 32px;
   width: 32px;
   line-height: 32px;
@@ -2237,7 +2239,7 @@ a:hover {
 }
 
 .bubble-checked {
-  background: #396e3e !important;
+  background: var(--primary-shade-color) !important;
   color: #FFF !important;
 }
 
@@ -2372,8 +2374,8 @@ a:hover {
 }
 
 md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
-  color: rgb(57, 110, 62) !important;
-  background: rgb(57, 110, 62) !important;
+  color: var(--primary-color) !important;
+  background: var(--primary-color) !important;
 }
 
 .extensions-eye {
@@ -2438,7 +2440,7 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   }*/
 
 .green-href {
-  color: #396e3e !important;
+  color: var(--primary-shade-color) !important;
 }
 
 .ul-extensions {
@@ -2489,7 +2491,7 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
   margin-left: 20px;
 }
 .wz-link {
-  color:#396e3e !important;
+  color:var(--primary-shade-color) !important;
   text-decoration: none;
   cursor:pointer;
 }
@@ -2588,7 +2590,7 @@ background-color: white;
 
 .euiTextArea:focus {
   background-color: rgb(250,250,250);
-  border-bottom: 2px solid rgb(63, 126, 67);
+  border-bottom: 2px solid var(--primary-color);
 }
 
 ::-webkit-scrollbar {
@@ -2753,3 +2755,74 @@ body > div.tooltip {
   align-items: center;
   justify-content: center;
 }
+
+.wz-bg-primary {
+  background-color: var(--primary-color);
+}
+
+.wz-color-primary {
+  color: var(--primary-color);
+}
+
+.wz-bg-dark-primary {
+  background-color: var(--button-dark-primary);
+}
+
+.wz-color-dark-primary {
+  color: var(--button-dark-primary);
+}
+
+.wz-bg-primary-shade {
+  background-color: var(--primary-shade-color);
+}
+
+.wz-color-primary-shade {
+  color: var(--primary-shade-color);
+}
+
+.wz-bg-primary-light-shade {
+  background-color: var(--primary-light-shade-color);
+}
+
+.wz-color-primary-light-shade {
+  color: var(--primary-light-shade-color);
+}
+
+.wz-bg-primary-lightest-shade {
+  background-color: var(--primary-lightest-shade-color);
+}
+
+.wz-color-primary-lightest-shade {
+  color: var(--primary-lightest-shade-color);
+}
+
+.wz-bg-accent {
+  background-color: var(--accent-color);
+}
+
+.wz-color-accent {
+  color: var(--accent-color);
+}
+
+.wz-bg-secondary {
+  background-color: var(--secondary-color);
+}
+
+.wz-color-secondary {
+  color: var(--secondary-color);
+}
+
+div[data-modal-role^="footer-buttons"] a[class^="primary"] {
+  background-color: var(--primary-bright-color);
+}
+
+div[data-modal-role^="footer-buttons"] a[class^="primary"]:hover {
+  background-color: var(--primary-color);
+}
+
+/* --primary-color: rgb(63, 126, 67); */
+    /* --button-dark-primary: rgb(28, 58, 31); */
+    /* --primary-shade-color: #396e3e; */
+    /* --primary-light-shade-color: #43884a;     */
+    /* --primary-lightest-color: #e4f5e6; */
+    /* --accent-color: #00445a; */

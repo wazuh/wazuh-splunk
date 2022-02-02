@@ -20,7 +20,10 @@ define(['../module'], function(directives) {
         color: '@',
         svgTooltip: '@'
       },
-      controller() {},
+      controller($scope) {
+        const color = $scope.color || '';
+        $scope.isHex = /^#[0-9A-F]{6}$/i.test(color);
+      },
       templateUrl:
         BASE_URL +
         '/static/app/SplunkAppForWazuh/js/directives/wz-svg/wz-svg.html'

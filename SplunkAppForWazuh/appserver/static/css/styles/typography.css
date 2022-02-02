@@ -18,7 +18,7 @@
 /* html, body, button:not(.fa):not(.fa-times), textarea, input, select, .wz-chip {
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
 } */
-
+@import './variables.css';
 .font-size-12 {
   font-size: 12px !important;
 }
@@ -46,7 +46,7 @@
 }
 
 .color-pointer {
-  color: #396e3e !important;
+  color: var(--primary-color) !important;
 }
 
 .wz-line-height {
