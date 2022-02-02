@@ -246,7 +246,7 @@ define([
         }, 250)
       }
 
-      this.scope.getAgentStatus = () => {
+      this.scope.getAgentStatus = async () => {
         try {
           this.clusOrMng = Object.keys(
             this.currentDataService.getFilters()[0]
@@ -264,7 +264,10 @@ define([
           // eslint-disable-next-line no-empty
         } catch (error) {}
 
-        this.spanTime = '15m'
+        this.interval = await this.currentDataService.getCurrentInputs()
+        this.spanTime = this.interval.data.data.interval.split(' *')[0]
+        this.spanTime = this.spanTime.replace('*/', '') + 'm'
+        
         this.linearChartAgent = new LinearChart(
           `agentStatusChartHistory`,
           `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
