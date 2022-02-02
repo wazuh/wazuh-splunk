@@ -2764,6 +2764,10 @@ body > div.tooltip {
   color: var(--primary-color);
 }
 
+.wz-color-primary-text {
+  color: var(--primary-text-color);
+}
+
 .wz-bg-dark-primary {
   background-color: var(--button-dark-primary);
 }
@@ -2812,14 +2816,47 @@ body > div.tooltip {
   color: var(--secondary-color);
 }
 
+.wz-bg-grey {
+  background-color: var(--grey-color);
+}
+
+.wz-color-grey {
+  color: var(--grey-color);
+}
+
+.wz-bg-danger {
+  background-color: var(--danger-color);
+}
+
+.wz-color-danger {
+  color: var(--danger-color);
+}
+
+.wz-bg-info {
+  background-color: var(--info-color);
+}
+
+.wz-color-info {
+  color: var(--info-color);
+}
+
 div[data-modal-role^="footer-buttons"] a[class^="primary"] {
-  background-color: var(--primary-bright-color);
+  background-color: var(--primary-bright-color) !important;
 }
 
 div[data-modal-role^="footer-buttons"] a[class^="primary"]:hover {
-  background-color: var(--primary-color);
+  background-color: var(--primary-color) !important;
 }
 
+.search-bar .search-button .btn, 
+.search-bar-primary .search-button .btn{
+  background-color: var(--primary-bright-color) !important;
+}
+
+.search-bar .search-button .btn:hover, 
+.search-bar-primary .search-button .btn:hover{
+  background-color: var(--primary-color) !important;
+}
 /* --primary-color: rgb(63, 126, 67); */
     /* --button-dark-primary: rgb(28, 58, 31); */
     /* --primary-shade-color: #396e3e; */

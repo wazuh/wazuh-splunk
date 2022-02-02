@@ -21,8 +21,15 @@ define(['../module'], function(directives) {
         svgTooltip: '@'
       },
       controller($scope) {
+        /*
+          This directive accepts hexadecimal colors with 6 characters or class names like:
+          primary, secondary, danger, info or any other, which will result in a class like 
+          wz-color-primary, wz-color-secondary, etc.
+        */
         const color = $scope.color || '';
         $scope.isHex = /^#[0-9A-F]{6}$/i.test(color);
+        $scope.className = !$scope.isHex ? `wz-color-${$scope.color}` : '';
+
       },
       templateUrl:
         BASE_URL +

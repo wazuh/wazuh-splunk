@@ -47,7 +47,7 @@
 
 /* Style to mark active or when-hover buttons on the toolbar */
 .wz-menu-button.wz-menu-active {
-  border-bottom: 6px solid var(--bright-primary-color);
+  border-bottom: 6px solid var(--primary-bright-color);
   color: var(--primary-color) !important;
 }
 
@@ -65,7 +65,7 @@
   border: none;
   color: white;
   cursor: pointer;
-  background-color: rgb(0, 68, 90);
+  background-color: var(--bg-menu-select-color);
 }
 
 /* Style for index-pattern selector options */
