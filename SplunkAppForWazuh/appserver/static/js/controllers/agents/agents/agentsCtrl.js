@@ -264,9 +264,7 @@ define([
           // eslint-disable-next-line no-empty
         } catch (error) {}
 
-        this.interval = await this.currentDataService.getCurrentInputs()
-        this.spanTime = this.interval.data.data.interval.split(' *')[0]
-        this.spanTime = this.spanTime.replace('*/', '') + 'm'
+        this.spanTime = '1m'
         
         this.linearChartAgent = new LinearChart(
           `agentStatusChartHistory`,
