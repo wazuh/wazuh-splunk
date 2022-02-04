@@ -18,8 +18,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/rawTableData/rawTableDataService',
-  'FileSaver'
-], function(
+  'FileSaver',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -64,7 +64,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.wzTableFilter = $tableFilterService
       this.agent = agent
@@ -86,7 +87,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
       if (
         this.agent &&
@@ -178,7 +179,7 @@ define([
           `${this.filters} syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
           'topDeletedFiles',
           this.scope
-        )
+        ),
       ]
 
       // Set agent info
@@ -192,7 +193,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -216,7 +217,7 @@ define([
             'topUserOwnersElement',
             'topFileChangesElement',
             'rootUserFileChangesElement',
-            'eventsSummaryElement'
+            'eventsSummaryElement',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -224,15 +225,14 @@ define([
         )
 
       /* RBAC flags */
-      this.isAllowed = (action, resource, params = ["*"]) => {
-        return $security_service.getPolicy(action, resource, params)
-          .isAllowed;
-      };
+      this.isAllowed = (action, resource, params = ['*']) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
       this.scope.canReadSyscheck = this.isAllowed(
-        "SYSCHECK_READ",
-        ["AGENT_ID"],
+        'SYSCHECK_READ',
+        ['AGENT_ID'],
         [this.agent.id]
-      );
+      )
     }
 
     /**
@@ -242,20 +242,25 @@ define([
       this.show()
       this.scope.show = () => this.show()
       this.scope.agent =
-        this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.affected_items[0]
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.affected_items[0]
           ? this.agent.data.data.affected_items[0]
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      this.scope.search = term => {
+      this.scope.search = (term) => {
         this.scope.$broadcast('wazuhSearch', { term })
       }
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
     }
@@ -275,7 +280,11 @@ define([
     async runScan() {
       try {
         const id = this.agent.data.data.affected_items[0].id
-        const result = await this.apiReq(`/syscheck?q=agents_list=${id}`, {}, 'PUT')
+        const result = await this.apiReq(
+          `/syscheck?q=agents_list=${id}`,
+          {},
+          'PUT'
+        )
         if (result && result.data && !result.data.error) {
           this.notification.showSuccessToast('Syscheck scan launched.')
         } else {

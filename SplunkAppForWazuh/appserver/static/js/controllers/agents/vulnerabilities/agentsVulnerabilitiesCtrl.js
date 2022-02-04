@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -52,14 +52,16 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
-      $security_service
+      $security_service,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -74,13 +76,16 @@ define([
         this.agent.data &&
         this.agent.data.data &&
         this.agent.data.data.affected_items[0].id
-      ){
+      ) {
         this.currentDataService.addFilter(
           `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
         const agentId = this.agent.data.data.affected_items[0].id
-        this.scope.canReadVulnerabilities = $security_service.isAllowed("VULNERABILITY_READ",["AGENT_ID"],[agentId]);
-
+        this.scope.canReadVulnerabilities = $security_service.isAllowed(
+          'VULNERABILITY_READ',
+          ['AGENT_ID'],
+          [agentId]
+        )
       }
       if (!this.currentDataService.getCurrentAgent()) {
         this.state.go('overview')
@@ -183,7 +188,7 @@ define([
           '$result$',
           this.scope,
           'Common Rules'
-        )
+        ),
       ]
 
       // Set agent info
@@ -197,7 +202,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -217,7 +222,7 @@ define([
             'commonCves',
             'severityDistribution',
             'commonlyAffectedPackVizz',
-            'alertsSummaryVizz'
+            'alertsSummaryVizz',
           ],
           this.reportMetrics,
           this.tableResults,
@@ -235,13 +240,15 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.formatAgentStatus = agentStatus =>
+
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
     }
 
@@ -271,7 +278,7 @@ define([
         'Critical severity alerts': this.scope.criticalSeverity,
         'High severity alerts': this.scope.highSeverity,
         'Medium severity alerts': this.scope.mediumSeverity,
-        'Low severity alerts': this.scope.lowSeverity
+        'Low severity alerts': this.scope.lowSeverity,
       }
     }
   }

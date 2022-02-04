@@ -1,4 +1,4 @@
-define(['splunkjs/mvc/simplexml/element/map', '../viz/viz'], function(
+define(['splunkjs/mvc/simplexml/element/map', '../viz/viz'], function (
   MapElement,
   Viz
 ) {
@@ -46,7 +46,7 @@ define(['splunkjs/mvc/simplexml/element/map', '../viz/viz'], function(
             'mapping.data.maxClusters': '100',
             'mapping.map.panning': '1',
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
           { tokens: true, tokenNamespace: 'submitted' }
         ).render(),

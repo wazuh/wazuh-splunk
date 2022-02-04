@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Main {
@@ -29,7 +29,7 @@ define(['../../module'], function(controllers) {
           this.scope.tabName = 'configuration'
       }
 
-      this.scope.switchTab = name => {
+      this.scope.switchTab = (name) => {
         this.scope.tabName = name
       }
 

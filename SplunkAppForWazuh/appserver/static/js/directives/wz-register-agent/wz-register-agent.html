@@ -7,19 +7,31 @@
         <div class="reg-agent-text">Choose your OS</div>
         <div class="border-to-div">
           <div class="choose-os">
-            <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('redhat')"
+            <button
+              type="submit"
+              class="btn wz-button-empty wz-margin-left-10"
+              ng-click="selectOs('redhat')"
               ng-class="{'btn-empty-selected': config.osSelected === 'redhat'}">
               <span>{{osEquivalence("redhat")}}</span>
             </button>
-            <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('debian')"
+            <button
+              type="submit"
+              class="btn wz-button-empty wz-margin-left-10"
+              ng-click="selectOs('debian')"
               ng-class="{'btn-empty-selected': config.osSelected === 'debian'}">
               <span>{{osEquivalence("debian")}}</span>
             </button>
-            <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('windows')"
+            <button
+              type="submit"
+              class="btn wz-button-empty wz-margin-left-10"
+              ng-click="selectOs('windows')"
               ng-class="{'btn-empty-selected': config.osSelected === 'windows'}">
               <span>{{osEquivalence("windows")}}</span>
             </button>
-            <button type="submit" class="btn wz-button-empty wz-margin-left-10" ng-click="selectOs('macos')"
+            <button
+              type="submit"
+              class="btn wz-button-empty wz-margin-left-10"
+              ng-click="selectOs('macos')"
               ng-class="{'btn-empty-selected': config.osSelected === 'macos'}">
               <span>{{osEquivalence("macos")}}</span>
             </button>
@@ -32,24 +44,38 @@
         <div class="wz-padding-top-7"></div>
         <div class="reg-agent-text wz-padding-0">Wazuh server address</div>
         <div class="div-input-register-agent border-to-div">
-          <input flex placeholder="Server address..." ng-model="managerAddress" type="text" class="euiFieldText"
-            ng-change="selectManagerAddress(managerAddress)">
+          <input
+            flex
+            placeholder="Server address..."
+            ng-model="managerAddress"
+            type="text"
+            class="euiFieldText"
+            ng-change="selectManagerAddress(managerAddress)" />
         </div>
       </div>
       <div>
-
         <div class="wz-margin-top-30">
           <div class="bubble">3</div>
           <div class="reg-agent-text">Complete the installation</div>
           <!-- snippet with install steps-->
-          <div ng-if="config.osSelected && config.managerIp" class="wz-margin-top-10">
+          <div
+            ng-if="config.osSelected && config.managerIp"
+            class="wz-margin-top-10">
             <!-- Navbar to select if is a new install or not -->
-            <md-nav-bar ng-if="showNavTab" class="wz-nav-bar wz-margin-10 no-margin-left"
+            <md-nav-bar
+              ng-if="showNavTab"
+              class="wz-nav-bar wz-margin-10 no-margin-left"
               md-selected-nav-item="'newInstall'">
-              <md-nav-item class="wz-nav-item" md-nav-click="changeInstall('newInstall')" name="newInstall">New
-                installation
+              <md-nav-item
+                class="wz-nav-item"
+                md-nav-click="changeInstall('newInstall')"
+                name="newInstall"
+                >New installation
               </md-nav-item>
-              <md-nav-item class="wz-nav-item" md-nav-click="changeInstall('onlyRegister')" name="onlyRegister">
+              <md-nav-item
+                class="wz-nav-item"
+                md-nav-click="changeInstall('onlyRegister')"
+                name="onlyRegister">
                 Registration
               </md-nav-item>
             </md-nav-bar>
@@ -59,41 +85,61 @@
               <div ng-if="config.osSelected === 'redhat'">
                 <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="accent" ng-click="toClipboard('step1')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="accent"
+                      ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  sudo WAZUH_MANAGER='{{config.managerIp}}' yum install https://packages.wazuh.com/4.x/yum/wazuh-agent-{{wazuhVersion}}-1.x86_64.rpm
+                  sudo WAZUH_MANAGER='{{config.managerIp}}' yum install
+                  https://packages.wazuh.com/4.x/yum/wazuh-agent-{{wazuhVersion}}-1.x86_64.rpm
                 </div>
               </div>
               <!-- If Debian / Ubuntu -->
               <div ng-if="config.osSelected === 'debian'">
                 <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step1')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  curl -so wazuh-agent.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{{wazuhVersion}}-1_amd64.deb && sudo WAZUH_MANAGER='{{config.managerIp}}' dpkg -i ./wazuh-agent.deb
+                  curl -so wazuh-agent.deb
+                  https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{{wazuhVersion}}-1_amd64.deb
+                  && sudo WAZUH_MANAGER='{{config.managerIp}}' dpkg -i
+                  ./wazuh-agent.deb
                 </div>
               </div>
               <!-- If Windows -->
               <div ng-if="config.osSelected === 'windows'">
                 <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step1')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi -OutFile wazuh-agent.msi; wazuh-agent.msi /q WAZUH_MANAGER='{{config.managerIp}}' WAZUH_REGISTRATION_SERVER='{{config.managerIp}}'
+                  Invoke-WebRequest -Uri
+                  https://packages.wazuh.com/4.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi
+                  -OutFile wazuh-agent.msi; wazuh-agent.msi /q
+                  WAZUH_MANAGER='{{config.managerIp}}'
+                  WAZUH_REGISTRATION_SERVER='{{config.managerIp}}'
                 </div>
                 <div flex class="euiCallOut euiCallOut--info wz-margin-top-17">
                   <div class="euiCallOutHeader">
                     <wz-svg icon="info-circle" color="primary-text"></wz-svg>
-                    <span class="euiCallOutHeader__title">You will need administrator privileges to perform this installation.</span>
+                    <span class="euiCallOutHeader__title"
+                      >You will need administrator privileges to perform this
+                      installation.</span
+                    >
                   </div>
                 </div>
               </div>
@@ -101,12 +147,18 @@
               <div ng-if="config.osSelected === 'macos'">
                 <div class="register-snippet" id="step1">
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="accent" ng-click="toClipboard('step1')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="accent"
+                      ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  curl -so wazuh-agent.pkg https://packages.wazuh.com/4.x/osx/wazuh-agent-{{wazuhVersion}}-1.pkg && sudo launchctl setenv WAZUH_MANAGER '{{config.managerIp}}' && sudo installer -pkg ./wazuh-agent.pkg -target /
+                  curl -so wazuh-agent.pkg
+                  https://packages.wazuh.com/4.x/osx/wazuh-agent-{{wazuhVersion}}-1.pkg
+                  && sudo launchctl setenv WAZUH_MANAGER '{{config.managerIp}}'
+                  && sudo installer -pkg ./wazuh-agent.pkg -target /
                 </div>
               </div>
             </div>
@@ -115,11 +167,20 @@
               <!-- Insert agent name -->
               <div>
                 <div class="wz-margin-top-10">
-                  <div class="reg-agent-text reg-agent-name">Agent name:</div> &nbsp;
-                  <input flex placeholder="Agent name..." ng-model="agentName" type="text" class="input-register-agent"
-                    ng-change="selectAgentName(agentName)">
-                  <button ng-if="config.agentName && !registeredAgent" type="submit"
-                    class="btn wz-button-empty wz-margin-left-10 next-input-register-agent" ng-click="addAgent()">
+                  <div class="reg-agent-text reg-agent-name">Agent name:</div>
+                  &nbsp;
+                  <input
+                    flex
+                    placeholder="Agent name..."
+                    ng-model="agentName"
+                    type="text"
+                    class="input-register-agent"
+                    ng-change="selectAgentName(agentName)" />
+                  <button
+                    ng-if="config.agentName && !registeredAgent"
+                    type="submit"
+                    class="btn wz-button-empty wz-margin-left-10 next-input-register-agent"
+                    ng-click="addAgent()">
                     <span>Register</span>
                   </button>
                 </div>
@@ -127,20 +188,28 @@
               <!-- If the key was generated -->
               <div ng-if="registeredAgent">
                 <!-- If the agent is Linux -->
-                <div ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
+                <div
+                  ng-if="config.osSelected === 'redhat' || config.osSelected === 'debian'">
                   1. Set the manager IP.
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step1')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step1">
-                    sed -i 's:MANAGER_IP:'{{config.managerIp}}':g' /var/ossec/etc/ossec.conf
+                    sed -i 's:MANAGER_IP:'{{config.managerIp}}':g'
+                    /var/ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step2')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -150,7 +219,10 @@
                   </div>
                   3. Restart the agent.
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step3')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step3')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -163,40 +235,51 @@
                 <div ng-if="config.osSelected === 'windows'">
                   1. Set the manager IP.
                   <div class="power-cmd">
-                    Change <span class="bg-whitesmoke">MANAGER_IP</span> for <span
-                      class="bg-whitesmoke">{{config.managerIp}}</span> in <b>C:\Program Files
-                      (x86)\wazuh-agent\ossec.conf</b>:
+                    Change <span class="bg-whitesmoke">MANAGER_IP</span> for
+                    <span class="bg-whitesmoke">{{config.managerIp}}</span> in
+                    <b>C:\Program Files (x86)\wazuh-agent\ossec.conf</b>:
                   </div>
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step1')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step1">
-                    &lt;client&gt;<br>
-                    &nbsp;&nbsp;&lt;server&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;address&gt;{{config.managerIp}}&lt;/address&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;...<br>
-                    &nbsp;&nbsp;&lt;/server&gt;<br>
+                    &lt;client&gt;<br />
+                    &nbsp;&nbsp;&lt;server&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;address&gt;{{config.managerIp}}&lt;/address&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;...<br />
+                    &nbsp;&nbsp;&lt;/server&gt;<br />
                     &lt;/client&gt;
                   </div>
                   2. Register the agent against the manager.
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step2')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step2">
-                    'C:\Program Files (x86)\wazuh-agent\manage_agents' -i {{config.agentKey}}
+                    'C:\Program Files (x86)\wazuh-agent\manage_agents' -i
+                    {{config.agentKey}}
                   </div>
                   3. Restart the agent.
                   <div class="wz-margin-left-10">
-                    <div class="power-cmd">For this you can use Powershell or CMD.</div>
-                    a) Powershell:
-                    Restart-Service -Name wazuh
-                    <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                    <div class="power-cmd">
+                      For this you can use Powershell or CMD.
+                    </div>
+                    a) Powershell: Restart-Service -Name wazuh
+                    <span class="clip cursor-pointer"
+                      ><i
+                        class="fa fa-clipboard"
+                        aria-hidden="true"
                         ng-click="toClipboard('stepA')"></i>
                       <md-tooltip md-direction="right" class="wz-tooltip">
                         Copy to clipboard
@@ -206,14 +289,17 @@
                       Restart-Service -Name wazuh
                     </div>
                     b) CMD:
-                    <span class="clip cursor-pointer"><i class="fa fa-clipboard" aria-hidden="true"
+                    <span class="clip cursor-pointer"
+                      ><i
+                        class="fa fa-clipboard"
+                        aria-hidden="true"
                         ng-click="toClipboard('stepB')"></i>
                       <md-tooltip md-direction="right" class="wz-tooltip">
                         Copy to clipboard
                       </md-tooltip>
                     </span>
                     <div class="register-snippet" id="stepB">
-                      net stop wazuh<br>
+                      net stop wazuh<br />
                       net start wazuh
                     </div>
                   </div>
@@ -222,17 +308,24 @@
                 <div ng-if="config.osSelected === 'macos'">
                   1. Set the manager IP.
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="accent" ng-click="toClipboard('step1')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="accent"
+                      ng-click="toClipboard('step1')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step1">
-                    sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g' /Library/Ossec/etc/ossec.conf
+                    sed -i '' -e 's/MANAGER_IP/{{config.managerIp}}/g'
+                    /Library/Ossec/etc/ossec.conf
                   </div>
                   2. Register the agent against the manager.
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="primary-text" ng-click="toClipboard('step2')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="primary-text"
+                      ng-click="toClipboard('step2')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -242,7 +335,10 @@
                   </div>
                   3. Restart the agent.
                   <span class="clip cursor-pointer">
-                    <wz-svg icon="copy" color="accent" ng-click="toClipboard('step3')"></wz-svg>
+                    <wz-svg
+                      icon="copy"
+                      color="accent"
+                      ng-click="toClipboard('step3')"></wz-svg>
                     <md-tooltip md-direction="right" class="wz-tooltip">
                       Copy to clipboard
                     </md-tooltip>
@@ -256,7 +352,10 @@
           </div>
         </div>
       </div>
-      <div ng-if="config.osSelected && showNavTab" class="reset-register-agent cursor-pointer" ng-click="reset()">
+      <div
+        ng-if="config.osSelected && showNavTab"
+        class="reset-register-agent cursor-pointer"
+        ng-click="reset()">
         <wz-svg icon="refresh" color="accent"></wz-svg>
         <span>Reset</span>
       </div>

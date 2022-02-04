@@ -17,7 +17,7 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
+  '../../../services/rawTableData/rawTableDataService',
 ], function (
   app,
   DashboardMain,
@@ -50,14 +50,16 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -76,7 +78,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       if (
@@ -172,7 +174,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -186,7 +188,7 @@ define([
           OS: this.agent.data.data.os.affected_items[0].name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -205,7 +207,7 @@ define([
             'commandsVizz',
             'filesVizz',
             'alertsOverTimeVizz',
-            'alertsSummaryVizz'
+            'alertsSummaryVizz',
           ],
           this.reportMetrics,
           this.tableResults,
@@ -224,12 +226,14 @@ define([
 
       // Capitalize Status
       if (this.scope.agent && this.scope.agent.status) {
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
 
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
     }
 
@@ -259,7 +263,7 @@ define([
         'New files': this.scope.newFiles,
         'Read files': this.scope.readFiles,
         'Modified files': this.scope.filesModifiedToken,
-        'Removed files': this.scope.filesDeleted
+        'Removed files': this.scope.filesDeleted,
       }
     }
   }

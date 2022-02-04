@@ -10,8 +10,8 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module", "FileSaver"], function (module) {
-  "use strict"
+define(['../../module', 'FileSaver'], function (module) {
+  'use strict'
   class Inventory {
     /**
      * Class Inventory
@@ -65,7 +65,7 @@ define(["../../module", "FileSaver"], function (module) {
      * @param {String} specificPath
      */
     search(term, specificPath) {
-      this.scope.$broadcast("wazuhSearch", { term, specificPath })
+      this.scope.$broadcast('wazuhSearch', { term, specificPath })
     }
 
     /**
@@ -75,7 +75,7 @@ define(["../../module", "FileSaver"], function (module) {
       try {
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.hasSize = (obj) =>
-          obj && typeof obj === "object" && Object.keys(obj).length
+          obj && typeof obj === 'object' && Object.keys(obj).length
 
         this.scope.agent = this.agent
         // Capitalize Status
@@ -89,21 +89,21 @@ define(["../../module", "FileSaver"], function (module) {
           this.search(term, specificPath)
         }
         this.scope.getAgentStatusClass = (agentStatus) =>
-          agentStatus === "Active" ? "teal" : "red"
+          agentStatus === 'Active' ? 'teal' : 'red'
         this.scope.formatAgentStatus = (agentStatus) => {
-          return ["Active", "Disconnected"].includes(agentStatus)
+          return ['Active', 'Disconnected'].includes(agentStatus)
             ? agentStatus
-            : "Never connected"
+            : 'Never connected'
         }
 
         this.scope.startVis2Png = () =>
           this.reportingService.reportInventoryData(this.scope.agent.id)
 
-        this.scope.$on("loadingReporting", (event, data) => {
+        this.scope.$on('loadingReporting', (event, data) => {
           this.scope.loadingReporting = data.status
         })
 
-        this.scope.$on("loadingContent", (event, data) => {
+        this.scope.$on('loadingContent', (event, data) => {
           this.scope.loadingContent = data.status
           event.preventDefault()
         })
@@ -111,13 +111,13 @@ define(["../../module", "FileSaver"], function (module) {
         this.scope.setBrowserOffset = (date) => this.setBrowserOffset(date)
 
         /* RBAC flags */
-        this.isAllowed = (action, resource, params = ["*"]) => {
+        this.isAllowed = (action, resource, params = ['*']) => {
           return this.$security_service.getPolicy(action, resource, params)
             .isAllowed
         }
         this.scope.canReadSysCollector = this.isAllowed(
-          "SYSCOLLECTOR_READ",
-          ["AGENT_ID"],
+          'SYSCOLLECTOR_READ',
+          ['AGENT_ID'],
           [this.scope.agent.id]
         )
 
@@ -135,10 +135,10 @@ define(["../../module", "FileSaver"], function (module) {
     async getSyscollectorData() {
       try {
         // FIXME SYSCOLLECTOR REQUEST
-        const apiId = this.api["_key"]
+        const apiId = this.api['_key']
         const agentId = this.agent.id
         const syscollector = await this.httpReq(
-          "GET",
+          'GET',
           `/api/getSyscollector?apiId=${apiId}&agentId=${agentId}`
         )
 
@@ -160,17 +160,17 @@ define(["../../module", "FileSaver"], function (module) {
     async downloadCsv(path, name) {
       try {
         this.notification.showSimpleToast(
-          "Your download should begin automatically..."
+          'Your download should begin automatically...'
         )
-        const currentApi = this.api["_key"]
+        const currentApi = this.api['_key']
         const output = await this.csvReq.fetch(path, currentApi)
-        const blob = new Blob([output], { type: "text/csv" }) // eslint-disable-line
+        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
         saveAs(blob, name) // eslint-disable-line
       } catch (error) {
-        this.notification.showErrorToast("Error downloading CSV")
+        this.notification.showErrorToast('Error downloading CSV')
       }
     }
   }
   // Logs controller
-  module.controller("inventoryCtrl", Inventory)
+  module.controller('inventoryCtrl', Inventory)
 })

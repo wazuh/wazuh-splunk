@@ -26,5 +26,5 @@ define([
   './wz-upload-files/wz-upload-files',
   './wz-iframe-onload/wz-iframe-onload',
   './wz-forbidden/wz-forbidden',
-  './wz-rbac-prompt/wz-rbac-prompt'
-], function() {})
+  './wz-rbac-prompt/wz-rbac-prompt',
+], function () {})

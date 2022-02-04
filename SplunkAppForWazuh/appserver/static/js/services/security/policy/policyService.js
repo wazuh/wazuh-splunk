@@ -11,41 +11,41 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../../module"], function (module) {
-  "use strict";
+define(['../../module'], function (module) {
+  'use strict'
 
-  module.service("$policyService", function ($requestService, $state) {
+  module.service('$policyService', function ($requestService, $state) {
     const getPolicyData = async () => {
       try {
-        return await $requestService.apiReq("/security/policies");
+        return await $requestService.apiReq('/security/policies')
       } catch (error) {
-        $state.go("settings.api");
+        $state.go('settings.api')
       }
-    };
+    }
 
     const savePolicy = async (policyName, actions, resources, effectValue) => {
       try {
         const result = await $requestService.apiReq(
-          "/security/policies",
+          '/security/policies',
           {
             content: JSON.stringify({
               name: policyName,
               policy: {
                 actions: actions,
                 resources: resources,
-                effect: effectValue
-              }
+                effect: effectValue,
+              },
             }),
-            origin: "json"
+            origin: 'json',
           },
-          "POST"
-        );
+          'POST'
+        )
 
-        return result.data;
+        return result.data
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const updatePolicy = async (policyId, actions, resources, effectValue) => {
       try {
@@ -56,59 +56,59 @@ define(["../../module"], function (module) {
               policy: {
                 actions: actions,
                 resources: resources,
-                effect: effectValue
-              }
+                effect: effectValue,
+              },
             }),
-            origin: "json"
+            origin: 'json',
           },
-          "PUT"
-        );
+          'PUT'
+        )
 
-        return result.data;
+        return result.data
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
-    const removePolicy = async policy => {
+    const removePolicy = async (policy) => {
       try {
         const result = await $requestService.apiReq(
           `/security/policies?policy_ids=${policy}`,
           {},
-          "DELETE"
-        );
+          'DELETE'
+        )
 
         if (
           result.data.data.failed_items.length &&
           result.data.data.failed_items[0].error.code === 4008
         ) {
-          throw new Error(result.data.data.failed_items[0].error.message);
+          throw new Error(result.data.data.failed_items[0].error.message)
         }
 
         if (result.data.error !== 0) {
-          throw new Error(result.data.message);
+          throw new Error(result.data.message)
         }
-        return result;
+        return result
       } catch (error) {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    };
+    }
 
     const getResourceData = async () => {
       try {
-        return await $requestService.apiReq("/security/resources");
+        return await $requestService.apiReq('/security/resources')
       } catch (error) {
-        $state.go("settings.api");
+        $state.go('settings.api')
       }
-    };
+    }
 
     const getActionData = async () => {
       try {
-        return await $requestService.apiReq("/security/actions");
+        return await $requestService.apiReq('/security/actions')
       } catch (error) {
-        $state.go("settings.api");
+        $state.go('settings.api')
       }
-    };
+    }
 
     return {
       getPolicyData: getPolicyData,
@@ -116,7 +116,7 @@ define(["../../module"], function (module) {
       updatePolicy: updatePolicy,
       removePolicy: removePolicy,
       getResourceData: getResourceData,
-      getActionData: getActionData
-    };
-  });
-});
+      getActionData: getActionData,
+    }
+  })
+})

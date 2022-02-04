@@ -6,8 +6,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -27,6 +27,7 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} $notificationService
      * @param {*} pciTabs
      * @param {*} reportingEnabled
      * @param {*} gdprExtensionEnabled
@@ -36,21 +37,24 @@ define([
       $urlTokenModel,
       $scope,
       $currentDataService,
+      $notificationService,
       $state,
       $reportingService,
       pciTabs,
       reportingEnabled,
       gdprExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
       this.scope.hipaaExtensionEnabled = hipaaExtensionEnabled
@@ -69,7 +73,7 @@ define([
       )
       this.dropdownInstance = this.dropdown.getElement()
 
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -114,7 +118,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -133,12 +137,14 @@ define([
               'groupsVizz',
               'agentsVizz',
               'requirementsByAgentVizz',
-              'alertsSummaryViz'
+              'alertsSummaryViz',
             ],
             {}, //Metrics
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
   }
 

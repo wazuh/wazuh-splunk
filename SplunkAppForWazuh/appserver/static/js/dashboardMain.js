@@ -12,8 +12,8 @@
 
 define([
   './controllers/module',
-  './services/visualizations/inputs/time-picker'
-], function(app, TimePicker) {
+  './services/visualizations/inputs/time-picker',
+], function (app, TimePicker) {
   'use strict'
 
   class DashboardMain {
@@ -24,14 +24,17 @@ define([
      * @param {*} $state
      * @param {*} $currentDataService
      * @param {*} $urlTokenModel
+     * @param {*} $notificationService
      */
     constructor(
       $scope,
       $reportingService,
       $state,
       $currentDataService,
-      $urlTokenModel
+      $urlTokenModel,
+      $notificationService
     ) {
+      this.notification = $notificationService
       this.scope = $scope
       this.reportingService = $reportingService
       this.state = $state
@@ -45,9 +48,16 @@ define([
       )
       this.tableResults = {}
       this.initialize()
-      // Prevent DashBoardMain from transforming an undefinded value 
+      // Prevent DashBoardMain from transforming an undefinded value
       // (calls to map(), filter(), ...)
       this.vizz = []
+    }
+
+    /**
+     * Abstract method. Implemention required in subclasess
+     */
+    setReportMetrics() {
+      console.warn('Unimplemented method setReportMetrics()')
     }
 
     /**
@@ -59,12 +69,12 @@ define([
         this.scope.loadingVizz = true
 
         // Listeners
-        this.scope.$on('deletedFilter', event => {
+        this.scope.$on('deletedFilter', (event) => {
           event.stopPropagation()
           this.launchSearches()
         })
 
-        this.scope.$on('barFilter', event => {
+        this.scope.$on('barFilter', (event) => {
           event.stopPropagation()
           this.launchSearches()
         })
@@ -73,17 +83,15 @@ define([
         this.scope.expand = (i, id) => this.expand(i, id)
 
         this.scope.$on('checkReportingStatus', () => {
-          this.vizzReady = !this.vizz.filter(v => {
+          this.vizzReady = !this.vizz.filter((v) => {
             return v.finish === false
           }).length
           if (this.vizzReady) {
             this.scope.loadingVizz = false
-            try {
-              // There's not always metrics to set.
-              this.setReportMetrics()
-            } catch (error) {}
+            // There's not always metrics to set.
+            this.setReportMetrics()
           } else {
-            this.vizz.map(v => {
+            this.vizz.map((v) => {
               if (v.constructor.name === 'RawTableData') {
                 this.tableResults[v.name] = v.results
               }
@@ -107,19 +115,16 @@ define([
          */
         this.scope.$on('$destroy', () => {
           this.tableResults = {}
-          this.timePicker.destroy()
-          // Agents configuration assesment has not visualizations, this prevent an error
-          try {
-            this.vizz.map(vizz => vizz.destroy())
-          } catch (error) {}
-
-          // There's not always a dropdown.
-          try {
-            this.dropdown.destroy()
-          } catch (error) {}
+          // There are now always visualizations
+          this.timePicker?.destroy()
+          this.vizz?.map((vizz) => vizz.destroy())
+          this.dropdown?.destroy()
         })
       } catch (error) {
-        console.error('Error initializing DashboardMain: ', error)
+        this.notification.showErrorToast(
+          'Error initializing DashboardMain: ',
+          error.message || error
+        )
       }
     }
 
@@ -145,10 +150,13 @@ define([
         ? vis.css('height', 'calc(100vh - 200px)')
         : vis.css('height', '250px')
 
-      document.querySelectorAll('[role="main"]')[0].style.zIndex = this.scope.expandArray[i] ? 900 : '';
+      document.querySelectorAll('[role="main"]')[0].style.zIndex = this.scope
+        .expandArray[i]
+        ? 900
+        : ''
 
       let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
+      vis_header.dblclick((e) => {
         if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
           this.scope.expandArray[i]

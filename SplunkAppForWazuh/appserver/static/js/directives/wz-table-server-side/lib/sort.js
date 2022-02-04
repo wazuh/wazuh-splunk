@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
+define([], function () {
   'use strict'
   /**
    * Sorts table
@@ -35,9 +35,9 @@ define([], function() {
         field ? field.value : 'undefined'
       } - ${error.message || error}.`
       errorHandler.showSimpleToast(
-        `Error sorting table by ${
-          field ? field.value : 'undefined'
-        }. ${error.message || error}`
+        `Error sorting table by ${field ? field.value : 'undefined'}. ${
+          error.message || error
+        }`
       )
     }
     $scope.$applyAsync()

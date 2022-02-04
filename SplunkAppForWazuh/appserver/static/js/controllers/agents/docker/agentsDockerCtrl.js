@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -50,14 +50,15 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -122,7 +123,7 @@ define([
           '$result$',
           this.scope,
           'Alerts summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -136,7 +137,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -167,13 +168,15 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
 
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
+      this.scope.formatAgentStatus = (agentStatus) => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
           : 'Never connected'

@@ -45,7 +45,7 @@ def get_api_by_id(id: int):
             user=api_as_json['userapi'],
             password=api_as_json['passapi'],
             name=api_as_json['managerName'],
-            alias=None, # FIXME when the ALIAS stuff is merged
+            alias=api_as_json['alias'],
             filter_name=api_as_json['filterName'],
             filter_type=api_as_json['filterType'],
             run_as=api_as_json['runAs'],

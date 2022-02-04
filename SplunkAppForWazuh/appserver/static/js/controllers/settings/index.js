@@ -4,5 +4,5 @@ define([
   './api/settingsApiCtrl',
   './logs/logsCtrl',
   './about/aboutCtrl',
-  './configuration/settingsConfigCtrl'
-], function() {})
+  './configuration/settingsConfigCtrl',
+], function () {})

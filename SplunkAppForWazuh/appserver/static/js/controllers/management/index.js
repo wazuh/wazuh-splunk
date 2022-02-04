@@ -13,4 +13,4 @@ define([
   './cdb/managerCdbCtrl',
   './cdb/managerCdbIdCtrl',
   './status/statusCtrl',
-], function() {})
+], function () {})

@@ -1,438 +1,787 @@
-<div ng-if="icon === 'spinner'" class="euiLoadingSpinner euiLoadingSpinner--medium"></div>
+<div
+  ng-if="icon === 'spinner'"
+  class="euiLoadingSpinner euiLoadingSpinner--medium"></div>
 
-<span ng-if="icon === 'download'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'download'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
     <path
-      d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
-    </path>
+      d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'settings'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'settings'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    width="32" height="32" viewBox="0 0 32 32">
-    <path class="euiIcon__fillSecondary" d="M16 21a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z">
-    </path>
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 32 32">
     <path
-      d="M20 32h-8v-4.06a1 1 0 0 0-1.61-.67l-2.88 2.87-5.65-5.65 2.87-2.87a.92.92 0 0 0 .2-1 .93.93 0 0 0-.86-.6H0V12h4.06a.92.92 0 0 0 .85-.58.94.94 0 0 0-.19-1L1.86 7.51l5.65-5.65 2.87 2.87A1 1 0 0 0 12 4.06V0h8v4.06a1 1 0 0 0 1.61.67l2.87-2.87 5.66 5.66-2.87 2.87a.92.92 0 0 0-.2 1 .93.93 0 0 0 .86.6H32v8h-4.06a.92.92 0 0 0-.85.58.94.94 0 0 0 .19 1l2.87 2.87-5.66 5.66-2.87-2.87a1 1 0 0 0-1.61.67L20 32zm-6-2h4v-2.06a3 3 0 0 1 5-2.08l1.46 1.46 2.83-2.83L25.86 23a3 3 0 0 1 2.08-5H30v-4h-2.06a3 3 0 0 1-2.08-5l1.46-1.46-2.83-2.85L23 6.14a3 3 0 0 1-5-2.08V2h-4v2.06a3 3 0 0 1-5 2.08L7.51 4.69 4.69 7.51 6.14 9a3 3 0 0 1-2.08 5H2v4h2.06a3 3 0 0 1 2.08 5l-1.45 1.49 2.83 2.83L9 25.86a3 3 0 0 1 5 2.08V30z">
-    </path>
+      class="euiIcon__fillSecondary"
+      d="M16 21a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+    <path
+      d="M20 32h-8v-4.06a1 1 0 0 0-1.61-.67l-2.88 2.87-5.65-5.65 2.87-2.87a.92.92 0 0 0 .2-1 .93.93 0 0 0-.86-.6H0V12h4.06a.92.92 0 0 0 .85-.58.94.94 0 0 0-.19-1L1.86 7.51l5.65-5.65 2.87 2.87A1 1 0 0 0 12 4.06V0h8v4.06a1 1 0 0 0 1.61.67l2.87-2.87 5.66 5.66-2.87 2.87a.92.92 0 0 0-.2 1 .93.93 0 0 0 .86.6H32v8h-4.06a.92.92 0 0 0-.85.58.94.94 0 0 0 .19 1l2.87 2.87-5.66 5.66-2.87-2.87a1 1 0 0 0-1.61.67L20 32zm-6-2h4v-2.06a3 3 0 0 1 5-2.08l1.46 1.46 2.83-2.83L25.86 23a3 3 0 0 1 2.08-5H30v-4h-2.06a3 3 0 0 1-2.08-5l1.46-1.46-2.83-2.85L23 6.14a3 3 0 0 1-5-2.08V2h-4v2.06a3 3 0 0 1-5 2.08L7.51 4.69 4.69 7.51 6.14 9a3 3 0 0 1-2.08 5H2v4h2.06a3 3 0 0 1 2.08 5l-1.45 1.49 2.83 2.83L9 25.86a3 3 0 0 1 5 2.08V30z"></path>
   </svg>
 </span>
 
-
-<span ng-if="icon === 'download-big'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
-    <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
-      {{svgTooltip}}
-    </md-tooltip>
-    <svg class="euiIcon euiIcon--medium" style="width:auto; height:auto;" focusable="false" xmlns="http://www.w3.org/2000/svg" width="70" height="70"
-      viewBox="0 0 16 16">
-      <path
-        d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z">
-      </path>
-    </svg>
-  </span>
- 
-
-<span ng-if="icon === 'pencil'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'download-big'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--primary" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <svg
+    class="euiIcon euiIcon--medium"
+    style="width: auto; height: auto"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="70"
+    height="70"
+    viewBox="0 0 16 16">
+    <path
+      d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"></path>
+  </svg>
+</span>
+
+<span
+  ng-if="icon === 'pencil'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
+    {{svgTooltip}}
+  </md-tooltip>
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--primary"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
     <defs>
-      <path id="pencil-a"
-        d="M12.148 3.148L11 2l-9 9v3h3l9-9-1.144-1.144-8.002 7.998a.502.502 0 0 1-.708 0 .502.502 0 0 1 0-.708l8.002-7.998zM11 1c.256 0 .512.098.707.293l3 3a.999.999 0 0 1 0 1.414l-9 9A.997.997 0 0 1 5 15H2a1 1 0 0 1-1-1v-3c0-.265.105-.52.293-.707l9-9A.997.997 0 0 1 11 1zM5 14H2v-3l3 3z">
-      </path>
+      <path
+        id="pencil-a"
+        d="M12.148 3.148L11 2l-9 9v3h3l9-9-1.144-1.144-8.002 7.998a.502.502 0 0 1-.708 0 .502.502 0 0 1 0-.708l8.002-7.998zM11 1c.256 0 .512.098.707.293l3 3a.999.999 0 0 1 0 1.414l-9 9A.997.997 0 0 1 5 15H2a1 1 0 0 1-1-1v-3c0-.265.105-.52.293-.707l9-9A.997.997 0 0 1 11 1zM5 14H2v-3l3 3z"></path>
     </defs>
     <use xlink:href="#pencil-a"></use>
   </svg>
 </span>
 
-<span ng-if="icon === 'eye'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'eye'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--primary" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
-    height="16" viewBox="0 0 16 16">
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--primary"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
     <path
-      d="M15.98 7.873c.013.03.02.064.02.098v.06a.24.24 0 0 1-.02.097C15.952 8.188 13.291 14 8 14S.047 8.188.02 8.128A.24.24 0 0 1 0 8.03v-.059c0-.034.007-.068.02-.098C.048 7.813 2.709 2 8 2s7.953 5.813 7.98 5.873zm-1.37-.424a12.097 12.097 0 0 0-1.385-1.862C11.739 3.956 9.999 3 8 3c-2 0-3.74.956-5.225 2.587a12.098 12.098 0 0 0-1.701 2.414 12.095 12.095 0 0 0 1.7 2.413C4.26 12.043 6.002 13 8 13s3.74-.956 5.225-2.587A12.097 12.097 0 0 0 14.926 8c-.08-.15-.189-.343-.315-.551zM8 4.75A3.253 3.253 0 0 1 11.25 8 3.254 3.254 0 0 1 8 11.25 3.253 3.253 0 0 1 4.75 8 3.252 3.252 0 0 1 8 4.75zm0 1C6.76 5.75 5.75 6.76 5.75 8S6.76 10.25 8 10.25 10.25 9.24 10.25 8 9.24 5.75 8 5.75zm0 1.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5z">
-    </path>
+      d="M15.98 7.873c.013.03.02.064.02.098v.06a.24.24 0 0 1-.02.097C15.952 8.188 13.291 14 8 14S.047 8.188.02 8.128A.24.24 0 0 1 0 8.03v-.059c0-.034.007-.068.02-.098C.048 7.813 2.709 2 8 2s7.953 5.813 7.98 5.873zm-1.37-.424a12.097 12.097 0 0 0-1.385-1.862C11.739 3.956 9.999 3 8 3c-2 0-3.74.956-5.225 2.587a12.098 12.098 0 0 0-1.701 2.414 12.095 12.095 0 0 0 1.7 2.413C4.26 12.043 6.002 13 8 13s3.74-.956 5.225-2.587A12.097 12.097 0 0 0 14.926 8c-.08-.15-.189-.343-.315-.551zM8 4.75A3.253 3.253 0 0 1 11.25 8 3.254 3.254 0 0 1 8 11.25 3.253 3.253 0 0 1 4.75 8 3.252 3.252 0 0 1 8 4.75zm0 1C6.76 5.75 5.75 6.76 5.75 8S6.76 10.25 8 10.25 10.25 9.24 10.25 8 9.24 5.75 8 5.75zm0 1.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'trash'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'trash'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--danger" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--danger"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
     <defs>
-      <path id="trash-a"
-        d="M11 3h5v1H0V3h5V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2zm-7.056 8H7v1H4.1l.392 2.519c.042.269.254.458.493.458h6.03c.239 0 .451-.189.493-.458l1.498-9.576H14l-1.504 9.73c-.116.747-.74 1.304-1.481 1.304h-6.03c-.741 0-1.365-.557-1.481-1.304l-1.511-9.73H9V5.95H3.157L3.476 8H8v1H3.632l.312 2zM6 3h4V1H6v2z">
-      </path>
+      <path
+        id="trash-a"
+        d="M11 3h5v1H0V3h5V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2zm-7.056 8H7v1H4.1l.392 2.519c.042.269.254.458.493.458h6.03c.239 0 .451-.189.493-.458l1.498-9.576H14l-1.504 9.73c-.116.747-.74 1.304-1.481 1.304h-6.03c-.741 0-1.365-.557-1.481-1.304l-1.511-9.73H9V5.95H3.157L3.476 8H8v1H3.632l.312 2zM6 3h4V1H6v2z"></path>
     </defs>
     <use xlink:href="#trash-a"></use>
   </svg>
 </span>
 
-<span ng-if="icon === 'refresh'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'refresh'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
     <path
-      d="M11.228 2.942a.5.5 0 1 1-.538.842A5 5 0 1 0 13 8a.5.5 0 1 1 1 0 6 6 0 1 1-2.772-5.058zM14 1.5v3A1.5 1.5 0 0 1 12.5 6h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 1 1 1 0z">
-    </path>
+      d="M11.228 2.942a.5.5 0 1 1-.538.842A5 5 0 1 0 13 8a.5.5 0 1 1 1 0 6 6 0 1 1-2.772-5.058zM14 1.5v3A1.5 1.5 0 0 1 12.5 6h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 1 1 1 0z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'star'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'star'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
-    <path fill-rule="evenodd"
-      d="M8 2a.86.86 0 0 0-.792.511l-1.33 2.924-3.128.446c-.71.102-1.001.976-.496 1.487l2.313 2.336-.563 3.268A.877.877 0 0 0 4.864 14c.142 0 .289-.036.429-.116L8 12.342l2.707 1.542c.14.08.287.116.43.116a.877.877 0 0 0 .859-1.027l-.563-3.269 2.313-2.336c.505-.511.214-1.385-.496-1.487l-3.128-.446-1.33-2.923A.86.86 0 0 0 8 2m0 1c.073 0 .095.049.104.07l1.267 2.783.162.356.387.055 2.978.425c.017.002.071.01.095.08a.116.116 0 0 1-.029.126l-2.202 2.226-.259.261.063.362.535 3.112c.007.04 0 .07-.023.098a.127.127 0 0 1-.091.046.106.106 0 0 1-.055-.016l-2.578-1.469L8 11.314l-.354.201-2.579 1.469a.103.103 0 0 1-.054.016.127.127 0 0 1-.091-.046c-.023-.028-.03-.058-.024-.098l.536-3.112.063-.362-.259-.261-2.202-2.226a.116.116 0 0 1-.029-.126.108.108 0 0 1 .094-.08l2.98-.425.386-.055.162-.356 1.267-2.786C7.905 3.05 7.927 3 8 3">
-    </path>
+    <path
+      fill-rule="evenodd"
+      d="M8 2a.86.86 0 0 0-.792.511l-1.33 2.924-3.128.446c-.71.102-1.001.976-.496 1.487l2.313 2.336-.563 3.268A.877.877 0 0 0 4.864 14c.142 0 .289-.036.429-.116L8 12.342l2.707 1.542c.14.08.287.116.43.116a.877.877 0 0 0 .859-1.027l-.563-3.269 2.313-2.336c.505-.511.214-1.385-.496-1.487l-3.128-.446-1.33-2.923A.86.86 0 0 0 8 2m0 1c.073 0 .095.049.104.07l1.267 2.783.162.356.387.055 2.978.425c.017.002.071.01.095.08a.116.116 0 0 1-.029.126l-2.202 2.226-.259.261.063.362.535 3.112c.007.04 0 .07-.023.098a.127.127 0 0 1-.091.046.106.106 0 0 1-.055-.016l-2.578-1.469L8 11.314l-.354.201-2.579 1.469a.103.103 0 0 1-.054.016.127.127 0 0 1-.091-.046c-.023-.028-.03-.058-.024-.098l.536-3.112.063-.362-.259-.261-2.202-2.226a.116.116 0 0 1-.029-.126.108.108 0 0 1 .094-.08l2.98-.425.386-.055.162-.356 1.267-2.786C7.905 3.05 7.927 3 8 3"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'expand'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'expand'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
-    <path fill-rule="evenodd"
-      d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z">
-    </path>
+    <path
+      fill-rule="evenodd"
+      d="M4.354 12.354l8-8a.5.5 0 0 0-.708-.708l-8 8a.5.5 0 0 0 .708.708zM1 10.5a.5.5 0 1 1 1 0v3a.5.5 0 0 0 .5.5h3a.5.5 0 1 1 0 1h-3A1.5 1.5 0 0 1 1 13.5v-3zm14-5a.5.5 0 1 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 1 0-1h3A1.5 1.5 0 0 1 15 2.5v3z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'chart'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'chart'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    width="32" height="32" viewBox="0 0 32 32">
-    <path class="euiIcon__fillSecondary" d="M32 32H4a4 4 0 0 1-4-4V0h2v28a2 2 0 0 0 2 2h28v2z"></path>
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 32 32">
+    <path
+      class="euiIcon__fillSecondary"
+      d="M32 32H4a4 4 0 0 1-4-4V0h2v28a2 2 0 0 0 2 2h28v2z"></path>
     <path d="M6 20h2v7H6zM16 12h2v15h-2zM26 17h2v10h-2z"></path>
     <path
-      d="M27 6a3 3 0 0 0-2.08.84L20 4.36A2.2 2.2 0 0 0 20 4a3 3 0 0 0-6 0c.001.341.062.68.18 1l-5.6 4.46A3 3 0 0 0 7 9a3 3 0 1 0 3 3 2.93 2.93 0 0 0-.18-1l5.6-4.48A3 3 0 0 0 17 7a3 3 0 0 0 2.08-.84l5 2.48A2.2 2.2 0 0 0 24 9a3 3 0 1 0 3-3zM7 13a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm10-8a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm10 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z">
-    </path>
+      d="M27 6a3 3 0 0 0-2.08.84L20 4.36A2.2 2.2 0 0 0 20 4a3 3 0 0 0-6 0c.001.341.062.68.18 1l-5.6 4.46A3 3 0 0 0 7 9a3 3 0 1 0 3 3 2.93 2.93 0 0 0-.18-1l5.6-4.48A3 3 0 0 0 17 7a3 3 0 0 0 2.08-.84l5 2.48A2.2 2.2 0 0 0 24 9a3 3 0 1 0 3-3zM7 13a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm10-8a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm10 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'cloud'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'cloud'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    width="32" height="32" viewBox="0 0 32 32">
-    <path class="euiIcon__fillSecondary" d="M12.594 18.424h3.875v1.939h-3.875zM12.594 26.182h3.875v1.939h-3.875z">
-    </path>
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 32 32">
     <path
-      d="M8.719 14.545V32H31V14.545H8.719zm20.343 1.94v5.818H10.657v-5.818h18.407zM10.657 30.06v-5.819h18.407v5.819H10.655z">
-    </path>
+      class="euiIcon__fillSecondary"
+      d="M12.594 18.424h3.875v1.939h-3.875zM12.594 26.182h3.875v1.939h-3.875z"></path>
     <path
-      d="M27.648 12.606a8.499 8.499 0 0 0-4.398-3.879 8.983 8.983 0 0 0-8.903-7.81 8.983 8.983 0 0 0-8.903 7.81 8.553 8.553 0 0 0-5.353 8.645 8.55 8.55 0 0 0 6.69 7.656V23.03a6.612 6.612 0 0 1-4.845-6.293 6.613 6.613 0 0 1 4.69-6.41l.64-.194v-.669a7.046 7.046 0 0 1 7.023-6.527 7.046 7.046 0 0 1 7.024 6.527v.67l.639.193a6.587 6.587 0 0 1 3.4 2.28h2.296z">
-    </path>
+      d="M8.719 14.545V32H31V14.545H8.719zm20.343 1.94v5.818H10.657v-5.818h18.407zM10.657 30.06v-5.819h18.407v5.819H10.655z"></path>
+    <path
+      d="M27.648 12.606a8.499 8.499 0 0 0-4.398-3.879 8.983 8.983 0 0 0-8.903-7.81 8.983 8.983 0 0 0-8.903 7.81 8.553 8.553 0 0 0-5.353 8.645 8.55 8.55 0 0 0 6.69 7.656V23.03a6.612 6.612 0 0 1-4.845-6.293 6.613 6.613 0 0 1 4.69-6.41l.64-.194v-.669a7.046 7.046 0 0 1 7.023-6.527 7.046 7.046 0 0 1 7.024 6.527v.67l.639.193a6.587 6.587 0 0 1 3.4 2.28h2.296z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'compass'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'compass'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    width="32" height="32" viewBox="0 0 32 32">
-    <path class="euiIcon__fillSecondary"
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--ghost euiIcon--app"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 32 32">
+    <path
+      class="euiIcon__fillSecondary"
       d="M8.33 23.67l4.79-10.55 10.55-4.79-4.79 10.55-10.55 4.79zm6.3-9l-2.28 5 5-2.28 2.28-5-5 2.28z"></path>
     <path
-      d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16A16 16 0 0 0 16 0zm1 29.95V28h-2v1.95A14 14 0 0 1 2.05 17H4v-2H2.05A14 14 0 0 1 15 2.05V4h2V2.05A14 14 0 0 1 29.95 15H28v2h1.95A14 14 0 0 1 17 29.95z">
-    </path>
+      d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16A16 16 0 0 0 16 0zm1 29.95V28h-2v1.95A14 14 0 0 1 2.05 17H4v-2H2.05A14 14 0 0 1 15 2.05V4h2V2.05A14 14 0 0 1 29.95 15H28v2h1.95A14 14 0 0 1 17 29.95z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'console'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'console'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
     <defs>
-      <path id="console-a"
-        d="M1.157 12.224L5.768 8.32a.404.404 0 0 0 0-.64l-4.61-3.904a.407.407 0 0 1 0-.643.608.608 0 0 1 .759 0l4.61 3.904c.631.534.63 1.393 0 1.926l-4.61 3.904a.608.608 0 0 1-.76 0 .407.407 0 0 1 0-.643zM9 12h6v1H9v-1z">
-      </path>
+      <path
+        id="console-a"
+        d="M1.157 12.224L5.768 8.32a.404.404 0 0 0 0-.64l-4.61-3.904a.407.407 0 0 1 0-.643.608.608 0 0 1 .759 0l4.61 3.904c.631.534.63 1.393 0 1.926l-4.61 3.904a.608.608 0 0 1-.76 0 .407.407 0 0 1 0-.643zM9 12h6v1H9v-1z"></path>
     </defs>
     <use xlink:href="#console-a"></use>
   </svg>
 </span>
 
-<span ng-if="icon === 'list'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'list'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
     <defs>
-      <path id="editor_unordered_list-a"
-        d="M5.5 4h8a.5.5 0 1 1 0 1h-8a.5.5 0 0 1 0-1zm0 4h8a.5.5 0 1 1 0 1h-8a.5.5 0 0 1 0-1zm0 4h8a.5.5 0 1 1 0 1h-8a.5.5 0 1 1 0-1zm-3-7a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 4a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 4a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1z">
-      </path>
+      <path
+        id="editor_unordered_list-a"
+        d="M5.5 4h8a.5.5 0 1 1 0 1h-8a.5.5 0 0 1 0-1zm0 4h8a.5.5 0 1 1 0 1h-8a.5.5 0 0 1 0-1zm0 4h8a.5.5 0 1 1 0 1h-8a.5.5 0 1 1 0-1zm-3-7a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 4a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 4a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1z"></path>
     </defs>
     <use xlink:href="#editor_unordered_list-a"></use>
   </svg>
 </span>
 
-<span ng-if="icon === 'circles'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'circles'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
     <path
-      d="M5 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 1A5 5 0 1 1 5 3a5 5 0 0 1 0 10zm6-1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 1a5 5 0 1 1 0-10 5 5 0 0 1 0 10z">
-    </path>
+      d="M5 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 1A5 5 0 1 1 5 3a5 5 0 0 1 0 10zm6-1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 1a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'wrench'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
+<span
+  ng-if="icon === 'wrench'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
   <md-tooltip md-direction="bottom" class="wz-tooltip" ng-if="svgTooltip">
     {{svgTooltip}}
   </md-tooltip>
-  <svg class="euiIcon euiIcon--medium euiIcon--primary" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16"
-    height="16" viewBox="0 0 16 16">
-    <path
-      d="M6.918 9.746l4.537 4.537a2 2 0 1 0 2.828-2.829l-3.157-3.156a.5.5 0 0 1 .708-.708l3.156 3.157a3 3 0 1 1-4.243 4.243l-4.949-4.95a5.001 5.001 0 0 1-5.22-7.106.5.5 0 0 1 .805-.138L3.676 5.09a1 1 0 1 0 1.415-1.414L2.797 1.382a.5.5 0 0 1 .138-.805 5.001 5.001 0 1 1 3.983 9.169zM1.226 4.054a4.002 4.002 0 0 0 6.693 3.865 4 4 0 0 0-3.865-6.693l1.744 1.743a2 2 0 1 1-2.829 2.828L1.226 4.054zm10.229 8.814a1 1 0 1 1 1.414-1.414 1 1 0 0 1-1.414 1.414z">
-    </path>
-  </svg>
-</span>
-
-<span ng-if="icon === 'plus'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-    viewBox="0 0 16 16">
-    <path fill-rule="evenodd"
-      d="M8 7h3.5a.5.5 0 1 1 0 1H8v3.5a.5.5 0 1 1-1 0V8H3.5a.5.5 0 0 1 0-1H7V3.5a.5.5 0 0 1 1 0V7zm-.5-7C11.636 0 15 3.364 15 7.5S11.636 15 7.5 15 0 11.636 0 7.5 3.364 0 7.5 0zm0 .882a6.618 6.618 0 1 0 0 13.236A6.618 6.618 0 0 0 7.5.882z">
-    </path>
-  </svg>
-</span>
-
-<span ng-if="icon === 'hex'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+  <svg
+    class="euiIcon euiIcon--medium euiIcon--primary"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
     <path
-      d="M8.5 1.443a1 1 0 0 0-1 0L2.572 4.29a1 1 0 0 0-.5.866v5.69a1 1 0 0 0 .5.866L7.5 14.557a1 1 0 0 0 1 0l4.928-2.846a1 1 0 0 0 .5-.866v-5.69a1 1 0 0 0-.5-.866L8.5 1.443zM9 .577l4.928 2.846a2 2 0 0 1 1 1.732v5.69a2 2 0 0 1-1 1.732L9 15.423a2 2 0 0 1-2 0l-4.928-2.846a2 2 0 0 1-1-1.732v-5.69a2 2 0 0 1 1-1.732L7 .577a2 2 0 0 1 2 0z">
-    </path>
+      d="M6.918 9.746l4.537 4.537a2 2 0 1 0 2.828-2.829l-3.157-3.156a.5.5 0 0 1 .708-.708l3.156 3.157a3 3 0 1 1-4.243 4.243l-4.949-4.95a5.001 5.001 0 0 1-5.22-7.106.5.5 0 0 1 .805-.138L3.676 5.09a1 1 0 1 0 1.415-1.414L2.797 1.382a.5.5 0 0 1 .138-.805 5.001 5.001 0 1 1 3.983 9.169zM1.226 4.054a4.002 4.002 0 0 0 6.693 3.865 4 4 0 0 0-3.865-6.693l1.744 1.743a2 2 0 1 1-2.829 2.828L1.226 4.054zm10.229 8.814a1 1 0 1 1 1.414-1.414 1 1 0 0 1-1.414 1.414z"></path>
   </svg>
 </span>
 
-
-<span ng-if="icon === 'burble'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+<span
+  ng-if="icon === 'plus'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
     <path
-      d="M12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 1a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm0 5a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm8-9a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z">
-    </path>
+      fill-rule="evenodd"
+      d="M8 7h3.5a.5.5 0 1 1 0 1H8v3.5a.5.5 0 1 1-1 0V8H3.5a.5.5 0 0 1 0-1H7V3.5a.5.5 0 0 1 1 0V7zm-.5-7C11.636 0 15 3.364 15 7.5S11.636 15 7.5 15 0 11.636 0 7.5 3.364 0 7.5 0zm0 .882a6.618 6.618 0 1 0 0 13.236A6.618 6.618 0 0 0 7.5.882z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'cross'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
-  <svg class="euiIcon euiIcon--medium" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-    width="16" height="16" viewBox="0 0 16 16">
+<span
+  ng-if="icon === 'hex'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
     <path
-      d="M7.293 8L3.146 3.854a.5.5 0 1 1 .708-.708L8 7.293l4.146-4.147a.5.5 0 0 1 .708.708L8.707 8l4.147 4.146a.5.5 0 0 1-.708.708L8 8.707l-4.146 4.147a.5.5 0 0 1-.708-.708L7.293 8z">
-    </path>
+      d="M8.5 1.443a1 1 0 0 0-1 0L2.572 4.29a1 1 0 0 0-.5.866v5.69a1 1 0 0 0 .5.866L7.5 14.557a1 1 0 0 0 1 0l4.928-2.846a1 1 0 0 0 .5-.866v-5.69a1 1 0 0 0-.5-.866L8.5 1.443zM9 .577l4.928 2.846a2 2 0 0 1 1 1.732v5.69a2 2 0 0 1-1 1.732L9 15.423a2 2 0 0 1-2 0l-4.928-2.846a2 2 0 0 1-1-1.732v-5.69a2 2 0 0 1 1-1.732L7 .577a2 2 0 0 1 2 0z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'copy'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color, fill: color }">
-  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-    class="euiIcon euiIcon--medium euiIcon-isLoaded" focusable="false">
+<span
+  ng-if="icon === 'burble'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
+    <path
+      d="M12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 1a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm0 5a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm8-9a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+  </svg>
+</span>
+
+<span
+  ng-if="icon === 'cross'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
+    <path
+      d="M7.293 8L3.146 3.854a.5.5 0 1 1 .708-.708L8 7.293l4.146-4.147a.5.5 0 0 1 .708.708L8.707 8l4.147 4.146a.5.5 0 0 1-.708.708L8 8.707l-4.146 4.147a.5.5 0 0 1-.708-.708L7.293 8z"></path>
+  </svg>
+</span>
+
+<span
+  ng-if="icon === 'copy'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color, fill: color }">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon-isLoaded"
+    focusable="false">
     <defs>
-      <path id="copy-a"
-        d="M11.4 0c.235 0 .46.099.622.273l2.743 3c.151.162.235.378.235.602v9.25a.867.867 0 0 1-.857.875H3.857A.867.867 0 0 1 3 13.125V.875C3 .392 3.384 0 3.857 0H11.4zM14 4h-2.6a.4.4 0 0 1-.4-.4V1H4v12h10V4z">
-      </path>
+      <path
+        id="copy-a"
+        d="M11.4 0c.235 0 .46.099.622.273l2.743 3c.151.162.235.378.235.602v9.25a.867.867 0 0 1-.857.875H3.857A.867.867 0 0 1 3 13.125V.875C3 .392 3.384 0 3.857 0H11.4zM14 4h-2.6a.4.4 0 0 1-.4-.4V1H4v12h10V4z"></path>
     </defs>
     <use xlink:href="#copy-a"></use>
-    <path d="M3 1H2a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1h-1v1H2V2h1V1z"></path>
+    <path
+      d="M3 1H2a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1h-1v1H2V2h1V1z"></path>
   </svg>
 </span>
-<span ng-if="icon === 'arrow-down'" class="cursor-pointer" ng-class="className" ng-style="isHex && { color: color }">
-  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-    class="euiIcon euiIcon--medium euiIcon-isLoaded" focusable="false">
+<span
+  ng-if="icon === 'arrow-down'"
+  class="cursor-pointer"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon-isLoaded"
+    focusable="false">
     <defs>
-      <path id="arrow_down-a"
-        d="M13.069 5.157L8.384 9.768a.546.546 0 0 1-.768 0L2.93 5.158a.552.552 0 0 0-.771 0 .53.53 0 0 0 0 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 0 0 0-.76.552.552 0 0 0-.771 0z">
-      </path>
+      <path
+        id="arrow_down-a"
+        d="M13.069 5.157L8.384 9.768a.546.546 0 0 1-.768 0L2.93 5.158a.552.552 0 0 0-.771 0 .53.53 0 0 0 0 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 0 0 0-.76.552.552 0 0 0-.771 0z"></path>
     </defs>
     <use fill-rule="nonzero" xlink:href="#arrow_down-a"></use>
   </svg>
 </span>
 
-<span ng-if="icon === 'callOutHeader'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg style="margin-top: -5px;" class="euiIcon euiIcon--medium euiCallOutHeader__icon" aria-hidden="true"
-    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"
+<span
+  ng-if="icon === 'callOutHeader'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    style="margin-top: -5px"
+    class="euiIcon euiIcon--medium euiCallOutHeader__icon"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
     <defs>
-      <path id="help-a"
-        d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z">
-      </path>
-    </defs>
-    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#help-a" fill-rule="evenodd"></use>
-  </svg>
-</span>
-
-
-<span ng-if="icon === 'info-circle'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-    viewBox="0 0 16 16">
-    <path fill-rule="evenodd"
-      d="M7.5 11.508L7.468 8H6.25V7h2.401l.03 3.508H9.8v1H7.5zm-.25-6.202a.83.83 0 0 1 .207-.577c.137-.153.334-.229.59-.229.256 0 .454.076.594.23.14.152.209.345.209.576 0 .228-.07.417-.21.568-.14.15-.337.226-.593.226-.256 0-.453-.075-.59-.226a.81.81 0 0 1-.207-.568zM8 13A5 5 0 1 0 8 3a5 5 0 0 0 0 10zm0 1A6 6 0 1 1 8 2a6 6 0 0 1 0 12z">
-    </path>
-  </svg>
-</span>
-
-
-<span ng-if="icon === 'question-mark-circle'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-    viewBox="0 0 16 16">
-    <path
-      d="M8 14A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm0-1A5 5 0 1 0 8 3a5 5 0 0 0 0 10zm-.186-1.065A.785.785 0 0 1 7 11.12c0-.48.34-.82.814-.82.475 0 .809.34.809.82 0 .475-.334.815-.809.815zM5.9 6.317C5.96 5.168 6.755 4.4 8.048 4.4c1.218 0 2.091.759 2.091 1.8 0 .736-.36 1.304-1.03 1.707-.56.33-.717.56-.717 1.022v.305l-.1.1H7.47l-.1-.1v-.431c-.005-.646.302-1.104.987-1.514.527-.322.708-.59.708-1.047 0-.536-.416-.91-1.05-.91-.652 0-1.064.374-1.112.998l-.1.092H6l-.1-.105z">
-    </path>
-  </svg>
-</span>
-
-<span ng-if="icon === 'slack'" ng-class="className" ng-style="isHex && { color: color }" style="padding-left: 10px;">
-  <a class=" euiButtonIcon euiButtonIcon--primary" href="https://wazuh.com/community/join-us-on-slack/" target="_blank"
-  rel="noopener noreferrer"><svg class="euiIcon euiIcon--xxLarge euiButtonIcon__icon" focusable="false"
-    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-    <path d="M13.271 14.61l4.239-1.42 1.37 4.094-4.238 1.42z"></path>
-    <path d="M13.271 14.61l4.239-1.42 1.37 4.094-4.238 1.42z"></path>
-    <path
-      d="M30.629 11.556c-3.277-10.921-8-13.46-18.921-10.185-10.92 3.277-13.46 8-10.184 18.921 3.276 10.92 8 13.46 18.92 10.184 10.921-3.276 13.46-8 10.185-18.92zm-5.512 7.085l-2.057.686.711 2.133c.28.864-.177 1.803-1.04 2.083-.179.05-.382.101-.56.076a1.695 1.695 0 0 1-1.523-1.117l-.711-2.134-4.242 1.422.711 2.134c.28.863-.177 1.803-1.04 2.082-.179.051-.382.102-.56.077a1.695 1.695 0 0 1-1.523-1.118l-.712-2.133-2.057.685c-.177.051-.38.102-.558.077a1.695 1.695 0 0 1-1.524-1.118c-.28-.863.178-1.803 1.041-2.082l2.057-.686-1.371-4.089-2.057.686c-.178.05-.381.101-.56.076a1.695 1.695 0 0 1-1.523-1.118c-.28-.863.178-1.803 1.041-2.082l2.057-.686-.71-2.133c-.28-.864.177-1.803 1.04-2.083.864-.279 1.804.178 2.083 1.042l.711 2.133 4.242-1.422-.712-2.134c-.279-.863.178-1.803 1.042-2.082.863-.28 1.803.178 2.082 1.041l.711 2.133 2.057-.685c.864-.28 1.804.178 2.083 1.041.28.864-.178 1.803-1.041 2.083l-2.057.685 1.371 4.09 2.057-.687c.864-.279 1.803.178 2.083 1.042.28.863-.178 1.803-1.042 2.082z">
-    </path>
-  </svg></a>
-</span>
-
-<span ng-if="icon === 'groups-google'" ng-class="className" ng-style="isHex && { color: color }" style="padding-left: 10px;">
-  <a class="euiButtonIcon euiButtonIcon--primary" href="https://groups.google.com/forum/#!forum/wazuh" target="_blank"
-    rel="noopener noreferrer"><svg class="euiIcon euiIcon--xxLarge euiButtonIcon__icon" focusable="false"
-      aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <g fill="none">
-        <path fill="#E65A4D"
-          d="M29.162 4.149c.29-.175.588-.078.873 0a2.616 2.616 0 0 1 1.907 2.476c.006.29-.007.581-.007.866-.084 0-.135.052-.2.097-.815.582-1.642 1.164-2.45 1.752-.33.239-.692.426-.97.73-.116 0-.2.078-.284.136-2.69 1.855-5.379 3.704-8.062 5.56-1.331.918-2.663 1.849-3.995 2.773h-.11c-.058-.045-.11-.103-.168-.142L5.863 11.55c-.672-.466-1.344-.938-2.017-1.403-.077-.052-.148-.162-.245-.104-.09.052-.033.175-.045.272-.007.032 0 .065 0 .097v16.194c0 .116.006.24.012.355 0 .065-.006.123-.006.188-1.228.149-2.347-.02-3.116-1.131a2.381 2.381 0 0 1-.44-1.364c0-6.032-.006-12.057.007-18.089 0-1.228.995-2.314 2.217-2.488.194-.026.388-.052.556.077.04.039.071.078.117.11 4.273 3.168 8.546 6.335 12.819 9.51.168.122.278.116.446-.007 3.413-2.521 6.833-5.036 10.247-7.55.905-.692 1.823-1.384 2.747-2.07z">
-        </path>
-        <path fill="#F6F4EC"
-          d="M29.162 4.149c-.924.685-1.842 1.377-2.767 2.062-3.413 2.521-6.833 5.03-10.246 7.55-.168.123-.272.13-.446.007-4.267-3.174-8.54-6.335-12.813-9.51-.046-.032-.078-.07-.117-.11.078-.129.214-.083.324-.083h25.742c.11 0 .239-.046.323.084z">
-        </path>
-        <path fill="#E6E3D6"
-          d="M3.556 26.95a6.533 6.533 0 0 1-.013-.356V10.4c0-.032-.007-.065 0-.097.013-.09-.046-.213.045-.271.097-.059.174.051.246.103.672.465 1.344.937 2.017 1.403l9.832 6.846c.058.045.117.097.168.142-.026.026-.058.045-.084.071l-.064.065c-.052 0-.104.013-.13.064l-.064.065c-.007.013-.02.02-.026.032.013-.006.02-.019.032-.025l.065-.065c.052 0 .103-.013.13-.065.018-.02.044-.045.064-.064.064 0 .129-.007.194-.007.898.627 1.803 1.248 2.702 1.875 2.676 1.855 5.353 3.704 8.023 5.572.478.337 1.002.628 1.428 1.035-.116.11-.258.039-.388.058.007-.149-.122-.188-.22-.252-.49-.343-.995-.672-1.473-1.028-.802-.588-1.617-1.15-2.431-1.72-.679-.472-1.351-.963-2.05-1.409-.607-.388-1.17-.853-1.777-1.248-.685-.44-1.332-.93-2.01-1.377-.563-.368-1.113-.762-1.662-1.15-.11-.078-.207-.11-.323-.033-.233.168-.53.278-.724.46-.556.51-1.235.84-1.817 1.305-.743.589-1.545 1.112-2.34 1.636-1.319.873-2.599 1.816-3.911 2.696a43.697 43.697 0 0 0-2.308 1.629c-.207.155-.485.226-.614.485-.13-.013-.272.038-.395-.046 2.315-1.616 4.63-3.226 6.937-4.842.304-.213.646-.381.899-.666.045-.013.103-.019.097-.084 0-.006-.013-.02-.02-.02-.065-.006-.077.046-.09.091-.233.013-.375.194-.55.31-2.463 1.7-4.932 3.388-7.395 5.075zm11.119-7.564l.064-.065c.052 0 .104-.013.13-.064l.064-.065c.052 0 .104-.013.13-.065.006-.013.019-.02.025-.032-.012.006-.019.02-.032.026-.052 0-.103.013-.13.064l-.064.065c-.051 0-.103.013-.13.065-.018.026-.038.045-.057.07-.013.007-.026.014-.033.027.013-.007.026-.013.033-.026zm-.84.575c-.052 0-.104.013-.13.065-.039.006-.09.006-.097.065 0 .012.026.038.039.038.052-.006.058-.051.065-.09.051-.007.096-.013.122-.078a.311.311 0 0 0 .071-.058c.052 0 .104-.013.13-.065l.064-.064c.052 0 .104-.013.13-.065.006-.013.02-.02.026-.032-.013.006-.02.02-.033.026-.051 0-.103.013-.13.064-.018.02-.044.046-.064.065-.051 0-.103.013-.129.065l-.065.064zm-.841.588c-.052 0-.103.013-.13.065-.051.007-.103.013-.096.084 0 .007.013.02.02.02.07.006.077-.046.083-.097.052-.007.097-.02.123-.072.026-.012.045-.038.071-.058.052 0 .103-.013.13-.064l.064-.065c.052 0 .103-.013.13-.065.006-.013.019-.019.025-.032-.013.007-.02.02-.032.026-.052 0-.104.013-.13.065l-.064.064c-.052 0-.104.013-.13.065a.306.306 0 0 0-.064.064zm-.647.46c.052-.007.104-.013.097-.085 0-.006-.012-.019-.019-.019-.071-.006-.078.045-.084.097-.052 0-.097.013-.13.065a.223.223 0 0 0-.193.129c-.045.013-.104.013-.097.084 0 .006.013.02.02.02.064.006.077-.046.083-.098.09 0 .181-.006.194-.129.058-.006.104-.02.13-.065zm2.128-1.533c-.008.027-.025.054-.033.072.025.009.05.035.067.027.016-.01.025-.045.033-.072a.55.55 0 0 1-.067-.027zm-1.81 1.35c-.008-.024-.015-.056-.03-.056-.015-.008-.052.008-.06.024-.022.033-.007.074.03.074.022 0 .037-.025.06-.041zM15.355 19a.185.185 0 0 1 .034-.072c-.025-.009-.05-.035-.067-.026-.016.008-.025.044-.033.07.017.01.042.019.067.028zm-3.526 2.402c-.016-.024-.031-.05-.04-.057-.015 0-.055.016-.055.033-.016.04.008.074.048.065.016 0 .031-.024.047-.04z">
-        </path>
-        <path fill="#B6B5AC"
-          d="M28.121 27.085c-.426-.413-.944-.698-1.428-1.034-2.67-1.862-5.347-3.717-8.023-5.573-.899-.627-1.804-1.247-2.702-1.874 0-.02-.007-.046-.007-.065l3.995-2.773c2.69-1.856 5.379-3.705 8.062-5.56.084-.058.168-.136.284-.136v17.073c-.051-.019-.116-.038-.18-.058z">
-        </path>
-        <path fill="#E6E3D6"
-          d="M4.073 27.143c.123-.258.407-.33.614-.484a47.845 47.845 0 0 1 2.308-1.63c1.312-.885 2.592-1.823 3.91-2.695.796-.524 1.598-1.048 2.341-1.636.588-.465 1.26-.795 1.817-1.306.2-.18.49-.29.724-.459.11-.084.207-.051.323.033.55.388 1.099.782 1.661 1.15.68.446 1.326.944 2.01 1.377.608.388 1.17.854 1.779 1.248.698.446 1.37.937 2.049 1.41.814.568 1.635 1.13 2.43 1.719.485.355.983.685 1.475 1.028.09.064.226.103.22.252-7.888-.007-15.774-.007-23.661-.007z">
-        </path>
-        <path fill="#B1392F"
-          d="M28.315 27.143V10.07c.278-.304.64-.491.97-.73.814-.595 1.635-1.17 2.45-1.752.058-.045.116-.097.2-.097.007.11.013.213.013.323 0 5.502 0 11.01.007 16.51 0 .376-.013.75-.104 1.126-.161.691-.575 1.17-1.247 1.409-.744.259-1.513.33-2.289.284z">
-        </path>
-        <path fill="#BEBDB3"
-          d="M11.514 21.59c-.253.285-.595.453-.9.666a2650.078 2650.078 0 0 1-6.936 4.842l-.129.039c0-.065.007-.123.007-.188 2.47-1.687 4.932-3.374 7.402-5.061.174-.117.31-.304.55-.31l.006.012z">
-        </path>
-      </g>
-    </svg></a>
-</span>
-
-<span ng-if="icon === 'groups-google'" ng-class="className" ng-style="isHex && { color: color }" style="padding-left:10px;">
-  <a class="euiButtonIcon euiButtonIcon--primary" href="https://github.com/wazuh/wazuh-splunk" target="_blank"
-    rel="noopener noreferrer"><svg class="euiIcon euiIcon--xxLarge euiButtonIcon__icon" focusable="false"
-      aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
       <path
-        d="M16 0C7.164 0 0 7.343 0 16.4c0 7.248 4.584 13.394 10.942 15.562.8.15 1.092-.356 1.092-.789 0-.39-.014-1.684-.022-3.053-4.45.991-5.39-1.934-5.39-1.934-.728-1.894-1.776-2.398-1.776-2.398-1.454-1.017.11-.997.11-.997 1.606.114 2.452 1.69 2.452 1.69 1.428 2.506 3.746 1.781 4.656 1.36.146-1.056.56-1.78 1.016-2.19-3.552-.414-7.288-1.821-7.288-8.105 0-1.792.624-3.254 1.646-4.402-.164-.416-.714-2.085.158-4.342 0 0 1.341-.44 4.4 1.681A14.882 14.882 0 0 1 16 7.932c1.36.006 2.728.188 4.006.553 3.053-2.124 4.396-1.681 4.396-1.681.875 2.259.325 3.926.16 4.34 1.026 1.148 1.645 2.61 1.645 4.402 0 6.3-3.742 7.687-7.307 8.094.577.508 1.086 1.505 1.086 3.035 0 2.192-.021 3.96-.021 4.5 0 .437.29.947 1.101.787C27.42 29.79 32 23.644 32 16.4 32 7.343 24.836 0 16 0z">
-      </path>
-    </svg></a>
+        id="help-a"
+        d="M13.6 12.186l-1.357-1.358c-.025-.025-.058-.034-.084-.056.53-.794.84-1.746.84-2.773a4.977 4.977 0 0 0-.84-2.772c.026-.02.059-.03.084-.056L13.6 3.813a6.96 6.96 0 0 1 0 8.373zM8 15A6.956 6.956 0 0 1 3.814 13.6l1.358-1.358c.025-.025.034-.057.055-.084C6.02 12.688 6.974 13 8 13a4.978 4.978 0 0 0 2.773-.84c.02.026.03.058.056.083l1.357 1.358A6.956 6.956 0 0 1 8 15zm-5.601-2.813a6.963 6.963 0 0 1 0-8.373l1.359 1.358c.024.025.057.035.084.056A4.97 4.97 0 0 0 3 8c0 1.027.31 1.98.842 2.773-.027.022-.06.031-.084.056l-1.36 1.358zm5.6-.187A4 4 0 1 1 8 4a4 4 0 0 1 0 8zM8 1c1.573 0 3.019.525 4.187 1.4l-1.357 1.358c-.025.025-.035.057-.056.084A4.979 4.979 0 0 0 8 3a4.979 4.979 0 0 0-2.773.842c-.021-.027-.03-.059-.055-.084L3.814 2.4A6.957 6.957 0 0 1 8 1zm0-1a8.001 8.001 0 1 0 .003 16.002A8.001 8.001 0 0 0 8 0z"></path>
+    </defs>
+    <use
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xlink:href="#help-a"
+      fill-rule="evenodd"></use>
+  </svg>
 </span>
 
-<span ng-if="icon === 'index-icon'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg class="euiIcon euiIcon--medium" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+<span
+  ng-if="icon === 'info-circle'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
     viewBox="0 0 16 16">
     <path
-      d="M7.914 1c-3.6 0-5.897 1.111-5.897 1.876 0 .766 2.297 1.877 5.897 1.877s5.897-1.111 5.897-1.877C13.811 2.111 11.514 1 7.914 1m3.98 7.988c-1.187.331-2.601.502-3.98.502-1.383 0-2.801-.172-3.991-.505l2.863 3.242v2.515c.136.08.515.214 1.128.214.61 0 .989-.133 1.126-.213v-2.515l2.854-3.24zm2.394-1.206l-4.248 4.823v2.246h.004c0 .763-1.069 1.105-2.13 1.105-1.06 0-2.13-.342-2.13-1.105h.002v-2.245L1.321 7.55l.01-.008A1.53 1.53 0 0 1 1 6.607V2.78h.02C1.14.973 4.627 0 7.913 0c3.286 0 6.774.973 6.894 2.78h.02v3.827c0 .343-.12.657-.335.941l-.003.004c-.06.079-.128.155-.202.23zm-.578-.856a.56.56 0 0 0 .118-.319V4.411c-1.288.879-3.649 1.342-5.914 1.342C5.65 5.753 3.288 5.29 2 4.411v2.196C2 7.375 4.304 8.49 7.914 8.49c2.879 0 4.927-.709 5.639-1.385l.157-.18z">
-    </path>
+      fill-rule="evenodd"
+      d="M7.5 11.508L7.468 8H6.25V7h2.401l.03 3.508H9.8v1H7.5zm-.25-6.202a.83.83 0 0 1 .207-.577c.137-.153.334-.229.59-.229.256 0 .454.076.594.23.14.152.209.345.209.576 0 .228-.07.417-.21.568-.14.15-.337.226-.593.226-.256 0-.453-.075-.59-.226a.81.81 0 0 1-.207-.568zM8 13A5 5 0 1 0 8 3a5 5 0 0 0 0 10zm0 1A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"></path>
   </svg>
 </span>
 
-
-<span ng-if="icon === 'agent-Active'" style="color:rgb(0, 166, 155)">
-  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-    class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded" focusable="false">
-    <defs>
-      <circle id="dot-a" cx="8" cy="8" r="4"></circle>
-    </defs>
-    <use xlink:href="#dot-a"></use>
+<span
+  ng-if="icon === 'question-mark-circle'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
+    <path
+      d="M8 14A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm0-1A5 5 0 1 0 8 3a5 5 0 0 0 0 10zm-.186-1.065A.785.785 0 0 1 7 11.12c0-.48.34-.82.814-.82.475 0 .809.34.809.82 0 .475-.334.815-.809.815zM5.9 6.317C5.96 5.168 6.755 4.4 8.048 4.4c1.218 0 2.091.759 2.091 1.8 0 .736-.36 1.304-1.03 1.707-.56.33-.717.56-.717 1.022v.305l-.1.1H7.47l-.1-.1v-.431c-.005-.646.302-1.104.987-1.514.527-.322.708-.59.708-1.047 0-.536-.416-.91-1.05-.91-.652 0-1.064.374-1.112.998l-.1.092H6l-.1-.105z"></path>
   </svg>
 </span>
 
-<span ng-if="icon === 'agent-Never connected'" style="color:#ff0000">
-  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-    class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded" focusable="false">
-    <defs>
-      <circle id="dot-a" cx="8" cy="8" r="4"></circle>
-    </defs>
-    <use xlink:href="#dot-a"></use>
-  </svg>
+<span
+  ng-if="icon === 'slack'"
+  ng-class="className"
+  ng-style="isHex && { color: color }"
+  style="padding-left: 10px">
+  <a
+    class="euiButtonIcon euiButtonIcon--primary"
+    href="https://wazuh.com/community/join-us-on-slack/"
+    target="_blank"
+    rel="noopener noreferrer"
+    ><svg
+      class="euiIcon euiIcon--xxLarge euiButtonIcon__icon"
+      focusable="false"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32">
+      <path d="M13.271 14.61l4.239-1.42 1.37 4.094-4.238 1.42z"></path>
+      <path d="M13.271 14.61l4.239-1.42 1.37 4.094-4.238 1.42z"></path>
+      <path
+        d="M30.629 11.556c-3.277-10.921-8-13.46-18.921-10.185-10.92 3.277-13.46 8-10.184 18.921 3.276 10.92 8 13.46 18.92 10.184 10.921-3.276 13.46-8 10.185-18.92zm-5.512 7.085l-2.057.686.711 2.133c.28.864-.177 1.803-1.04 2.083-.179.05-.382.101-.56.076a1.695 1.695 0 0 1-1.523-1.117l-.711-2.134-4.242 1.422.711 2.134c.28.863-.177 1.803-1.04 2.082-.179.051-.382.102-.56.077a1.695 1.695 0 0 1-1.523-1.118l-.712-2.133-2.057.685c-.177.051-.38.102-.558.077a1.695 1.695 0 0 1-1.524-1.118c-.28-.863.178-1.803 1.041-2.082l2.057-.686-1.371-4.089-2.057.686c-.178.05-.381.101-.56.076a1.695 1.695 0 0 1-1.523-1.118c-.28-.863.178-1.803 1.041-2.082l2.057-.686-.71-2.133c-.28-.864.177-1.803 1.04-2.083.864-.279 1.804.178 2.083 1.042l.711 2.133 4.242-1.422-.712-2.134c-.279-.863.178-1.803 1.042-2.082.863-.28 1.803.178 2.082 1.041l.711 2.133 2.057-.685c.864-.28 1.804.178 2.083 1.041.28.864-.178 1.803-1.041 2.083l-2.057.685 1.371 4.09 2.057-.687c.864-.279 1.803.178 2.083 1.042.28.863-.178 1.803-1.042 2.082z"></path></svg
+  ></a>
 </span>
 
+<span
+  ng-if="icon === 'groups-google'"
+  ng-class="className"
+  ng-style="isHex && { color: color }"
+  style="padding-left: 10px">
+  <a
+    class="euiButtonIcon euiButtonIcon--primary"
+    href="https://groups.google.com/forum/#!forum/wazuh"
+    target="_blank"
+    rel="noopener noreferrer"
+    ><svg
+      class="euiIcon euiIcon--xxLarge euiButtonIcon__icon"
+      focusable="false"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32">
+      <g fill="none">
+        <path
+          fill="#E65A4D"
+          d="M29.162 4.149c.29-.175.588-.078.873 0a2.616 2.616 0 0 1 1.907 2.476c.006.29-.007.581-.007.866-.084 0-.135.052-.2.097-.815.582-1.642 1.164-2.45 1.752-.33.239-.692.426-.97.73-.116 0-.2.078-.284.136-2.69 1.855-5.379 3.704-8.062 5.56-1.331.918-2.663 1.849-3.995 2.773h-.11c-.058-.045-.11-.103-.168-.142L5.863 11.55c-.672-.466-1.344-.938-2.017-1.403-.077-.052-.148-.162-.245-.104-.09.052-.033.175-.045.272-.007.032 0 .065 0 .097v16.194c0 .116.006.24.012.355 0 .065-.006.123-.006.188-1.228.149-2.347-.02-3.116-1.131a2.381 2.381 0 0 1-.44-1.364c0-6.032-.006-12.057.007-18.089 0-1.228.995-2.314 2.217-2.488.194-.026.388-.052.556.077.04.039.071.078.117.11 4.273 3.168 8.546 6.335 12.819 9.51.168.122.278.116.446-.007 3.413-2.521 6.833-5.036 10.247-7.55.905-.692 1.823-1.384 2.747-2.07z"></path>
+        <path
+          fill="#F6F4EC"
+          d="M29.162 4.149c-.924.685-1.842 1.377-2.767 2.062-3.413 2.521-6.833 5.03-10.246 7.55-.168.123-.272.13-.446.007-4.267-3.174-8.54-6.335-12.813-9.51-.046-.032-.078-.07-.117-.11.078-.129.214-.083.324-.083h25.742c.11 0 .239-.046.323.084z"></path>
+        <path
+          fill="#E6E3D6"
+          d="M3.556 26.95a6.533 6.533 0 0 1-.013-.356V10.4c0-.032-.007-.065 0-.097.013-.09-.046-.213.045-.271.097-.059.174.051.246.103.672.465 1.344.937 2.017 1.403l9.832 6.846c.058.045.117.097.168.142-.026.026-.058.045-.084.071l-.064.065c-.052 0-.104.013-.13.064l-.064.065c-.007.013-.02.02-.026.032.013-.006.02-.019.032-.025l.065-.065c.052 0 .103-.013.13-.065.018-.02.044-.045.064-.064.064 0 .129-.007.194-.007.898.627 1.803 1.248 2.702 1.875 2.676 1.855 5.353 3.704 8.023 5.572.478.337 1.002.628 1.428 1.035-.116.11-.258.039-.388.058.007-.149-.122-.188-.22-.252-.49-.343-.995-.672-1.473-1.028-.802-.588-1.617-1.15-2.431-1.72-.679-.472-1.351-.963-2.05-1.409-.607-.388-1.17-.853-1.777-1.248-.685-.44-1.332-.93-2.01-1.377-.563-.368-1.113-.762-1.662-1.15-.11-.078-.207-.11-.323-.033-.233.168-.53.278-.724.46-.556.51-1.235.84-1.817 1.305-.743.589-1.545 1.112-2.34 1.636-1.319.873-2.599 1.816-3.911 2.696a43.697 43.697 0 0 0-2.308 1.629c-.207.155-.485.226-.614.485-.13-.013-.272.038-.395-.046 2.315-1.616 4.63-3.226 6.937-4.842.304-.213.646-.381.899-.666.045-.013.103-.019.097-.084 0-.006-.013-.02-.02-.02-.065-.006-.077.046-.09.091-.233.013-.375.194-.55.31-2.463 1.7-4.932 3.388-7.395 5.075zm11.119-7.564l.064-.065c.052 0 .104-.013.13-.064l.064-.065c.052 0 .104-.013.13-.065.006-.013.019-.02.025-.032-.012.006-.019.02-.032.026-.052 0-.103.013-.13.064l-.064.065c-.051 0-.103.013-.13.065-.018.026-.038.045-.057.07-.013.007-.026.014-.033.027.013-.007.026-.013.033-.026zm-.84.575c-.052 0-.104.013-.13.065-.039.006-.09.006-.097.065 0 .012.026.038.039.038.052-.006.058-.051.065-.09.051-.007.096-.013.122-.078a.311.311 0 0 0 .071-.058c.052 0 .104-.013.13-.065l.064-.064c.052 0 .104-.013.13-.065.006-.013.02-.02.026-.032-.013.006-.02.02-.033.026-.051 0-.103.013-.13.064-.018.02-.044.046-.064.065-.051 0-.103.013-.129.065l-.065.064zm-.841.588c-.052 0-.103.013-.13.065-.051.007-.103.013-.096.084 0 .007.013.02.02.02.07.006.077-.046.083-.097.052-.007.097-.02.123-.072.026-.012.045-.038.071-.058.052 0 .103-.013.13-.064l.064-.065c.052 0 .103-.013.13-.065.006-.013.019-.019.025-.032-.013.007-.02.02-.032.026-.052 0-.104.013-.13.065l-.064.064c-.052 0-.104.013-.13.065a.306.306 0 0 0-.064.064zm-.647.46c.052-.007.104-.013.097-.085 0-.006-.012-.019-.019-.019-.071-.006-.078.045-.084.097-.052 0-.097.013-.13.065a.223.223 0 0 0-.193.129c-.045.013-.104.013-.097.084 0 .006.013.02.02.02.064.006.077-.046.083-.098.09 0 .181-.006.194-.129.058-.006.104-.02.13-.065zm2.128-1.533c-.008.027-.025.054-.033.072.025.009.05.035.067.027.016-.01.025-.045.033-.072a.55.55 0 0 1-.067-.027zm-1.81 1.35c-.008-.024-.015-.056-.03-.056-.015-.008-.052.008-.06.024-.022.033-.007.074.03.074.022 0 .037-.025.06-.041zM15.355 19a.185.185 0 0 1 .034-.072c-.025-.009-.05-.035-.067-.026-.016.008-.025.044-.033.07.017.01.042.019.067.028zm-3.526 2.402c-.016-.024-.031-.05-.04-.057-.015 0-.055.016-.055.033-.016.04.008.074.048.065.016 0 .031-.024.047-.04z"></path>
+        <path
+          fill="#B6B5AC"
+          d="M28.121 27.085c-.426-.413-.944-.698-1.428-1.034-2.67-1.862-5.347-3.717-8.023-5.573-.899-.627-1.804-1.247-2.702-1.874 0-.02-.007-.046-.007-.065l3.995-2.773c2.69-1.856 5.379-3.705 8.062-5.56.084-.058.168-.136.284-.136v17.073c-.051-.019-.116-.038-.18-.058z"></path>
+        <path
+          fill="#E6E3D6"
+          d="M4.073 27.143c.123-.258.407-.33.614-.484a47.845 47.845 0 0 1 2.308-1.63c1.312-.885 2.592-1.823 3.91-2.695.796-.524 1.598-1.048 2.341-1.636.588-.465 1.26-.795 1.817-1.306.2-.18.49-.29.724-.459.11-.084.207-.051.323.033.55.388 1.099.782 1.661 1.15.68.446 1.326.944 2.01 1.377.608.388 1.17.854 1.779 1.248.698.446 1.37.937 2.049 1.41.814.568 1.635 1.13 2.43 1.719.485.355.983.685 1.475 1.028.09.064.226.103.22.252-7.888-.007-15.774-.007-23.661-.007z"></path>
+        <path
+          fill="#B1392F"
+          d="M28.315 27.143V10.07c.278-.304.64-.491.97-.73.814-.595 1.635-1.17 2.45-1.752.058-.045.116-.097.2-.097.007.11.013.213.013.323 0 5.502 0 11.01.007 16.51 0 .376-.013.75-.104 1.126-.161.691-.575 1.17-1.247 1.409-.744.259-1.513.33-2.289.284z"></path>
+        <path
+          fill="#BEBDB3"
+          d="M11.514 21.59c-.253.285-.595.453-.9.666a2650.078 2650.078 0 0 1-6.936 4.842l-.129.039c0-.065.007-.123.007-.188 2.47-1.687 4.932-3.374 7.402-5.061.174-.117.31-.304.55-.31l.006.012z"></path>
+      </g></svg
+  ></a>
+</span>
 
-<span ng-if="icon === 'agent-Disconnected'" style="color:#ff0000">
-    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-      class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded" focusable="false">
-      <defs>
-        <circle id="dot-a" cx="8" cy="8" r="4"></circle>
-      </defs>
-      <use xlink:href="#dot-a"></use>
+<span
+  ng-if="icon === 'groups-google'"
+  ng-class="className"
+  ng-style="isHex && { color: color }"
+  style="padding-left: 10px">
+  <a
+    class="euiButtonIcon euiButtonIcon--primary"
+    href="https://github.com/wazuh/wazuh-splunk"
+    target="_blank"
+    rel="noopener noreferrer">
+    <svg
+      class="euiIcon euiIcon--xxLarge euiButtonIcon__icon"
+      focusable="false"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32">
+      <path
+        d="M16 0C7.164 0 0 7.343 0 16.4c0 7.248 4.584 13.394 10.942 15.562.8.15 1.092-.356 1.092-.789 0-.39-.014-1.684-.022-3.053-4.45.991-5.39-1.934-5.39-1.934-.728-1.894-1.776-2.398-1.776-2.398-1.454-1.017.11-.997.11-.997 1.606.114 2.452 1.69 2.452 1.69 1.428 2.506 3.746 1.781 4.656 1.36.146-1.056.56-1.78 1.016-2.19-3.552-.414-7.288-1.821-7.288-8.105 0-1.792.624-3.254 1.646-4.402-.164-.416-.714-2.085.158-4.342 0 0 1.341-.44 4.4 1.681A14.882 14.882 0 0 1 16 7.932c1.36.006 2.728.188 4.006.553 3.053-2.124 4.396-1.681 4.396-1.681.875 2.259.325 3.926.16 4.34 1.026 1.148 1.645 2.61 1.645 4.402 0 6.3-3.742 7.687-7.307 8.094.577.508 1.086 1.505 1.086 3.035 0 2.192-.021 3.96-.021 4.5 0 .437.29.947 1.101.787C27.42 29.79 32 23.644 32 16.4 32 7.343 24.836 0 16 0z"></path>
     </svg>
-  </span>
+  </a>
+</span>
 
+<span
+  ng-if="icon === 'index-icon'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    class="euiIcon euiIcon--medium"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16">
+    <path
+      d="M7.914 1c-3.6 0-5.897 1.111-5.897 1.876 0 .766 2.297 1.877 5.897 1.877s5.897-1.111 5.897-1.877C13.811 2.111 11.514 1 7.914 1m3.98 7.988c-1.187.331-2.601.502-3.98.502-1.383 0-2.801-.172-3.991-.505l2.863 3.242v2.515c.136.08.515.214 1.128.214.61 0 .989-.133 1.126-.213v-2.515l2.854-3.24zm2.394-1.206l-4.248 4.823v2.246h.004c0 .763-1.069 1.105-2.13 1.105-1.06 0-2.13-.342-2.13-1.105h.002v-2.245L1.321 7.55l.01-.008A1.53 1.53 0 0 1 1 6.607V2.78h.02C1.14.973 4.627 0 7.913 0c3.286 0 6.774.973 6.894 2.78h.02v3.827c0 .343-.12.657-.335.941l-.003.004c-.06.079-.128.155-.202.23zm-.578-.856a.56.56 0 0 0 .118-.319V4.411c-1.288.879-3.649 1.342-5.914 1.342C5.65 5.753 3.288 5.29 2 4.411v2.196C2 7.375 4.304 8.49 7.914 8.49c2.879 0 4.927-.709 5.639-1.385l.157-.18z"></path>
+  </svg>
+</span>
 
-<span ng-if="icon === 'agent-Pending'" style="color:#fffb00">
-  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-    class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded" focusable="false">
+<span ng-if="icon === 'agent-Active'" style="color: rgb(0, 166, 155)">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded"
+    focusable="false">
     <defs>
       <circle id="dot-a" cx="8" cy="8" r="4"></circle>
     </defs>
     <use xlink:href="#dot-a"></use>
   </svg>
 </span>
-      
-<span ng-if="icon === 'submodule'" ng-class="className" ng-style="isHex && { color: color }">
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded" focusable="false"><path clip-rule="evenodd" d="M6 2H1v12h3V7a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1h4V4H7c-.621 0-1-.379-1-1V2zm10 6v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.25a.75.75 0 0 1 .75.75l-.004.206C6.99 2.317 6.974 3 7 3h8a1 1 0 0 1 1 1v4zm-1 1h-4a1 1 0 0 1-1-1V7H5v7h10V9zM2 4.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM6.5 9a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"></path></svg>
+
+<span ng-if="icon === 'agent-Never connected'" style="color: #ff0000">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded"
+    focusable="false">
+    <defs>
+      <circle id="dot-a" cx="8" cy="8" r="4"></circle>
+    </defs>
+    <use xlink:href="#dot-a"></use>
+  </svg>
 </span>
 
-
-
-<span ng-if="icon === 'import'" ng-class="className" ng-style="isHex && { color: color }">
-<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded" focusable="false"><path d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"></path></svg>
+<span ng-if="icon === 'agent-Disconnected'" style="color: #ff0000">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded"
+    focusable="false">
+    <defs>
+      <circle id="dot-a" cx="8" cy="8" r="4"></circle>
+    </defs>
+    <use xlink:href="#dot-a"></use>
+  </svg>
 </span>
 
-<span ng-if="icon === 'export'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded" focusable="false"><path d="M8.505 1c.422-.003.844.17 1.166.516l1.95 2.05c.213.228.213.6 0 .828a.52.52 0 0 1-.771 0L9 2.451v7.993c0 .307-.224.556-.5.556s-.5-.249-.5-.556v-7.96l-1.82 1.91a.52.52 0 0 1-.77 0 .617.617 0 0 1 0-.829l1.95-2.05A1.575 1.575 0 0 1 8.5 1h.005zM4.18 7c-.473 0-.88.294-.972.703l-1.189 5.25a.776.776 0 0 0-.019.172c0 .483.444.875.99.875H14.01c.065 0 .13-.006.194-.017.537-.095.885-.556.778-1.03l-1.19-5.25C13.7 7.294 13.293 7 12.822 7H4.18zM6 6v1h5V6h1.825c.946 0 1.76.606 1.946 1.447l1.19 5.4c.215.975-.482 1.923-1.556 2.118a2.18 2.18 0 0 1-.39.035H2.985C1.888 15 1 14.194 1 13.2c0-.119.013-.237.039-.353l1.19-5.4C2.414 6.606 3.229 6 4.174 6H6z"></path></svg>
+<span ng-if="icon === 'agent-Pending'" style="color: #fffb00">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon--danger euiIcon-isLoaded"
+    focusable="false">
+    <defs>
+      <circle id="dot-a" cx="8" cy="8" r="4"></circle>
+    </defs>
+    <use xlink:href="#dot-a"></use>
+  </svg>
 </span>
 
-<span ng-if="icon === 'full-screen'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded" focusable="false"><path d="M13 3v4h-1V4H9V3h4zM3 3h4v1H4v3H3V3zm10 10H9v-1h3V9h1v4zM3 13V9h1v3h3v1H3zM0 1.994C0 .893.895 0 1.994 0h12.012C15.107 0 16 .895 16 1.994v12.012A1.995 1.995 0 0 1 14.006 16H1.994A1.995 1.995 0 0 1 0 14.006V1.994zm1 0v12.012c0 .548.446.994.994.994h12.012a.995.995 0 0 0 .994-.994V1.994A.995.995 0 0 0 14.006 1H1.994A.995.995 0 0 0 1 1.994z" fill-rule="evenodd"></path></svg>
+<span
+  ng-if="icon === 'submodule'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon-isLoaded"
+    focusable="false">
+    <path
+      clip-rule="evenodd"
+      d="M6 2H1v12h3V7a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1h4V4H7c-.621 0-1-.379-1-1V2zm10 6v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.25a.75.75 0 0 1 .75.75l-.004.206C6.99 2.317 6.974 3 7 3h8a1 1 0 0 1 1 1v4zm-1 1h-4a1 1 0 0 1-1-1V7H5v7h10V9zM2 4.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM6.5 9a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"></path>
+  </svg>
 </span>
 
-<span ng-if="icon === 'shield'" ng-class="className" ng-style="isHex && { color: color }">
-  <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon--primary euiIcon--app euiIcon-isLoaded" focusable="false" role="img" aria-hidden="true"><path d="M14 32l-.36-.14A21.07 21.07 0 010 12.07V5.44L14 .06l14 5.38v6.63a21.07 21.07 0 01-13.64 19.78L14 32zM2 6.82v5.25a19.08 19.08 0 0012 17.77 19.08 19.08 0 0012-17.77V6.82L14 2.2 2 6.82z"></path><path class="euiIcon__fillSecondary" d="M9 17.83h2V23H9zM11 10.18V7H9v3.18a3 3 0 102 0zM10 14a1 1 0 110-2 1 1 0 010 2zM17 7h2v5.17h-2zM21 17a3 3 0 10-4 2.82V23h2v-3.18A3 3 0 0021 17zm-3 1a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+<span
+  ng-if="icon === 'import'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon-isLoaded"
+    focusable="false">
+    <path
+      d="M9 10.114l1.85-1.943a.52.52 0 0 1 .77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 0 1-2.31 0L5.41 9a.617.617 0 0 1 0-.829.52.52 0 0 1 .77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 0 0-.972.804l-1.189 6A.995.995 0 0 0 2.991 14h11.018a1 1 0 0 0 .972-1.196l-1.19-6a.993.993 0 0 0-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0 1 14.016 15H2.984a1.992 1.992 0 0 1-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"></path>
+  </svg>
+</span>
+
+<span
+  ng-if="icon === 'export'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon-isLoaded"
+    focusable="false">
+    <path
+      d="M8.505 1c.422-.003.844.17 1.166.516l1.95 2.05c.213.228.213.6 0 .828a.52.52 0 0 1-.771 0L9 2.451v7.993c0 .307-.224.556-.5.556s-.5-.249-.5-.556v-7.96l-1.82 1.91a.52.52 0 0 1-.77 0 .617.617 0 0 1 0-.829l1.95-2.05A1.575 1.575 0 0 1 8.5 1h.005zM4.18 7c-.473 0-.88.294-.972.703l-1.189 5.25a.776.776 0 0 0-.019.172c0 .483.444.875.99.875H14.01c.065 0 .13-.006.194-.017.537-.095.885-.556.778-1.03l-1.19-5.25C13.7 7.294 13.293 7 12.822 7H4.18zM6 6v1h5V6h1.825c.946 0 1.76.606 1.946 1.447l1.19 5.4c.215.975-.482 1.923-1.556 2.118a2.18 2.18 0 0 1-.39.035H2.985C1.888 15 1 14.194 1 13.2c0-.119.013-.237.039-.353l1.19-5.4C2.414 6.606 3.229 6 4.174 6H6z"></path>
+  </svg>
+</span>
+
+<span
+  ng-if="icon === 'full-screen'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon-isLoaded"
+    focusable="false">
+    <path
+      d="M13 3v4h-1V4H9V3h4zM3 3h4v1H4v3H3V3zm10 10H9v-1h3V9h1v4zM3 13V9h1v3h3v1H3zM0 1.994C0 .893.895 0 1.994 0h12.012C15.107 0 16 .895 16 1.994v12.012A1.995 1.995 0 0 1 14.006 16H1.994A1.995 1.995 0 0 1 0 14.006V1.994zm1 0v12.012c0 .548.446.994.994.994h12.012a.995.995 0 0 0 .994-.994V1.994A.995.995 0 0 0 14.006 1H1.994A.995.995 0 0 0 1 1.994z"
+      fill-rule="evenodd"></path>
+  </svg>
+</span>
+
+<span
+  ng-if="icon === 'shield'"
+  ng-class="className"
+  ng-style="isHex && { color: color }">
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    xmlns="http://www.w3.org/2000/svg"
+    class="euiIcon euiIcon--medium euiIcon--primary euiIcon--app euiIcon-isLoaded"
+    focusable="false"
+    role="img"
+    aria-hidden="true">
+    <path
+      d="M14 32l-.36-.14A21.07 21.07 0 010 12.07V5.44L14 .06l14 5.38v6.63a21.07 21.07 0 01-13.64 19.78L14 32zM2 6.82v5.25a19.08 19.08 0 0012 17.77 19.08 19.08 0 0012-17.77V6.82L14 2.2 2 6.82z"></path>
+    <path
+      class="euiIcon__fillSecondary"
+      d="M9 17.83h2V23H9zM11 10.18V7H9v3.18a3 3 0 102 0zM10 14a1 1 0 110-2 1 1 0 010 2zM17 7h2v5.17h-2zM21 17a3 3 0 10-4 2.82V23h2v-3.18A3 3 0 0021 17zm-3 1a1 1 0 110-2 1 1 0 010 2z"></path>
+  </svg>
 </span>

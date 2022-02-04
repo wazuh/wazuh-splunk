@@ -1,18 +1,44 @@
 <div flex layout="column" ng-cloak>
-
   <!-- Navigation bar -->
   <div>
-    <md-nav-bar class="wz-nav-bar" md-selected-nav-item="tabName" nav-bar-aria-label="Settings navigation links">
-
-      <md-nav-item class="wz-nav-item" ui-sref='settings.api' md-nav-click="switchTab('api')" name="api">API
+    <md-nav-bar
+      class="wz-nav-bar"
+      md-selected-nav-item="tabName"
+      nav-bar-aria-label="Settings navigation links">
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="settings.api"
+        md-nav-click="switchTab('api')"
+        name="api"
+        >API
       </md-nav-item>
-      <md-nav-item class="wz-nav-item" ui-sref='settings.index' md-nav-click="switchTab('index')" name="index">Index
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="settings.index"
+        md-nav-click="switchTab('index')"
+        name="index"
+        >Index
       </md-nav-item>
-      <md-nav-item class="wz-nav-item" ui-sref="settings.configuration"
-        md-nav-click="switchTab('configuration')" name="configuration">Configuration</md-nav-item>
-      <md-nav-item class="wz-nav-item" ui-sref='settings.logs' md-nav-click="switchTab('logs')" name="logs">Logs
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="settings.configuration"
+        md-nav-click="switchTab('configuration')"
+        name="configuration"
+        >Configuration</md-nav-item
+      >
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="settings.logs"
+        md-nav-click="switchTab('logs')"
+        name="logs"
+        >Logs
       </md-nav-item>
-      <md-nav-item class="wz-nav-item" ui-sref='settings.about' md-nav-click="switchTab('about')" name="about">About
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="settings.about"
+        md-nav-click="switchTab('about')"
+        name="about"
+        >About
       </md-nav-item>
     </md-nav-bar>
     <!-- End navigation bar -->

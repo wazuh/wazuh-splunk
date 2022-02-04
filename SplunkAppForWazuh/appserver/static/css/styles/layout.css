@@ -58,7 +58,6 @@
   margin-top: 12px;
 }
 
-
 .wz-margin-top-17 {
   margin-top: 17px;
 }
@@ -123,7 +122,7 @@
 }
 
 .wz-padding-left-16 {
-  padding-left: 16px
+  padding-left: 16px;
 }
 
 .padding-right-0 {
@@ -184,7 +183,7 @@
   flex: 1 1 100%;
 }
 
-.wz-pos-rel{
+.wz-pos-rel {
   position: relative;
 }
 
@@ -193,9 +192,9 @@
 /* -------------------------------------------------------------------------- */
 
 md-dialog.modalTheme {
-  animation: none!important;
-  transition: none!important;
-  transform: none!important;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
   bottom: 0;
   right: 0;
   position: fixed;
@@ -204,19 +203,18 @@ md-dialog.modalTheme {
   margin-right: 10px;
 }
 
-.md-dialog-body{
-  top: 0!important;
-  width: 100vw!important;
+.md-dialog-body {
+  top: 0 !important;
+  width: 100vw !important;
 }
-.md-dialog-body{
-  top: 0!important;
-  width: 100vw!important;
+.md-dialog-body {
+  top: 0 !important;
+  width: 100vw !important;
 }
-.md-dialog-body .md-scroll-mask{
-  display: none!important;
+.md-dialog-body .md-scroll-mask {
+  display: none !important;
 }
-.md-dialog-body .md-dialog-container{
-  height: 0!important;
-  width: 0!important;
-
+.md-dialog-body .md-dialog-container {
+  height: 0 !important;
+  width: 0 !important;
 }

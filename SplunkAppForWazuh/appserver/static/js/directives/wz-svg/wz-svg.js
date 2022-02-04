@@ -10,15 +10,15 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzSvg', function(BASE_URL) {
+  directives.directive('wzSvg', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         icon: '@',
         color: '@',
-        svgTooltip: '@'
+        svgTooltip: '@',
       },
       controller($scope) {
         /*
@@ -26,14 +26,13 @@ define(['../module'], function(directives) {
           primary, secondary, danger, info or any other, which will result in a class like 
           wz-color-primary, wz-color-secondary, etc.
         */
-        const color = $scope.color || '';
-        $scope.isHex = /^#[0-9A-F]{6}$/i.test(color);
-        $scope.className = !$scope.isHex ? `wz-color-${$scope.color}` : '';
-
+        const color = $scope.color || ''
+        $scope.isHex = /^#[0-9A-F]{6}$/i.test(color)
+        $scope.className = !$scope.isHex ? `wz-color-${$scope.color}` : ''
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-svg/wz-svg.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-svg/wz-svg.html',
     }
   })
 })

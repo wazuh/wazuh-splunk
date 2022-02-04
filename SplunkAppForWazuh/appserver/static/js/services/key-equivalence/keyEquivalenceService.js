@@ -1,13 +1,13 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
-  module.service('$keyEquivalenceService', function() {
+  module.service('$keyEquivalenceService', function () {
     const service = {
       equivalences: () => {
         return {
           id: 'ID',
-          'phase_name': 'Phase name',
-          'platform_name': 'Platforms',
+          phase_name: 'Phase name',
+          platform_name: 'Platforms',
           'json.created': 'Created',
           'json.name': 'Name',
           'json.x_mitre_version': 'Version',
@@ -127,24 +127,22 @@ define(['../module'], function(module) {
           D: 'Uninterruptible sleep (usually IO)',
           R: 'Running or runnable (on run queue)',
           S: 'Interruptible sleep (waiting for an event to complete)',
-          T:
-            'Stopped, either by a job control signal or because it is being traced.',
+          T: 'Stopped, either by a job control signal or because it is being traced.',
           W: 'paging (not valid since the 2.6.xx kernel)',
           X: 'Dead (should never be seen)',
-          Z:
-            'Defunct ("zombie") process, terminated but not reaped by its parent.',
+          Z: 'Defunct ("zombie") process, terminated but not reaped by its parent.',
           '<': 'High-priority (not nice to other users)',
           N: 'Low-priority (nice to other users)',
           L: 'Has pages locked into memory (for real-time and custom IO)',
           s: 'Is a session leader',
           l: 'Is multi-threaded (using CLONE_THREAD, like NPTL pthreads do)',
           '+': 'Is in the foreground process group',
-          'policy.actions' : 'Policy Actions',
-          'policy.resources' : 'Resources',
-          'policies' : 'Policies',
+          'policy.actions': 'Policy Actions',
+          'policy.resources': 'Resources',
+          policies: 'Policies',
           'policy.effect': 'Effect',
         }
-      }
+      },
     }
     return service
   })

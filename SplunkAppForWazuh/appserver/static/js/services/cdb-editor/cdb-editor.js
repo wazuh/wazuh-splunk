@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class CDBEditor {
@@ -45,17 +45,11 @@ define(['../module'], function(module) {
       }
     }
 
-    async getConfiguration(file, path) {
+    async getConfiguration(file, _path) {
       try {
         const url = `/lists/files/${file}?raw=true`
-        const result = await this.apiReq(
-          url,
-          { origin:"raw" }
-        )
-        if (
-          !result ||
-          !result.data
-        ) {
+        const result = await this.apiReq(url, { origin: 'raw' })
+        if (!result || !result.data) {
           throw new Error('Error fetching cdb list content')
         }
         return result.data.data

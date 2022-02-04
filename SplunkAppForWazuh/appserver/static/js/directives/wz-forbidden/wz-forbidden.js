@@ -10,17 +10,17 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzForbidden', function(BASE_URL) {
+  directives.directive('wzForbidden', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
-        data: '=data'
+        data: '=data',
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-forbidden/wz-forbidden.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-forbidden/wz-forbidden.html',
     }
   })
 })

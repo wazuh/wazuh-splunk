@@ -7,8 +7,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/single-value',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -29,6 +29,7 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} $notificationService
      * @param {*} hipaaTabs
      * @param {*} reportingEnabled
      * @param {*} pciExtensionEnabled
@@ -41,19 +42,22 @@ define([
       $currentDataService,
       $state,
       $reportingService,
+      $notificationService,
       hipaaTabs,
       reportingEnabled,
       pciExtensionEnabled,
       gdprExtensionEnabled,
-      nistExtensionEnabled,
+      nistExtensionEnabled
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
@@ -70,7 +74,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.dropdown = new Dropdown(
@@ -83,7 +87,7 @@ define([
       )
       this.dropdownInstance = this.dropdown.getElement()
 
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -146,7 +150,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -169,12 +173,14 @@ define([
               'totalAlerts',
               'requirementsEvolutionOverTime',
               'requirementsDistributionByAgent',
-              'alertsSummary'
+              'alertsSummary',
             ],
             {}, //Metrics
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
   }
   app.controller('overviewHipaaCtrl', Hipaa)

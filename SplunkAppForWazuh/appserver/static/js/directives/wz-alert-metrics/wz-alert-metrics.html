@@ -1,39 +1,51 @@
 <div layout-padding class="wz-no-padding">
-    <div
-      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
-      <div class="euiFlexItem euiFlexItem"></div>
-      <div class="euiFlexItem euiFlexItem">
-        <div class="euiStat euiStat--leftAligned wz-text-align-center">
-          <p class="euiText--small euiStat__description">Total</p>
-          <div class="euiText euiText--small euiStat__description">
-            <p class="agentField total">{{totalAlerts >= 0 ? totalAlerts : '0'}}</p>
-          </div>
+  <div
+    class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
+    <div class="euiFlexItem euiFlexItem"></div>
+    <div class="euiFlexItem euiFlexItem">
+      <div class="euiStat euiStat--leftAligned wz-text-align-center">
+        <p class="euiText--small euiStat__description">Total</p>
+        <div class="euiText euiText--small euiStat__description">
+          <p class="agentField total">
+            {{totalAlerts >= 0 ? totalAlerts : '0'}}
+          </p>
         </div>
       </div>
-      <div class="euiFlexItem euiFlexItem">
-        <div class="euiStat euiStat--leftAligned wz-text-align-center">
-          <p class="euiText--small euiStat__description">Level 12 or above alerts</p>
-          <div class="euiText euiText--small euiStat__description">
-            <p class="agentField active">{{levelTwelve >= 0 ? levelTwelve : '0'}}</p>
-          </div>
-        </div>
-      </div>
-      <div class="euiFlexItem euiFlexItem">
-        <div class="euiStat euiStat--leftAligned wz-text-align-center">
-          <p class="euiText--small euiStat__description">Authentication failure</p>
-          <div class="euiText euiText--small euiStat__description">
-            <p class="agentField disconnected">{{authFailure >= 0 ? authFailure : '0'}}</p>
-          </div>
-        </div>
-      </div>
-      <div class="euiFlexItem euiFlexItem">
-        <div class="euiStat euiStat--leftAligned wz-text-align-center">
-          <p class="euiText--small euiStat__description">Authentication success</p>
-          <div class="euiText euiText--small euiStat__description">
-            <p class="agentField">{{authSuccess >= 0 ? authSuccess : '0'}}</p>
-          </div>
-        </div>
-      </div>
-      <div class="euiFlexItem euiFlexItem"></div>
     </div>
+    <div class="euiFlexItem euiFlexItem">
+      <div class="euiStat euiStat--leftAligned wz-text-align-center">
+        <p class="euiText--small euiStat__description">
+          Level 12 or above alerts
+        </p>
+        <div class="euiText euiText--small euiStat__description">
+          <p class="agentField active">
+            {{levelTwelve >= 0 ? levelTwelve : '0'}}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="euiFlexItem euiFlexItem">
+      <div class="euiStat euiStat--leftAligned wz-text-align-center">
+        <p class="euiText--small euiStat__description">
+          Authentication failure
+        </p>
+        <div class="euiText euiText--small euiStat__description">
+          <p class="agentField disconnected">
+            {{authFailure >= 0 ? authFailure : '0'}}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="euiFlexItem euiFlexItem">
+      <div class="euiStat euiStat--leftAligned wz-text-align-center">
+        <p class="euiText--small euiStat__description">
+          Authentication success
+        </p>
+        <div class="euiText euiText--small euiStat__description">
+          <p class="agentField">{{authSuccess >= 0 ? authSuccess : '0'}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="euiFlexItem euiFlexItem"></div>
+  </div>
 </div>

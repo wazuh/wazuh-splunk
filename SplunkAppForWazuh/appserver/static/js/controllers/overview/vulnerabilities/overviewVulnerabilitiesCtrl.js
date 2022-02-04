@@ -18,8 +18,8 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -48,14 +48,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -71,7 +73,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.filters = this.getFilters()
@@ -169,7 +171,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -190,7 +192,7 @@ define([
               'commonAffectedPackages',
               'commonCves',
               'commonCwes',
-              'alertsSummary'
+              'alertsSummary',
             ],
             {}, //Metrics
             this.tableResults

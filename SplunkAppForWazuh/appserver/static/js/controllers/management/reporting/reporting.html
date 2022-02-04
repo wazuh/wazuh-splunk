@@ -1,7 +1,9 @@
 <div layout="column" layout-align="start stretch">
   <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-breadcrumb-margin'>
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+    <div class="wz-breadcrumb-margin">
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / Reporting </span>
     </div>
     <div flex></div>
@@ -9,13 +11,36 @@
 </div>
 
 <!-- Nav bar -->
-<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status
+<md-nav-bar
+  class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"
+  md-selected-nav-item="selectedNavTab">
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-status"
+    name="status"
+    >Status
   </md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-logs"
+    name="logs"
+    >Logs</md-nav-item
+  >
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-monitoring"
+    name="monitoring"
+    >Cluster
   </md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-reporting"
+    name="reporting"
+    >Reporting
   </md-nav-item>
 </md-nav-bar>
 
@@ -27,28 +52,42 @@
 </div>
 <div>
   <!-- No reports section -->
-  <div layout="row" layout-align="start start" ng-show="(!pagedItems || !pagedItems.length)">
+  <div
+    layout="row"
+    layout-align="start start"
+    ng-show="(!pagedItems || !pagedItems.length)">
     <md-card flex class="wz-md-card" flex>
       <md-card-content class="wz-text-center">
-        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">No reports
-          available</span>
+        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+        <span class="wz-headline-title">No reports available</span>
         <md-divider class="wz-margin-top-10"></md-divider>
         <div layout="column" class="wz-padding-top-10">
-          <p>There are no reports yet. Go to the Overview or Agents tabs and click on the <i class="fa fa-fw fa-print"
-              aria-hidden="true"></i> icon to create one.</p>
+          <p>
+            There are no reports yet. Go to the Overview or Agents tabs and
+            click on the
+            <i class="fa fa-fw fa-print" aria-hidden="true"></i> icon to create
+            one.
+          </p>
         </div>
       </md-card-content>
     </md-card>
   </div>
   <!-- End no reports section -->
-  <div layout="row" layout-padding ng-show="!loading && pagedItems && pagedItems.length"
-    style="padding-left: 10px; padding-right: 10px;">
+  <div
+    layout="row"
+    layout-padding
+    ng-show="!loading && pagedItems && pagedItems.length"
+    style="padding-left: 10px; padding-right: 10px">
     <span class="flex"></span>
     <!-- Refresh button -->
-    <md-button style="height: 30px; padding-top: 4px;" ng-click="load()" class='wz-margin-left-10'>
+    <md-button
+      style="height: 30px; padding-top: 4px"
+      ng-click="load()"
+      class="wz-margin-left-10">
       <span>
         <wz-svg icon="refresh"></wz-svg>
-        Refresh</span>
+        Refresh</span
+      >
       <md-tooltip md-direction="bottom" class="wz-tooltip">
         Refresh
       </md-tooltip>
@@ -58,26 +97,50 @@
     <md-card flex class="wz-md-card">
       <md-card-content>
         <div layout="row" class="wz-padding-top-10">
-          <table class="table table-striped table-condensed" style="margin-bottom:0;" id="wz_table">
+          <table
+            class="table table-striped table-condensed"
+            style="margin-bottom: 0"
+            id="wz_table">
             <thead class="wz-text-bold">
-              <th class="wz-text-left wz-text-link" ng-click="changeSorting('name')" >File</th>
-              <th class="wz-text-left wz-text-link" ng-click="changeSorting('size')">Size</th>
-              <th class="wz-text-left wz-text-link" ng-click="changeSorting('date')">Created</th>
+              <th
+                class="wz-text-left wz-text-link"
+                ng-click="changeSorting('name')">
+                File
+              </th>
+              <th
+                class="wz-text-left wz-text-link"
+                ng-click="changeSorting('size')">
+                Size
+              </th>
+              <th
+                class="wz-text-left wz-text-link"
+                ng-click="changeSorting('date')">
+                Created
+              </th>
               <th class="wz-text-left">Options</th>
             </thead>
             <tbody>
-              <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.column:sort.descending">
+              <tr
+                ng-repeat="item in pagedItems[currentPage] | orderBy:sort.column:sort.descending">
                 <td>{{item.name}}</td>
                 <td>{{item.size / 1024 | number: 2}}KB</td>
                 <td>{{offsetTimestamp(item.date)}}</td>
                 <td>
-                  <a ng-href="/static/app/SplunkAppForWazuh/{{item.name}}" flex class="wz-text-right" target="_blank">
+                  <a
+                    ng-href="/static/app/SplunkAppForWazuh/{{item.name}}"
+                    flex
+                    class="wz-text-right"
+                    target="_blank">
                     <wz-svg icon="download"></wz-svg>
                     <md-tooltip md-direction="bottom" class="wz-tooltip">
                       Download report
                     </md-tooltip>
                   </a>
-                  <a ng-if="isWazuhAdmin" flex class="wz-text-right cursor-pointer" ng-click="deleteReport(item.name)">
+                  <a
+                    ng-if="isWazuhAdmin"
+                    flex
+                    class="wz-text-right cursor-pointer"
+                    ng-click="deleteReport(item.name)">
                     <wz-svg icon="trash"></wz-svg>
                     <md-tooltip md-direction="bottom" class="wz-tooltip">
                       Delete report
@@ -91,16 +154,25 @@
                 <div class="pagination pull-right">
                   <ul layout="row">
                     <li ng-show="currentPage" class="md-padding">
-                      <a href ng-click="prevPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                      <a href ng-click="prevPage()"
+                        ><i class="fa fa-angle-left" aria-hidden="true"></i
+                      ></a>
                     </li>
 
-                    <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
-                        ng-class="{'wz-text-active': n == currentPage}" ng-click="setPage(n)" class="md-padding">
+                    <li
+                      ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+                      ng-class="{'wz-text-active': n == currentPage}"
+                      ng-click="setPage(n)"
+                      class="md-padding">
                       <a href ng-bind="n + 1">1</a>
                     </li>
 
-                    <li ng-show="currentPage < pagedItems.length - 1" class="md-padding">
-                      <a href ng-click="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                    <li
+                      ng-show="currentPage < pagedItems.length - 1"
+                      class="md-padding">
+                      <a href ng-click="nextPage()"
+                        ><i class="fa fa-angle-right" aria-hidden="true"></i
+                      ></a>
                     </li>
                   </ul>
                 </div>

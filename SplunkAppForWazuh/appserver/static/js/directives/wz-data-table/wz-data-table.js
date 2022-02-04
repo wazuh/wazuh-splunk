@@ -14,16 +14,16 @@ define([
   '../module',
   '../wz-table/lib/rows',
   '../wz-table/lib/pagination',
-  '../wz-table/lib/check-gap'
-], function(app, calcTableRows, pagination, checkGap) {
+  '../wz-table/lib/check-gap',
+], function (app, calcTableRows, pagination, checkGap) {
   'use strict'
 
-  app.directive('wzDataTable', function(BASE_URL) {
+  app.directive('wzDataTable', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         rowSizes: '=rowSizes',
-        data: '='
+        data: '=',
       },
       controller($scope, $filter, $notificationService, $window) {
         /**
@@ -72,7 +72,7 @@ define([
         $scope.sortValue = ''
         $scope.sortReverse = false
         $scope.searchTerm = ''
-        $scope.sort = key => {
+        $scope.sort = (key) => {
           if (key !== $scope.sortValue) {
             $scope.sortReverse = false
           }
@@ -113,9 +113,9 @@ define([
         $scope.range = (size, start, end) =>
           pagination.range(size, start, end, $scope.gap)
         $scope.prevPage = () => pagination.prevPage($scope)
-        $scope.nextPage = async currentPage =>
+        $scope.nextPage = async (currentPage) =>
           pagination.nextPage(currentPage, $scope, $notificationService, fetch)
-        $scope.setPage = function() {
+        $scope.setPage = function () {
           $scope.currentPage = this.n
           $scope.nextPage(this.n)
         }
@@ -129,7 +129,7 @@ define([
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-data-table/wz-data-table.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-data-table/wz-data-table.html',
     }
   })
 })

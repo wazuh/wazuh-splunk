@@ -1,40 +1,45 @@
 {
   "env": {
-    "browser": true,
-    "node": true,
-    "es6": true,
-    "mocha": true,
     "amd": true,
-    "jquery" : true
+    "browser": true,
+    "es6": true,
+    "jquery": true,
+    "mocha": true,
+    "node": true
   },
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended"
+  ],
   "parserOptions": {
-    "ecmaVersion": 9,
-    "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
-    }
-  },
-  "parser": "esprima",
-  "rules": {
-    "node/exports-style": [
-      "error",
-      "module.exports"
-    ],
-    "semi": 0,
-    "no-console": 0,
-    "no-process-exit": 0,
-    "node/no-unpublished-require": 0,
-    "node/no-unsupported-features": 0,
-    "node/no-unsupported-features/es-syntax": 0,
-    "no-extra-boolean-cast": 0,
-    "no-cond-assign": 0
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
   },
   "plugins": [
     "node",
     "async-await"
   ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:node/recommended"
-  ]
+  "rules": {
+    "no-cond-assign": 0,
+    "no-console": 0,
+    "no-extra-boolean-cast": 0,
+    "no-process-exit": 0,
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_|_"
+      }
+    ],
+    "node/exports-style": [
+      "error",
+      "module.exports"
+    ],
+    "node/no-unpublished-require": 0,
+    "node/no-unsupported-features": 0,
+    "node/no-unsupported-features/es-syntax": 0,
+    "semi": 0
+  }
 }

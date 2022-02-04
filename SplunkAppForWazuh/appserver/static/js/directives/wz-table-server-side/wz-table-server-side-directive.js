@@ -20,8 +20,8 @@ define([
   './lib/data',
   './lib/click-action',
   './lib/check-gap',
-  'JqueryUI'
-], function(
+  'JqueryUI',
+], function (
   app,
   calcTableRows,
   parseValue,
@@ -33,7 +33,7 @@ define([
   checkGap
 ) {
   'use strict'
-  app.directive('wazuhTableServerSide', function(BASE_URL) {
+  app.directive('wazuhTableServerSide', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -48,7 +48,7 @@ define([
         implicitSort: '=implicitSort',
         wzConfigViewer: '=wzConfigViewer',
         isRegistryValue: '=isRegistryValue',
-        agentId: '=agentId'
+        agentId: '=agentId',
       },
       controller(
         $rootScope,
@@ -73,7 +73,7 @@ define([
          * Init variables
          */
 
-        $scope.isAllowed = (action, resource, params = "*") => {
+        $scope.isAllowed = (action, resource, params = '*') => {
           return $security_service.getPolicy(action, resource, params).isAllowed
         }
         $scope.showingChecks = false
@@ -86,8 +86,9 @@ define([
         )
 
         $scope.isVulnerabilities = instance.path.startsWith('/vulnerability')
-        $scope.isPolicyMonitoring = instance.path.includes('sca') && instance.path.includes('/checks')        
-        $scope.isSyschecks = instance.path.startsWith('/syscheck')        
+        $scope.isPolicyMonitoring =
+          instance.path.includes('sca') && instance.path.includes('/checks')
+        $scope.isSyschecks = instance.path.startsWith('/syscheck')
 
         $scope.keyEquivalence = $keyEquivalenceService.equivalences()
         $scope.totalItems = 0
@@ -101,9 +102,9 @@ define([
         $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
         $scope.scapepath = $scope.path.split('/').join('')
 
-        $scope.updateColumns = key => {
+        $scope.updateColumns = (key) => {
           if (!$scope.isLastKey(key)) {
-            const cleanArray = $scope.keys.map(item => item.value || item)
+            const cleanArray = $scope.keys.map((item) => item.value || item)
             if (cleanArray.includes(key)) {
               const idx = cleanArray.indexOf(key)
               if (idx > -1) {
@@ -111,23 +112,23 @@ define([
               }
             } else {
               let originalKey = $scope.originalkeys.filter(
-                k => k.key.value === key || k.key === key
+                (k) => k.key.value === key || k.key === key
               )
               originalKey = originalKey[0].key
 
               const originalIdx = $scope.originalkeys.findIndex(
-                item => item.key === originalKey
+                (item) => item.key === originalKey
               )
               if (originalIdx >= 0) {
                 $scope.keys.splice(originalIdx, 0, originalKey)
               } else {
                 let originalKey = $scope.originalkeys.filter(
-                  k => k.key.value === key || k.key === key
+                  (k) => k.key.value === key || k.key === key
                 )
                 try {
                   originalKey = originalKey[0].key
                   const originalIdx = $scope.originalkeys.findIndex(
-                    item => item.key === originalKey
+                    (item) => item.key === originalKey
                   )
                   if (originalIdx >= 0) {
                     $scope.keys.splice(originalIdx, 0, originalKey)
@@ -145,13 +146,13 @@ define([
           //updateStoredKeys($scope.keys)
         }
 
-        $scope.exists = key => {
+        $scope.exists = (key) => {
           const str = key || key.value
           for (const k of $scope.keys) if ((k.value || k) === str) return true
           return false
         }
 
-        $scope.isLastKey = key => {
+        $scope.isLastKey = (key) => {
           const exists = $scope.exists(key)
           const keysLength = $scope.keys.length === 1
           const keyValue = key || key.value
@@ -170,7 +171,7 @@ define([
                 },
                 end: () => {
                   $scope.resizingColumns = false
-                }
+                },
               })
               $scope.$applyAsync()
             }
@@ -183,7 +184,7 @@ define([
         const rowSizes = $scope.rowSizes || [15, 13, 11]
         let doit
         let resizing = false
-        let itemsPerPage 
+        let itemsPerPage
         if (!$scope.wzConfigViewer) {
           $window.onresize = () => {
             if (resizing || $scope.resizingColumns) return
@@ -192,7 +193,7 @@ define([
             doit = setTimeout(() => {
               $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
               $scope.itemsPerPage = $scope.rowsPerPage
-              if(itemsPerPage != $scope.itemsPerPage){
+              if (itemsPerPage != $scope.itemsPerPage) {
                 itemsPerPage = $scope.itemsPerPage
                 init()
                   .then(() => {
@@ -200,11 +201,10 @@ define([
                     resizing = false
                   })
                   .catch(() => (resizing = false))
-                } else {
-                  resizing = false
-                }
+              } else {
+                resizing = false
+              }
             }, 1300)
-              
           }
         }
         $scope.rowsPerPage = calcTableRows($window.innerHeight, rowSizes)
@@ -227,7 +227,9 @@ define([
          * Fetchs data from API
          * @param {Object} options
          */
-        const fetch = async (options = { offset:0, limit: $scope.itemsPerPage }) => {
+        const fetch = async (
+          options = { offset: 0, limit: $scope.itemsPerPage }
+        ) => {
           try {
             if ((instance.filters || []).length) {
               $scope.customEmptyResults =
@@ -239,11 +241,18 @@ define([
             const result = await instance.fetch(options)
             $scope.time = result.time
             $scope.totalItems = result.totalItems
-            $scope.totalPages = Math.floor($scope.totalItems/$scope.itemsPerPage)
+            $scope.totalPages = Math.floor(
+              $scope.totalItems / $scope.itemsPerPage
+            )
             $scope.items = result.items
             checkGap($scope)
-            $scope.range = pagination.range($scope.totalPages, $scope.currentPage, $scope.currentPage + $scope.gap, $scope.gap)
-            $scope.$emit('wazuhFetched', { items:$scope.items })
+            $scope.range = pagination.range(
+              $scope.totalPages,
+              $scope.currentPage,
+              $scope.currentPage + $scope.gap,
+              $scope.gap
+            )
+            $scope.$emit('wazuhFetched', { items: $scope.items })
             return
           } catch (error) {
             if (
@@ -258,7 +267,7 @@ define([
           }
         }
 
-        $scope.canFilter = keyTmp => {
+        $scope.canFilter = (keyTmp) => {
           return (
             ($scope.path === '/rules' &&
               (keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path')) ||
@@ -267,7 +276,7 @@ define([
           )
         }
 
-        $scope.parseKey = key => {
+        $scope.parseKey = (key) => {
           return key ? key.value || key : key
         }
 
@@ -282,19 +291,20 @@ define([
               $scope.$emit('applyFilter', { filter })
             } else if (keyTmp === 'file') {
               const readOnly = !(
-                item.relative_dirname === 'etc/rules' || item.relative_dirname === 'etc/decoders'
+                item.relative_dirname === 'etc/rules' ||
+                item.relative_dirname === 'etc/decoders'
               )
               $scope.$emit('editFile', {
                 file: item.filename,
                 path: item.relative_dirname,
-                readOnly
+                readOnly,
               })
             }
             ev.stopPropagation()
           }
         }
 
-        $scope.sort = async field =>
+        $scope.sort = async (field) =>
           sort(field, $scope, instance, fetch, $notificationService)
 
         /**
@@ -348,7 +358,7 @@ define([
          * Filters API results
          * @param {String} filter
          */
-        const filter = async filter =>
+        const filter = async (filter) =>
           data.filterData(
             filter,
             $scope,
@@ -372,8 +382,9 @@ define([
             }
           } catch (error) {
             realTime = false
-            $scope.error = `Real time feature aborted - ${error.message ||
-              error}.`
+            $scope.error = `Real time feature aborted - ${
+              error.message || error
+            }.`
             $notificationService.handle(
               `Real time feature aborted. ${error.message || error}`,
               'Data factory'
@@ -392,18 +403,19 @@ define([
             $dateDiffService
           )
 
-        
         /**
          * Pagination variables and functions
          */
         $scope.itemsPerPage = $scope.rowsPerPage || 10
         $scope.currentPage = 0
         $scope.gap = 0
-        
-        $scope.prevPage = async() => pagination.prevPage($scope, $notificationService, fetch)
-        $scope.nextPage = async () => pagination.nextPage($scope, $notificationService, fetch)
-        $scope.setPage = function(page = false) {
-          $scope.currentPage = typeof page == 'number'? page : this.n
+
+        $scope.prevPage = async () =>
+          pagination.prevPage($scope, $notificationService, fetch)
+        $scope.nextPage = async () =>
+          pagination.nextPage($scope, $notificationService, fetch)
+        $scope.setPage = function (page = false) {
+          $scope.currentPage = typeof page == 'number' ? page : this.n
           pagination.setPage($scope, $notificationService, fetch)
         }
         $scope.getFirstPage = () => {
@@ -417,7 +429,7 @@ define([
         /**
          * Initializes table
          */
-         const init = async () => {
+        const init = async () => {
           try {
             $scope.error = false
             $scope.setPage(0)
@@ -495,7 +507,7 @@ define([
 
         $scope.isLookingGroup = () => {
           try {
-            const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/)
+            const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-.]*\/agents$/)
             $scope.isLookingDefaultGroup =
               instance.path.split('/').pop() === 'default'
             return regexp.test(instance.path)
@@ -513,7 +525,7 @@ define([
             $scope.removingGroup === group.name ? null : group.name
         }
 
-        $scope.showConfirmRemoveAgentFromGroup = (ev, agent) => {
+        $scope.showConfirmRemoveAgentFromGroup = (_ev, agent) => {
           $scope.removingAgent =
             $scope.removingAgent === agent.id ? null : agent.id
         }
@@ -526,19 +538,22 @@ define([
           $scope.removingGroup = null
         }
 
-        $scope.editGroup = group => {
+        $scope.editGroup = (group) => {
           $scope.$emit('openGroupFromList', { group })
         }
 
-        $scope.confirmRemoveAgent = async agent => {
+        $scope.confirmRemoveAgent = async (agent) => {
           try {
-            const [_, group] = instance.path.match(/^\/groups\/([a-zA-Z0-9_\-\.]*)\/agents$/) || []
+            const [, group] =
+              instance.path.match(/^\/groups\/([a-zA-Z0-9_\-.]*)\/agents$/) ||
+              []
             const result = await $groupHandler.removeAgentFromGroup(
               group,
               agent
             )
             $notificationService.showSuccessToast(
-              result.message || `Success. Agent ${agent} has been removed from ${group}`
+              result.message ||
+                `Success. Agent ${agent} has been removed from ${group}`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)
@@ -547,7 +562,7 @@ define([
           return init()
         }
 
-        $scope.confirmRemoveGroup = async group => {
+        $scope.confirmRemoveGroup = async (group) => {
           try {
             await $groupHandler.removeGroup(group)
             $notificationService.showSuccessToast(
@@ -575,7 +590,7 @@ define([
           $scope.removingFile = item
         }
 
-        $scope.confirmRemoveFile = async item => {
+        $scope.confirmRemoveFile = async (item) => {
           try {
             $scope.removingFile = false
             const result = await $fileEditor.removeFile(item)
@@ -594,7 +609,7 @@ define([
           return init()
         }
 
-        $scope.getWitdh = key => {
+        $scope.getWitdh = (key) => {
           try {
             if (key.includes('id') || key.includes('level')) {
               return 'wz-width-85'
@@ -605,7 +620,7 @@ define([
           } catch (error) {} // eslint-disable-line
         }
 
-       const checkIsWindows = () => {
+        const checkIsWindows = () => {
           try {
             const agent = $scope.$parent.$parent.$parent.agent
             return (agent.os || {}).platform === 'windows'
@@ -616,22 +631,19 @@ define([
 
         $scope.isWindows = checkIsWindows()
 
-        $scope.expandItem = item => {
+        $scope.expandItem = (item) => {
           if (item.expanded) item.expanded = false
           else {
-            $scope.items.map(
-              item => (item.expanded = false)
-            )
+            $scope.items.map((item) => (item.expanded = false))
             item.expanded = true
           }
         }
 
         $scope.loadRegistryValueDetails = async (item) => {
-          var parentEl = angular.element(document.body);
+          var parentEl = angular.element(document.body) // eslint-disable-line
           $mdDialog.show({
             parent: parentEl,
-            template:
-              `<md-dialog aria-label="List dialog">
+            template: `<md-dialog aria-label="List dialog">
               <h3 class="wz-headline-title boldText">Registry values</h3>
               <md-divider class="wz-margin-top-10"></md-divider>
               <md-dialog-content>
@@ -639,7 +651,10 @@ define([
                 <wazuh-table
                   flex
                   path="'/syscheck/${$scope.agentId}'"
-                  implicit-filter="[{name:'type',value:'registry_value'},{name:'file',value:'${item.file.replaceAll('\\','\\\\')}'}]"
+                  implicit-filter="[{name:'type',value:'registry_value'},{name:'file',value:'${item.file.replaceAll(
+                    '\\',
+                    '\\\\'
+                  )}'}]"
                   row-sizes="[6,6,6]"
                   extra-limit="true"
                   keys="['date','value.name','value.type','sha1']"
@@ -652,16 +667,16 @@ define([
               </md-dialog-actions>
             </md-dialog>;`,
             locals: {
-              items: item
+              items: item,
             },
             controller: DialogController,
-            controllerAs: 'ctrl'
-         })
-         function DialogController($mdDialog) {
-           this.closeDialog = function() {
-             $mdDialog.hide()
-           }
-         }
+            controllerAs: 'ctrl',
+          })
+          function DialogController($mdDialog) {
+            this.closeDialog = function () {
+              $mdDialog.hide()
+            }
+          }
         }
 
         /**
@@ -670,14 +685,14 @@ define([
         const cleanKeys = () => {
           if ($scope.customColumns && sessionStorage[$scope.path]) {
             $scope.cleanKeys = {}
-            $scope.keys.map(key => {
+            $scope.keys.map((key) => {
               const k = key.value || key
               let storedKeys = sessionStorage[$scope.path].split(';')
               $scope.cleanKeys[k] = storedKeys.indexOf(k) !== -1
             })
           } else {
             $scope.cleanKeys = {}
-            $scope.keys.map(key => {
+            $scope.keys.map((key) => {
               const k = key.value || key
               $scope.cleanKeys[k] = true
             })
@@ -687,13 +702,13 @@ define([
         /**
          * Launch an event to open the discover with the agent id
          */
-        $scope.launchAgentDiscover = agentId => {
+        $scope.launchAgentDiscover = (agentId) => {
           $scope.$emit('openDiscover', agentId)
         }
 
         cleanKeys()
 
-        $scope.getEquivalence = key => {
+        $scope.getEquivalence = (key) => {
           return $scope.keyEquivalence[key]
         }
 
@@ -701,18 +716,18 @@ define([
           $scope.showingChecks = !$scope.showingChecks
         }
 
-        $scope.switchKey = key => {
+        $scope.switchKey = (key) => {
           $scope.cleanKeys[key] = !$scope.cleanKeys[key]
         }
 
-        $scope.showKey = item => {
+        $scope.showKey = (item) => {
           const it = item.value || item
           return $scope.cleanKeys[it]
         }
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-table-server-side/wz-table-server-side.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-table-server-side/wz-table-server-side.html',
     }
   })
 })

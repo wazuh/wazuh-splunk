@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -55,14 +55,15 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
-      awsExtensionEnabled,
+      awsExtensionEnabled
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
@@ -179,7 +180,7 @@ define([
           '$result$',
           this.scope,
           'Agents Summary'
-        ))
+        )),
       ]
     }
 
@@ -191,7 +192,7 @@ define([
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
           this.apiReq(`/agents/summary/status`)
-            .then(data => {
+            .then((data) => {
               this.scope.agentsCountTotal = data.data.data.total
               this.scope.agentsCountActive = data.data.data.active
               this.scope.agentsCountDisconnected = data.data.data.disconnected
@@ -203,7 +204,7 @@ define([
                 : 0
               this.scope.$applyAsync()
             })
-            .catch(error => {
+            .catch((error) => {
               this.notification.showErrorToast(
                 `Cannot fetch agent status data: ${error}`
               )
@@ -218,14 +219,12 @@ define([
             )[0]
 
             if (this.clusOrMng == 'manager.name') {
-              this.mngName = this.currentDataService.getFilters()[0][
-                'manager.name'
-              ]
+              this.mngName =
+                this.currentDataService.getFilters()[0]['manager.name']
               this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
             } else {
-              this.clusName = this.currentDataService.getFilters()[0][
-                'cluster.name'
-              ]
+              this.clusName =
+                this.currentDataService.getFilters()[0]['cluster.name']
               this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
             }
           } catch (error) {} //eslint-disable-line
@@ -252,7 +251,7 @@ define([
               'alertsVizz',
               'alertsEvoTop5Agents',
               'top5ruleGroups',
-              'agentsSummaryVizz'
+              'agentsSummaryVizz',
             ],
             this.reportMetrics,
             this.tableResults
@@ -270,7 +269,7 @@ define([
         Alerts: this.scope.totalAlerts,
         'Level 12 or above alerts': this.scope.levelTwelve,
         'Authentication failure': this.scope.authFailure,
-        'Authentication success': this.scope.authSuccess
+        'Authentication success': this.scope.authSuccess,
       }
     }
   }

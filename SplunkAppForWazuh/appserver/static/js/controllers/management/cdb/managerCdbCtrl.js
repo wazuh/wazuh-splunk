@@ -2,8 +2,8 @@ define([
   '../../module',
   '../rules/ruleset',
   '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap'
-], function(controllers, Ruleset, pagination, checkGap) {
+  '../../../directives/wz-table/lib/check-gap',
+], function (controllers, Ruleset, pagination, checkGap) {
   'use strict'
   class CDBList extends Ruleset {
     /**
@@ -46,12 +46,12 @@ define([
 
       /* RBAC flags */
       this.scope.canReadLists = $security_service.isAllowed(
-        "LISTS_READ",
-        ["LIST_FILE"],
-        ["*"]
+        'LISTS_READ',
+        ['LIST_FILE'],
+        ['*']
       )
-      this.scope.canUpdateLists = $security_service.isAllowed("LISTS_UPDATE", [
-        "RESOURCELESS",
+      this.scope.canUpdateLists = $security_service.isAllowed('LISTS_UPDATE', [
+        'RESOURCELESS',
       ])
     }
 
@@ -74,7 +74,7 @@ define([
         this.showConfirmRemoveEntry(ev, key)
       this.scope.editKey = (key, value) => this.editKey(key, value)
       this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
-      this.scope.confirmRemoveEntry = key => this.confirmRemoveEntry(key)
+      this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
       this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveList = () => this.saveList()
@@ -97,24 +97,24 @@ define([
       this.scope.range = (size, start, end) =>
         this.pagination.range(size, start, end, this.scope.gap)
       this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-      this.scope.nextPage = async currentPage =>
+      this.scope.nextPage = async (currentPage) =>
         this.pagination.nextPage(
           currentPage,
           this.scope,
           this.notification,
           null
         )
-      this.scope.setPage = n => {
+      this.scope.setPage = (n) => {
         this.scope.currentPage = n
         this.scope.nextPage(n)
       }
-      this.scope.filterContent = filter => this.filterContent(filter)
+      this.scope.filterContent = (filter) => this.filterContent(filter)
 
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', event => {
+      this.scope.$on('loadedTable', (event) => {
         event.stopPropagation()
         try {
           if (window.localStorage.cdb) {
@@ -150,8 +150,8 @@ define([
           list: {},
           details: {
             file: '',
-            path: 'etc/lists'
-          }
+            path: 'etc/lists',
+          },
         }
       } catch (error) {
         this.notification.showErrorToast('Cannot add new CDB list file.')
@@ -331,7 +331,7 @@ define([
     stringToObj(string) {
       let result = {}
       const splitted = string.split('\n')
-      splitted.forEach(element => {
+      splitted.forEach((element) => {
         const keyValue = element.split(':')
         if (keyValue[0]) result[keyValue[0]] = keyValue[1]
       })

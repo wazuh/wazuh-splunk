@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(app) {
+define(['../module'], function (app) {
   class CSVRequest {
     /**
      * Constructor
@@ -30,7 +30,7 @@ define(['../module'], function(app) {
         let filterStr = '{'
         if (filters && typeof filters === 'object' && filters.length > 0) {
           filters.map(
-            filter => (filterStr += `"${filter.name}": "${filter.value}",`)
+            (filter) => (filterStr += `"${filter.name}": "${filter.value}",`)
           )
           filterStr = filterStr.slice(0, -1)
           filterStr += '}'

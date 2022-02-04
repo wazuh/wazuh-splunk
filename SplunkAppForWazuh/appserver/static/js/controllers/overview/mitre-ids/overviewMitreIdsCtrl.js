@@ -45,7 +45,7 @@ define([
       $mdDialog,
       $dateDiffService,
       $urlTokenModel,
-      extensions,
+      extensions
     ) {
       this.scope = $scope
       this.currentDataService = $currentDataService
@@ -79,15 +79,15 @@ define([
         ) {
           this.urlTokenModel.set({ earliest: '0', latest: '' })
         }
-        this.timePicker = new TimePicker(
-          '#timePicker',
-          this.reloadFilters
-        )
+        this.timePicker = new TimePicker('#timePicker', this.reloadFilters)
         if (
           !this.urlTokenModel.has('form.when.earliest') &&
           !this.urlTokenModel.has('form.when.latest')
         ) {
-          this.urlTokenModel.set({ 'form.when.earliest': '0', 'form.when.latest': '' })
+          this.urlTokenModel.set({
+            'form.when.earliest': '0',
+            'form.when.latest': '',
+          })
         }
         if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
           this.scope.searchBarModel.node_name = nodes || []
@@ -99,26 +99,31 @@ define([
       this.scope.$applyAsync()
     }
     onDataTactics(rows) {
-      rows.forEach(row => {
+      rows.forEach((row) => {
         this.scope.tactics[row[0]] = parseInt(row[1])
       })
-      this.scope.sortedTactics = Object.entries(this.scope.tactics).sort((a, b) => {
-        return (b[1] || 0) - (a[1] || 0)
-      })
+      this.scope.sortedTactics = Object.entries(this.scope.tactics).sort(
+        (a, b) => {
+          return (b[1] || 0) - (a[1] || 0)
+        }
+      )
       this.scope.$applyAsync()
     }
 
     onDataTechniques(rows) {
-      rows.forEach(row => {
+      rows.forEach((row) => {
         this.scope.techniques[row[0]].count = parseInt(row[1])
       })
-      this.scope.sortedTechniques = Object.entries(this.scope.techniques).sort((a, b) => {
-        return (b[1].count || 0) - (a[1].count || 0)
-      })
+      this.scope.sortedTechniques = Object.entries(this.scope.techniques).sort(
+        (a, b) => {
+          return (b[1].count || 0) - (a[1].count || 0)
+        }
+      )
       this.scope.$applyAsync()
     }
     cleanModalTable() {
-      this.vizz.forEach(vizz => {
+      this.vizz.forEach((vizz) => {
+        // eslint-disable-next-line no-undef
         angular.element(vizz.element.el).empty()
         vizz.destroy()
       })
@@ -138,16 +143,13 @@ define([
         )
         table.search.on('search:done', () => {
           this.scope.loadingModalData = false
-          if(this.modalOpen)
-            this.modalInitialized = true
+          if (this.modalOpen) this.modalInitialized = true
           this.scope.$applyAsync()
         })
-        this.vizz.push(
-          table
-        )
+        this.vizz.push(table)
       }
     }
-    
+
     /**
      * Load Main Tactics and Techniques
      */
@@ -156,9 +158,11 @@ define([
       this.scope.tactics = Object.assign({}, this.mitre_tactics)
       this.scope.sortedTactics = Object.entries(this.scope.tactics)
       this.scope.techniques = Object.assign({}, this.mitre_techniques)
-      for (let id in this.scope.techniques)
-        this.scope.techniques[id].count = 0
-      if (typeof earliest_time == 'undefined' && typeof latest_time == 'undefined') {
+      for (let id in this.scope.techniques) this.scope.techniques[id].count = 0
+      if (
+        typeof earliest_time == 'undefined' &&
+        typeof latest_time == 'undefined'
+      ) {
         earliest_time = this.urlTokenModel.get('form.when.earliest')
         latest_time = this.urlTokenModel.get('form.when.latest')
       }
@@ -169,7 +173,7 @@ define([
         onData: this.onDataTactics,
         scope: this.scope,
         earliest_time,
-        latest_time
+        latest_time,
       })
 
       this.techniquesSearch = new SearchHelper({
@@ -178,12 +182,15 @@ define([
         onData: this.onDataTechniques,
         scope: this.scope,
         earliest_time,
-        latest_time
+        latest_time,
       })
     }
 
     reloadFilters(input) {
-      const { earliest_time, latest_time } = typeof input == 'object' ? input.settings.attributes : this.timePicker.input.settings.attributes
+      const { earliest_time, latest_time } =
+        typeof input == 'object'
+          ? input.settings.attributes
+          : this.timePicker.input.settings.attributes
 
       this.filters = this.currentDataService.getSerializedFilters(false)
       this.destroy()
@@ -199,10 +206,12 @@ define([
       this.scope.addingAgents = false
       this.scope.hideEmptyRows = false
       this.scope.query = (query, search) => this.query(query, search)
-      this.scope.showAgent = agent => this.showAgent(agent)
+      this.scope.showAgent = (agent) => this.showAgent(agent)
       this.scope.goToDashboard = () => this.goToDashboard()
-      this.scope.loadRegistryValueDetails = item => this.loadRegistryValueDetails(item)
-      this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
+      this.scope.loadRegistryValueDetails = (item) =>
+        this.loadRegistryValueDetails(item)
+      this.scope.isClusterEnabled =
+        this.clusterInfo && this.clusterInfo.status === 'enabled'
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
       this.scope.version = 'all'
@@ -218,14 +227,14 @@ define([
       this.loadTacticsTechniques()
 
       // Listeners
-      this.scope.$on('deletedFilter', event => {
+      this.scope.$on('deletedFilter', (event) => {
         event.stopPropagation()
         this.reloadFilters()
       })
 
-      this.scope.$on('barFilter', event => {
+      this.scope.$on('barFilter', (event) => {
         event.stopPropagation()
-        event.currentScope.custom_search = ""
+        event.currentScope.custom_search = ''
         this.reloadFilters()
       })
       this.scope.offsetTimestamp = (text, time) => {
@@ -250,18 +259,19 @@ define([
       this.scope.$applyAsync()
 
       try {
-        const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${this.scope.selectedItem[0]}` })
+        const newRequestMitre = await this.apiReq(`/mitre`, {
+          q: `id=${this.scope.selectedItem[0]}`,
+        })
         const mitreData = newRequestMitre.data.data.affected_items[0]
+        // eslint-disable-next-line no-undef
         var parentEl = angular.element(document.body)
         const ParentCtrl = this
-
 
         this.$mdDialog.show({
           parent: parentEl,
           scope: this.scope,
           preserveScope: true,
-          template:
-          `<md-dialog aria-label="List dialog" style="min-height:80%;max-width: 75%;">
+          template: `<md-dialog aria-label="List dialog" style="min-height:80%;max-width: 75%;">
             <h3 class="wz-headline-title boldText">Technique ${this.scope.selectedItem[1].name}</h3>
             <md-divider class="wz-margin-top-10"></md-divider>
             <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
@@ -308,31 +318,28 @@ define([
           </md-dialog>`,
           locals: {
             items: this.scope.selectedItem,
-            loadingModalData: this.scope.loadingModalData
+            loadingModalData: this.scope.loadingModalData,
           },
-          onComplete: () => {           
+          onComplete: () => {
             this.timePicker = new TimePicker(
               '#timePickerModal',
               this.reloadFilters
             )
             this.modalOpen = true
           },
-          controller: DialogController,
-          controllerAs: 'ctrl'
+          controller: ($mdDialog, $scope) => {
+            this.$scope = $scope
+            this.closeDialog = () => {
+              ParentCtrl.modalOpen = false
+              ParentCtrl.modalInitialized = false
+              ParentCtrl.cleanModalTable()
+              $mdDialog.hide()
+            }
+          },
+          controllerAs: 'ctrl',
         })
-        function DialogController($mdDialog, $scope) {
-
-          this.$scope = $scope
-          this.closeDialog = () => {
-            ParentCtrl.modalOpen = false
-            ParentCtrl.modalInitialized = false
-            ParentCtrl.cleanModalTable()
-            $mdDialog.hide()
-          }
-        }
 
         this.scope.$applyAsync()
-
       } catch (err) {
         console.error(err)
       }
@@ -341,8 +348,8 @@ define([
     /**
      * Link to Mitre Dashboard
      */
-    goToDashboard(){
-      this.state.go('ow-mitre', { })
+    goToDashboard() {
+      this.state.go('ow-mitre', {})
     }
   }
   app.controller('overviewMitreIdsCtrl', OverviewMitreIds)

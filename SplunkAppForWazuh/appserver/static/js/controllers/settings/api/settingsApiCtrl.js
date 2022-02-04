@@ -9,7 +9,13 @@ define(['../../module'], function (controllers) {
      * @param {*} apiList
      * @param {*} $notificationService
      */
-    constructor($scope, $currentDataService, apiList, isSplunkAdmin, $notificationService) {
+    constructor(
+      $scope,
+      $currentDataService,
+      apiList,
+      isSplunkAdmin,
+      $notificationService
+    ) {
       this.scope = $scope
       this.scope.addManagerContainer = false
       this.scope.isEditing = false
@@ -28,7 +34,7 @@ define(['../../module'], function (controllers) {
       this.currentDataService = $currentDataService
       this.notification = $notificationService
       this.savingApi = false
-      this.scope.runAs = false;
+      this.scope.runAs = false
       this.scope.isSplunkAdmin = isSplunkAdmin
     }
 
@@ -38,19 +44,19 @@ define(['../../module'], function (controllers) {
     $onInit() {
       this.scope.init = () => this.init()
       this.scope.addNewApiClick = () => this.addNewApiClick()
-      this.scope.checkManager = entry => this.checkManager(entry)
-      this.scope.editEntry = entry => this.editEntry(entry)
-      this.scope.removeManager = entry => this.removeManager(entry)
+      this.scope.checkManager = (entry) => this.checkManager(entry)
+      this.scope.editEntry = (entry) => this.editEntry(entry)
+      this.scope.removeManager = (entry) => this.removeManager(entry)
       this.scope.updateEntry = (user, pass, url, port, alias, runAs) =>
         this.updateEntry(user, pass, url, port, alias, runAs)
-      this.scope.selectManager = mg => this.selectManager(mg)
+      this.scope.selectManager = (mg) => this.selectManager(mg)
       this.scope.submitApiForm = (user, api, url, port, alias, runAs) =>
         this.submitApiForm(user, api, url, port, alias, runAs)
-      this.scope.getIconAndTooltip = entry => this.getIconAndTooltip(entry)
+      this.scope.getIconAndTooltip = (entry) => this.getIconAndTooltip(entry)
       this.init()
 
       // Init form values
-      this.clearForm();
+      this.clearForm()
 
       // Listens for changes in the selected API
       this.scope.$on('APIChanged', (event, key) => {
@@ -73,7 +79,7 @@ define(['../../module'], function (controllers) {
           // If no API, then remove cookie
           if (Array.isArray(this.apiList) && this.apiList.length === 0) {
             this.currentDataService.removeCurrentApi()
-            this.scope.$emit('updatedAPI', () => { })
+            this.scope.$emit('updatedAPI', () => {})
           }
           // Get the current selected API
           let currentApi = this.currentDataService.getApi()
@@ -119,7 +125,7 @@ define(['../../module'], function (controllers) {
           this.scope.apiList.splice(index, 1)
           this.scope.loadingVizz = false
           this.notification.showSuccessToast('Manager was removed')
-          this.scope.$emit('updatedAPI', () => { })
+          this.scope.$emit('updatedAPI', () => {})
 
           // Turn off the isEditing mode
           this.scope.edit = false
@@ -187,7 +193,7 @@ define(['../../module'], function (controllers) {
         this.scope.url = entry.url
         this.scope.pass = entry.pass
         this.scope.port = entry.portapi
-        this.scope.runAs = entry.runAs;
+        this.scope.runAs = entry.runAs
         this.scope.user = entry.userapi
         this.scope.managerName = entry.managerName
         this.scope.filterType = entry.filterType
@@ -235,8 +241,8 @@ define(['../../module'], function (controllers) {
         // Handle errors
         if ('data' in res && 'messages' in res.data) {
           // messages in an array of {type, text} objects
-          res.data.messages.forEach(item => {
-            if ('type' in item && item.type === "ERROR") {
+          res.data.messages.forEach((item) => {
+            if ('type' in item && item.type === 'ERROR') {
               throw new Error(item.text)
             }
           })
@@ -289,9 +295,8 @@ define(['../../module'], function (controllers) {
         await this.currentDataService.chose(key)
         this.setYellowStar(key)
         this.scope.loadingVizz = false
-        if (showToast)
-          this.notification.showSuccessToast('API selected')
-        this.scope.$emit('updatedAPI', () => { })
+        if (showToast) this.notification.showSuccessToast('API selected')
+        this.scope.$emit('updatedAPI', () => {})
         this.scope.$applyAsync()
       } catch (err) {
         this.scope.loadingVizz = false
@@ -351,7 +356,7 @@ define(['../../module'], function (controllers) {
           userapi: form_apiuser,
           passapi: form_apipass,
           alias: form_alias,
-          runAs: runAs
+          runAs: runAs,
         }
 
         // If connected to the API then continue
@@ -375,7 +380,7 @@ define(['../../module'], function (controllers) {
         this.scope.$applyAsync()
         this.notification.showSuccessToast('New API was added')
         this.scope.loadingVizz = false
-        this.scope.$emit('updatedAPI', () => { })
+        this.scope.$emit('updatedAPI', () => {})
       } catch (err) {
         this.scope.loadingVizz = false
         if (
@@ -475,33 +480,31 @@ define(['../../module'], function (controllers) {
     }
 
     setYellowStar(key) {
-      this.apiList.map(api => {
+      this.apiList.map((api) => {
         api['_key'] === key ? (api.selected = true) : (api.selected = false)
       })
     }
 
-
     /**
-     * Evaluates the class and tooltip text for the given API 
+     * Evaluates the class and tooltip text for the given API
      * object depending on the `run_as` value.
-     * 
+     *
      * If the `run_as` field is true, a check icon is shown. If it is false,
-     * a cross icon is shown instead. Respectively, the tooltip text takes 
+     * a cross icon is shown instead. Respectively, the tooltip text takes
      * 'enabled' or 'disable'.
-     * 
+     *
      * @param {Object} entry API object to evaluate.
-     * @returns Object with the CSS class for the icon and string text 
+     * @returns Object with the CSS class for the icon and string text
      * for the tooltip.
      */
     getIconAndTooltip(entry) {
       // Cast to boolean
-      const runAs = (entry.runAs === "true") || (entry.runAs === true)
+      const runAs = entry.runAs === 'true' || entry.runAs === true
       return {
         class: runAs ? 'fa fa-check' : 'fa fa-times',
-        tooltip: runAs ? 'enabled' : 'disabled'
+        tooltip: runAs ? 'enabled' : 'disabled',
       }
     }
-
   }
   controllers.controller('settingsApiCtrl', SettingsApi)
 })

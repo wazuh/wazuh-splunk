@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class GroupHandler {
@@ -25,7 +25,7 @@ define(['../module'], function(module) {
           {},
           'DELETE'
         )
-        if (result && result.data  && !result.data.error) {
+        if (result && result.data && !result.data.error) {
           return result.data
         } else {
           throw new Error(result.data.message)
@@ -74,10 +74,10 @@ define(['../module'], function(module) {
 
     async createGroup(name) {
       try {
-        const content = JSON.stringify({group_id:name});
+        const content = JSON.stringify({ group_id: name })
         const result = await this.req.apiReq(
           `/groups`,
-          {content, origin:'json'},
+          { content, origin: 'json' },
           'POST'
         )
         if (result.data.error != 0) {

@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -47,13 +47,15 @@ define([
       $reportingService,
       reportingEnabled,
       extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -106,7 +108,7 @@ define([
           '$result$',
           this.scope,
           'Alerts summary'
-        )
+        ),
       ]
     }
 

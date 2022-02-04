@@ -9,65 +9,65 @@
   *
   * Find more information about this on the LICENSE file.
   */
- 
-  /* -------------------------------------------------------------------------- */
- /* ------------------------ Wazuh Multiple selector ------------------------- */
- /* -------------------------------------------------------------------------- */
- 
-  
- .wzMultipleSelector{
-    width: 100%;
+
+/* -------------------------------------------------------------------------- */
+/* ------------------------ Wazuh Multiple selector ------------------------- */
+/* -------------------------------------------------------------------------- */
+
+.wzMultipleSelector {
+  width: 100%;
 }
 
-.wzMultipleSelectorCounter{
-    position: absolute;
-    right: 15px;
-    padding: 20px 40px;
-    z-index: 1;
+.wzMultipleSelectorCounter {
+  position: absolute;
+  right: 15px;
+  padding: 20px 40px;
+  z-index: 1;
 }
 
-.error-msg{
-    color: red;
-    padding: 8px;
+.error-msg {
+  color: red;
+  padding: 8px;
 }
 
- .wzMultipleSelector .panel-primary{
-    border: 1px solid #d9d9d9;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 2px;
+.wzMultipleSelector .panel-primary {
+  border: 1px solid #d9d9d9;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 2px;
 }
 
- .wzMultipleSelector .panel-primary > .panel-heading{
-    background: none;
-    color: #000;
-    margin: 5px 15px;
-    border-color: #e0e0e0;
+.wzMultipleSelector .panel-primary > .panel-heading {
+  background: none;
+  color: #000;
+  margin: 5px 15px;
+  border-color: #e0e0e0;
 }
 
- .wzMultipleSelectorButtons{
-    width: 100px;
-    float: left;
-    text-align: center;
-    height: 300px;
-    display: grid;
-    margin-top: 10px;
+.wzMultipleSelectorButtons {
+  width: 100px;
+  float: left;
+  text-align: center;
+  height: 300px;
+  display: grid;
+  margin-top: 10px;
 }
 
- .wzMultipleSelectorButtons button{
-    margin: 5px;
+.wzMultipleSelectorButtons button {
+  margin: 5px;
 }
 
- .wzMultipleSelectorLeft, .wzMultipleSelectorRight{
-    margin: 0 15px;
-    width: calc(50% - 80px);
-    float: left;
+.wzMultipleSelectorLeft,
+.wzMultipleSelectorRight {
+  margin: 0 15px;
+  width: calc(50% - 80px);
+  float: left;
 }
 
- .wzMultipleSelector .panel-body{
-    display: grid;
+.wzMultipleSelector .panel-body {
+  display: grid;
 }
 
- .wzMultipleSelector select{
-    border-color: #e0e0e0;
-    margin-top: 15px;
-} 
+.wzMultipleSelector select {
+  border-color: #e0e0e0;
+  margin-top: 15px;
+}

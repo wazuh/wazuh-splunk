@@ -2,8 +2,8 @@ define([
   '../../module',
   '../rules/ruleset',
   '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap'
-], function(controllers, Ruleset, pagination, checkGap) {
+  '../../../directives/wz-table/lib/check-gap',
+], function (controllers, Ruleset, pagination, checkGap) {
   'use strict'
   class CdbListId extends Ruleset {
     /**
@@ -50,7 +50,9 @@ define([
       this.pagination = pagination
       this.checkGap = checkGap
       this.restartService = $restartService
-      this.scope.canUpdateList = $security_service.isAllowed('LISTS_UPDATE', ['LIST_FILE']);  
+      this.scope.canUpdateList = $security_service.isAllowed('LISTS_UPDATE', [
+        'LIST_FILE',
+      ])
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
@@ -76,15 +78,15 @@ define([
           this.showConfirmRemoveEntry(ev, key)
         this.scope.editKey = (key, value) => this.editKey(key, value)
         this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
-        this.scope.confirmRemoveEntry = key => this.confirmRemoveEntry(key)
+        this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
         this.scope.firstPage = () => this.firstPage()
 
         // Edit cdb lists
         this.scope.currentList = {
           details: {
             file: this.cdbInfo.file,
-            path: this.cdbInfo.path
-          }
+            path: this.cdbInfo.path,
+          },
         }
         this.cdbInfo.content = this.stringToObj(this.cdbInfo.content)
 
@@ -108,14 +110,14 @@ define([
         this.scope.range = (size, start, end) =>
           this.pagination.range(size, start, end, this.scope.gap)
         this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-        this.scope.nextPage = async currentPage =>
+        this.scope.nextPage = async (currentPage) =>
           this.pagination.nextPage(
             currentPage,
             this.scope,
             this.notification,
             null
           )
-        this.scope.setPage = n => {
+        this.scope.setPage = (n) => {
           this.scope.currentPage = n
           this.scope.nextPage(n)
         }
@@ -246,7 +248,7 @@ define([
     stringToObj(string) {
       let result = {}
       const splitted = string.split('\n')
-      splitted.forEach(element => {
+      splitted.forEach((element) => {
         const keyValue = element.split(':')
         if (keyValue[0]) result[keyValue[0]] = keyValue[1]
       })

@@ -1,33 +1,34 @@
 @import './variables.css';
 
 .custom-result-value {
-    font-size: 30px;
-    margin: 35px auto;
-    text-align: center;
-    font-weight: bold;
-    color: rgb(85, 85, 85);
+  font-size: 30px;
+  margin: 35px auto;
+  text-align: center;
+  font-weight: bold;
+  color: rgb(85, 85, 85);
 }
 .custom-result-value:before {
-    font-family: "Splunk Icons";
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-    font-size: 110%;
+  font-family: 'Splunk Icons';
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-size: 110%;
 }
+
 .down.custom-result-value:before {
-    content: "\2297";
+  content: '\2297';
 }
 .down.custom-result-value {
-    color: rgb(217, 63, 60);
+  color: rgb(217, 63, 60);
 }
 .up.custom-result-value {
-    color: rgb(101, 166, 55);
+  color: rgb(101, 166, 55);
 }
 .up.custom-result-value:before {
-    content: "\ECD3";
+  content: '\ECD3';
 }
 .custom-result-value.icon-only {
-    font-size: 60px;
+  font-size: 60px;
 }
 
 .json-key {
@@ -195,14 +196,13 @@ a.btn-primary:hover {
 
 .wz-dashboard-cell {
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
-  border: 1px solid #D9D9D9 !important;
+  border: 1px solid #d9d9d9 !important;
 }
 
 .wz-dashboard-panel {
   margin-bottom: 0 !important;
   margin-right: 0 !important;
 }
-
 
 .wz-text-link:hover {
   text-decoration: underline;
@@ -226,9 +226,9 @@ a.btn-primary:hover {
 }
 
 .wz-line-separator {
-  height:1px;
-  background:#717171;
-  border-bottom:1px solid #313030;
+  height: 1px;
+  background: #717171;
+  border-bottom: 1px solid #313030;
 }
 
 .wz-list-child {
@@ -244,7 +244,7 @@ hr {
   width: 97%;
   max-height: 0;
   font-size: 1px;
-  opacity:.5;
+  opacity: 0.5;
   line-height: 0;
   clear: both;
   border: none;
@@ -260,9 +260,10 @@ scroll {
   margin: 0 auto;
   width: 24px;
   height: 24px;
-  background-color: #ABFF00;
+  background-color: #abff00;
   border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
+    #89ff00 0 2px 12px;
 }
 
 .wz-red-led {
@@ -271,7 +272,8 @@ scroll {
   height: 24px;
   background-color: #bd0606;
   border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, rgb(230, 29, 3) 0 2px 12px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
+    rgb(230, 29, 3) 0 2px 12px;
 }
 
 /**
@@ -280,9 +282,9 @@ scroll {
  * 3. Remove the padding so developers are not caught out when they zero out
  *    `fieldset` elements in all browsers.
  */
- legend {
+legend {
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   /* 1 */
   color: inherit;
   /* 2 */
@@ -296,8 +298,9 @@ scroll {
   /* 1 */
 }
 
-
-table, th, td {
+table,
+th,
+td {
   border: none;
 }
 
@@ -309,8 +312,8 @@ table {
 }
 
 table.highlight > tbody > tr {
-  -webkit-transition: background-color .25s ease;
-  transition: background-color .25s ease;
+  -webkit-transition: background-color 0.25s ease;
+  transition: background-color 0.25s ease;
 }
 
 table.highlight > tbody > tr:hover {
@@ -321,7 +324,8 @@ tr {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-td, th {
+td,
+th {
   padding: 15px 5px;
   display: table-cell;
   text-align: left;
@@ -336,11 +340,10 @@ table span.badge {
 }
 
 .row:after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
-
 
 .tap-target-content {
   position: relative;
@@ -366,12 +369,12 @@ table span.badge {
 
 /* Change background color of buttons on hover */
 .wz-tab button:hover {
-  background-color:rgb(230, 230, 230);
+  background-color: rgb(230, 230, 230);
 }
 
 /* Create an active/current tablink class */
 .wz-tab button.active {
-  background-color:white;
+  background-color: white;
 }
 
 /* Style the tab content */
@@ -383,17 +386,15 @@ table span.badge {
 }
 
 .wz-loading {
-  display:    none;
-  position:   fixed;
-  z-index:    1000;
-  top:        0;
-  left:       0;
-  height:     100%;
-  width:      100%;
-  background: rgba( 255, 255, 255, .8 ) 
-              url('http://sampsonresume.com/labs/pIkfp.gif') 
-              50% 50% 
-              no-repeat;
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8)
+    url('http://sampsonresume.com/labs/pIkfp.gif') 50% 50% no-repeat;
 }
 
 .wz-no-padding {
@@ -445,7 +446,7 @@ table span.badge {
   margin-top: 30px !important;
 }
 
-.wz-margin-top--15{
+.wz-margin-top--15 {
   margin-top: -15px !important;
 }
 
@@ -476,7 +477,7 @@ table span.badge {
   padding: 5px !important;
 }
 
-.wz-table-element-pull-left{
+.wz-table-element-pull-left {
   float: left !important;
 }
 

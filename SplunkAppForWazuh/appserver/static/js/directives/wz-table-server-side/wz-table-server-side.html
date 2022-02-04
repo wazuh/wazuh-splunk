@@ -9,8 +9,7 @@
     ng-if="customColumns"
     layout="row"
     ng-show="!error && !wazuhTableLoading && items.length"
-    ng-class="{'show-checkboxes':showingChecks}"
-  >
+    ng-class="{'show-checkboxes':showingChecks}">
     <div class="wz-table-checkboxes">
       <div ng-show="showingChecks" class="wz-margin-left-20">
         <md-checkbox
@@ -20,15 +19,13 @@
           ng-model="value"
           ng-change="switchKey(key)"
           aria-label="key"
-          ng-disabled="isLastKey(key)"
-        >
+          ng-disabled="isLastKey(key)">
           {{getEquivalence(key) ? getEquivalence(key) : key}}
         </md-checkbox>
       </div>
     </div>
     <div
-      ng-class="{'showing-checks':showingChecks, 'not-showing-checks':!showingChecks}"
-    >
+      ng-class="{'showing-checks':showingChecks, 'not-showing-checks':!showingChecks}">
       <md-tooltip md-direction="bottom" class="wz-tooltip">
         Show or hide columns
       </md-tooltip>
@@ -43,49 +40,42 @@
   <div
     layout="row"
     ng-show="!error && !wazuhTableLoading && items.length"
-    ng-if="!isPolicyMonitoring && !isSyschecks && !isVulnerabilities"
-  >
+    ng-if="!isPolicyMonitoring && !isSyschecks && !isVulnerabilities">
     <table
       ng-class="customColumns ? 'table-resizable' : ''"
       class="table wz-no-outline table-condensed table-striped table-hover"
       style="table-layout: fixed"
-      id="table{{scapepath}}"
-    >
+      id="table{{scapepath}}">
       <thead class="wz-text-bold">
         <th
           ng-repeat="key in keys | filter: showKey"
           class="wz-text-left wz-nowrap"
           ng-class="{'cursor-pointer' : !key.nosortable}"
-          ng-click="!key.nosortable && sort(key)"
-        >
+          ng-click="!key.nosortable && sort(key)">
           {{ path === '/groups' && (key.value || key) === 'count' ? 'Agents' :
           keyEquivalence[key.value || key] || key.value || key }}
           <i
             ng-if="!key.nosortable"
             class="fa wz-theader-sort-icon"
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
-            aria-hidden="true"
-          ></i>
+            aria-hidden="true"></i>
         </th>
         <th
           ng-if="(path === '/agents' || (path === '/groups') || (isLookingGroup())) "
           class="wz-text-left wz-nowrap"
-          ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)"
-        >
+          ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'} && getWitdh(key.value || key)">
           Actions
         </th>
         <th
           ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')"
           class="wz-text-left wz-nowrap"
-          ng-style="path !== '/agents' && {'width':'375px'}"
-        >
+          ng-style="path !== '/agents' && {'width':'375px'}">
           Actions
         </th>
         <th
           ng-if="(path === '/security/users' || path === '/security/rules' || path === '/security/policies')"
           class="wz-text-left wz-nowrap"
-          ng-style="path !== '/agents' && {'width':'375px'}"
-        >
+          ng-style="path !== '/agents' && {'width':'375px'}">
           Actions
         </th>
       </thead>
@@ -94,13 +84,11 @@
           ng-class="allowClick ? 'cursor-pointer' : ''"
           class="wz-word-wrap"
           ng-repeat="item in items | filter:{item:'!'}"
-          ng-click="clickAction(item)"
-        >
+          ng-click="clickAction(item)">
           <td
             ng-repeat="key in keys | filter: showKey"
             ng-class="{'table-width-id': key === 'id', 'table-width-filename': key.value === 'filename' }"
-            ng-if="path !== '/decoders' && path !== '/rules'"
-          >
+            ng-if="path !== '/decoders' && path !== '/rules'">
             <div class="table-width-id" ng-if="key === 'id'">
               {{ parseValue(key,item) }}
             </div>
@@ -112,8 +100,7 @@
             <md-tooltip
               ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)"
               md-direction="bottom"
-              class="wz-tooltip"
-            >
+              class="wz-tooltip">
               {{ parseValue(key,item) }}
             </md-tooltip>
           </td>
@@ -123,13 +110,11 @@
             ng-if="path === '/rules'"
             ng-click="handleClick(key,item,$event)"
             ng-mouseover="selectedCell = $index;"
-            ng-mouseleave="selectedCell = false"
-          >
+            ng-mouseleave="selectedCell = false">
             <div class="wz-text-truncatable-container">
               <span
                 class="wzTableCellFilter"
-                ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'filename'"
-              >
+                ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'filename'">
                 <span class="fa fa-search-plus"></span>
               </span>
               <div class="table-width-id" ng-if="key === 'id'">
@@ -138,8 +123,7 @@
               <div
                 ng-if="key !== 'id'"
                 class="wz-text-truncatable-container"
-                ng-class="{'wz-link': parseKey(key) === 'filename'}"
-              >
+                ng-class="{'wz-link': parseKey(key) === 'filename'}">
                 <span class="wz-text-truncatable">
                   {{parseValue(key,item)}}
                 </span>
@@ -148,8 +132,7 @@
             <md-tooltip
               ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)"
               md-direction="bottom"
-              class="wz-tooltip"
-            >
+              class="wz-tooltip">
               {{ parseValue(key,item) }}
             </md-tooltip>
           </td>
@@ -159,40 +142,34 @@
             ng-if="path === '/decoders'"
             ng-click="handleClick(key,item,$event)"
             ng-mouseover="selectedCell = $index;"
-            ng-mouseleave="selectedCell = false"
-          >
+            ng-mouseleave="selectedCell = false">
             <div class="wz-text-truncatable-container">
               <span
                 class="wzTableCellFilter"
-                ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'filename'"
-              >
+                ng-show="canFilter(parseKey(key)) && selectedCell == $index && parseKey(key) !== 'filename'">
                 <span class="fa fa-search-plus"></span>
               </span>
               <div
                 class="wz-text-left"
                 tooltip="{{ parseValue(key,item) }}"
-                tooltip-placement="bottom"
-              >
+                tooltip-placement="bottom">
                 <div
                   class="table-width-id wz-text-truncatable-container"
-                  ng-if="key === 'id'"
-                >
+                  ng-if="key === 'id'">
                   <span class="wz-text-truncatable">
                     {{parseValue(key,item)}}
                   </span>
                 </div>
                 <div
                   ng-if="key !== 'id'"
-                  ng-class="{'wz-link': parseKey(key) === 'filename'}"
-                >
+                  ng-class="{'wz-link': parseKey(key) === 'filename'}">
                   {{ parseValue(key,item) }}
                 </div>
               </div>
               <md-tooltip
                 ng-if="parseValue(key,item).length > (extraLimit ? 100 : 25)"
                 md-direction="bottom"
-                class="wz-tooltip"
-              >
+                class="wz-tooltip">
                 {{ parseValue(key,item) }}
               </md-tooltip>
             </div>
@@ -200,25 +177,21 @@
           <td
             ng-if="path === '/agents'"
             ng-click="$event.stopPropagation()"
-            class="cursor-default action-btn-td"
-          >
+            class="cursor-default action-btn-td">
             <wz-svg
               icon="compass"
               ng-click="launchAgentDiscover(item.id); $event.stopPropagation()"
-              svg-tooltip="Open Discover panel for this agent"
-            >
+              svg-tooltip="Open Discover panel for this agent">
             </wz-svg>
             <wz-svg
               icon="wrench"
               ng-click="clickAction(item, 'ag-conf'); $event.stopPropagation()"
-              svg-tooltip="Open Configuration for this agent"
-            >
+              svg-tooltip="Open Configuration for this agent">
             </wz-svg>
           </td>
           <!-- Remove files -->
           <td
-            ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')"
-          >
+            ng-if="(path === '/rules/files' || path === '/decoders/files' || path === '/lists/files')">
             <!-- Edit icon -->
             <!--FIXME: The icon is not displayed possibly due to the validation service when the user is allowed: action=[rules:update] resource=[*:*:*]-->
             <wz-svg
@@ -226,8 +199,7 @@
               ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname)"
               icon="pencil"
               svg-tooltip="Edit this file"
-              color="secondary"
-            >
+              color="secondary">
             </wz-svg>
             <!--Remove icon -->
             <wz-svg
@@ -235,27 +207,23 @@
               ng-click="showConfirmRemoveFile($event, item.filename || item.name); $event.stopPropagation()"
               icon="trash"
               color="secondary"
-              svg-tooltip="Remove this file"
-            >
+              svg-tooltip="Remove this file">
             </wz-svg>
             <!--NO icon -->
             <i
               ng-if="item.relative_dirname !== 'etc/rules' && item.relative_dirname !== 'etc/decoders' && path !== '/lists/files'"
               aria-hidden="true"
-              style="color: #396e3e; font-size: 17px"
-            >
+              style="color: #396e3e; font-size: 17px">
               <wz-svg
                 ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname, true)"
                 icon="eye"
                 svg-tooltip="View file content"
-                color="primary-shade"
-              >
+                color="primary-shade">
               </wz-svg>
             </i>
             <div
               ng-if="(item.filename && removingFile === item.filename) || (item.name && removingFile === item.name)"
-              class="confirmEmbedBubble"
-            >
+              class="confirmEmbedBubble">
               <div class="inline" layout="row">
                 <span class="font-size-12 wz-padding-left-8"
                   >This file will be removed</span
@@ -285,22 +253,19 @@
             ng-if="path === '/groups'"
             ng-click="$event.stopPropagation()"
             class="cursor-default action-btn-td"
-            class="wz-text-truncatable"
-          >
+            class="wz-text-truncatable">
             <wz-svg
               ng-if="removingGroup !== item.name && item.name !== 'default' && isAllowed('GROUP_DELETE', ['GROUP_ID'], [item.name]) "
               ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
               icon="trash"
               color="primary-shade"
-              svg-tooltip="Remove this group"
-            ></wz-svg>
+              svg-tooltip="Remove this group"></wz-svg>
             <wz-svg
               ng-if="removingGroup !== item.name && isAllowed('GROUP_UPDATE_CONFIG', ['GROUP_ID'], [item.name])"
               ng-click="editGroup(item); $event.stopPropagation()"
               icon="pencil"
               color="primary-shade"
-              svg-tooltip="Edit this group configuration"
-            >
+              svg-tooltip="Edit this group configuration">
             </wz-svg>
 
             <span
@@ -336,15 +301,13 @@
           <td
             ng-if="isLookingGroup()"
             ng-click="$event.stopPropagation()"
-            class="cursor-default action-btn-td"
-          >
+            class="cursor-default action-btn-td">
             <wz-svg
               ng-if="removingAgent !== item.id && isAllowed('AGENT_MODIFY_GROUP', ['AGENT_ID', 'GROUP_ID'], [item.id, item.group])"
               ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()"
               icon="trash"
               color="primary-shade"
-              svg-tooltip="Remove agent"
-            >
+              svg-tooltip="Remove agent">
             </wz-svg>
 
             <div ng-if="removingAgent === item.id" class="confirmEmbedBubble">
@@ -368,8 +331,7 @@
                   ><i
                     aria-hidden="true"
                     ng-if="removingAgent !== item.id && isAllowed('AGENT_MODIFY_GROUP', ['AGENT_ID', 'GROUP_ID'], [item.id, item.group])"
-                    class="fa fa-fw fa-check"
-                  ></i>
+                    class="fa fa-fw fa-check"></i>
                   Confirm</md-button
                 >
               </div>
@@ -380,16 +342,14 @@
       </tbody>
       <tfoot class="no-border">
         <td
-          colspan="{{ (path === '/agents' || (path === '/groups') || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}"
-        >
+          colspan="{{ (path === '/agents' || (path === '/groups') || (path === '/rules/files' || path === '/decoders/files' || path === '/lists/files') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey"
             >{{ totalItems }} items ({{time | number: 2}} seconds)</span
           >
           <div
             ng-show="totalItems > itemsPerPage"
             class="pagination pull-right"
-            style="margin: 0 !important"
-          >
+            style="margin: 0 !important">
             <ul layout="row">
               <li ng-show="currentPage > 0" class="md-padding">
                 <a href ng-click="getFirstPage()">First</a>
@@ -403,8 +363,7 @@
                 ng-repeat="n in range"
                 ng-class="{'wz-text-active': n == currentPage}"
                 ng-click="setPage()"
-                class="md-padding"
-              >
+                class="md-padding">
                 <a href ng-bind="n + 1">1</a>
               </li>
               <li ng-show="(totalPages - currentPage) > 0" class="md-padding">
@@ -426,35 +385,30 @@
   <div
     layout="row"
     ng-show="!error && !wazuhTableLoading && items.length"
-    ng-if="isPolicyMonitoring"
-  >
+    ng-if="isPolicyMonitoring">
     <table
       ng-class="customColumns ? 'table-resizable' : ''"
       class="table wz-no-outline table-condensed"
       style="table-layout: fixed !important"
-      id="table{{scapepath}}"
-    >
+      id="table{{scapepath}}">
       <thead class="wz-text-bold">
         <th
           ng-repeat="key in keys | filter: showKey"
           class="wz-text-left wz-nowrap"
           ng-class="{'cursor-pointer' : !key.nosortable}"
-          ng-click="!key.nosortable && sort(key)"
-        >
+          ng-click="!key.nosortable && sort(key)">
           {{ path === '/groups' && (key.value || key) === 'count' ? 'Agents' :
           keyEquivalence[key.value || key] || key.value || key }}
           <i
             ng-if="!key.nosortable"
             class="fa wz-theader-sort-icon"
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
-            aria-hidden="true"
-          ></i>
+            aria-hidden="true"></i>
         </th>
         <th
           ng-if="(path === '/agents' || (path === '/groups') || (isLookingGroup())) "
           class="wz-text-left wz-nowrap"
-          ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}  && getWitdh(key.value || key)"
-        >
+          ng-class="{'col-lg-2': path !== '/agents', 'col-lg-1': path === '/agents'}  && getWitdh(key.value || key)">
           Actions
         </th>
       </thead>
@@ -463,17 +417,14 @@
           ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}"
           class="wz-word-wrap"
           ng-repeat-start="item in items | filter:{item:'!'}"
-          ng-click="expandItem(item)"
-        >
+          ng-click="expandItem(item)">
           <td
             ng-repeat="key in keys | filter: showKey"
-            ng-class="{'noBorderBottom':item.expanded}"
-          >
+            ng-class="{'noBorderBottom':item.expanded}">
             <span ng-show="key === 'result'" class="no-wrap">
               <p
                 class="round status littleStat"
-                ng-class="item.result ? ((item.result === 'passed') ? 'teal' : 'red') : 'gray'"
-              ></p>
+                ng-class="item.result ? ((item.result === 'passed') ? 'teal' : 'red') : 'gray'"></p>
               &nbsp;&nbsp;
             </span>
             <span>
@@ -485,15 +436,13 @@
         <tr
           class="wz-word-wrap backgroundSky"
           ng-if="item.expanded && (item.rationale || item.remediation || item.directory || item.condition || item.compliance.length > 0)"
-          ng-repeat-end=""
-        >
+          ng-repeat-end="">
           <td colspan="{{keys.length}}" style="border-top: none">
             <md-card>
               <div
                 layout="column"
                 ng-if="!item.result"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Check not applicable due to:</span>
                 <p class="wz-margin-top-10 pExpanded wz-text-sca">
                   {{ item.reason }}
@@ -502,8 +451,7 @@
               <div
                 layout="column"
                 ng-if="item.rationale"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Rationale</span>
                 <p class="wz-margin-top-10 pExpanded wz-text-sca">
                   {{item.rationale}}
@@ -512,8 +460,7 @@
               <div
                 layout="column"
                 ng-if="item.condition"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Condition</span>
                 <p class="wz-margin-top-10 pExpanded wz-text-sca">
                   {{item.condition}}
@@ -522,8 +469,7 @@
               <div
                 layout="column"
                 ng-if="item.remediation"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Remediation</span>
                 <p class="wz-margin-top-10 pExpanded wz-text-sca">
                   {{item.remediation}}
@@ -532,8 +478,7 @@
               <div
                 layout="column"
                 ng-if="item.description"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Description</span>
                 <p class="wz-margin-top-10 pExpanded wz-text-sca">
                   {{item.description}}
@@ -542,8 +487,7 @@
               <div
                 layout="column"
                 ng-if="item.directory"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Path(s)</span>
                 <p class="wz-margin-top-10 pExpanded wz-text-sca">
                   {{ item.directory }}
@@ -552,14 +496,12 @@
               <div
                 layout="column"
                 ng-if="item.rules.length > 0"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Checks</span>
                 <ul class="noDot pExpanded">
                   <li
                     class="wz-text-sca wz-margin-top-20"
-                    ng-repeat="r in item.rules"
-                  >
+                    ng-repeat="r in item.rules">
                     {{r.rule}}
                   </li>
                 </ul>
@@ -567,8 +509,7 @@
               <div
                 layout="column"
                 ng-if="item.compliance.length > 0"
-                class="wz-margin-top-10 expandedDiv"
-              >
+                class="wz-margin-top-10 expandedDiv">
                 <span class="tSize16">Compliance</span>
                 <p class="wz-margin-top-10 pExpanded">
                   <span
@@ -584,16 +525,14 @@
       </tbody>
       <tfoot class="no-border">
         <td
-          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}"
-        >
+          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey"
             >{{ totalItems }} items ({{time | number: 2}} seconds)</span
           >
           <div
             ng-show="totalItems > itemsPerPage"
             class="pagination pull-right"
-            style="margin: 0 !important"
-          >
+            style="margin: 0 !important">
             <ul layout="row">
               <li ng-show="currentPage > 0" class="md-padding">
                 <a href ng-click="getFirstPage()">First</a>
@@ -608,8 +547,7 @@
                 ng-repeat="n in range"
                 ng-class="{'wz-text-active': n == currentPage}"
                 ng-click="setPage()"
-                class="md-padding"
-              >
+                class="md-padding">
                 <a href ng-bind="n + 1">1</a>
               </li>
 
@@ -632,29 +570,25 @@
   <div
     layout="row"
     ng-show="!error && !wazuhTableLoading && items.length"
-    ng-if="isSyschecks"
-  >
+    ng-if="isSyschecks">
     <table
       ng-class="customColumns ? 'table-resizable' : ''"
       ng-class="customColumns ? 'table-resizable' : ''"
       class="table wz-no-outline table-condensed"
       style="table-layout: fixed !important"
-      id="table{{scapepath}}"
-    >
+      id="table{{scapepath}}">
       <thead class="wz-text-bold">
         <th
           ng-repeat="key in keys  | filter: showKey"
           class="wz-text-left wz-nowrap"
           ng-class="{'cursor-pointer' : !key.nosortable}"
-          ng-click="!key.nosortable && sort(key)"
-        >
+          ng-click="!key.nosortable && sort(key)">
           {{ keyEquivalence[key.value || key] || key.value || key }}
           <i
             ng-if="!key.nosortable"
             class="fa wz-theader-sort-icon"
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
-            aria-hidden="true"
-          ></i>
+            aria-hidden="true"></i>
         </th>
       </thead>
       <tbody>
@@ -662,8 +596,7 @@
           ng-class="allowClick ? 'cursor-pointer' : ''"
           class="wz-word-wrap"
           ng-repeat-start="item in items | filter:{item:'!'}"
-          ng-click="expandItem(item)"
-        >
+          ng-click="expandItem(item)">
           <td ng-repeat="key in keys | filter: showKey">
             <span> {{ parseValue(key,item) }} </span>
           </td>
@@ -672,16 +605,14 @@
           class="wz-word-wrap"
           style="background-color: #ecf6fb !important"
           ng-if="item.expanded"
-          ng-repeat-end=""
-        >
+          ng-repeat-end="">
           <td colspan="9">
             <md-card class="wz-margin-12">
               <table class="table wz-no-outline table-condensed">
                 <tbody>
                   <tr
                     ng-repeat="(key,value) in item"
-                    ng-show="(!isWindows || (key !== 'inode' && key !== 'gid' && key !== 'gname')) && key !== 'expanded'"
-                  >
+                    ng-show="(!isWindows || (key !== 'inode' && key !== 'gid' && key !== 'gname')) && key !== 'expanded'">
                     <td class="wz-width-150">
                       <b>{{keyEquivalence[key] || key}}</b>
                     </td>
@@ -695,8 +626,7 @@
                   md-no-ink
                   class="btn wz-button-empty wz-button-report button-reg-details"
                   ng-click="loadRegistryValueDetails(item)"
-                  aria-label="View registry details"
-                >
+                  aria-label="View registry details">
                   <i class="fa fa-fw fa-info" aria-hidden="true"></i>View
                   registry values
                 </button>
@@ -707,16 +637,14 @@
       </tbody>
       <tfoot class="no-border">
         <td
-          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}"
-        >
+          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey"
             >{{ totalItems }} items ({{time | number: 2}} seconds)</span
           >
           <div
             ng-show="totalItems > itemsPerPage"
             class="pagination pull-right"
-            style="margin: 0 !important"
-          >
+            style="margin: 0 !important">
             <ul layout="row">
               <li ng-show="currentPage > 0" class="md-padding">
                 <a href ng-click="getFirstPage()">First</a>
@@ -731,8 +659,7 @@
                 ng-repeat="n in range"
                 ng-class="{'wz-text-active': n == currentPage}"
                 ng-click="setPage()"
-                class="md-padding"
-              >
+                class="md-padding">
                 <a href ng-bind="n + 1">1</a>
               </li>
 
@@ -771,8 +698,7 @@
   <div
     layout="row"
     ng-if="!wazuhTableLoading && !totalItems"
-    class="wz-margin-top-10"
-  >
+    class="wz-margin-top-10">
     <span class="color-grey">0 items ({{time | number: 2}} seconds)</span>
   </div>
 
@@ -780,29 +706,25 @@
   <div
     layout="row"
     ng-show="!error && !wazuhTableLoading && items.length"
-    ng-if="isVulnerabilities"
-  >
+    ng-if="isVulnerabilities">
     <table
       ng-class="customColumns ? 'table-resizable' : ''"
       ng-class="customColumns ? 'table-resizable' : ''"
       class="table wz-no-outline table-condensed"
       style="table-layout: fixed !important"
-      id="table{{scapepath}}"
-    >
+      id="table{{scapepath}}">
       <thead class="wz-text-bold">
         <th
           ng-repeat="key in keys  | filter: showKey"
           class="wz-text-left wz-nowrap"
           ng-class="{'cursor-pointer' : !key.nosortable}"
-          ng-click="!key.nosortable && sort(key)"
-        >
+          ng-click="!key.nosortable && sort(key)">
           {{ keyEquivalence[key.value || key] || key.value || key }}
           <i
             ng-if="!key.nosortable"
             class="fa wz-theader-sort-icon"
             ng-class="sortValue === (key.value || key) ? (sortDir ? 'fa-sort-asc' : 'fa-sort-desc') : 'fa-sort'"
-            aria-hidden="true"
-          ></i>
+            aria-hidden="true"></i>
         </th>
       </thead>
       <tbody>
@@ -810,8 +732,7 @@
           ng-class="allowClick ? 'cursor-pointer' : ''"
           class="wz-word-wrap"
           ng-repeat-start="item in items | filter:{item:'!'}"
-          ng-click="expandItem(item)"
-        >
+          ng-click="expandItem(item)">
           <td ng-repeat="key in keys | filter: showKey">
             <span> {{ parseValue(key,item) }} </span>
           </td>
@@ -820,16 +741,14 @@
           class="wz-word-wrap"
           style="background-color: #ecf6fb !important"
           ng-if="item.expanded"
-          ng-repeat-end=""
-        >
+          ng-repeat-end="">
           <td colspan="9">
             <md-card class="wz-margin-12">
               <table class="table wz-no-outline table-condensed">
                 <tbody>
                   <tr
                     ng-repeat="(key,value) in item"
-                    ng-show="(!isWindows || (key !== 'inode' && key !== 'gid' && key !== 'gname')) && key !== 'expanded'"
-                  >
+                    ng-show="(!isWindows || (key !== 'inode' && key !== 'gid' && key !== 'gname')) && key !== 'expanded'">
                     <td class="wz-width-150">
                       <b>{{keyEquivalence[key] || key}}</b>
                     </td>
@@ -843,16 +762,14 @@
       </tbody>
       <tfoot class="no-border">
         <td
-          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}"
-        >
+          colspan="{{ (path === '/agents' || (path === '/groups') || (isLookingGroup()))  ? keys.length + 1 : keys.length}}">
           <span ng-show="!wazuhTableLoading" class="color-grey"
             >{{ totalItems }} items ({{time | number: 2}} seconds)</span
           >
           <div
             ng-show="totalItems > itemsPerPage"
             class="pagination pull-right"
-            style="margin: 0 !important"
-          >
+            style="margin: 0 !important">
             <ul layout="row">
               <li ng-show="currentPage > 0" class="md-padding">
                 <a href ng-click="getFirstPage()">First</a>
@@ -867,8 +784,7 @@
                 ng-repeat="n in range"
                 ng-class="{'wz-text-active': n == currentPage}"
                 ng-click="setPage()"
-                class="md-padding"
-              >
+                class="md-padding">
                 <a href ng-bind="n + 1">1</a>
               </li>
 

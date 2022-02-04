@@ -26,7 +26,7 @@ define(['../../module'], function (app) {
           break
       }
 
-      this.scope.switchTab = name => {
+      this.scope.switchTab = (name) => {
         this.scope.tabName = name
       }
 

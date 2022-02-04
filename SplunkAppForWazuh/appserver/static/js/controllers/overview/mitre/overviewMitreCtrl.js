@@ -16,13 +16,7 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/column-chart',
-], function(
-  app,
-  DashboardMain,
-  LinearChart,
-  PieChart,
-  ColumnChart,
-) {
+], function (app, DashboardMain, LinearChart, PieChart, ColumnChart) {
   'use strict'
 
   class OverviewMitre extends DashboardMain {
@@ -47,14 +41,15 @@ define([
       $reportingService,
       $rootScope,
       reportingEnabled,
-      extensions,
+      extensions
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.rootScope = $rootScope
       this.state = $state
@@ -70,7 +65,6 @@ define([
       this.filters = this.getFilters()
 
       this.vizz = [
-        
         /**
          * Visualizations
          */
@@ -92,22 +86,22 @@ define([
           `${this.filters} index=wazuh sourcetype=wazuh rule.mitre.technique{}=* rule.mitre.tactic{}=* | chart count over rule.mitre.technique{} by rule.mitre.tactic{} | rename rule.mitre.tactic{} as "Tactic", rule.mitre.technique{} as "Technique"`,
           'alertsTechnique',
           this.scope,
-          {stackMode: 'stacked'}
+          { stackMode: 'stacked' }
         ),
         new ColumnChart(
           'topTacticsByAgent',
           `${this.filters} sourcetype=wazuh rule.mitre.tactic{}=* agent.name=* | chart count(rule.mitre.tactic{}) by agent.name,rule.mitre.tactic{} | rename count as "Count", agent.name as "Agent name", rule.mitre.tactic{} as "Tactics" | sort count DESC limit=10`,
           'topTacticsByAgent',
           this.scope,
-          {stackMode: 'stacked'}
+          { stackMode: 'stacked' }
         ),
         new ColumnChart(
           'techniquesByAgent',
           `${this.filters} sourcetype=wazuh rule.mitre.technique{}=* agent.name=* | chart count(rule.mitre.technique{}) by agent.name,rule.mitre.technique{} | rename count as "Count", agent.name as "Agent name", rule.mitre.technique{} as "Techniques" | sort count DESC limit=10`,
           'techniquesByAgent',
           this.scope,
-          {stackMode: 'stacked100'}
-        )
+          { stackMode: 'stacked100' }
+        ),
       ]
     }
 
@@ -116,7 +110,9 @@ define([
      */
     $onInit() {
       try {
-        this.scope.goToInventory = () => { this.goToInventory() }
+        this.scope.goToInventory = () => {
+          this.goToInventory()
+        }
         this.scope.startVis2Png = () =>
           this.reportingService.startVis2Png(
             'overview-mitre',
@@ -127,7 +123,7 @@ define([
               'alertsTop10Tactic',
               'alertsTechnique',
               'topTacticsByAgent',
-              'techniquesByAgent'
+              'techniquesByAgent',
             ]
           )
       } catch (error) {
@@ -138,8 +134,8 @@ define([
     /**
      * Link to Mitre Inventory
      */
-     goToInventory(){
-      this.state.go('ow-mitre-ids', { })
+    goToInventory() {
+      this.state.go('ow-mitre-ids', {})
     }
   }
 
