@@ -27,6 +27,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 
 - Wazuh rebranding [#1186](https://github.com/wazuh/wazuh-splunk/pull/1186)
 - Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
+- Refactored branding color styles to improve maintainability [#1236](https://github.com/wazuh/wazuh-splunk/pull/1236)
 
 ### Fixed
 
