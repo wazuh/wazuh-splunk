@@ -91,6 +91,7 @@ define(['../module'], function (app) {
         this.notification.showErrorToast(
           'Extensions management failed: ' + (e.message || e)
         )
+        return false
       }
     }
 

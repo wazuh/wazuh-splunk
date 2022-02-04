@@ -133,12 +133,13 @@ define(['../module'], function (module) {
         try {
           let payload = {}
           let updateExtensionKey = false
-          try {
-            payload['_key'] = $apiIndexStorageService.getExtensionKey(id)
-          } catch (err) {
+          
+          payload['_key'] = $apiIndexStorageService.getExtensionKey(id)
+          if (!payload['_key']) {
             payload['api'] = id
             updateExtensionKey = true
           }
+
           const ext = await $requestService.httpReq(
             `POST`,
             `/manager/extensions`,
