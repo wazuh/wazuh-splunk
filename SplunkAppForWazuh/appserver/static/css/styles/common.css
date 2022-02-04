@@ -2896,21 +2896,3 @@ body > div.tooltip {
 .wz-color-info {
   color: var(--info-color);
 }
-
-div[data-modal-role^='footer-buttons'] a[class^='primary'] {
-  background-color: var(--primary-bright-color) !important;
-}
-
-div[data-modal-role^='footer-buttons'] a[class^='primary']:hover {
-  background-color: var(--primary-color) !important;
-}
-
-.search-bar .search-button .btn,
-.search-bar-primary .search-button .btn {
-  background-color: var(--primary-bright-color) !important;
-}
-
-.search-bar .search-button .btn:hover,
-.search-bar-primary .search-button .btn:hover {
-  background-color: var(--primary-color) !important;
-}
