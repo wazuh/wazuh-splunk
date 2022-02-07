@@ -15,7 +15,6 @@ Find more information about this on the LICENSE file.
 import jsonbak
 import splunk.appserver.mrsparkle.controllers as controllers
 from edit_config import EditConfig
-from inputs_conf import EditInputs
 from log import log
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 
@@ -31,7 +30,6 @@ class Configuration(controllers.BaseController):
         """Constructor."""
         try:
             self.config = EditConfig()
-            self.inputs = EditInputs()
             self.logger = log()
             controllers.BaseController.__init__(self)
         except Exception as e:
@@ -84,31 +82,6 @@ class Configuration(controllers.BaseController):
         except Exception as e:
             self.logger.error(
                 "config: Error getting the configuration: %s" % (e))
-            return jsonbak.dumps(
-                {
-                    'error': str(e)
-                }
-            )
-
-    @expose_page(must_login=False, methods=['GET'])
-    def get_inputs(self):
-        """Gets the inputs.
-
-        Parameters
-        ----------
-        kwargs : dict
-            Request parameters
-        """
-        try:
-            self.logger.debug("inputs: Reading the inputs.conf file.")
-            inputs = self.inputs.get_inputs()
-            self.logger.debug(inputs)
-            return jsonbak.dumps({
-                "data": inputs, "error": 0
-            })
-        except Exception as e:
-            self.logger.error(
-                "inputs: Error getting the inputs: %s" % (e))
             return jsonbak.dumps(
                 {
                     'error': str(e)

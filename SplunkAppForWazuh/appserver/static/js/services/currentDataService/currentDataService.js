@@ -272,22 +272,6 @@ define(['../module'], function (module) {
         }
       }
 
-      /**
-       * Get the current inputs.conf
-       */
-
-       const getCurrentInputs = async () => {
-        try {
-          const inputs = await $requestService.httpReq(
-            `GET`,
-            `/config/get_inputs`
-          )
-          return inputs
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-
       return {
         getPollintState: getPollintState,
         getBaseUrl: getBaseUrl,
@@ -327,7 +311,6 @@ define(['../module'], function (module) {
         checkWazuhVersion: checkWazuhVersion,
         getSourceType: getSourceType,
         setSourceType: setSourceType,
-        getCurrentInputs: getCurrentInputs,
       }
     }
   )
