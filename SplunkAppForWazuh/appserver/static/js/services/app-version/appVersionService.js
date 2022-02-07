@@ -1,6 +1,6 @@
 const metadataApp = {
-  version: '4.3.0',
-  revision: '4301',
+  "version": "4.3.0",
+  "revision": "4301"
 }
 
 define(['../module'], function (module) {
