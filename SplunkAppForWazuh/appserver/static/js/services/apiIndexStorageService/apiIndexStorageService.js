@@ -77,21 +77,17 @@ define(['../module'], function (app) {
     }
 
     getExtensionKey(apiId) {
-      try {
-        if (this.sessionStorage.getItem('extensions')) {
-          const parsedExtensions = JSON.parse(
-            this.sessionStorage.getItem('extensions')
-          )
-          if (parsedExtensions[apiId]) {
-            return parsedExtensions[apiId]
-          }
+      const extensions = this.sessionStorage?.extensions || false
+
+      if (extensions) {
+        const extensionsKey = JSON.parse(extensions)
+
+        if (extensionsKey && extensionsKey[apiId]) {
+          return extensionsKey[apiId]
         }
-        throw 'Key not found'
-      } catch (e) {
-        this.notification.showErrorToast(
-          'Extensions management failed: ' + (e.message || e)
-        )
       }
+
+      return false
     }
 
     setExtensionKey(apiId, extensionKey) {
