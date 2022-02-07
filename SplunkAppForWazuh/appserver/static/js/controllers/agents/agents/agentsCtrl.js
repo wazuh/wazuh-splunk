@@ -248,9 +248,9 @@ define([
 
       this.scope.getAgentStatus = () => {
         try {
-          const filters = this.currentDataService.getFilters()[0]
+          const [filters] = this.currentDataService.getFilters()
           const nodeType = Object.keys(filters)[0]
-          var agentsStatusFilter = false
+          let agentsStatusFilter = false
 
           if (nodeType === 'manager.name') {
             const managerName = filters['manager.name']
