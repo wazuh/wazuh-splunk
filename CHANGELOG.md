@@ -40,7 +40,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed error when agents view is re-initialized [#1223](https://github.com/wazuh/wazuh-splunk/pull/1223)
 - Fixed not being able to see actions after adding first API [#1230](https://github.com/wazuh/wazuh-splunk/pull/1230)
 - Fixed agent status chart data disappearing [#1232](https://github.com/wazuh/wazuh-splunk/pull/1232)
-- fixed the agent status graph so that it shows the correct amount of agents [#1237](https://github.com/wazuh/wazuh-splunk/pull/1237)
+- Fixed the agent status graph so that it shows the correct amount of agents [#1237](https://github.com/wazuh/wazuh-splunk/pull/1237)
 
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 
