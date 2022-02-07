@@ -246,33 +246,35 @@ define([
         }, 250)
       }
 
-      this.scope.getAgentStatus = async () => {
+      this.scope.getAgentStatus = () => {
         try {
-          this.clusOrMng = Object.keys(
-            this.currentDataService.getFilters()[0]
-          )[0]
+          const filters = this.currentDataService.getFilters()[0]
+          const nodeType = Object.keys(filters)[0]
+          var agentsStatusFilter = false
 
-          if (this.clusOrMng === 'manager.name') {
-            this.mngName =
-              this.currentDataService.getFilters()[0]['manager.name']
-            this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
+          if (nodeType === 'manager.name') {
+            const managerName = filters['manager.name']
+            agentsStatusFilter = `manager.name=${managerName} index=wazuh-monitoring*`
           } else {
-            this.clusName =
-              this.currentDataService.getFilters()[0]['cluster.name']
-            this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
+            const clusterName = filters['cluster.name']
+            agentsStatusFilter = `cluster.name=${clusterName} index=wazuh-monitoring*`
           }
-          // eslint-disable-next-line no-empty
-        } catch (error) {}
 
-        this.spanTime = '1m'
-        
-        this.linearChartAgent = new LinearChart(
-          `agentStatusChartHistory`,
-          `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
-          `agentStatusChart`,
-          this.scope,
-          { customAxisTitleX: 'Time span' }
-        )
+          if (agentsStatusFilter != false) {
+            const spanTime = '1m'
+            this.linearChartAgent = new LinearChart(
+              `agentStatusChartHistory`,
+              `${agentsStatusFilter} id!=000 status=* | timechart span=${spanTime} cont=FALSE count by status usenull=f`,
+              `agentStatusChart`,
+              this.scope,
+              { customAxisTitleX: 'Time span' }
+            )
+          }
+        } catch (error) {
+          this.notification.showErrorToast(
+            'Error fetching agents status ' + (error.message || error)
+          )
+        }
       }
 
       /**
@@ -324,7 +326,7 @@ define([
         })
         const currentApi = this.api['_key']
         const output = await this.csvReq.fetch('/agents', currentApi, filters)
-        const blob = new Blob([output], { type: 'text/csv' }) // eslint-disable-line
+        const blob = new Blob([output], { type: 'text/csv' })
         saveAs(blob, 'agents.csv') // eslint-disable-line
         return
       } catch (error) {
