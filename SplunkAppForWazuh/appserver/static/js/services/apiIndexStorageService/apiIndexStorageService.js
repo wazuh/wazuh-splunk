@@ -77,18 +77,13 @@ define(['../module'], function (app) {
     }
 
     getExtensionKey(apiId) {
-      try {
-        if (this.sessionStorage.getItem('extensions')) {
-          const parsedExtensions = JSON.parse(
-            this.sessionStorage.getItem('extensions')
-          )
-          if (parsedExtensions[apiId]) {
-            return parsedExtensions[apiId]
-          }
-        }
-      } catch (_e) {
-        return false
+      const extensionsKey = this.sessionStorage?.extensions || false
+
+      if (extensionsKey && extensionsKey[apiId]) {
+        return extensionsKey[apiId]
       }
+
+      return false
     }
 
     setExtensionKey(apiId, extensionKey) {
