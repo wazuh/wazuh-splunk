@@ -86,11 +86,7 @@ define(['../module'], function (app) {
             return parsedExtensions[apiId]
           }
         }
-        throw 'Key not found'
-      } catch (e) {
-        this.notification.showErrorToast(
-          'Extensions management failed: ' + (e.message || e)
-        )
+      } catch (_e) {
         return false
       }
     }

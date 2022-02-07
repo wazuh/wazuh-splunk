@@ -133,9 +133,10 @@ define(['../module'], function (module) {
         try {
           let payload = {}
           let updateExtensionKey = false
-          
+
           payload['_key'] = $apiIndexStorageService.getExtensionKey(id)
           if (!payload['_key']) {
+            delete payload['_key']
             payload['api'] = id
             updateExtensionKey = true
           }
