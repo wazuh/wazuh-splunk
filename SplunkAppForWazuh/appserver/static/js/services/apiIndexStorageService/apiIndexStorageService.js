@@ -77,7 +77,7 @@ define(['../module'], function (app) {
     }
 
     getExtensionKey(apiId) {
-      const extensionsKey = this.sessionStorage?.extensions || false
+      const extensionsKey = JSON.parse(this.sessionStorage?.extensions) || false
 
       if (extensionsKey && extensionsKey[apiId]) {
         return extensionsKey[apiId]
