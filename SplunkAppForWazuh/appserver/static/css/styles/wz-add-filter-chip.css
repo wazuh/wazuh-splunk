@@ -2,6 +2,8 @@
 /* ------------------ Wazuh add chip filter stylesheet ---------------------- */
 /* -------------------------------------------------------------------------- */
 
+@import './variables.css';
+
 .open-chips {
   position: relative;
   right: 20px;
@@ -36,5 +38,5 @@
 
 .filter-icon {
   margin-top: 14px !important;
-  color: #00445a !important;
+  color: var(--button-dark-primary) !important;
 }

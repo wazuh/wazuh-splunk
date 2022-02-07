@@ -195,14 +195,14 @@
               ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname)"
               icon="pencil"
               svg-tooltip="Edit this file"
-              color="#0079a5">
+              color="secondary">
             </wz-svg>
             <!--Remove icon -->
             <wz-svg
               ng-if="!removingFile && ((item.relative_dirname === 'etc/rules' && isAllowed('RULES_DELETE', ['RULE_FILE'], [item.filename || item.name])) || (item.relative_dirname === 'etc/decoders' && isAllowed('DECODERS_DELETE', ['DECODER_FILE'], [item.filename || item.name])) || (path === '/lists/files' && isAllowed('LISTS_UPDATE', ['LIST_FILE'], [item.filename || item.name])))"
               ng-click="showConfirmRemoveFile($event, item.filename || item.name); $event.stopPropagation()"
               icon="trash"
-              color="#0079a5"
+              color="secondary"
               svg-tooltip="Remove this file">
             </wz-svg>
             <!--NO icon -->
@@ -214,7 +214,7 @@
                 ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname, true)"
                 icon="eye"
                 svg-tooltip="View file content"
-                color="#396e3e">
+                color="primary-shade">
               </wz-svg>
             </i>
             <div
@@ -254,13 +254,13 @@
               ng-if="removingGroup !== item.name && item.name !== 'default' && isAllowed('GROUP_DELETE', ['GROUP_ID'], [item.name]) "
               ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove this group"></wz-svg>
             <wz-svg
               ng-if="removingGroup !== item.name && isAllowed('GROUP_UPDATE_CONFIG', ['GROUP_ID'], [item.name])"
               ng-click="editGroup(item); $event.stopPropagation()"
               icon="pencil"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Edit this group configuration">
             </wz-svg>
 
@@ -298,7 +298,7 @@
               ng-if="removingAgent !== item.id && isAllowed('AGENT_MODIFY_GROUP', ['AGENT_ID', 'GROUP_ID'], [item.id, item.group])"
               ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove agent">
             </wz-svg>
 
@@ -337,7 +337,7 @@
               ng-if="isAllowed('SECURITY_READ', ['USER_ID'], [item.id])"
               ng-click="editSecurityUser(item); viewUserContent(item); $event.stopPropagation()"
               icon="eye"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="View user">
             </wz-svg>
           </td>
@@ -351,14 +351,14 @@
               ng-if="removingUser !== item.username && isAllowed('SECURITY_UPDATE', ['USER_ID'], [item.id])"
               ng-click="editSecurityUser(item); $event.stopPropagation()"
               icon="pencil"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Edit user">
             </wz-svg>
             <wz-svg
               ng-if="removingUser !== item.username && isAllowed('SECURITY_DELETE', ['USER_ID'], [item.id])"
               ng-click="showConfirmRemoveSecurityUser($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove user">
             </wz-svg>
 
@@ -399,21 +399,21 @@
               ng-if="removingRoles !== item.name && item.id <= '7' && isAllowed('SECURITY_READ', ['ROLE_ID'], [item.id])"
               ng-click="editSecurityRoles(item); $event.stopPropagation()"
               icon="eye"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="View role">
             </wz-svg>
             <wz-svg
               ng-if="removingRoles !== item.name && item.id > '7' && isAllowed('SECURITY_UPDATE', ['ROLE_ID'], [item.id])"
               ng-click="editSecurityRoles(item); $event.stopPropagation()"
               icon="pencil"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Edit role">
             </wz-svg>
             <wz-svg
               ng-if="removingRoles !== item.name && item.id > '7' && isAllowed('SECURITY_DELETE', ['ROLE_ID'], [item.id])"
               ng-click="showConfirmRemoveSecurityRoles($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove role"></wz-svg>
 
             <div ng-if="(removingRoles === item.name)">
@@ -453,21 +453,21 @@
               ng-if="removingPolicies !== item.name && item.id < 100 && isAllowed('SECURITY_READ', ['POLICY_ID'], [item.id])"
               ng-click="editSecurityPolicies(item); $event.stopPropagation()"
               icon="eye"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="View policy">
             </wz-svg>
             <wz-svg
               ng-if="removingPolicies !== item.name && item.id >= 100 && isAllowed('SECURITY_UPDATE', ['POLICY_ID'], [item.id])"
               ng-click="editSecurityPolicies(item); $event.stopPropagation()"
               icon="pencil"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Edit policy">
             </wz-svg>
             <wz-svg
               ng-if="removingPolicy !== item.name && item.id >= 100 && isAllowed('SECURITY_DELETE', ['POLICY_ID'], [item.id])"
               ng-click="showConfirmRemoveSecurityPolicies($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove policy"></wz-svg>
 
             <div ng-if="(removingPolicies === item.name)">
@@ -508,21 +508,21 @@
               ng-if="removingRoleMapping !== item.name && item.id < 100 && isAllowed('SECURITY_READ', ['RULE_ID'], [item.id])"
               ng-click="editRoleMapping(item); $event.stopPropagation()"
               icon="eye"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="View rule">
             </wz-svg>
             <wz-svg
               ng-if="removingRoleMapping !== item.name && item.id >= 100 && sAllowed('SECURITY_UPDATE', ['RULE_ID'], [item.id])"
               ng-click="editRoleMapping(item); $event.stopPropagation()"
               icon="pencil"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Edit rule">
             </wz-svg>
             <wz-svg
               ng-if="removingRoleMapping !== item.name && item.id >= 100 && isAllowed('SECURITY_DELETE', ['RULE_ID'], [item.id])"
               ng-click="showConfirmRemoveRoleMapping($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove rule"></wz-svg>
 
             <div ng-if="(removingRoleMapping === item.name)">

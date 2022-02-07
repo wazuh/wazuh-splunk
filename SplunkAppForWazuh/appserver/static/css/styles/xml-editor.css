@@ -10,6 +10,8 @@
   * Find more information about this on the LICENSE file.
   */
 
+@import './variables.css';
+
 /* -------------------------------------------------------------------------- */
 /* ------------------ Wazuh XML file editor stylesheet ---------------------- */
 /* -------------------------------------------------------------------------- */
@@ -24,6 +26,7 @@
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
   border-radius: 2px;
 }
+
 .wzXmlEditorHeader {
   padding: 15px;
 }
@@ -54,9 +57,10 @@
   padding-bottom: 25px;
   padding-top: 0px;
 }
+
 .extraHeaderInfo {
   background: #ecf6fb;
-  border-top: 1px solid rgba(92, 192, 92, 0.161) !important;
-  color: #396e3e !important;
+  border-top: 1px solid var(--primary-lightest-opacity) !important;
+  color: var(--primary-color) !important;
   padding: 12px 15px;
 }

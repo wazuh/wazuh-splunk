@@ -199,14 +199,14 @@
               ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname)"
               icon="pencil"
               svg-tooltip="Edit this file"
-              color="#0079a5">
+              color="secondary">
             </wz-svg>
             <!--Remove icon -->
             <wz-svg
               ng-if="!removingFile && ((item.relative_dirname === 'etc/rules' && isAllowed('RULES_DELETE', ['RULE_FILE'], [item.filename || item.name])) || (item.relative_dirname === 'etc/decoders' && isAllowed('DECODERS_DELETE', ['DECODER_FILE'], [item.filename || item.name])) || (path === '/lists/files' && isAllowed('LISTS_UPDATE', ['LIST_FILE'], [item.filename || item.name])))"
               ng-click="showConfirmRemoveFile($event, item.filename || item.name); $event.stopPropagation()"
               icon="trash"
-              color="#0079a5"
+              color="secondary"
               svg-tooltip="Remove this file">
             </wz-svg>
             <!--NO icon -->
@@ -218,7 +218,7 @@
                 ng-click="$event.stopPropagation();editFile(item.filename || item.name, item.relative_dirname, true)"
                 icon="eye"
                 svg-tooltip="View file content"
-                color="#396e3e">
+                color="primary-shade">
               </wz-svg>
             </i>
             <div
@@ -258,13 +258,13 @@
               ng-if="removingGroup !== item.name && item.name !== 'default' && isAllowed('GROUP_DELETE', ['GROUP_ID'], [item.name]) "
               ng-click="showConfirmRemoveGroup($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove this group"></wz-svg>
             <wz-svg
               ng-if="removingGroup !== item.name && isAllowed('GROUP_UPDATE_CONFIG', ['GROUP_ID'], [item.name])"
               ng-click="editGroup(item); $event.stopPropagation()"
               icon="pencil"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Edit this group configuration">
             </wz-svg>
 
@@ -306,7 +306,7 @@
               ng-if="removingAgent !== item.id && isAllowed('AGENT_MODIFY_GROUP', ['AGENT_ID', 'GROUP_ID'], [item.id, item.group])"
               ng-click="showConfirmRemoveAgentFromGroup($event, item); $event.stopPropagation()"
               icon="trash"
-              color="#396e3e"
+              color="primary-shade"
               svg-tooltip="Remove agent">
             </wz-svg>
 

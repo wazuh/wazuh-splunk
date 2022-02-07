@@ -1,3 +1,5 @@
+@import './variables.css';
+
 .custom-result-value {
   font-size: 30px;
   margin: 35px auto;
@@ -12,6 +14,7 @@
   text-decoration: inherit;
   font-size: 110%;
 }
+
 .down.custom-result-value:before {
   content: '\2297';
 }
@@ -68,7 +71,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #396e3e !important;
+  background-color: var(--primary-color) !important;
 }
 
 a.btn-primary:hover {
@@ -206,7 +209,7 @@ a.btn-primary:hover {
 }
 .wz-text-link {
   cursor: pointer !important;
-  color: #396e3e !important;
+  color: var(--primary-color) !important;
 }
 
 .wz-text-right {
@@ -502,7 +505,7 @@ table span.badge {
 
 .wz-metric-color {
   margin: 0 !important;
-  background-color: rgba(200, 239, 172, 0.478) !important;
-  border: 1px solid rgba(200, 239, 172, 0.478) !important;
+  background-color: var(--primary-half-opacity) !important;
+  border: 1px solid var(--primary-half-opacity) !important;
   box-shadow: none !important;
 }
