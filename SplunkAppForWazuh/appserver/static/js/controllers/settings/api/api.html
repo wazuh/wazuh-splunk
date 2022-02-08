@@ -100,7 +100,7 @@
             layout="row"
             layout-align="space-between center"
             class="wz-padding-top-10 wz-text-align-center">
-            <p flex="10">
+            <p flex="10" class="wz-word-wrap">
               <i
                 ng-show="entry.selected"
                 class="fa fa-star wz-color-orange"
@@ -111,7 +111,7 @@
                 This is the default Manager
               </md-tooltip>
             </p>
-            <p flex="10">
+            <p flex="10" class="wz-word-wrap">
               {{ (entry.filterType === 'cluster.name') ? entry.filterName :
               'Disabled'}}
             </p>
