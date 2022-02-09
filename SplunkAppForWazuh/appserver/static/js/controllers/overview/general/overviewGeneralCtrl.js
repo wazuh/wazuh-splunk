@@ -211,34 +211,37 @@ define([
             })
         } else {
           this.scope.wzMonitoringEnabled = true
-
-          //Filters for agents Status
           try {
-            this.clusOrMng = Object.keys(
-              this.currentDataService.getFilters()[0]
-            )[0]
+            //Filters for agents Status
+            const [filters] = this.currentDataService.getFilters()
+            const [nodeType] = Object.keys(filters)
+            let agentsStatusFilter = false
 
-            if (this.clusOrMng == 'manager.name') {
-              this.mngName =
-                this.currentDataService.getFilters()[0]['manager.name']
-              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
+            if (nodeType === 'manager.name') {
+              const managerName = filters['manager.name']
+              agentsStatusFilter = `manager.name=${managerName} index=wazuh-monitoring*`
             } else {
-              this.clusName =
-                this.currentDataService.getFilters()[0]['cluster.name']
-              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
+              const clusterName = filters['cluster.name']
+              agentsStatusFilter = `cluster.name=${clusterName} index=wazuh-monitoring*`
             }
-          } catch (error) {} //eslint-disable-line
 
-          this.spanTime = '15m'
-          this.vizz.push(
-            new LinearChart(
-              `agentStatusHistory`,
-              `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
-              `agentStatus`,
-              this.scope,
-              { customAxisTitleX: 'Time span' }
+            if (agentsStatusFilter != false) {
+              const spanTime = '1m'
+              this.vizz.push(
+                new LinearChart(
+                  `agentStatusHistory`,
+                  `${agentsStatusFilter} id!=000 status=* | timechart span=${spanTime} cont=FALSE count by status usenull=f`,
+                  `agentStatus`,
+                  this.scope,
+                  { customAxisTitleX: 'Time span' }
+                )
+              )
+            }
+          } catch (error) {
+            this.notification.showErrorToast(
+              'Error fetching agents status ' + (error.message || error)
             )
-          )
+          }
         }
 
         this.scope.startVis2Png = () =>
