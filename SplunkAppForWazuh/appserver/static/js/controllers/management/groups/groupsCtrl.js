@@ -98,7 +98,8 @@ define(['../../module', 'FileSaver'], function (app) {
         }
       })
       this.extensions = extensions
-      this.scope.newGroupName = ''
+      this.newGroupName = ''
+      this.scope.validationRegex = '^[A-Za-z0-9._-]+$'
       this.scope.addingGroup = false
       this.scope.addingAgents = false
       this.scope.$on('groupsIsReloaded', () => {
@@ -203,30 +204,35 @@ define(['../../module', 'FileSaver'], function (app) {
           this.scope.addingGroup = !this.scope.addingGroup
         }
 
-        /**
-         * Remove any whitespace in the input for the new group.
-         */
-        this.scope.validateGroupName = (e) => {
-          this.scope.newGroupName = e.target.value.split(' ').join('')
-          e.target.value = this.scope.newGroupName
+        // Keeps the data freshly updated
+        // --> ng-model won't work with this awful app design
+        this.scope.updateGroupName = (e) => {
+          this.newGroupName = e.target.value
         }
 
-        this.scope.createGroup = async (name) => {
-          try {
-            this.scope.addingGroup = false
-            await this.groupHandler.createGroup(name)
-            this.notification.showSuccessToast(
-              `Success. Group ${name} has been created`
+        this.scope.createGroup = async () => {
+          // Data validation
+          if (!this.validateGroupName(this.newGroupName)) {
+            this.notification.showErrorToast(
+              `Group's name must match this regular expresion: ${this.scope.validationRegex}`
             )
-            // refresh the table when a new group is created
-            this.scope.$applyAsync()
-            this.scope.search = (term) => {
-              this.scope.$broadcast('wazuhSearch', { term })
+          } else {
+            try {
+              this.scope.addingGroup = false
+              await this.groupHandler.createGroup(this.newGroupName)
+              this.notification.showSuccessToast(
+                `Success. Group ${name} has been created`
+              )
+              // refresh the table when a new group is created
+              this.scope.$applyAsync()
+              this.scope.search = (term) => {
+                this.scope.$broadcast('wazuhSearch', { term })
+              }
+            } catch (error) {
+              this.notification.showErrorToast(`${error.message || error}`)
             }
-          } catch (error) {
-            this.notification.showErrorToast(`${error.message || error}`)
+            this.scope.$broadcast('wazuhSearch', {})
           }
-          this.scope.$broadcast('wazuhSearch', {})
         }
 
         this.scope.loadGroup = (group, firstLoad) =>
@@ -287,6 +293,11 @@ define(['../../module', 'FileSaver'], function (app) {
         console.error('err ', err)
         this.notification.showErrorToast('Error loading groups information')
       }
+    }
+
+    validateGroupName(name) {
+      console.log(name)
+      return new RegExp(this.scope.validationRegex).test(name)
     }
 
     /**
