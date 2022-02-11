@@ -1,4 +1,4 @@
-define(['../../module', 'FileSaver'], function (controllers) {
+define(['../../module', 'FileSaver'], function (app) {
   'use strict'
   class Groups {
     /**
@@ -98,6 +98,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
         }
       })
       this.extensions = extensions
+      this.scope.newGroupName = ''
       this.scope.addingGroup = false
       this.scope.addingAgents = false
       this.scope.$on('groupsIsReloaded', () => {
@@ -200,6 +201,14 @@ define(['../../module', 'FileSaver'], function (controllers) {
 
         this.scope.switchAddingGroup = () => {
           this.scope.addingGroup = !this.scope.addingGroup
+        }
+
+        /**
+         * Remove any whitespace in the input for the new group.
+         */
+        this.scope.validateGroupName = (e) => {
+          this.scope.newGroupName = e.target.value.split(' ').join('')
+          e.target.value = this.scope.newGroupName
         }
 
         this.scope.createGroup = async (name) => {
@@ -883,5 +892,6 @@ define(['../../module', 'FileSaver'], function (controllers) {
       }
     }
   }
-  controllers.controller('groupsCtrl', Groups)
+
+  app.controller('groupsCtrl', Groups)
 })

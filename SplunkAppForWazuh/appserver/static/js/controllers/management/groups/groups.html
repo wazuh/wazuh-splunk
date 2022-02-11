@@ -46,7 +46,7 @@
         <div layout="row" ng-if="canCreateGroup && addingGroup">
           <input
             placeholder="Group name..."
-            ng-model="groupToBeAdded"
+            ng-keyup="validateGroupName($event)"
             type="text"
             class="kuiLocalSearchInput addGroupInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
             aria-invalid="false" />
@@ -54,7 +54,7 @@
             type="submit"
             aria-label="Search"
             class="kuiLocalSearchButton addGroupBtn height-20"
-            ng-click="createGroup(groupToBeAdded)">
+            ng-click="createGroup(newGroupName)">
             <span class="fa fa-save fa-fw" aria-hidden="true"></span>
           </button>
         </div>

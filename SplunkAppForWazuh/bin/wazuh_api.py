@@ -104,11 +104,16 @@ class Wazuh_API():
                             counter=counter - 1
                         )
                 elif status_code != 200:
-                    response = response.json()
-                    raise Exception(
+                    result = response.json()
+                    response = {
+                        'error': True,
+                        'status_code': status_code,
+                        'message': result['title'] + ": " + result['detail']
+                    }
+
+                    self.logger.error(
                         f"{method} {endpoint_url} request failed with status {status_code}\n"
-                        + json.dumps(response, indent=4)
-                    )
+                        + json.dumps(response, indent=4))
                 else:
                     response = response.json()
                 catch_exceptions.attempts = 0
