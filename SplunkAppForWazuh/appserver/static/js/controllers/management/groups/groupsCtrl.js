@@ -208,6 +208,11 @@ define(['../../module', 'FileSaver'], function (app) {
         // --> ng-model won't work with this awful app design
         this.scope.updateGroupName = (e) => {
           this.newGroupName = e.target.value
+
+          // on Enter key pressed
+          if (e.keyCode === 13) {
+            this.scope.createGroup(this.newGroupName)
+          }
         }
 
         this.scope.createGroup = async () => {
