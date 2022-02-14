@@ -59,6 +59,9 @@ define([
      * On controller load
      */
     $onInit() {
+      // Data validation
+      this.scope.nameValidationRegex = '^[\\w\\.\\-]+$'
+
       this.scope.overwrite = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
@@ -137,6 +140,16 @@ define([
     async filterContent(filter) {
       this.scope.items = this.filter('filter')(this.contentToFilter, filter)
       this.initPagination()
+    }
+
+    /**
+     * Validate the given name for the new CDB list.
+     * 
+     * @param {String} name given name
+     * @returns {Boolean}
+     */
+    isValidName = (name) => {
+      return new RegExp(this.scope.nameValidationRegex).test(name)
     }
 
     /**
@@ -275,42 +288,45 @@ define([
      */
     async saveList() {
       try {
-        const constainsBlanks = /.* .*/
+        // const constainsBlanks = /.* .*/
         const fileName = this.scope.currentList.details.file
-        if (fileName) {
-          if (constainsBlanks.test(fileName)) {
-            this.notification.showErrorToast(
-              'Error creating a new file. The filename can not contain white spaces.'
-            )
-          } else {
-            this.scope.saveIncomplete = true
-            const path = this.scope.currentList.details.path
-            const content = this.objToString(this.scope.currentList.list)
-            const result = await this.cdbEditor.sendConfiguration(
-              fileName,
-              path,
-              content
-            )
-            if (result && result.data && result.data.error === 0) {
-              this.notification.showSuccessToast('File saved successfully.')
-              this.scope.saveIncomplete = false
-              this.scope.$applyAsync()
-            } else if (result.data.error === 1905) {
-              this.notification.showWarningToast(
-                result.data.message || 'File already exists.'
-              )
-              this.scope.overwrite = true
-              this.scope.saveIncomplete = false
-              this.scope.$applyAsync()
-            } else {
-              throw new Error(result.data.message || 'Cannot send this file.')
-            }
-          }
-        } else {
-          this.notification.showWarningToast(
-            'Please set a name for the new CDB list.'
+        
+        if (!this.isValidName(fileName)) {
+          this.notification.showErrorToast(
+            `List's name must match this regular expresion: ${this.scope.nameValidationRegex}`
           )
+        } else {
+          this.scope.saveIncomplete = true
+          const path = this.scope.currentList.details.path
+          const content = this.objToString(this.scope.currentList.list)
+          const result = await this.cdbEditor.sendConfiguration(
+            fileName,
+            path,
+            content
+          )
+          if (result && result.data && result.data.error === 0) {
+            this.notification.showSuccessToast('File saved successfully.')
+            this.scope.saveIncomplete = false
+            this.scope.$applyAsync()
+          } else if (result.data.error === 1905) {
+            this.notification.showWarningToast(
+              result.data.message || 'File already exists.'
+            )
+            this.scope.overwrite = true
+            this.scope.saveIncomplete = false
+            this.scope.$applyAsync()
+          } else {
+            throw new Error(result.data.message || 'Cannot send this file.')
+          }
         }
+        
+        // if (fileName) {
+          
+        // } else {
+        //   this.notification.showWarningToast(
+        //     'Please set a name for the new CDB list.'
+        //   )
+        // }
       } catch (error) {
         this.scope.saveIncomplete = false
         this.notification.showErrorToast(error)
