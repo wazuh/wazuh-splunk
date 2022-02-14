@@ -310,7 +310,7 @@ define(['../../module', 'FileSaver'], function (app) {
         new RegExp(this.scope.validationRegex).test(name) && name.length > 255
       )
     }
-    abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg
+
     /**
      * Exports the table in CSV format
      */
