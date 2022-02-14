@@ -306,9 +306,7 @@ define(['../../module', 'FileSaver'], function (app) {
      * @returns {Boolean}
      */
     validateGroupName(name) {
-      return (
-        new RegExp(this.scope.validationRegex).test(name) && name.length > 255
-      )
+      return new RegExp(this.scope.validationRegex).test(name)
     }
 
     /**
