@@ -581,13 +581,18 @@ class manager(controllers.BaseController):
             # Get path
             dest_resource = kwargs['resource']
 
-            response = self.wz_api.make_request(
+            # wazuh_api.py verifies the "origin" of the request to be "raw" when a binary file is sent
+            # also expects the file content to be in "content"
+            params = {}
+            params['origin'] = "raw"
+            params['content'] = file_content
+
+            result = self.wz_api.make_request(
                 method='PUT',
                 endpoint_url=f"/{dest_resource}/files/{file_name}",
-                kwargs=file_content,
+                kwargs=params,
                 current_api=api
             )
-            result = jsonbak.loads(response.text)
 
             if 'error' in result and result['error'] != 0:
                 self.logger.error(
