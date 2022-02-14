@@ -99,7 +99,7 @@ define(['../../module', 'FileSaver'], function (app) {
       })
       this.extensions = extensions
       this.newGroupName = ''
-      this.scope.validationRegex = '^[A-Za-z0-9._-]+$'
+      this.scope.validationRegex = '^[A-Za-z0-9._-]{1,255}$'
       this.scope.addingGroup = false
       this.scope.addingAgents = false
       this.scope.$on('groupsIsReloaded', () => {
@@ -295,11 +295,22 @@ define(['../../module', 'FileSaver'], function (app) {
       }
     }
 
+    /**
+     * Validates a new group name. The group name must meet the 
+     * following criteria:
+     * 
+     *  - The group name cannot exceed 255 characters.
+     *  - The group name must match this regular expression: A-Za-z0-9.\-_
+     * 
+     * @param {String} name the new group's name
+     * @returns {Boolean}
+     */
     validateGroupName(name) {
-      console.log(name)
-      return new RegExp(this.scope.validationRegex).test(name)
+      return (
+        new RegExp(this.scope.validationRegex).test(name) && name.length > 255
+      )
     }
-
+    abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg
     /**
      * Exports the table in CSV format
      */
