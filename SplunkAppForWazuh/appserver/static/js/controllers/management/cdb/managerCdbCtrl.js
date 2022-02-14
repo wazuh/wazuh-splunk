@@ -288,7 +288,6 @@ define([
      */
     async saveList() {
       try {
-        // const constainsBlanks = /.* .*/
         const fileName = this.scope.currentList.details.file
         
         if (!this.isValidName(fileName)) {
@@ -319,14 +318,6 @@ define([
             throw new Error(result.data.message || 'Cannot send this file.')
           }
         }
-        
-        // if (fileName) {
-          
-        // } else {
-        //   this.notification.showWarningToast(
-        //     'Please set a name for the new CDB list.'
-        //   )
-        // }
       } catch (error) {
         this.scope.saveIncomplete = false
         this.notification.showErrorToast(error)
