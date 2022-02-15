@@ -149,7 +149,7 @@ define([
             {
               id: `menuSelectAPI`,
               choices: $scope.apiList.map((item) => ({
-                label: item.managerName,
+                label: item.alias || item.managerName,
                 value: item._key,
               })),
               value: $scope.currentAPI._key,

@@ -195,11 +195,27 @@ define(['../../module', 'FileSaver'], function (app) {
               `/cluster/${this.scope.selectedNode}/logs/summary`
             )
           : await this.apiReq('/manager/logs/summary')
-        const daemons = data.data.data.affected_items
 
-        this.scope.daemons = daemons.map((item) => ({
-          title: Object.keys(item)[0],
-        }))
+        // NOTE Remove on v4.4.0
+        const daemonsNotIncluded = [
+          'wazuh-modulesd:task-manager',
+          'wazuh-modulesd:agent-upgrade'
+        ]
+        // END NOTE
+
+        const daemons = data.data.data.affected_items
+        // NOTE Remove on v4.4.0
+          .flatMap(Object.keys)
+          .filter(daemon => !daemonsNotIncluded.includes(daemon))
+          
+        this.scope.daemons = daemons.map(d => ({title: d}))
+        // END NOTE
+
+        // NOTE uncomment on v4.4.0
+        // this.scope.daemons = daemons.map((item) => ({
+        //   title: Object.keys(item)[0],
+        // }))
+        // END NOTE
         this.scope.$applyAsync()
         return
       } catch (err) {

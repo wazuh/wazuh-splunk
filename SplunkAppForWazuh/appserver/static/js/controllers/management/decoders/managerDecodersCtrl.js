@@ -119,7 +119,7 @@ define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
       this.scope.addingNewFile = true
       this.scope.editingFile = {
         file: ``,
-        dir: `decoders`,
+        dir: `etc/decoders`,
       }
       this.scope.fetchedXML = `<!-- Configure your local decoders here -->`
     }
