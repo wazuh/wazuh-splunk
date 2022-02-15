@@ -289,7 +289,11 @@
             flex
             extra-limit="100"
             path="'/security/rules'"
-            keys="['id', 'name', 'roles']"
+            keys="[
+                  'id',
+                  'name',
+                  { value: 'roles', nosortable: true },
+                ]"
             allow-click="true"
             row-sizes="[20,15,10]">
           </wazuh-table>
