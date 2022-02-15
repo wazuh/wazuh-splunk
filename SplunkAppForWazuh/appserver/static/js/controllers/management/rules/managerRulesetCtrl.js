@@ -86,7 +86,7 @@ define(['../../module', './ruleset'], function (controllers, Ruleset) {
       this.scope.overwrite = false
       this.scope.editingFile = {
         file: ``,
-        dir: `rules`,
+        dir: `etc/rules`,
       }
       this.scope.addingNewFile = true
       this.scope.fetchedXML = `<!-- Configure your local rules here -->`

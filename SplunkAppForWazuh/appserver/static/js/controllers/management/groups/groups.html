@@ -284,7 +284,11 @@
                   flex
                   extra-limit="100"
                   path="'/groups'"
-                  keys="['name','count','mergedSum']"
+                  keys="[
+                    'name',
+                    { value: 'count', nosortable: true },
+                    { value: 'mergedSum', nosortable: true },
+                  ]"
                   allow-click="true"
                   row-sizes="[20,15,10]">
                 </wazuh-table>
