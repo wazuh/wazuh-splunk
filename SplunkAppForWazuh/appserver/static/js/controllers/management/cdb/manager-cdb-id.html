@@ -128,18 +128,20 @@
                 <tr class="wz-word-wrap">
                   <td class="td-align-middle">
                     <input
-                      placeholder="New key"
+                      placeholder="New-key"
                       type="text"
                       class="wz-height-35 wz-input-text"
                       style="margin-bottom: 0 !important"
+                      pattern="{{ keyValidationRegex }}"
                       ng-model="newKey" />
                   </td>
                   <td class="td-align-middle">
                     <input
-                      placeholder="New value"
+                      placeholder="New-value"
                       type="text"
                       class="wz-height-35 wz-input-text"
                       style="margin-bottom: 0 !important"
+                      pattern="{{ valueValidationRegex }}"
                       ng-model="newValue" />
                   </td>
                   <td class="td-align-middle">
@@ -166,6 +168,7 @@
                         type="text"
                         class="wz-height-35 wz-input-text"
                         style="margin-bottom: 0 !important"
+                        pattern="{{ valueValidationRegex }}"
                         ng-model="editingNewValue" />
                     </div>
                     <div ng-show="!editingKey || editingKey !== item[0]">

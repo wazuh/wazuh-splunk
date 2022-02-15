@@ -61,6 +61,8 @@ define([
     $onInit() {
       // Data validation
       this.scope.nameValidationRegex = '^[\\w\\.\\-]+$'
+      this.scope.keyValidationRegex = '(?:^"([\\w\\-:]+?)"|^[^:"\\s]+$)'
+      this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"\\s]*$)'
 
       this.scope.overwrite = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
@@ -186,15 +188,44 @@ define([
     }
 
     /**
+     * Validates the Key and Value of a new CDB List entry.
+     * 
+     * @param {String} key the new key
+     * @param {String} value the new value
+     * @returns {Boolean} true if both the key and the value are valid.
+     */
+    validateCdbEntry(key, value){
+      let isValid = true
+      const errorMessage = (type, regex) =>
+        `The ${type} must match this regular expression ${regex}`
+
+      const keyRegex = new RegExp(this.scope.keyValidationRegex)
+      const valRegex = new RegExp(this.scope.valueValidationRegex)
+
+      if (!keyRegex.test(key)) {
+        this.notification.showWarningToast(
+          errorMessage('Key', this.scope.keyValidationRegex)
+        )
+        isValid = false
+      }
+      if (!valRegex.test(value)) {
+        this.notification.showWarningToast(
+          errorMessage('Value', this.scope.valueValidationRegex)
+        )
+        isValid = false
+      }
+
+      return isValid
+    }
+
+    /**
      * Adds new entry field
      * @param {String} key
      * @param {String} value
      */
     async addEntry(key, value) {
       try {
-        if (!key) {
-          this.notification.showWarningToast('Cannot send empty fields.')
-        } else {
+        if (this.validateCdbEntry(key, value)) {
           if (!this.scope.currentList.list[key]) {
             value = value ? value : ''
             this.scope.currentList.list[key] = value
@@ -204,11 +235,13 @@ define([
           } else {
             this.notification.showErrorToast(
               'Error adding new entry, the key exists.'
-            )
+              )
+            }
           }
-        }
       } catch (error) {
-        this.notification.showErrorToast('Error adding entry.')
+        this.notification.showErrorToast(
+          `Error adding entry: ${error.message || error}`
+        )
       }
     }
 
