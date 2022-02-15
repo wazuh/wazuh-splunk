@@ -176,7 +176,12 @@
             custom-columns="true"
             flex
             path="'/security/users'"
-            keys="['id','username', 'allow_run_as', 'roles']"
+            keys="[
+                  'id',
+                  'username',
+                  { value: 'allow_run_as', nosortable: true },
+                  { value: 'roles', nosortable: true },
+                ]"
             allow-click="true"
             rows-per-page="14"
             row-sizes="[20,15,10,20]">

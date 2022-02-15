@@ -467,9 +467,9 @@
                   Cancel
                 </button>
                 <button
-                  ng-if="canUpdateRulesetFile(editingFile.filename)"
+                  ng-if="canUpdateRulesetFile(editingFile.file)"
                   ng-disabled="xmlHasErrors || overwrite || saveIncomplete"
-                  ng-click="saveRuleConfig(editingFile.filename, editingFile.dir)"
+                  ng-click="saveRuleConfig(editingFile.file, editingFile.dir)"
                   class="btn wz-button-empty pull-right wz-margin-left-10">
                   <span ng-show="!xmlHasErrors">
                     <i
@@ -486,7 +486,7 @@
                 </button>
                 <input
                   placeholder="New file name..."
-                  ng-model="editingFile.filename"
+                  ng-model="editingFile.file"
                   class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid flex"
                   style="margin-left: 10px"
                   ng-change="enableSave()" />
@@ -498,7 +498,7 @@
                   style="height: inherit"
                   file-name="rules"
                   data="fetchedXML"
-                  target-name="editingFile.filename"
+                  target-name="editingFile.file"
                   valid-fn="xmlIsValid(valid)"
                   close-fn="closeEditingFile()">
                 </wz-xml-file-editor>
@@ -514,9 +514,9 @@
                   Cancel
                 </button>
                 <button
-                  ng-if="canUpdateRulesetFile(editingFile.filename)"
+                  ng-if="canUpdateRulesetFile(editingFile.file)"
                   ng-disabled="xmlHasErrors || overwrite || saveIncomplete"
-                  ng-click="saveFile(editingRulesetFile.filename, editingRulesetFile.dir)"
+                  ng-click="saveFile(editingRulesetFile.file, editingRulesetFile.dir)"
                   class="btn wz-button-empty pull-right wz-margin-left-10">
                   <span ng-show="!xmlHasErrors"
                     ><i
@@ -540,7 +540,7 @@
                   style="height: inherit"
                   file-name="rules"
                   data="fetchedXML"
-                  target-name="editingRulesetFile.filename"
+                  target-name="editingRulesetFile.file"
                   valid-fn="xmlIsValid(valid)"
                   close-fn="closeEditingFile()">
                 </wz-xml-file-editor>
