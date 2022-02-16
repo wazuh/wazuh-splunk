@@ -41,6 +41,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed error when agents view is re-initialized [#1223](https://github.com/wazuh/wazuh-splunk/pull/1223)
 - Fixed not being able to see actions after adding first API [#1230](https://github.com/wazuh/wazuh-splunk/pull/1230)
 - Fixed agent status chart data disappearing [#1232](https://github.com/wazuh/wazuh-splunk/pull/1232)
+- Added data validation to the group creation process [#1256](https://github.com/wazuh/wazuh-splunk/pull/1256)
 - Implemented data validation on the CDB lists [#1261](https://github.com/wazuh/wazuh-splunk/pull/1261)
 - Fixed the agent status graph so that it shows the correct amount of agents [#1237](https://github.com/wazuh/wazuh-splunk/pull/1237) [#1244](https://github.com/wazuh/wazuh-splunk/pull/1244)
 - Fix the sorting on the Groups table columns [#1258](https://github.com/wazuh/wazuh-splunk/pull/1258)
