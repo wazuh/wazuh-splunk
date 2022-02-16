@@ -36,7 +36,6 @@ define(['../module'], function (module) {
           if (result.data.error === 1905) {
             return result
           } else {
-            console.log(result)
             throw new Error(result.data.error || 'File upload failed. Check the logs.')
           }
         }
