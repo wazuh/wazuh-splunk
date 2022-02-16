@@ -594,8 +594,6 @@ class manager(controllers.BaseController):
                 current_api=api
             )
 
-            self.logger.debug(result)
-
             if 'error' in result and result['error'] != 0:
                 return jsonbak.dumps(
                     {
