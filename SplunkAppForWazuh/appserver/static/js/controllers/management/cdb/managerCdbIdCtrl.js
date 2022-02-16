@@ -66,7 +66,7 @@ define([
     $onInit() {
       // Data validation
       this.scope.keyValidationRegex = '(?:^"([\\w\\-:]+?)"|^[^:"\\s]+$)'
-      this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"\\s]*$)'
+      this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"]*$)'
 
       try {
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)

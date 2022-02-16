@@ -62,7 +62,7 @@ define([
       // Data validation
       this.scope.nameValidationRegex = '^[\\w\\-]+$'
       this.scope.keyValidationRegex = '(?:^"([\\w\\-:]+?)"|^[^:"\\s]+$)'
-      this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"\\s]*$)'
+      this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"]*$)'
 
       this.scope.overwrite = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
