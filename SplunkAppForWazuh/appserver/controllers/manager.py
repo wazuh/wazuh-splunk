@@ -594,21 +594,22 @@ class manager(controllers.BaseController):
                 current_api=api
             )
 
+            self.logger.debug(result)
+
             if 'error' in result and result['error'] != 0:
-                self.logger.error(
-                    "manager: Error trying to upload a file(s): %s" % (result))
                 return jsonbak.dumps(
                     {
-                        "status": "400",
-                        "text": "Error adding file: %s. Cause: %s" % (file_name, result['detail'])
+                        "status": result.get('status_code', 400),
+                        "text": "Error adding file: %s. Cause: %s" % (file_name, result['message'])
                     }
                 )
-            return jsonbak.dumps(
-                {
-                    "status": "200",
-                    "text": "File %s was updated successfully. " % file_name
-                }
-            )
+            else:
+                return jsonbak.dumps(
+                    {
+                        "status": result.get('status_code', 200),
+                        "text": "File %s was updated successfully. " % file_name
+                    }
+                )
         except Exception as e:
             self.logger.error(
                 "manager: Error trying to upload a file(s): %s" % (e))
