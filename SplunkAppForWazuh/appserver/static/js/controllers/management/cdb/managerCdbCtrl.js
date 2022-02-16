@@ -33,7 +33,7 @@ define([
         $scope,
         $sce,
         $notificationService,
-        'cbd',
+        'cdb',
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
@@ -60,7 +60,7 @@ define([
      */
     $onInit() {
       // Data validation
-      this.scope.nameValidationRegex = '^[\\w\\.\\-]+$'
+      this.scope.nameValidationRegex = '^[\\w\\-]+$'
       this.scope.keyValidationRegex = '(?:^"([\\w\\-:]+?)"|^[^:"\\s]+$)'
       this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"\\s]*$)'
 
