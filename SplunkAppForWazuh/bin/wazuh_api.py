@@ -104,11 +104,16 @@ class Wazuh_API():
                             counter=counter - 1
                         )
                 elif status_code != 200:
-                    response = response.json()
-                    raise Exception(
+                    result = response.json()
+                    response = {
+                        'error': True,
+                        'status_code': status_code,
+                        'message': result['title'] + ": " + result['detail']
+                    }
+
+                    self.logger.error(
                         f"{method} {endpoint_url} request failed with status {status_code}\n"
-                        + json.dumps(response, indent=4)
-                    )
+                        + json.dumps(response, indent=4))
                 else:
                     response = response.json()
                 catch_exceptions.attempts = 0
@@ -215,6 +220,7 @@ class Wazuh_API():
 
             if method == 'PUT':
                 if 'origin' in kwargs:
+                    requestData = str(kwargs['content'])
                     if kwargs['origin'] == 'xmleditor':
                         headers = {
                             'Content-Type': 'application/xml',
@@ -230,10 +236,11 @@ class Wazuh_API():
                             'Content-Type':  'application/octet-stream',
                             'Authorization': f'Bearer {wazuh_token}'
                         }
-                    kwargs = str(kwargs['content'])
+                        requestData = kwargs['content']
+                   
                     response = self.session.put(
                         url=current_api.get_url() + endpoint_url,
-                        data=kwargs,
+                        data=requestData,
                         verify=False,
                         timeout=self.timeout,
                         headers=headers
