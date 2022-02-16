@@ -67,7 +67,7 @@ class api(controllers.BaseController):
             self.logger.debug("api: %s" % msg)
             return jsonbak.dumps(
                 {
-                    "status": "200",
+                    "status": 200,
                     "ready": daemons_ready,
                     "message": msg
                 }
@@ -76,7 +76,7 @@ class api(controllers.BaseController):
             self.logger.error("api: Error checking daemons: %s" % (e))
             return jsonbak.dumps(
                 {
-                    "status": "200",
+                    "status": 200,
                     "ready": False,
                     "message": "Error getting the Wazuh daemons status."
                 }
@@ -708,7 +708,7 @@ class api(controllers.BaseController):
             if not check_daemons(api):
                 return jsonbak.dumps(
                     {
-                        "status": "200",
+                        "status": 200,
                         "error": 3099,
                         "message": "Wazuh not ready yet."
                     }

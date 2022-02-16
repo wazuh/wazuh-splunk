@@ -220,6 +220,7 @@ class Wazuh_API():
 
             if method == 'PUT':
                 if 'origin' in kwargs:
+                    requestData = str(kwargs['content'])
                     if kwargs['origin'] == 'xmleditor':
                         headers = {
                             'Content-Type': 'application/xml',
@@ -235,10 +236,11 @@ class Wazuh_API():
                             'Content-Type':  'application/octet-stream',
                             'Authorization': f'Bearer {wazuh_token}'
                         }
-                    kwargs = str(kwargs['content'])
+                        requestData = kwargs['content']
+                   
                     response = self.session.put(
                         url=current_api.get_url() + endpoint_url,
-                        data=kwargs,
+                        data=requestData,
                         verify=False,
                         timeout=self.timeout,
                         headers=headers
