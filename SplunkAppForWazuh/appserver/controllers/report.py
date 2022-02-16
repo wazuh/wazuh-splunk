@@ -860,7 +860,7 @@ class report(controllers.BaseController):
                             elif 'affected_items' not in conf_data['data']:
                                 self.setTableTitle(pdf)
                                 pdf.cell(0, 10, txt="Group configuration is not available.", border='B', ln=1, align='C', fill=False,
-                                         link='https://documentation.wazuh.com/3.9/user-manual/reference/centralized-configuration.html')
+                                         link='https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html')
                                 pdf.add_page()
                                 pdf.ln(20)
                             else:

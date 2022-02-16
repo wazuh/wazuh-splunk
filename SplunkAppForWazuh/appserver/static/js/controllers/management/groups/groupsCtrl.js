@@ -858,34 +858,32 @@ define(['../../module', 'FileSaver'], function (app) {
 
     async initReportConfig() {
       const data = {
-        configurations: [
-          this.scope.selectedOptions.groupConf
-            ? {
-                title: 'Main group configurations',
-                sections: [
-                  {
-                    desc: 'agent.conf',
-                    groupConfig: true,
-                    labels: {},
-                  },
-                ],
-              }
-            : false,
-          this.scope.selectedOptions.agentsList
-            ? {
-                title: 'Agents ',
-                sections: [
-                  {
-                    desc: 'agents',
-                    agentList: true,
-                    labels: {},
-                  },
-                ],
-              }
-            : false,
-        ],
+        configurations: [],
       }
-
+      if (this.scope.selectedOptions.groupConf) {
+        data.configurations.push({
+          title: 'Main group configurations',
+          sections: [
+            {
+              desc: 'agent.conf',
+              groupConfig: true,
+              labels: {},
+            },
+          ],
+        })
+      }
+      if (this.scope.selectedOptions.agentsList) {
+        data.configurations.push({
+          title: 'Agents ',
+          sections: [
+            {
+              desc: 'agents',
+              agentList: true,
+              labels: {},
+            },
+          ],
+        })
+      }
       if (!this.scope.loadingReporting)
         this.reportingService.reportGroupConfiguration(
           this.scope.currentGroup,
