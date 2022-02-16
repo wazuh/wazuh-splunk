@@ -508,7 +508,7 @@ class manager(controllers.BaseController):
                     "manager: Cannot connect to API; Wazuh not ready yet.")
                 return jsonbak.dumps(
                     {
-                        "status": "200",
+                        "status": 200,
                         "error": 3099,
                         "message": "Wazuh not ready yet."
                     }
@@ -559,7 +559,7 @@ class manager(controllers.BaseController):
             self.logger.error(msg)
             return jsonbak.dumps(
                 {
-                    "status": "500",
+                    "status": 500,
                     "error": msg
                 }
             )
@@ -581,35 +581,39 @@ class manager(controllers.BaseController):
             # Get path
             dest_resource = kwargs['resource']
 
-            response = self.wz_api.make_request(
+            # wazuh_api.py verifies the "origin" of the request to be "raw" when a binary file is sent
+            # also expects the file content to be in "content"
+            params = {}
+            params['origin'] = "raw"
+            params['content'] = file_content
+
+            result = self.wz_api.make_request(
                 method='PUT',
                 endpoint_url=f"/{dest_resource}/files/{file_name}",
-                kwargs=file_content,
+                kwargs=params,
                 current_api=api
             )
-            result = jsonbak.loads(response.text)
 
             if 'error' in result and result['error'] != 0:
-                self.logger.error(
-                    "manager: Error trying to upload a file(s): %s" % (result))
                 return jsonbak.dumps(
                     {
-                        "status": "400",
-                        "text": "Error adding file: %s. Cause: %s" % (file_name, result['detail'])
+                        "status": result.get('status_code', 400),
+                        "text": "Error adding file: %s. Cause: %s" % (file_name, result['message'])
                     }
                 )
-            return jsonbak.dumps(
-                {
-                    "status": "200",
-                    "text": "File %s was updated successfully. " % file_name
-                }
-            )
+            else:
+                return jsonbak.dumps(
+                    {
+                        "status": result.get('status_code', 200),
+                        "text": "File %s was updated successfully. " % file_name
+                    }
+                )
         except Exception as e:
             self.logger.error(
                 "manager: Error trying to upload a file(s): %s" % (e))
             return jsonbak.dumps(
                 {
-                    "status": "400",
+                    "status": 400,
                     "text": "Error adding file: %s. Cause: %s" % (file_name, e)
                 }
             )

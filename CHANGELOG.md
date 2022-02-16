@@ -28,6 +28,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Wazuh rebranding [#1186](https://github.com/wazuh/wazuh-splunk/pull/1186)
 - Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
 - Refactored branding color styles to improve maintainability [#1236](https://github.com/wazuh/wazuh-splunk/pull/1236)
+- Changed Wazuh API's name to its alias in the quick settings selector [#1243](https://github.com/wazuh/wazuh-splunk/pull/1243)
 
 ### Fixed
 
@@ -40,8 +41,11 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed error when agents view is re-initialized [#1223](https://github.com/wazuh/wazuh-splunk/pull/1223)
 - Fixed not being able to see actions after adding first API [#1230](https://github.com/wazuh/wazuh-splunk/pull/1230)
 - Fixed agent status chart data disappearing [#1232](https://github.com/wazuh/wazuh-splunk/pull/1232)
-- Fixed the agent status graph so that it shows the correct amount of agents [#1237](https://github.com/wazuh/wazuh-splunk/pull/1237)
+- Fixed the agent status graph so that it shows the correct amount of agents [#1237](https://github.com/wazuh/wazuh-splunk/pull/1237) [#1244](https://github.com/wazuh/wazuh-splunk/pull/1244)
+- Fix the sorting on the Groups table columns [#1258](https://github.com/wazuh/wazuh-splunk/pull/1258)
+- Fixed non-sortable columns on the Security section tables [1260](https://github.com/wazuh/wazuh-splunk/pull/1260)
 - Fixed group report disabled configuration parameter error[#1271](https://github.com/wazuh/wazuh-splunk/pull/1271)
+- Fixed import CDB list file [#1266](https://github.com/wazuh/wazuh-splunk/pull/1266)
 
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 

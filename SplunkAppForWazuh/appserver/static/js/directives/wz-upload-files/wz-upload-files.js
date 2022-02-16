@@ -87,7 +87,7 @@ define(['../module', 'Dropzone'], function (app, Dropzone) {
 
               var node = _ref6
 
-              if (message.status === '200') {
+              if (message.status === 200) {
                 node.classList.add('wz-success-message')
               } else {
                 node.classList.add('wz-error-message')
