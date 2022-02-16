@@ -44,6 +44,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed the agent status graph so that it shows the correct amount of agents [#1237](https://github.com/wazuh/wazuh-splunk/pull/1237) [#1244](https://github.com/wazuh/wazuh-splunk/pull/1244)
 - Fix the sorting on the Groups table columns [#1258](https://github.com/wazuh/wazuh-splunk/pull/1258)
 - Fixed non-sortable columns on the Security section tables [1260](https://github.com/wazuh/wazuh-splunk/pull/1260)
+- Fixed import CDB list file [#1266](https://github.com/wazuh/wazuh-splunk/pull/1266)
 
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 
