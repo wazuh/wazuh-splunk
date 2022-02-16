@@ -508,7 +508,7 @@ class manager(controllers.BaseController):
                     "manager: Cannot connect to API; Wazuh not ready yet.")
                 return jsonbak.dumps(
                     {
-                        "status": "200",
+                        "status": 200,
                         "error": 3099,
                         "message": "Wazuh not ready yet."
                     }
@@ -559,7 +559,7 @@ class manager(controllers.BaseController):
             self.logger.error(msg)
             return jsonbak.dumps(
                 {
-                    "status": "500",
+                    "status": 500,
                     "error": msg
                 }
             )
@@ -613,7 +613,7 @@ class manager(controllers.BaseController):
                 "manager: Error trying to upload a file(s): %s" % (e))
             return jsonbak.dumps(
                 {
-                    "status": "400",
+                    "status": 400,
                     "text": "Error adding file: %s. Cause: %s" % (file_name, e)
                 }
             )
