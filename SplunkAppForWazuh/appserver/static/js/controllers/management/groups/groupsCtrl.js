@@ -613,7 +613,7 @@ define(['../../module', 'FileSaver'], function (controllers) {
             `Group has been updated but an error has occurred with ${failedIds.length} agents`
           )
         } else {
-          const responseMsg = (response || {}).data.message
+          const responseMsg = (response || { data: { message: '' } }).data.message
           if (responseMsg) {
             this.notification.showSuccessToast(
               responseMsg || 'Success. Group has been updated'
