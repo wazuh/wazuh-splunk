@@ -199,16 +199,16 @@ define(['../../module', 'FileSaver'], function (app) {
         // NOTE Remove on v4.4.0
         const daemonsNotIncluded = [
           'wazuh-modulesd:task-manager',
-          'wazuh-modulesd:agent-upgrade'
+          'wazuh-modulesd:agent-upgrade',
         ]
         // END NOTE
 
         const daemons = data.data.data.affected_items
-        // NOTE Remove on v4.4.0
+          // NOTE Remove on v4.4.0
           .flatMap(Object.keys)
-          .filter(daemon => !daemonsNotIncluded.includes(daemon))
-          
-        this.scope.daemons = daemons.map(d => ({title: d}))
+          .filter((daemon) => !daemonsNotIncluded.includes(daemon))
+
+        this.scope.daemons = daemons.map((d) => ({ title: d }))
         // END NOTE
 
         // NOTE uncomment on v4.4.0

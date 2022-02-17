@@ -145,12 +145,12 @@ define([
 
     /**
      * Validates the Key and Value of a new CDB List entry.
-     * 
+     *
      * @param {String} key the new key
      * @param {String} value the new value
      * @returns {Boolean} true if both the key and the value are valid.
      */
-      validateCdbEntry(key, value){
+    validateCdbEntry(key, value) {
       let isValid = true
       const errorMessage = (type, regex) =>
         `The ${type} must match this regular expression ${regex}`
@@ -191,9 +191,9 @@ define([
           } else {
             this.notification.showErrorToast(
               'Error adding new entry, the key exists.'
-              )
-            }
+            )
           }
+        }
       } catch (error) {
         this.notification.showErrorToast(
           `Error adding entry: ${error.message || error}`

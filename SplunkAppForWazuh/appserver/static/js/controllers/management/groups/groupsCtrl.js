@@ -301,12 +301,12 @@ define(['../../module', 'FileSaver'], function (app) {
     }
 
     /**
-     * Validates a new group name. The group name must meet the 
+     * Validates a new group name. The group name must meet the
      * following criteria:
-     * 
+     *
      *  - The group name cannot exceed 255 characters.
      *  - The group name must match this regular expression: A-Za-z0-9.\-_
-     * 
+     *
      * @param {String} name the new group's name
      * @returns {Boolean}
      */
