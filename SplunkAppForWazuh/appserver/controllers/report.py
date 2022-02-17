@@ -24,6 +24,7 @@ import splunk.appserver.mrsparkle.controllers as controllers
 from fpdf import FPDF
 from log import log
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
+from splunk.clilib import cli_common as cli
 
 from . import api, report_vars
 
@@ -859,8 +860,20 @@ class report(controllers.BaseController):
                                 pass
                             elif 'affected_items' not in conf_data['data']:
                                 self.setTableTitle(pdf)
-                                pdf.cell(0, 10, txt="Group configuration is not available.", border='B', ln=1, align='C', fill=False,
-                                         link='https://documentation.wazuh.com/current/user-manual/reference/centralized-configuration.html')
+                                # Get Wazuh version for the documentation link
+                                wazuhVersion = cli.getConfStanza('package', 'app')['version']
+                                wazuhVersion = wazuhVersion.split(
+                                    '.')[0] + '.' + wazuhVersion.split('.')[1]
+                                pdf.cell(
+                                    0, 
+                                    10, 
+                                    txt="Group configuration is not available.", 
+                                    border='B', 
+                                    ln=1, 
+                                    align='C', 
+                                    fill=False,
+                                    link=f'https://documentation.wazuh.com/{wazuhVersion}/user-manual/reference/centralized-configuration.html'
+                                )
                                 pdf.add_page()
                                 pdf.ln(20)
                             else:
