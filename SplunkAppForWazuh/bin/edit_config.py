@@ -86,7 +86,7 @@ class EditConfig():
                 f.write("\n%s = %s" % (str(k), str(v)))
             f.close()
             return {
-                "data": "Configuration updated susccesfully. Changes will not be applied until restart Splunk.",
+                "data": "Configuration updated susccesfully.",
                 "error": 0
             }
         except Exception as e:
