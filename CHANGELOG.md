@@ -48,6 +48,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed non-sortable columns on the Security section tables [1260](https://github.com/wazuh/wazuh-splunk/pull/1260)
 - Fixed group report disabled configuration parameter error[#1271](https://github.com/wazuh/wazuh-splunk/pull/1271)
 - Fixed import CDB list file [#1266](https://github.com/wazuh/wazuh-splunk/pull/1266)
+- Fixed header menu height style issue [#1282](https://github.com/wazuh/wazuh-splunk/pull/1282)
 
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 
