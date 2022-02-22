@@ -93,104 +93,6 @@ define([
 
       this.filters = this.getFilters()
 
-      this.vizz = [
-        /**
-         * Metrics
-         */
-        new SearchHandler(
-          `criticalSeveritySearch`,
-          `${this.filters} data.vulnerability.severity=critical | stats count`,
-          `criticalSeverityToken`,
-          `$result.count$`,
-          `criticalSeverity`,
-          this.submittedTokenModel,
-          this.scope
-        ),
-        new SearchHandler(
-          `highSeveritySeach`,
-          `${this.filters} data.vulnerability.severity=high | stats count`,
-          `highSeverityToken`,
-          `$result.count$`,
-          `highSeverity`,
-          this.submittedTokenModel,
-          this.scope
-        ),
-        new SearchHandler(
-          `mediumSeveritySeach`,
-          `${this.filters} data.vulnerability.severity=medium | stats count`,
-          `mediumSeverityToken`,
-          `$result.count$`,
-          `mediumSeverity`,
-          this.submittedTokenModel,
-          this.scope
-        ),
-        new SearchHandler(
-          `lowSeveritySeach`,
-          `${this.filters} data.vulnerability.severity=low | stats count`,
-          `lowSeverityToken`,
-          `$result.count$`,
-          `lowSeverity`,
-          this.submittedTokenModel,
-          this.scope
-        ),
-        /**
-         * Visualizations
-         */
-        new AreaChart(
-          'alertsSeverityOverTimeVizz',
-          `${this.filters} rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
-          'alertsSeverityOverTimeVizz',
-          this.scope,
-          { customAxisTitleX: 'Time span' }
-        ),
-        new Table(
-          'commonRules',
-          `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
-          'commonRules',
-          this.scope
-        ),
-        new PieChart(
-          'commonCves',
-          `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.cve limit=5`,
-          'commonCves',
-          this.scope
-        ),
-        new PieChart(
-          'severityDistribution',
-          `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.severity limit=5`,
-          'severityDistribution',
-          this.scope
-        ),
-        new PieChart(
-          'commonlyAffectedPackVizz',
-          `${this.filters} | top 5 data.vulnerability.package.name`,
-          'commonlyAffectedPackVizz',
-          this.scope
-        ),
-        new Table(
-          'alertsSummaryVizz',
-          `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
-          'alertsSummaryVizz',
-          this.scope
-        ),
-        new RawTableDataService(
-          'alertsSummaryTable',
-          `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
-          'alertsSummaryTableToken',
-          '$result$',
-          this.scope,
-          'Alerts Summary'
-        ),
-        new RawTableDataService(
-          'commonRulesTable',
-          `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
-          'commonRulesTableToken',
-          '$result$',
-          this.scope,
-          'Common Rules'
-        ),
-      ]
-
       // Set agent info
       try {
         this.agentReportData = {
@@ -250,6 +152,108 @@ define([
         this.formatAgentStatus(agentStatus)
       this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
+      this.scope.loadVizz = () => {
+        if (!this.vizzLoaded) {
+          this.vizz = [
+            /**
+             * Metrics
+             */
+            new SearchHandler(
+              `criticalSeveritySearch`,
+              `${this.filters} data.vulnerability.severity=critical | stats count`,
+              `criticalSeverityToken`,
+              `$result.count$`,
+              `criticalSeverity`,
+              this.submittedTokenModel,
+              this.scope
+            ),
+            new SearchHandler(
+              `highSeveritySeach`,
+              `${this.filters} data.vulnerability.severity=high | stats count`,
+              `highSeverityToken`,
+              `$result.count$`,
+              `highSeverity`,
+              this.submittedTokenModel,
+              this.scope
+            ),
+            new SearchHandler(
+              `mediumSeveritySeach`,
+              `${this.filters} data.vulnerability.severity=medium | stats count`,
+              `mediumSeverityToken`,
+              `$result.count$`,
+              `mediumSeverity`,
+              this.submittedTokenModel,
+              this.scope
+            ),
+            new SearchHandler(
+              `lowSeveritySeach`,
+              `${this.filters} data.vulnerability.severity=low | stats count`,
+              `lowSeverityToken`,
+              `$result.count$`,
+              `lowSeverity`,
+              this.submittedTokenModel,
+              this.scope
+            ),
+            /**
+             * Visualizations
+             */
+            new AreaChart(
+              'alertsSeverityOverTimeVizz',
+              `${this.filters} rule.groups{}=vulnerability-detector data.vulnerability.severity=* | timechart count by data.vulnerability.severity`,
+              'alertsSeverityOverTimeVizz',
+              this.scope,
+              { customAxisTitleX: 'Time span' }
+            ),
+            new Table(
+              'commonRules',
+              `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule Description", count as Count, percent as Percent`,
+              'commonRules',
+              this.scope
+            ),
+            new PieChart(
+              'commonCves',
+              `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.cve limit=5`,
+              'commonCves',
+              this.scope
+            ),
+            new PieChart(
+              'severityDistribution',
+              `${this.filters} rule.groups{}="vulnerability-detector" | top data.vulnerability.severity limit=5`,
+              'severityDistribution',
+              this.scope
+            ),
+            new PieChart(
+              'commonlyAffectedPackVizz',
+              `${this.filters} | top 5 data.vulnerability.package.name`,
+              'commonlyAffectedPackVizz',
+              this.scope
+            ),
+            new Table(
+              'alertsSummaryVizz',
+              `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
+              'alertsSummaryVizz',
+              this.scope
+            ),
+            new RawTableDataService(
+              'alertsSummaryTable',
+              `${this.filters} | stats count sparkline by data.vulnerability.title, data.vulnerability.severity | sort count DESC  | rename data.vulnerability.title as Title, data.vulnerability.severity as Severity, count as Count, sparkline as Sparkline `,
+              'alertsSummaryTableToken',
+              '$result$',
+              this.scope,
+              'Alerts Summary'
+            ),
+            new RawTableDataService(
+              'commonRulesTable',
+              `${this.filters} rule.groups{}="vulnerability-detector" | top rule.id,rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+              'commonRulesTableToken',
+              '$result$',
+              this.scope,
+              'Common Rules'
+            ),
+          ]
+          this.vizzLoaded = true
+        }
+      }
     }
 
     /**
