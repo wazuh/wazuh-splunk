@@ -3,7 +3,7 @@
   "bugs": {
     "url": "https://github.com/wazuh/wazuh-splunk/issues"
   },
-  "code": "4301-0",
+  "code": "4303-0",
   "dependencies": {},
   "description": "Splunk app for Wazuh",
   "devDependencies": {
@@ -33,7 +33,7 @@
     "type": "git",
     "url": "git+https://github.com/wazuh/wazuh-splunk.git"
   },
-  "revision": "4302",
+  "revision": "4303",
   "scripts": {
     "build": "make build",
     "clean": "make clean",
