@@ -42,7 +42,7 @@ class CheckQueue():
 
     def init(self):
         """Inits the job"""
-        self.logger.debug("bin.check_queue: Checking jobs queue.")
+        # self.logger.debug("bin.check_queue: Checking jobs queue.")
         try:
             jobs = self.q.get_jobs(self.auth_key)
             todo_jobs = self.get_todo_jobs(jobs)
@@ -62,7 +62,7 @@ class CheckQueue():
         str: jobs
             A dictionary in string format with the jobs
         """
-        self.logger.debug("bin.check_queue: Gettings todo jobs.")
+        # self.logger.debug("bin.check_queue: Gettings todo jobs.")
         try:
             jobs = jsonbak.loads(jobs)
             todo_jobs = filter(lambda j: j['done'] == False, jobs)
@@ -81,7 +81,7 @@ class CheckQueue():
         dic: jobs
             A dictionary with the todo jobs
         """
-        self.logger.debug("bin.check_queue: Checking todo jobs.")
+        # self.logger.debug("bin.check_queue: Checking todo jobs.")
         try:
             for job in jobs:
                 if job['exec_time'] < self.now:

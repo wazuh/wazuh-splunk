@@ -72,9 +72,9 @@ class database():
                 verify=False
             ).json()
             if not '_key' in result:
-                raise Exception('The new API could not be inserted\n' +
-                                jsonbak.dumps(result, indent=4)
-                                )
+                raise Exception(
+                    'The new API could not be inserted: ' + jsonbak.dumps(result)
+                )
             key = result['_key']
             return key
         except Exception as e:

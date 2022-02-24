@@ -75,8 +75,8 @@ class wazuhtoken():
             raise Exception(error)
         else:
             self.logger.debug(
-                "wazuh-token: API object provided\n" +
-                json.dumps(api.__dict__, sort_keys=True, indent=4)
+                "wazuh-token: API object provided" 
+                # + json.dumps(api.__dict__)
             )
 
         # Init values
@@ -125,10 +125,10 @@ class wazuhtoken():
                 # If it fails, use the basic auth
                 if response.status_code != 200:
                     self.logger.error(
-                        f"wazuh-token: allow_run_as not enabled for user {self.api.get_auth()}\n"
-                        + "API response:\n"
-                        + f"Request failed with code {response.status_code}"
-                        + json.dumps(response.json(), indent=4)
+                        f"wazuh-token: allow_run_as not enabled for user {self.api.get_auth()}\t"
+                        + "API response:\t"
+                        + f"Request failed with code {response.status_code} |-> "
+                        + json.dumps(response.json())
                     )
                     response = self._basic_auth_login()
             else:
@@ -171,10 +171,7 @@ class wazuhtoken():
         auth_context['name'] = self.api._user
         auth_context['user_name'] = self.api._user
 
-        self.logger.debug(
-            "wazuh-token: using auth context\n"
-            + json.dumps(auth_context, indent=4)
-        )
+        self.logger.debug("wazuh-token: using auth context")
         try:
             return self.session.post(
                 f"{self.api.get_url()}/security/user/authenticate/run_as",

@@ -112,8 +112,9 @@ class Wazuh_API():
                     }
 
                     self.logger.error(
-                        f"{method} {endpoint_url} request failed with status {status_code}\n"
-                        + json.dumps(response, indent=4))
+                        f"{method} {endpoint_url} request failed with status {status_code} |-> "
+                        + json.dumps(response)
+                    )
                 else:
                     response = response.json()
                 catch_exceptions.attempts = 0

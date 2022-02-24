@@ -65,10 +65,7 @@ def check_daemons(api: API_model) -> bool:
 
     wazuh_ready = False
     if 'error' in daemons_status and daemons_status['error'] > 0:
-        logger.error(
-            "check_daemons():\n"
-            + json.dumps(daemons_status, indent=4)
-        )
+        logger.error("check_daemons(): " + json.dumps(daemons_status))
     else:
         d = daemons_status['data']['affected_items'][0]
         daemons = {
