@@ -14,7 +14,6 @@ Find more information about this on the LICENSE file.
 
 
 import json
-import os
 
 import get_api_by_id as API_services
 import jsonbak
@@ -27,7 +26,6 @@ from log import log
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
 from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
 from splunk.clilib import cli_common as cli
-from splunk.clilib.control_exceptions import ParsingError
 from wazuh_api import Wazuh_API
 
 
@@ -662,8 +660,8 @@ class manager(controllers.BaseController):
         except IndexError:
             # data.affected_items is empty
             self.logger.error(
-                f"manager::get_cluster_info(): {endpoint} did not return any data\n"
-                + json.dumps(response, indent=4)
+                f"manager::get_cluster_info(): {endpoint} did not return any data |-> "
+                + json.dumps(response)
             )
             return response  # API error response
         else:
@@ -698,8 +696,8 @@ class manager(controllers.BaseController):
         except (IndexError, KeyError):
             # data does not exist or data.affected_items is empty
             self.logger.error(
-                f"manager: {endpoint} did not return any data\n"
-                + json.dumps(response, indent=4)
+                f"manager: {endpoint} did not return any data |-> "
+                + json.dumps(response)
             )
         except Exception as e:
             self.logger.error(f"manager: error on get_cluster_info(): {e}")

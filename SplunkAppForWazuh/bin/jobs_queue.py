@@ -147,7 +147,7 @@ class JobsQueue():
             The authorized session key
         """
         try:
-            self.logger.debug("bin.jobs_queue: Getting all jobs.")
+            # self.logger.debug("bin.jobs_queue: Getting all jobs.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(
