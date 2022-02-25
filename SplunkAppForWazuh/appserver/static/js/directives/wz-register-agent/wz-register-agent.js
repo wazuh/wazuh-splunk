@@ -10,9 +10,9 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzRegisterAgent', function(BASE_URL) {
+  directives.directive('wzRegisterAgent', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {},
@@ -22,34 +22,34 @@ define(['../module'], function(directives) {
           osSelected: 'redhat',
           managerIp: '',
           agentName: '',
-          agentKey: ''
+          agentKey: '',
         }
         $scope.newInstall = true
         $scope.registeredAgent = false
         $scope.showNavTab = false
 
         // Functions
-        $scope.selectOs = os => {
+        $scope.selectOs = (os) => {
           $scope.config.osSelected = os
           $scope.$applyAsync()
         }
 
-        $scope.osEquivalence = os => {
+        $scope.osEquivalence = (os) => {
           const equivalences = {
             redhat: 'Red Hat / CentOS',
             debian: 'Debian / Ubuntu',
             windows: 'Windows',
-            macos: 'MacOS'
+            macos: 'MacOS',
           }
           return equivalences[os] || 'Undefined'
         }
 
-        $scope.selectManagerAddress = managerAddress => {
+        $scope.selectManagerAddress = (managerAddress) => {
           $scope.config.managerIp = managerAddress
           $scope.$applyAsync()
         }
 
-        $scope.selectAgentName = agentName => {
+        $scope.selectAgentName = (agentName) => {
           $scope.config.agentName = agentName
           $scope.registeredAgent = false
           $scope.$applyAsync()
@@ -65,12 +65,12 @@ define(['../module'], function(directives) {
           $scope.$applyAsync()
         }
 
-        $scope.changeInstall = install => {
+        $scope.changeInstall = (install) => {
           $scope.newInstall = install === 'newInstall'
           $scope.$applyAsync()
         }
 
-        $scope.toClipboard = element => {
+        $scope.toClipboard = (element) => {
           try {
             const el = document.getElementById(element)
             const range = document.createRange()
@@ -88,9 +88,13 @@ define(['../module'], function(directives) {
         }
 
         $scope.getVersion = async () => {
-          $scope.wazuhVersion = await $requestService.apiReq('/manager/info');
-          $scope.wazuhVersion = (((($scope.wazuhVersion || {}).data || {}).data || {}).affected_items[0] || {}).version || {}
-          $scope.wazuhVersion = $scope.wazuhVersion.replace("v","")
+          $scope.wazuhVersion = await $requestService.apiReq('/manager/info')
+          $scope.wazuhVersion =
+            (
+              ((($scope.wazuhVersion || {}).data || {}).data || {})
+                .affected_items[0] || {}
+            ).version || {}
+          $scope.wazuhVersion = $scope.wazuhVersion.replace('v', '')
           $scope.$applyAsync()
         }
 
@@ -126,7 +130,7 @@ define(['../module'], function(directives) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-register-agent/wz-register-agent.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-register-agent/wz-register-agent.html',
     }
   })
 })

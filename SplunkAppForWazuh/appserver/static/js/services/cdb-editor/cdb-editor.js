@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class CDBEditor {
@@ -36,7 +36,9 @@ define(['../module'], function(module) {
           if (result.data.error === 1905) {
             return result
           } else {
-            throw new Error(result.data.message || 'Cannot send this file.')
+            throw new Error(
+              result.data.error || 'File upload failed. Check the logs.'
+            )
           }
         }
         return result
@@ -45,17 +47,11 @@ define(['../module'], function(module) {
       }
     }
 
-    async getConfiguration(file, path) {
+    async getConfiguration(file, _path) {
       try {
         const url = `/lists/files/${file}?raw=true`
-        const result = await this.apiReq(
-          url,
-          { origin:"raw" }
-        )
-        if (
-          !result ||
-          !result.data
-        ) {
+        const result = await this.apiReq(url, { origin: 'raw' })
+        if (!result || !result.data) {
           throw new Error('Error fetching cdb list content')
         }
         return result.data.data

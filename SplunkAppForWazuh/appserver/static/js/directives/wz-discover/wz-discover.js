@@ -10,13 +10,13 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzDiscover', function(BASE_URL) {
+  directives.directive('wzDiscover', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
-        breadcrumbs: '=breadcrumbs'
+        breadcrumbs: '=breadcrumbs',
       },
       controller(
         $scope,
@@ -28,9 +28,8 @@ define(['../module'], function(directives) {
         $scope.discoverSection = () => {
           try {
             const hideOnlyShowFilters = false
-            const filters = $currentDataService.getSerializedFilters(
-              hideOnlyShowFilters
-            )
+            const filters =
+              $currentDataService.getSerializedFilters(hideOnlyShowFilters)
             const url = `${BASE_URL}/app/search/search?q=${filters}`
             localStorage.setItem('urlDiscover', url)
             const lastState = $navigationService.getLastState()
@@ -40,7 +39,7 @@ define(['../module'], function(directives) {
             $state.go('discover', {
               fromDashboard: fromDashboard,
               previousState: lastState,
-              breadcrumbs: breadcrumbs
+              breadcrumbs: breadcrumbs,
             })
           } catch (error) {
             $notificationService.showErrorToast(
@@ -51,7 +50,7 @@ define(['../module'], function(directives) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-discover/wz-discover.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-discover/wz-discover.html',
     }
   })
 })

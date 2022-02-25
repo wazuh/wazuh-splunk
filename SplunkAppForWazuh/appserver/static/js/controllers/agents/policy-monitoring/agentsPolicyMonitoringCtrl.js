@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -39,6 +39,9 @@ define([
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
 
     constructor(
@@ -61,7 +64,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
@@ -134,7 +138,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -148,7 +152,7 @@ define([
           OS: this.agent.data.data.os.name,
           dateAdd: this.agent.data.data.dateAdd,
           lastKeepAlive: this.agent.data.data.lastKeepAlive,
-          group: this.agent.data.data.group.toString()
+          group: this.agent.data.data.group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -166,7 +170,7 @@ define([
             'elementOverTime',
             'ruleDistribution',
             'eventsPerAgent',
-            'alertsSummary'
+            'alertsSummary',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -178,8 +182,6 @@ define([
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
-      this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -187,14 +189,15 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
 
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 

@@ -3,18 +3,28 @@
   <div class="loader"></div>
 </div>
 
-<div ng-show='!loadingRing'>
+<div ng-show="!loadingRing">
   <div layout="row" ng-show="fromDashboard" class="div-cont">
     <!--Print breadcumbs-->
     <div class="div-bread">
-      <span class="wz-text-link cursor-pointer" ui-sref='{{breadcrumbs.ref}}'>{{breadcrumbs.section}}</span>
-      <span class="wz-text-link cursor-pointer" ng-if="breadcrumbs.agentName" ui-sref='{{breadcrumbs.agentRef}}'>/ {{breadcrumbs.agentName}} ({{breadcrumbs.agentId}})</span>
+      <span class="wz-text-link cursor-pointer" ui-sref="{{breadcrumbs.ref}}"
+        >{{breadcrumbs.section}}</span
+      >
+      <span
+        class="wz-text-link cursor-pointer"
+        ng-if="breadcrumbs.agentName"
+        ui-sref="{{breadcrumbs.agentRef}}"
+        >/ {{breadcrumbs.agentName}} ({{breadcrumbs.agentId}})</span
+      >
       <span ng-if="breadcrumbs.agentName">/ {{breadcrumbs.subSection}} </span>
       <span ng-if="!breadcrumbs.agentName">/ {{breadcrumbs.subSection}} </span>
     </div>
     <!--Back to dashboard-->
     <div class="div-dash">
-      <span class="btn wz-button-empty" ng-click="backToDashboard()" aria-label="Dashboard">
+      <span
+        class="btn wz-button-empty"
+        ng-click="backToDashboard()"
+        aria-label="Dashboard">
         <i class="fa fa-fw fa-table" aria-hidden="true"></i>&nbsp;Dashboard
         <md-tooltip md-direction="bottom" class="wz-tooltip">
           Back to the dashboard.
@@ -23,7 +33,13 @@
     </div>
   </div>
 
-  <iframe id="searchAndReporting" frameborder="0" scrolling="yes" class="iframeSr" src="" iframe-onload="removeIFrameHeader()"></iframe>
+  <iframe
+    id="searchAndReporting"
+    frameborder="0"
+    scrolling="yes"
+    class="iframeSr"
+    src=""
+    iframe-onload="removeIFrameHeader()"></iframe>
 </div>
 
 <style>

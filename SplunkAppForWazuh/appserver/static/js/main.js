@@ -20,7 +20,7 @@ require.config({
 
     // JSON2XML
     js2xmlparser: 'js/libs/json2xml/jsontoxml',
-    
+
     // Dropzonejs
     Dropzone: 'js/libs/dropzone/dropzone',
 
@@ -36,43 +36,43 @@ require.config({
     jQuery: 'js/jQuery',
 
     // JqueryUI
-    JqueryUI: 'js/libs/jquery-ui'
+    JqueryUI: 'js/libs/jquery-ui',
   },
 
   // Add angular modules that does not support AMD out of the box, put it in a shim
   shim: {
     angular: {
-      exports: 'angular'
+      exports: 'angular',
     },
     ngAnimate: {
       exports: 'ngAnimate',
-      deps: ['angular']
+      deps: ['angular'],
     },
     ngAria: {
       exports: 'ngAria',
-      deps: ['angular']
+      deps: ['angular'],
     },
     ngMaterial: {
       exports: 'ngMaterial',
-      deps: ['angular']
+      deps: ['angular'],
     },
     ngRoute: {
       exports: 'ngRoute',
-      deps: ['angular']
+      deps: ['angular'],
     },
     chart: {
       exports: 'chart',
-      deps: ['angular']
+      deps: ['angular'],
     },
     angularChart: {
       exports: 'angularChart',
-      deps: ['angular', 'chart']
+      deps: ['angular', 'chart'],
     },
     localjQuery: {
-      exports: '$'
-    }
+      exports: '$',
+    },
   },
 
   // kick start application
-  deps: ['angular', 'ngMaterial', 'ngAnimate', 'ngAria', 'js/bootstrap']
+  deps: ['angular', 'ngMaterial', 'ngAnimate', 'ngAria', 'js/bootstrap'],
 })

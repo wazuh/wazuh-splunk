@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', 'FileSaver'], function(app) {
+define(['../../module', 'FileSaver'], function (app) {
   'use strict'
 
   class Logs {
@@ -31,7 +31,8 @@ define(['../../module', 'FileSaver'], function(app) {
       $notificationService,
       $currentDataService,
       $csvRequestService,
-      logs
+      logs,
+      $security_service
     ) {
       this.scope = $scope
       this.scope.realtime = false
@@ -45,6 +46,9 @@ define(['../../module', 'FileSaver'], function(app) {
       this.csvReq = $csvRequestService
       this.wzTableFilter = $tableFilterService
       this.path = '/manager/logs'
+      this.scope.canReadLogs = $security_service.isAllowed('MANAGER_READ', [
+        'RESOURCELESS',
+      ])
     }
 
     /**
@@ -53,15 +57,16 @@ define(['../../module', 'FileSaver'], function(app) {
     $onInit() {
       try {
         this.scope.selectedNavTab = 'logs'
-        this.scope.search = term => this.search(term)
-        this.scope.filter = term => this.filter(term)
-        this.scope.changeNode = node => this.changeNode(node)
+        this.scope.search = (term) => this.search(term)
+        this.scope.filter = (term) => this.filter(term)
+        this.scope.changeNode = (node) => this.changeNode(node)
         this.scope.stopRealtime = () => this.stopRealtime()
         this.scope.playRealtime = () => this.playRealtime()
         this.scope.summary = this.logs.data.data
         this.scope.downloadCsv = () => this.downloadCsv()
-        this.initialize()
-
+        if (this.scope.canReadLogs) {
+          this.initialize()
+        }
         this.scope.sort = () => this.sort()
 
         this.scope.$on('wazuhFetched', (ev, params) => {
@@ -73,7 +78,7 @@ define(['../../module', 'FileSaver'], function(app) {
             this.scope.XMLContent = this.parseLogsToText(params.items)
             this.scope.$broadcast('XMLContentReady', {
               data: this.scope.XMLContent,
-              logs: true
+              logs: true,
             })
           }
 
@@ -102,7 +107,7 @@ define(['../../module', 'FileSaver'], function(app) {
     parseLogsToText(logs) {
       try {
         let result = ''
-        logs.map(log => {
+        logs.map((log) => {
           if (log) {
             result += `${log.timestamp} ${log.tag} ${(
               log.level || ''
@@ -173,10 +178,10 @@ define(['../../module', 'FileSaver'], function(app) {
             Array.isArray(nodeList.data.data.affected_items)
           ) {
             this.scope.nodeList = nodeList.data.data.affected_items
-              .map(item => item.name)
+              .map((item) => item.name)
               .reverse()
             this.scope.selectedNode = nodeList.data.data.affected_items.filter(
-              item => item.type === 'master'
+              (item) => item.type === 'master'
             )[0].name
           }
         }
@@ -190,11 +195,27 @@ define(['../../module', 'FileSaver'], function(app) {
               `/cluster/${this.scope.selectedNode}/logs/summary`
             )
           : await this.apiReq('/manager/logs/summary')
-        const daemons = data.data.data.affected_items
 
-        this.scope.daemons = daemons.map((item) => ({
-          title: Object.keys(item)[0]
-        }))
+        // NOTE Remove on v4.4.0
+        const daemonsNotIncluded = [
+          'wazuh-modulesd:task-manager',
+          'wazuh-modulesd:agent-upgrade',
+        ]
+        // END NOTE
+
+        const daemons = data.data.data.affected_items
+          // NOTE Remove on v4.4.0
+          .flatMap(Object.keys)
+          .filter((daemon) => !daemonsNotIncluded.includes(daemon))
+
+        this.scope.daemons = daemons.map((d) => ({ title: d }))
+        // END NOTE
+
+        // NOTE uncomment on v4.4.0
+        // this.scope.daemons = daemons.map((item) => ({
+        //   title: Object.keys(item)[0],
+        // }))
+        // END NOTE
         this.scope.$applyAsync()
         return
       } catch (err) {
@@ -214,12 +235,12 @@ define(['../../module', 'FileSaver'], function(app) {
         this.scope.selectedNode = node
         this.scope.custom_search = null
         this.scope.$broadcast('wazuhUpdateInstancePath', {
-          path: `/cluster/${node}/logs`
+          path: `/cluster/${node}/logs`,
         })
         const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
         const daemons = summary.data.data.affected_items
         this.scope.daemons = daemons.map((item) => ({
-          title: Object.keys(item)[0]
+          title: Object.keys(item)[0],
         }))
         this.scope.$applyAsync()
       } catch (error) {

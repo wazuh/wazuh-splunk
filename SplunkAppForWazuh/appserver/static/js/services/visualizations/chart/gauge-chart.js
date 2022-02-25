@@ -1,4 +1,4 @@
-define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
+define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function (
   ChartElement,
   Viz
 ) {
@@ -29,7 +29,7 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
             'charting.gaugeColors': '[0xB84B56,0xECDA47,0x26AC85]',
             height: '250',
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
           { tokens: true, tokenNamespace: 'submitted' }
         ).render(),

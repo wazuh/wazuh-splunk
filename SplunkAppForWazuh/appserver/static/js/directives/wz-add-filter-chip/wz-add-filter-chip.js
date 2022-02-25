@@ -10,18 +10,18 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzAddFilterChip', function(BASE_URL) {
+  directives.directive('wzAddFilterChip', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         idInput: '@',
-        options: '='
+        options: '=',
       },
       controller($scope) {
         $scope.showDropdown = false
-        $scope.select = chip => {
+        $scope.select = (chip) => {
           $scope.showDropdown = false
           const searchBar = $(`#${$scope.idInput}`)
           searchBar.val(`${chip.value}: `)
@@ -30,7 +30,7 @@ define(['../module'], function(directives) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-add-filter-chip/wz-add-filter-chip.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-add-filter-chip/wz-add-filter-chip.html',
     }
   })
 })

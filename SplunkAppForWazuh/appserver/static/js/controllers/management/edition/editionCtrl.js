@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Edition {
@@ -6,22 +6,27 @@ define(['../../module'], function(controllers) {
      * Class Status
      * @param {*} $scope
      * @param {Array} clusterInfo
-     * @param {Boolean} isAdmin
+     * @param {*} clusterInfo
+     * @param {*} $fileEditor
+     * @param {*} $restartService
+     * @param {*} $interval
+     * @param {*} $rootScope
+     * @param {*} $state
+     * @param {*} $security_service
      */
     constructor(
       $scope,
-      isAdmin,
       $notificationService,
       clusterInfo,
       $fileEditor,
       $restartService,
       $interval,
       $rootScope,
-      $state
+      $state,
+      $security_service
     ) {
       this.scope = $scope
       this.clusterInfo = clusterInfo
-      this.isAdmin = isAdmin
       this.notification = $notificationService
       this.clusterInfo = clusterInfo
       this.fileEditor = $fileEditor
@@ -29,6 +34,27 @@ define(['../../module'], function(controllers) {
       this.interval = $interval
       this.rootScope = $rootScope
       this.state = $state
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ['*']) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+      // Cluster (for each node): Read, Restart, UpdateConfig
+      this.scope.canUpdateClusterConfigOnNode = (node_id) =>
+        this.isAllowed('CLUSTER_UPDATE_CONFIG', ['NODE_ID'], [node_id])
+      this.scope.canRestartClusterNode = (node_id) =>
+        this.isAllowed('CLUSTER_RESTART', ['NODE_ID'], [node_id])
+      this.scope.canReadClusterNode = (node_id) =>
+        this.isAllowed('CLUSTER_READ', ['NODE_ID'], [node_id])
+
+      // Manager: Read, Restart, UpdateConfig
+      this.scope.canUpdateManagerConfig = this.isAllowed(
+        'MANAGER_UPDATE_CONFIG',
+        ['RESOURCELESS']
+      )
+      this.scope.canRestartManager = this.isAllowed('MANAGER_RESTART', [
+        'RESOURCELESS',
+      ])
     }
     /**
      * On controller loads
@@ -37,12 +63,12 @@ define(['../../module'], function(controllers) {
       try {
         this.scope.restartInProgress = false
         this.scope.editingNode = false
-        this.scope.editNode = nodeName => this.editNode(nodeName)
+        this.scope.editNode = (nodeName) => this.editNode(nodeName)
         this.scope.cancelEditNode = () => this.cancelEditNode()
         this.scope.saveOssecConfig = () => this.saveOssecConfig()
-        this.scope.xmlIsValid = valid => this.xmlIsValid(valid)
-        this.scope.changeNode = node => this.changeNode(node)
-        this.scope.restart = node => this.restart(node)
+        this.scope.xmlIsValid = (valid) => this.xmlIsValid(valid)
+        this.scope.changeNode = (node) => this.changeNode(node)
+        this.scope.restart = (node) => this.restart(node)
         this.scope.switchRestart = () => this.switchRestart()
         this.scope.closeRestartConfirmation = () =>
           this.closeRestartConfirmation()
@@ -50,20 +76,20 @@ define(['../../module'], function(controllers) {
         if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           if (this.clusterInfo.clusterEnabled) {
-            this.scope.selectedNode = this.clusterInfo.nodes.data.data.affected_items[0].name
+            this.scope.selectedNode =
+              this.clusterInfo.nodes.data.data.affected_items[0].name
             this.scope.nodes = this.clusterInfo.nodes.data.data.affected_items
           }
           this.editNode(this.scope.selectedNode)
         } else {
           this.editNode()
         }
-        this.scope.isAdmin = this.isAdmin
 
         /**
          *  Listeners
          */
 
-        this.scope.$on('saveComplete', event => {
+        this.scope.$on('saveComplete', (event) => {
           event.stopPropagation()
           this.scope.saveIncomplete = false
         })
@@ -101,7 +127,7 @@ define(['../../module'], function(controllers) {
         file: 'ossec.conf',
         dir: false,
         node: node,
-        overwrite: true
+        overwrite: true,
       })
     }
 
@@ -126,7 +152,7 @@ define(['../../module'], function(controllers) {
             type: 'info',
             msg: result,
             delay: true,
-            spinner: false
+            spinner: false,
           })
         } else {
           this.rootScope.$broadcast('wazuhNotReadyYet', { msg: result })
@@ -138,7 +164,7 @@ define(['../../module'], function(controllers) {
           type: 'error',
           msg: error || `Cannot restart.`,
           delay: false,
-          spinner: false
+          spinner: false,
         })
         //this.notification.showErrorToast(error)
         this.scope.restartInProgress = false

@@ -18,8 +18,8 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -38,6 +38,9 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     *@param {*} $notificationService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -45,6 +48,7 @@ define([
       $currentDataService,
       $state,
       $reportingService,
+      $notificationService,
       reportingEnabled,
       extensions
     ) {
@@ -53,8 +57,10 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.currentDataService.addFilter(
@@ -72,7 +78,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.filters = this.getFilters()
@@ -164,7 +170,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -174,7 +180,7 @@ define([
           'New files': this.scope.newFiles,
           'Read files': this.scope.readFiles,
           'Modified files': this.scope.filesModifiedToken,
-          'Deleted files': this.scope.filesDeleted
+          'Deleted files': this.scope.filesDeleted,
         }
 
         /**
@@ -191,12 +197,14 @@ define([
               'commandsVizz',
               'filesElement',
               'alertsOverTimeElement',
-              'alertsSummaryElement'
+              'alertsSummaryElement',
             ],
             this.reportMetrics,
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
   }
   app.controller('overviewAuditCtrl', Audit)

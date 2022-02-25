@@ -1,4 +1,4 @@
-define(['splunkjs/mvc/simplexml/element/table', '../viz/viz'], function(
+define(['splunkjs/mvc/simplexml/element/table', '../viz/viz'], function (
   TableElement,
   Viz
 ) {
@@ -24,7 +24,7 @@ define(['splunkjs/mvc/simplexml/element/table', '../viz/viz'], function(
             totalsRow: 'false',
             wrap: 'true',
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
           { tokens: true, tokenNamespace: 'submitted' }
         ).render(),

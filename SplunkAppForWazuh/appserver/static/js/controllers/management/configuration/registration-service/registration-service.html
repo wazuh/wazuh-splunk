@@ -1,32 +1,46 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'registration-service'">
-
+<div
+  flex="auto"
+  layout="column"
+  ng-if="configurationTab === 'registration-service'">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
       <span class="font-size-18">Registration service</span>
-      <span ng-if="currentConfig['auth-auth'] && currentConfig['auth-auth'].auth && currentConfig['auth-auth'].auth.disabled === 'no'"
-        class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])" class="wz-agent-status-indicator small red">Disabled</span>
+      <span
+        ng-if="currentConfig['auth-auth'] && currentConfig['auth-auth'].auth && currentConfig['auth-auth'].auth.disabled === 'no'"
+        class="wz-agent-status-indicator small teal"
+        >Enabled</span
+      >
+      <span
+        ng-if="currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])"
+        class="wz-agent-status-indicator small red"
+        >Disabled</span
+      >
     </div>
     <span>Automatic agent registration service</span>
   </div>
   <!-- End headline -->
 
-<!-- Loading bar -->
-<div class="loader-bar" ng-show="load">
-  <div class="loader"></div>
-</div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="load">
+    <div class="loader"></div>
+  </div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['auth-auth']" ng-if="(currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])) || !currentConfig['auth-auth'].auth"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['auth-auth']"
+      ng-if="(currentConfig['auth-auth'] && isString(currentConfig['auth-auth'])) || !currentConfig['auth-auth'].auth"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['auth-auth'] && currentConfig['auth-auth'].auth && !isString(currentConfig['auth-auth'].auth)">
-
+    <div
+      class="configuration-margin-top"
+      flex
+      layout="column"
+      ng-if="currentConfig['auth-auth'] && currentConfig['auth-auth'].auth && !isString(currentConfig['auth-auth'].auth)">
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
         <md-card-content class="overflow-auto">
@@ -34,91 +48,167 @@
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">General settings applied to the registration service</span>
+                <span class="md-subheader small"
+                  >General settings applied to the registration service</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <wz-config-item label="Service status" value="currentConfig['auth-auth'].auth.disabled === 'yes'? 'disabled' : 'enabled'">
+            <wz-config-item
+              label="Service status"
+              value="currentConfig['auth-auth'].auth.disabled === 'yes'? 'disabled' : 'enabled'">
             </wz-config-item>
-            <wz-config-item label="Listen to connections at port" value="currentConfig['auth-auth'].auth.port">
+            <wz-config-item
+              label="Listen to connections at port"
+              value="currentConfig['auth-auth'].auth.port">
             </wz-config-item>
-            <wz-config-item label="Use client's source IP address" value="currentConfig['auth-auth'].auth.use_source_ip">
+            <wz-config-item
+              label="Use client's source IP address"
+              value="currentConfig['auth-auth'].auth.use_source_ip">
             </wz-config-item>
-            <wz-config-item label="Use a password to register agents" value="currentConfig['auth-auth'].auth.use_password">
+            <wz-config-item
+              label="Use a password to register agents"
+              value="currentConfig['auth-auth'].auth.use_password">
             </wz-config-item>
-            <wz-config-item label="Purge agents list when removing agents" value="currentConfig['auth-auth'].auth.purge">
+            <wz-config-item
+              label="Purge agents list when removing agents"
+              value="currentConfig['auth-auth'].auth.purge">
             </wz-config-item>
-            <wz-config-item label="Limit registration to maximum number of agents" value="currentConfig['auth-auth'].auth.limit_maxagents">
+            <wz-config-item
+              label="Limit registration to maximum number of agents"
+              value="currentConfig['auth-auth'].auth.limit_maxagents">
             </wz-config-item>
-            <wz-config-item label="Force registration when using an existing IP address" value="currentConfig['auth-auth'].auth.force_insert">
+            <wz-config-item
+              label="Toggles forced insertion of an agent if there is a duplicate name or IP address. This will remove the old agent with same name or IP address"
+              value="currentConfig['auth-auth'].auth.force.enabled"
+              ng-if="currentConfig['auth-auth'].auth.force">
             </wz-config-item>
-
+            <wz-config-item
+              label="Specifies that the agent replacement will be performed only when the time (seconds) passed since the agent registration is greater than the value configured in the setting"
+              value="currentConfig['auth-auth'].auth.force.after_registration_time"
+              ng-if="currentConfig['auth-auth'].auth.force && currentConfig['auth-auth'].auth.force.after_registration_time != undefined">
+            </wz-config-item>
+            <wz-config-item
+              label="Defines that the agent replacement occurs when the key held by the agent is different from the one registered by the manager"
+              value="currentConfig['auth-auth'].auth.force.key_mismatch"
+              ng-if="currentConfig['auth-auth'].auth.force && currentConfig['auth-auth'].auth.force.key_mismatch != undefined">
+            </wz-config-item>
+            <wz-config-item
+              label="Specifies that the replacement will be performed only for agents that have been disconnected longer than a certain time"
+              value="currentConfig['auth-auth'].auth.force.disconnected_time.enabled"
+              ng-if="currentConfig['auth-auth'].auth.force && currentConfig['auth-auth'].auth.force.disconnected_time != undefined">
+            </wz-config-item>
+            <wz-config-item
+              label="Seconds since an agent is in a disconnected state"
+              value="currentConfig['auth-auth'].auth.force.disconnected_time.value"
+              ng-if="currentConfig['auth-auth'].auth.force && currentConfig['auth-auth'].auth.force.disconnected_time != undefined">
+            </wz-config-item>
           </div>
           <!-- End configuration block -->
 
           <div class="wz-margin-top-10">
             <span class="font-size-16">SSL settings</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Applied when the registration service uses SSL certificates</span>
+              <span class="md-subheader small"
+                >Applied when the registration service uses SSL
+                certificates</span
+              >
             </div>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <wz-config-item label="Verify agents using a CA certificate" value="currentConfig['auth-auth'].auth.ssl_verify_host">
+            <wz-config-item
+              label="Verify agents using a CA certificate"
+              value="currentConfig['auth-auth'].auth.ssl_verify_host">
             </wz-config-item>
-            <wz-config-item label="Auto-select the SSL negotiation method" value="currentConfig['auth-auth'].auth.ssl_auto_negotiate">
+            <wz-config-item
+              label="Auto-select the SSL negotiation method"
+              value="currentConfig['auth-auth'].auth.ssl_auto_negotiate">
             </wz-config-item>
-            <wz-config-item label="CA certificate location" value="currentConfig['auth-auth'].auth.ssl_agent_ca">
+            <wz-config-item
+              label="CA certificate location"
+              value="currentConfig['auth-auth'].auth.ssl_agent_ca">
             </wz-config-item>
-            <wz-config-item label="Server SSL certificate location" value="currentConfig['auth-auth'].auth.ssl_manager_cert">
+            <wz-config-item
+              label="Server SSL certificate location"
+              value="currentConfig['auth-auth'].auth.ssl_manager_cert">
             </wz-config-item>
-            <wz-config-item label="Server SSL key location" value="currentConfig['auth-auth'].auth.ssl_manager_key">
+            <wz-config-item
+              label="Server SSL key location"
+              value="currentConfig['auth-auth'].auth.ssl_manager_key">
             </wz-config-item>
-            <wz-config-item label="Use the following SSL ciphers" value="currentConfig['auth-auth'].auth.ciphers">
+            <wz-config-item
+              label="Use the following SSL ciphers"
+              value="currentConfig['auth-auth'].auth.ciphers">
             </wz-config-item>
-
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/registering/use-registration-service.html">How
-          to use the registration service</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/auth.html">Registration
-          service reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/registering/use-registration-service.html"
+          >How to use the registration service</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/auth.html"
+          >Registration service reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
-
 </div>

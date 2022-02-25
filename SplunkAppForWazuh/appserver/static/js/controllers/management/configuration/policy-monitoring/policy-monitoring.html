@@ -1,129 +1,204 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca' || configurationSubTab === 'pm-unix' || configurationSubTab === 'pm-general'"
-   ng-init="switchConfigurationSubTab('pm-general')">
-
+<div
+  flex="auto"
+  layout="column"
+  ng-if="configurationTab === 'policy-monitoring' || configurationSubTab === 'pm-ca' || configurationSubTab === 'pm-unix' || configurationSubTab === 'pm-general'"
+  ng-init="switchConfigurationSubTab('pm-general')">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
       <span class="font-size-18">Policy monitoring</span>
-      <span ng-if="currentConfig['syscheck-rootcheck']
+      <span
+        ng-if="currentConfig['syscheck-rootcheck']
     && currentConfig['syscheck-rootcheck'].rootcheck
     && currentConfig['syscheck-rootcheck'].rootcheck.disabled
     && currentConfig['syscheck-rootcheck'].rootcheck.disabled === 'no'"
-        class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="(currentConfig['syscheck-rootcheck']
+        class="wz-agent-status-indicator small teal"
+        >Enabled</span
+      >
+      <span
+        ng-if="(currentConfig['syscheck-rootcheck']
     && currentConfig['syscheck-rootcheck'].rootcheck
     && currentConfig['syscheck-rootcheck'].rootcheck.disabled
     && currentConfig['syscheck-rootcheck'].rootcheck.disabled === 'yes')
     ||
     (currentConfig['syscheck-rootcheck']
     && isString(currentConfig['syscheck-rootcheck']))"
-        class="wz-agent-status-indicator small red">Disabled</span>
+        class="wz-agent-status-indicator small red"
+        >Disabled</span
+      >
     </div>
-    <span>Configuration to ensure compliance with security policies, standards and hardening
-      guides</span>
+    <span
+      >Configuration to ensure compliance with security policies, standards and
+      hardening guides</span
+    >
   </div>
   <!-- End headline -->
 
   <!-- Policy monitoring navigation bar -->
-  <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Policy monitoring navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
-      switchConfigurationSubTab('pm-general')" name="pm-general">General</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
-      switchConfigurationSubTab('pm-unix')" name="pm-unix">System audit</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
-    switchConfigurationSubTab('pm-unix')" name="pm-ignored">Ignored</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchWodle('sca'); switchConfigurationSubTab('pm-ca')" name="pm-ca">SCA</md-nav-item>
+  <md-nav-bar
+    class="wz-nav-bar"
+    md-selected-nav-item="configurationSubTab"
+    nav-bar-aria-label="Policy monitoring navigation links">
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-general')"
+      name="pm-general"
+      >General</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+      switchConfigurationSubTab('pm-unix')"
+      name="pm-unix"
+      >System audit</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigTab('policy-monitoring', [{component:'syscheck',configuration:'rootcheck'}, {component:'wmodules',configuration:'wmodules'}]);
+    switchConfigurationSubTab('pm-unix')"
+      name="pm-ignored"
+      >Ignored</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchWodle('sca'); switchConfigurationSubTab('pm-ca')"
+      name="pm-ca"
+      >SCA</md-nav-item
+    >
   </md-nav-bar>
   <!-- End Policy monitoring navigation bar -->
 
-<!-- Loading bar -->
-<div class="loader-bar" ng-show="load">
-  <div class="loader"></div>
-</div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="load">
+    <div class="loader"></div>
+  </div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['syscheck-rootcheck']" ng-if="currentConfig['syscheck-rootcheck'] && isString(currentConfig['syscheck-rootcheck'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig['syscheck-rootcheck'] && !isString(currentConfig['syscheck-rootcheck']) && !currentConfig['syscheck-rootcheck'].rootcheck"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['syscheck-rootcheck']"
+      ng-if="currentConfig['syscheck-rootcheck'] && isString(currentConfig['syscheck-rootcheck'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig['syscheck-rootcheck'] && !isString(currentConfig['syscheck-rootcheck']) && !currentConfig['syscheck-rootcheck'].rootcheck"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
     <div class="configuration-margin-top" flex layout="column">
-
-
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="(configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && !currentConfig['syscheck-rootcheck'].rootcheck.system_audit)"></wz-no-config>
+      <wz-no-config
+        flex
+        error="'not-present'"
+        ng-if="(configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && !currentConfig['syscheck-rootcheck'].rootcheck.system_audit)"></wz-no-config>
       <!-- End no configuration section -->
 
       <!-- The main card will all the settings -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && currentConfig['syscheck-rootcheck'].rootcheck.system_audit">
+      <md-card
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-unix' && currentConfig && currentConfig['syscheck-rootcheck'] && currentConfig['syscheck-rootcheck'].rootcheck && currentConfig['syscheck-rootcheck'].rootcheck.system_audit">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">UNIX audit files</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Specified paths to audit definition files for Unix-like systems</span>
+                <span class="md-subheader small"
+                  >Specified paths to audit definition files for Unix-like
+                  systems</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+            <table
+              class="table table-striped table-condensed"
+              style="table-layout: fixed !important">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Path</th>
               </thead>
               <tbody class="wz-word-wrap">
-                <tr ng-repeat="item in currentConfig['syscheck-rootcheck'].rootcheck.system_audit">
+                <tr
+                  ng-repeat="item in currentConfig['syscheck-rootcheck'].rootcheck.system_audit">
                   <td>{{ item }}</td>
                 </tr>
               </tbody>
             </table>
-
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
 
-
-
       <!-- Ignored no config -->
-      <wz-no-config flex error="'not-present'" ng-if="(configurationSubTab === 'pm-ignored' && !currentConfig['syscheck-rootcheck'].rootcheck.ignore && !currentConfig['syscheck-rootcheck'].rootcheck.ignore_sregex)"></wz-no-config>
+      <wz-no-config
+        flex
+        error="'not-present'"
+        ng-if="(configurationSubTab === 'pm-ignored' && !currentConfig['syscheck-rootcheck'].rootcheck.ignore && !currentConfig['syscheck-rootcheck'].rootcheck.ignore_sregex)"></wz-no-config>
       <!-- Ignored -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-ignored' && (currentConfig['syscheck-rootcheck'].rootcheck.ignore || currentConfig['syscheck-rootcheck'].rootcheck.ignore_sregex)">
+      <md-card
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-ignored' && (currentConfig['syscheck-rootcheck'].rootcheck.ignore || currentConfig['syscheck-rootcheck'].rootcheck.ignore_sregex)">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Ignored files and directories</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">These files and directories are ignored from the
-                  rootcheck scan</span>
+                <span class="md-subheader small"
+                  >These files and directories are ignored from the rootcheck
+                  scan</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
-          <div class="wz-padding-top-10" ng-if="currentConfig['syscheck-rootcheck']['rootcheck']['ignore'].length">
-            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+          <div
+            class="wz-padding-top-10"
+            ng-if="currentConfig['syscheck-rootcheck']['rootcheck']['ignore'].length">
+            <table
+              class="table table-striped table-condensed"
+              style="table-layout: fixed !important">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Path</th>
               </thead>
               <tbody class="wz-word-wrap">
-                <tr ng-repeat="item in currentConfig['syscheck-rootcheck'].rootcheck.ignore">
+                <tr
+                  ng-repeat="item in currentConfig['syscheck-rootcheck'].rootcheck.ignore">
                   <td>{{ item }}</td>
                 </tr>
               </tbody>
@@ -132,87 +207,145 @@
           <!-- End configuration block -->
 
           <!-- Configuration block -->
-          <div class="wz-padding-top-10" ng-if="currentConfig['syscheck-rootcheck']['rootcheck']['ignore_sregex'].length">
-            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+          <div
+            class="wz-padding-top-10"
+            ng-if="currentConfig['syscheck-rootcheck']['rootcheck']['ignore_sregex'].length">
+            <table
+              class="table table-striped table-condensed"
+              style="table-layout: fixed !important">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Sregex</th>
               </thead>
               <tbody class="wz-word-wrap">
-                <tr ng-repeat="item in currentConfig['syscheck-rootcheck'].rootcheck.ignore_sregex">
+                <tr
+                  ng-repeat="item in currentConfig['syscheck-rootcheck'].rootcheck.ignore_sregex">
                   <td>{{ item }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <!-- End configuration block -->
-
         </md-card-content>
       </md-card>
       <!-- End ignored -->
 
       <!-- The main card will all the settings -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-general'">
+      <md-card
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-general'">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">All settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">General settings for the rootcheck daemon</span>
+                <span class="md-subheader small"
+                  >General settings for the rootcheck daemon</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <wz-config-item label="Policy monitoring service status" value="currentConfig['syscheck-rootcheck'].rootcheck.disabled === 'no' ? 'enabled' : 'disabled'">
+            <wz-config-item
+              label="Policy monitoring service status"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.disabled === 'no' ? 'enabled' : 'disabled'">
             </wz-config-item>
-            <wz-config-item label="Base directory" value="currentConfig['syscheck-rootcheck'].rootcheck.base_directory">
+            <wz-config-item
+              label="Base directory"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.base_directory">
             </wz-config-item>
-            <wz-config-item label="Scan the entire system" value="currentConfig['syscheck-rootcheck'].rootcheck.scanall">
+            <wz-config-item
+              label="Scan the entire system"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.scanall">
             </wz-config-item>
-            <wz-config-item label="Frequency (in seconds) to run the scan" value="currentConfig['syscheck-rootcheck'].rootcheck.frequency">
+            <wz-config-item
+              label="Frequency (in seconds) to run the scan"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.frequency">
             </wz-config-item>
-            <wz-config-item label="Check /dev path" value="currentConfig['syscheck-rootcheck'].rootcheck.check_dev">
+            <wz-config-item
+              label="Check /dev path"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_dev">
             </wz-config-item>
-            <wz-config-item label="Check files" value="currentConfig['syscheck-rootcheck'].rootcheck.check_files">
+            <wz-config-item
+              label="Check files"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_files">
             </wz-config-item>
-            <wz-config-item label="Check network interfaces" value="currentConfig['syscheck-rootcheck'].rootcheck.check_if">
+            <wz-config-item
+              label="Check network interfaces"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_if">
             </wz-config-item>
-            <wz-config-item label="Check processes IDs" value="currentConfig['syscheck-rootcheck'].rootcheck.check_pids">
+            <wz-config-item
+              label="Check processes IDs"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_pids">
             </wz-config-item>
-            <wz-config-item label="Check network ports" value="currentConfig['syscheck-rootcheck'].rootcheck.check_ports">
+            <wz-config-item
+              label="Check network ports"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_ports">
             </wz-config-item>
-            <wz-config-item label="Check anomalous system objects" value="currentConfig['syscheck-rootcheck'].rootcheck.check_sys">
+            <wz-config-item
+              label="Check anomalous system objects"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_sys">
             </wz-config-item>
-            <wz-config-item label="Check trojans" value="currentConfig['syscheck-rootcheck'].rootcheck.check_trojans">
+            <wz-config-item
+              label="Check trojans"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_trojans">
             </wz-config-item>
-            <wz-config-item label="Check UNIX audit" value="currentConfig['syscheck-rootcheck'].rootcheck.check_unixaudit">
+            <wz-config-item
+              label="Check UNIX audit"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_unixaudit">
             </wz-config-item>
-            <wz-config-item label="Check Windows apps" value="currentConfig['syscheck-rootcheck'].rootcheck.check_winapps">
+            <wz-config-item
+              label="Check Windows apps"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_winapps">
             </wz-config-item>
-            <wz-config-item label="Check Windows audit" value="currentConfig['syscheck-rootcheck'].rootcheck.check_winaudit">
+            <wz-config-item
+              label="Check Windows audit"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_winaudit">
             </wz-config-item>
-            <wz-config-item label="Check Windows malware" value="currentConfig['syscheck-rootcheck'].rootcheck.check_winmalware">
+            <wz-config-item
+              label="Check Windows malware"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.check_winmalware">
             </wz-config-item>
-            <wz-config-item label="Skip scan on CIFS/NFS mounts" value="currentConfig['syscheck-rootcheck'].rootcheck.skip_nfs">
+            <wz-config-item
+              label="Skip scan on CIFS/NFS mounts"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.skip_nfs">
             </wz-config-item>
-            <wz-config-item label="Rootkit files database path" value="currentConfig['syscheck-rootcheck'].rootcheck.rootkit_files">
+            <wz-config-item
+              label="Rootkit files database path"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.rootkit_files">
             </wz-config-item>
-            <wz-config-item label="Rootkit trojans database path" value="currentConfig['syscheck-rootcheck'].rootcheck.rootkit_trojans">
+            <wz-config-item
+              label="Rootkit trojans database path"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.rootkit_trojans">
             </wz-config-item>
-            <wz-config-item label="Rootkit trojans database path" value="currentConfig['syscheck-rootcheck'].rootcheck.windows_audit">
+            <wz-config-item
+              label="Rootkit trojans database path"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.windows_audit">
             </wz-config-item>
-            <wz-config-item label="Rootkit trojans database path" value="currentConfig['syscheck-rootcheck'].rootcheck.windows_apps">
+            <wz-config-item
+              label="Rootkit trojans database path"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.windows_apps">
             </wz-config-item>
-            <wz-config-item label="Rootkit trojans database path" value="currentConfig['syscheck-rootcheck'].rootcheck.windows_malware">
+            <wz-config-item
+              label="Rootkit trojans database path"
+              value="currentConfig['syscheck-rootcheck'].rootcheck.windows_malware">
             </wz-config-item>
-
           </div>
           <!-- End configuration block -->
         </md-card-content>
@@ -222,31 +355,48 @@
       <!-- The configuration assessment -->
 
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="(configurationSubTab === 'pm-ca' && !currentConfig['sca'])"></wz-no-config>
+      <wz-no-config
+        flex
+        error="'not-present'"
+        ng-if="(configurationSubTab === 'pm-ca' && !currentConfig['sca'])"></wz-no-config>
       <!-- End no configuration section -->
 
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-ca' && currentConfig['sca']">
+      <md-card
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'pm-ca' && currentConfig['sca']">
         <md-card-content>
           <!-- Configuration block -->
           <div layout="row" layout-align="start center">
             <div>
-              <span class="font-size-16"> Security Configuration Assessment</span>
-              <div class="wz-margin-top-10">
-              </div>
+              <span class="font-size-16">
+                Security Configuration Assessment</span
+              >
+              <div class="wz-margin-top-10"></div>
             </div>
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
-          <div ng-if="currentConfig['sca']" layout="row" style="padding-left: 20%; margin-bottom:30px;">
-            <div class="wz-padding-top-10" style="width:100%">
+          <div
+            ng-if="currentConfig['sca']"
+            layout="row"
+            style="padding-left: 20%; margin-bottom: 30px">
+            <div class="wz-padding-top-10" style="width: 100%">
               <!-- content -->
-              <wz-config-item label="Configuration assessment status" value="currentConfig['sca'].enabled === 'yes' ? 'enabled' : 'disabled'">
+              <wz-config-item
+                label="Configuration assessment status"
+                value="currentConfig['sca'].enabled === 'yes' ? 'enabled' : 'disabled'">
               </wz-config-item>
-              <wz-config-item label="Interval" value="currentConfig['sca'].interval">
+              <wz-config-item
+                label="Interval"
+                value="currentConfig['sca'].interval">
               </wz-config-item>
-              <wz-config-item label="Scan on start" value="currentConfig['sca'].scan_on_start">
+              <wz-config-item
+                label="Scan on start"
+                value="currentConfig['sca'].scan_on_start">
               </wz-config-item>
-              <wz-config-item label="Skip nfs" value="currentConfig['sca'].skip_nfs">
+              <wz-config-item
+                label="Skip nfs"
+                value="currentConfig['sca'].skip_nfs">
               </wz-config-item>
               <!-- end content -->
             </div>
@@ -258,64 +408,84 @@
             <div layout="row" layout-align="start center">
               <div>
                 <span class="font-size-16">Policies</span>
-                <div class="wz-margin-top-10">
-                </div>
+                <div class="wz-margin-top-10"></div>
               </div>
             </div>
             <md-divider class="wz-margin-top-10"></md-divider>
 
-            <div class="wz-padding-top-10" style="width:100%">
+            <div class="wz-padding-top-10" style="width: 100%">
               <!-- content -->
-              <table class="table table-striped table-condensed table-layout-fixed table-vertical-align-middle">
+              <table
+                class="table table-striped table-condensed table-layout-fixed table-vertical-align-middle">
                 <thead class="wz-text-bold">
                   <th class="wz-text-left">Name</th>
                 </thead>
                 <tbody>
-                  <tr class="wz-word-wrap" ng-repeat="policy in currentConfig['sca'].policies">
+                  <tr
+                    class="wz-word-wrap"
+                    ng-repeat="policy in currentConfig['sca'].policies">
                     <td>
                       <span>{{policy}}</span>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              </wz-config-item>
               <!-- end content -->
             </div>
           </div>
           <!-- End policies block -->
-
-
         </md-card-content>
-
       </md-card>
       <!-- End configuration assessment -->
 
-
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/anomalies-detection/index.html">Anomaly
-          and malware detection documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/policy-monitoring/index.html">Policy
-          monitoring documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/rootcheck.html">Rootcheck
-          reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/anomalies-detection/index.html"
+          >Anomaly and malware detection documentation</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/policy-monitoring/index.html"
+          >Policy monitoring documentation</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/rootcheck.html"
+          >Rootcheck reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
 </div>

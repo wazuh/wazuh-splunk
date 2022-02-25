@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -41,6 +41,8 @@ define([
      * @param {Object} pollingState
      * @param {*} $reportingService
      * @param {*} $rootScope
+     * @param {*} reportingEnabled
+     * @param {*} awsExtensionEnabled
      */
     constructor(
       $urlTokenModel,
@@ -60,7 +62,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
@@ -177,7 +180,7 @@ define([
           '$result$',
           this.scope,
           'Agents Summary'
-        ))
+        )),
       ]
     }
 
@@ -189,7 +192,7 @@ define([
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
           this.apiReq(`/agents/summary/status`)
-            .then(data => {
+            .then((data) => {
               this.scope.agentsCountTotal = data.data.data.total
               this.scope.agentsCountActive = data.data.data.active
               this.scope.agentsCountDisconnected = data.data.data.disconnected
@@ -201,43 +204,44 @@ define([
                 : 0
               this.scope.$applyAsync()
             })
-            .catch(error => {
+            .catch((error) => {
               this.notification.showErrorToast(
                 `Cannot fetch agent status data: ${error}`
               )
             })
         } else {
           this.scope.wzMonitoringEnabled = true
-
-          //Filters for agents Status
           try {
-            this.clusOrMng = Object.keys(
-              this.currentDataService.getFilters()[0]
-            )[0]
+            //Filters for agents Status
+            const [filters] = this.currentDataService.getFilters()
+            const [nodeType] = Object.keys(filters)
+            let agentsStatusFilter = false
 
-            if (this.clusOrMng == 'manager.name') {
-              this.mngName = this.currentDataService.getFilters()[0][
-                'manager.name'
-              ]
-              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring*`
+            if (nodeType === 'manager.name') {
+              const managerName = filters['manager.name']
+              agentsStatusFilter = `manager.name=${managerName} index=wazuh-monitoring*`
             } else {
-              this.clusName = this.currentDataService.getFilters()[0][
-                'cluster.name'
-              ]
-              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring*`
+              const clusterName = filters['cluster.name']
+              agentsStatusFilter = `cluster.name=${clusterName} index=wazuh-monitoring*`
             }
-          } catch (error) {} //eslint-disable-line
 
-          this.spanTime = '15m'
-          this.vizz.push(
-            new LinearChart(
-              `agentStatusHistory`,
-              `${this.agentsStatusFilter} id!=000 status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
-              `agentStatus`,
-              this.scope,
-              { customAxisTitleX: 'Time span' }
+            if (agentsStatusFilter != false) {
+              const spanTime = '1m'
+              this.vizz.push(
+                new LinearChart(
+                  `agentStatusHistory`,
+                  `${agentsStatusFilter} id!=000 status=* | timechart span=${spanTime} cont=FALSE count by status usenull=f`,
+                  `agentStatus`,
+                  this.scope,
+                  { customAxisTitleX: 'Time span' }
+                )
+              )
+            }
+          } catch (error) {
+            this.notification.showErrorToast(
+              'Error fetching agents status ' + (error.message || error)
             )
-          )
+          }
         }
 
         this.scope.startVis2Png = () =>
@@ -250,7 +254,7 @@ define([
               'alertsVizz',
               'alertsEvoTop5Agents',
               'top5ruleGroups',
-              'agentsSummaryVizz'
+              'agentsSummaryVizz',
             ],
             this.reportMetrics,
             this.tableResults
@@ -268,7 +272,7 @@ define([
         Alerts: this.scope.totalAlerts,
         'Level 12 or above alerts': this.scope.levelTwelve,
         'Authentication failure': this.scope.authFailure,
-        'Authentication success': this.scope.authSuccess
+        'Authentication success': this.scope.authSuccess,
       }
     }
   }

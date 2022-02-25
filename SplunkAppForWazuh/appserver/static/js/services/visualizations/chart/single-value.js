@@ -1,4 +1,4 @@
-define(['splunkjs/mvc/simplexml/element/single', '../viz/viz'], function(
+define(['splunkjs/mvc/simplexml/element/single', '../viz/viz'], function (
   SingleElement,
   Viz
 ) {
@@ -19,7 +19,7 @@ define(['splunkjs/mvc/simplexml/element/single', '../viz/viz'], function(
             id: `${id}`,
             managerid: `${id}Search`,
             height: '190',
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
           { tokens: true, tokenNamespace: 'submitted' }
         ).render(),

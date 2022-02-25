@@ -21,8 +21,8 @@ define([
   '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -44,6 +44,10 @@ define([
      * @param {*} $scope
      * @param {*} $currentDataService
      * @param {*} $state
+     * @param {*} $reportingService
+     * @param {*} $notificationService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -51,6 +55,7 @@ define([
       $currentDataService,
       $state,
       $reportingService,
+      $notificationService,
       reportingEnabled,
       extensions
     ) {
@@ -59,8 +64,10 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.currentDataService.addFilter(
@@ -75,7 +82,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.dropdown = new Dropdown(
@@ -89,7 +96,7 @@ define([
 
       this.dropdownInstance = this.dropdown.getElement()
 
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -189,7 +196,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -211,12 +218,14 @@ define([
               'top5AgentsVizz',
               'top10AlertsVizz',
               'top10HRisk',
-              'alertsSummaryVizz'
+              'alertsSummaryVizz',
             ],
             this.reportMetrics,
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
 
     /**
@@ -226,7 +235,7 @@ define([
       this.reportMetrics = {
         'Last score': this.scope.scapLastScore,
         'Highest score': this.scope.scapHighestScore,
-        'Lowest score': this.scope.scapLowestScore
+        'Lowest score': this.scope.scapLowestScore,
       }
     }
   }

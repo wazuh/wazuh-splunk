@@ -18,8 +18,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/chart/linear-chart',
-  '../../../services/visualizations/table/table'
-], function(
+  '../../../services/visualizations/table/table',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -42,6 +42,10 @@ define([
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} BASE_URL
+     * @param {*} extensions
      */
 
     constructor(
@@ -64,7 +68,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.rootScope = $rootScope
       this.notification = $notificationService
@@ -93,7 +98,7 @@ define([
           'scoreByPolicy',
           {
             trellisEnabled: true,
-            gaugeType: 'radialGauge'
+            gaugeType: 'radialGauge',
           },
           this.scope
         ),
@@ -145,7 +150,7 @@ define([
           `${this.filters} | stats count by data.sca.policy,data.sca.passed,data.sca.failed | fields - count | rename data.sca.policy as Policy data.sca.passed as Passed data.sca.failed as Failed | sort - Passed`,
           'alertsSummary',
           this.scope
-        )
+        ),
       ]
       /**
        * Generates report
@@ -162,7 +167,7 @@ define([
             'resultDistributionByPolicy',
             'top5Failed',
             'top5Passed',
-            'alertsSummary'
+            'alertsSummary',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -184,9 +189,9 @@ define([
         this.agent && this.agent.data && this.agent.data.data
           ? this.agent.data.data
           : { error: true }
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 
