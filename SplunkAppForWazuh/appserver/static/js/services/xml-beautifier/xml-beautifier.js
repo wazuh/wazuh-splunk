@@ -9,9 +9,9 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
+define([], function () {
   'use strict'
-  return function(xml) {
+  return function (xml) {
     const reg = /(>)\s*(<)(\/*)/g // updated Mar 30, 2015
     const wsexp = / *(.*) +\n/g
     const contexp = /(<.+>)(.+\n)/g
@@ -40,7 +40,7 @@ define([], function() {
       'other->single': 0,
       'other->closing': -1,
       'other->opening': 0,
-      'other->other': 0
+      'other->other': 0,
     }
 
     for (const ln of lines) {

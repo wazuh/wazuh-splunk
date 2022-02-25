@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -38,6 +38,8 @@ define([
      * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -47,14 +49,16 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.currentDataService.addFilter(
         `{"rule.groups{}":"ciscat", "implicit":true, "onlyShow":true}`
@@ -186,7 +190,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -200,7 +204,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -230,16 +234,17 @@ define([
           ? this.agent.data.data.affected_items[0]
           : { error: true }
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
 
-        
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.$on('deletedFilter', event => {
+      this.scope.$on('deletedFilter', (event) => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -275,7 +280,7 @@ define([
         'Last errores': this.scope.lastErrors,
         'Last fails': this.scope.lastFails,
         'Last unknown': this.scope.lastUnknown,
-        'Last scan benchmark': this.scope.lastScanBenchmark
+        'Last scan benchmark': this.scope.lastScanBenchmark,
       }
     }
   }

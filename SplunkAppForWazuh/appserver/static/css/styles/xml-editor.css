@@ -1,4 +1,4 @@
- /*
+/*
   * Wazuh app - Wazuh XML file editor stylesheet
   * Copyright (C) 2015-2019 Wazuh, Inc.
   *
@@ -9,55 +9,58 @@
   *
   * Find more information about this on the LICENSE file.
   */
- 
-  /* -------------------------------------------------------------------------- */
- /* ------------------ Wazuh XML file editor stylesheet ---------------------- */
- /* -------------------------------------------------------------------------- */
 
- .wzXmlEditor{
-    background: #fff;
-    width: 100%;
-    height: inherit;
-    top: 0;
-    border: 1px solid #d9d9d9;
-    -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 2px;
-}
-.wzXmlEditorHeader{
-    padding: 15px;
+@import './variables.css';
+
+/* -------------------------------------------------------------------------- */
+/* ------------------ Wazuh XML file editor stylesheet ---------------------- */
+/* -------------------------------------------------------------------------- */
+
+.wzXmlEditor {
+  background: #fff;
+  width: 100%;
+  height: inherit;
+  top: 0;
+  border: 1px solid #d9d9d9;
+  -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 2px;
 }
 
-.wzXmlEditorHeader b{
-    font-weight: 600;
+.wzXmlEditorHeader {
+  padding: 15px;
+}
+
+.wzXmlEditorHeader b {
+  font-weight: 600;
 }
 
 .wzXmlEditorBody .CodeMirror {
-    height: 100%;
-} 
+  height: 100%;
+}
 
 .wzXmlEditorDivContent {
-    width: calc(100vw - 32px);
-    margin-left: auto;
-    margin-right: 18px;
+  width: calc(100vw - 32px);
+  margin-left: auto;
+  margin-right: 18px;
 }
 
-
-.wzXmlEditorError{
-    border-bottom: inherit;
+.wzXmlEditorError {
+  border-bottom: inherit;
 }
 
-.wzXmlEditorError b{
-    font-weight: 600;
+.wzXmlEditorError b {
+  font-weight: 600;
 }
 
 .mdListXmlError {
-    padding-bottom: 25px;
-    padding-top: 0px;
+  padding-bottom: 25px;
+  padding-top: 0px;
 }
-.extraHeaderInfo{
-    background: #ecf6fb;
-    border-top: 1px solid rgba(92, 192, 92, 0.161) !important;
-    color: #396e3e !important;
-    padding: 12px 15px;
-} 
+
+.extraHeaderInfo {
+  background: #ecf6fb;
+  border-top: 1px solid var(--primary-lightest-opacity) !important;
+  color: var(--primary-color) !important;
+  padding: 12px 15px;
+}

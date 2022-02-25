@@ -2,8 +2,8 @@ define([
   '../../module',
   '../rules/ruleset',
   '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap'
-], function(controllers, Ruleset, pagination, checkGap) {
+  '../../../directives/wz-table/lib/check-gap',
+], function (controllers, Ruleset, pagination, checkGap) {
   'use strict'
   class CDBList extends Ruleset {
     /**
@@ -14,6 +14,9 @@ define([
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $cdbEditor
+     * @param {*} $restartService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -22,15 +25,15 @@ define([
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      isAdmin,
       $cdbEditor,
-      $restartService
+      $restartService,
+      $security_service
     ) {
       super(
         $scope,
         $sce,
         $notificationService,
-        'cbd',
+        'cdb',
         $currentDataService,
         $tableFilterService,
         $csvRequestService,
@@ -38,20 +41,33 @@ define([
       )
       this.pagination = pagination
       this.checkGap = checkGap
-      this.isAdmin = isAdmin
       this.cdbEditor = $cdbEditor
       this.restartService = $restartService
+
+      /* RBAC flags */
+      this.scope.canReadLists = $security_service.isAllowed(
+        'LISTS_READ',
+        ['LIST_FILE'],
+        ['*']
+      )
+      this.scope.canUpdateLists = $security_service.isAllowed('LISTS_UPDATE', [
+        'RESOURCELESS',
+      ])
     }
 
     /**
      * On controller load
      */
     $onInit() {
+      // Data validation
+      this.scope.nameValidationRegex = '^[\\w\\-]+$'
+      this.scope.keyValidationRegex = '(?:^"([\\w\\-:]+?)"|^[^:"\\s]+$)'
+      this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"]*$)'
+
       this.scope.overwrite = false
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.selectedNavTab = 'cdbList'
-      this.scope.adminMode = this.isAdmin
 
       /**
        * Functions to edit a CDB lists binded to the scope
@@ -63,7 +79,7 @@ define([
         this.showConfirmRemoveEntry(ev, key)
       this.scope.editKey = (key, value) => this.editKey(key, value)
       this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
-      this.scope.confirmRemoveEntry = key => this.confirmRemoveEntry(key)
+      this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
       this.scope.cancelCdbListEdition = () => this.cancelCdbListEdition()
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveList = () => this.saveList()
@@ -86,24 +102,24 @@ define([
       this.scope.range = (size, start, end) =>
         this.pagination.range(size, start, end, this.scope.gap)
       this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-      this.scope.nextPage = async currentPage =>
+      this.scope.nextPage = async (currentPage) =>
         this.pagination.nextPage(
           currentPage,
           this.scope,
           this.notification,
           null
         )
-      this.scope.setPage = n => {
+      this.scope.setPage = (n) => {
         this.scope.currentPage = n
         this.scope.nextPage(n)
       }
-      this.scope.filterContent = filter => this.filterContent(filter)
+      this.scope.filterContent = (filter) => this.filterContent(filter)
 
       this.scope.restart = () => this.restart()
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', event => {
+      this.scope.$on('loadedTable', (event) => {
         event.stopPropagation()
         try {
           if (window.localStorage.cdb) {
@@ -129,6 +145,16 @@ define([
     }
 
     /**
+     * Validate the given name for the new CDB list.
+     *
+     * @param {String} name given name
+     * @returns {Boolean}
+     */
+    isValidName = (name) => {
+      return new RegExp(this.scope.nameValidationRegex).test(name)
+    }
+
+    /**
      * Adds new CDB list file
      */
     addNewFile() {
@@ -139,8 +165,8 @@ define([
           list: {},
           details: {
             file: '',
-            path: 'etc/lists'
-          }
+            path: 'etc/lists',
+          },
         }
       } catch (error) {
         this.notification.showErrorToast('Cannot add new CDB list file.')
@@ -162,15 +188,44 @@ define([
     }
 
     /**
+     * Validates the Key and Value of a new CDB List entry.
+     *
+     * @param {String} key the new key
+     * @param {String} value the new value
+     * @returns {Boolean} true if both the key and the value are valid.
+     */
+    validateCdbEntry(key, value) {
+      let isValid = true
+      const errorMessage = (type, regex) =>
+        `The ${type} must match this regular expression ${regex}`
+
+      const keyRegex = new RegExp(this.scope.keyValidationRegex)
+      const valRegex = new RegExp(this.scope.valueValidationRegex)
+
+      if (!keyRegex.test(key)) {
+        this.notification.showWarningToast(
+          errorMessage('Key', this.scope.keyValidationRegex)
+        )
+        isValid = false
+      }
+      if (!valRegex.test(value)) {
+        this.notification.showWarningToast(
+          errorMessage('Value', this.scope.valueValidationRegex)
+        )
+        isValid = false
+      }
+
+      return isValid
+    }
+
+    /**
      * Adds new entry field
      * @param {String} key
      * @param {String} value
      */
     async addEntry(key, value) {
       try {
-        if (!key) {
-          this.notification.showWarningToast('Cannot send empty fields.')
-        } else {
+        if (this.validateCdbEntry(key, value)) {
           if (!this.scope.currentList.list[key]) {
             value = value ? value : ''
             this.scope.currentList.list[key] = value
@@ -184,7 +239,9 @@ define([
           }
         }
       } catch (error) {
-        this.notification.showErrorToast('Error adding entry.')
+        this.notification.showErrorToast(
+          `Error adding entry: ${error.message || error}`
+        )
       }
     }
 
@@ -264,41 +321,35 @@ define([
      */
     async saveList() {
       try {
-        const constainsBlanks = /.* .*/
         const fileName = this.scope.currentList.details.file
-        if (fileName) {
-          if (constainsBlanks.test(fileName)) {
-            this.notification.showErrorToast(
-              'Error creating a new file. The filename can not contain white spaces.'
-            )
-          } else {
-            this.scope.saveIncomplete = true
-            const path = this.scope.currentList.details.path
-            const content = this.objToString(this.scope.currentList.list)
-            const result = await this.cdbEditor.sendConfiguration(
-              fileName,
-              path,
-              content
-            )
-            if (result && result.data && result.data.error === 0) {
-              this.notification.showSuccessToast('File saved successfully.')
-              this.scope.saveIncomplete = false
-              this.scope.$applyAsync()
-            } else if (result.data.error === 1905) {
-              this.notification.showWarningToast(
-                result.data.message || 'File already exists.'
-              )
-              this.scope.overwrite = true
-              this.scope.saveIncomplete = false
-              this.scope.$applyAsync()
-            } else {
-              throw new Error(result.data.message || 'Cannot send this file.')
-            }
-          }
-        } else {
-          this.notification.showWarningToast(
-            'Please set a name for the new CDB list.'
+
+        if (!this.isValidName(fileName)) {
+          this.notification.showErrorToast(
+            `List's name must match this regular expresion: ${this.scope.nameValidationRegex}`
           )
+        } else {
+          this.scope.saveIncomplete = true
+          const path = this.scope.currentList.details.path
+          const content = this.objToString(this.scope.currentList.list)
+          const result = await this.cdbEditor.sendConfiguration(
+            fileName,
+            path,
+            content
+          )
+          if (result && result.data && result.data.error === 0) {
+            this.notification.showSuccessToast('File saved successfully.')
+            this.scope.saveIncomplete = false
+            this.scope.$applyAsync()
+          } else if (result.data.error === 1905) {
+            this.notification.showWarningToast(
+              result.data.message || 'File already exists.'
+            )
+            this.scope.overwrite = true
+            this.scope.saveIncomplete = false
+            this.scope.$applyAsync()
+          } else {
+            throw new Error(result.data.message || 'Cannot send this file.')
+          }
         }
       } catch (error) {
         this.scope.saveIncomplete = false
@@ -320,7 +371,7 @@ define([
     stringToObj(string) {
       let result = {}
       const splitted = string.split('\n')
-      splitted.forEach(element => {
+      splitted.forEach((element) => {
         const keyValue = element.split(':')
         if (keyValue[0]) result[keyValue[0]] = keyValue[1]
       })

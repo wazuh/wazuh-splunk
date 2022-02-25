@@ -1,78 +1,95 @@
 <div layout="column" layout-align="start stretch" ng-if="!load">
+  <div>
+    <!-- Headline -->
+    <div layout="column" layout-padding>
+      <span class="font-size-18"
+        ><i class="fa fa-wrench" aria-hidden="true"></i> Wazuh Splunk App
+        configuration</span
+      >
+      <span>Configuration settings</span>
+    </div>
+    <!-- End headline -->
 
-  <!-- Headline -->
-  <div layout="column" layout-padding>
-    <span class="font-size-18"><i class="fa fa-wrench" aria-hidden="true"></i> Wazuh Splunk App configuration</span>
-    <span>Configuration settings</span>
+    <md-card class="wz-md-card">
+      <md-card-actions
+        layout="row"
+        class="layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
+        <i class="fa fa-file-o" aria-hidden="true"></i>&nbsp;
+        <span class="wz-margin-top--3">Current configuration</span>
+      </md-card-actions>
+      <md-card-contents class="wz-padding-16">
+        <!-- Configuration table -->
+        <table class="table-striped table-condensed table-hover">
+          <thead>
+            <tr class="border-top-none-settings">
+              <th>Setting</th>
+              <th class="wz-width-350">Value</th>
+              <th>Description</th>
+              <th ng-if="isWazuhAdmin">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="(key, val) in configuration" ng-if="key !== 'admin'">
+              <td>{{key}}</td>
+              <!-- value to edit -->
+              <td>
+                <div ng-show="!editingKey || editingKey !== key">{{val}}</div>
+                <!-- Input -->
+                <div ng-show="editingKey === key && key !== 'log.level'">
+                  <input
+                    class="wz-margin-zero"
+                    type="text"
+                    ng-model="vm.editingNewValue" />
+                </div>
+                <!-- Log dropdown -->
+                <div ng-show="editingKey === key && key === 'log.level'">
+                  <select
+                    ng-options="option for option in logLevelOptions"
+                    ng-model="vm.dropDownValue"
+                    ng-init="vm.dropDownValue = logLevelOptions[0]"
+                    ng-change="selectValue(vm.dropDownValue)"
+                    class="input input-dropdown conf-node-selector wz-button-empty wz-margin-zero"></select>
+                </div>
+              </td>
+              <!-- end value -->
+              <td>{{getDescription(key)}}</td>
+              <td ng-if="isWazuhAdmin">
+                <!-- switch to edit -->
+                <div ng-show="!editingKey || editingKey !== key">
+                  <wz-svg
+                    icon="pencil"
+                    color="primary-shade"
+                    ng-click="switchEdit(key, val)">
+                    <md-tooltip md-direction="bottom" class="wz-tooltip">
+                      Edit
+                    </md-tooltip>
+                  </wz-svg>
+                </div>
+                <div ng-show="editingKey === key">
+                  <span style="color: #396e3e">
+                    <i
+                      ng-click="cancelEdition()"
+                      class="fa fa-fw fa-times cursor-pointer">
+                      <md-tooltip md-direction="bottom" class="wz-tooltip">
+                        Cancel
+                      </md-tooltip>
+                    </i>
+                    <i
+                      ng-click="setValue(key)"
+                      class="fa fa-fw fa-check cursor-pointer">
+                      <md-tooltip md-direction="bottom" class="wz-tooltip">
+                        Apply
+                      </md-tooltip>
+                    </i>
+                  </span>
+                </div>
+                <!-- end switch -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </md-card-contents>
+    </md-card>
+    <!-- End configuration table -->
   </div>
-  <!-- End headline -->
-
-  <md-card class="wz-md-card">
-    <md-card-actions layout="row" class="layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-      <i class="fa fa-file-o" aria-hidden="true"></i>&nbsp;
-      <span class="wz-margin-top--3">Current configuration</span>
-    </md-card-actions>
-    <md-card-contents class="wz-padding-16">
-      <!-- Configuration table -->
-      <table class="table-striped table-condensed table-hover">
-        <thead>
-          <tr class="border-top-none-settings">
-            <th>Setting</th>
-            <th class="wz-width-350">Value</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="(key, val) in configuration" ng-if="key !== 'admin'">
-            <td>{{key}}</td>
-            <!-- value to edit -->
-            <td>
-              <div ng-show="!editingKey || editingKey !== key">{{val}}</div>
-              <!-- Input -->
-              <div ng-show="editingKey === key && key !== 'log.level'">
-                <input class="wz-margin-zero" type="text" ng-model="vm.editingNewValue">
-              </div>
-              <!-- Log dropdown -->
-              <div ng-show="editingKey === key && key === 'log.level'">
-                <select ng-options="option for option in logLevelOptions" ng-model="vm.dropDownValue"
-                  ng-init="vm.dropDownValue = logLevelOptions[0]" ng-change="selectValue(vm.dropDownValue)"
-                  class="input input-dropdown conf-node-selector wz-button-empty wz-margin-zero">
-                </select>
-              </div>
-            </td>
-            <!-- end value -->
-            <td>{{getDescription(key)}}</td>
-            <td>
-              <!-- switch to edit -->
-              <div ng-show="!editingKey || editingKey !== key">
-                <wz-svg icon="pencil" color="#396e3e" ng-click="switchEdit(key, val)">
-                  <md-tooltip md-direction="bottom" class="wz-tooltip">
-                    Edit
-                  </md-tooltip>
-                </wz-svg>
-              </div>
-              <div ng-show="editingKey === key">
-                <span style="color: #396e3e">
-                  <i ng-click="cancelEdition()" class="fa fa-fw fa-times cursor-pointer">
-                    <md-tooltip md-direction="bottom" class="wz-tooltip">
-                      Cancel
-                    </md-tooltip>
-                  </i>
-                  <i ng-click="setValue(key)" class="fa fa-fw fa-check cursor-pointer">
-                    <md-tooltip md-direction="bottom" class="wz-tooltip">
-                      Apply
-                    </md-tooltip>
-                  </i>
-                </span>
-              </div>
-              <!-- end switch -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </md-card-contents>
-  </md-card>
-  <!-- End configuration table -->
-
 </div>

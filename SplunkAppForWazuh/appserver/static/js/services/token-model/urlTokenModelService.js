@@ -2,8 +2,8 @@ define([
   '../module',
   'splunkjs/mvc',
   'splunkjs/mvc/simpleform/formutils',
-  'splunkjs/mvc/simplexml/urltokenmodel'
-], function(module, mvc, FormUtils, UrlTokenModel) {
+  'splunkjs/mvc/simplexml/urltokenmodel',
+], function (module, mvc, FormUtils, UrlTokenModel) {
   'use strict'
 
   class urlTokenModel {
@@ -13,16 +13,17 @@ define([
     constructor() {
       this.urlTokenModel = new UrlTokenModel({ id: 'tokenModel' })
       this.defaultTokenModel = mvc.Components.getInstance('default', {
-        create: true
+        create: true,
       })
       this.submittedTokenModel = mvc.Components.getInstance('submitted', {
-        create: true
+        create: true,
       })
       mvc.Components.registerInstance('url', this.urlTokenModel)
       this.defaultTokenModel.set(this.urlTokenModel.toJSON())
 
       this.urlTokenModel.on('url:navigate', () => {
         this.defaultTokenModel.set(this.urlTokenModel.toJSON())
+        // eslint-disable-next-line no-undef
         if (typeof _.isEmpty !== 'undefined') {
           //eslint-disable-line
           if (

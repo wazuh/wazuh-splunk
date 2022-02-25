@@ -1,15 +1,19 @@
 <!-- About card section -->
-<br><i class="fa fa-fw fa-info-circle wz-margin-left-5" aria-hidden="true"></i><span class="wz-headline-title">Wazuh Splunk plugin description</span>
+<br /><i class="fa fa-fw fa-info-circle wz-margin-left-5" aria-hidden="true"></i
+><span class="wz-headline-title">Wazuh Splunk plugin description</span>
 <div layout="row" class="wz-margin-9">
   <md-card flex class="wz-metric-color">
     <md-card-content layout="row" class="wz-padding-metric">
-      <div class="wz-text-truncatable" flex>App version:
+      <div class="wz-text-truncatable" flex>
+        App version:
         <span class="wz-text-bold" ng-bind="appInfo.version"></span>
       </div>
-      <div class="wz-text-truncatable" flex>App revision:
+      <div class="wz-text-truncatable" flex>
+        App revision:
         <span class="wz-text-bold" ng-bind="appInfo.revision"></span>
       </div>
-      <div class="wz-text-truncatable" flex>Splunk version:
+      <div class="wz-text-truncatable" flex>
+        Splunk version:
         <span class="wz-text-bold" ng-bind="appInfo.splunk_version"></span>
       </div>
     </md-card-content>
@@ -18,32 +22,44 @@
 
 <div layout="row" class="layout-row">
   <md-card flex="" class="wz-md-card _md flex">
-      <md-card-content>
-        <wz-svg icon="info-circle"></wz-svg><span class="wz-headline-title">Welcome to
-              the
-              Wazuh app for Splunk {{appInfo.splunk_version}}</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" layout-padding="" class="wz-line-height layout-padding layout-row">
-              Wazuh Splunk plugin provides management and monitoring capabilities, giving users control
-              over the Wazuh infrastructure. Using this plugin you can monitor the status of your agents and
-              configuration, query and visualize your alert data and manage your Wazuh configuration and
-              configuration.
-          </div>
-      </md-card-content>
+    <md-card-content>
+      <wz-svg icon="info-circle"></wz-svg
+      ><span class="wz-headline-title"
+        >Welcome to the Wazuh app for Splunk {{appInfo.splunk_version}}</span
+      >
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <div
+        layout="row"
+        layout-padding=""
+        class="wz-line-height layout-padding layout-row">
+        Wazuh Splunk plugin provides management and monitoring capabilities,
+        giving users control over the Wazuh infrastructure. Using this plugin
+        you can monitor the status of your agents and configuration, query and
+        visualize your alert data and manage your Wazuh configuration and
+        configuration.
+      </div>
+    </md-card-content>
   </md-card>
   <md-card flex="" class="wz-md-card _md flex">
-      <md-card-content>
-          <wz-svg icon="question-mark-circle"></wz-svg><span class="wz-headline-title">Community</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" layout-padding="" class="wz-line-height layout-padding layout-row">
-              Enjoy your Wazuh experience and please don't hesitate to give us your feedback.
-          </div>
-          <div layout="row" class="layout-align-center-center layout-row flex" flex="">
-              <wz-svg icon="slack"></wz-svg> 
-              <wz-svg icon="groups-google"></wz-svg>
-              <wz-svg icon="github"></wz-svg>
-          </div>
-
-      </md-card-content>
+    <md-card-content>
+      <wz-svg icon="question-mark-circle"></wz-svg
+      ><span class="wz-headline-title">Community</span>
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <div
+        layout="row"
+        layout-padding=""
+        class="wz-line-height layout-padding layout-row">
+        Enjoy your Wazuh experience and please don't hesitate to give us your
+        feedback.
+      </div>
+      <div
+        layout="row"
+        class="layout-align-center-center layout-row flex"
+        flex="">
+        <wz-svg icon="slack"></wz-svg>
+        <wz-svg icon="groups-google"></wz-svg>
+        <wz-svg icon="github"></wz-svg>
+      </div>
+    </md-card-content>
   </md-card>
 </div>

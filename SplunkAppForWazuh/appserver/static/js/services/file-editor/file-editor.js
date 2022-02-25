@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class FileEditor {
@@ -31,7 +31,7 @@ define(['../module'], function(module) {
       try {
         const typeFile = this.typeFilesByPath[dir]
         let url = `/${typeFile}/files/${file}?overwrite=${overwrite}`
-        if(file === 'ossec.conf'){
+        if (file === 'ossec.conf') {
           const nodeUrl = node ? `cluster/${node}` : 'manager'
           url = `/${nodeUrl}/configuration`
         }
@@ -56,31 +56,26 @@ define(['../module'], function(module) {
       }
     }
 
-    async getConfiguration(file, dir, node, readOnly = false) {
+    async getConfiguration(file, dir, node, _readOnly = false) {
       try {
         const typeFile = this.typeFilesByPath[dir]
         let url = `/${typeFile}/files/${file}?raw=true`
-        if(file === 'ossec.conf'){
+        if (file === 'ossec.conf') {
           const nodeUrl = node ? `cluster/${node}` : 'manager'
           url = `/${nodeUrl}/configuration?raw=true`
         }
 
-        let path = dir ? `${dir}/${file}` : file
-        if (!readOnly) {
-          path = path.startsWith('etc/') ? path : `etc/${path}`
-        }
-        const result = await this.apiReq(
-          url,
-          {origin:"xmlreader"}
-        )
-        if (
-          !result ||
-          !result.data
-        ) {
+        // let path = dir ? `${dir}/${file}` : file
+        // if (!readOnly) {
+        //   path = path.startsWith("etc/") ? path : `etc/${path}`
+        // }
+        const result = await this.apiReq(url, { origin: 'xmlreader' })
+        if (!result || !result.data) {
           throw new Error(`Error fetching ${file} content.`)
         }
-        if(!result.data.data) //Force XML box to be printed when the file is empty
-          return " "
+        if (!result.data.data)
+          //Force XML box to be printed when the file is empty
+          return ' '
         return result.data.data
       } catch (error) {
         return Promise.reject(error)
@@ -89,13 +84,17 @@ define(['../module'], function(module) {
 
     async checkConfiguration(node) {
       try {
-        const url = node ? `/cluster/configuration/validation?nodes_list=${node}` : '/manager/configuration/validation';
-        const check = await this.apiReq(url);
+        const url = node
+          ? `/cluster/configuration/validation?nodes_list=${node}`
+          : '/manager/configuration/validation'
+        const check = await this.apiReq(url)
         if (check && check.data && !check.data.error) {
           if (check.data.data.affected_items[0].status !== 'OK') {
             const errObj = {}
             errObj['badConfig'] = true
-            errObj['errMsg'] = [...new Set(check.data.data.affected_items.details)]
+            errObj['errMsg'] = [
+              ...new Set(check.data.data.affected_items.details),
+            ]
             return Promise.reject(errObj)
           } else {
             return 'Configuration saved.'

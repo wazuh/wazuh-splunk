@@ -21,10 +21,10 @@ define([
   '../../libs/codemirror-conv/search-cursor',
   '../../libs/codemirror-conv/mark-selection',
   '../../libs/codemirror-conv/formatting',
-  '../../libs/codemirror-conv/xml'
-], function(app, CodeMirror) {
+  '../../libs/codemirror-conv/xml',
+], function (app, CodeMirror) {
   'use strict'
-  app.directive('wzXmlFileEditor', function(BASE_URL) {
+  app.directive('wzXmlFileEditor', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -32,7 +32,7 @@ define([
         validFn: '&',
         data: '=data',
         targetName: '=targetName',
-        closeFn: '&'
+        closeFn: '&',
       },
       controller(
         $scope,
@@ -46,7 +46,7 @@ define([
          * evaluates regular expressions.
          * Alternative using split + join, same result.
          */
-        String.prototype.xmlReplace = function(str, newstr) {
+        String.prototype.xmlReplace = function (str, newstr) {
           return this.split(str).join(newstr)
         }
         let firstTime = true
@@ -56,7 +56,7 @@ define([
          * Escape "&" characters.
          * @param {*} text
          */
-        const replaceIllegalXML = text => {
+        const replaceIllegalXML = (text) => {
           const oDOM = parser.parseFromString(text, 'text/html')
           const lines = oDOM.documentElement.textContent.split('\n')
 
@@ -99,7 +99,7 @@ define([
               valid:
                 !!xmlDoc.getElementsByTagName('parsererror').length ||
                 !xml ||
-                !xml.length
+                !xml.length,
             })
           } catch (error) {
             $notificationService.showErrorToast(error, 'Error validating XML')
@@ -109,7 +109,7 @@ define([
           return
         }
 
-        const autoFormat = xml => {
+        const autoFormat = (xml) => {
           var reg = /(>)\s*(<)(\/*)/g
           var wsexp = / *(.*) +\n/g
           var contexp = /(<.+>)(.+\n)/g
@@ -137,7 +137,7 @@ define([
             'other->single': 0,
             'other->closing': -1,
             'other->opening': 0,
-            'other->other': 0
+            'other->other': 0,
           }
 
           for (var i = 0; i < lines.length; i++) {
@@ -172,7 +172,7 @@ define([
           return formatted.trim()
         }
 
-        const saveFile = async params => {
+        const saveFile = async (params) => {
           try {
             $scope.showErrorMessages = false
             $scope.errorInfo = false
@@ -243,7 +243,7 @@ define([
             theme: 'ttcn',
             foldGutter: true,
             styleSelectedText: true,
-            gutters: ['CodeMirror-foldgutter']
+            gutters: ['CodeMirror-foldgutter'],
           }
         )
 
@@ -252,7 +252,7 @@ define([
           $scope.$emit('performRestart', {})
         }
 
-        const getPosition = element => {
+        const getPosition = (element) => {
           var xPosition = 0
           var yPosition = 0
 
@@ -268,14 +268,14 @@ define([
         }
 
         const dynamicHeight = () => {
-          setTimeout(function() {
+          setTimeout(function () {
             const editorContainer = $('.wzXmlEditor')
             const headerContainer = $('#wzXmlEditorHeader')
             const windows = $(window).height()
             const offsetTop = getPosition(editorContainer[0]).y
             editorContainer.height(windows - (offsetTop + 25))
             $('.wzXmlEditorBody').css({
-              height: 'calc(100% - ' + headerContainer.height() + 'px)'
+              height: 'calc(100% - ' + headerContainer.height() + 'px)',
             })
           }, 1)
         }
@@ -316,13 +316,13 @@ define([
 
         $scope.$on('saveXmlFile', (ev, params) => saveFile(params))
 
-        $(window).on('resize', function() {
+        $(window).on('resize', function () {
           dynamicHeight()
         })
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-xml-file-editor/wz-xml-file-editor.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-xml-file-editor/wz-xml-file-editor.html',
     }
   })
 })

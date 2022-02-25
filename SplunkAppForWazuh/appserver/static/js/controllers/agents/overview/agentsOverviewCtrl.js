@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(app) {
+define(['../../module'], function (app) {
   'use strict'
 
   class AgentsOverview {
@@ -23,6 +23,12 @@ define(['../../module'], function(app) {
      * @param {*} $state
      * @param {*} $notificationService
      * @param {Object} agent
+     * @param {Object} groups
+     * @param {Object} $mdDialog
+     * @param {Object} $groupHandler
+     * @param {Object} $dateDiffService
+     * @param {Object} $currentDataService
+     * @param {Object} $security_service
      */
     constructor(
       $stateParams,
@@ -33,11 +39,11 @@ define(['../../module'], function(app) {
       $notificationService,
       agent,
       groups,
-      isAdmin,
       $mdDialog,
       $groupHandler,
       $dateDiffService,
-      $currentDataService
+      $currentDataService,
+      $security_service
     ) {
       this.stateParams = $stateParams
       this.scope = $scope
@@ -46,7 +52,7 @@ define(['../../module'], function(app) {
       this.notification = $notificationService
       this.agent = agent
       this.extensions = extensions
-      this.scope.extensions = angular.copy(this.extensions)
+      this.scope.extensions = angular.copy(this.extensions) // eslint-disable-line
       this.dateDiffService = $dateDiffService
       this.scope.editGroup = false
       this.scope.showRootcheckScan = false
@@ -55,7 +61,6 @@ define(['../../module'], function(app) {
       this.$mdDialog = $mdDialog
       this.groupHandler = $groupHandler
       this.scope.restartInProgress = false
-      this.scope.isAdmin = isAdmin
       this.currentDataService = $currentDataService
       this.currentApi = this.currentDataService.getApi()
       this.api = this.currentApi['_key']
@@ -63,14 +68,29 @@ define(['../../module'], function(app) {
         security: false,
         auditing: false,
         threadDetection: false,
-        regulatory: false
+        regulatory: false,
       }
       this.excludeModulesByOs = {
         linux: [],
         windows: ['audit', 'oscap', 'docker'],
         darwin: ['audit', 'oscap', 'vuls', 'docker'],
-        other: ['audit', 'oscap', 'vuls', 'docker']
+        other: ['audit', 'oscap', 'vuls', 'docker'],
       }
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ['*']) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+      this.scope.canRestartAgent = this.isAllowed(
+        'AGENT_RESTART',
+        ['AGENT_ID', 'AGENT_GROUP'],
+        [this.agent.id]
+      )
+      this.scope.canModifyGroup = this.isAllowed(
+        'AGENT_MODIFY_GROUP',
+        ['AGENT_ID', 'AGENT_GROUP'],
+        [this.agent.id]
+      )
     }
 
     /**
@@ -81,16 +101,18 @@ define(['../../module'], function(app) {
         this.scope.confirmingRestart = false
         this.setAgentPlatform()
         if (
-          this.agent.length &&
-          typeof this.agent[0] === 'object' &&
-          this.agent[0].data &&
-          typeof this.agent[0].data.data === 'object'
+          this.agent &&
+          typeof this.agent === 'object' &&
+          this.agent.data &&
+          typeof this.agent.data.data === 'object'
         ) {
-          this.scope.agent = this.agent[0].data.data.affected_items[0]
+          this.scope.agent = this.agent.data.data.affected_items[0]
 
           // Capitalize Status
-          if(this.scope.agent && this.scope.agent.status){
-            this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+          if (this.scope.agent && this.scope.agent.status) {
+            this.scope.agent.status =
+              this.scope.agent.status.charAt(0).toUpperCase() +
+              this.scope.agent.status.slice(1)
           }
 
           this.scope.agentOS =
@@ -98,71 +120,40 @@ define(['../../module'], function(app) {
             this.scope.agent.os &&
             this.scope.agent.os.name &&
             this.scope.agent.os.version
-              ? `${this.scope.agent.os.name || '-'} ${this.scope.agent.os
-                  .codename || '-'} ${this.scope.agent.os.version || '-'}`
+              ? `${this.scope.agent.os.name || '-'} ${
+                  this.scope.agent.os.codename || '-'
+                } ${this.scope.agent.os.version || '-'}`
               : 'Unknown'
-          this.scope.syscheck =
-            this.agent.length > 0 &&
-            typeof this.agent[1] === 'object' &&
-            typeof this.agent[1].data === 'object' &&
-            !this.agent[1].data.error
-              ? this.agent[1].data.data
-              : (this.scope.syscheck = { start: 'Unknown', end: 'Unknown' })
           this.scope.id = this.stateParams.id
-          this.scope.rootcheck =
-            this.agent.length > 1 &&
-            typeof this.agent[2] === 'object' &&
-            typeof this.agent[2].data === 'object' &&
-            !this.agent[2].data.error
-              ? this.agent[2].data.data
-              : { start: 'Unknown', end: 'Unknown' }
           if (!this.scope.agent.error) {
             this.refreshExtensions()
 
-            this.scope.groups = this.groups.data.data.affected_items
-              .map(item => item.name)
-              .filter(
-                item =>
-                  this.scope.agent.group &&
-                  !this.scope.agent.group.includes(item)
-              )
-            this.scope.formatAgentStatus = agentStatus =>
+            this.scope.groups = this.groups.error
+              ? []
+              : this.groups.data.data.affected_items
+                  .map((item) => item.name)
+                  .filter(
+                    (item) =>
+                      this.scope.agent.group &&
+                      !this.scope.agent.group.includes(item)
+                  )
+            this.scope.formatAgentStatus = (agentStatus) =>
               this.formatAgentStatus(agentStatus)
-            this.scope.getAgentStatusClass = agentStatus =>
+            this.scope.getAgentStatusClass = (agentStatus) =>
               this.getAgentStatusClass(agentStatus)
-            this.scope.goGroups = group => this.goGroups(group)
+            this.scope.goGroups = (group) => this.goGroups(group)
 
             this.scope.searchRootcheck = (term, specificFilter) =>
               this.scope.$broadcast('wazuhSearch', { term, specificFilter })
 
-            this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
-            this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
-
-            this.scope.checkModules = module => this.checkModules(module)
-
-            this.scope.syscheck.duration = this.dateDiffService.getDateDiff(
-              this.scope.syscheck.start,
-              this.scope.syscheck.end
-            ).duration
-            this.scope.rootcheck.duration = this.dateDiffService.getDateDiff(
-              this.scope.rootcheck.start,
-              this.scope.rootcheck.end
-            ).duration
-            this.scope.syscheck.inProgress = this.dateDiffService.getDateDiff(
-              this.scope.syscheck.start,
-              this.scope.syscheck.end
-            ).inProgress
-            this.scope.rootcheck.inProgress = this.dateDiffService.getDateDiff(
-              this.scope.rootcheck.start,
-              this.scope.rootcheck.end
-            ).inProgress
+            this.scope.checkModules = (module) => this.checkModules(module)
 
             this.scope.switchGroupEdit = () => {
               this.scope.addingGroupToAgent = false
               this.switchGroupEdit()
             }
 
-            this.scope.showConfirmAddGroup = group => {
+            this.scope.showConfirmAddGroup = (group) => {
               this.scope.addingGroupToAgent = this.scope.addingGroupToAgent
                 ? false
                 : group
@@ -181,21 +172,24 @@ define(['../../module'], function(app) {
 
             this.scope.restart = () => this.restartAgent()
             this.scope.switchRestart = () => this.switchRestart()
-            this.scope.showExtensionsLists = card =>
+            this.scope.showExtensionsLists = (card) =>
               this.showExtensionsLists(card)
             this.scope.toggleExtension = (extension, state) =>
               this.toggleExtension(extension, state)
 
-            this.scope.confirmAddGroup = group => {
+            this.scope.confirmAddGroup = (group) => {
               this.groupHandler
                 .addAgentToGroup(group, this.scope.agent.id)
                 .then(() =>
-                  this.requestService.apiReq(`/agents/${this.scope.agent.id}`)
+                  this.requestService.apiReq(
+                    `/agents?agents_list=${this.scope.agent.id}`
+                  )
                 )
-                .then(agent => {
-                  this.scope.agent.group = agent.data.data.group
+                .then((response) => {
+                  const agent = response.data.data.affected_items[0]
+                  this.scope.agent.group = agent.group
                   this.scope.groups = this.scope.groups.filter(
-                    item => !agent.data.data.group.includes(item)
+                    (item) => !agent.group.includes(item)
                   )
                   this.scope.addingGroupToAgent = false
                   this.scope.editGroup = false
@@ -204,7 +198,7 @@ define(['../../module'], function(app) {
                   )
                   this.scope.$applyAsync()
                 })
-                .catch(error => {
+                .catch((error) => {
                   if (!this.scope.agent) {
                     if ((error || {}).status === -1) {
                       this.scope.emptyAgent = 'Wazuh API timeout.'
@@ -216,19 +210,12 @@ define(['../../module'], function(app) {
                 })
             }
           }
-          //Check OS type
-          if (
-            this.agent[0].data.data &&
-            this.agent[0].data.data.os &&
-            this.agent[0].data.data.os.uname
-          ) {
-          }
 
           if (this.scope.agent.status == 'Never connected') {
             this.scope.agent.os = {
               name: 'Unknown',
               codename: 'Unknown',
-              version: 'Unknown'
+              version: 'Unknown',
             }
             this.scope.agent.group = null
             this.scope.agent.lastKeepAlive = 'Never connected'
@@ -243,11 +230,11 @@ define(['../../module'], function(app) {
             os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' },
             version: 'Unknown',
             dateAdd: 'Unknown',
-            lastKeepAlive: 'Unknown'
+            lastKeepAlive: 'Unknown',
           }
-          if (this.agent[0].data.error) {
+          if (this.agent.data.error) {
             this.scope.agent.error =
-              this.agent[0].data.message || this.agent[0].data.error
+              this.agent.data.message || this.agent.data.error
           } else {
             this.scope.agent = {
               group: null,
@@ -258,11 +245,11 @@ define(['../../module'], function(app) {
               os: { name: 'Unknown', codename: 'Unknown', version: 'Unknown' },
               version: 'Unknown',
               dateAdd: 'Unknown',
-              lastKeepAlive: 'Unknown'
+              lastKeepAlive: 'Unknown',
             }
-            if (this.agent[0].data.error) {
+            if (this.agent.data.error) {
               this.scope.agent.error =
-                this.agent[0].data.message || this.agent[0].data.error
+                this.agent.data.message || this.agent.data.error
             } else {
               this.scope.agent.error = 'Unable to load agent data from API'
             }
@@ -288,7 +275,7 @@ define(['../../module'], function(app) {
           typeof this.groupInfo.data.data === 'object'
         ) {
           this.groupData = this.groupInfo.data.data.affected_items.filter(
-            item => item.name === group
+            (item) => item.name === group
           )
         } else if (
           !this.groupInfo ||
@@ -403,13 +390,11 @@ define(['../../module'], function(app) {
     setAgentPlatform() {
       try {
         this.scope.agentPlatform = 'other'
-        const agentInfo = ((((this.agent[0] || []).data || {}).data || {}).affected_items || [])[0] || {}
-        let agentPlatformLinux = (
-          (agentInfo || {}).os || {}
-        ).uname
-        let agentPlatformOther = (
-          (agentInfo || {}).os || {}
-        ).platform
+        const agentInfo =
+          ((((this.agent || []).data || {}).data || {}).affected_items ||
+            [])[0] || {}
+        let agentPlatformLinux = ((agentInfo || {}).os || {}).uname
+        let agentPlatformOther = ((agentInfo || {}).os || {}).platform
         if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.scope.agentPlatform = 'linux'
         }
@@ -430,7 +415,7 @@ define(['../../module'], function(app) {
     refreshExtensions() {
       const keys = Object.keys(this.extensions)
       keys.map(
-        key => (this.scope.extensions[key] = this.extensions[key] === 'true')
+        (key) => (this.scope.extensions[key] = this.extensions[key] === 'true')
       )
       /*
       keys.map(key =>
@@ -444,9 +429,8 @@ define(['../../module'], function(app) {
      * @param {String} module
      */
     checkModules(module) {
-      const enable = !this.excludeModulesByOs[
-        this.scope.agentPlatform
-      ].includes(module)
+      const enable =
+        !this.excludeModulesByOs[this.scope.agentPlatform].includes(module)
       return enable
     }
   }

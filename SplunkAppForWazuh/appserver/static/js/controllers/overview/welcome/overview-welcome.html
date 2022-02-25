@@ -2,7 +2,7 @@
   <!-- End headline -->
 
   <!-- Agent stats -->
-  <div layout-padding class="wz-no-padding">
+  <div layout-padding class="wz-no-padding" ng-show="canReadAgents">
     <div class="agent-stats-box">
       <div
         class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
@@ -10,32 +10,44 @@
           <div class="euiStat euiStat--leftAligned wz-text-align-center">
             <p class="euiText--small euiStat__description">Total agents</p>
             <div class="euiText euiText--small euiStat__description">
-              <p class="agentField total">{{agentsCountTotal >= 0 ? agentsCountTotal : '0'}}</p>
+              <p class="agentField total">
+                {{agentsCountTotal >= 0 ? agentsCountTotal : '0'}}
+              </p>
             </div>
-
           </div>
         </div>
         <div class="euiFlexItem euiFlexItem">
           <div class="euiStat euiStat--leftAligned wz-text-align-center">
             <p class="euiText--small euiStat__description">Active agents</p>
             <div class="euiText euiText--small euiStat__description">
-              <p class="agentField active">{{agentsCountActive >= 0 ? agentsCountActive : '0'}}</p>
+              <p class="agentField active">
+                {{agentsCountActive >= 0 ? agentsCountActive : '0'}}
+              </p>
             </div>
           </div>
         </div>
         <div class="euiFlexItem euiFlexItem">
           <div class="euiStat euiStat--leftAligned wz-text-align-center">
-            <p class="euiText--small euiStat__description">Disconnected agents</p>
+            <p class="euiText--small euiStat__description">
+              Disconnected agents
+            </p>
             <div class="euiText euiText--small euiStat__description">
-              <p class="agentField disconnected">{{agentsCountDisconnected >= 0 ? agentsCountDisconnected : '0'}}</p>
+              <p class="agentField disconnected">
+                {{agentsCountDisconnected >= 0 ? agentsCountDisconnected : '0'}}
+              </p>
             </div>
           </div>
         </div>
         <div class="euiFlexItem euiFlexItem">
           <div class="euiStat euiStat--leftAligned wz-text-align-center">
-            <p class="euiText--small euiStat__description">Never connected agents</p>
+            <p class="euiText--small euiStat__description">
+              Never connected agents
+            </p>
             <div class="euiText euiText--small euiStat__description">
-              <p class="agentField">{{agentsCountNeverConnected >= 0 ? agentsCountNeverConnected : '0'}}</p>
+              <p class="agentField">
+                {{agentsCountNeverConnected >= 0 ? agentsCountNeverConnected :
+                '0'}}
+              </p>
             </div>
           </div>
         </div>
@@ -43,36 +55,64 @@
     </div>
   </div>
 
-  <div layout="row" layout-padding>
-    <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
+  <div
+    layout="row"
+    layout-padding
+    ng-class="{ 'wz-margin-top-20': !canReadAgents }">
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle wc-title welcome-card-main-title">Security Information Management</h3>
-          <div class="extensions-eye">
-            <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
-            <wz-svg ng-click="showExtensionsLists('security')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
+          <h3 class="euiTitle wc-title welcome-card-main-title">
+            Security Information Management
+          </h3>
+          <div class="extensions-eye" ng-show="isSplunkAdmin">
+            <md-tooltip class="wz-tooltip" md-direction="bottom"
+              >Show extensions list</md-tooltip
+            >
+            <wz-svg
+              ng-click="showExtensionsLists('security')"
+              icon="eye"
+              color="primary-shade"
+              class="pull-right"></wz-svg>
           </div>
           <div ng-show="extensionsLists.security" class="extensions-list">
             <ul class="noDot ul-extensions">
               <li>
-                <wz-kbn-switch switch-model="extensions.aws" switch-change="toggleExtension('aws',!extensions.aws)">
-                </wz-kbn-switch><span>Amazon AWS</span>
+                <wz-kbn-switch
+                  switch-model="extensions.aws"
+                  switch-change="toggleExtension('aws',!extensions.aws)">
+                </wz-kbn-switch
+                ><span>Amazon AWS</span>
               </li>
             </ul>
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'"
-              sub-title="'Security events'" ui-sref='ow-general' current-tab="'general'"
+          <div
+            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
+            <wz-welcome-card
+              class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_dashboard.svg'"
+              sub-title="'Security events'"
+              ui-sref="ow-general"
+              current-tab="'general'"
               description="'Browse through your security alerts, identifying issues and threats in your environment.'">
             </wz-welcome-card>
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'"
-              sub-title="'File integrity monitoring'" ui-sref='ow-fim' current-tab="'fim'"
+            <wz-welcome-card
+              class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_logging.svg'"
+              sub-title="'File integrity monitoring'"
+              ui-sref="ow-fim"
+              current-tab="'fim'"
               description="'Alerts related to file changes, including permissions, content, ownership and attributes.'">
             </wz-welcome-card>
-            <wz-welcome-card ng-if='extensions.aws' class="euiFlexItem"
-              logo="'/static/app/SplunkAppForWazuh/css/images/app_aws.svg'" sub-title="'Amazon Web Services'"
-              ui-sref='ow-aws' current-tab="'aws'"
+            <wz-welcome-card
+              ng-if="extensions.aws"
+              class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_aws.svg'"
+              sub-title="'Amazon Web Services'"
+              ui-sref="ow-aws"
+              current-tab="'aws'"
               description="'Security events related to your Amazon AWS services, collected directly via AWS API.'">
             </wz-welcome-card>
           </div>
@@ -81,40 +121,78 @@
 
       <div class="euiFlexItem flex-50">
         <div class="euiPanel euiPanel--paddingLarge">
-          <h3 class="euiTitle wc-title welcome-card-main-title">Auditing and Policy Monitoring</h3>
-          <div class="extensions-eye">
-            <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
-            <wz-svg ng-click="showExtensionsLists('auditing')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
+          <h3 class="euiTitle wc-title welcome-card-main-title">
+            Auditing and Policy Monitoring
+          </h3>
+          <div class="extensions-eye" ng-show="isSplunkAdmin">
+            <md-tooltip class="wz-tooltip" md-direction="bottom"
+              >Show extensions list</md-tooltip
+            >
+            <wz-svg
+              ng-click="showExtensionsLists('auditing')"
+              icon="eye"
+              color="primary-shade"
+              class="pull-right"></wz-svg>
           </div>
           <div ng-show="extensionsLists.auditing" class="extensions-list">
             <ul class="noDot ul-extensions">
-                <li>
-                  <wz-kbn-switch switch-model="extensions.audit"
-                    switch-change="toggleExtension('audit',!extensions.audit)">
-                  </wz-kbn-switch><span>System auditing</span>
-                </li>
-                <li>
-                  <wz-kbn-switch switch-model="extensions.oscap"
-                    switch-change="toggleExtension('oscap',!extensions.oscap)">
-                  </wz-kbn-switch><span>OpenSCAP</span>
-                </li>
-                <li>
-                  <wz-kbn-switch switch-model="extensions.ciscat"
-                    switch-change="toggleExtension('ciscat',!extensions.ciscat)">
-                  </wz-kbn-switch><span>CIS-CAT</span>
-                </li>
+              <li>
+                <wz-kbn-switch
+                  switch-model="extensions.audit"
+                  switch-change="toggleExtension('audit',!extensions.audit)">
+                </wz-kbn-switch
+                ><span>System auditing</span>
+              </li>
+              <li>
+                <wz-kbn-switch
+                  switch-model="extensions.oscap"
+                  switch-change="toggleExtension('oscap',!extensions.oscap)">
+                </wz-kbn-switch
+                ><span>OpenSCAP</span>
+              </li>
+              <li>
+                <wz-kbn-switch
+                  switch-model="extensions.ciscat"
+                  switch-change="toggleExtension('ciscat',!extensions.ciscat)">
+                </wz-kbn-switch
+                ><span>CIS-CAT</span>
+              </li>
             </ul>
           </div>
           <div class="euiSpacer euiSpacer--m"></div>
-          <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
-            <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
-              sub-title="'Policy monitoring'" ui-sref='ow-pm' current-tab="'pm'" description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
-              <wz-welcome-card ng-if="extensions.audit" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
-              sub-title="'Audit'" ui-sref='ow-audit' current-tab="'audit'" description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.oscap" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
-              sub-title="'Open SCAP'" ui-sref='ow-os' current-tab="'oscap'" description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
-            <wz-welcome-card ng-if="extensions.ciscat" class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
-              sub-title="'CIS-CAT'" ui-sref='ow-ciscat' current-tab="'oscap'" description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
+          <div
+            class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
+            <wz-welcome-card
+              class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
+              sub-title="'Policy monitoring'"
+              ui-sref="ow-pm"
+              current-tab="'pm'"
+              description="'Verify that your systems are configured according to your security policies baseline.'"></wz-welcome-card>
+            <wz-welcome-card
+              ng-if="extensions.audit"
+              class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_monitoring.svg'"
+              sub-title="'Audit'"
+              ui-sref="ow-audit"
+              current-tab="'audit'"
+              description="'Audit users behavior, monitoring command execution and alerting on access to critical files.'"></wz-welcome-card>
+            <wz-welcome-card
+              ng-if="extensions.oscap"
+              class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_discover.svg'"
+              sub-title="'Open SCAP'"
+              ui-sref="ow-os"
+              current-tab="'oscap'"
+              description="'Configuration assessment and automation of compliance monitoring using SCAP checks.'"></wz-welcome-card>
+            <wz-welcome-card
+              ng-if="extensions.ciscat"
+              class="euiFlexItem"
+              logo="'/static/app/SplunkAppForWazuh/css/images/app_advanced_settings.svg'"
+              sub-title="'CIS-CAT'"
+              ui-sref="ow-ciscat"
+              current-tab="'oscap'"
+              description="'Configuration assessment using Center of Internet Security scanner and SCAP checks.'"></wz-welcome-card>
           </div>
         </div>
       </div>
@@ -126,61 +204,100 @@
   <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--responsive">
     <div class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
-        <h3 class="euiTitle wc-title welcome-card-main-title">Threat Detection and Response</h3>
-        <div class="extensions-eye">
-          <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
-          <wz-svg ng-click="showExtensionsLists('threadDetection')" icon="eye" color="#396e3e" class="pull-right">
+        <h3 class="euiTitle wc-title welcome-card-main-title">
+          Threat Detection and Response
+        </h3>
+        <div class="extensions-eye" ng-show="isSplunkAdmin">
+          <md-tooltip class="wz-tooltip" md-direction="bottom"
+            >Show extensions list</md-tooltip
+          >
+          <wz-svg
+            ng-click="showExtensionsLists('threadDetection')"
+            icon="eye"
+            color="primary-shade"
+            class="pull-right">
           </wz-svg>
         </div>
         <div ng-show="extensionsLists.threadDetection" class="extensions-list">
           <ul class="noDot ul-extensions">
             <li>
-              <wz-kbn-switch switch-model="extensions.virustotal"
+              <wz-kbn-switch
+                switch-model="extensions.virustotal"
                 switch-change="toggleExtension('virustotal',!extensions.virustotal)"></wz-kbn-switch>
               <span>VirusTotal</span>
             </li>
             <li>
-              <wz-kbn-switch switch-model="extensions.osquery"
-                switch-change="toggleExtension('osquery',!extensions.osquery)"></wz-kbn-switch><span>Osquery</span>
+              <wz-kbn-switch
+                switch-model="extensions.osquery"
+                switch-change="toggleExtension('osquery',!extensions.osquery)"></wz-kbn-switch
+              ><span>Osquery</span>
             </li>
             <li>
-              <wz-kbn-switch switch-model="extensions.docker"
+              <wz-kbn-switch
+                switch-model="extensions.docker"
                 switch-change="toggleExtension('docker',!extensions.docker)">
-              </wz-kbn-switch><span>Docker listener</span>
+              </wz-kbn-switch
+              ><span>Docker listener</span>
             </li>
           </ul>
         </div>
         <div class="euiSpacer euiSpacer--m"></div>
-        <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
-          <wz-welcome-card class="euiFlexItem" logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
-            sub-title="'Vulnerabilities'" ui-sref='ow-vul' current-tab="'vuls'"
+        <div
+          class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
+          <wz-welcome-card
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_security.svg'"
+            sub-title="'Vulnerabilities'"
+            ui-sref="ow-vul"
+            current-tab="'vuls'"
             description="'Discover what applications in your environment are affected by well-known vulnerabilities.'">
           </wz-welcome-card>
-          <wz-welcome-card class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/mitre.svg'" sub-title="'MITRE ATT&amp;CK'" ui-sref='ow-mitre'
+          <wz-welcome-card
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/mitre.svg'"
+            sub-title="'MITRE ATT&amp;CK'"
+            ui-sref="ow-mitre"
             current-tab="'mitre'"
             description="'Security events from the knowledge base of adversary tactics and techniques based on real-world observations.'">
           </wz-welcome-card>
-          <wz-welcome-card ng-if="extensions.virustotal" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'" sub-title="'VirusTotal'"
-            title="'VirusTotal'" ui-sref='ow-virustotal' current-tab="'virustotal'"
+          <wz-welcome-card
+            ng-if="extensions.virustotal"
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_saved_objects.svg'"
+            sub-title="'VirusTotal'"
+            title="'VirusTotal'"
+            ui-sref="ow-virustotal"
+            current-tab="'virustotal'"
             description="'Alerts resulting from VirusTotal analysis of suspicious files via an integration with their API.'">
           </wz-welcome-card>
-          <wz-welcome-card ng-if="extensions.osquery" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/osquery.svg'" sub-title="'Osquery'" ui-sref='ow-osquery'
+          <wz-welcome-card
+            ng-if="extensions.osquery"
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/osquery.svg'"
+            sub-title="'Osquery'"
+            ui-sref="ow-osquery"
             current-tab="'osquery'"
             description="'Osquery allows to expose an operating system as a high-performance relational database.'">
           </wz-welcome-card>
-          <wz-welcome-card ng-if="extensions.docker" class="euiFlexItem"
-          logo="'/static/app/SplunkAppForWazuh/css/images/docker.svg'" sub-title="'Docker listener'"
-          ui-sref='ow-docker' current-tab="'docker'"
-          description="'Collects events on Docker containers such as starting, stopping or pausing.'">
-        </wz-welcome-card>
-          <div ng-if="(isWindows || isMac) && !extensions.docker && !extensions.osquery && !extensions.virustotal" flex
+          <wz-welcome-card
+            ng-if="extensions.docker"
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/docker.svg'"
+            sub-title="'Docker listener'"
+            ui-sref="ow-docker"
+            current-tab="'docker'"
+            description="'Collects events on Docker containers such as starting, stopping or pausing.'">
+          </wz-welcome-card>
+          <div
+            ng-if="(isWindows || isMac) && !extensions.docker && !extensions.osquery && !extensions.virustotal"
+            flex
             class="euiCallOut euiCallOut--success no-extensions">
             <div class="euiCallOutHeader">
               <wz-svg icon="callOutHeader"></wz-svg>
-              <span class="euiCallOutHeader__title">Click the <wz-svg icon="eye"></wz-svg> icon to show threat detection and response extensions. </span>
+              <span class="euiCallOutHeader__title"
+                >Click the <wz-svg icon="eye"></wz-svg> icon to show threat
+                detection and response extensions.
+              </span>
             </div>
           </div>
         </div>
@@ -189,58 +306,100 @@
 
     <div class="euiFlexItem flex-50">
       <div class="euiPanel euiPanel--paddingLarge">
-        <h3 class="euiTitle wc-title welcome-card-main-title">Regulatory Compliance</h3>
-        <div class="extensions-eye">
-          <md-tooltip class="wz-tooltip" md-direction="bottom">Show extensions list</md-tooltip>
-          <wz-svg ng-click="showExtensionsLists('regulatory')" icon="eye" color="#396e3e" class="pull-right"></wz-svg>
+        <h3 class="euiTitle wc-title welcome-card-main-title">
+          Regulatory Compliance
+        </h3>
+        <div class="extensions-eye" ng-show="isSplunkAdmin">
+          <md-tooltip class="wz-tooltip" md-direction="bottom"
+            >Show extensions list</md-tooltip
+          >
+          <wz-svg
+            ng-click="showExtensionsLists('regulatory')"
+            icon="eye"
+            color="primary-shade"
+            class="pull-right"></wz-svg>
         </div>
         <div ng-show="extensionsLists.regulatory" class="extensions-list">
           <ul class="noDot ul-extensions">
             <li>
-              <wz-kbn-switch switch-model="extensions.pci" switch-change="toggleExtension('pci',!extensions.pci)">
-              </wz-kbn-switch><span>PCI DSS</span>
+              <wz-kbn-switch
+                switch-model="extensions.pci"
+                switch-change="toggleExtension('pci',!extensions.pci)">
+              </wz-kbn-switch
+              ><span>PCI DSS</span>
             </li>
             <li>
-              <wz-kbn-switch switch-model="extensions.gdpr" switch-change="toggleExtension('gdpr',!extensions.gdpr)">
-              </wz-kbn-switch><span>GDPR</span>
+              <wz-kbn-switch
+                switch-model="extensions.gdpr"
+                switch-change="toggleExtension('gdpr',!extensions.gdpr)">
+              </wz-kbn-switch
+              ><span>GDPR</span>
             </li>
             <li>
-              <wz-kbn-switch switch-model="extensions.hipaa" switch-change="toggleExtension('hipaa',!extensions.hipaa)">
-              </wz-kbn-switch>HIPAA
+              <wz-kbn-switch
+                switch-model="extensions.hipaa"
+                switch-change="toggleExtension('hipaa',!extensions.hipaa)">
+              </wz-kbn-switch
+              >HIPAA
             </li>
             <li>
-              <wz-kbn-switch switch-model="extensions.nist" switch-change="toggleExtension('nist',!extensions.nist)">
-              </wz-kbn-switch><span>NIST 800-53</span>
+              <wz-kbn-switch
+                switch-model="extensions.nist"
+                switch-change="toggleExtension('nist',!extensions.nist)">
+              </wz-kbn-switch
+              ><span>NIST 800-53</span>
             </li>
           </ul>
         </div>
         <div class="euiSpacer euiSpacer--m"></div>
-        <div class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
-          <wz-welcome-card ng-if="extensions.pci" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'" sub-title="'PCI DSS'" ui-sref='ow-pci'
+        <div
+          class="euiFlexGrid euiFlexGrid--gutterLarge euiFlexGrid--halves wz-width-96">
+          <wz-welcome-card
+            ng-if="extensions.pci"
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_apm.svg'"
+            sub-title="'PCI DSS'"
+            ui-sref="ow-pci"
             current-tab="'pci'"
             description="'Global security standard for entities that process, store or transmit payment cardholder data.'">
           </wz-welcome-card>
-          <wz-welcome-card ng-if="extensions.gdpr" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'GDPR'" ui-sref='ow-gdpr'
+          <wz-welcome-card
+            ng-if="extensions.gdpr"
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+            sub-title="'GDPR'"
+            ui-sref="ow-gdpr"
             current-tab="'gdpr'"
             description="'General Data Protection Regulation (GDPR) sets guidelines for processing of personal data.'">
           </wz-welcome-card>
-          <wz-welcome-card ng-if="extensions.hipaa" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'HIPAA'" ui-sref='ow-hipaa'
+          <wz-welcome-card
+            ng-if="extensions.hipaa"
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+            sub-title="'HIPAA'"
+            ui-sref="ow-hipaa"
             current-tab="'hipaa'"
             description="'Health Insurance Portability and Accountability Act of 1996 (HIPAA) provides data privacy and security provisions for safeguarding medical information.'">
           </wz-welcome-card>
-          <wz-welcome-card ng-if="extensions.nist" class="euiFlexItem"
-            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'" sub-title="'NIST 800-53'"
-            ui-sref='ow-nist' current-tab="'nist'"
+          <wz-welcome-card
+            ng-if="extensions.nist"
+            class="euiFlexItem"
+            logo="'/static/app/SplunkAppForWazuh/css/images/app_visualize.svg'"
+            sub-title="'NIST 800-53'"
+            ui-sref="ow-nist"
+            current-tab="'nist'"
             description="'National Institute of Standards and Technology Special Publication 800-53 (NIST 800-53) sets guidelines for federal information systems.'">
           </wz-welcome-card>
-          <div ng-if="!extensions.gdpr && !extensions.pci && !extensions.hipaa && !extensions.nist" flex
+          <div
+            ng-if="!extensions.gdpr && !extensions.pci && !extensions.hipaa && !extensions.nist"
+            flex
             class="euiCallOut euiCallOut--success no-extensions">
             <div class="euiCallOutHeader">
               <wz-svg icon="callOutHeader"></wz-svg>
-              <span class="euiCallOutHeader__title">Click the <wz-svg icon="eye"></wz-svg> icon to show threat detection and response extensions. </span>
+              <span class="euiCallOutHeader__title"
+                >Click the <wz-svg icon="eye"></wz-svg> icon to show threat
+                detection and response extensions.
+              </span>
             </div>
           </div>
         </div>

@@ -9,19 +9,19 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzConfigItem', function(BASE_URL) {
+  directives.directive('wzConfigItem', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         label: '@label',
         value: '=value',
-        isArray: '=isArray'
+        isArray: '=isArray',
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-config-item/wz-config-item.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-config-item/wz-config-item.html',
     }
   })
 })

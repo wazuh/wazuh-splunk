@@ -1,11 +1,11 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$notificationService', function($mdToast, $rootScope) {
+  module.service('$notificationService', function ($mdToast, $rootScope) {
     let last = {
       bottom: true,
       top: false,
       left: false,
-      right: true
+      right: true,
     }
 
     let toastPosition = angular.extend({}, last) // eslint-disable-line
@@ -14,7 +14,7 @@ define(['../module'], function(module) {
       sanitizePosition()
 
       return Object.keys(toastPosition)
-        .filter(pos => {
+        .filter((pos) => {
           return toastPosition[pos]
         })
         .join(' ')
@@ -31,11 +31,11 @@ define(['../module'], function(module) {
       last = angular.extend({}, current) // eslint-disable-line
     }
 
-    let showSuccessToast = text => showSimpleToast(text, 1)
-    let showErrorToast = text => showSimpleToast(text, 2)
-    let showWarningToast = text => showSimpleToast(text, 3)
+    let showSuccessToast = (text) => showSimpleToast(text, 1)
+    let showErrorToast = (text) => showSimpleToast(text, 2)
+    let showWarningToast = (text) => showSimpleToast(text, 3)
 
-    let showSimpleToast = (text, type) => {   
+    let showSimpleToast = (text, type) => {
       if (!wazuhIsNotReady(text)) {
         let pinTo = getToastPosition()
         if (type === 1) {
@@ -43,52 +43,114 @@ define(['../module'], function(module) {
             //Success
             hideDelay: 6000,
             position: pinTo,
-            template:
-              '<md-toast ng-mouseover="overToast = true" ng-mouseleave="overToast = false" style="border-top: 3px solid #396e3e;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
-              '<div class="md-toast-content" style="background-color:white;">' +
-              '<p class="wz-padding-top-7 wz-padding-right-15"><i class="fa fa-check"></i>&nbsp;' +
-              text +
-              '<wz-svg class="closeToastCross" ng-show="overToast" icon="cross" ng-click="closeToast()"></wz-svg></p></div>' +
-              '</md-toast>'
+            template: `
+              <md-toast 
+                ng-mouseover="overToast = true" 
+                ng-mouseleave="overToast = false" 
+                style="border-top: 3px solid #396e3e;" 
+                class="toastTheme euiToast euiToast--success euiGlobalToastListItem">
+                <div 
+                  class="md-toast-content" 
+                  style="background-color:white;">
+                  <p 
+                    class="wz-padding-top-7 
+                    wz-padding-right-15">
+                      <i class="fa fa-check"></i>
+                      &nbsp;${text}
+                      <wz-svg 
+                        class="closeToastCross" 
+                        ng-show="overToast" 
+                        icon="cross" 
+                        ng-click="closeToast()">
+                      </wz-svg>
+                  </p>
+                </div>
+              </md-toast>
+              `,
           })
         } else if (type === 2) {
           //Error
           $mdToast.show({
             hideDelay: 30000,
             position: pinTo,
-            template:
-              '<md-toast ng-mouseover="overToast = true" ng-mouseleave="overToast = false" style="border-top: 3px solid #db0d0d;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
-              '<div class="md-toast-content" style="background-color:white;">' +
-              '<p class="wz-padding-top-7 wz-padding-right-15"><i class="fa fa-exclamation" aria-hidden="true"></i>&nbsp;' +
-              text +
-              '<wz-svg class="closeToastCross" ng-show="overToast" icon="cross" ng-click="closeToast()"></wz-svg></p></div>' +
-              '</md-toast>'
+            template: `
+              <md-toast 
+                ng-mouseover="overToast = true" 
+                ng-mouseleave="overToast = false" 
+                style="border-top: 3px solid #db0d0d;" 
+                class="toastTheme euiToast euiToast--success euiGlobalToastListItem">
+                <div 
+                  class="md-toast-content" 
+                  style="background-color:white;">
+                  <p class="wz-padding-top-7 wz-padding-right-15">
+                      <i class="fa fa-exclamation" aria-hidden="true"></i>
+                      &nbsp;${text}
+                      <wz-svg 
+                        class="closeToastCross" 
+                        ng-show="overToast" 
+                        icon="cross" 
+                        ng-click="closeToast()">
+                      </wz-svg>
+                  </p>
+                </div>
+              </md-toast>
+              `,
           })
         } else if (type === 3) {
           //Warning
           $mdToast.show({
             hideDelay: 30000,
             position: pinTo,
-            template:
-              '<md-toast ng-mouseover="overToast = true" ng-mouseleave="overToast = false" style="border-top: 3px solid #eddb07;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
-              '<div class="md-toast-content" style="background-color:white;">' +
-              '<p class="wz-padding-top-7 wz-padding-right-15"><i class="fa fa-warning fa-fw"></i>&nbsp;' +
-              text +
-              '<wz-svg class="closeToastCross" ng-show="overToast" icon="cross" ng-click="closeToast()"></wz-svg></p></div>' +
-              '</md-toast>'
+            template: `
+              <md-toast 
+                ng-mouseover="overToast = true" 
+                ng-mouseleave="overToast = false" 
+                style="border-top: 3px solid #eddb07;" 
+                class="toastTheme euiToast euiToast--success euiGlobalToastListItem">
+                  <div 
+                    class="md-toast-content" 
+                    style="background-color:white;">
+                    <p class="wz-padding-top-7 wz-padding-right-15">
+                      <i class="fa fa-warning fa-fw"></i>
+                      &nbsp;${text}
+                      <wz-svg 
+                        class="closeToastCross" 
+                        ng-show="overToast" 
+                        icon="cross" 
+                        ng-click="closeToast()">
+                      </wz-svg>
+                    </p>
+                  </div>
+                </md-toast>
+              `,
           })
         } else {
           $mdToast.show({
             //Info
             hideDelay: 6000,
             position: pinTo,
-            template:
-              '<md-toast ng-mouseover="overToast = true" ng-mouseleave="overToast = false" style="border-top: 3px solid #005571;" class="toastTheme euiToast euiToast--success euiGlobalToastListItem">' +
-              '<div class="md-toast-content" style="background-color:white;">' +
-              '<p class="wz-padding-top-7 wz-padding-right-15"><i class="fa fa-fw fa-info" aria-hidden="true"></i>&nbsp;' +
-              text +
-              '<wz-svg class="closeToastCross" ng-show="overToast" icon="cross" ng-click="closeToast()"></wz-svg></p></div>' +
-              '</md-toast>'
+            template: `
+              <md-toast 
+              ng-mouseover="overToast = true" 
+              ng-mouseleave="overToast = false" 
+              style="border-top: 3px solid #005571;" 
+              class="toastTheme euiToast euiToast--success euiGlobalToastListItem">
+                <div 
+                  class="md-toast-content" 
+                  style="background-color:white;">
+                  <p class="wz-padding-top-7 wz-padding-right-15">
+                    <i class="fa fa-warning fa-fw"></i>
+                    &nbsp;${text}
+                    <wz-svg 
+                      class="closeToastCross" 
+                      ng-show="overToast" 
+                      icon="cross" 
+                      ng-click="closeToast()">
+                    </wz-svg>
+                  </p>
+                </div>
+              </md-toast>
+              `,
           })
         }
       }
@@ -102,7 +164,7 @@ define(['../module'], function(module) {
       $rootScope.$broadcast('showHeadToaster', { type, msg, delay })
     }
 
-    const wazuhIsNotReady = text => {
+    const wazuhIsNotReady = (text) => {
       try {
         if (text instanceof Object && text.message.includes('ERROR3099')) {
           $rootScope.$broadcast('wazuhNotReadyYet', {})
@@ -123,7 +185,7 @@ define(['../module'], function(module) {
       showErrorToast: showErrorToast,
       showSuccessToast: showSuccessToast,
       showWarningToast: showWarningToast,
-      showHeadToaster: showHeadToaster
+      showHeadToaster: showHeadToaster,
     }
   })
 })

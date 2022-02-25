@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -35,6 +35,9 @@ define([
      * @param {*} $scope
      * @param {*} $currentDataService
      * @param {*} $state
+     * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -43,14 +46,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -164,7 +169,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -203,7 +208,7 @@ define([
         'Last errors': this.scope.lastErrors,
         'Last fails': this.scope.lastFails,
         'Last unknown': this.scope.lastUnknown,
-        'Last scan benchmark': this.scope.lastScanBenchmark
+        'Last scan benchmark': this.scope.lastScanBenchmark,
       }
     }
   }

@@ -1,0 +1,54 @@
+<div flex layout="column" ng-cloak>
+  <!-- Navigation bar -->
+  <div>
+    <md-nav-bar
+      class="wz-nav-bar"
+      md-selected-nav-item="tabName"
+      nav-bar-aria-label="Security navigation links">
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="security.users"
+        md-nav-click="switchTab('users')"
+        name="users">
+        Users
+      </md-nav-item>
+
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="security.roles"
+        md-nav-click="switchTab('roles')"
+        name="roles">
+        Roles
+      </md-nav-item>
+
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="security.policies"
+        md-nav-click="switchTab('policies')"
+        name="policies">
+        Policies
+      </md-nav-item>
+
+      <md-nav-item
+        class="wz-nav-item"
+        ui-sref="security.roles-mapping"
+        md-nav-click="switchTab('roles-mapping')"
+        name="roles-mapping">
+        Roles Mapping
+      </md-nav-item>
+    </md-nav-bar>
+    <!-- End navigation bar -->
+
+    <div layout="column" layout-align="start stretch">
+      <div ng-show="loadingContent">
+        <div class="loader-bar" ng-show="loadingContent">
+          <div class="loader"></div>
+        </div>
+      </div>
+
+      <div>
+        <ui-view></ui-view>
+      </div>
+    </div>
+  </div>
+</div>

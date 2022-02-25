@@ -19,8 +19,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/dropdown-input',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -40,8 +40,10 @@ define([
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} $state
-     * @param {*} $reportingService
      * @param {Object} agent
+     * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
 
     constructor(
@@ -52,14 +54,16 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -77,7 +81,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       if (
@@ -99,7 +103,7 @@ define([
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance) {
           this.urlTokenModel.handleValueChange(this.dropdownInstance)
         }
@@ -197,7 +201,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -211,7 +215,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -233,7 +237,7 @@ define([
             'top5AgentsSHVizz',
             'top5AlertsVizz',
             'top5HRAlertsVizz',
-            'alertsSummaryVizz'
+            'alertsSummaryVizz',
           ],
           this.reportMetrics,
           this.tableResults,
@@ -250,13 +254,15 @@ define([
           ? this.agent.data.data.affected_items[0]
           : { error: true }
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 
@@ -285,7 +291,7 @@ define([
       this.reportMetrics = {
         'Last score': this.scope.scapLastScore,
         'Highest score': this.scope.scapHighestScore,
-        'Lowest score': this.scope.scapLowestScore
+        'Lowest score': this.scope.scapLowestScore,
       }
     }
   }

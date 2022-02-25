@@ -10,13 +10,13 @@
  * Find more information about this on the LICENSE file.
  */
 
-define([], function() {
+define([], function () {
   'use strict'
   /**
    * Splits an array in parts
    * @param {Array} array
    */
-  const splitArray = array => {
+  const splitArray = (array) => {
     if (Array.isArray(array)) {
       if (!array.length) return false
       let str = ''
@@ -31,7 +31,7 @@ define([], function() {
    * Checks if an item is already in the array
    * @param {*} item
    */
-  const checkIfArray = item => {
+  const checkIfArray = (item) => {
     return typeof item === 'object' ? splitArray(item) : item == 0 ? '0' : item
   }
 

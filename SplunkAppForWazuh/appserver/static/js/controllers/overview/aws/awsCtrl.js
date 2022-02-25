@@ -6,8 +6,8 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/map/map',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -28,6 +28,7 @@ define([
      * @param {*} $state
      * @param {*} $notificationService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
      */
     constructor(
       $urlTokenModel,
@@ -43,7 +44,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.currentDataService.addFilter(
@@ -59,7 +61,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.filters = this.getFilters()
@@ -139,7 +141,7 @@ define([
           `${this.filters} | stats count by data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat, data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon as "lon" | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat as "lat" | geostats count`,
           'map',
           this.scope
-        )
+        ),
       ]
     }
 
@@ -159,7 +161,7 @@ define([
               'eventsByS3BucketsVizz',
               'map',
               'top5Buckets',
-              'top5Rules'
+              'top5Rules',
             ],
             {}, //Metrics
             this.tableResults

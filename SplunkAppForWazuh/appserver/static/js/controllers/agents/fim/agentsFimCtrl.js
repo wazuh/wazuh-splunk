@@ -18,8 +18,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/rawTableData/rawTableDataService',
-  'FileSaver'
-], function(
+  'FileSaver',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -34,12 +34,16 @@ define([
     /**
      * Class constructor
      * @param {Object} $urlTokenModel
-     * @param {Object} $state
      * @param {Object} $scope
+     * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
+     * @param {Object} $tableFilterService
+     * @param {Object} $csvRequestService
      * @param {Object} $notificationService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} $security_service
      */
 
     constructor(
@@ -52,14 +56,16 @@ define([
       $csvRequestService,
       $notificationService,
       $reportingService,
-      reportingEnabled
+      reportingEnabled,
+      $security_service
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.wzTableFilter = $tableFilterService
       this.agent = agent
@@ -81,7 +87,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
       if (
         this.agent &&
@@ -95,87 +101,6 @@ define([
 
       this.filters = this.getFilters()
 
-      this.vizz = [
-        /**
-         * Visualizations
-         */
-        new AreaChart(
-          'eventsOverTimeElement',
-          `${this.filters} sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
-          'eventsOverTimeElement',
-          this.scope,
-          { customAxisTitleX: 'Time span' }
-        ),
-        new ColumnChart(
-          'topGroupOwnersElement',
-          `${this.filters} sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
-          'topGroupOwnersElement',
-          this.scope
-        ),
-        new PieChart(
-          'topUserOwnersElement',
-          `${this.filters} sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
-          'topUserOwnersElement',
-          this.scope
-        ),
-        new PieChart(
-          'topActions',
-          `${this.filters} sourcetype="wazuh" | stats count by "syscheck.event"`,
-          'topActions',
-          this.scope
-        ),
-        new PieChart(
-          'topFileChangesElement',
-          `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
-          'topFileChangesElement',
-          this.scope
-        ),
-        new PieChart(
-          'rootUserFileChangesElement',
-          `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
-          'rootUserFileChangesElement',
-          this.scope
-        ),
-        new PieChart(
-          'wordWritableFilesElement',
-          `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
-          'wordWritableFilesElement',
-          this.scope
-        ),
-        new Table(
-          'eventsSummaryElement',
-          `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-          'eventsSummaryElement',
-          this.scope
-        ),
-        new RawTableDataService(
-          'eventsSummaryTable',
-          `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
-          'eventsSummaryTableToken',
-          '$result$',
-          this.scope,
-          'Events Summary'
-        ),
-        new PieChart(
-          'topNewFiles',
-          `${this.filters} syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
-          'topNewFiles',
-          this.scope
-        ),
-        new PieChart(
-          'topModifiedFiles',
-          `${this.filters} syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
-          'topModifiedFiles',
-          this.scope
-        ),
-        new PieChart(
-          'topDeletedFiles',
-          `${this.filters} syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
-          'topDeletedFiles',
-          this.scope
-        )
-      ]
-
       // Set agent info
       try {
         this.agentReportData = {
@@ -187,7 +112,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -211,12 +136,22 @@ define([
             'topUserOwnersElement',
             'topFileChangesElement',
             'rootUserFileChangesElement',
-            'eventsSummaryElement'
+            'eventsSummaryElement',
           ],
           {}, //Metrics,
           this.tableResults,
           this.agentReportData
         )
+
+      /* RBAC flags */
+      this.isAllowed = (action, resource, params = ['*']) => {
+        return $security_service.getPolicy(action, resource, params).isAllowed
+      }
+      this.scope.canReadSyscheck = this.isAllowed(
+        'SYSCHECK_READ',
+        ['AGENT_ID'],
+        [this.agent.id]
+      )
     }
 
     /**
@@ -226,22 +161,113 @@ define([
       this.show()
       this.scope.show = () => this.show()
       this.scope.agent =
-        this.agent && this.agent.data && this.agent.data.data && this.agent.data.data.affected_items[0]
+        this.agent &&
+        this.agent.data &&
+        this.agent.data.data &&
+        this.agent.data.data.affected_items[0]
           ? this.agent.data.data.affected_items[0]
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      this.scope.search = term => {
+      this.scope.search = (term) => {
         this.scope.$broadcast('wazuhSearch', { term })
       }
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
+      this.scope.loadVizz = () => {
+        if (!this.vizzLoaded) {
+          this.vizz = [
+            /**
+             * Visualizations
+             */
+            new AreaChart(
+              'eventsOverTimeElement',
+              `${this.filters} sourcetype="wazuh"  "rule.groups{}"="syscheck" | timechart span=12h count by rule.description`,
+              'eventsOverTimeElement',
+              this.scope,
+              { customAxisTitleX: 'Time span' }
+            ),
+            new ColumnChart(
+              'topGroupOwnersElement',
+              `${this.filters} sourcetype="wazuh" uname_after syscheck.gname_after!=""| top limit=20 "syscheck.gname_after"`,
+              'topGroupOwnersElement',
+              this.scope
+            ),
+            new PieChart(
+              'topUserOwnersElement',
+              `${this.filters} sourcetype="wazuh" uname_after| top limit=20 "syscheck.uname_after"`,
+              'topUserOwnersElement',
+              this.scope
+            ),
+            new PieChart(
+              'topActions',
+              `${this.filters} sourcetype="wazuh" | stats count by "syscheck.event"`,
+              'topActions',
+              this.scope
+            ),
+            new PieChart(
+              'topFileChangesElement',
+              `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | top syscheck.path`,
+              'topFileChangesElement',
+              this.scope
+            ),
+            new PieChart(
+              'rootUserFileChangesElement',
+              `${this.filters} sourcetype="wazuh" "Integrity checksum changed" location!="syscheck-registry" syscheck.path="*" | search root | top limit=10 syscheck.path`,
+              'rootUserFileChangesElement',
+              this.scope
+            ),
+            new PieChart(
+              'wordWritableFilesElement',
+              `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck" "syscheck.perm_after"=* | top "syscheck.perm_after" showcount=false showperc=false | head 1`,
+              'wordWritableFilesElement',
+              this.scope
+            ),
+            new Table(
+              'eventsSummaryElement',
+              `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+              'eventsSummaryElement',
+              this.scope
+            ),
+            new RawTableDataService(
+              'eventsSummaryTable',
+              `${this.filters} sourcetype="wazuh" rule.groups{}="syscheck"  |stats count sparkline by agent.name, syscheck.path syscheck.event, rule.description | sort count DESC | rename agent.name as Agent, syscheck.path as File, syscheck.event as Event, rule.description as Description, count as Count`,
+              'eventsSummaryTableToken',
+              '$result$',
+              this.scope,
+              'Events Summary'
+            ),
+            new PieChart(
+              'topNewFiles',
+              `${this.filters} syscheck.event=added  | stats count by syscheck.path | top syscheck.path limit=5`,
+              'topNewFiles',
+              this.scope
+            ),
+            new PieChart(
+              'topModifiedFiles',
+              `${this.filters} syscheck.event=modified  | stats count by syscheck.path | top syscheck.path limit=5`,
+              'topModifiedFiles',
+              this.scope
+            ),
+            new PieChart(
+              'topDeletedFiles',
+              `${this.filters} syscheck.event=deleted  | stats count by syscheck.path | top syscheck.path limit=5`,
+              'topDeletedFiles',
+              this.scope
+            ),
+          ]
+          this.vizzLoaded = true
+        }
+        return this.vizzLoaded
+      }
     }
 
     /**
@@ -259,7 +285,11 @@ define([
     async runScan() {
       try {
         const id = this.agent.data.data.affected_items[0].id
-        const result = await this.apiReq(`/syscheck?q=agents_list=${id}`, {}, 'PUT')
+        const result = await this.apiReq(
+          `/syscheck?q=agents_list=${id}`,
+          {},
+          'PUT'
+        )
         if (result && result.data && !result.data.error) {
           this.notification.showSuccessToast('Syscheck scan launched.')
         } else {

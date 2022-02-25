@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -31,13 +31,15 @@ define([
     /**
      * Class Agents Osquery
      * @param {Object} $urlTokenModel
-     * @param {Object} $state
      * @param {Object} $scope
-     * @param {Object} $currentDataService
-     * @param {Object} $notificationService
      * @param {Object} agent
+     * @param {Object} $notificationService
+     * @param {Object} $currentDataService
+     * @param {Object} $state
      * @param {Object} osquery
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
 
     constructor(
@@ -57,7 +59,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -131,7 +134,7 @@ define([
           '$result$',
           this.scope,
           'Alerts summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -145,7 +148,7 @@ define([
           OS: this.agent.data.data.affected_items[0].os.name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -165,7 +168,7 @@ define([
             'mostCommonActions',
             'topRules',
             'alertsOverTime',
-            'alertsSummary'
+            'alertsSummary',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -183,14 +186,16 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-        
+
       try {
         this.wodles = this.osquery.data.data.wmodules
         this.scope.osqueryWodle = this.wodles.filter(
-          item => item.osquery
+          (item) => item.osquery
         )[0].osquery
       } catch (err) {
         this.notification.showErrorToast(
@@ -198,9 +203,9 @@ define([
         )
       }
 
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         agentStatus === 'Active' ? 'teal' : 'red'
-      this.scope.formatAgentStatus = agentStatus => {
+      this.scope.formatAgentStatus = (agentStatus) => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
           : 'Never connected'

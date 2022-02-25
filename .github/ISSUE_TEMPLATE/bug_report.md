@@ -9,7 +9,7 @@ assignees: ''
 
 | Wazuh | Splunk | Rev |
 | ----- | ------- | --- |
-| 3.x   | 7.3.0     | 444 |
+| 4.3   | 8.1.4     | 4301 |
 
 **Description**
 Short description of your issue.

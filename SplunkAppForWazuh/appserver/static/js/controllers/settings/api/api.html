@@ -1,33 +1,44 @@
 <div class="wz-pos-rel" flex layout="column" layout-align="start stretch">
-
-  <div layout="row" class="layout-row" ng-show='!edit && apiList.length < 1'>
+  <div layout="row" class="layout-row" ng-show="!edit && apiList.length < 1">
     <md-card flex="" class="wz-md-card _md flex">
       <md-card-content>
-        <wz-svg icon="info-circle"></wz-svg> <span class="wz-headline-title">Welcome to
-          the
-          Wazuh app for Splunk</span>
+        <wz-svg icon="info-circle"></wz-svg>
+        <span class="wz-headline-title">
+          Welcome to the Wazuh app for Splunk
+        </span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" layout-padding="" class="wz-line-height layout-padding layout-row">
-          Wazuh Splunk plugin provides management and monitoring capabilities, giving users control
-          over the Wazuh infrastructure. Using this plugin you can monitor the status of your agents and
-          configuration, query and visualize your alert data and manage your Wazuh configuration and
+        <div
+          layout="row"
+          layout-padding=""
+          class="wz-line-height layout-padding layout-row">
+          Wazuh Splunk plugin provides management and monitoring capabilities,
+          giving users control over the Wazuh infrastructure. Using this plugin
+          you can monitor the status of your agents and configuration, query and
+          visualize your alert data and manage your Wazuh configuration and
           configuration.
         </div>
       </md-card-content>
     </md-card>
     <md-card flex="" class="wz-md-card _md flex">
       <md-card-content>
-        <wz-svg icon="question-mark-circle"></wz-svg> <span class="wz-headline-title">Community</span>
+        <wz-svg icon="question-mark-circle"></wz-svg>
+        <span class="wz-headline-title">Community</span>
         <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" layout-padding="" class="wz-line-height layout-padding layout-row">
-          Enjoy your Wazuh experience and please don't hesitate to give us your feedback.
+        <div
+          layout="row"
+          layout-padding=""
+          class="wz-line-height layout-padding layout-row">
+          Enjoy your Wazuh experience and please don't hesitate to give us your
+          feedback.
         </div>
-        <div layout="row" class="layout-align-center-center layout-row flex" flex="">
-          <wz-svg icon="slack"></wz-svg> 
+        <div
+          layout="row"
+          class="layout-align-center-center layout-row flex"
+          flex="">
+          <wz-svg icon="slack"></wz-svg>
           <wz-svg icon="groups-google"></wz-svg>
           <wz-svg icon="github"></wz-svg>
         </div>
-
       </md-card-content>
     </md-card>
   </div>
@@ -35,121 +46,236 @@
   <!-- Headline -->
   <div layout="column" layout-padding>
     <span class="font-size-18">
-      <i class="fa fa-fw fa-tasks" aria-hidden="true"></i> Wazuh API configuration</span>
-    <span>Use Wazuh API settings to connect the Splunk app to your Wazuh manager or cluster</span>
+      <i class="fa fa-fw fa-tasks" aria-hidden="true"></i>
+      Wazuh API configuration
+    </span>
+    <span
+      >Use Wazuh API settings to connect the Splunk app to your Wazuh manager or
+      cluster</span
+    >
   </div>
   <!-- End headline -->
   <div ng-show="loadingVizz" class="wz-api-settings-loading">
     <div>
-      <div class="animate-ellipsis">please wait</div>
+      <div class="animate-ellipsis">Please wait</div>
     </div>
   </div>
   <!-- API configuration card section -->
-  <div layout="row" layout-align="start start">
+  <div layout="row" layout-align="center center">
     <md-card flex class="wz-md-card">
-      <div layout="row" class="wz-margin-20" layout-padding ng-show="kvStoreInitializing">
+      <div
+        layout="row"
+        class="wz-margin-20"
+        layout-padding
+        ng-show="kvStoreInitializing">
         <div flex class="euiCallOut euiCallOut--warning wz-margin-top-17">
           <div class="euiCallOutHeader">
             <wz-svg icon="callOutHeader"></wz-svg>
-            <span class="euiCallOutHeader__title">Kv Store is being initialized please wait some seconds and try again later.</span>
+            <span class="euiCallOutHeader__title">
+              Kv Store is being initialized please wait some seconds and try
+              again later.
+            </span>
           </div>
         </div>
       </div>
       <md-card-content ng-if="apiList.length >= 1">
         <!-- API entries headings section -->
-        <div layout="row">
-          <p flex="15" class="wz-text-bold">Cluster</p>
+        <div layout="row" class="wz-text-align-center">
+          <p flex="10" class="wz-text-bold">API alias</p>
+          <p flex="10" class="wz-text-bold">Cluster</p>
           <p flex="20" class="wz-text-bold">Manager</p>
-          <p flex="15" class="wz-text-bold">API URL</p>
-          <p flex="15" class="wz-text-bold">API Port</p>
-          <p flex="15" class="wz-text-bold">User</p>
-          <p flex="20" class="wz-text-bold">Actions</p>
+          <p flex="20" class="wz-text-bold">API URL</p>
+          <p flex="10" class="wz-text-bold">API Port</p>
+          <p flex="10" class="wz-text-bold">User</p>
+          <p flex="5" class="wz-text-bold">Run as</p>
+          <p flex="15" class="wz-text-bold">Actions</p>
         </div>
         <md-divider></md-divider>
         <!-- End API entries headings section -->
 
         <!-- API entries list section -->
-        <div ng-repeat="entry in apiList">
+        <div ng-repeat="entry in apiList track by entry._key">
           <!-- API entry -->
-          <div layout="row" layout-align="space-between center" class="wz-padding-top-10">
-            <p flex="15">
-              <i ng-show="entry.selected" class="fa fa-star wz-color-orange" aria-hidden="true"></i>
-              {{ (entry.filterType === 'cluster.name') ? entry.filterName : 'Disabled'}}
+          <div
+            layout="row"
+            layout-align="space-between center"
+            class="wz-padding-top-10 wz-text-align-center">
+            <p flex="10" class="wz-word-wrap">
+              <i
+                ng-show="entry.selected"
+                class="fa fa-star wz-color-orange"
+                aria-hidden="true">
+              </i>
+              {{entry.alias}}
               <md-tooltip md-direction="right" class="wz-tooltip">
                 This is the default Manager
               </md-tooltip>
             </p>
-            <p flex="20">{{entry.managerName}}</p>
-            <p flex="15">{{entry.url}}</p>
-            <p flex="15">{{entry.portapi}}</p>
-            <p flex="15">{{entry.userapi}}</p>
-            <p flex="20">
-
-              <span ng-click="selectManager(entry['_key'])" class="cursor-pointer" aria-hidden="true">
+            <p flex="10" class="wz-word-wrap">
+              {{ (entry.filterType === 'cluster.name') ? entry.filterName :
+              'Disabled'}}
+            </p>
+            <p flex="20" class="wz-word-wrap">{{entry.managerName}}</p>
+            <p flex="20" class="wz-word-wrap">{{entry.url}}</p>
+            <p flex="10" class="wz-word-wrap">{{entry.portapi}}</p>
+            <p flex="10" class="wz-word-wrap">{{entry.userapi}}</p>
+            <p flex="5" class="wz-word-wrap">
+              <i ng-class="getIconAndTooltip(entry).class" aria-hidden="true">
+              </i>
+              <md-tooltip
+                md-direction="bottom"
+                class="wz-tooltip wz-margin-left-16">
+                'Run as' is {{ getIconAndTooltip(entry).tooltip }}
+              </md-tooltip>
+            </p>
+            <!-- Actions -->
+            <p flex="15">
+              <span
+                ng-click="selectManager(entry['_key'])"
+                class="cursor-pointer"
+                aria-hidden="true">
                 <wz-svg icon="star"></wz-svg>
-                <md-tooltip md-direction="bottom" class="wz-tooltip wz-margin-left-16">
+                <md-tooltip
+                  md-direction="bottom"
+                  class="wz-tooltip wz-margin-left-16">
                   Set as default Manager
                 </md-tooltip>
               </span>
-              <span ng-click="checkManager(entry)" class="cursor-pointer wz-margin-left-16" aria-hidden="true">
-                <wz-svg icon="refresh" color="#595d65"></wz-svg>
+              <span
+                ng-click="checkManager(entry)"
+                class="cursor-pointer wz-margin-left-16"
+                aria-hidden="true">
+                <wz-svg icon="refresh" color="grey"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Check API connection
                 </md-tooltip>
               </span>
-              <span ng-click="removeManager(entry)" class="cursor-pointer wz-margin-left-16" aria-hidden="true">
-                <wz-svg icon="trash" color="#da2062"></wz-svg>
+              <span
+                ng-click="removeManager(entry)"
+                ng-if="isSplunkAdmin"
+                class="cursor-pointer wz-margin-left-16"
+                aria-hidden="true">
+                <wz-svg icon="trash" color="danger"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Remove manager
                 </md-tooltip>
               </span>
-              <div flex></div>
-
-              <span ng-click="editEntry(entry)" class="cursor-pointer wz-margin-right-16" aria-hidden="true">
-                <wz-svg icon="arrow-down" color="#0b3b98"></wz-svg>
+              <span
+                ng-click="editEntry(entry)"
+                ng-if="isSplunkAdmin"
+                class="cursor-pointer wz-margin-left-16"
+                aria-hidden="true">
+                <wz-svg icon="wrench" color="info"></wz-svg>
                 <md-tooltip md-direction="bottom" class="wz-tooltip">
                   Edit API
                 </md-tooltip>
               </span>
             </p>
           </div>
-          <md-divider style="margin-bottom: 10px;" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key' ></md-divider>
-          <!-- Add API section-->
-          <div layout="row" ng-if='((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key' style="height: 80px;">
-            <!-- Add API form -->
-            <form flex layout="row" layout-align="start stretch" class="margin-top-30">
+          <md-divider
+            style="margin-bottom: 10px"
+            ng-if="((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key">
+          </md-divider>
+          <!-- Update API section-->
+          <div
+            layout="row"
+            ng-if="((showForm && !edit) || (!showForm && edit)) && currentEntryKey === entry._key"
+            style="height: 80px">
+            <!-- Update API form -->
+            <form
+              flex
+              layout="row"
+              layout-align="space-around stretch"
+              class="margin-top-30">
               <!-- Input section -->
               <md-input-container class="wz-input-container wz-margin-left-7">
-                <label class="api-label">Username</label>
-                <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder=""
-                  aria-label="username" required />
-              </md-input-container>
-              <md-input-container class="wz-input-container wz-margin-left-7">
-                <label class="api-label">Password</label>
-                <input class="wz-height-35 wz-input-text" ng-model="pass" type="password" placeholder=""
-                  aria-label="password" required />
-              </md-input-container>
-              <md-input-container class="wz-input-container wz-margin-left-7">
-                <label class="api-label">URL</label>
-                <input class="wz-height-35 wz-input-text" ng-model="url" type="url" placeholder="http(s)://"
-                  aria-label="full url" required />
-              </md-input-container>
-              <md-input-container class="wz-input-container wz-margin-left-7">
-                <label class="api-label">Port</label>
-                <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
+                <label class="api-label">API alias</label>
+                <input
+                  class="wz-height-35 wz-input-text"
+                  ng-model="alias"
+                  type="text"
+                  placeholder="A tag for the API"
+                  aria-label="alias"
                   required />
               </md-input-container>
               <md-input-container class="wz-input-container wz-margin-left-7">
-                <button ng-if='edit' ng-click='updateEntry(user,pass,url,port)' type="submit" class="btn wz-button"
+                <label class="api-label">Username</label>
+                <input
+                  class="wz-height-35 wz-input-text"
+                  ng-model="user"
+                  type="text"
+                  placeholder=""
+                  aria-label="username"
+                  required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">Password</label>
+                <input
+                  class="wz-height-35 wz-input-text"
+                  ng-model="pass"
+                  type="password"
+                  placeholder=""
+                  aria-label="password"
+                  required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">URL</label>
+                <input
+                  class="wz-height-35 wz-input-text"
+                  ng-model="url"
+                  type="url"
+                  placeholder="http(s)://"
+                  aria-label="full url"
+                  required />
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <label class="api-label">Port</label>
+                <input
+                  class="wz-height-35 wz-input-text"
+                  ng-model="port"
+                  type="text"
+                  placeholder=""
+                  aria-label="port"
+                  required />
+              </md-input-container>
+              <md-input-container
+                class="wz-input-container wz-margin-left-7 wz-min-width-55">
+                <label class="api-label">Run as</label>
+                <md-checkbox
+                  class="wz-height-35 wz-min-width-55"
+                  ng-model="runAs"
+                  ng-checked="{{ runAs }}"
+                  type="checkbox"
+                  placeholder=""
+                  aria-label="Run As button"
+                  required>
+                </md-checkbox>
+                <md-tooltip class="wz-tooltip">
+                  <strong>WARNING</strong>
+                  <br />
+                  <i>Run_as</i> permissions can only be obtained with the
+                  <b>wazuh-wui</b> user.
+                </md-tooltip>
+              </md-input-container>
+              <md-input-container class="wz-input-container wz-margin-left-7">
+                <button
+                  type="submit"
+                  class="btn wz-button"
+                  ng-if="edit"
+                  ng-click="updateEntry(user, pass, url, port, alias, runAs)"
                   aria-label="Save API button">
-                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Update
+                  <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
+                  Update
                 </button>
               </md-input-container>
               <!-- Button and errors section -->
               <div layout="row" layout-align="center center">
                 <p class="color-f9">{{messageError}}</p>
               </div>
-              <div ng-if="validatingError" layout="row" layout-align="center center">
+              <div
+                ng-if="validatingError"
+                layout="row"
+                layout-align="center center">
                 <ul class="noDot orange">
                   <li ng-repeat="err in validatingError">{{ err }}</li>
                 </ul>
@@ -162,106 +288,250 @@
         </div>
         <!-- End API entries list section -->
 
+        <!-- Add API section-->
+        <div
+          layout="row"
+          ng-if="((showForm && !edit) || (!showForm && edit)) && !currentEntryKey  && apiList.length >= 1">
+          <!-- Add API form -->
+          <form
+            flex
+            layout="row"
+            layout-align="space-around stretch"
+            style="padding-top: 20px; margin-bottom: auto">
+            <!-- Input section -->
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">API alias</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="alias"
+                type="text"
+                placeholder="A tag for the API"
+                aria-label="alias"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Username</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="user"
+                type="text"
+                placeholder=""
+                aria-label="username"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Password</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="pass"
+                type="password"
+                placeholder=""
+                aria-label="password"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">URL</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="url"
+                type="url"
+                placeholder="http(s)://"
+                aria-label="full url"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Port</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="port"
+                type="text"
+                placeholder=""
+                aria-label="port"
+                required />
+            </md-input-container>
+            <md-input-container
+              class="wz-input-container wz-margin-left-7 wz-min-width-55">
+              <label class="api-label">Run as</label>
+              <md-checkbox
+                class="wz-height-35 wz-min-width-55"
+                ng-model="runAs"
+                type="checkbox"
+                placeholder=""
+                aria-label="Run As button"
+                required>
+              </md-checkbox>
+              <md-tooltip class="wz-tooltip">
+                <strong>WARNING</strong>
+                <br />
+                <i>Run_as</i> permissions can only be obtained with the
+                <b>wazuh-wui</b> user.
+              </md-tooltip>
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <button
+                type="button"
+                class="btn wz-button"
+                ng-if="!edit"
+                ng-click="submitApiForm(user, pass, url, port, alias, runAs)"
+                aria-label="Save API button">
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
+                Save
+              </button>
+            </md-input-container>
+            <!-- Button and errors section -->
+            <div layout="row" layout-align="center center">
+              <p class="color-f9">{{messageError}}</p>
+            </div>
+            <div
+              class="api-error"
+              ng-if="validatingError"
+              layout="row"
+              layout-align="center center">
+              <ul class="noDot orange">
+                <li ng-repeat="err in validatingError">{{ err }}</li>
+              </ul>
+            </div>
+          </form>
+          <!-- End add API form -->
+        </div>
+        <md-divider style="margin-bottom: 10px"></md-divider>
+
         <!-- Add API button section -->
-        <div layout="row" layout-align="center center" class="wz-padding-top-10">
-          <button ng-show='!edit && apiList.length > 0 || currentEntryKey' ng-click='addNewApiClick()'
-            class="btn wz-button" aria-label="Add new API button">
-            <wz-svg icon="plus"></wz-svg> Add new
+        <div
+          layout="row"
+          layout-align="center center"
+          class="wz-padding-top-10">
+          <button
+            ng-show="!edit && apiList.length > 0 || currentEntryKey"
+            ng-if="isSplunkAdmin"
+            ng-click="addNewApiClick()"
+            class="btn wz-button"
+            aria-label="Add new API button">
+            <wz-svg icon="plus"></wz-svg>
+            Add new
           </button>
         </div>
         <!-- End add API button section -->
-
-        <!-- Add API section-->
-        <div layout="row"
-          ng-if='((showForm && !edit) || (!showForm && edit)) && !currentEntryKey  && apiList.length >= 1'>
-          <!-- Add API form -->
-          <form flex layout="row" layout-align="start stretch" class="margin-top-30">
-            <!-- Input section -->
-            <md-input-container class="wz-input-container wz-margin-left-7">
-              <label class="api-label" >Username</label>
-              <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder="" aria-label="username"
-                required />
-            </md-input-container>
-            <md-input-container class="wz-input-container wz-margin-left-7">
-              <label class="api-label">Password</label>
-              <input class="wz-height-35 wz-input-text" ng-model="pass" type="password" placeholder=""
-                aria-label="password" required />
-            </md-input-container>
-            <md-input-container class="wz-input-container wz-margin-left-7">
-              <label class="api-label">URL</label>
-              <input class="wz-height-35 wz-input-text" ng-model="url" type="url" placeholder="http(s)://"
-                aria-label="full url" required />
-            </md-input-container>
-            <md-input-container class="wz-input-container wz-margin-left-7">
-              <label class="api-label">Port</label>
-              <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
-                required />
-            </md-input-container>
-            <md-input-container class="wz-input-container wz-margin-left-7">
-              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port)' type="button" class="btn wz-button"
-                aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
-              </button>
-            </md-input-container>
-            <!-- Button and errors section -->
-            <div layout="row" layout-align="center center">
-              <p class="color-f9">{{messageError}}</p>
-            </div>
-            <div class="api-error" ng-if="validatingError" layout="row" layout-align="center center">
-              <ul class="noDot orange">
-                <li ng-repeat="err in validatingError">{{ err }}</li>
-              </ul>
-            </div>
-          </form>
-          <!-- Add API form -->
-          <!-- End add API form -->
-        </div>
       </md-card-content>
 
+      <!-- Show form if there are no APIs -->
+      <md-card-content ng-if="apiList.length < 1">
+        <div layout="column" ng-if="!isSplunkAdmin">
+          <!-- <div layout="column"> -->
+          <h2 class="wz-headline-title">
+            <i class="fa fa-exclamation" aria-hidden="true"></i>
+            Oops, it looks like there is nothing to show here
+          </h2>
+          <p class="layout-padding">
+            No Wazuh Manager (API) has been added to this installation yet. Only
+            the Splunk administrators can add, modify or delete Wazuh Managers,
+            as write permissions are required. Please, get in contact with the
+            administrator or log in with an administrator user.
+          </p>
+        </div>
 
-
-      <md-card-content style="height:60px;" ng-if="apiList.length < 1">
-        <div layout="row" ng-if='apiList.length < 1'>
-          <!-- Add API form -->
-          <form flex layout="row" layout-align="start stretch" class="margin-top-30">
+        <!-- Add API form -->
+        <div layout="row" ng-if="isSplunkAdmin">
+          <!-- <div layout="row"> -->
+          <form
+            flex
+            layout="row"
+            layout-align="space-around stretch"
+            class="wz-margin-20">
             <!-- Input section -->
-            <md-input-container flex="20" class="wz-input-container wz-margin-left-7">
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">API alias</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="alias"
+                type="text"
+                placeholder=""
+                aria-label="alias"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
               <label class="api-label">Username</label>
-              <input class="wz-height-35 wz-input-text" ng-model="user" type="text" placeholder="" aria-label="username"
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="user"
+                type="text"
+                placeholder=""
+                aria-label="username"
                 required />
             </md-input-container>
-            <md-input-container flex="20"  class="wz-input-container wz-margin-left-7">
+            <md-input-container class="wz-input-container wz-margin-left-7">
               <label class="api-label">Password</label>
-              <input class="wz-height-35 wz-input-text" ng-model="pass" type="password" placeholder=""
-                aria-label="password" required />
-            </md-input-container>
-            <md-input-container flex="20"  class="wz-input-container wz-margin-left-7">
-              <label class="api-label">URL</label>
-              <input class="wz-height-35 wz-input-text" ng-model="url" type="url" placeholder="http(s)://"
-                aria-label="full url" required />
-            </md-input-container>
-            <md-input-container flex="20"  class="wz-input-container wz-margin-left-7">
-              <label class="api-label">Port</label>
-              <input class="wz-height-35 wz-input-text" ng-model="port" type="text" placeholder="" aria-label="port"
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="pass"
+                type="password"
+                placeholder=""
+                aria-label="password"
                 required />
             </md-input-container>
-            <md-input-container flex="10"  class="wz-input-container wz-margin-left-7">
-              <button ng-if='!edit' ng-click='submitApiForm(user,pass,url,port)' type="button" class="btn wz-button"
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">URL</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="url"
+                type="url"
+                placeholder="http(s)://"
+                aria-label="full url"
+                required />
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <label class="api-label">Port</label>
+              <input
+                class="wz-height-35 wz-input-text"
+                ng-model="port"
+                type="text"
+                placeholder=""
+                aria-label="port"
+                required />
+            </md-input-container>
+            <md-input-container
+              class="wz-input-container wz-margin-left-7 wz-min-width-55">
+              <label class="api-label">Run as</label>
+              <md-checkbox
+                class="wz-height-35 wz-min-width-55"
+                ng-model="runAs"
+                type="checkbox"
+                placeholder=""
+                aria-label="Run As button"
+                required>
+              </md-checkbox>
+              <md-tooltip class="wz-tooltip">
+                <strong>WARNING</strong>
+                <br />
+                <i>Run_as</i> permissions can only be obtained with the
+                <b>wazuh-wui</b> user.
+              </md-tooltip>
+            </md-input-container>
+            <md-input-container class="wz-input-container wz-margin-left-7">
+              <button
+                type="button"
+                class="btn wz-button"
+                ng-if="!edit"
+                ng-click="submitApiForm(user, pass, url, port, alias, runAs)"
                 aria-label="Save API button">
-                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> Save
+                <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
+                Save
               </button>
             </md-input-container>
             <!-- Button and errors section -->
             <div layout="row" layout-align="center center">
               <p class="color-f9">{{messageError}}</p>
             </div>
-            <div flex="10" class="api-error" ng-if="validatingError" layout="row" layout-align="center center">
+            <div
+              class="api-error"
+              ng-if="validatingError"
+              layout="row"
+              layout-align="center center">
               <ul class="noDot orange">
                 <li ng-repeat="err in validatingError">{{ err }}</li>
               </ul>
             </div>
           </form>
-          <!-- Add API form -->
           <!-- End add API form -->
         </div>
         <!-- End add API section-->
@@ -269,5 +539,4 @@
     </md-card>
   </div>
   <!-- End API configuration card section -->
-
 </div>

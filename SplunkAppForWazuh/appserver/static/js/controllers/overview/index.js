@@ -17,5 +17,5 @@ define([
   './vulnerabilities/overviewVulnerabilitiesCtrl',
   './sca/overviewSCACtrl',
   './hipaa/overviewHipaaCtrl',
-  './nist/overviewNistCtrl'
-], function() {})
+  './nist/overviewNistCtrl',
+], function () {})
