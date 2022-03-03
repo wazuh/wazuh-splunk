@@ -2,6 +2,15 @@
 
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
 
+## Wazuh v4.3.5 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4308
+
+### Added
+- Support for Splunk 4.3.5
+
+### Fixed
+- Fixed an error on the DevTools where the payload was not being sent, causing the request to fail. [#1296](https://github.com/wazuh/wazuh-splunk/pull/1296)
+
+
 ## Wazuh v4.3.4 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4307
 
 ### Changed
