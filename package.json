@@ -3,7 +3,7 @@
   "bugs": {
     "url": "https://github.com/wazuh/wazuh-splunk/issues"
   },
-  "code": "4303-0",
+  "code": "4401-0",
   "dependencies": {},
   "description": "Splunk app for Wazuh",
   "devDependencies": {
@@ -44,5 +44,5 @@
     "pretty": "prettier --config .prettierrc --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html SplunkAppForWazuh/**/*.css !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
     "test": "mocha tests/manager.js"
   },
-  "version": "4.3.0"
+  "version": "4.4.0"
 }
