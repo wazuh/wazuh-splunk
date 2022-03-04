@@ -2896,3 +2896,19 @@ body > div.tooltip {
 .wz-color-info {
   color: var(--info-color);
 }
+
+.wz-color-active {
+  color: var(--bg-active-color);
+}
+
+.wz-color-pending {
+  color: var(--bg-pending-color);
+}
+
+.wz-color-disconnected {
+  color: var(--bg-disconnected-color);
+}
+
+.wz-color-never-connected {
+  color: var(--bg-never-connected-color);
+}

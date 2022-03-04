@@ -14,4 +14,8 @@
   --danger-color: #da2062;
   --info-color: #0b3b98;
   --bg-menu-select-color: rgb(0, 68, 90);
+  --bg-active-color: #46BFBD;
+  --bg-pending-color: #FFD35E;
+  --bg-disconnected-color: #F7464A;
+  --bg-never-connected-color: #949FB1;
 }
