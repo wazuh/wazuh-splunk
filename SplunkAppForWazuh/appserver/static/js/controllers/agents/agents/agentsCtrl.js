@@ -228,7 +228,7 @@ define([
               labels: ['Active', 'Pending', 'Disconnected', 'Never connected' ],
               datasets: [
                 {
-                  backgroundColor: ['#46BFBD', '#ffd35e', '#F7464A', '#949FB1'],
+                  backgroundColor: ['#46BFBD', '#FFD35E', '#F7464A', '#949FB1'],
                   data: [
                     this.scope.agentsCountActive,
                     this.scope.agentsCountDisconnected,
