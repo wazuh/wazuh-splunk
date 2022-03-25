@@ -32,6 +32,8 @@ Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_
 
 | Splunk version | Wazuh version     | Installation                                                   |
 | :------------: | :---------------: | :--------------------------------------------------------------|
+|      8.2.2     |       4.2.6       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.6_8.2.2-1.tar.gz>  |
+|      8.1.4     |       4.2.6       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.6_8.1.4-1.tar.gz>  |
 |      8.2.2     |       4.2.5       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.5_8.2.2-1.tar.gz>  |
 |      8.1.4     |       4.2.5       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.5_8.1.4-1.tar.gz>  |
 |      8.2.2     |       4.2.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.4_8.2.2-1.tar.gz>  |
@@ -129,7 +131,7 @@ If you want to contribute to our project please don't hesitate to send a pull re
 
 ## Copyright & License
 
-Copyright (C) 2015-2019 Wazuh, Inc.
+Copyright (C) 2015-2022 Wazuh, Inc.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 

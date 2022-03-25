@@ -51,6 +51,11 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed header menu height style issue [#1282](https://github.com/wazuh/wazuh-splunk/pull/1282)
 - Fixed an error on the search string used on the Alerts Summary table on the Overview > Vulnerability section, causing the table to showno data [#1283](https://github.com/wazuh/wazuh-splunk/issues/1264)
 
+## Wazuh v4.2.6 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4207
+
+### Added
+
+- Support for Wazuh 4.2.6
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 
 ### Added
