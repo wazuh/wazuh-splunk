@@ -124,7 +124,7 @@ define([
 
         this.scope.searchBarModel = {
           name: [],
-          status: ['active', 'disconnect', 'never_connected', 'pending'],
+          status: ['active', 'pending', 'disconnect', 'never_connected'],
           group: groups
             ? groups.sort((a, b) => {
                 return a.toString().localeCompare(b.toString())
@@ -231,9 +231,9 @@ define([
                   backgroundColor: ['#46BFBD', '#FFD35E', '#F7464A', '#949FB1'],
                   data: [
                     this.scope.agentsCountActive,
+                    this.scope.agentsCountPending,
                     this.scope.agentsCountDisconnected,
                     this.scope.agentsCountNeverConnected,
-                    this.scope.agentsCountPending,
                   ],
                 },
               ],
