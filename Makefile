@@ -16,7 +16,7 @@
 #--------------------------------------------------------------------#
 # SOURCES AND PATHS
 #--------------------------------------------------------------------#
-APP_DIR = ./SplunkAppForWazuh
+APP_DIR = SplunkAppForWazuh
 PACKAGE_NAME = SplunkAppForWazuh.tar.gz
 
 inspect: build
