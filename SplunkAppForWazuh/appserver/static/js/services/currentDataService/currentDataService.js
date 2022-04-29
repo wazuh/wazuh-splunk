@@ -85,9 +85,6 @@ define(['../module'], function (module) {
       const update = (register) => {
         return $apiMgrService.update(register)
       }
-      const getClusterInfo = () => {
-        return $apiMgrService.getClusterInfo()
-      }
       const getFilter = () => {
         return $apiMgrService.getFilter()
       }
@@ -294,7 +291,6 @@ define(['../module'], function (module) {
         update: update,
         getIndex: getIndex,
         setIndex: setIndex,
-        getClusterInfo: getClusterInfo,
         getFilter: getFilter,
         getApi: getApi,
         removeCurrentApi: removeCurrentApi,
