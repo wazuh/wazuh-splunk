@@ -112,7 +112,6 @@ define([
      * For each result (row), transform the array into a named object in order
      * to be able to merge the arrays of found tactics and general tactics.
      * 
-     * 
      * @param {Array} rows array of arrays. Each subarray contains a pair of 
      * string elements which are the MITRE_TACTIC_NAME and the COUNT.
      * 
@@ -149,8 +148,7 @@ define([
      * Parse the results of the MITRE Techniques Search on the index.
      * 
      * For each result (row), transform the array into a named object in order
-     * to be able to merge the arrays of found tecnjiques and general tecnhiques.
-     * 
+     * to be able to map the arrays of found techniques and general tecnhiques.
      * 
      * @param {Array} rows array of arrays. Each subarray contains a pair of 
      * string elements which are the MITRE_TECHNIQUE_NAME and the COUNT.
@@ -172,8 +170,8 @@ define([
         })
       })
 
-      // Make a copy of the techniques, look for found tecnjiques and update
-      // its count.
+      // Make a copy of the techniques, look for found techniques 
+      // and update its count accordingly.
       let techniques = this.scope.techniques
       for (const techniqueFound of foundTechniques) {
         for (let technique of techniques) {
@@ -341,15 +339,10 @@ define([
         q: `external_id=${id}`,
       })
 
-      if (request?.data?.error) {
-        throw new Error(request.data?.message || '404 Not Found')
-      }
-      if (request.data.data.total_affected_items === 0) {
-        throw new Error(
-          request.data.data.message ||
-            'No MITRE techniques information was returned'
-        )
-      }
+      this.handleRequestError(
+        request,
+        'No MITRE techniques information was returned'
+      )
 
       return request.data.data.affected_items[0]
     }
@@ -376,17 +369,10 @@ define([
         tactic_ids: tactics_ids,
       })
 
-      // If the request fails
-      if (request?.data?.error) {
-        throw new Error(request.data?.message || '404 Not Found')
-      }
-      // If the request return no inforamtion
-      if (request.data.data.total_affected_items === 0) {
-        throw new Error(
-          request.data.data.message ||
-            'No MITRE techniques information was returned'
-        )
-      }
+      this.handleRequestError(
+        request,
+        'No MITRE tactics information was returned'
+      )
 
       return request.data.data.affected_items
     }
@@ -429,18 +415,6 @@ define([
         if (mitreTecnhiqueTactics.length > 0) {
           this.scope.selectedTechniqueTactics = mitreTecnhiqueTactics
         }
-
-        // let tactics = [];
-        // for (const tactic of mitreTecnhiqueTactics) {
-        //   tactics.push(
-        //     {
-        //       name: tactic.name,
-        //       url: tactic.url
-        //     }
-        //   )
-        // }
-        // console.log(tactics)
-        // this.scope.selectedTechniqueTactics = tactics
 
         // eslint-disable-next-line no-undef
         var parentEl = angular.element(document.body)
