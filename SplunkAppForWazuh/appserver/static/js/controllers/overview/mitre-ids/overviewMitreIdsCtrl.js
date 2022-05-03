@@ -91,7 +91,10 @@ define([
         ) {
           this.urlTokenModel.set({ earliest: '0', latest: '' })
         }
-        this.timePicker = new TimePicker('#timePicker', this.reloadFilters)
+        this.timePicker = new TimePicker('#timePicker', () => {
+          if (!this.modalOpen)
+            this.reloadFilters
+        })
         if (
           !this.urlTokenModel.has('form.when.earliest') &&
           !this.urlTokenModel.has('form.when.latest')
