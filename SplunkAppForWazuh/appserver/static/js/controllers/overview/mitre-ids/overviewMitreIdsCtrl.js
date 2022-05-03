@@ -73,6 +73,8 @@ define([
             count: 0
           } 
         })
+      this.scope.sortedTactics = this.scope.tactics
+      this.scope.sortedTechniques = this.scope.techniques
       this.$mdDialog = $mdDialog
       this.urlTokenModel = $urlTokenModel
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
@@ -172,14 +174,14 @@ define([
 
       // Make a copy of the techniques, look for found techniques 
       // and update its count accordingly.
-      let techniques = this.scope.techniques
-      for (const techniqueFound of foundTechniques) {
-        for (let technique of techniques) {
+      const techniques = this.scope.techniques.map((technique) => {
+        for (const techniqueFound of foundTechniques) {
           if (technique.external_id === techniqueFound.external_id) {
-            technique.count = techniqueFound.count
+            return { name: technique.name, ...techniqueFound }
           }
         }
-      }
+        return technique
+      })
       // Sort by count
       this.scope.sortedTechniques = techniques.sort((a, b) => b.count - a.count)
 
@@ -233,6 +235,8 @@ define([
         earliest_time = this.urlTokenModel.get('form.when.earliest')
         latest_time = this.urlTokenModel.get('form.when.latest')
       }
+      // reset count values in case there are no results (onData doesn't trigger)
+      this.scope.sortedTactics = this.scope.tactics
       this.tacticsSearch = new SearchHelper({
         id: 'tacticsCount',
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
@@ -241,7 +245,8 @@ define([
         earliest_time,
         latest_time,
       })
-
+      // reset count values in case there are no results (onData doesn't trigger)
+      this.scope.sortedTechniques = this.scope.techniques
       this.techniquesSearch = new SearchHelper({
         id: 'techniquesCount',
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
