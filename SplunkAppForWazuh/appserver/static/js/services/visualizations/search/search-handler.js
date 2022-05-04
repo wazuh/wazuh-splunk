@@ -74,19 +74,22 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
         if (this.loading) {
           this.scope[this.loadingBindedValue] = false
         }
-        const result = this.submittedTokenModel.get(this.token)
-        if (
-          result &&
-          result !== value &&
-          typeof result !== 'undefined' &&
-          result !== 'undefined'
-        ) {
-          this.scope[bindedValue] = result
-        } else {
-          this.scope[bindedValue] = '0'
-          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
-        }
-        this.scope.$applyAsync()
+        setTimeout(() => {
+          const result = this.submittedTokenModel.get(this.token)
+          if (
+            result &&
+            result !== value &&
+            typeof result !== 'undefined' &&
+            result !== 'undefined'
+          ) {
+            this.scope[bindedValue] = result
+          } else {
+            this.scope[bindedValue] = '0'
+            this.notification &&
+              this.notification.showErrorToast(FORWARDER_ERROR)
+          }
+          this.scope.$applyAsync()
+        }, 500)
       })
 
       this.submittedTokenModel.on(`change:${this.token}`, () => {
