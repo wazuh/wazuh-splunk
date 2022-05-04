@@ -91,9 +91,10 @@ define([
         ) {
           this.urlTokenModel.set({ earliest: '0', latest: '' })
         }
-        this.timePicker = new TimePicker('#timePicker', () => {
-          if (!this.modalOpen)
-            this.reloadFilters
+        this.timePicker = new TimePicker('#timePicker', (e) => {
+          if (!this.modalOpen){     
+            this.reloadFilters(e)
+          }
         })
         if (
           !this.urlTokenModel.has('form.when.earliest') &&
@@ -516,6 +517,7 @@ define([
               ParentCtrl.modalOpen = false
               ParentCtrl.cleanModalTable()
               $mdDialog.hide()
+              this.timePicker.destroy()
               delete window.closeDialog
             }
           },
