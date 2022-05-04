@@ -29,6 +29,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
 - Refactored branding color styles to improve maintainability [#1236](https://github.com/wazuh/wazuh-splunk/pull/1236)
 - Changed Wazuh API's name to its alias in the quick settings selector [#1243](https://github.com/wazuh/wazuh-splunk/pull/1243)
+- Changed register windows agent command [#1315](https://github.com/wazuh/wazuh-splunk/pull/1315)
+
 
 ### Fixed
 
