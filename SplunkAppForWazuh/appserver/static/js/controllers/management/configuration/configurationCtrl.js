@@ -57,7 +57,7 @@ define(['../../module', '../../../utils/config-handler'], function (
 
     $onInit() {
       try {
-        this.scope.nodes = this.clusterInfo?.nodes.data.data.affected_items;
+        this.scope.nodes = (((this.clusterInfo.nodes || []).data || []).data || []).affected_items || []
         if (this.clusterInfo?.clusterEnabled && this.scope.nodes.length > 0) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           this.scope.selectedNode = this.scope.nodes[0].name
@@ -142,7 +142,7 @@ define(['../../module', '../../../utils/config-handler'], function (
         }
 
         // True if the request on the resolver was successful
-        this.scope.canReadCluster = this.clusterInfo.clusterEnabled && this.scope.nodes.length > 0 || !this.clusterInfo.clusterEnabled;
+        this.scope.canReadCluster = this.clusterInfo && this.clusterInfo?.clusterEnabled && this.scope.nodes.length > 0 
       } catch (error) {
         this.notification.showErrorToast(error)
       }
