@@ -58,7 +58,7 @@
   </md-nav-bar>
   <div style="position: relative">
     <!-- Filter bar -->
-    <wazuh-bar></wazuh-bar>
+    <!-- <wazuh-bar></wazuh-bar> -->
     <div>
       <div class="wz-margin-right-15 wz-text-align-right">
         <i class="fa fa-fw fa-area-chart formatted-color"></i>&nbsp;
@@ -79,10 +79,10 @@
             <ul class="wz-tactics-list noDot">
               <li
                 ng-repeat="tactic in sortedTactics"
-                ng-if="!hideEmptyRows||tactic[1]"
-                ng-class="{disabled:!tactic[1]}">
-                <span class="euiFlexItem">{{tactic[0]}}</span
-                ><span class="euiFlexItem wz-green-badge">{{tactic[1]}}</span>
+                ng-if="!hideEmptyRows||tactic.count"
+                ng-class="{disabled:!tactic.count}">
+                <span class="euiFlexItem">{{tactic.name}}</span
+                ><span class="euiFlexItem wz-green-badge">{{tactic.count}}</span>
               </li>
             </ul>
           </md-card-content>
@@ -108,23 +108,23 @@
                 <li
                   ng-click="loadRegistryValueDetails(technique)"
                   ng-repeat="technique in sortedTechniques"
-                  ng-if="!hideEmptyRows||technique[1].count"
-                  ng-class="{disabled:!technique[1].count}"
+                  ng-if="!hideEmptyRows||technique.count"
+                  ng-class="{disabled:!technique.count}"
                   class="wz-flex-list cursor-pointer noDot ng-binding ng-scope wz-padding-4 wz-width-30 wz-height-30 wz-hover-underline">
                   <span class="euiFlexItem"
-                    >{{technique[0]}} -- {{technique[1].name}}</span
+                    >{{ technique.external_id }} -- {{ technique.name }}</span
                   ><span class="euiFlexItem wz-green-badge"
-                    >{{technique[1].count||0}}</span
+                    >{{ technique.count || 0 }}</span
                   >
                 </li>
               </ul>
             </div>
-            ​
+            
           </md-card-content>
         </md-card>
       </div>
     </div>
-    ​
+    
     <div ng-show="loadingVizz" class="wz-bg-loader">
       <div class="wz-loader">
         <div align="center">
@@ -135,6 +135,6 @@
       </div>
     </div>
   </div>
-  ​
+  
   <!-- end document  -->
 </md-content>
