@@ -24,7 +24,7 @@
     "ossec"
   ],
   "kibana": {
-    "version": "8.1.4"
+    "version": "8.2.0"
   },
   "license": "GPL-2.0",
   "main": "index.js",
@@ -33,7 +33,7 @@
     "type": "git",
     "url": "git+https://github.com/wazuh/wazuh-splunk.git"
   },
-  "revision": "4303",
+  "revision": "4301",
   "scripts": {
     "build": "make build",
     "clean": "make clean",
