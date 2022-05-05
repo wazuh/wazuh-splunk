@@ -111,20 +111,6 @@ define(['../module'], function (module) {
         return $apiIndexStorageService.setApi(api)
       }
 
-      /**
-       * Returns currently selected API
-       * @param {String} API
-       */
-      const getClusterInfo = () => {
-        if (
-          $apiIndexStorageService.getApi() &&
-          $apiIndexStorageService.getApi().cluster
-        ) {
-          return getApi().cluster
-        } else {
-          return null
-        }
-      }
 
       /**
        * Returns the API filter (manager.name / cluster.name)
@@ -420,7 +406,6 @@ define(['../module'], function (module) {
         remove: remove,
         update: update,
         checkRawConnection: checkRawConnection,
-        getClusterInfo: getClusterInfo,
         getFilter: getFilter,
         getIndex: getIndex,
         setIndex: setIndex,
