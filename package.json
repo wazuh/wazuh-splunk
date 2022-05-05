@@ -33,7 +33,7 @@
     "type": "git",
     "url": "git+https://github.com/wazuh/wazuh-splunk.git"
   },
-  "revision": "4303",
+  "revision": "4301",
   "scripts": {
     "build": "make build",
     "clean": "make clean",
