@@ -57,12 +57,10 @@ define(['../../module', '../../../utils/config-handler'], function (
 
     $onInit() {
       try {
-        if (this.clusterInfo && this.clusterInfo.clusterEnabled) {
+        this.scope.nodes = (((this.clusterInfo.nodes || []).data || []).data || []).affected_items || []
+        if (this.clusterInfo?.clusterEnabled && this.scope.nodes.length > 0) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
-          if (this.clusterInfo.clusterEnabled) {
-            this.scope.nodes = this.clusterInfo.nodes.data.data.affected_items
-            this.scope.selectedNode = this.scope.nodes[0].name
-          }
+          this.scope.selectedNode = this.scope.nodes[0].name
           this.changeNode(this.scope.selectedNode)
         } else {
           // If cluster is disabled there is not a node selected
@@ -144,7 +142,9 @@ define(['../../module', '../../../utils/config-handler'], function (
         }
 
         // True if the request on the resolver was successful
-        this.scope.canReadCluster = this.clusterInfo != false
+
+        this.scope.canReadCluster = this.clusterInfo && this.clusterInfo?.clusterEnabled && this.scope.nodes.length > 0 
+
       } catch (error) {
         this.notification.showErrorToast(error)
       }
