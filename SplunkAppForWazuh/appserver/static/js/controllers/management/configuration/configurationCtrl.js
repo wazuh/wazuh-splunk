@@ -61,9 +61,13 @@ define(['../../module', '../../../utils/config-handler'], function (
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           if (this.clusterInfo.clusterEnabled) {
             this.scope.nodes = this.clusterInfo.nodes.data.data.affected_items
-            this.scope.selectedNode = this.scope.nodes[0].name
+            if(this.scope.nodes.length > 0){
+              this.scope.selectedNode = this.scope.nodes[0].name
+              this.changeNode(this.scope.selectedNode)
+            } else {
+              this.scope.selectedNode = false
+            }
           }
-          this.changeNode(this.scope.selectedNode)
         } else {
           // If cluster is disabled there is not a node selected
           this.scope.selectedNode = false
