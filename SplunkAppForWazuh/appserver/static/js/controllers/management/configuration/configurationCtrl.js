@@ -142,7 +142,9 @@ define(['../../module', '../../../utils/config-handler'], function (
         }
 
         // True if the request on the resolver was successful
+
         this.scope.canReadCluster = this.clusterInfo && this.clusterInfo?.clusterEnabled && this.scope.nodes.length > 0 
+
       } catch (error) {
         this.notification.showErrorToast(error)
       }
