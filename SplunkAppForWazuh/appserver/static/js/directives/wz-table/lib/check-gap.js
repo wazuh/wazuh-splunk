@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
+define([], function () {
   'use strict'
   /**
    * Checks the gap of results

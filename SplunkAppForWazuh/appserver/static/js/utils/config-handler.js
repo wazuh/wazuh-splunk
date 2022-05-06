@@ -17,8 +17,13 @@ define([
   './query-config',
   './remove-hash-key',
   '../services/xml-beautifier/xml-beautifier',
-  'js2xmlparser'
-], function(queryConfig, objectWithoutProperties, XMLBeautifier, js2xmlparser) {
+  'js2xmlparser',
+], function (
+  queryConfig,
+  objectWithoutProperties,
+  XMLBeautifier,
+  js2xmlparser
+) {
   'use strict'
 
   return class ConfigurationHandler {
@@ -68,19 +73,17 @@ define([
         } else if (sections[0].component === 'logcollector') {
           const logcollector =
             currentConfigReq['logcollector-localfile'].localfile
-          $scope.currentConfig['logcollector-localfile'][
-            'localfile-logs'
-          ] = logcollector.filter(
-            log =>
-              log.logformat !== 'command' && log.logformat !== 'full_command'
-          )
-          $scope.currentConfig['logcollector-localfile'][
-            'localfile-commands'
-          ] = logcollector.filter(
-            log =>
-              log.logformat === 'command' || log.logformat === 'full_command'
-          )
-          logcollector.map(log => {
+          $scope.currentConfig['logcollector-localfile']['localfile-logs'] =
+            logcollector.filter(
+              (log) =>
+                log.logformat !== 'command' && log.logformat !== 'full_command'
+            )
+          $scope.currentConfig['logcollector-localfile']['localfile-commands'] =
+            logcollector.filter(
+              (log) =>
+                log.logformat === 'command' || log.logformat === 'full_command'
+            )
+          logcollector.map((log) => {
             const keys = Object.keys(log)
             if (
               !keys.includes('file') &&
@@ -131,14 +134,14 @@ define([
           $scope.currentConfig['wmodules-wmodules'].wmodules
         ) {
           result = $scope.currentConfig['wmodules-wmodules'].wmodules.filter(
-            item => typeof item[wodleName] !== 'undefined'
+            (item) => typeof item[wodleName] !== 'undefined'
           )
         }
 
         if (result.length) {
           $scope.currentConfig =
             wodleName === 'command'
-              ? { commands: result.map(item => item.command) }
+              ? { commands: result.map((item) => item.command) }
               : result[0]
         }
 

@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class Decoders extends Ruleset {
@@ -10,6 +10,9 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $restartService
+     * @param {*} $fileEditor
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -19,8 +22,8 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $tableFilterService,
       $csvRequestService,
       $restartService,
-      isAdmin,
-      $fileEditor
+      $fileEditor,
+      $security_service
     ) {
       super(
         $scope,
@@ -34,20 +37,35 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         $fileEditor
       )
       this.scope.typeFilter = 'all'
-      this.isAdmin = isAdmin
       this.restartService = $restartService
+
+      /* RBAC flags */
+      this.scope.canReadDecoders = $security_service.isAllowed(
+        'DECODERS_READ',
+        ['DECODER_FILE'],
+        ['*']
+      )
+      this.scope.canUpdateDecoders = $security_service.isAllowed(
+        'DECODERS_UPDATE',
+        ['RESOURCELESS']
+      )
+      this.scope.canUpdateDecoderFile = (filename) =>
+        $security_service.isAllowed(
+          'DECODERS_UPDATE',
+          ['DECODER_FILE'],
+          [filename]
+        )
     }
 
     /**
      * On controller load
      */
     $onInit() {
-      this.scope.adminMode = this.isAdmin
       this.scope.localFilter = false
       // Reloading event listener
       this.scope.$broadcast('wazuhSearch', { term: '', removeFilters: true })
       this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
-      this.scope.onlyParents = typeFilter => this.onlyParents(typeFilter)
+      this.scope.onlyParents = (typeFilter) => this.onlyParents(typeFilter)
       this.scope.addNewFile = () => this.addNewFile()
       this.scope.saveRuleConfig = (fileName, dir, overwrite) =>
         this.saveRuleConfig(fileName, dir, overwrite)
@@ -58,7 +76,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.closeRestartConfirmation = () =>
         this.closeRestartConfirmation()
 
-      this.scope.$on('loadedTable', event => {
+      this.scope.$on('loadedTable', (event) => {
         event.stopPropagation()
         try {
           if (window.localStorage.decoders) {
@@ -88,7 +106,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       } else {
         this.scope.onlyParentDecoders = true
         this.scope.$broadcast('wazuhUpdateInstancePath', {
-          path: '/decoders/parents'
+          path: '/decoders/parents',
         })
       }
     }
@@ -101,7 +119,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.addingNewFile = true
       this.scope.editingFile = {
         file: ``,
-        dir: `decoders`
+        dir: `etc/decoders`,
       }
       this.scope.fetchedXML = `<!-- Configure your local decoders here -->`
     }
@@ -126,7 +144,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
             this.scope.$broadcast('saveXmlFile', {
               file: fileName,
               dir,
-              overwrite
+              overwrite,
             })
           } else {
             throw new Error('The name cannot be ".xml"')

@@ -16,16 +16,14 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/visualizations/inputs/time-picker',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
   PieChart,
   Table,
-  TimePicker,
   Dropdown,
   RawTableDataService
 ) {
@@ -35,11 +33,16 @@ define([
     /**
      * Class constructor
      * @param {Object} $urlTokenModel
-     * @param {Object} $scope
      * @param {Object} $currentDataService
+     * @param {Object} $scope
      * @param {Object} $state
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} gdprTabs
+     * @param {*} reportingEnabled
+     * @param {*} pciExtensionEnabled
+     * @param {*} hipaaExtensionEnabled
+     * @param {*} nistExtensionEnabled
      */
 
     constructor(
@@ -53,14 +56,16 @@ define([
       reportingEnabled,
       pciExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled
+      nistExtensionEnabled,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.pciExtensionEnabled = pciExtensionEnabled
@@ -79,7 +84,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       if (
@@ -101,7 +106,7 @@ define([
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance) {
           $urlTokenModel.handleValueChange(this.dropdownInstance)
         }
@@ -163,7 +168,7 @@ define([
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -177,7 +182,7 @@ define([
           OS: this.agent.data.data.os.affected_items[0].name,
           dateAdd: this.agent.data.data.affected_items[0].dateAdd,
           lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
-          group: this.agent.data.data.affected_items[0].group.toString()
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -198,7 +203,7 @@ define([
             'rulesVizz',
             'agentsVizz',
             'requirementsByAgentVizz',
-            'alertsSummaryVizz'
+            'alertsSummaryVizz',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -216,13 +221,15 @@ define([
           : { error: true }
 
       // Capitalize Status
-      if(this.scope.agent && this.scope.agent.status){
-        this.scope.agent.status = this.scope.agent.status.charAt(0).toUpperCase() + this.scope.agent.status.slice(1)
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
       }
-      
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 

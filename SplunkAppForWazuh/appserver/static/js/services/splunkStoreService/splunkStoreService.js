@@ -1,6 +1,6 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$splunkStoreService', function($requestService) {
+  module.service('$splunkStoreService', function ($requestService) {
     /**
      * Obtains all APIs
      * @param {Object} id
@@ -21,7 +21,7 @@ define(['../module'], function(module) {
      * Select an API by ID
      * @param {Object} id
      */
-    const getApiById = async id => {
+    const getApiById = async (id) => {
       try {
         const { data } = await $requestService.httpReq(
           `GET`,
@@ -42,7 +42,7 @@ define(['../module'], function(module) {
      * Inserts an entry
      * @param {Object} payload
      */
-    const insert = async payload => {
+    const insert = async (payload) => {
       try {
         const { data } = await $requestService.httpReq(
           `POST`,
@@ -59,7 +59,7 @@ define(['../module'], function(module) {
      * DELETE method
      * @param {String} url
      */
-    const deletes = async key => {
+    const deletes = async (key) => {
       try {
         const { data } = await $requestService.httpReq(
           `DELETE`,
@@ -78,7 +78,7 @@ define(['../module'], function(module) {
      * @param {String} key
      * @param {Object} newRegister: The API to update
      */
-    const update = async newRegister => {
+    const update = async (newRegister) => {
       try {
         const { data } = await $requestService.httpReq(
           `PUT`,
@@ -96,7 +96,7 @@ define(['../module'], function(module) {
       getApiById: getApiById,
       insert: insert,
       delete: deletes,
-      update: update
+      update: update,
     }
     return methods
   })

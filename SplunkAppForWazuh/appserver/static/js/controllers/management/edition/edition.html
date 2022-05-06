@@ -1,19 +1,25 @@
 <!-- Breadcrumbs for nodes configuration -->
-<div class="wz-breadcrumb-margin" ng-if='!currentAgent' class="wz-full-width">
+<div class="wz-breadcrumb-margin" ng-if="!currentAgent" class="wz-full-width">
   <!-- Navigation section (Breadcrumbs, etc) -->
   <!-- Breadcrumbs -->
   <div>
     <!-- Welcome section -->
     <div ng-if="configurationTab === 'welcome'">
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / </span>
       <span>Configuration</span>
     </div>
     <!-- First-level section -->
     <div ng-if="configurationTab !== 'welcome'">
-      <span class="wz-text-link cursor-pointer" ui-sref="manager">Management</span>
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ui-sref="mg-conf">Configuration</span>
+      <span class="wz-text-link cursor-pointer" ui-sref="mg-conf"
+        >Configuration</span
+      >
     </div>
     <span flex class="flex"></span>
   </div>
@@ -22,94 +28,190 @@
 
 <div layout="row" layout-padding="" class="layout-padding layout-row">
   <span class="settings-edit-ossec font-size-21 text-black">
-    <svg class="euiIcon euiIcon--large" focusable="false" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="21" height="21" viewBox="0 0 16 16"><defs><path id="gear-a" d="M.164 10.329L1.87 8 .163 5.67c.18-.601.43-1.19.758-1.757a8.197 8.197 0 0 1 1.142-1.535l2.872.313L6.099.05a8.166 8.166 0 0 1 3.8-.003l1.166 2.644 2.872-.313a8.166 8.166 0 0 1 1.899 3.293L14.13 8l1.706 2.33c-.18.601-.43 1.19-.758 1.757a8.197 8.197 0 0 1-1.142 1.535l-2.872-.313-1.164 2.641a8.166 8.166 0 0 1-3.8.003l-1.166-2.644-2.872.313a8.166 8.166 0 0 1-1.899-3.293zm4.663 1.986a1 1 0 0 1 1.023.591l.957 2.17c.79.134 1.597.132 2.387-.001l.956-2.169a1 1 0 0 1 1.023-.59l2.358.256a7.23 7.23 0 0 0 1.194-2.068l-1.401-1.913a1 1 0 0 1 0-1.182l1.4-1.912a7.165 7.165 0 0 0-1.192-2.069l-2.359.257a1 1 0 0 1-1.023-.591L9.193.924a7.165 7.165 0 0 0-2.387.001L5.85 3.094a1 1 0 0 1-1.023.59l-2.358-.256a7.23 7.23 0 0 0-1.194 2.068l1.401 1.913a1 1 0 0 1 0 1.182l-1.4 1.912c.28.751.681 1.45 1.192 2.069l2.359-.257zM8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path></defs><use xlink:href="#gear-a"></use></svg>
+    <svg
+      class="euiIcon euiIcon--large"
+      focusable="false"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      width="21"
+      height="21"
+      viewBox="0 0 16 16">
+      <defs>
+        <path
+          id="gear-a"
+          d="M.164 10.329L1.87 8 .163 5.67c.18-.601.43-1.19.758-1.757a8.197 8.197 0 0 1 1.142-1.535l2.872.313L6.099.05a8.166 8.166 0 0 1 3.8-.003l1.166 2.644 2.872-.313a8.166 8.166 0 0 1 1.899 3.293L14.13 8l1.706 2.33c-.18.601-.43 1.19-.758 1.757a8.197 8.197 0 0 1-1.142 1.535l-2.872-.313-1.164 2.641a8.166 8.166 0 0 1-3.8.003l-1.166-2.644-2.872.313a8.166 8.166 0 0 1-1.899-3.293zm4.663 1.986a1 1 0 0 1 1.023.591l.957 2.17c.79.134 1.597.132 2.387-.001l.956-2.169a1 1 0 0 1 1.023-.59l2.358.256a7.23 7.23 0 0 0 1.194-2.068l-1.401-1.913a1 1 0 0 1 0-1.182l1.4-1.912a7.165 7.165 0 0 0-1.192-2.069l-2.359.257a1 1 0 0 1-1.023-.591L9.193.924a7.165 7.165 0 0 0-2.387.001L5.85 3.094a1 1 0 0 1-1.023.59l-2.358-.256a7.23 7.23 0 0 0-1.194 2.068l1.401 1.913a1 1 0 0 1 0 1.182l-1.4 1.912c.28.751.681 1.45 1.192 2.069l2.359-.257zM8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+      </defs>
+      <use xlink:href="#gear-a"></use>
+    </svg>
   </span>
-  <span ng-if="!clusterEnabled" class="font-size-21 text-black"> Manager configuration</span>
-  <span ng-if="clusterEnabled" class="font-size-21 text-black"> Cluster configuration</span>
+  <span ng-if="!clusterEnabled" class="font-size-21 text-black">
+    Manager configuration</span
+  >
+  <span ng-if="clusterEnabled" class="font-size-21 text-black">
+    Cluster configuration</span
+  >
 </div>
 <!-- XML editor for ossec.conf -->
 <div ng-show="editingNode">
   <div layout="row" class="wz-margin-left-10">
-    <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
-      ng-change="changeNode(selectedNode.name)" style="margin:0 5px;" ng-if="isAdmin && clusterEnabled"
+    <select
+      ng-options="n.name for n in nodes"
+      ng-model="selectedNode"
+      ng-init="selectedNode=nodes[0]"
+      ng-change="changeNode(selectedNode.name)"
+      style="margin: 0 5px"
+      ng-if="clusterEnabled && canReadClusterNode('*')"
       class="input input-dropdown wz-button-empty"></select>
-    <button class="md-icon-button cursor-pointer" ng-if="!isAdmin" aria-label="Back" ng-click="goBackFiles()"><i
-        class="fa fa-fw fa-close" aria-hidden="true"></i>
-      <md-tooltip md-direction="bottom" class="wz-tooltip">Close file</md-tooltip>
+    <button
+      style="height: 30px"
+      ui-sref="mg-conf"
+      class="edit-cancel-button wz-margin-left-10">
+      Close file
     </button>
-    <button style="height: 30px;" ng-if="isAdmin" ui-sref="mg-conf"
-      class='edit-cancel-button wz-margin-left-10'>Cancel</button>
-    <button style="height: 30px;" ng-if="isAdmin" ng-disabled='xmlHasErrors || saveIncomplete || restartInProgress || wazuhNotReadyYet'
-      ng-click='saveOssecConfig()' class='btn wz-button-empty pull-right wz-margin-left-10'>
-      <span ng-show='!xmlHasErrors && isAdmin'>
-        <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-          aria-hidden='true'></i>
-        Save</span>
-      <span ng-show='xmlHasErrors && isAdmin' class='btn-danger'><i aria-hidden='true'
-          class='fa fa-fw fa-exclamation-triangle'></i>
-        XML format error</span>
+    <button
+      style="height: 30px"
+      ng-if="(
+        (clusterEnabled && canUpdateClusterConfigOnNode(editingNode)) || 
+        (!clusterEnabled && canUpdateManagerConfig)
+      )"
+      ng-disabled="xmlHasErrors || saveIncomplete || restartInProgress || wazuhNotReadyYet"
+      ng-click="saveOssecConfig()"
+      class="btn wz-button-empty pull-right wz-margin-left-10">
+      <span
+        ng-show="!xmlHasErrors && (
+          (clusterEnabled && canUpdateClusterConfigOnNode(editingNode)) || 
+          (!clusterEnabled && canUpdateManagerConfig)
+        )">
+        <i
+          ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+          aria-hidden="true"></i>
+        Save</span
+      >
+      <span ng-show="xmlHasErrors" class="btn-danger"
+        ><i aria-hidden="true" class="fa fa-fw fa-exclamation-triangle"></i> XML
+        format error</span
+      >
     </button>
     <span class="flex"></span>
 
     <!-- Restart button -->
-    <div style="padding-right: 15px;">
+    <div style="padding-right: 15px">
       <div ng-show="!confirmingRestart">
-        <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="switchRestart()"
-          ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet" class='btn wz-button pull-right'>
-          <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
-            aria-hidden='true'></i>Restart
-            {{editingNode}}</span>
+        <button
+          style="height: 30px"
+          ng-if="canRestartManager"
+          ng-show="!clusterEnabled"
+          ng-click="switchRestart()"
+          ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet"
+          class="btn wz-button pull-right">
+          <span
+            ><i
+              ng-class="{
+                'fa fa-fw fa-spin fa-spinner': restartInProgress, 
+                'fa fa-fw fa-refresh': !restartInProgress
+              }"
+              aria-hidden="true"></i
+            >Restart {{editingNode}}</span
+          >
         </button>
-        <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="switchRestart()"
-          ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet" class='btn wz-button pull-right'>
-          <span ng-show='isAdmin'><i ng-class="{'fa fa-fw fa-spin fa-spinner': restartInProgress, 'fa fa-fw fa-refresh': !restartInProgress}"
-            aria-hidden='true'></i>Restart
-            {{editingNode}}</span>
+        <button
+          style="height: 30px"
+          ng-if="canRestartClusterNode(editingNode)"
+          ng-show="clusterEnabled"
+          ng-click="switchRestart()"
+          ng-disabled="restartInProgress || saveIncomplete || wazuhNotReadyYet"
+          class="btn wz-button pull-right">
+          <span
+            ><i
+              ng-class="{
+                'fa fa-fw fa-spin fa-spinner': restartInProgress, 
+                'fa fa-fw fa-refresh': !restartInProgress
+              }"
+              aria-hidden="true"></i
+            >Restart {{editingNode}}</span
+          >
         </button>
       </div>
       <div ng-show="confirmingRestart">
-        <span class="node-will-be-restarted" style="padding-top: 8px;"><b>{{editingNode}}</b> will be restarted</span>
-        <button style="height: 30px;" ng-if="isAdmin" ng-click="switchRestart()"
-          class='edit-cancel-button wz-margin-left-10'>
-          <span ng-show='isAdmin'><i aria-hidden='true' class='wz-margin-left-10'></i>Cancel</span>
+        <span class="node-will-be-restarted" style="padding-top: 8px"
+          ><b>{{editingNode}}</b> will be restarted</span
+        >
+        <button
+          style="height: 30px"
+          ng-click="switchRestart()"
+          class="edit-cancel-button wz-margin-left-10">
+          <span
+            ><i aria-hidden="true" class="wz-margin-left-10"></i>Cancel</span
+          >
         </button>
-        <button style="height: 30px;" ng-if="isAdmin && !clusterEnabled" ng-click="restart(); switchRestart()"
-          class='btn wz-button wz-margin-left-10'>
-          <span class="wz-margin-left--10" ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+        <button
+          style="height: 30px"
+          ng-if="!clusterEnabled && canRestartManager"
+          ng-click="restart(); switchRestart()"
+          class="btn wz-button wz-margin-left-10">
+          <span class="wz-margin-left--10"
+            ><i
+              aria-hidden="true"
+              class="fa fa-fw fa-check wz-margin-left-10"></i
+            >Confirm</span
+          >
         </button>
-        <button style="height: 30px;" ng-if="isAdmin && clusterEnabled" ng-click="restart(editingNode); switchRestart()"
-          class='btn wz-button wz-margin-left-10'>
-          <span class="wz-margin-left--10" ng-show='isAdmin'><i aria-hidden='true' class='fa fa-fw fa-check wz-margin-left-10'></i>Confirm</span>
+        <button
+          style="height: 30px"
+          ng-if="clusterEnabled && canRestartClusterNode(editingNode)"
+          ng-click="restart(editingNode); switchRestart()"
+          class="btn wz-button wz-margin-left-10">
+          <span class="wz-margin-left--10"
+            ><i
+              aria-hidden="true"
+              class="fa fa-fw fa-check wz-margin-left-10"></i
+            >Confirm</span
+          >
         </button>
       </div>
     </div>
     <!-- End restart button -->
-
   </div>
 
   <div class="md-padding md-padding-top-10" ng-if="fetchedXML">
-    <wz-xml-file-editor style="height: inherit;" file-name='ossec.conf' data="fetchedXML" target-name="editingNode"
-      valid-fn='xmlIsValid(valid)'>
-      <select ng-options="n.name for n in nodes" ng-model="selectedNode" ng-init="selectedNode=nodes[0]"
-        ng-change="changeNode(selectedNode.name)" style="margin-left:5px;" ng-if="isAdmin && clusterEnabled"
+    <wz-xml-file-editor
+      style="height: inherit"
+      file-name="ossec.conf"
+      data="fetchedXML"
+      target-name="editingNode"
+      valid-fn="xmlIsValid(valid)">
+      <select
+        ng-options="n.name for n in nodes"
+        ng-model="selectedNode"
+        ng-init="selectedNode=nodes[0]"
+        ng-change="changeNode(selectedNode.name)"
+        style="margin-left: 5px"
+        ng-if="clusterEnabled"
         class="input input-dropdown wz-button-empty"></select>
 
-      <button style="height: 30px;" ng-if="isAdmin" ng-show="!clusterEnabled" ng-click="restart()"
-        ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><wz-svg icon="refresh"></wz-svg></i>Restart {{editingNode}}</span>
+      <button
+        style="height: 30px"
+        ng-if="!clusterEnabled && canRestartManager"
+        ng-click="restart()"
+        ng-disabled="restartInProgress"
+        class="btn wz-button-empty pull-right wz-margin-left-10">
+        <span> <wz-svg icon="refresh"></wz-svg>Restart {{editingNode}} </span>
       </button>
-      <button style="height: 30px;" ng-if="isAdmin" ng-show="clusterEnabled" ng-click="restart(editingNode)"
-        ng-disabled="restartInProgress" class='btn wz-button-empty pull-right wz-margin-left-10'>
-        <span ng-show='isAdmin'><wz-svg icon="refresh"></wz-svg></i>Restart {{editingNode}}</span>
+      <button
+        style="height: 30px"
+        ng-if="clusterEnabled && canRestartClusterNode(editingNode)"
+        ng-click="restart(editingNode)"
+        ng-disabled="restartInProgress"
+        class="btn wz-button-empty pull-right wz-margin-left-10">
+        <span> <wz-svg icon="refresh"></wz-svg>Restart {{editingNode}} </span>
       </button>
-
+    </wz-xml-file-editor>
   </div>
-</div>
 
+  <div
+    layout="row"
+    class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8"
+    ng-show="clusterError && !load"></div>
 
-<div layout="row" class="wz-margin-top-10 wz-margin-right-8 wz-margin-left-8" ng-show="clusterError && !load">
-</div>
-
-<!-- End last registered agent section -->
-
+  <!-- End last registered agent section -->
 </div>

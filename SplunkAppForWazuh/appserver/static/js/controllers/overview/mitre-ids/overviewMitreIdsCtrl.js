@@ -12,25 +12,26 @@
  */
 define([
   '../../module',
-  './lib/mitre-techniques',
   './lib/discover-search-helper',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/time-picker',
   'FileSaver',
-], function (app, mitre_techniques, SearchHelper, Table, TimePicker) {
+], function (app, SearchHelper, Table, TimePicker) {
   'use strict'
 
   class OverviewMitreIds {
     /**
      * Class constructor
-     * @param {Object} $urlTokenModel
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} $state
      * @param {Object} $notificationService
      * @param {Object} $requestService
-     * @param {Object} agentData
-     * @param {*} $reportingService
+     * @param {Object} mitre_tactics
+     * @param {*} $mdDialog
+     * @param {*} $dateDiffService
+     * @param {*} $urlTokenModel
+     * @param {*} extensions
      */
 
     constructor(
@@ -40,6 +41,7 @@ define([
       $notificationService,
       $requestService,
       mitre_tactics,
+      mitre_techniques,
       $mdDialog,
       $dateDiffService,
       $urlTokenModel,
@@ -51,16 +53,28 @@ define([
         `{"rule.mitre.id{}":"*", "implicit":true, "onlyShow":true}`
       )
       this.modalOpen = false
-      this.modalInitialized = false
       this.api = this.currentDataService.getApi()
       this.apiReq = $requestService.apiReq
       this.state = $state
       this.scope.extensions = extensions
       this.notification = $notificationService
-      this.currentClusterInfo = this.currentDataService.getClusterInfo()
       this.filters = this.currentDataService.getSerializedFilters(false)
-      this.mitre_tactics = mitre_tactics
-      this.mitre_techniques = mitre_techniques
+      this.scope.tactics = mitre_tactics.map(
+        tactic => {
+          return {
+            name: tactic.name,
+            count: 0
+          } 
+        })
+      this.scope.techniques = mitre_techniques.map(
+        technique => {
+          return {
+            ...technique,
+            count: 0
+          } 
+        })
+      this.scope.sortedTactics = this.scope.tactics
+      this.scope.sortedTechniques = this.scope.techniques
       this.$mdDialog = $mdDialog
       this.urlTokenModel = $urlTokenModel
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
@@ -77,18 +91,19 @@ define([
         ) {
           this.urlTokenModel.set({ earliest: '0', latest: '' })
         }
-        this.timePicker = new TimePicker(
-          '#timePicker',
-          this.reloadFilters
-        )
+        this.timePicker = new TimePicker('#timePicker', (e) => {
+          if (!this.modalOpen){     
+            this.reloadFilters(e)
+          }
+        })
         if (
           !this.urlTokenModel.has('form.when.earliest') &&
           !this.urlTokenModel.has('form.when.latest')
         ) {
-          this.urlTokenModel.set({ 'form.when.earliest': '0', 'form.when.latest': '' })
-        }
-        if (this.clusterInfo && this.clusterInfo.status === 'enabled') {
-          this.scope.searchBarModel.node_name = nodes || []
+          this.urlTokenModel.set({
+            'form.when.earliest': '0',
+            'form.when.latest': '',
+          })
         }
       } catch (error) {
         console.error(error)
@@ -96,92 +111,161 @@ define([
 
       this.scope.$applyAsync()
     }
+
+    /**
+     * Parse the results of the MITRE Tactics Search on the index.
+     * 
+     * For each result (row), transform the array into a named object in order
+     * to be able to merge the arrays of found tactics and general tactics.
+     * 
+     * @param {Array} rows array of arrays. Each subarray contains a pair of 
+     * string elements which are the MITRE_TACTIC_NAME and the COUNT.
+     * 
+     * Example:
+     *  - rows: [ ["Defense Evasion", "1"] ]
+     * 
+     *   This is transformed to: { name: 'Defense Evasion', count: '1' }
+     *   And this is later on merge with the rest of the MITRE Tactics stored
+     *   on this.scope.tactics, which count is set to 0 by default.
+     */
     onDataTactics(rows) {
-      rows.forEach(row => {
-        this.scope.tactics[row[0]] = parseInt(row[1])
+      let foundTactics = []
+      rows.forEach((row) => {
+        let [name, count] = row 
+        foundTactics.push({
+          name,
+          count,
+        })
       })
-      this.scope.sortedTactics = Object.entries(this.scope.tactics).sort((a, b) => {
-        return (b[1] || 0) - (a[1] || 0)
-      })
+
+      // Merge the foundTactics and sortedTactics arrays without duplicates (by name).
+      let foundTacticsNames = new Set(foundTactics.map((tactic) => tactic.name))
+      this.scope.sortedTactics = [
+        ...foundTactics,
+        ...this.scope.tactics.filter(
+          (tactic) => !foundTacticsNames.has(tactic.name)
+        ),
+      ]
+
       this.scope.$applyAsync()
     }
 
+    /**
+     * Parse the results of the MITRE Techniques Search on the index.
+     * 
+     * For each result (row), transform the array into a named object in order
+     * to be able to map the arrays of found techniques and general tecnhiques.
+     * 
+     * @param {Array} rows array of arrays. Each subarray contains a pair of 
+     * string elements which are the MITRE_TECHNIQUE_NAME and the COUNT.
+     * 
+     * Example:
+     *  - rows: [ ["T1562.001", "1"] ]
+     * 
+     *   This is transformed to: { name: 'T1562.001', count: '1' }
+     *   And this is later on merge with the rest of the MITRE Techniques stored
+     *   on this.scope.techniques, which count is set to 0 by default.
+     */
     onDataTechniques(rows) {
-      rows.forEach(row => {
-        this.scope.techniques[row[0]].count = parseInt(row[1])
+      let foundTechniques = []
+      rows.forEach((row) => {
+        let [external_id, count] = row
+        foundTechniques.push({
+          external_id,
+          count,
+        })
       })
-      this.scope.sortedTechniques = Object.entries(this.scope.techniques).sort((a, b) => {
-        return (b[1].count || 0) - (a[1].count || 0)
+
+      // Make a copy of the techniques, look for found techniques 
+      // and update its count accordingly.
+      const techniques = this.scope.techniques.map((technique) => {
+        for (const techniqueFound of foundTechniques) {
+          if (technique.external_id === techniqueFound.external_id) {
+            return { name: technique.name, ...techniqueFound }
+          }
+        }
+        return technique
       })
+      // Sort by count
+      this.scope.sortedTechniques = techniques.sort((a, b) => b.count - a.count)
+
       this.scope.$applyAsync()
     }
+
+    /**
+     * Clean modal table.
+     */
     cleanModalTable() {
-      this.vizz.forEach(vizz => {
+      this.vizz.forEach((vizz) => {
+        // eslint-disable-next-line no-undef
         angular.element(vizz.element.el).empty()
         vizz.destroy()
       })
       this.vizz = []
     }
 
+    /**
+     * Load modal.
+     */
     loadModalEventsTable() {
-      if (!this.scope.loadingModalData || !this.modalInitialized) {
-        this.scope.loadingModalData = true
+      this.scope.loadingModalData = true
+      this.cleanModalTable()
+      const table = new Table(
+        'mitre-technique-details-vizz',
+        `index=wazuh ${this.filters} \
+        sourcetype=wazuh rule.mitre.id{}=${this.scope.selectedItem.external_id} \
+        | stats count by rule.id, rule.description, rule.level \
+        | sort count DESC  \
+        | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+        'mitre-technique-details-vizz',
+        this.scope
+      )
+      table.search.on('search:done', () => {
+        this.scope.loadingModalData = false
         this.scope.$applyAsync()
-        this.cleanModalTable()
-        const table = new Table(
-          'mitre-technique-details-vizz',
-          `index=wazuh ${this.filters} sourcetype=wazuh rule.mitre.id{}=${this.scope.selectedItem[0]} | stats count by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
-          'mitre-technique-details-vizz',
-          this.scope
-        )
-        table.search.on('search:done', () => {
-          this.scope.loadingModalData = false
-          if(this.modalOpen)
-            this.modalInitialized = true
-          this.scope.$applyAsync()
-        })
-        this.vizz.push(
-          table
-        )
-      }
+      })
+      this.vizz.push(table)
     }
-    
+
     /**
      * Load Main Tactics and Techniques
      */
     loadTacticsTechniques(earliest_time, latest_time) {
       this.scope.loadingVizz = true
-      this.scope.tactics = Object.assign({}, this.mitre_tactics)
-      this.scope.sortedTactics = Object.entries(this.scope.tactics)
-      this.scope.techniques = Object.assign({}, this.mitre_techniques)
-      for (let id in this.scope.techniques)
-        this.scope.techniques[id].count = 0
-      if (typeof earliest_time == 'undefined' && typeof latest_time == 'undefined') {
+      if (
+        typeof earliest_time == 'undefined' &&
+        typeof latest_time == 'undefined'
+      ) {
         earliest_time = this.urlTokenModel.get('form.when.earliest')
         latest_time = this.urlTokenModel.get('form.when.latest')
       }
-      this.scope.sortedTechniques = Object.entries(this.scope.techniques)
+      // reset count values in case there are no results (onData doesn't trigger)
+      this.scope.sortedTactics = this.scope.tactics
       this.tacticsSearch = new SearchHelper({
         id: 'tacticsCount',
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.tactic{} | sort - count`,
         onData: this.onDataTactics,
         scope: this.scope,
         earliest_time,
-        latest_time
+        latest_time,
       })
-
+      // reset count values in case there are no results (onData doesn't trigger)
+      this.scope.sortedTechniques = this.scope.techniques
       this.techniquesSearch = new SearchHelper({
         id: 'techniquesCount',
         search: `index=wazuh ${this.filters} rule.mitre.id{}=* | stats count by rule.mitre.id{} | sort - count`,
         onData: this.onDataTechniques,
         scope: this.scope,
         earliest_time,
-        latest_time
+        latest_time,
       })
     }
 
     reloadFilters(input) {
-      const { earliest_time, latest_time } = typeof input == 'object' ? input.settings.attributes : this.timePicker.input.settings.attributes
+      const { earliest_time, latest_time } =
+        typeof input == 'object'
+          ? input.settings.attributes
+          : this.timePicker.input.settings.attributes
 
       this.filters = this.currentDataService.getSerializedFilters(false)
       this.destroy()
@@ -190,6 +274,7 @@ define([
         this.loadModalEventsTable()
       }
     }
+
     /**
      * On controller loads
      */
@@ -197,10 +282,10 @@ define([
       this.scope.addingAgents = false
       this.scope.hideEmptyRows = false
       this.scope.query = (query, search) => this.query(query, search)
-      this.scope.showAgent = agent => this.showAgent(agent)
+      this.scope.showAgent = (agent) => this.showAgent(agent)
       this.scope.goToDashboard = () => this.goToDashboard()
-      this.scope.loadRegistryValueDetails = item => this.loadRegistryValueDetails(item)
-      this.scope.isClusterEnabled = this.clusterInfo && this.clusterInfo.status === 'enabled'
+      this.scope.loadRegistryValueDetails = (item) =>
+        this.loadRegistryValueDetails(item)
       this.scope.status = 'all'
       this.scope.osPlatform = 'all'
       this.scope.version = 'all'
@@ -216,14 +301,14 @@ define([
       this.loadTacticsTechniques()
 
       // Listeners
-      this.scope.$on('deletedFilter', event => {
+      this.scope.$on('deletedFilter', (event) => {
         event.stopPropagation()
         this.reloadFilters()
       })
 
-      this.scope.$on('barFilter', event => {
+      this.scope.$on('barFilter', (event) => {
         event.stopPropagation()
-        event.currentScope.custom_search = ""
+        event.currentScope.custom_search = ''
         this.reloadFilters()
       })
       this.scope.offsetTimestamp = (text, time) => {
@@ -240,98 +325,208 @@ define([
       this.techniquesSearch.destroy()
     }
 
-    loadRegistryValueDetails = async (item) => {
-      //display loading spinner while information is loading
-      this.scope.loadingModalData = true
+    /**
+     * Get a MITRE technique information by ID.
+     * @param {String} id valid MITRE technique ID (required).
+     * @returns an object with the MITRE technique information.
+     */
+    async getTechniqueById(id) {
+      if (!id) {
+        throw new Error('No MITRE tecnhinque provided')
+      }
 
+      const fields = [
+        'name',
+        'mitre_version',
+        'tactics',
+        'description',
+        'url',
+        'external_id',
+      ].join()
+
+      const request = await this.apiReq(`/mitre/techniques?select=${fields}`, {
+        q: `external_id=${id}`,
+      })
+
+      this.handleRequestError(
+        request,
+        'No MITRE techniques information was returned'
+      )
+
+      return request.data.data.affected_items[0]
+    }
+
+    /**
+     * Get a MITRE tactic information by ID.
+     * @param {String} id comma separated MITRE tactic IDs (required).
+     * @returns an array of objects with the MITRE tactic information.
+     */
+    async getTacticsById(tactics_ids) {
+      if (!tactics_ids) {
+        console.info('No MITRE tactic provided')
+        return []
+      }
+
+      const fields = [
+        'name',
+        'url',
+        'external_id',
+        // 'id'
+      ].join()
+
+      const request = await this.apiReq(`/mitre/tactics?select=${fields}`, {
+        tactic_ids: tactics_ids,
+      })
+
+      this.handleRequestError(
+        request,
+        'No MITRE tactics information was returned'
+      )
+
+      return request.data.data.affected_items
+    }
+
+    /**
+     * Check the given request's response for errors.
+     *
+     * Throws Error if the response is invalid, due to the following criteria:
+     *   - The request fails:
+     *        the response object has a truthly property named `error`.
+     *   - The request returns no data:
+     *        the previous condition does not happen but the response hasn't
+     *        returned the expected informantion (total_affected_items = 0).
+     *
+     * @param {Object} response the request's response object.
+     * @param {String} errorMessage (optional) the error message to build the
+     *  Error object, if no error message is found in the response object.
+     */
+    handleRequestError(response, errorMessage = 'No information was returned') {
+      if (response?.data?.error) {
+        throw new Error(response.data?.message || '404 Not Found')
+      }
+      if (response.data.data.total_affected_items === 0) {
+        throw new Error(response.data.data.message || errorMessage)
+      }
+    }
+
+    loadRegistryValueDetails = async (item) => {
       this.scope.selectedItem = item
       this.scope.$applyAsync()
 
       try {
-        const newRequestMitre = await this.apiReq(`/mitre`, { q: `id=${this.scope.selectedItem[0]}` })
-        const mitreData = newRequestMitre.data.data.affected_items[0]
+        const {external_id, name} = this.scope.selectedItem
+        const mitreTecnhique = await this.getTechniqueById(external_id)
+        const mitreTecnhiqueTactics = await this.getTacticsById(
+          // Generate a comma separated string.
+          mitreTecnhique.tactics.join()
+        )
+        this.scope.selectedTechniqueTactics = []
+        if (mitreTecnhiqueTactics.length > 0) {
+          this.scope.selectedTechniqueTactics = mitreTecnhiqueTactics
+        }
+
+        // eslint-disable-next-line no-undef
         var parentEl = angular.element(document.body)
         const ParentCtrl = this
-
 
         this.$mdDialog.show({
           parent: parentEl,
           scope: this.scope,
           preserveScope: true,
-          template:
-          `<md-dialog aria-label="List dialog" style="min-height:80%;max-width: 75%;">
-            <h3 class="wz-headline-title boldText">Technique ${this.scope.selectedItem[1].name}</h3>
-            <md-divider class="wz-margin-top-10"></md-divider>
-            <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
-              <div class="modalFlexData">            
-                <p><b>Id: </b>${mitreData.id}</p>  
-                <p><b>Tactic: </b>${mitreData.phase_name}</p>
-              </div>
-              <div class="modalFlexData">
-                <p><b>Platform: </b>${mitreData.platform_name}</p>  
-                <p><b>Version: </b>${mitreData.json.x_mitre_version}</p>
-              </div>
-              
-              <p><b>Data sources: </b>${mitreData.json.x_mitre_data_sources}</p>
-            
-              <p><b>Description: </b>${mitreData.json.description}</p>
-                <h6 class="wz-headline-title">Events</h6>
-                <div class="pos-rel">
-                  <md-divider class="wz-margin-top-10"></md-divider>
-                  <div>
-                    <div style="display:flex;" >
-                      <wazuh-bar flex></wazuh-bar>
-                      <div style="flex:0" id='timePickerModal'></div>
+          template: `
+            <md-dialog aria-label="List dialog" style="min-height:80%;max-width: 75%;">
+                <h3 class="wz-headline-title boldText">Technique ${name}</h3>
+                <md-divider class="wz-margin-top-10"></md-divider>
+                <md-dialog-content class="_md flex wazuh-column wz-margin-top-10">
+                    <div class="modalFlexData wz-margin-20">
+                        <span>
+                            <dt>ID</dt>
+                            <dd>${mitreTecnhique?.external_id || 'N/A'}</dd>
+                        </span>
+                        <span>
+                            <dt>Version</dt>
+                            <dd>${mitreTecnhique?.mitre_version || 'N/A'}</dd>
+                        </span>
+                        <span>
+                            <dt>Data sources</dt>
+                            <dd>
+                                <a href="${mitreTecnhique?.url}" target="_blank">
+                                    ${mitreTecnhique?.url}
+                                </a>
+                            </dd>
+                        </span>
                     </div>
-                  </div>
-                  <md-divider class="wz-margin-top-10"></md-divider>
-                  <div class="pos-rel" id='mitre-technique-details-vizz'></div>               
-                </div>
-            
-            
-            
-              <div ng-show="loadingModalData" class="wz-bg-loader">
-                <div class="wz-loader">
-                  <div align='center'> Fetching data...<br /><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i></div>
-                </div>
-              </div>
-            
-            
-            </md-dialog-content>
-            <md-dialog-actions>
-              <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
-                Close
-              </md-button>
-            </md-dialog-actions>
-          </md-dialog>`,
+
+                    <div class="wz-margin-20">
+                        <dt>Tactics</dt>
+                        <dd ng-repeat="tactic in selectedTechniqueTactics">
+                            <a href="{{ tactic.url }}" target="_blank">
+                              {{ tactic.name }}
+                            </a>
+                        </dd>
+                    </div>
+
+                    <div class="wz-margin-20">
+                        <dt>Description</dt>
+                        <dd>${mitreTecnhique?.description || 'No description was returned.'}</dd>
+                    </div>
+
+                    <h6 class="wz-headline-title">Events</h6>
+                    <div class="pos-rel">
+                        <md-divider class="wz-margin-top-10"></md-divider>
+                        <div>
+                            <div style="display:flex;" >
+                                <wazuh-bar flex></wazuh-bar>
+                                <div style="flex:0" id='timePickerModal'></div>
+                            </div>
+                        </div>
+                        <md-divider class="wz-margin-top-10"></md-divider>
+                        <div class="pos-rel" id='mitre-technique-details-vizz'></div>
+                    </div>
+
+                    <div ng-show="loadingModalData" class="wz-bg-loader">
+                        <div class="wz-loader">
+                            <div align='center'> Fetching data...<br />
+                            <i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                </md-dialog-content>
+                <md-dialog-actions>
+                    <md-button onclick="closeDialog()" class="splButton-primary">
+                        Close
+                    </md-button>
+                </md-dialog-actions>
+            </md-dialog>
+          `,
           locals: {
             items: this.scope.selectedItem,
-            loadingModalData: this.scope.loadingModalData
+            loadingModalData: this.scope.loadingModalData,
           },
-          onComplete: () => {           
+          onComplete: () => {
             this.timePicker = new TimePicker(
               '#timePickerModal',
               this.reloadFilters
             )
             this.modalOpen = true
           },
-          controller: DialogController,
-          controllerAs: 'ctrl'
+          controller: ($mdDialog, $scope) => {
+            this.$scope = $scope
+            window.closeDialog = () => {
+              ParentCtrl.modalOpen = false
+              ParentCtrl.cleanModalTable()
+              $mdDialog.hide()
+              this.timePicker.destroy()
+              delete window.closeDialog
+            }
+          },
+          controllerAs: 'ctrl',
         })
-        function DialogController($mdDialog, $scope) {
-
-          this.$scope = $scope
-          this.closeDialog = () => {
-            ParentCtrl.modalOpen = false
-            ParentCtrl.modalInitialized = false
-            ParentCtrl.cleanModalTable()
-            $mdDialog.hide()
-          }
-        }
 
         this.scope.$applyAsync()
-
       } catch (err) {
+        this.notification.showErrorToast(err.message || String(err))
         console.error(err)
       }
     }
@@ -339,8 +534,8 @@ define([
     /**
      * Link to Mitre Dashboard
      */
-    goToDashboard(){
-      this.state.go('ow-mitre', { })
+    goToDashboard() {
+      this.state.go('ow-mitre', {})
     }
   }
   app.controller('overviewMitreIdsCtrl', OverviewMitreIds)

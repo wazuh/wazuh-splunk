@@ -1,72 +1,70 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-
-  const checkAdmin = async $currentDataService => {
-    try {
-      return await $currentDataService.isAdmin()
-    } catch (error) {
-      return false
-    }
-  }
 
   module.config([
     '$stateProvider',
     'BASE_URL',
-    function($stateProvider, BASE_URL) {
+    function ($stateProvider, BASE_URL) {
       $stateProvider
         // Manager
         .state('manager', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/welcome/manager-welcome.html',
-            onEnter: () => {
-              window.sessionStorage.showLogtest = false
-            }
+          onEnter: () => {
+            window.sessionStorage.showLogtest = false
+          },
         })
         // Manager - Monitoring
         .state('mg-monitoring', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/monitoring/monitoring.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-monitoring')
           },
           controller: 'monitoringCtrl',
           params: { id: null, filters: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
             monitoringInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
-                  const checkCluster = await $requestService.apiReq('/cluster/status');
-                  let result = {};
-                   if(checkCluster['data']['data'].enabled === 'no'){
+                  const checkCluster = await $requestService.apiReq(
+                    '/cluster/status'
+                  )
+                  let result = {}
+                  if (checkCluster['data']['data'].enabled === 'no') {
                     result = await Promise.all([
                       checkCluster,
                       false,
                       false,
                       $requestService.apiReq('/'),
                       $requestService.apiReq('/agents', { limit: 1 }),
-                      false
+                      false,
                     ])
-                   }
-                   else
-                      result = await Promise.all([
-                       checkCluster,
-                       $requestService.apiReq('/cluster/nodes'),
-                       $requestService.apiReq('/cluster/local/config'),
-                       $requestService.apiReq('/'),
-                       $requestService.apiReq('/agents', { limit: 1 }),
-                       $requestService.apiReq('/cluster/healthcheck')
-                     ])
+                  } else
+                    result = await Promise.all([
+                      checkCluster,
+                      $requestService.apiReq('/cluster/nodes'),
+                      $requestService.apiReq('/cluster/local/config'),
+                      $requestService.apiReq('/'),
+                      $requestService.apiReq('/agents', { limit: 1 }),
+                      $requestService.apiReq('/cluster/healthcheck'),
+                    ])
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return [false, false, false, false, false, false]
                 }
-              }
-            ]
-          }
+              },
+            ],
+          },
         })
 
         // Manager - rules
@@ -74,57 +72,68 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/logs/manager-logs.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-logs')
           },
           controller: 'managerLogsCtrl',
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
             logs: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const result = await $requestService.apiReq(
                     '/manager/logs/summary'
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
-              }
-            ]
-          }
+              },
+            ],
+          },
         })
         // Manager - Ruleset
         .state('mg-rules', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/rules/manager-ruleset.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-rules')
           },
           controller: 'managerRulesetCtrl',
           params: { filters: null },
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
-          }
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
+          },
         })
         // Manager - Ruleset/:id
         .state('mg-rules-id', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/rules/manager-ruleset-id.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-rules')
           },
           controller: 'managerRulesetIdCtrl',
           params: { id: null, filters: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
             ruleInfo: [
               '$requestService',
               '$stateParams',
@@ -136,58 +145,58 @@ define(['../module'], function(module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  $state.go('settings.api') //TODO: this could be improved displaying a prompt instead of going to `settings.api`
                 }
-              }
+              },
             ],
             extensions: [
               '$currentDataService',
-              async $currentDataService => {
+              async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
-              }
+              },
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
-          }
+          },
         })
         // Manager - Decoders
         .state('mg-decoders', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-decoders')
           },
           controller: 'managerDecodersCtrl',
           params: { filters: null },
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
-          }
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
+          },
         })
         // Manager - Decoders/:id
         .state('mg-decoders-id', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/decoders/manager-decoders-id.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-decoders')
           },
           controller: 'managerDecodersIdCtrl',
           params: { id: null, name: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
             currentDecoder: [
               '$requestService',
               '$stateParams',
@@ -199,27 +208,21 @@ define(['../module'], function(module) {
                   )
                   return result
                 } catch (err) {
-                  $state.go('settings.api')
+                  $state.go('settings.api') //TODO: this could be improved displaying a prompt instead of going to `settings.api`
                 }
-              }
+              },
             ],
             extensions: [
               '$currentDataService',
-              async $currentDataService => {
+              async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
-              }
+              },
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
-          }
+          },
         })
 
         // Manager - CDB List
@@ -227,19 +230,19 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-cdb')
           },
           controller: 'managerCdbCtrl',
           params: { filters: null },
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
-          }
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
+          },
         })
 
         // Manager - CDB List/:id
@@ -247,17 +250,17 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/cdb/manager-cdb-id.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-cdb')
           },
           controller: 'managerCdbIdCtrl',
           params: { name: null, path: null },
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
             ],
             cdbInfo: [
               '$cdbEditor',
@@ -272,14 +275,14 @@ define(['../module'], function(module) {
                   return {
                     file: $stateParams.name,
                     path: $stateParams.path,
-                    content: result
+                    content: result,
                   }
                 } catch (error) {
-                  $state.go('settings.api')
+                  $state.go('settings.api') //TODO: this could be improved displaying a prompt instead of going to `settings.api`
                 }
-              }
-            ]
-          }
+              },
+            ],
+          },
         })
 
         // Manager - Groups
@@ -287,29 +290,29 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/groups/groups.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-groups')
           },
           controller: 'groupsCtrl',
           params: { group: null },
           resolve: {
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
+            ],
             extensions: [
               '$currentDataService',
-              async $currentDataService => {
+              async ($currentDataService) => {
                 try {
                   return await $currentDataService.getCurrentExtensions()
                 } catch (err) {
                   return false
                 }
-              }
+              },
             ],
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
-            ]
-          }
+          },
         })
 
         // Manager - Configuration
@@ -317,21 +320,20 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/configuration/both-configuration.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-conf')
           },
           controller: 'configurationCtrl',
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
             ],
             clusterInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const info = {}
                   const clusterStatus = await $requestService.apiReq(
@@ -346,7 +348,7 @@ define(['../module'], function(module) {
                     )
                     Object.assign(info, {
                       clusterEnabled: true,
-                      nodes: nodesList
+                      nodes: nodesList,
                     })
                   } else {
                     Object.assign(info, { clusterEnabled: false })
@@ -355,9 +357,9 @@ define(['../module'], function(module) {
                 } catch (error) {
                   return false
                 }
-              }
-            ]
-          }
+              },
+            ],
+          },
         })
 
         // Manager - EditConfig
@@ -365,21 +367,20 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/edition/edition.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-editConfig')
           },
           controller: 'editionCtrl',
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
             ],
             clusterInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const info = {}
                   const clusterStatus = await $requestService.apiReq(
@@ -394,18 +395,18 @@ define(['../module'], function(module) {
                     )
                     Object.assign(info, {
                       clusterEnabled: true,
-                      nodes: nodesList
+                      nodes: nodesList,
                     })
                   } else {
                     Object.assign(info, { clusterEnabled: false })
                   }
                   return info
                 } catch (error) {
-                  $state.go('manager')
+                  return false
                 }
-              }
-            ]
-          }
+              },
+            ],
+          },
         })
 
         // Manager - Status
@@ -413,21 +414,20 @@ define(['../module'], function(module) {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/status/status.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-status')
           },
           controller: 'statusCtrl',
           resolve: {
-            isAdmin: [
-              '$currentDataService',
-              async $currentDataService => {
-                return await checkAdmin($currentDataService)
-              }
+            updateUserPermissions: [
+              '$security_service',
+              async ($security_service) => {
+                return await $security_service.updateUserPermissions()
+              },
             ],
             statusData: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const responseStatus = await $requestService.apiReq(
                     '/cluster/status'
@@ -435,8 +435,8 @@ define(['../module'], function(module) {
                   let promises = []
                   if (
                     (!responseStatus ||
-                    !responseStatus.data ||
-                    !responseStatus.data.error) &&
+                      !responseStatus.data ||
+                      !responseStatus.data.error) &&
                     responseStatus.data.data.enabled !== 'no'
                   ) {
                     const nodes = await $requestService.apiReq('/cluster/nodes')
@@ -446,7 +446,7 @@ define(['../module'], function(module) {
                       responseStatus.data.data.running === 'yes'
                     ) {
                       const masterNode = nodes.data.data.affected_items.filter(
-                        item => item.type === 'master'
+                        (item) => item.type === 'master'
                       )[0]
                       promises = [
                         $requestService.apiReq('/agents/summary/status'),
@@ -458,15 +458,15 @@ define(['../module'], function(module) {
                         ),
                         $requestService.apiReq('/rules', {
                           offset: 0,
-                          limit: 1
+                          limit: 1,
                         }),
                         $requestService.apiReq('/decoders', {
                           offset: 0,
-                          limit: 1
+                          limit: 1,
                         }),
                         Promise.resolve(masterNode),
                         Promise.resolve(nodes),
-                        Promise.resolve(responseStatus.data)
+                        Promise.resolve(responseStatus.data),
                       ]
                     } else if (
                       responseStatus.data.data.enabled === 'yes' &&
@@ -478,15 +478,15 @@ define(['../module'], function(module) {
                         Promise.resolve(false),
                         $requestService.apiReq('/rules', {
                           offset: 0,
-                          limit: 1
+                          limit: 1,
                         }),
                         $requestService.apiReq('/decoders', {
                           offset: 0,
-                          limit: 1
+                          limit: 1,
                         }),
                         Promise.resolve(false),
                         Promise.resolve(nodes),
-                        Promise.resolve(responseStatus.data)
+                        Promise.resolve(responseStatus.data),
                       ]
                     } else {
                       promises = [
@@ -495,13 +495,13 @@ define(['../module'], function(module) {
                         $requestService.apiReq(`/manager/info`),
                         $requestService.apiReq('/rules', {
                           offset: 0,
-                          limit: 1
+                          limit: 1,
                         }),
                         $requestService.apiReq('/decoders', {
                           offset: 0,
-                          limit: 1
+                          limit: 1,
                         }),
-                        Promise.resolve(false)
+                        Promise.resolve(false),
                       ]
                     }
                   } else {
@@ -512,25 +512,24 @@ define(['../module'], function(module) {
                       $requestService.apiReq('/rules', { offset: 0, limit: 1 }),
                       $requestService.apiReq('/decoders', {
                         offset: 0,
-                        limit: 1
+                        limit: 1,
                       }),
-                      Promise.resolve(false)
+                      Promise.resolve(false),
                     ]
                   }
                   return await Promise.all(promises)
                 } catch (err) {
-                  $state.go('settings.api')
+                  return [false, false, false, false, false, false]
                 }
-              }
+              },
             ],
             agentInfo: [
               '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+              async ($requestService) => {
                 try {
                   const response = await $requestService.apiReq('/agents', {
                     limit: 1,
-                    sort: '-dateAdd'
+                    sort: '-dateAdd',
                   })
 
                   const lastAgent = await $requestService.apiReq(
@@ -539,39 +538,34 @@ define(['../module'], function(module) {
                   )
                   return lastAgent
                 } catch (err) {
-                  $state.go('settings.api')
+                  return false
                 }
-              }
-            ]
-          }
+              },
+            ],
+          },
         })
         // Reporting
         .state('mg-reporting', {
           templateUrl:
             BASE_URL +
             'static/app/SplunkAppForWazuh/js/controllers/management/reporting/reporting.html',
-          onEnter: $navigationService => {
+          onEnter: ($navigationService) => {
             $navigationService.storeRoute('mg-reporting')
           },
           controller: 'reportingCtrl',
           resolve: {
-            reportsList: [
-              '$requestService',
-              '$state',
-              async ($requestService, $state) => {
+            isWazuhAdmin: [
+              '$security_service',
+              async ($security_service) => {
                 try {
-                  const result = await $requestService.httpReq(
-                    'GET',
-                    '/report/reports'
-                  )
-                  return result
-                } catch (err) {
-                  $state.go('settings.api')
+                  return await $security_service.hasWazuhRole('administrator')
+                } catch (error) {
+                  return false
                 }
-              }
-            ]
-          }
+              },
+            ],
+          },
         })
-    }
+    },
   ])
 })

@@ -3,8 +3,8 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/column-chart',
-  '../../../services/visualizations/inputs/time-picker'
-], function(app, LinearChart, PieChart, ColumChart, TimePicker) {
+  '../../../services/visualizations/inputs/time-picker',
+], function (app, LinearChart, PieChart, ColumChart, TimePicker) {
   'use strict'
   class Monitoring {
     /**
@@ -14,6 +14,7 @@ define([
      * @param {Object} $scope
      * @param {Object} $currentDataService
      * @param {Object} $requestService
+     * @param {Object} $appVersionService
      * @param {Object} $notificationService
      * @param {Object} monitoringInfo
      */
@@ -75,31 +76,30 @@ define([
           'overviewNode',
           this.scope,
           { customAxisTitleX: 'Time span' }
-        )
+        ),
       ]
-      const parsedResult = monitoringInfo.map(item =>
+      const parsedResult = monitoringInfo.map((item) =>
         item && item.data && item.data.data ? item.data.data : false
       )
 
-      const [
-        status,
-        nodes,
-        configuration,
-        version,
-        agents,
-        health
-      ] = parsedResult
+      const [status, nodes, configuration, version, agents, health] =
+        parsedResult
 
-      this.running = status.running
-      this.enabled = status.enabled
+      this.running = status && status.running
+      this.enabled = status && status.enabled
       this.scope.isClusterEnabled =
         $stateParams.isClusterEnabled || this.enabled === 'yes'
       this.scope.isClusterRunning =
         $stateParams.isClusterRunning || this.running === 'yes'
-      this.nodes = this.enabled === 'yes' ? nodes.affected_items[0] : []
-      this.nodesCount = this.enabled === 'yes' ? nodes.total_affected_items : 0
-      this.configuration = this.enabled === 'yes' ? configuration.affected_items[0] : false
-      this.version = version.api_version
+      this.nodes =
+        this.enabled === 'yes' && nodes ? nodes.affected_items[0] : []
+      this.nodesCount =
+        this.enabled === 'yes' && nodes ? nodes.total_affected_items : 0
+      this.configuration =
+        this.enabled === 'yes' && configuration
+          ? configuration.affected_items[0]
+          : false
+      this.version = version ? version.api_version : ''
       this.agents = agents
       this.health = this.enabled === 'yes' ? health.affected_items[0] : false
     }
@@ -111,7 +111,7 @@ define([
       this.scope.selectedNavTab = 'monitoring'
       this.scope.currentApi =
         this.currentApi.clusterName || this.currentApi.managerName
-      this.scope.search = term => this.search(term)
+      this.scope.search = (term) => this.search(term)
       this.scope.status = 'yes'
       this.scope.reset = () => this.reset()
       this.scope.goConfiguration = () => this.goConfiguration()
@@ -130,11 +130,11 @@ define([
             this.scope.currentNode = parameters.node
             this.launchSearches()
             const data = await this.apiReq(`/cluster/healthcheck`, {
-              nodes_list: this.scope.currentNode.name
+              nodes_list: this.scope.currentNode.name,
             })
-            
-            const nodeInfo = data.data.data.affected_items.map(item =>{
-              if(item.info.name == this.scope.currentNode.name){
+
+            const nodeInfo = data.data.data.affected_items.map((item) => {
+              if (item.info.name == this.scope.currentNode.name) {
                 return item
               }
             })
@@ -164,9 +164,9 @@ define([
                 const start = new Date(
                   this.scope.currentNode.healthCheck.status.last_sync_integrity.date_start_master
                 )
-                this.scope.currentNode.healthCheck.status.last_sync_integrity.duration = `${(end -
-                  start) /
-                  1000}s`
+                this.scope.currentNode.healthCheck.status.last_sync_integrity.duration = `${
+                  (end - start) / 1000
+                }s`
               }
 
               if (
@@ -181,9 +181,9 @@ define([
                 const start = new Date(
                   this.scope.currentNode.healthCheck.status.last_sync_agentinfo.date_start_master
                 )
-                this.scope.currentNode.healthCheck.status.last_sync_agentinfo.duration = `${(end -
-                  start) /
-                  1000}s`
+                this.scope.currentNode.healthCheck.status.last_sync_agentinfo.duration = `${
+                  (end - start) / 1000
+                }s`
               }
 
               if (
@@ -198,9 +198,9 @@ define([
                 const start = new Date(
                   this.scope.currentNode.healthCheck.status.last_sync_agentgroups.date_start_master
                 )
-                this.scope.currentNode.healthCheck.status.last_sync_agentgroups.duration = `${(end -
-                  start) /
-                  1000}s`
+                this.scope.currentNode.healthCheck.status.last_sync_agentgroups.duration = `${
+                  (end - start) / 1000
+                }s`
               }
             }
           }
@@ -225,7 +225,7 @@ define([
        */
       this.scope.$on('$destroy', () => {
         this.timePicker.destroy()
-        this.vizz.map(viz => viz.destroy())
+        this.vizz.map((viz) => viz.destroy())
       })
     }
 
@@ -254,9 +254,6 @@ define([
       if (this.enabled === 'no') {
         this.scope.isClusterEnabled = false
       } else if (this.running === 'no') {
-        this.scope.isClusterRunning = false
-        this.scope.status = 'no'
-      } else if (this.running === 'no' && this.enabled === 'yes') {
         this.scope.isClusterRunning = false
         this.scope.status = 'no'
       } else if (this.running === 'yes' && this.enabled === 'yes') {
@@ -322,7 +319,7 @@ define([
         : vis.css('height', '250px')
 
       let vis_header = $('.wz-headline-title')
-      vis_header.dblclick(e => {
+      vis_header.dblclick((e) => {
         if (this.scope.expandArray[i]) {
           this.scope.expandArray[i] = !this.scope.expandArray[i]
           this.scope.expandArray[i]

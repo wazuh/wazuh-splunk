@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class DateDiffService {
@@ -11,22 +11,20 @@ define(['../module'], function(module) {
      * Returns the difference between dates
      */
     getDateDiff(start, end) {
-
       const result = {
         duration: 'Unknown',
         inProgress: false,
         end: this.end || 'Unknown',
-        start: this.start || 'Unknown'
+        start: this.start || 'Unknown',
       }
 
-      if(!start || !end){
+      if (!start || !end) {
         return result
       }
 
-
       this.start = new Date(start)
       this.end = new Date(end)
-      
+
       if (this.end && this.start) {
         result.duration = (this.end - this.start) / 1000 / 60
         result.duration = Math.round(result.duration * 100) / 100
@@ -38,9 +36,8 @@ define(['../module'], function(module) {
     }
 
     setBrowserOffset(d) {
-
-      if(!d){
-        return '';
+      if (!d) {
+        return ''
       }
 
       try {

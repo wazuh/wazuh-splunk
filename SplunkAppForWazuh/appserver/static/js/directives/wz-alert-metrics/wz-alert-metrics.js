@@ -10,21 +10,21 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzAlertMetrics', function(BASE_URL) {
+  directives.directive('wzAlertMetrics', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         totalAlerts: '=',
         levelTwelve: '=',
         authFailure: '=',
-        authSuccess: '='
+        authSuccess: '=',
       },
       controller() {},
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-alert-metrics/wz-alert-metrics.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-alert-metrics/wz-alert-metrics.html',
     }
   })
 })

@@ -1,26 +1,47 @@
-<div ng-cloak flex layout="column" class='wz-white-background'>
+<div ng-cloak flex layout="column" class="wz-white-background">
   <div layout="row" class="layout-row layout-align-end wz-white-background">
-    <div class='wz-breadcrumb-margin'>
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
-      <span class="wz-text-link cursor-pointer" ui-sref='mg-rules'> / Ruleset</span>
-      <span class="wz-text-link cursor-pointer" ui-sref='mg-decoders'> / Decoders</span>
+    <div class="wz-breadcrumb-margin">
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
+      <span class="wz-text-link cursor-pointer" ui-sref="mg-rules">
+        / Ruleset</span
+      >
+      <span class="wz-text-link cursor-pointer" ui-sref="mg-decoders">
+        / Decoders</span
+      >
       <span> / {{currentDecoder.name}}</span>
     </div>
     <div flex></div>
-    <div style="margin-right:7px;" id='input1'></div>
+    <div style="margin-right: 7px" id="input1"></div>
   </div>
 
   <!-- Nav bar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav"
+  <md-nav-bar
+    class="wz-nav-bar wz-margin-left-16 wz-margin-right-16 wz-ruleset-subnav"
     md-selected-nav-item="'decoders'">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-rules" name="rules">Rules
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="mg-rules"
+      name="rules"
+      >Rules
     </md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-decoders" name="decoders">Decoders
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="mg-decoders"
+      name="decoders"
+      >Decoders
     </md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-cdb" name="cdbList">Lists
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="mg-cdb"
+      name="cdbList"
+      >CDB Lists
     </md-nav-item>
   </md-nav-bar>
-
 
   <!-- Loading content -->
 
@@ -28,11 +49,12 @@
     <!-- Back button and title -->
     <div layout="row" layout-align="start center">
       <!-- Back button -->
-      <md-button class="md-icon-button" aria-label="Back to decoders list" ui-sref='mg-decoders'>
+      <md-button
+        class="md-icon-button"
+        aria-label="Back to decoders list"
+        ui-sref="mg-decoders">
         <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Back
-        </md-tooltip>
+        <md-tooltip md-direction="bottom" class="wz-tooltip"> Back </md-tooltip>
       </md-button>
       <!-- Decoder title -->
       <h1 class="font-size-20">{{currentDecoder.name}}</h1>
@@ -43,21 +65,36 @@
     <div layout="row" ng-if="!editingFile" class="wz-margin-9">
       <md-card flex class="wz-metric-color">
         <md-card-content layout="row" class="wz-padding-metric">
-          <div flex="20" ng-if="currentDecoder.position || currentDecoder.position == 0" class="wz-text-truncatable">
+          <div
+            flex="20"
+            ng-if="currentDecoder.position || currentDecoder.position == 0"
+            class="wz-text-truncatable">
             Position:
             <span class="wz-text-bold">{{currentDecoder.position}}</span>
           </div>
-          <div flex="40" ng-if="currentDecoder.filename" class="wz-text-truncatable">File:
-            <span class="wz-text-bold wz-text-link"
-              ng-click="editDecoder(currentDecoder.filename)">{{currentDecoder.filename}}
+          <div
+            flex="40"
+            ng-if="currentDecoder.filename"
+            class="wz-text-truncatable">
+            File:
+            <span
+              class="wz-text-bold wz-text-link"
+              ng-click="editDecoder(currentDecoder.filename)"
+              >{{currentDecoder.filename}}
               <md-tooltip md-direction="bottom" class="wz-tooltip">
                 Filter by this file
               </md-tooltip>
             </span>
           </div>
-          <div flex="40" ng-if="currentDecoder.relative_dirname" class="wz-text-truncatable">Path:
-            <span class="wz-text-bold wz-text-link"
-              ng-click="addDetailFilter('path', currentDecoder.relative_dirname)">{{currentDecoder.relative_dirname}}
+          <div
+            flex="40"
+            ng-if="currentDecoder.relative_dirname"
+            class="wz-text-truncatable">
+            Path:
+            <span
+              class="wz-text-bold wz-text-link"
+              ng-click="addDetailFilter('path', currentDecoder.relative_dirname)"
+              >{{currentDecoder.relative_dirname}}
               <md-tooltip md-direction="bottom" class="wz-tooltip">
                 Filter by this path
               </md-tooltip>
@@ -70,7 +107,9 @@
 
     <!-- Edit button -->
     <div layout="row" ng-if="!editingFile">
-      <button ng-if="currentDecoder.filename && isLocal && adminMode" ng-click="editDecoder(currentDecoder.filename)"
+      <button
+        ng-if="currentDecoder.filename && isLocal && canUpdateDecoderFile(currentDecoder.filename)"
+        ng-click="editDecoder(currentDecoder.filename)"
         class="btn wz-button-empty btn-ruleset ng-scope">
         <wz-svg icon="pencil"></wz-svg>
         Edit {{currentDecoder.filename}}
@@ -79,33 +118,50 @@
 
     <!-- Rest of decoder information -->
     <div layout="column" layout-align="start">
-
       <div layout="row" layout-align="start stretch">
-
         <!-- Details section -->
         <md-card flex class="wz-md-card" ng-if="!editingFile">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-info" aria-hidden="true"></i> Details</span>
+              <i class="fa fa-fw fa-info" aria-hidden="true"></i> Details</span
+            >
             <md-divider class="wz-margin-top-10"></md-divider>
 
-            <div layout="row" layout-wrap class="wz-padding-top-10" ng-repeat="(key, value) in currentDecoder.details"
+            <div
+              layout="row"
+              layout-wrap
+              class="wz-padding-top-10"
+              ng-repeat="(key, value) in currentDecoder.details"
               ng-if="!isArray(value)">
               <span flex="20">{{key}}</span>
-              <span class="wz-text-right color-grey" ng-if="key !== 'regex' && key !== 'order'">{{value}}</span>
-              <span class="wz-text-right color-grey" ng-if="key == 'regex'" ng-bind-html="colorRegex(value.pattern || value)"></span>
-              <span class="wz-text-right color-grey" ng-if="key == 'order'" ng-bind-html="colorOrder(value)"></span>
-
+              <span
+                class="wz-text-right color-grey"
+                ng-if="key !== 'regex' && key !== 'order'"
+                >{{value}}</span
+              >
+              <span
+                class="wz-text-right color-grey"
+                ng-if="key == 'regex'"
+                ng-bind-html="colorRegex(value.pattern || value)"></span>
+              <span
+                class="wz-text-right color-grey"
+                ng-if="key == 'order'"
+                ng-bind-html="colorOrder(value)"></span>
             </div>
           </md-card-content>
         </md-card>
         <!-- End details section -->
 
         <!-- Regex section -->
-        <md-card flex class="wz-md-card" ng-if="isArray(currentDecoder.details.regex) && !editingFile">
+        <md-card
+          flex
+          class="wz-md-card"
+          ng-if="isArray(currentDecoder.details.regex) && !editingFile">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i> Regex</span>
+              <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+              Regex</span
+            >
             <md-divider class="wz-margin-top-10"></md-divider>
             <div ng-repeat="item in currentDecoder.details.regex">
               <div layout="row" layout-wrap class="wz-padding-top-10">
@@ -115,16 +171,18 @@
           </md-card-content>
         </md-card>
         <!-- End regex section -->
-
       </div>
 
       <div layout="row" layout-align="start stretch">
-
         <!-- Match section -->
-        <md-card flex class="wz-md-card" ng-if="isArray(currentDecoder.details.match) && !editingFile">
+        <md-card
+          flex
+          class="wz-md-card"
+          ng-if="isArray(currentDecoder.details.match) && !editingFile">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> Match</span>
+              <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> Match</span
+            >
             <md-divider class="wz-margin-top-10"></md-divider>
             <div ng-repeat="item in currentDecoder.details.match">
               <div layout="row" layout-wrap class="wz-padding-top-10">
@@ -136,10 +194,15 @@
         <!-- End match section -->
 
         <!-- Prematch section -->
-        <md-card flex class="wz-md-card" ng-if="isArray(currentDecoder.details.prematch) && !editingFile">
+        <md-card
+          flex
+          class="wz-md-card"
+          ng-if="isArray(currentDecoder.details.prematch) && !editingFile">
           <md-card-content class="wazuh-column">
             <span class="wz-headline-title wz-margin-left--10">
-              <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> Prematch</span>
+              <i class="fa fa-fw fa-retweet" aria-hidden="true"></i>
+              Prematch</span
+            >
             <md-divider class="wz-margin-top-10"></md-divider>
             <div ng-repeat="item in currentDecoder.details.prematch">
               <div layout="row" layout-wrap class="wz-padding-top-10">
@@ -149,62 +212,85 @@
           </md-card-content>
         </md-card>
         <!-- End prematch section -->
-
       </div>
 
-
-    <md-card class="wz-md-card" ng-if="currentDecoder && !editingFile">
-      <!-- Related decoders section -->
-      <h1 class="md-headline wz-headline wz-margin-10">
-        <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related decoders
-      </h1>
-      <md-card-contents>
-        <div layout="row">
-
+      <md-card class="wz-md-card" ng-if="currentDecoder && !editingFile">
+        <!-- Related decoders section -->
+        <h1 class="md-headline wz-headline wz-margin-10">
+          <i class="fa fa-fw fa-link" aria-hidden="true"></i> Related decoders
+        </h1>
+        <md-card-contents>
+          <div layout="row"></div>
+          <div layout="row" class="md-padding">
+            <wazuh-table-server-side
+              custom-columns="true"
+              flex
+              path="'/decoders'"
+              implicit-filter="[{ name:'filename',value: currentDecoder.filename}]"
+              keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'filename',{value:'relative_dirname',nosortable:true}]"
+              allow-click="true">
+            </wazuh-table-server-side>
+          </div>
+          <div ng-show="!editingFile" layout="row" class="ruleset-csv-formater">
+            <span flex></span>
+            <a
+              class="small formatted-color"
+              id="btnDownload"
+              ng-click="downloadCsv('/decoders','decoders.csv')">
+              <wz-svg icon="download"></wz-svg>&nbsp;Formatted
+            </a>
+          </div>
+        </md-card-contents>
+      </md-card>
+      <!-- End related decoders section -->
+      <!-- XML editor for decoder -->
+      <div ng-show="editingFile">
+        <div layout="row" class="md-padding wz-padding-top-0">
+          <span ng-click="closeEditingFile()" class="btn wz-button-cancel"
+            >Cancel</span
+          >
+          <div ng-show="!readOnly">
+            <button
+              ng-if="canUpdateDecoderFile(currentDecoder.filename) && fetchedXML"
+              ng-disabled="xmlHasErrors || saveIncomplete"
+              ng-click="saveDecoderConfig(currentDecoder.filename)"
+              class="btn wz-button-empty pull-right wz-margin-left-10">
+              <span ng-show="!xmlHasErrors">
+                <i
+                  ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
+                  aria-hidden="true"></i>
+                Save file</span
+              >
+              <span ng-show="xmlHasErrors" class="btn-danger"
+                ><i
+                  aria-hidden="true"
+                  class="fa fa-fw fa-exclamation-triangle"></i>
+                XML format error</span
+              >
+            </button>
+          </div>
         </div>
-        <div layout="row" class="md-padding">
-          <wazuh-table-server-side custom-columns="true" flex path="'/decoders'"
-            implicit-filter="[{ name:'filename',value: currentDecoder.filename}]"
-            keys="['name',{value:'details.program_name',size:2,nosortable:true},{value:'details.order',size:2,nosortable:true},'filename',{value:'relative_dirname',nosortable:true}]"
-            allow-click="true">
-          </wazuh-table-server-side>
+        <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
+          <wz-xml-file-editor
+            style="height: inherit"
+            file-name="decoder"
+            data="fetchedXML"
+            target-name="currentDecoder.filename"
+            valid-fn="xmlIsValid(valid)"
+            close-fn="closeEditingFile()">
+          </wz-xml-file-editor>
         </div>
-        <div ng-show="!editingFile" layout="row" class="ruleset-csv-formater">
-          <span flex></span>
-          <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv('/decoders','decoders.csv')">
-            <wz-svg icon="download"></wz-svg>&nbsp;Formatted
-          </a>
+        <div
+          class="wzXmlEditorDivContent wz-margin-left-10"
+          ng-show="XMLContent && readOnly">
+          <wz-config-viewer
+            flex
+            xmlcontent="XMLContent"
+            hide-header="true"
+            no-local="fileName" />
         </div>
-      </md-card-contents>
-    </md-card>
-    <!-- End related decoders section -->
-    <!-- XML editor for decoder -->
-    <div ng-show="editingFile">
-      <div layout="row" class="md-padding wz-padding-top-0">
-        <span ng-click='closeEditingFile()' class='btn wz-button-cancel'>Cancel</span>
-        <div ng-show="!readOnly">
-          <button ng-if="adminMode && fetchedXML" ng-disabled='xmlHasErrors || saveIncomplete'
-            ng-click='saveDecoderConfig(currentDecoder.file)' class='btn wz-button-empty pull-right wz-margin-left-10'>
-            <span ng-show='!xmlHasErrors && adminMode'>
-              <i ng-class="{'fa fa-fw fa-spin fa-spinner': saveIncomplete, 'fa fa-fw fa-save': !saveIncomplete}"
-                aria-hidden='true'></i>
-              Save file</span>
-            <span ng-show='xmlHasErrors && adminMode' class='btn-danger'><i aria-hidden='true'
-                class='fa fa-fw fa-exclamation-triangle'></i>
-              XML format error</span>
-          </button>
-        </div>
-
       </div>
-      <div class="wzXmlEditorDivContent wz-margin-left-10" ng-if="fetchedXML">
-        <wz-xml-file-editor style="height: inherit;" file-name='decoder' data="fetchedXML"
-          target-name="currentDecoder.file" valid-fn='xmlIsValid(valid)' close-fn='closeEditingFile()'>
-        </wz-xml-file-editor>
-      </div>
-      <div class="wzXmlEditorDivContent wz-margin-left-10" ng-show="XMLContent && readOnly">
-        <wz-config-viewer flex xmlcontent="XMLContent" hide-header="true" no-local="fileName" />
-      </div>
+      <!-- End rest of decoder information -->
     </div>
-    <!-- End rest of decoder information -->
   </div>
 </div>

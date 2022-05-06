@@ -1,8 +1,8 @@
 define([
   'splunkjs/mvc',
   'splunkjs/mvc/simplexml/searcheventhandler',
-  '../visualizations/viz/viz'
-], function(mvc, SearchEventHandler, Viz) {
+  '../visualizations/viz/viz',
+], function (mvc, SearchEventHandler, Viz) {
   'use strict'
 
   return class RawTableData extends Viz {
@@ -25,9 +25,9 @@ define([
             {
               attr: 'any',
               value: '*',
-              actions: [{ type: 'set', token: token, value: value }]
-            }
-          ]
+              actions: [{ type: 'set', token: token, value: value }],
+            },
+          ],
         }),
         id,
         search,
@@ -48,7 +48,7 @@ define([
         console.error('Cancelled search')
       })
 
-      this.getSearch().on('search:error', error => {
+      this.getSearch().on('search:error', (error) => {
         this.results = {}
         console.error(error)
       })
@@ -64,9 +64,9 @@ define([
         const tableResults = mvc.Components.getInstance(`${this.id}Search`)
         const tableData = tableResults.data('results', {
           output_mode: 'json_rows',
-          count: 20
+          count: 20,
         })
-        tableData.on('data', data => {
+        tableData.on('data', (data) => {
           try {
             if (data._data) {
               this.results.fields = tableData._data.fields
@@ -80,7 +80,7 @@ define([
             console.error('Error fetching table data ', err)
           }
         })
-        tableData.on('error', err => {
+        tableData.on('error', (err) => {
           console.error(err)
         })
       })

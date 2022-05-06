@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
+define([], function () {
   'use strict'
   return {
     searchData: async (
@@ -52,7 +52,7 @@ define([], function() {
         $scope.error = false
         $scope.wazuhTableLoading = true
         if (Array.isArray(filter)) {
-          filter.forEach(item => {
+          filter.forEach((item) => {
             if (item.name === 'platform' && instance.path === '/agents') {
               const platform = item.value.split(' - ')[0]
               const version = item.value.split(' - ')[1]
@@ -80,9 +80,9 @@ define([], function() {
           filter ? filter.value : 'undefined'
         }. ${error.message || error}.`
         $notificationService.showErrorToast(
-          `Error filtering by ${
-            filter ? filter.value : 'undefined'
-          }. ${error.message || error}`
+          `Error filtering by ${filter ? filter.value : 'undefined'}. ${
+            error.message || error
+          }`
         )
       }
       $scope.$applyAsync()
@@ -113,16 +113,17 @@ define([], function() {
         $scope.wazuh_table_loading = false
       } catch (error) {
         $scope.wazuh_table_loading = false
-        $scope.error = `Query error ${
-          query ? query.value : 'undefined'
-        } - ${error.message || error}.`
+        $scope.error = `Query error ${query ? query.value : 'undefined'} - ${
+          error.message || error
+        }.`
         errorHandler.showErrorToast(
-          `Query error ${query ? query.value : 'undefined'}. ${error.message ||
-            error}`
+          `Query error ${query ? query.value : 'undefined'}. ${
+            error.message || error
+          }`
         )
       }
       $scope.$applyAsync()
       return
-    }
+    },
   }
 })

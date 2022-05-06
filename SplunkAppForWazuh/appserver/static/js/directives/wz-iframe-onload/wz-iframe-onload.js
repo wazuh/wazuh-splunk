@@ -10,19 +10,19 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(["../module"], function (directives) {
-  "use strict";
-  directives.directive("iframeOnload", function () {
+define(['../module'], function (directives) {
+  'use strict'
+  directives.directive('iframeOnload', function () {
     return {
       restrict: 'A',
       scope: {
-        callBack: "&iframeOnload",
+        callBack: '&iframeOnload',
       },
-      link: function (scope, element, attrs) {
+      link: function (scope, element, _attrs) {
         element.on('load', function () {
-          return scope.callBack();
-        });
+          return scope.callBack()
+        })
       },
-    };
-  });
-});
+    }
+  })
+})

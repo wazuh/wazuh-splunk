@@ -1,4 +1,4 @@
-define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
+define(['../../module', '../rules/ruleset'], function (controllers, Ruleset) {
   'use strict'
 
   class DecodersId extends Ruleset {
@@ -12,6 +12,11 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} extensions
+     * @param {*} $fileEditor
+     * @param {*} $restartService
+     * @param {*} $requestService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -26,7 +31,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       $fileEditor,
       $restartService,
       $requestService,
-      isAdmin
+      $security_service
     ) {
       super(
         $scope,
@@ -44,7 +49,12 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.restartService = $restartService
       this.requestService = $requestService
       this.currentDecoder = currentDecoder
-      this.scope.adminMode = isAdmin
+      this.scope.canUpdateDecoderFile = (filename) =>
+        $security_service.isAllowed(
+          'DECODERS_UPDATE',
+          ['DECODER_FILE'],
+          [filename]
+        )
     }
 
     /**
@@ -57,15 +67,17 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
         } catch (error) {
           this.filters = []
         }
-        this.scope.currentDecoder = this.currentDecoder.data.data.affected_items[0]
+        this.scope.currentDecoder =
+          this.currentDecoder.data.data.affected_items[0]
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
           this.addDetailFilter(name, value)
-        this.scope.isLocal = this.scope.currentDecoder.relative_dirname === 'etc/decoders'
-        this.scope.saveDecoderConfig = fileName =>
+        this.scope.isLocal =
+          this.scope.currentDecoder.relative_dirname === 'etc/decoders'
+        this.scope.saveDecoderConfig = (fileName) =>
           this.saveDecoderConfig(fileName)
         this.scope.closeEditingFile = () => this.closeEditingFile()
-        this.scope.editDecoder = fileName => this.editDecoder(fileName)
+        this.scope.editDecoder = (fileName) => this.editDecoder(fileName)
 
         this.scope.restart = () => this.restart()
         this.scope.closeRestartConfirmation = () =>
@@ -112,16 +124,24 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
       this.scope.saveIncomplete = true
       this.scope.$broadcast('saveXmlFile', {
         file: fileName,
-        dir: 'decoders',
-        overwrite: true
+        dir: 'etc/decoders',
+        overwrite: true,
       })
     }
 
     async editDecoder(fileName) {
       try {
-        const readOnly = !(this.scope.currentDecoder.relative_dirname === 'etc/decoders')
-        const result = await this.fetchFileContent(fileName, this.scope.currentDecoder.relative_dirname, readOnly)
-      } catch (error) {}
+        const readOnly = !(
+          this.scope.currentDecoder.relative_dirname === 'etc/decoders'
+        )
+        await this.fetchFileContent(
+          fileName,
+          this.scope.currentDecoder.relative_dirname,
+          readOnly
+        )
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
       return
     }
 
@@ -143,7 +163,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
               readOnly
             )
             this.scope.$broadcast('XMLContentReady', {
-              data: this.scope.XMLContent
+              data: this.scope.XMLContent,
             })
           } else {
             this.scope.XMLContent = await this.fileEditor.getConfiguration(
@@ -171,7 +191,7 @@ define(['../../module', '../rules/ruleset'], function(controllers, Ruleset) {
               readOnly
             )
             this.scope.$broadcast('fetchedFile', {
-              data: this.scope.fetchedXML
+              data: this.scope.fetchedXML,
             })
           }
         }

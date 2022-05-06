@@ -1,4 +1,4 @@
-define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
+define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function (
   ChartElement,
   Viz
 ) {
@@ -26,7 +26,7 @@ define(['splunkjs/mvc/simplexml/element/chart', '../viz/viz'], function(
             'charting.chart': 'line',
             'charting.axisTitleX.text': customAxisTitleX,
             managerid: `${id}Search`,
-            el: $(`#${attachedElement}`)
+            el: $(`#${attachedElement}`),
           },
           { tokens: true, tokenNamespace: 'submitted' }
         ).render(),

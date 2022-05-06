@@ -12,5 +12,7 @@ define([
   // Main
   './main/mainCtrl',
   //Discover
-  './discover/discoverCtrl'
-], function() {})
+  './discover/discoverCtrl',
+  //Security
+  './security/index',
+], function () {})

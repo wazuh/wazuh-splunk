@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
+define([], function () {
   'use strict'
   return function clickAction(
     instance,
@@ -22,8 +22,8 @@ define([], function() {
   ) {
     if (
       instance.path === '/agents' ||
-      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-\.]*$/).test(instance.path) ||
-      new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/).test(instance.path)// eslint-disable-line
+      new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/).test(instance.path) || //FIXME: This endpoint doesn't exist in the current API versions. This should be checked and removed if is not necessary
+      new RegExp(/^\/groups\/[a-zA-Z0-9_\-\.]*\/agents$/).test(instance.path) // eslint-disable-line
     ) {
       // Go to and store an agent details
       $currentDataService.setCurrentAgent(item.id)
@@ -40,22 +40,34 @@ define([], function() {
       $scope.$emit('wazuhShowGroup', { group: item })
     } else if (
       new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*\/files$/).test(
+        //FIXME: This endpoint doesn't exist in the current API versions. This should be checked and replaced by the valid one
         // eslint-disable-line
         instance.path
       )
     ) {
       $scope.$emit('wazuhShowGroupFile', {
         groupName: instance.path.split('groups/')[1].split('/files')[0],
-        fileName: item.filename
+        fileName: item.filename,
       })
     } else if (instance.path === '/rules') {
       $state.go('mg-rules-id', { id: item.id })
     } else if (instance.path === '/decoders') {
       $state.go('mg-decoders-id', { file: item.file, name: item.name })
     } else if (instance.path === '/lists/files') {
-      $state.go('mg-cdb-id', { name: item.filename, path: item.relative_dirname })
+      $state.go('mg-cdb-id', {
+        name: item.filename,
+        path: item.relative_dirname,
+      })
     } else if (instance.path === '/cluster/nodes') {
       $scope.$emit('wazuhShowClusterNode', { node: item })
+    } else if (instance.path === '/security/rules') {
+      $scope.$emit('openRuleFromList', { rule: item })
+    } else if (instance.path === '/security/roles') {
+      $scope.$emit('openRoleFromList', { role: item })
+    } else if (instance.path === '/security/policies') {
+      $scope.$emit('openPolicyFromList', { policy: item })
+    } else if (instance.path === '/security/users') {
+      $scope.$emit('openUserFromList', { user: item })
     }
   }
 })

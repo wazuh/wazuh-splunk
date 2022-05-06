@@ -14,9 +14,10 @@ Find more information about this on the LICENSE file.
 
 import jsonbak
 import splunk.appserver.mrsparkle.controllers as controllers
-from splunk.appserver.mrsparkle.lib.decorators import expose_page
-from log import log
 from edit_config import EditConfig
+from log import log
+from splunk.appserver.mrsparkle.lib.decorators import expose_page
+
 
 class Configuration(controllers.BaseController):
 
@@ -32,7 +33,9 @@ class Configuration(controllers.BaseController):
             self.logger = log()
             controllers.BaseController.__init__(self)
         except Exception as e:
-            self.logger.error("config: Error in configuration module constructor: %s" % (e))
+            self.logger.error(
+                "config: Error in configuration module constructor: %s" % (e))
+
     @expose_page(must_login=False, methods=['POST'])
     def update_config(self, **kwargs):
         """Updates a parameter of the configuration.
@@ -45,10 +48,19 @@ class Configuration(controllers.BaseController):
         try:
             self.logger.debug("config: Updating configuration.")
             result = self.config.update_config(kwargs)
-            return jsonbak.dumps({"data": result, "error": 0})
+            return jsonbak.dumps(
+                {
+                    "data": result, "error": 0
+                }
+            )
         except Exception as e:
-            self.logger.error("config: Error updating the configuration: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            self.logger.error(
+                "config: Error updating the configuration: %s" % (e))
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['GET'])
     def get_config(self):
@@ -62,7 +74,16 @@ class Configuration(controllers.BaseController):
         try:
             self.logger.debug("config: Reading the config.conf file.")
             config = self.config.get_config()
-            return jsonbak.dumps({"data": config, "error": 0})
+            return jsonbak.dumps(
+                {
+                    "data": config, "error": 0
+                }
+            )
         except Exception as e:
-            self.logger.error("config: Error getting the configuration: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
+            self.logger.error(
+                "config: Error getting the configuration: %s" % (e))
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )

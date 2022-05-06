@@ -1,9 +1,9 @@
-define(['../module'], function(app) {
-  app.filter('orderObjectBy', function() {
-    return function(items, field, reverse) {
+define(['../module'], function (app) {
+  app.filter('orderObjectBy', function () {
+    return function (items, field, reverse) {
       if (!items) return []
 
-      const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n)
+      const isNumeric = (n) => !isNaN(parseFloat(n)) && isFinite(n)
 
       const filtered = []
 

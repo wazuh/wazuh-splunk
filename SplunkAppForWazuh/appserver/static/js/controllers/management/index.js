@@ -13,5 +13,4 @@ define([
   './cdb/managerCdbCtrl',
   './cdb/managerCdbIdCtrl',
   './status/statusCtrl',
-  './configuration/edit-configuration/editGroupsCtrl'
-], function() {})
+], function () {})

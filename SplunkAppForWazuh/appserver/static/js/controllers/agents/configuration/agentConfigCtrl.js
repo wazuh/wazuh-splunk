@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', '../../../utils/config-handler'], function(
+define(['../../module', '../../../utils/config-handler'], function (
   controllers,
   ConfigHandler
 ) {
@@ -64,13 +64,17 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
       this.$scope.isSynchronized =
-        data && data.data && data.data.data && data.data.data.affected_items && 
-        data.data.data.affected_items.length && data.data.data.affected_items[0].synced
+        data &&
+        data.data &&
+        data.data.data &&
+        data.data.data.affected_items &&
+        data.data.data.affected_items.length &&
+        data.data.data.affected_items[0].synced
       this.excludeModulesByOs = {
         linux: [],
         windows: ['audit', 'oscap', 'docker'],
         darwin: ['audit', 'oscap', 'vuls', 'docker'],
-        other: ['audit', 'oscap', 'vuls', 'docker']
+        other: ['audit', 'oscap', 'vuls', 'docker'],
       }
 
       this.$scope.selectedOptions = {
@@ -87,9 +91,11 @@ define(['../../module', '../../../utils/config-handler'], function(
         commandsConf: true,
         dockerListenerConf: true,
         logCollectionConf: true,
-        integrityMonitoringConf: true
+        integrityMonitoringConf: true,
       }
 
+      this.$scope.isManager = false
+      this.$scope.canReadAgents = true // controlled on the parent view (agents)
       this.$scope.$on('loadingReporting', (event, data) => {
         this.$scope.loadingReporting = data.status
       })
@@ -103,10 +109,10 @@ define(['../../module', '../../../utils/config-handler'], function(
       this.setAgentPlatform()
       this.$scope.showInfo = () => this.showInfo()
       this.$scope.showModulesToExport = () => this.showModulesToExport()
-      this.$scope.selectAll = value => this.selectAll(value)
+      this.$scope.selectAll = (value) => this.selectAll(value)
       this.$scope.checkAllDisabled = () => this.checkAllDisabled()
-      this.$scope.keyEquivalences = key => this.keyEquivalences(key)
-      this.$scope.showConfigCheck = key => this.showConfigCheck(key)
+      this.$scope.keyEquivalences = (key) => this.keyEquivalences(key)
+      this.$scope.showConfigCheck = (key) => this.showConfigCheck(key)
       this.$scope.goToEdition = false
       this.$scope.agent =
         this.agent && this.agent.data && this.agent.data.data
@@ -114,21 +120,23 @@ define(['../../module', '../../../utils/config-handler'], function(
           : { error: true }
 
       // Capitalize Status
-      if(this.$scope.agent && this.$scope.agent.status){
-        this.$scope.agent.status = this.$scope.agent.status.charAt(0).toUpperCase() + this.$scope.agent.status.slice(1)
+      if (this.$scope.agent && this.$scope.agent.status) {
+        this.$scope.agent.status =
+          this.$scope.agent.status.charAt(0).toUpperCase() +
+          this.$scope.agent.status.slice(1)
       }
 
-      this.$scope.getAgentStatusClass = agentStatus =>
+      this.$scope.getAgentStatusClass = (agentStatus) =>
         agentStatus === 'Active' ? 'teal' : 'red'
-      this.$scope.formatAgentStatus = agentStatus => {
+      this.$scope.formatAgentStatus = (agentStatus) => {
         return ['Active', 'Disconnected'].includes(agentStatus)
           ? agentStatus
           : 'Never connected'
       }
       this.$scope.getXML = () => this.configurationHandler.getXML(this.$scope)
       this.$scope.getJSON = () => this.configurationHandler.getJSON(this.$scope)
-      this.$scope.isString = item => typeof item === 'string'
-      this.$scope.hasSize = obj =>
+      this.$scope.isString = (item) => typeof item === 'string'
+      this.$scope.hasSize = (obj) =>
         obj && typeof obj === 'object' && Object.keys(obj).length
       this.$scope.switchConfigTab = (configurationTab, sections) =>
         this.configurationHandler.switchConfigTab(
@@ -138,9 +146,9 @@ define(['../../module', '../../../utils/config-handler'], function(
           this.id, // Send the agent id
           false // Send node as false
         )
-      this.$scope.switchWodle = wodleName =>
+      this.$scope.switchWodle = (wodleName) =>
         this.configurationHandler.switchWodle(wodleName, this.$scope, this.id)
-      this.$scope.switchConfigurationTab = async configurationTab => {
+      this.$scope.switchConfigurationTab = async (configurationTab) => {
         if (configurationTab === 'welcome') {
           this.$scope.isSynchronized = await this.checkAgentSync()
         }
@@ -150,15 +158,15 @@ define(['../../module', '../../../utils/config-handler'], function(
         )
       }
 
-      this.$scope.switchConfigurationSubTab = configurationSubTab =>
+      this.$scope.switchConfigurationSubTab = (configurationSubTab) =>
         this.configurationHandler.switchConfigurationSubTab(
           configurationSubTab,
           this.$scope
         )
-      this.$scope.updateSelectedItem = i => (this.$scope.selectedItem = i)
-      this.$scope.getIntegration = list =>
+      this.$scope.updateSelectedItem = (i) => (this.$scope.selectedItem = i)
+      this.$scope.getIntegration = (list) =>
         this.configurationHandler.getIntegration(list, this.$scope)
-      this.$scope.goGroups = group => this.goGroups(group)
+      this.$scope.goGroups = (group) => this.goGroups(group)
 
       this.$scope.initReportConfig = () => this.initReportConfig()
     }
@@ -171,7 +179,7 @@ define(['../../module', '../../../utils/config-handler'], function(
       try {
         const groupInfo = await this.apiReq.apiReq(`/groups/`)
         const groupData = groupInfo.data.data.affected_items.filter(
-          item => item.name === group
+          (item) => item.name === group
         )
         if (
           !groupInfo ||
@@ -247,7 +255,7 @@ define(['../../module', '../../../utils/config-handler'], function(
      */
     selectAll(value) {
       try {
-        Object.keys(this.$scope.selectedOptions).forEach(key => {
+        Object.keys(this.$scope.selectedOptions).forEach((key) => {
           this.$scope.selectedOptions[key] = value
         })
       } catch (error) {
@@ -258,7 +266,7 @@ define(['../../module', '../../../utils/config-handler'], function(
     checkAllDisabled() {
       try {
         let result = false
-        Object.keys(this.$scope.selectedOptions).forEach(key => {
+        Object.keys(this.$scope.selectedOptions).forEach((key) => {
           if (this.$scope.selectedOptions[key]) {
             result = true
           }
@@ -292,10 +300,12 @@ define(['../../module', '../../../utils/config-handler'], function(
       try {
         this.$scope.agentPlatform = 'other'
         let agentPlatformLinux = (
-          ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {}).os || {}
+          ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {})
+            .os || {}
         ).uname
         let agentPlatformOther = (
-          ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {}).os || {}
+          ((((this.agent || {}).data || {}).data || {}).affected_items[0] || {})
+            .os || {}
         ).platform
         if (agentPlatformLinux && agentPlatformLinux.includes('Linux')) {
           this.$scope.agentPlatform = 'linux'
@@ -344,7 +354,7 @@ define(['../../module', '../../../utils/config-handler'], function(
         commandsConf: 'Commands',
         dockerListenerConf: 'Docker listener',
         logCollectionConf: 'Log collection',
-        integrityMonitoringConf: 'Integrity monitoring'
+        integrityMonitoringConf: 'Integrity monitoring',
       }
       return options[key] || key
     }

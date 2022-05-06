@@ -9,11 +9,11 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(directives) {
+define(['../module'], function (directives) {
   'use strict'
-  directives.directive('wzHeadToaster', function(BASE_URL) {
+  directives.directive('wzHeadToaster', function (BASE_URL) {
     return {
-      controller: function($scope, $checkDaemonsService) {
+      controller: function ($scope, $checkDaemonsService) {
         // Listen for show toaster
         $scope.$on('showHeadToaster', (event, data) => {
           // data will be a object with this fields: type=string, msg=string, delay=bool, spinner=bool
@@ -61,7 +61,7 @@ define(['../module'], function(directives) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-head-toaster/wz-head-toaster.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-head-toaster/wz-head-toaster.html',
     }
   })
 })

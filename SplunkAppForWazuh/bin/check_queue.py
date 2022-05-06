@@ -12,195 +12,189 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
-from log import log
-from wazuhtoken import wazuhtoken
-import time
-import datetime
-import jsonbak
-import requestsbak
 import sys
-from jobs_queue import JobsQueue
+import time
+
+import get_api_by_id as API_services
+import jsonbak
+import utils
+from API_model import API_model
 from db import database
+from jobs_queue import JobsQueue
+from log import log
+from wazuh_api import Wazuh_API
 
 
 class CheckQueue():
 
     def __init__(self):
         """Constructor."""
-        self.logger = log()
-        self.wztoken = wazuhtoken()
-        self.now = time.time()  # Get the date in seconds
-        self.session = requestsbak.Session()
-        self.auth_key = sys.stdin.readline().strip()
-        self.q = JobsQueue()
-        self.db = database()
+        try:
+            self.logger = log()
+            self.now = time.time()  # Get the date in seconds
+            self.auth_key = sys.stdin.readline().strip()
+            self.q = JobsQueue()
+            self.wz_api = Wazuh_API()
+            self.db = database("credentials")
+        except Exception as e:
+            self.logger.error(
+                "bin.check_queue: error in the constructor: %s" % (e))
 
     def init(self):
-        """Inits the jobs
-        """
+        """Inits the job"""
+        # self.logger.debug("bin.check_queue: Checking jobs queue.")
         try:
-            self.logger.debug("bin.check_queue: Checking jobs queue.")
             jobs = self.q.get_jobs(self.auth_key)
             todo_jobs = self.get_todo_jobs(jobs)
             self.check_todo_jobs(todo_jobs)
             jobs = jsonbak.loads(jobs)
             self.check_todo_jobs(jobs)
         except Exception as e:
-            self.logger.error('bin.check_queue: Error at init in the CheckQueue module: {}'.format(e))
+            self.logger.error(
+                'bin.check_queue: Error at init in the CheckQueue module: {}'.format(e))
 
     def get_todo_jobs(self, jobs):
-        """Gets the to do jobs
+        """
+        Gets the to do jobs
 
         Parameters
         ----------
         str: jobs
             A dictionary in string format with the jobs
         """
-
+        # self.logger.debug("bin.check_queue: Gettings todo jobs.")
         try:
-            self.logger.debug("bin.check_queue: Gettings todo jobs.")
             jobs = jsonbak.loads(jobs)
             todo_jobs = filter(lambda j: j['done'] == False, jobs)
         except TypeError as e:
             todo_jobs = []
-            self.logger.error('bin.check_queue: Error filtering the fields in the CheckQueue module: {}'.format(e))
+            self.logger.error(
+                'bin.check_queue: Error filtering the fields in the CheckQueue module: {}'.format(e))
         return todo_jobs
 
     def check_todo_jobs(self, jobs):
-        """Check the to do jobs
+        """
+        Check the to do jobs
 
         Parameters
         ----------
         dic: jobs
             A dictionary with the todo jobs
         """
+        # self.logger.debug("bin.check_queue: Checking todo jobs.")
         try:
-            self.logger.debug("bin.check_queue: Checking todo jobs.")
             for job in jobs:
                 if job['exec_time'] < self.now:
                     self.exec_job(job)
         except Exception as e:
-            self.logger.error('bin.check_queue: Error checking to do jobs in the CheckQueue module: {}'.format(e))
+            self.logger.error(
+                'bin.check_queue: Error checking to do jobs in the CheckQueue module: {}'.format(e))
 
     def exec_job(self, job):
-        """Exec the passed job
+        """
+        Exec the passed job
 
         Parameters
         ----------
         dic: job
             A dictionary with the job
         """
+        self.logger.debug("bin.check_queue: Executing job.")
         try:
-            self.logger.debug("bin.check_queue: Executing job.")
             req = job['job']
             method = 'GET'
 
             # Checks if are missing params
-            if ('id' not in req and 'apiId' not in req) or 'endpoint' not in req:
-                raise Exception('Missing ID or endpoint')
+            endpoint = utils.get_parameter(req, 'endpoint')
+            api_id = utils.get_parameter(req, 'apiId')
+
             if 'method' in req.keys() and req['method'] != 'GET':
                 method = req['method']
                 del req['method']
-            
-            api_id = 0
-            if 'id' in req:
-                api_id = req['id']
-            elif 'apiId' in req:
-                api_id = req['apiId']
-            else:
-                raise Exception('Missing API ID')
+
             try:
-                url, auth, verify = self.get_api_credentials(api_id)
+                api: API_model = API_services.get_api_by_id(api_id)
             except Exception as e:
-                self.logger.error("bin.check_queue: Error executing the job, job will be deleted from the queue. Reason: {}".format(e))
+                self.logger.error(
+                    "bin.check_queue: Error executing the job, job will be"
+                    + " deleted from the queue. Reason: {}".format(e))
                 self.remove_job(job['_key'])
-                return 
-            endpoint = req['endpoint']
-            wazuh_token = self.wztoken.get_auth_token(url,auth)
+                return
+
             # Checks methods
             if method == 'GET':
-                request = self.session.get(
-                    url + endpoint, params=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify).json()
-            if method == 'POST':
-                request = self.session.post(
-                    url + endpoint, data=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify).json()
-            if method == 'PUT':
-                request = self.session.put(
-                    url + endpoint, data=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify).json()
-            if method == 'DELETE':
-                request = self.session.delete(
-                    url + endpoint, data=req, headers = {'Authorization': f'Bearer {wazuh_token}'},
-                    verify=verify).json()
+                response = self.wz_api.make_request(
+                    method='GET',
+                    endpoint_url=endpoint,
+                    kwargs={},
+                    current_api=api
+                )
 
-            if request['error'] == 0:
-                # self.mark_as_done(job)
+            elif method == 'POST':
+                response = self.wz_api.make_request(
+                    method='POST',
+                    endpoint_url=endpoint,
+                    kwargs=req,
+                    current_api=api
+                )
+
+            elif method == 'PUT':
+                response = self.wz_api.make_request(
+                    method='PUT',
+                    endpoint_url=endpoint,
+                    kwargs=req,
+                    current_api=api
+                )
+
+            elif method == 'DELETE':
+                response = self.wz_api.make_request(
+                    method='DELETE',
+                    endpoint_url=endpoint,
+                    kwargs=req,
+                    current_api=api
+                )
+
+            if response['error'] == 0:
                 self.remove_job(job['_key'])
             else:
                 raise Exception('Job cannot be executed properly.')
-            return request
+            return response
         except Exception as e:
-            self.logger.error('bin.check_queue: Error executing the job in CheckQueue module: {}'.format(e))
+            self.logger.error(
+                'bin.check_queue: Error executing the job in CheckQueue module: {}'.format(e))
 
     def mark_as_done(self, job):
-        """Update the job and mark as done.
+        """
+        Update the job and mark as done.
 
         Parameters
         ----------
         str: job_key
             The job key in the kvStore
         """
+        self.logger.debug("bin.check_queue: Marking job as done.")
         try:
-            self.logger.debug("bin.check_queue: Marking job as done.")
             job['done'] = True
             self.q.update_job(job, self.auth_key)
         except Exception as e:
-            self.logger.error('bin.check_queue: Error updating the job in CheckQueue module: {}'.format(e))
+            self.logger.error(
+                'bin.check_queue: Error updating the job in CheckQueue module: {}'.format(e))
 
     def remove_job(self, job_key):
-        """Remove the job of the queue.
+        """
+        Remove the job of the queue.
 
         Parameters
         ----------
         str: job_key
             The job key in the kvStore
         """
+        self.logger.debug("bin.check_queue: Removing job.")
         try:
-            self.logger.debug("bin.check_queue: Removing job.")
             self.q.remove_job(job_key, self.auth_key)
         except Exception as e:
-            self.logger.error('bin.check_queue: Error removing the job in CheckQueue module: {}'.format(e))
-
-    def get_api_credentials(self, api_id):
-        """Get API credentials.
-
-        Parameters
-        ----------
-        str: api_id
-            The API id
-        """
-        try:
-            self.logger.debug("bin.check_queue: Getting API credentials.")
-            api = self.db.get(api_id, self.auth_key)
-            api = jsonbak.loads(api)
-            if "data" in api and "messages" in api["data"] and api["data"]["messages"][0] and "type" in api["data"]["messages"][0] and api["data"]["messages"][0]["type"] == "ERROR":
-                raise Exception('API does not exist')
-            elif api:
-                opt_username = api['data']["userapi"]
-                opt_password = api['data']["passapi"]
-                opt_base_url = api['data']["url"]
-                opt_base_port = api['data']["portapi"]
-                url = str(opt_base_url) + ":" + str(opt_base_port)
-                auth = requestsbak.auth.HTTPBasicAuth(
-                    opt_username, opt_password)
-                verify = False
-                return url, auth, verify
-            else:
-                raise Exception('API not found')
-        except Exception as e:
-            raise e
+            self.logger.error(
+                'bin.check_queue: Error removing the job in CheckQueue module: {}'.format(e))
 
 
 if __name__ == '__main__':

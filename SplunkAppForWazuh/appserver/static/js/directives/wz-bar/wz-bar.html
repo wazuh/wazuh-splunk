@@ -1,25 +1,44 @@
 <div layout="row" layout-align="start center">
-  <div layout="column" flex='100' class="height-40 wz-bar-margin">
+  <div layout="column" flex="100" class="height-40 wz-bar-margin">
     <div layout="row">
-      <input placeholder="Add filters..." ng-model="custom_search" type="text" flex class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
-        aria-invalid="false" wz-enter="applyFilters(custom_search)">
+      <input
+        placeholder="Add filters..."
+        ng-model="custom_search"
+        type="text"
+        flex
+        class="kuiLocalSearchInput ng-empty ng-pristine ng-scope ng-touched ng-valid"
+        aria-invalid="false"
+        wz-enter="applyFilters(custom_search)" />
     </div>
   </div>
 </div>
-<md-chips class="wz-chips" layout="row" readonly="true" ng-model='filters'>
-  <md-chip-template class="wz-chip" ng-mouseover="editChip($chip)" ng-mouseleave="finishChipEdition()">
+<md-chips class="wz-chips" layout="row" readonly="true" ng-model="filters">
+  <md-chip-template
+    class="wz-chip"
+    ng-mouseover="editChip($chip)"
+    ng-mouseleave="finishChipEdition()">
     <span ng-show="editingChip !== $chip">
       {{ $chip }}
-      <i ng-show="filterPined($chip)" class="fa fa-fw fa-times fa-thumb-tack cursor-pointer" aria-hidden="true"></i>
+      <i
+        ng-show="filterPined($chip)"
+        class="fa fa-fw fa-times fa-thumb-tack cursor-pointer"
+        aria-hidden="true"></i>
     </span>
     <span ng-show="editingChip === $chip">
       {{ $chip }}
-      <i class="fa fa-fw fa-times fa-trash cursor-pointer" aria-hidden="true" ng-click="removeFilter($chip)">
+      <i
+        class="fa fa-fw fa-times fa-trash cursor-pointer"
+        aria-hidden="true"
+        ng-click="removeFilter($chip)">
         <md-tooltip md-direction="bottom" class="wz-tooltip">
           Remove filter
         </md-tooltip>
       </i>
-      <i class="fa fa-fw fa-times fa-thumb-tack cursor-pointer" ng-class="{'fa-rotate-270' : filterPined($chip)}" aria-hidden="true" ng-click="pinFilter($chip)">
+      <i
+        class="fa fa-fw fa-times fa-thumb-tack cursor-pointer"
+        ng-class="{'fa-rotate-270' : filterPined($chip)}"
+        aria-hidden="true"
+        ng-click="pinFilter($chip)">
         <md-tooltip md-direction="bottom" class="wz-tooltip">
           Pin/Unpin filter
         </md-tooltip>

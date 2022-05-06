@@ -9,9 +9,9 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
-  module.service('$beautifierJson', function() {
+  module.service('$beautifierJson', function () {
     /**
      * Replaces strings
      * @param {String} match
@@ -34,7 +34,7 @@ define(['../module'], function(module) {
      * Parses and formats a JSON Object
      * @param {Object} obj
      */
-    const prettyPrint = obj => {
+    const prettyPrint = (obj) => {
       let jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/gm
       return JSON.stringify(obj, null, 3)
         .replace(/&/g, '&amp;')
@@ -45,7 +45,7 @@ define(['../module'], function(module) {
     }
     return {
       replacer: replacer,
-      prettyPrint: prettyPrint
+      prettyPrint: prettyPrint,
     }
   })
 })

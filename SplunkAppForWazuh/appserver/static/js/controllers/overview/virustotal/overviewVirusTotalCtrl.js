@@ -19,8 +19,8 @@ define([
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/chart/bar-chart',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -36,11 +36,13 @@ define([
   class OverviewVirusTotal extends DashboardMain {
     /**
      * Class Overview Virus Total
-     * @param {*} $urlTokenModel
      * @param {*} $scope
+     * @param {*} $urlTokenModel
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $scope,
@@ -49,14 +51,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -151,7 +155,7 @@ define([
           '$result$',
           this.scope,
           'Top 5 Rules'
-        )
+        ),
       ]
     }
 
@@ -174,7 +178,7 @@ define([
               'eventsSummary',
               'top10AgentsNoPositive',
               'alertsPerAgent',
-              'top5Rules'
+              'top5Rules',
             ],
             {}, //Metrics
             this.tableResults
