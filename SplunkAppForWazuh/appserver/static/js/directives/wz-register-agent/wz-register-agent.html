@@ -127,10 +127,9 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  Invoke-WebRequest -Uri
-                  https://packages.wazuh.com/4.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi
-                  -OutFile wazuh-agent.msi; wazuh-agent.msi /q
-                  WAZUH_MANAGER='{{config.managerIp}}'
+                  Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi 
+                  -OutFile ${env:tmp}\wazuh-agent-{{wazuhVersion}}.msi; msiexec.exe /i ${env:tmp}\wazuh-agent-{{wazuhVersion}}.msi /q 
+                  WAZUH_MANAGER='{{config.managerIp}}' 
                   WAZUH_REGISTRATION_SERVER='{{config.managerIp}}'
                 </div>
                 <div flex class="euiCallOut euiCallOut--info wz-margin-top-17">
