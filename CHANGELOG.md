@@ -3,7 +3,7 @@
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
 
-## Wazuh v4.3.0 - Splunk Enterprise v8.1.4, v8.1.6, v8.2.2 - Revision 4301
+## Wazuh v4.3.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4301
 
 ### Added
 
@@ -29,6 +29,8 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
 - Refactored branding color styles to improve maintainability [#1236](https://github.com/wazuh/wazuh-splunk/pull/1236)
 - Changed Wazuh API's name to its alias in the quick settings selector [#1243](https://github.com/wazuh/wazuh-splunk/pull/1243)
+- Changed register windows agent command [#1315](https://github.com/wazuh/wazuh-splunk/pull/1315)
+- Extended the MITRE alerts section [#1234](https://github.com/wazuh/wazuh-splunk/issues/1234)
 
 ### Fixed
 
@@ -50,6 +52,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed import CDB list file [#1266](https://github.com/wazuh/wazuh-splunk/pull/1266)
 - Fixed header menu height style issue [#1282](https://github.com/wazuh/wazuh-splunk/pull/1282)
 - Fixed an error on the search string used on the Alerts Summary table on the Overview > Vulnerability section, causing the table to showno data [#1283](https://github.com/wazuh/wazuh-splunk/issues/1264)
+- Fixed not allowing to see view settings without permission [#1316](https://github.com/wazuh/wazuh-splunk/pull/1316)
 
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 
