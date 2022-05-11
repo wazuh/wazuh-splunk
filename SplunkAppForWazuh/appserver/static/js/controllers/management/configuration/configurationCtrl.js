@@ -141,10 +141,15 @@ define(['../../module', '../../../utils/config-handler'], function (
           else return this.isAllowed('MANAGER_UPDATE_CONFIG', ['RESOURCELESS'])
         }
 
-        // True if the request on the resolver was successful
-
-        this.scope.canReadCluster = this.clusterInfo && this.clusterInfo?.clusterEnabled && this.scope.nodes.length > 0 
-
+        this.scope.canReadConfig = () => {
+          if (this.scope.selectedNode)
+            return this.isAllowed(
+              'CLUSTER_READ',
+              ['NODE_ID'],
+              [this.scope.selectedNode]
+            )
+          else return this.isAllowed('MANAGER_READ', ['RESOURCELESS'])
+        }
       } catch (error) {
         this.notification.showErrorToast(error)
       }

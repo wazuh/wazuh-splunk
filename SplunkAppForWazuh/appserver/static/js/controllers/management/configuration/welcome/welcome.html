@@ -1,5 +1,5 @@
 <wz-rbac-prompt
-  permissions="(isManager && canReadCluster) || (!isManager && canReadAgents)">
+  permissions="(isManager && canReadConfig()) || (!isManager && canReadAgents)">
   <div flex="auto" layout="column" ng-if="configurationTab === 'welcome'">
     <div
       ng-if="agent && agent.id !== '000'"
