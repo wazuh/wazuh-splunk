@@ -2,6 +2,11 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.3.1 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4302
+
+### Fixed
+
+- Fixed the appearance of a toast message related to the forwarder when there is no data of agents and the agent deployment guide is displayed in the `Agents` section [#1320](https://github.com/wazuh/wazuh-splunk/pull/1320)
 
 ## Wazuh v4.3.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4301
 
