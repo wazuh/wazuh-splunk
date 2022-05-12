@@ -240,20 +240,21 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        self.logger.debug("manager: reading App's info.")
+        app_info = {}
         try:
-            self.logger.debug("manager: Getting app info.")
-            stanza = cli.getConfStanza('package', 'app')
-            data_temp = stanza
-            stanza = cli.getConfStanza('package', 'splunk')
-            data_temp['splunk_version'] = stanza['version']
-            parsed_data = jsonbak.dumps(data_temp)
+            app_info = {
+                'version': cli.getConfStanza('app', 'launcher')['version'],
+                'revision': cli.getConfStanza('app', 'install')['build'],
+                'splunk_version': cli.getConfStanza('package', 'splunk')['version']
+            }
         except Exception as e:
-            return jsonbak.dumps(
-                {
-                    'error': str(e)
-                }
-            )
-        return parsed_data
+            self.logger.error("manager: error reading App's info." + str(e))
+            app_info = {
+                'error': str(e)
+            }
+        finally:
+            return jsonbak.dumps(app_info)
 
     @expose_page(must_login=False, methods=['GET'])
     def get_api(self, **kwargs):
@@ -728,7 +729,7 @@ class manager(controllers.BaseController):
             v_split = wazuh_version.split('.')
             wazuh_version = str(v_split[0]+"."+v_split[1])
 
-            app_version = cli.getConfStanza('package', 'app')['version']
+            app_version = cli.getConfStanza('app', 'launcher')['version']
             a_split = app_version.split('.')
             app_version = str(a_split[0]+"."+a_split[1])
 
