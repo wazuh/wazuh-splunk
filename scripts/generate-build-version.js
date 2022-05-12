@@ -44,8 +44,8 @@ function updateAppVersionServiceFile() {
       return console.log(error)
     }
 
-    // Generate the new metadataApp object.
-    let metadata = 'const metadataApp = ' + JSON_CONTENT + '\n\n'
+    // Generate the new UI_METADATA object.
+    let metadata = 'const UI_METADATA = ' + JSON_CONTENT + '\n\n'
     // Get the merging point position.
     let definePos = data.indexOf('define(')
     // Get the remaining file content.
