@@ -1,99 +1,116 @@
 const fs = require('fs')
 const packageJson = require('../package.json')
-const { version, revision } = packageJson
+const { version, revision, splunk } = packageJson
 
-const jsonData = {
-  version,
-  revision,
+// ------------------------------------------------------------------------- //
+//  Removes any indentation.
+//  src: https://stackoverflow.com/questions/25924057/multiline-strings-that-dont-break-indentation
+// ------------------------------------------------------------------------- //
+function dedent(aString) {
+  return aString.replace(/  +/g, '')
 }
 
-const jsonContent = JSON.stringify(jsonData, null, 2)
+// ------------------------------------------------------------------------- //
+//  Writes the given data to the specified file.
+//  Overwrites file if it exists.
+// ------------------------------------------------------------------------- //
+function writeFile(file, data, applyDedent = false, encoding = 'utf8') {
+  if (applyDedent) {
+    data = dedent(data);
+  }
 
-fs.readFile(
-  './SplunkAppForWazuh/appserver/static/js/services/app-version/appVersionService.js',
-  'utf8',
-  function (err, data) {
+  fs.writeFile(file, data, encoding, function (err) {
     if (err) {
-      console.log('An error occurred while read file')
+      console.log(`An error occurred while writing JSON Object to ${file}`)
       return console.log(err)
     }
 
-    // file content
-    let appVersionServiceFile = data
-    // new metadata version and revision
-    let newMetadata = 'const metadataApp = ' + jsonContent + '\n\n'
-    // get content without const version and revision
-    let definePos = data.indexOf('define(')
-    let fileWithOutMeta = appVersionServiceFile.substring(
-      definePos,
-      appVersionServiceFile.length
-    )
-    // added new version and revision in file content
-    let updateFileContent = newMetadata + fileWithOutMeta
+    console.log(`${file} file has been saved with latest version number`)
+  })
+}
 
-    // write meta json with last version
-    fs.writeFile(
-      './SplunkAppForWazuh/appserver/static/js/services/app-version/appVersionService.js',
-      updateFileContent,
-      'utf8',
-      function (err) {
-        if (err) {
-          console.log('An error occurred while writing data in file')
-          return console.log(err)
-        }
+// ------------------------------------------------------------------------- //
+//  Update appVersionService.js with latest Wazuh version and revision number.
+// ------------------------------------------------------------------------- //
+function updateAppVersionServiceFile() {
+  const FILE = './SplunkAppForWazuh/appserver/static/js/services/app-version/appVersionService.js'
+  const JSON_CONTENT = JSON.stringify({version, revision}, null, 2)
 
-        console.log('app meta has been saved with latest version number')
-      }
-    )
-  }
-)
-
-//replaces package.conf with last
-fs.readFile(
-  './SplunkAppForWazuh/default/package.conf',
-  'utf-8',
-  function (err, data) {
-    if (err) {
-      console.log(err)
-      return
+  // Read the file and strip the metadata out.
+  fs.readFile(FILE, 'utf8', function(error, data) {
+    // Abort on error.
+    if (error) {
+      console.log('An error occurred while read file')
+      return console.log(error)
     }
 
-    var confLines = data.split('\n')
-    let currentSection = ''
-
-    // replace version and revision inside [app] delimitation
-    confLines.forEach((item, index) => {
-      if (item.match(/\[[^\]]*]/g)) {
-        currentSection = item
-      } else {
-        if (currentSection === '[app]') {
-          if (item.includes('version'))
-            confLines[index] = 'version = ' + jsonData.version
-          if (item.includes('revision'))
-            confLines[index] = 'revision = ' + jsonData.revision
-        }
-      }
-    })
-
-    let packageConf = confLines.join('\n')
-
-    // write in package.conf
-    fs.writeFile(
-      './SplunkAppForWazuh/default/package.conf',
-      packageConf,
-      'utf8',
-      function (err) {
-        if (err) {
-          console.log(
-            'An error occurred while writing JSON Object to package.conf'
-          )
-          return console.log(err)
-        }
-
-        console.log(
-          'package.conf file has been saved with latest version number'
-        )
-      }
+    // Generate the new metadataApp object.
+    let metadata = 'const metadataApp = ' + JSON_CONTENT + '\n\n'
+    // Get the merging point position.
+    let definePos = data.indexOf('define(')
+    // Get the remaining file content.
+    let fileWithoutMeta = data.substring(
+      definePos,
+      data.length
     )
-  }
-)
+    // Merge both file contents together.
+    let updatedFileContent = metadata + fileWithoutMeta
+
+    // Update file. Writes to disk.
+    writeFile(FILE, updatedFileContent)
+  })
+}
+
+// ------------------------------------------------------------------------- //
+//  Update package.conf with latest supported Splunk minor version.
+// ------------------------------------------------------------------------- //
+function updatePackageConfFile() {
+  const FILE = './SplunkAppForWazuh/default/package.conf'
+
+  let template = `\
+    [splunk]
+    version = ${splunk}
+  `
+
+  // Update file. Writes to disk.
+  writeFile(FILE, template, true)
+}
+
+// ------------------------------------------------------------------------- //
+//  Update app.conf with latest Wazuh version and App's revision number.
+// ------------------------------------------------------------------------- //
+function updateAppConfFile() {
+  const FILE = './SplunkAppForWazuh/default/app.conf'
+
+  let template = `\
+    [ui]
+    is_visible = 1
+    label = Wazuh
+
+    [launcher]
+    version = ${version}
+    author = info@wazuh.com
+    description = Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
+
+    [package]
+    id = SplunkAppForWazuh
+    check_for_updates = 1
+
+    [install]
+    build = ${revision}
+
+    [triggers]
+    reload.package = simple
+    reload.config = simple
+  `
+
+  // Update file. Writes to disk.
+  writeFile(FILE, template, true)
+}
+
+// ------------------------------------------------------------------------- //
+//  Main
+// ------------------------------------------------------------------------- //
+updatePackageConfFile()
+updateAppConfFile()
+updateAppVersionServiceFile()
