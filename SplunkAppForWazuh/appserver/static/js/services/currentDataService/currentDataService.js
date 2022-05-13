@@ -261,11 +261,13 @@ define(['../module'], function (module) {
       }
 
       /**
-       * Checks if the Splunk Version are the same that the Wazuh version
+       * Checks if the Wazuh API version and App versions match.
+       * @param {String} appVersion App's version as mayor.minor.patch
+       * @returns 
        */
-      const checkWazuhVersion = async () => {
+      const checkWazuhVersion = async (appVersion) => {
         try {
-          return await $apiMgrService.checkWazuhVersion()
+          return await $apiMgrService.checkWazuhVersion(appVersion)
         } catch (error) {
           return Promise.reject(error)
         }

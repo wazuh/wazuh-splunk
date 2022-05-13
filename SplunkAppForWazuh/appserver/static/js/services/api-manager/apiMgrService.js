@@ -242,7 +242,7 @@ define(['../module'], function (module) {
         } catch (err) {
           if (err.status === 500) {
             throw new Error(
-              'There was an error connecting to the api. Please check your api configuration.'
+              'There was an error connecting to the API. Please check your API configuration.'
             )
           }
           return Promise.reject(err)
@@ -336,31 +336,19 @@ define(['../module'], function (module) {
       /**
        * Checks if the Splunk Version are the same that the Wazuh version
        */
-      const checkWazuhVersion = async () => {
+      const checkWazuhVersion = async (appVersion) => {
         try {
-          const wazuhVersion = await $requestService.apiReq('/version')
-          const appVersion = await $requestService.httpReq(
-            'GET',
-            '/manager/app_info'
-          )
-          if (
-            wazuhVersion.data &&
-            wazuhVersion.data.data &&
-            !wazuhVersion.data.error &&
-            appVersion.data &&
-            appVersion.data.version &&
-            !appVersion.data.error
-          ) {
-            const wv = wazuhVersion.data.data
-            const av = appVersion.data.version
-            const wazuhSplit = wv.split('v')[1].split('.')
-            const appSplit = av.split('.')
+          const result = await $requestService.apiReq('/')
 
-            if (
-              wazuhSplit[0] !== appSplit[0] ||
-              wazuhSplit[1] !== appSplit[1]
-            ) {
-              throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
+          if (result.data && result.data.data && !result.data.error) {
+            const APIversion = result.data.data.api_version
+            console.log(appVersion)
+            console.log(APIversion)
+
+            if (appVersion === APIversion) {
+              throw new Error(
+                `Unexpected Wazuh version. App version: ${appVersion}, Wazuh version: ${APIversion}`
+              )
             }
           }
         } catch (error) {
