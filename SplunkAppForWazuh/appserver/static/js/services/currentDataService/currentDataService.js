@@ -260,19 +260,6 @@ define(['../module'], function (module) {
         }
       }
 
-      /**
-       * Checks if the Wazuh API version and App versions match.
-       * @param {String} appVersion App's version as mayor.minor.patch
-       * @returns 
-       */
-      const checkWazuhVersion = async (appVersion) => {
-        try {
-          return await $apiMgrService.checkWazuhVersion(appVersion)
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-
       return {
         getPollintState: getPollintState,
         getBaseUrl: getBaseUrl,
@@ -308,7 +295,6 @@ define(['../module'], function (module) {
         setExtensionsById: setExtensionsById,
         addApi: addApi,
         getReportingStatus: getReportingStatus,
-        checkWazuhVersion: checkWazuhVersion,
         getSourceType: getSourceType,
         setSourceType: setSourceType,
       }

@@ -111,7 +111,6 @@ define(['../module'], function (module) {
         return $apiIndexStorageService.setApi(api)
       }
 
-
       /**
        * Returns the API filter (manager.name / cluster.name)
        */
@@ -333,29 +332,6 @@ define(['../module'], function (module) {
         }
       }
 
-      /**
-       * Checks if the Splunk Version are the same that the Wazuh version
-       */
-      const checkWazuhVersion = async (appVersion) => {
-        try {
-          const result = await $requestService.apiReq('/')
-
-          if (result.data && result.data.data && !result.data.error) {
-            const APIversion = result.data.data.api_version
-            console.log(appVersion)
-            console.log(APIversion)
-
-            if (appVersion === APIversion) {
-              throw new Error(
-                `Unexpected Wazuh version. App version: ${appVersion}, Wazuh version: ${APIversion}`
-              )
-            }
-          }
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-
       const resolveCurrentApi = async () => {
         let [currentApi, apiList] = await Promise.all([getApi(), getApiList()])
 
@@ -400,7 +376,6 @@ define(['../module'], function (module) {
         getApi: getApi,
         setApi: setApi,
         addApi: addApi,
-        checkWazuhVersion: checkWazuhVersion,
         resolveCurrentApi: resolveCurrentApi,
         setSourceType: setSourceType,
         getSourceType: getSourceType,
