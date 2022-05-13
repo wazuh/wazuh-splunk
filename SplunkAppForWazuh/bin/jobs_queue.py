@@ -80,7 +80,7 @@ class JobsQueue():
             The API to edit.
         """
         try:
-            self.logger.debug("bin.jobs_queuee: Updating job.")
+            self.logger.debug("bin.jobs_queue: Updating job.")
             if not '_key' in job:
                 raise Exception('Missing Key')
             id = job['_key']
@@ -115,7 +115,7 @@ class JobsQueue():
             The API to be removed.
         """
         try:
-            self.logger.debug("bin.jobs_queuee: Removing job.")
+            self.logger.debug("bin.jobs_queue: Removing job.")
             if not _key:
                 raise Exception('Missing ID in remove JobQueue module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
@@ -147,7 +147,7 @@ class JobsQueue():
             The authorized session key
         """
         try:
-            # self.logger.debug("bin.jobs_queuee: Getting all jobs.")
+            # self.logger.debug("bin.jobs_queue: Getting all jobs.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             result = self.session.get(
