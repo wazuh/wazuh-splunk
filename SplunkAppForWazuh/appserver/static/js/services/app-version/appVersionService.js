@@ -1,56 +1,63 @@
-const metadataApp = {
-  "version": "4.3.0",
-  "revision": "4303"
+const UI_METADATA = {
+  version: '4.3.0',
+  revision: '4303',
 }
 
 define(['../module'], function (module) {
   'use strict'
-  module.metadata = metadataApp
-  module.constant('APP_META', {
-    version: module.metadata.version,
-    revision: module.metadata.revision,
-  })
-  module.service('$appVersionService', function (APP_META) {
-    let appInfo = { revision: '', version: '', splunk_version: '' }
+  module.metadata = UI_METADATA
+  module.constant('UI_METADATA', UI_METADATA)
+
+  module.service('$appVersionService', function (UI_METADATA) {
+    let backend_metadata = { revision: '', version: '', splunk_version: '' }
     let documentationAppVersion = ''
-    const getAppVersion = () => {
-      return appInfo
-    }
 
     /**
-     * Set the info about the app and splunk
+     * Set the backends metadata.
+     *  - Supported Wazuh's version.
+     *  - Supported Splunk's version.
+     *  - App's revision number.
      */
     const setAppInfo = (info) => {
-      appInfo = info
-      const [major, minor] = appInfo.version.split('.')
+      backend_metadata = info
+      const [major, minor] = backend_metadata.version.split('.')
       documentationAppVersion = [major, minor].join('.')
     }
 
+    /**
+     * Returns the backend metadata
+     * @returns Object with revision, version and splunk_version as keys.
+     */
+    const getAppInfo = () => {
+      return backend_metadata
+    }
+
+    /**
+     * Returns the Wazuh major and minor versions to be used in the links
+     * to the documentation.
+     *
+     * Examples: 4.3, 4.4
+     *
+     * @returns String
+     */
     const getDocumentationVersion = () => {
       return documentationAppVersion
     }
 
-    const getAppMetaData = () => {
-      return APP_META
+    /**
+     * Checks whether the App's frontend and backend revision numbers mismatch.
+     *
+     * @returns true if the versions DO NOT match, false if they do.
+     */
+    function appRevisionsMismatch() {
+      return UI_METADATA.revision !== backend_metadata.revision
     }
 
-    function getDiffAppVersions() {
-      const appVersion = this.getAppMetaData()
-      const appPackageVersion = this.getAppVersion()
-
-      return (
-        appVersion.version !== appPackageVersion.version ||
-        appVersion.revision !== appPackageVersion.revision
-      )
-    }
-
-    const service = {
-      getAppVersion: getAppVersion,
+    return {
       setAppInfo: setAppInfo,
+      getAppInfo: getAppInfo,
       getDocumentationVersion: getDocumentationVersion,
-      getAppMetaData: getAppMetaData,
-      getDiffAppVersions: getDiffAppVersions,
+      appRevisionsMismatch: appRevisionsMismatch,
     }
-    return service
   })
 })
