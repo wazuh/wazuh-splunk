@@ -19,7 +19,8 @@ define(['./module'], function (module) {
       $appVersionService,
       $notificationService
     ) {
-      //Go to last state or to a specified tab if "currentTab" param is specified in the url
+      // Go to last state or to a specified tab if "currentTab" param 
+      // is specified in the url
       $navigationService.manageState()
 
       async function getAppVersion() {
@@ -29,7 +30,7 @@ define(['./module'], function (module) {
             '/manager/app_info'
           )
           $appVersionService.setAppInfo(result.data)
-          //compare app and backend versions
+          // Compare app and backend versions
           if ($appVersionService.getDiffAppVersions()) {
             $rootScope.$broadcast('showAppVersionsDiff', {
               hasDiffVersions: true,
@@ -60,7 +61,8 @@ define(['./module'], function (module) {
               $currentDataService.getSourceType().sourceType
             }", "implicit":true}`
           )
-          // If change the primary state and do not receive an error the two below code lines clear the warning message
+          // If change the primary state and do not receive an error 
+          // the two below code lines clear the warning message.
           window.localStorage.setItem('wazuhIsReady', 'true')
           $rootScope.wazuhNotReadyYet = false
           $rootScope.wazuhCouldNotBeRecovered = false
@@ -86,7 +88,8 @@ define(['./module'], function (module) {
         }
       }
 
-      // Check secondary states when Wazuh is not ready to prevent change the state
+      // Check secondary states when Wazuh is not ready to prevent 
+      // changing the state.
       $transitions.onBefore({}, async (trans) => {
         const to = trans.to().name
         if (
@@ -138,8 +141,8 @@ define(['./module'], function (module) {
         } else if (to !== 'discover') {
           $rootScope.$broadcast('stateChanged', to)
         }
-        //Select secondary states
 
+        // Select secondary states
         if (to.startsWith('agent') || to.startsWith('ag-')) {
           if (
             from !== 'agents' &&
@@ -159,8 +162,10 @@ define(['./module'], function (module) {
         } else if (to.startsWith('security')) {
           $rootScope.$broadcast('stateChanged', 'security')
         }
+
         // This selects "api" tab when there some state transition error.
-        // It solves that another setting tab could appear as selected when show the view of "api" tab.
+        // It solves that another setting tab could appear as selected when 
+        // show the view of "api" tab.
         if (to === 'settings.api') {
           $rootScope.$broadcast('changeSettingsTab', { tabName: 'api' })
         }
@@ -177,7 +182,8 @@ define(['./module'], function (module) {
         }
       })
 
-      // When access to a state and Wazuh is not ready is detected, this funcion checks if is a secondary state, if it is, go to primary state
+      // When access to a state and Wazuh is not ready is detected, this 
+      // function checks if is a secondary state, if it is, go to primary state
       const toPrimaryState = (to) => {
         if (to.startsWith('ag-') || to.startsWith('agent-')) {
           $state.go('agents')

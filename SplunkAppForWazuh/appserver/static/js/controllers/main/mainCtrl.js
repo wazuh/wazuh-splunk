@@ -46,12 +46,25 @@ define([
         this.scope.$applyAsync()
       })
 
-      // show warning notification diff version backend front end
-      this.scope.$on('showAppVersionsDiff', (_event, _data) => {
+      // Show a warning toast if the App's revisions numbers on the 
+      // frontend and the backend do not match.
+      // @reads_event APP_REVISION_MISMATCH
+      this.scope.$on('APP_REVISION_MISMATCH', (_event, _data) => {
         this.noticacionService.showWarningToast(
           'Warning: Versions Conflict</br>' +
           'The version of the Wazuh App in your browser does not match the \
            App\'s version installed in Splunk. Please, clear your browser\'s cache.'
+        )
+      })
+
+      // Show a warning toast if the App's versions and the 
+      // Wazuh API version do not match.
+      // @reads_event WAZUH_VERSION_MISMATCH
+      this.scope.$on('WAZUH_VERSION_MISMATCH', (_event, data) => {
+        this.noticacionService.showWarningToast(
+          'Warning: Versions Conflict</br>' +
+          'The version of the Wazuh App does not match the Wazuh API version.</br>' +
+          `App version: ${data.appVersion}, Wazuh version: ${data.APIversion}`
         )
       })
 
