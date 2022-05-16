@@ -41,5 +41,5 @@
   },
   "version": "4.3.1",
   "revision": "4304",
-  "splunk": "8.2.x"
+  "splunk": "8.1.x"
 }
