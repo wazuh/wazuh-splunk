@@ -30,7 +30,7 @@
 2. Go to the Splunk WUI main page and click on the **gear** icon (Manage Apps), at the sidebar.
 3. Click on the `Install App from file` button.
 4. Select and upload the downloaded App package.
-5. Check the `Upgrade App` chekbox if a Wazuh App is already installed.
+5. Check the `Upgrade App` checkbox if a Wazuh App is already installed.
 6. Click on `Upload`. An Indexer restart might be required.
 
 ### Using the Command Line Interface (CLI)
