@@ -74,7 +74,6 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
         
         // More info in:
         // https://docs.splunk.com/DocumentationStatic/WebFramework/1.5/compref_splunkresultsmodel.html#top
-        this.getSearch().finish = this.getSearch().attributes.data.isDone
         const resultModel = this.search.data('results')
         resultModel.on('data', (data) => {
           try {
@@ -93,7 +92,6 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
         })
       })
 
-      this.submittedTokenModel.on(`change:${this.token}`, () => {})
 
       this.initSearch()
     }
