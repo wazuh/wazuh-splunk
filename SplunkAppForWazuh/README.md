@@ -1,127 +1,55 @@
-# Splunk app for Wazuh
+# Splunk App for Wazuh
 
 [![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://wazuh.com/community/join-us-on-slack/)
 [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)
 [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
 [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
 
-Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
-
----
-
-![Overview](../SplunkOverview.png)
-
+ The Wazuh App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
+* * *
+![Overview](SplunkOverview.png)
 ### Documentation
 
-- [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installation-guide/installing-splunk/index.html)
+- [Wazuh App for Splunk installation guide](https://documentation.wazuh.com/current/deployment-options/splunk/index.html)
 
 ## Branches
 
-- `stable` branch on correspond to the last Wazuh app stable version.
+- `stable` branch on correspond to the last Wazuh App stable version.
 - `master` branch contains the latest code, be aware of possible bugs on this branch.
 
-### Requisites
+## Installation and Upgrade
 
-1. An already installed Wazuh Manager with access to the API.
-2. **Splunk Universal Forwarder** where Wazuh Manager is installed.
-3. At least one **Splunk Enterprise indexer**.
+### Requirements
+1. A Wazuh Manager with a running and accesible API.
+2. A __Splunk Universal Forwarder__ installed along with the Wazuh Manager.
+3. At least one __Splunk Enterprise Indexer__.
 
-## Installation 
+### Using the Web User Interface (WUI)
+
+1. Download the App package that matches your installation (Wazuh and Splunk version, check the [Compatibilty Matrix](#compatibility-matrix)).
+2. Go to the Splunk WUI main page and click on the **gear** icon (Manage Apps), at the sidebar.
+3. Click on the `Install App from file` button.
+4. Select and upload the downloaded App package.
+5. Check the `Upgrade App` chekbox if a Wazuh App is already installed.
+6. Click on `Upload`. An Indexer restart might be required.
+
+### Using the Command Line Interface (CLI)
+
+1. Download the App package that matches your installation (Wazuh and Splunk version, check the [Compatibilty Matrix](#compatibility-matrix)).
+2. If an older App is already installed, remove it using the Splunk binary:
+    
+    ```bash
+    $SPLUNK_HOME/bin/splunk remove app SplunkAppForWazuh
+    ```
+3. Install the App:
+
+    ```bash
+    $SPLUNK_HOME/bin/splunk install app <downloaded_package>
+    ```
 
 ### Compatibility Matrix
 
-| Splunk version | Wazuh version     | Installation                                                   |
-| :------------: | :---------------: | :--------------------------------------------------------------|
-|      8.2.2     |       4.2.5       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.5_8.2.2-1.tar.gz>  |
-|      8.1.4     |       4.2.5       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.5_8.1.4-1.tar.gz>  |
-|      8.2.2     |       4.2.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.4_8.2.2-1.tar.gz>  |
-|      8.1.4     |       4.2.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.4_8.1.4-1.tar.gz>  |
-|      8.2.2     |       4.2.3       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.3_8.2.2-1.tar.gz>  |
-|      8.1.4     |       4.2.3       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.3_8.1.4-1.tar.gz>  |
-|      8.2.2     |       4.2.2       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.2_8.2.2-1.tar.gz>  |
-|      8.1.4     |       4.2.2       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.2_8.1.4-1.tar.gz>  |
-|      8.1.4     |       4.2.1       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.1_8.1.4-1.tar.gz>  |
-|      8.1.3     |       4.2.1       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.1_8.1.3-1.tar.gz>  |
-|      8.1.3     |       4.2.1       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.1_8.1.2-1.tar.gz>  |
-|      8.1.4     |       4.2.0       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.0_8.1.4-1.tar.gz>  |
-|      8.1.3     |       4.2.0       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.0_8.1.3-1.tar.gz>  |
-|      8.1.2     |       4.2.0       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.2.0_8.1.2-1.tar.gz>  |
-|      8.1.4     |       4.1.5       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.5_8.1.4-1.tar.gz>  |
-|      8.1.3     |       4.1.5       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.5_8.1.3-1.tar.gz>  |
-|      8.1.2     |       4.1.5       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.5_8.1.2-1.tar.gz>  |
-|      8.1.2     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.1.2-1.tar.gz>  |
-|      8.1.1     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.1.1-1.tar.gz>  |
-|      8.1.0     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.1.0-1.tar.gz>  |
-|      8.0.8     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.8-1.tar.gz>  |
-|      8.0.7     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.7-1.tar.gz>  |
-|      8.0.6     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.6-1.tar.gz>  |
-|      8.0.5     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.5-1.tar.gz>  |
-|      8.0.4     |       4.1.4       | <https://packages.wazuh.com/4.x/ui/splunk/wazuh_splunk-4.1.4_8.0.4-1.tar.gz>  |
-|      8.0.4     |       3.13.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.2_8.0.4.tar.gz> |
-|      8.0.4     |       3.13.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.1_8.0.4.tar.gz> |
-|      8.0.2     |       3.13.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.0_8.0.2.tar.gz> |
-|      8.0.2     |       3.12.3      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.3_8.0.2.tar.gz> |
-|      8.0.2     |       3.12.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.2_8.0.2.tar.gz> |
-|      8.0.2     |       3.12.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.1_8.0.2.tar.gz> |
-|      8.0.2     |       3.12.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.0_8.0.2.tar.gz> |
-|      8.0.1     |       3.11.4      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.4_8.0.1.tar.gz> |
-|      8.0.1     |       3.11.3      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.3_8.0.1.tar.gz> |
-|      8.0.1     |       3.11.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.2_8.0.1.tar.gz> |
-|      8.0.0     |       3.11.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.1_8.0.0.tar.gz> |
-|      8.0.0     |       3.11.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.0_8.0.0.tar.gz> |
-|      7.3.5     |       3.13.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.1_7.3.5.tar.gz> |
-|      7.3.5     |       3.13.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.13.0_7.3.5.tar.gz> |
-|      7.3.4     |       3.12.3      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.3_7.3.4.tar.gz> |
-|      7.3.4     |       3.12.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.2_7.3.4.tar.gz> |
-|      7.3.4     |       3.12.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.1_7.3.4.tar.gz> |
-|      7.3.4     |       3.12.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.12.0_7.3.4.tar.gz> |
-|      7.3.4     |       3.11.4      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.4_7.3.4.tar.gz> |
-|      7.3.4     |       3.11.3      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.3_7.3.4.tar.gz> |
-|      7.3.4     |       3.11.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.2_7.3.4.tar.gz> |
-|      7.3.2     |       3.11.1      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.1_7.3.2.tar.gz> |
-|      7.3.2     |       3.11.0      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.11.0_7.3.2.tar.gz> |
-|      8.0.0     |       3.10.2      | <https://packages.wazuh.com/3.x/splunkapp/wazuhapp-splunk-3.10.2_8.0.0.tar.gz> |
-|      7.3.0     |       3.10.2      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.2_7.3.0.tar.gz> |
-|      7.3.0     |       3.10.1      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.1_7.3.0.tar.gz> |
-|      7.3.0     |       3.10.0      | <https://packages.wazuh.com/3.x/splunkapp/v3.10.0_7.3.0.tar.gz> |
-|      7.3.0     |       3.9.5       | <https://packages.wazuh.com/3.x/splunkapp/v3.9.5_7.3.0.tar.gz> |
-|      7.3.0     |       3.9.4       | <https://packages.wazuh.com/3.x/splunkapp/v3.9.4_7.3.0.tar.gz> |
-|      7.3.0     |       3.9.3       | <https://packages.wazuh.com/3.x/splunkapp/v3.9.3_7.3.0.tar.gz> |
-|      7.3.0     |       3.9.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.9.2_7.3.0.tar.gz> |
-|      7.3.0     |       3.9.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.9.1_7.3.0.tar.gz> |
-|      7.2.6     |       3.9.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.9.1_7.2.6.tar.gz> |
-|      7.2.6     |       3.9.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.9.0_7.2.6.tar.gz> |
-|      7.2.6     |       3.8.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.6.tar.gz> |
-|      7.2.5     |       3.8.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.5.tar.gz> |
-|      7.2.4     |       3.8.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.4.tar.gz> |
-|      7.2.3     |       3.8.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.2_7.2.3.tar.gz> |
-|      7.2.3     |       3.8.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.1_7.2.3.tar.gz> |
-|      7.2.3     |       3.8.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.8.0_7.2.3.tar.gz> |
-|      7.2.1     |       3.7.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.2_7.2.1.tar.gz> |
-|      7.2.1     |       3.7.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.1_7.2.1.tar.gz> |
-|      7.2.1     |       3.7.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.1.tar.gz> |
-|      7.2.0     |       3.7.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.7.0_7.2.0.tar.gz> |
-|      7.1.3     |       3.6.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.6.1_7.1.3.tar.gz> |
-|      7.1.2     |       3.6.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.6.0_7.1.2.tar.gz> |
-|      7.1.2     |       3.5.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.5.0_7.1.2.tar.gz> |
-|      7.1.2     |       3.4.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.4.0_7.1.2.tar.gz> |
-|      7.1.1     |       3.3.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.3.1_7.1.1.tar.gz> |
-|      7.1.1     |       3.3.0       | <https://packages.wazuh.com/3.x/splunkapp/v3.3.0_7.1.1.tar.gz> |
-|      7.1.1     |       3.2.4       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.4_7.1.1.tar.gz> |
-|      7.1.1     |       3.2.3       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.3_7.1.1.tar.gz> |
-|      7.1.1     |       3.2.2       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.2_7.1.1.tar.gz> |
-|      7.0.3     |       3.2.1       | <https://packages.wazuh.com/3.x/splunkapp/v3.2.1_7.0.3.tar.gz> |
-
-
-## Upgrade
-
-Remove the app using splunk plugin tool
-
-    $SPLUNK_HOME/bin/splunk remove app SplunkAppForWazuh
-
-Install the app
-
-     $SPLUNK_HOME/bin/splunk install app <last package file>
+The compatibility matrix is avaliable in the repository [wiki](https://github.com/wazuh/wazuh-splunk/wiki/Compatibility).
 
 ## Contribute
 
@@ -129,7 +57,7 @@ If you want to contribute to our project please don't hesitate to send a pull re
 
 ## Copyright & License
 
-Copyright (C) 2015-2019 Wazuh, Inc.
+Copyright (C) 2015-2022 Wazuh, Inc.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
@@ -137,6 +65,6 @@ Find more information about this on the [LICENSE](LICENSE) file.
 
 ## References
 
-- [Wazuh website](https://wazuh.com)
-- [Wazuh documentation](https://documentation.wazuh.com)
-- [Splunk documentation](http://docs.splunk.com/Documentation)
+-   [Wazuh website](https://wazuh.com)
+-   [Wazuh documentation](https://documentation.wazuh.com)
+-   [Splunk documentation](http://docs.splunk.com/Documentation)
