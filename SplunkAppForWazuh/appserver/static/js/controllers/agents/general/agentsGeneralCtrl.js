@@ -68,6 +68,13 @@ define([
         $urlTokenModel,
         $notificationService
       )
+      
+      const DEFAULT_METRIC_VALUES = '-'
+      this.scope.totalAlerts = DEFAULT_METRIC_VALUES
+      this.scope.levelTwelve = DEFAULT_METRIC_VALUES
+      this.scope.authFailure = DEFAULT_METRIC_VALUES
+      this.scope.authSuccess = DEFAULT_METRIC_VALUES
+
       this.scope.reportingEnabled = reportingEnabled
       this.requestService = $requestService
       this.notification = $notificationService

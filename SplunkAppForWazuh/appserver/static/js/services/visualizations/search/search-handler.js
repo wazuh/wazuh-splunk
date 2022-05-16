@@ -61,7 +61,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
       })
 
       this.getSearch().on('search:error', (error) => {
-        console.error(error)
+        console.error('search:error', error)
       })
 
       this.getSearch().on('search:progress', () => {
@@ -70,39 +70,65 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
         }
       })
 
-      this.getSearch().on('search:done', () => {
+      this.getSearch().on('search:done', (param1, param2, param3) => {
         if (this.loading) {
           this.scope[this.loadingBindedValue] = false
         }
-        const result = this.submittedTokenModel.get(this.token)
-        if (
-          result &&
-          result !== value &&
-          typeof result !== 'undefined' &&
-          result !== 'undefined'
-        ) {
-          this.scope[bindedValue] = result
-        } else {
-          this.scope[bindedValue] = '0'
-          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
-        }
-        this.scope.$applyAsync()
+        
+        const tableData = this.search.data('results')
+        tableData.on('change', (param1, param2, param3) => {
+          const result = this.submittedTokenModel.get(this.token)
+          console.log('onChange', param1, param2, param3)
+        })
+        tableData.on('data', (data) => {
+          try {
+            if (data.hasData()) {
+              const result = this.submittedTokenModel.get(this.token)
+              
+              this.fields = tableData._data.fields
+              this.getSearch().finish = true
+              this.scope[bindedValue] = result
+              this.scope.$applyAsync()
+            } else {
+              this.getSearch().finish = false
+            }
+          } catch (err) {
+            console.error('Error fetching table data ', err)
+          }
+        })
+        tableData.on('error', (err) => {
+          console.error(err)
+        })
+        
+
+        // if (
+        //   result &&
+        //   result !== value &&
+        //   typeof result !== 'undefined' &&
+        //   result !== 'undefined'
+        // ) {
+        //   this.scope[bindedValue] = result
+        // } else {
+        //   this.scope[bindedValue] = '0'
+        //   this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
+        // }
+        // this.scope.$applyAsync()
       })
 
-      this.submittedTokenModel.on(`change:${this.token}`, () => {
-        const loadedTokenJS = this.submittedTokenModel.get(this.token)
-        if (
-          loadedTokenJS &&
-          loadedTokenJS !== value &&
-          typeof loadedTokenJS !== 'undefined' &&
-          loadedTokenJS !== 'undefined'
-        ) {
-          this.scope[bindedValue] = loadedTokenJS
-        } else {
-          this.scope[bindedValue] = '0'
-          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
-        }
-        this.scope.$applyAsync()
+      this.submittedTokenModel.on(`change:${this.token}`, (param1, param2, param3) => {
+        // const loadedTokenJS = this.submittedTokenModel.get(this.token)
+        // if (
+        //   loadedTokenJS &&
+        //   loadedTokenJS !== value &&
+        //   typeof loadedTokenJS !== 'undefined' &&
+        //   loadedTokenJS !== 'undefined'
+        // ) {
+        //   this.scope[bindedValue] = loadedTokenJS
+        // } else {
+        //   this.scope[bindedValue] = '0'
+        //   this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
+        // }
+        // this.scope.$applyAsync()
       })
 
       this.initSearch()
