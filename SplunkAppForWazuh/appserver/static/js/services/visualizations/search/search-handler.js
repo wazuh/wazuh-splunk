@@ -4,9 +4,6 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
 ) {
   'use strict'
 
-  const FORWARDER_ERROR =
-    'Unable to retrieve results. It may be due to a connection problem with the Splunk forwarder,\nplease try restarting this service.'
-
   return class SearchHandler extends Viz {
     /**
      * Builds a SearchHandler (Metrics) instance
@@ -70,66 +67,33 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
         }
       })
 
-      this.getSearch().on('search:done', (param1, param2, param3) => {
+      this.getSearch().on('search:done', () => {
         if (this.loading) {
           this.scope[this.loadingBindedValue] = false
         }
         
-        const tableData = this.search.data('results')
-        tableData.on('change', (param1, param2, param3) => {
-          const result = this.submittedTokenModel.get(this.token)
-          console.log('onChange', param1, param2, param3)
-        })
-        tableData.on('data', (data) => {
+        // More info in:
+        // https://docs.splunk.com/DocumentationStatic/WebFramework/1.5/compref_splunkresultsmodel.html#top
+        this.getSearch().finish = this.getSearch().attributes.data.isDone
+        const resultModel = this.search.data('results')
+        resultModel.on('data', (data) => {
           try {
             if (data.hasData()) {
               const result = this.submittedTokenModel.get(this.token)
-              
-              this.fields = tableData._data.fields
-              this.getSearch().finish = true
+              this.fields = resultModel._data.fields
               this.scope[bindedValue] = result
               this.scope.$applyAsync()
-            } else {
-              this.getSearch().finish = false
             }
           } catch (err) {
             console.error('Error fetching table data ', err)
           }
         })
-        tableData.on('error', (err) => {
-          console.error(err)
+        resultModel.on('error', (err) => {
+          console.error('Search Handler - onError: ', err)
         })
-        
-
-        // if (
-        //   result &&
-        //   result !== value &&
-        //   typeof result !== 'undefined' &&
-        //   result !== 'undefined'
-        // ) {
-        //   this.scope[bindedValue] = result
-        // } else {
-        //   this.scope[bindedValue] = '0'
-        //   this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
-        // }
-        // this.scope.$applyAsync()
       })
 
-      this.submittedTokenModel.on(`change:${this.token}`, (param1, param2, param3) => {
-        // const loadedTokenJS = this.submittedTokenModel.get(this.token)
-        // if (
-        //   loadedTokenJS &&
-        //   loadedTokenJS !== value &&
-        //   typeof loadedTokenJS !== 'undefined' &&
-        //   loadedTokenJS !== 'undefined'
-        // ) {
-        //   this.scope[bindedValue] = loadedTokenJS
-        // } else {
-        //   this.scope[bindedValue] = '0'
-        //   this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
-        // }
-        // this.scope.$applyAsync()
-      })
+      this.submittedTokenModel.on(`change:${this.token}`, () => {})
 
       this.initSearch()
     }
