@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/inputs/dropdown-input',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -38,6 +38,11 @@ define([
      * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} pciTabs
+     * @param {*} reportingEnabled
+     * @param {*} gdprExtensionEnabled
+     * @param {*} hipaaExtensionEnabled
+     * @param {*} nistExtensionEnabled
      */
     constructor(
       $urlTokenModel,
@@ -50,14 +55,16 @@ define([
       reportingEnabled,
       gdprExtensionEnabled,
       hipaaExtensionEnabled,
-      nistExtensionEnabled
+      nistExtensionEnabled,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.gdprExtensionEnabled = gdprExtensionEnabled
@@ -69,14 +76,14 @@ define([
 
       this.dropdown = new Dropdown(
         'dropDownInput',
-        `${this.filters} sourcetype=wazuh rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
+        `${this.filters} rule.pci_dss{}="*"| stats count by "rule.pci_dss{}" | sort "rule.pci_dss{}" ASC | fields - count`,
         'rule.pci_dss{}',
         '$form.pci$',
         'dropDownInput',
         this.scope
       )
       this.dropdownInstance = this.dropdown.getElement()
-      this.dropdownInstance.on('change', newValue => {
+      this.dropdownInstance.on('change', (newValue) => {
         if (newValue && this.dropdownInstance)
           $urlTokenModel.handleValueChange(this.dropdownInstance)
       })
@@ -88,7 +95,7 @@ define([
         this.agent.data.data.id
       )
         this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+          `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
 
       this.filters = this.getFilters()
@@ -99,68 +106,68 @@ define([
          */
         new ColumnChart(
           'pciReqSearchVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$"  | stats count by rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'pciReqSearchVizz',
           this.scope
         ),
         new PieChart(
           'groupsVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$" | top limit=5 rule.groups{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'groupsVizz',
           this.scope
         ),
         new PieChart(
           'topRules',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$" | top limit=5 rule.description | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'topRules',
           this.scope
         ),
         new PieChart(
           'top5Pcidss',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$" | top limit=5 rule.pci_dss{} | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'top5Pcidss',
           this.scope
         ),
         new PieChart(
           'ruleLevelDistribution',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$" | stats count by rule.level | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'ruleLevelDistribution',
           this.scope
         ),
         new ColumnChart(
           'reqByAgentsVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
+          `${this.filters} rule.pci_dss{}="$pci$" agent.name=*| chart  count(rule.pci_dss{}) by rule.pci_dss{},agent.name | rename count as "Count", rule.pci_dss{} as "Requirements"`,
           'reqByAgentsVizz',
           this.scope
         ),
         new Table(
           'alertsSummaryVizz',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryVizz',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
+          `${this.filters} rule.pci_dss{}="$pci$" | stats count sparkline by agent.name, rule.pci_dss{}, rule.description | sort count DESC | rename agent.name as "Agent Name", rule.pci_dss{} as Requirement, rule.description as "Rule description", count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
       try {
         this.agentReportData = {
-          ID: this.agent.data.data.id,
-          Name: this.agent.data.data.name,
-          IP: this.agent.data.data.ip,
-          Version: this.agent.data.data.version,
-          Manager: this.agent.data.data.manager,
-          OS: this.agent.data.data.os.name,
-          dateAdd: this.agent.data.data.dateAdd,
-          lastKeepAlive: this.agent.data.data.lastKeepAlive,
-          group: this.agent.data.data.group.toString()
+          ID: this.agent.data.data.affected_items[0].id,
+          Name: this.agent.data.data.affected_items[0].name,
+          IP: this.agent.data.data.affected_items[0].ip,
+          Version: this.agent.data.data.affected_items[0].version,
+          Manager: this.agent.data.data.affected_items[0].manager,
+          OS: this.agent.data.data.affected_items[0].os.name,
+          dateAdd: this.agent.data.data.affected_items[0].dateAdd,
+          lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -181,7 +188,7 @@ define([
             'groupsVizz',
             'topRules',
             'reqByAgentsVizz',
-            'alertsSummaryVizz'
+            'alertsSummaryVizz',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -195,11 +202,19 @@ define([
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
-          ? this.agent.data.data
+          ? this.agent.data.data.affected_items[0]
           : { error: true }
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      // Capitalize Status
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
+      }
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 

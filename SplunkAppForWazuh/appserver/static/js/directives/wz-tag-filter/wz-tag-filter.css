@@ -12,6 +12,9 @@
 /* -------------------------------------------------------------------------- */
 /* ----------- Wazuh search and filter by tags bar stylesheet --------------- */
 /* -------------------------------------------------------------------------- */
+
+@import '../../../css/styles/variables.css';
+
 #wz-search-filter-bar {
   padding: 8px;
   margin-top: 15px;
@@ -20,10 +23,10 @@
 #wz-search-filter-bar > .fa-search {
   padding: 8px 3px;
   float: left;
-  opacity: .5;
+  opacity: 0.5;
   width: calc(0% + 25px);
 }
-.fa-search-margin { 
+.fa-search-margin {
   margin-left: 10px;
   margin-top: 7px;
 }
@@ -49,13 +52,13 @@
   display: flex;
 }
 .wz-tag-item {
-  color: #396e3e;
+  color: var(--primary-color);
   border-radius: 3px;
   display: inline-block;
   padding: 3px 5px;
   background: white;
   margin: 1px 3px;
-  border: solid 1px #396e3e !important;
+  border: solid 1px var(--primary-color) !important;
 }
 .wz-tag-item-connector {
   font-size: 10px;
@@ -99,7 +102,7 @@
   padding: 10px;
 }
 .wz-search-filter-bar-autocomplete ul {
-  list-style: none!important;
+  list-style: none !important;
   margin: 0;
 }
 .wz-search-filter-bar-autocomplete ul li {
@@ -112,6 +115,6 @@
 .wz-search-filter-bar-autocomplete ul li:hover,
 .wz-search-filter-bar-autocomplete ul li.selected {
   background: black;
-  color: #396e3e;
+  color: var(--primary-color);
   cursor: pointer;
 }

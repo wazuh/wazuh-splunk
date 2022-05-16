@@ -1,142 +1,257 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'alerts'" ng-init="(!agent || agent.id === '000') ? switchConfigurationSubTab('general-alerts') : switchConfigurationSubTab('labels')">
-
+<div
+  flex="auto"
+  layout="column"
+  ng-if="configurationTab === 'alerts'"
+  ng-init="(!agent || agent.id === '000') ? switchConfigurationSubTab('general-alerts') : switchConfigurationSubTab('labels')">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
       <!-- <span class="font-size-18">Alerts</span> -->
-      <span ng-if="!agent || agent.id === '000'" class="font-size-18">Alerts</span>
-      <span ng-if="agent && agent.id !== '000'" class="font-size-18">Labels</span>
+      <span ng-if="!agent || agent.id === '000'" class="font-size-18"
+        >Alerts</span
+      >
+      <span ng-if="agent && agent.id !== '000'" class="font-size-18"
+        >Labels</span
+      >
     </div>
-    <span ng-if="!agent || agent.id === '000'"  >Settings related to the alerts and their format</span>
-    <span ng-if="agent && agent.id !== '000'"  >User-defined information about the agent included
-      in alerts</span>
+    <span ng-if="!agent || agent.id === '000'"
+      >Settings related to the alerts and their format</span
+    >
+    <span ng-if="agent && agent.id !== '000'"
+      >User-defined information about the agent included in alerts</span
+    >
   </div>
   <!-- End headline -->
 
   <!-- Alerts navigation bar -->
-  <md-nav-bar ng-if="!agent || agent.id === '000'" class="wz-nav-bar" md-selected-nav-item="configurationSubTab"
+  <md-nav-bar
+    ng-if="!agent || agent.id === '000'"
+    class="wz-nav-bar"
+    md-selected-nav-item="configurationSubTab"
     nav-bar-aria-label="Alerts navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('general-alerts')" name="general-alerts">General</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('labels')" name="labels">Labels</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('email-alerts')" name="email-alerts">Email
-      alerts</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('reports')" name="reports">Reports</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('syslog')" name="syslog">Syslog output</md-nav-item>
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('general-alerts')"
+      name="general-alerts"
+      >General</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('labels')"
+      name="labels"
+      >Labels</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('email-alerts')"
+      name="email-alerts"
+      >Email alerts</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('reports')"
+      name="reports"
+      >Reports</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('syslog')"
+      name="syslog"
+      >Syslog output</md-nav-item
+    >
   </md-nav-bar>
   <!-- End Alerts navigation bar -->
 
-<!-- Loading bar -->
-<div class="loader-bar" ng-show="load">
-  <div class="loader"></div>
-</div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="load">
+    <div class="loader"></div>
+  </div>
   <!-- This section contains the main content and the right sidenav -->
-  <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'email-alerts'">
-
+  <div
+    flex="auto"
+    layout="row"
+    ng-if="!load && configurationSubTab === 'email-alerts'">
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['mail-alerts']" ng-if="currentConfig['mail-alerts'] && isString(currentConfig['mail-alerts'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig['mail-alerts'] && !isString(currentConfig['mail-alerts']) && (!currentConfig['mail-alerts'].email_alerts || !currentConfig['mail-alerts'].email_alerts.length)">  </wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['mail-alerts']"
+      ng-if="currentConfig['mail-alerts'] && isString(currentConfig['mail-alerts'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig['mail-alerts'] && !isString(currentConfig['mail-alerts']) && (!currentConfig['mail-alerts'].email_alerts || !currentConfig['mail-alerts'].email_alerts.length)">
+    </wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['mail-alerts'] && !isString(currentConfig['mail-alerts']) && currentConfig['mail-alerts'].email_alerts && currentConfig['mail-alerts'].email_alerts.length">
-
+    <div
+      class="configuration-margin-top"
+      flex
+      layout="column"
+      ng-if="currentConfig['mail-alerts'] && !isString(currentConfig['mail-alerts']) && currentConfig['mail-alerts'].email_alerts && currentConfig['mail-alerts'].email_alerts.length">
       <!-- The main card will all the settings -->
-      <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
+      <md-card
+        flex="auto"
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent">
         <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Granular email alert options</span>
+                <span class="md-subheader small"
+                  >Granular email alert options</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <div flex="auto" layout="row" class="wz-margin-top-10">
-
             <!-- List container -->
             <div flex="30" layout="column">
-
               <md-list flex="auto" class="wz-item-list">
-                <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['mail-alerts'].email_alerts">{{item.email_to}}</md-list-item>
+                <md-list-item
+                  class="wz-text-link"
+                  ng-click="updateSelectedItem($index)"
+                  ng-repeat="item in currentConfig['mail-alerts'].email_alerts"
+                  >{{item.email_to}}</md-list-item
+                >
               </md-list>
-
             </div>
             <!-- End list container -->
 
             <!-- Detail container -->
-            <div flex layout="column" ng-if="currentConfig['mail-alerts'].email_alerts.length">
-
+            <div
+              flex
+              layout="column"
+              ng-if="currentConfig['mail-alerts'].email_alerts.length">
               <div flex="auto" class="wz-item-detail">
-                <wz-config-item label="Send alerts to this email address" value="currentConfig['mail-alerts'].email_alerts[selectedItem].email_to">
+                <wz-config-item
+                  label="Send alerts to this email address"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].email_to">
                 </wz-config-item>
-                <wz-config-item label="Minimum severity level to send the alert by email" value="currentConfig['mail-alerts'].email_alerts[selectedItem].level">
+                <wz-config-item
+                  label="Minimum severity level to send the alert by email"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].level">
                 </wz-config-item>
-                <wz-config-item label="Send only alerts that belong to one of these groups" value="currentConfig['mail-alerts'].email_alerts[selectedItem].group">
+                <wz-config-item
+                  label="Send only alerts that belong to one of these groups"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].group">
                 </wz-config-item>
-                <wz-config-item label="Send alerts when they match this event location" value="currentConfig['mail-alerts'].email_alerts[selectedItem].event_location">
+                <wz-config-item
+                  label="Send alerts when they match this event location"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].event_location">
                 </wz-config-item>
-                <wz-config-item label="Format for email alerts" value="currentConfig['mail-alerts'].email_alerts[selectedItem].format">
+                <wz-config-item
+                  label="Format for email alerts"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].format">
                 </wz-config-item>
-                <wz-config-item label="Send only alerts that belong to one of these rule IDs" value="currentConfig['mail-alerts'].email_alerts[selectedItem].rule_id">
+                <wz-config-item
+                  label="Send only alerts that belong to one of these rule IDs"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].rule_id">
                 </wz-config-item>
-                <wz-config-item label="Disable delayed email delivery" value="currentConfig['mail-alerts'].email_alerts[selectedItem].do_not_delay">
+                <wz-config-item
+                  label="Disable delayed email delivery"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].do_not_delay">
                 </wz-config-item>
-                <wz-config-item label="Disable alerts grouping into the same email" value="currentConfig['mail-alerts'].email_alerts[selectedItem].do_not_group">
+                <wz-config-item
+                  label="Disable alerts grouping into the same email"
+                  value="currentConfig['mail-alerts'].email_alerts[selectedItem].do_not_group">
                 </wz-config-item>
               </div>
-
             </div>
             <!-- End detail container -->
           </div>
-
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/index.html">How
-          to configure email alerts</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/smtp_authentication.html">How
-          to configure authenticated SMTP server</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/email_alerts.html">Email
-          alerts reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/manual-email-report/index.html"
+          >How to configure email alerts</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/manual-email-report/smtp_authentication.html"
+          >How to configure authenticated SMTP server</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/email_alerts.html"
+          >Email alerts reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
   <!-- This section contains the main content and the right sidenav -->
-  <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'general-alerts'">
-
+  <div
+    flex="auto"
+    layout="row"
+    ng-if="!load && configurationSubTab === 'general-alerts'">
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['analysis-alerts']" ng-if="currentConfig['analysis-alerts'] && isString(currentConfig['analysis-alerts'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig['analysis-alerts'] && !isString(currentConfig['analysis-alerts']) && !currentConfig['analysis-alerts'].alerts"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['analysis-alerts']"
+      ng-if="currentConfig['analysis-alerts'] && isString(currentConfig['analysis-alerts'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig['analysis-alerts'] && !isString(currentConfig['analysis-alerts']) && !currentConfig['analysis-alerts'].alerts"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig['analysis-alerts'] && !isString(currentConfig['analysis-alerts']) && currentConfig['analysis-alerts'].alerts">
-
+    <div
+      flex
+      layout="column"
+      ng-if="currentConfig['analysis-alerts'] && !isString(currentConfig['analysis-alerts']) && currentConfig['analysis-alerts'].alerts">
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
         <md-card-content class="overflow-auto">
@@ -148,64 +263,107 @@
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <wz-config-item label="Minimum severity level to store the alert" value="currentConfig['analysis-alerts'].alerts.log_alert_level">
+            <wz-config-item
+              label="Minimum severity level to store the alert"
+              value="currentConfig['analysis-alerts'].alerts.log_alert_level">
             </wz-config-item>
-            <wz-config-item label="Minimum severity level to send the alert by email" value="currentConfig['analysis-alerts'].alerts.email_alert_level">
+            <wz-config-item
+              label="Minimum severity level to send the alert by email"
+              value="currentConfig['analysis-alerts'].alerts.email_alert_level">
             </wz-config-item>
-            <wz-config-item label="Enable GeoIP lookups" value="currentConfig['analysis-alerts'].use_geoip || 'no'">
+            <wz-config-item
+              label="Enable GeoIP lookups"
+              value="currentConfig['analysis-alerts'].use_geoip || 'no'">
             </wz-config-item>
-
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/getting-started/use-cases.html">Use
-          cases about alerts generation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/alerts.html">Alerts
-          reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/getting-started/use-cases.html"
+          >Use cases about alerts generation</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/alerts.html"
+          >Alerts reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
   <!-- This section contains the main content and the right sidenav -->
-  <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'labels'">
-
+  <div
+    flex="auto"
+    layout="row"
+    ng-if="!load && configurationSubTab === 'labels'">
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']" ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && !isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']) && !hasSize(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'].labels)"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']"
+      ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && !isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']) && !hasSize(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'].labels)"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && !isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']) && hasSize(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'].labels)">
-
+    <div
+      flex
+      layout="column"
+      ng-if="currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'] && !isString(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels']) && hasSize(currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'].labels)">
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
         <md-card-content class="overflow-auto">
@@ -214,130 +372,207 @@
               <span class="font-size-16">Defined labels</span>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+            <table
+              class="table table-striped table-condensed"
+              style="table-layout: fixed !important">
               <thead class="wz-text-bold">
                 <th class="wz-text-left">Label key</th>
                 <th class="wz-text-left">Label value</th>
                 <th class="wz-text-left">Hidden</th>
               </thead>
               <tbody class="wz-word-wrap">
-                <tr ng-repeat="currentLabel in currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'].labels">
-                    <td>{{ currentLabel.key }}</td>
-                    <td>{{ currentLabel.value }}</td>
-                    <td>{{ currentLabel.hidden }}</td>
+                <tr
+                  ng-repeat="currentLabel in currentConfig[(agent && agent.id !== '000') ? 'agent-labels' : 'analysis-labels'].labels">
+                  <td>{{ currentLabel.key }}</td>
+                  <td>{{ currentLabel.value }}</td>
+                  <td>{{ currentLabel.hidden }}</td>
                 </tr>
               </tbody>
             </table>
-
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/labels.html">Labels
-          documentation</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/labels.html">Labels
-          reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/labels.html"
+          >Labels documentation</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/labels.html"
+          >Labels reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
   <!-- This section contains the main content and the right sidenav -->
-  <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'reports'">
-
+  <div
+    flex="auto"
+    layout="row"
+    ng-if="!load && configurationSubTab === 'reports'">
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['monitor-reports']" ng-if="currentConfig['monitor-reports'] && isString(currentConfig['monitor-reports'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig['monitor-reports'] && !isString(currentConfig['monitor-reports']) && (!currentConfig['monitor-reports'].reports || !currentConfig['monitor-reports'].reports.length)"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['monitor-reports']"
+      ng-if="currentConfig['monitor-reports'] && isString(currentConfig['monitor-reports'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig['monitor-reports'] && !isString(currentConfig['monitor-reports']) && (!currentConfig['monitor-reports'].reports || !currentConfig['monitor-reports'].reports.length)"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig['monitor-reports'] && !isString(currentConfig['monitor-reports']) && currentConfig['monitor-reports'].reports && currentConfig['monitor-reports'].reports.length">
-
+    <div
+      flex
+      layout="column"
+      ng-if="currentConfig['monitor-reports'] && !isString(currentConfig['monitor-reports']) && currentConfig['monitor-reports'].reports && currentConfig['monitor-reports'].reports.length">
       <!-- The main card will all the settings -->
-      <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
+      <md-card
+        flex="auto"
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent">
         <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Daily reports about alerts</span>
+                <span class="md-subheader small"
+                  >Daily reports about alerts</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- The container for both list and detail -->
           <div flex="auto" layout="row" class="wz-margin-top-10">
-
             <!-- List container -->
             <div flex="30" layout="column">
-
               <md-list flex="auto" class="wz-item-list">
-                <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['monitor-reports'].reports">{{
-                  item.title }}</md-list-item>
+                <md-list-item
+                  class="wz-text-link"
+                  ng-click="updateSelectedItem($index)"
+                  ng-repeat="item in currentConfig['monitor-reports'].reports"
+                  >{{ item.title }}</md-list-item
+                >
               </md-list>
-
             </div>
             <!-- End list container -->
 
             <!-- Detail container -->
-            <div flex layout="column" ng-if="currentConfig['monitor-reports'].reports.length">
+            <div
+              flex
+              layout="column"
+              ng-if="currentConfig['monitor-reports'].reports.length">
               <div flex="auto" class="wz-item-detail">
-
-                <wz-config-item label="Report name" value="currentConfig['monitor-reports'].reports[selectedItem].title">
+                <wz-config-item
+                  label="Report name"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].title">
                 </wz-config-item>
-                <wz-config-item is-array="true" label="Send report to this email addresses" value="currentConfig['monitor-reports'].reports[selectedItem].mail_to">
+                <wz-config-item
+                  is-array="true"
+                  label="Send report to this email addresses"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].mail_to">
                 </wz-config-item>
-                <wz-config-item label="Include logs when creating a report" value="currentConfig['monitor-reports'].reports[selectedItem].showlogs">
+                <wz-config-item
+                  label="Include logs when creating a report"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].showlogs">
                 </wz-config-item>
-                <wz-config-item label="Filter by this group" value="currentConfig['monitor-reports'].reports[selectedItem].group">
+                <wz-config-item
+                  label="Filter by this group"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].group">
                 </wz-config-item>
-                <wz-config-item label="Filter by this category" value="currentConfig['monitor-reports'].reports[selectedItem].category">
+                <wz-config-item
+                  label="Filter by this category"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].category">
                 </wz-config-item>
-                <wz-config-item label="Filter by this rule ID" value="currentConfig['monitor-reports'].reports[selectedItem].rule">
+                <wz-config-item
+                  label="Filter by this rule ID"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].rule">
                 </wz-config-item>
-                <wz-config-item label="Filter by this alert level and above" value="currentConfig['monitor-reports'].reports[selectedItem].level">
+                <wz-config-item
+                  label="Filter by this alert level and above"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].level">
                 </wz-config-item>
-                <wz-config-item label="Filter by this log location" value="currentConfig['monitor-reports'].reports[selectedItem].location">
+                <wz-config-item
+                  label="Filter by this log location"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].location">
                 </wz-config-item>
-                <wz-config-item label="Filter by this source IP address" value="currentConfig['monitor-reports'].reports[selectedItem].srcip">
+                <wz-config-item
+                  label="Filter by this source IP address"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].srcip">
                 </wz-config-item>
-                <wz-config-item label="Filter by this user name" value="currentConfig['monitor-reports'].reports[selectedItem].user">
+                <wz-config-item
+                  label="Filter by this user name"
+                  value="currentConfig['monitor-reports'].reports[selectedItem].user">
                 </wz-config-item>
-
               </div>
-
             </div>
             <!-- End detail container -->
           </div>
@@ -346,43 +581,72 @@
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/automatic-reports.html">How
-          to generate automatic reports</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/reports.html">Reports
-          reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/automatic-reports.html"
+          >How to generate automatic reports</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/reports.html"
+          >Reports reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
 
   <!-- This section contains the main content and the right sidenav -->
-  <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'syslog'">
-
+  <div
+    flex="auto"
+    layout="row"
+    ng-if="!load && configurationSubTab === 'syslog'">
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['csyslog-csyslog']" ng-if="currentConfig['csyslog-csyslog'] && isString(currentConfig['csyslog-csyslog'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog']) || (!currentConfig['csyslog-csyslog'].syslog_output || !currentConfig['csyslog-csyslog'].syslog_output.length)"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['csyslog-csyslog']"
+      ng-if="currentConfig['csyslog-csyslog'] && isString(currentConfig['csyslog-csyslog'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="(currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog'])) && (!currentConfig['csyslog-csyslog'].syslog_output || !currentConfig['csyslog-csyslog'].syslog_output.length)"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog']) && currentConfig['csyslog-csyslog'].syslog_output && currentConfig['csyslog-csyslog'].syslog_output.length">
-
+    <div
+      flex
+      layout="column"
+      ng-if="currentConfig['csyslog-csyslog'] && !isString(currentConfig['csyslog-csyslog']) && currentConfig['csyslog-csyslog'].syslog_output && currentConfig['csyslog-csyslog'].syslog_output.length">
       <!-- The main card will all the settings -->
       <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent">
         <md-card-content class="overflow-auto">
@@ -390,20 +654,33 @@
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Output alerts to a syslog server</span>
+                <span class="md-subheader small"
+                  >Output alerts to a syslog server</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <table class="table table-striped table-condensed" style="table-layout: fixed !important;">
+            <table
+              class="table table-striped table-condensed"
+              style="table-layout: fixed !important">
               <thead class="wz-text-bold">
                 <th class="wz-text-left col-lg-2">Server</th>
                 <th class="wz-text-left col-lg-1">Port</th>
@@ -415,7 +692,8 @@
                 <th class="wz-text-left col-lg-2">Location</th>
               </thead>
               <tbody class="wz-word-wrap">
-                <tr ng-repeat="item in currentConfig['csyslog-csyslog'].syslog_output">
+                <tr
+                  ng-repeat="item in currentConfig['csyslog-csyslog'].syslog_output">
                   <td>{{ item.server }}</td>
                   <td>{{ item.port }}</td>
                   <td>{{ item.level }}</td>
@@ -427,37 +705,54 @@
                 </tr>
               </tbody>
             </table>
-
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/manager/manual-syslog-output.html">How
-          to configure the syslog output</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/syslog-output.html">Syslog
-          output reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/manager/manual-syslog-output.html"
+          >How to configure the syslog output</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/syslog-output.html"
+          >Syslog output reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
-
 </div>

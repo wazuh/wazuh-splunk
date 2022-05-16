@@ -1,6 +1,7 @@
 define([
   './wz-menu/wz-menu',
   './wz-table/index',
+  './wz-table-server-side/index',
   './wz-data-table/wz-data-table',
   './wz-enter/wz-enter',
   './wz-dynamic/wz-dynamic',
@@ -23,4 +24,7 @@ define([
   './wz-card-slider/wz-card-slider',
   './wz-logtest/wz-logtest',
   './wz-upload-files/wz-upload-files',
-], function() {})
+  './wz-iframe-onload/wz-iframe-onload',
+  './wz-forbidden/wz-forbidden',
+  './wz-rbac-prompt/wz-rbac-prompt',
+], function () {})

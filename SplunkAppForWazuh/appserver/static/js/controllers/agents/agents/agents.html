@@ -1,149 +1,235 @@
 <!-- End loading ring -->
-<div flex ng-if="!loading && !noAgents && !addingAgents" class="md-padding" layout="column"
-  layout-align="start space-around">
-
-  <div layout="row" layout-align="space-between stretch" ng-if="!wazuhNotReadyYet">
-
-    <div class="md-padding euiFlexGroup--wrap layout-row wz-margin-top--20">
-      <div class="layout-column md-padding">
-        <span class="wz-headline-title">
-          <wz-svg icon="hex"></wz-svg> Status
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div class="wz-margin-top-10">
-          <canvas id="bar" ng-if="lastAgent && lastAgent.id"
-            class="wz-margin-top-16 chart chart-doughnut wz-margin-bottom-10" ng-init="loadCharts('bar')">
+<wz-rbac-prompt permissions="canReadAgents">
+  <div
+    flex
+    ng-if="!loading && !noAgents && !addingAgents"
+    class="md-padding"
+    layout="column"
+    layout-align="start space-around">
+    <div
+      layout="row"
+      layout-align="space-between stretch"
+      ng-if="!wazuhNotReadyYet">
+      <div class="md-padding euiFlexGroup--wrap layout-row wz-margin-top--20">
+        <div class="layout-column md-padding">
+          <span class="wz-headline-title">
+            <wz-svg icon="hex"></wz-svg> Status
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div class="wz-margin-top-10">
+            <canvas
+              id="bar"
+              ng-if="lastAgent && lastAgent.id"
+              class="wz-margin-top-16 chart chart-doughnut wz-margin-bottom-10"
+              ng-init="loadCharts('bar')">
+            </canvas>
+          </div>
+          <div
+            layout="row"
+            class="wz-margin-top-16 layout-align-center-center"
+            ng-if="!lastAgent || !lastAgent.id">
+            There are no agents yet.
+          </div>
+          <div
+            layout="row"
+            class="wz-margin-top-16 layout-align-center-center"
+            ng-if="!lastAgent || !lastAgent.id">
+            <button
+              class="kuiButton kuiButton--success"
+              ng-click="openRegistrationDocs()">
+              <react-component name="EuiIcon" props="{type: 'help'}" /> How to
+            </button>
+          </div>
         </div>
-        <div layout="row" class="wz-margin-top-16 layout-align-center-center" ng-if="!lastAgent || !lastAgent.id">
-          There are no agents yet.
-        </div>
-        <div layout="row" class="wz-margin-top-16 layout-align-center-center" ng-if="!lastAgent || !lastAgent.id">
-          <button class="kuiButton kuiButton--success" ng-click="openRegistrationDocs()">
-            <react-component name="EuiIcon" props="{type: 'help'}" /> How to
-          </button>
+        <div flex class="layout-column md-padding">
+          <span class="wz-headline-title">
+            <wz-svg icon="burble"></wz-svg> Details
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive wz-margin-top-5">
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Active</p>
+                </div>
+                <p
+                  class="euiTitle euiTitle--small euiStat__title wz-text-align-center">
+                  {{agentsCountActive}}
+                </p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Disconnected</p>
+                </div>
+                <p
+                  class="euiTitle euiTitle--small euiStat__title wz-text-align-center">
+                  {{agentsCountDisconnected}}
+                </p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Never connected</p>
+                </div>
+                <p
+                  class="euiTitle euiTitle--small euiStat__title wz-text-align-center">
+                  {{agentsCountNeverConnected}}
+                </p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Agents coverage</p>
+                </div>
+                <p
+                  class="euiTitle euiTitle--small euiStat__title wz-text-align-center">
+                  {{(agentsCoverity | number:2)}}%
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Last registered agent</p>
+                </div>
+                <p
+                  ng-if="lastAgent.id !== '000'"
+                  ng-click="showAgent(lastAgent)"
+                  class="euiTitle euiTitle--small euiStat__title wz-text-link cursor-pointer">
+                  {{lastAgent.name}}
+                </p>
+                <p
+                  ng-if="!lastAgent || !lastAgent.id"
+                  class="euiTitle euiTitle--small euiStat__title">
+                  -
+                </p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Most active agent</p>
+                </div>
+                <p
+                  ng-if="lastAgent && lastAgent.id && mostActiveAgent.id !== '000'"
+                  ng-click="showAgent(mostActiveAgent)"
+                  class="euiTitle euiTitle--small euiStat__title wz-text-link cursor-pointer">
+                  {{mostActiveAgent}}
+                </p>
+                <p
+                  ng-if="!lastAgent || !lastAgent.id"
+                  class="euiTitle euiTitle--small euiStat__title">
+                  -
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div flex class="layout-column md-padding">
-        <span class="wz-headline-title">
-          <wz-svg icon="burble"></wz-svg> Details
-        </span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive wz-margin-top-5">
-          <div class="euiFlexItem euiFlexItem--flexGrowZero">
 
-            <div class="euiStat">
-              <div class="euiText euiText--small euiStat__description">
-                <p>Active</p>
-              </div>
-              <p class="euiTitle euiTitle--small euiStat__title">{{agentsCountActive}}</p>
-            </div>
-          </div>
-          <div class="euiFlexItem euiFlexItem--flexGrowZero">
-
-            <div class="euiStat">
-              <div class="euiText euiText--small euiStat__description">
-                <p>Disconnected</p>
-              </div>
-              <p class="euiTitle euiTitle--small euiStat__title">{{agentsCountDisconnected}}</p>
-            </div>
-          </div>
-          <div class="euiFlexItem euiFlexItem--flexGrowZero">
-
-            <div class="euiStat">
-              <div class="euiText euiText--small euiStat__description">
-                <p>Never connected</p>
-              </div>
-              <p class="euiTitle euiTitle--small euiStat__title">{{agentsCountNeverConnected}}</p>
-            </div>
-          </div>
-          <div class="euiFlexItem euiFlexItem--flexGrowZero">
-
-            <div class="euiStat">
-              <div class="euiText euiText--small euiStat__description">
-                <p>Agents coverage</p>
-              </div>
-              <p class="euiTitle euiTitle--small euiStat__title">{{(agentsCoverity | number:2)}}%</p>
-            </div>
-          </div>
-        </div>
-        <div class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
-          <div class="euiFlexItem euiFlexItem--flexGrowZero">
-
-            <div class="euiStat">
-              <div class="euiText euiText--small euiStat__description">
-                <p>Last registered agent</p>
-              </div>
-              <p ng-if="lastAgent.id !== '000'" ng-click="showAgent(lastAgent)"
-                class="euiTitle euiTitle--small euiStat__title wz-text-link cursor-pointer">
-                {{lastAgent.name}}</p>
-              <p ng-if="!lastAgent || !lastAgent.id" class="euiTitle euiTitle--small euiStat__title">
-                -</p>
-            </div>
-          </div>
-          <div class="euiFlexItem euiFlexItem--flexGrowZero">
-
-            <div class="euiStat">
-              <div class="euiText euiText--small euiStat__description">
-                <p>Most active agent</p>
-              </div>
-              <p ng-if="lastAgent && lastAgent.id && mostActiveAgent.id !== '000'" ng-click="showAgent(mostActiveAgent)"
-                class="euiTitle euiTitle--small euiStat__title wz-text-link cursor-pointer">
-                {{mostActiveAgent}}</p>
-              <p ng-if="!lastAgent || !lastAgent.id" class="euiTitle euiTitle--small euiStat__title">
-                -</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <md-card
+        flex="33"
+        class="wz-md-card"
+        ng-class="{'fullscreen': expandChartAgent}">
+        <md-card-content class="wazuh-column">
+          <span class="wz-headline-title"
+            >Agents status
+            <span
+              class="wz-text-link"
+              style="float: right"
+              ng-click="expand('agentStatusChart')">
+              <wz-svg icon="expand"></wz-svg>
+            </span>
+          </span>
+          <md-divider class="wz-margin-top-10"></md-divider>
+          <div id="agentStatusChart" ng-init="getAgentStatus()"></div>
+        </md-card-content>
+      </md-card>
     </div>
-
   </div>
 
   <!-- Search bar -->
-  <div ng-if="!loading" layout="row" layout-align="space-between stretch">
-    <wz-tag-filter flex path="'/agents'" query-fn="query(q, search)" fields-model="searchBarModel"></wz-tag-filter>
-    <button type="submit" aria-label="Search" class="btn wz-button-empty wz-margin-left-10 wz-margin-top-15"
+  <div
+    ng-if="!loading"
+    layout="row"
+    layout-align="space-between stretch"
+    class="md-margin">
+    <wz-tag-filter
+      flex
+      path="'/agents'"
+      query-fn="query(q, search)"
+      fields-model="searchBarModel"></wz-tag-filter>
+    <button
+      type="submit"
+      aria-label="Search"
+      class="btn wz-button-empty wz-margin-left-10 wz-margin-top-15"
       ng-click="reloadList()">
       <wz-svg icon="refresh"></wz-svg>
       <span>Refresh</span>
     </button>
   </div>
 
-  <md-card class="wz-md-card no-margin-sides wz-margin-top-15">
+  <md-card class="wz-md-card wz-margin-top-15">
     <!-- Table -->
-
-    <md-card-actions layout="row" layout-align="start center"
+    <md-card-actions
+      layout="row"
+      layout-align="start center"
+      ng-if="canAddAgents"
       class="layout-align-start-center layout-row wz-card-actions wz-card-actions-top md-actions-ruleset">
-      <a class="cursor-pointer green-href" ng-click="addNewAgent()">Add new agent</a>
+      <a class="cursor-pointer green-href" ng-click="addNewAgent()"
+        >Add new agent</a
+      >
     </md-card-actions>
     <md-card-contents>
-      <wazuh-table flex path="'/agents'" custom-columns="true"
-        keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
-        allow-click="true" rows-per-page="17">
-      </wazuh-table>
+      <wazuh-table-server-side
+        flex
+        path="'/agents'"
+        custom-columns="true"
+        keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version','node_name', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
+        allow-click="true"
+        rows-per-page="17">
+      </wazuh-table-server-side>
     </md-card-contents>
-
 
     <!-- Download CSV -->
     <div layout="row" class="ruleset-csv-formater">
       <span flex></span>
-      <a class="small formatted-color" id="btnDownload" ng-click="downloadCsv()">
+      <a
+        class="small formatted-color"
+        id="btnDownload"
+        ng-click="downloadCsv()">
         <wz-svg icon="download"></wz-svg>&nbsp;Formatted
       </a>
     </div>
   </md-card>
-</div>
 
-
-<!-- Register a new agent -->
-<div flex ng-if="!loading && noAgents || addingAgents" class="md-padding" layout="column"
-  layout-align="start space-around">
-  <div class="wz-margin-auto title-register-agent" ng-if="!wazuhNotReadyYet">
-    <span ng-if="noAgents" class="font-size-20">There are not agents registered</span>
-    <span ng-if="addingAgents" class="font-size-20">Add a new agent</span>
-    <span ng-if="addingAgents" class="close-register-agent cursor-pointer" ng-click="closeAddAgent()"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;close</span>
+  <!-- Register a new agent -->
+  <div
+    flex
+    ng-if="!loading && noAgents || addingAgents"
+    class="md-padding"
+    layout="column"
+    layout-align="start space-around">
+    <div class="wz-margin-auto title-register-agent" ng-if="!wazuhNotReadyYet">
+      <span ng-if="noAgents" class="font-size-20"
+        >There are no agents registered</span
+      >
+      <span ng-if="addingAgents" class="font-size-20">Add a new agent</span>
+      <span
+        ng-if="addingAgents"
+        class="close-register-agent cursor-pointer"
+        ng-click="closeAddAgent()">
+        <i class="fa fa-times" aria-hidden="true"></i>&nbsp;close
+      </span>
+    </div>
+    <wz-register-agent></wz-register-agent>
   </div>
-  <wz-register-agent></wz-register-agent>
-</div>
+</wz-rbac-prompt>

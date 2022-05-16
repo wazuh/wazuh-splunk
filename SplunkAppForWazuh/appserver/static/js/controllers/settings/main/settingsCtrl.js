@@ -1,13 +1,13 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Main {
-    constructor($scope, $navigationService, isAdmin) {
+    constructor($scope, $navigationService, isWazuhAdmin) {
       this.navigationService = $navigationService
       this.scope = $scope
       this.scope.message = 'Settings'
       this.scope.tabName = ''
-      this.scope.isAdmin = isAdmin
+      this.scope.isWazuhAdmin = isWazuhAdmin
     }
 
     $onInit() {
@@ -29,12 +29,17 @@ define(['../../module'], function(controllers) {
           this.scope.tabName = 'configuration'
       }
 
-      this.scope.switchTab = name => {
+      this.scope.switchTab = (name) => {
         this.scope.tabName = name
       }
 
       this.scope.$on('loadingContent', (event, data) => {
         this.scope.loadingContent = data.status
+        event.preventDefault()
+      })
+
+      this.scope.$on('changeSettingsTab', (event, data) => {
+        this.scope.tabName = data.tabName
         event.preventDefault()
       })
     }

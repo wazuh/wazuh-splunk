@@ -2,11 +2,289 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v3.11.0 - Splunk Enterprise v7.3.2 - Revision 45
+## Wazuh v4.3.1 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4304
+
+### Added
+
+- Added PowerShell version warning to Windows agent installation wizard [#1322](https://github.com/wazuh/wazuh-splunk/pull/1322)
+
+### Changed
+
+- The compability checks of the App has been changed in order to simplify our release flow. [#1323](https://github.com/wazuh/wazuh-splunk/pull/1323)
+
+### Fixed
+
+- Fixed the render condition of a toast message related to the forwarder when there is no data of agents and the agent deployment guide is displayed in the `Agents` section [#1320](https://github.com/wazuh/wazuh-splunk/pull/1320)
+- Fixed the access to `Management/Configuration` due to missing permissions when the manager cluster is disabled [#1318](https://github.com/wazuh/wazuh-splunk/pull/1318)
+
+## Wazuh v4.3.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4301
+
+### Added
+
+- Support for Wazuh 4.3.0
+- Added Alias field to API to facilitate distinguishing between different managers [#1166](https://github.com/wazuh/wazuh-splunk/pull/1166)
+- Ensure backwards compatibility [#1126](https://github.com/wazuh/wazuh-splunk/pull/1226)
+- Added a Security Section to manage security related configurations [#1148](https://github.com/wazuh/wazuh-splunk/issues/1148)
+- Added Crud Policies on security section. [#1171](https://github.com/wazuh/wazuh-splunk/pull/1171)
+- Added Crud Roles on security section. [#1168](https://github.com/wazuh/wazuh-splunk/pull/1168)
+- Added Crud Role Mapping on security section. [#1169](https://github.com/wazuh/wazuh-splunk/pull/1169)
+- Added Crud Users on security section. [#1173](https://github.com/wazuh/wazuh-splunk/pull/1173)
+- Created a permissions validation service. [#1147](https://github.com/wazuh/wazuh-splunk/issues/1147)
+- Implemented the access control on the App's views. [1164](https://github.com/wazuh/wazuh-splunk/issues/1164)
+- Implemented a service to fetch Wazuh's users and its roles. [#1155](https://github.com/wazuh/wazuh-splunk/issues/1155)
+- Implemented a server to fetch Splunk's users and its roles. [#1156](https://github.com/wazuh/wazuh-splunk/issues/1156)
+- Added a run_as checkbox to the API configuration [#1149](https://github.com/wazuh/wazuh-splunk/issues/1149)
+- Added the ability to use the Authorization Context login method. [#1174](https://github.com/wazuh/wazuh-splunk/pull/1174)
+- Extensions now can only be changed by Splunk Admins [#1228](https://github.com/wazuh/wazuh-splunk/issues/1228)
+
+### Changed
+
+- Wazuh rebranding [#1186](https://github.com/wazuh/wazuh-splunk/pull/1186)
+- Updated deprecated authd options [#1172](https://github.com/wazuh/wazuh-splunk/pull/1172)
+- Refactored branding color styles to improve maintainability [#1236](https://github.com/wazuh/wazuh-splunk/pull/1236)
+- Changed Wazuh API's name to its alias in the quick settings selector [#1243](https://github.com/wazuh/wazuh-splunk/pull/1243)
+- Changed register windows agent command [#1315](https://github.com/wazuh/wazuh-splunk/pull/1315)
+- Extended the MITRE alerts section [#1234](https://github.com/wazuh/wazuh-splunk/issues/1234)
+
+### Fixed
+
+- Fixed agent's name overflow in the overview [#1137](https://github.com/wazuh/wazuh-splunk/pull/1137)
+- Fixed on save rules or decoders files [#1138](https://github.com/wazuh/wazuh-splunk/pull/1138)
+- Fixed unnecessary table requests when resizing browser window [#1141](https://github.com/wazuh/wazuh-splunk/pull/1141)
+- Agent counters are now centered [#1215](https://github.com/wazuh/wazuh-splunk/pull/1215)
+- Fixed being able to add an agent without create permissions [#1216](https://github.com/wazuh/wazuh-splunk/pull/1216)
+- Fixed the underlapping navigation bar for Security options [#1217](https://github.com/wazuh/wazuh-splunk/pull/1217)
+- Fixed error when agents view is re-initialized [#1223](https://github.com/wazuh/wazuh-splunk/pull/1223)
+- Fixed not being able to see actions after adding first API [#1230](https://github.com/wazuh/wazuh-splunk/pull/1230)
+- Fixed agent status chart data disappearing [#1232](https://github.com/wazuh/wazuh-splunk/pull/1232)
+- Added data validation to the group creation process [#1256](https://github.com/wazuh/wazuh-splunk/pull/1256)
+- Implemented data validation on the CDB lists [#1261](https://github.com/wazuh/wazuh-splunk/pull/1261)
+- Fixed the agent status graph so that it shows the correct amount of agents [#1237](https://github.com/wazuh/wazuh-splunk/pull/1237) [#1244](https://github.com/wazuh/wazuh-splunk/pull/1244)
+- Fix the sorting on the Groups table columns [#1258](https://github.com/wazuh/wazuh-splunk/pull/1258)
+- Fixed non-sortable columns on the Security section tables [1260](https://github.com/wazuh/wazuh-splunk/pull/1260)
+- Fixed group report disabled configuration parameter error[#1271](https://github.com/wazuh/wazuh-splunk/pull/1271)
+- Fixed import CDB list file [#1266](https://github.com/wazuh/wazuh-splunk/pull/1266)
+- Fixed header menu height style issue [#1282](https://github.com/wazuh/wazuh-splunk/pull/1282)
+- Fixed an error on the search string used on the Alerts Summary table on the Overview > Vulnerability section, causing the table to showno data [#1283](https://github.com/wazuh/wazuh-splunk/issues/1264)
+- Fixed not allowing to see view settings without permission [#1316](https://github.com/wazuh/wazuh-splunk/pull/1316)
+
+## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
+
+### Added
+
+- Support for Wazuh 4.2.5
+
+## Wazuh v4.2.4 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4205
+
+### Added
+
+- Support for Wazuh 4.2.4
+
+## Wazuh v4.2.3 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4204
+
+### Added
+
+- Support for Wazuh 4.2.3
+
+## Wazuh v4.2.2 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4203
+
+### Added 
+
+- Added MITRE ATT&CK Framework integration [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
+- Added MITRE ATT&CK Dashboard integration [#1076](https://github.com/wazuh/wazuh-splunk/pull/1076)
+- Added CVE Dashboard [#1109](https://github.com/wazuh/wazuh-splunk/pull/1109)
+- Support for Splunk v8.1.4
+- Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
+- Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
+- Added requirement service [#1162](https://github.com/wazuh/wazuh-splunk/pull/1162)
+- Support for Splunk v8.2.2
+
+### Changed 
+
+- Upgrades jQuery version from 2.1.0 to 3.5.0 [#1118](https://github.com/wazuh/wazuh-splunk/pull/1118)
+
+### Fixed
+
+- Cannot pin search filters on Edge - Chip style collapses [#1070](https://github.com/wazuh/wazuh-splunk/pull/1070)
+- Tables without server side pagination [#1074](https://github.com/wazuh/wazuh-splunk/pull/1074)
+- Fixed gear icon in fim table [#1077](https://github.com/wazuh/wazuh-splunk/pull/1077)
+- Added cache control [#1078](https://github.com/wazuh/wazuh-splunk/pull/1078)
+- Fixed error where tables unset their loading state before finishing API calls [#1084](https://github.com/wazuh/wazuh-splunk/pull/1084)
+- Fixed search bar queries with spaces  [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
+- Fixed pinned fields ending with curly brackets [#1083](https://github.com/wazuh/wazuh-splunk/pull/1083)
+- Fixed issues for Splunk Cloud compatibility [#1099](https://github.com/wazuh/wazuh-splunk/pull/1099)
+- Fixed expand row feature in Agent File Integrity Monitoring [#1112](https://github.com/wazuh/wazuh-splunk/pull/1112)
+
+## Wazuh v4.2.1 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4202
+
+### Added 
+
+- Support for Wazuh 4.2.1
+
+## Wazuh v4.2.0 - Splunk Enterprise v8.1.2, v8.1.3 - Revision 4201
+
+### Added
+
+- Added error toast in search handler when the connection with forwarder fails [#1021](https://github.com/wazuh/wazuh-splunk/pull/1021)
+- Changed query to show alert evolution on discover [#1024](https://github.com/wazuh/wazuh-splunk/pull/1024)
+- Added link to agent view in Group Agents table [#1066](https://github.com/wazuh/wazuh-splunk/pull/1066)
+- Support for Splunk 8.1.3
+
+### Changed
+
+- Support for Python3 compatibility, deleted deprecated Python2 [#1052](https://github.com/wazuh/wazuh-splunk/pull/1052)
+- Applied latest Wazuh API changes to create group request [#1058](https://github.com/wazuh/wazuh-splunk/pull/1058)
+### Fixed
+
+- Apply Wazuh tools name changing to the wazuh-splunk [#944](https://github.com/wazuh/wazuh-splunk/issues/944)
+- Apply Wazuh daemons name changing to wazuh-splunk [#945](https://github.com/wazuh/wazuh-splunk/issues/945)
+- Fixed token cache duration [#1020](https://github.com/wazuh/wazuh-splunk/pull/1020)
+- Fixed issue with dynamic columns width for agents PDF report [#1042](https://github.com/wazuh/wazuh-splunk/pull/1042)
+- Fixed blocked app when there isn't connection with the API [#1045](https://github.com/wazuh/wazuh-splunk/pull/1045)
+- Fixed success toast saving agent configuration file with bad style [#1046](https://github.com/wazuh/wazuh-splunk/pull/1046)
+- Minor style fixes [#1059](https://github.com/wazuh/wazuh-splunk/pull/1059)
+- Added new error handler to Alerts Configuration views [#1063](https://github.com/wazuh/wazuh-splunk/pull/1063)
+- Fixed uncontrolled message error when add api fails [#1069](https://github.com/wazuh/wazuh-splunk/pull/1069)
+
+## Wazuh v4.1.5 - Splunk Enterprise v8.1.2, v8.1.3, v8.1.4 - Revision 71
+
+### Added
+
+- Support for Wazuh v4.1.5
+- Support for Splunk v8.1.2
+- Support for Splunk v8.1.3
+- Support for Splunk v8.1.4
+- Added new source type selector to customize queries used by dashboards [#1104](https://github.com/wazuh/wazuh-splunk/pull/1104)
+- Added quick settings to improve the view and selection of API, index, and source type [#1107](https://github.com/wazuh/wazuh-splunk/pull/1107)
+- Added persitence to modules in overview panel [#1134](https://github.com/wazuh/wazuh-splunk/pull/1134) [#1135](https://github.com/wazuh/wazuh-splunk/pull/1135) [#1146](https://github.com/wazuh/wazuh-splunk/pull/1146)
+- Added Agent status visualization on Agents main view [#1140](https://github.com/wazuh/wazuh-splunk/pull/1140)
+- Added validation service to compare user permissions to requirements [#1158](https://github.com/wazuh/wazuh-splunk/pull/1158)
+
+### Fixed 
+
+- Fixed missing node name for agent overview [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
+- Fixed missing columns for some tables in reports [#1103](https://github.com/wazuh/wazuh-splunk/pull/1103)
+- Fixed multiple Wazuh API token cache [#1136](https://github.com/wazuh/wazuh-splunk/pull/1136)
+- Fixed visualizations buttons tooltip positioning [#1144](https://github.com/wazuh/wazuh-splunk/pull/1144)
+
+## Wazuh v4.1.4 - Splunk Enterprise v8.1.2 - Revision 68
+
+### Added
+
+- Support for Wazuh v4.1.4
+- Support for Splunk v8.1.2
+
+### Changed
+
+**Adapt for Wazuh 4.0**
+- Support Wazuh API JWT authentication and authorization
+- Adapt for deprecated Wazuh API endpoints in 4.0 - #950
+- Adapt for Manager endpoints
+- Several cosmetic fixes
+
+**Adapt for Wazuh 4.1**
+- Adapt for new Manager and Cluster Configuration endpoints
+- Adapt for new Ruleset files endpoints
+- Adapt for new `syscheck` registry types
+- Added registry values for registry key inventory in FIM
+- Fixed regex field in Decoder detail
+- Fixed search bar on Agents table
+
+## Wazuh v3.13.2 - Splunk Enterprise v8.0.4.1 - Revision 67
+
+### Added
+
+- Support for Wazuh v3.13.2
+
+## Wazuh v3.13.1 - Splunk Enterprise v8.0.4.1 - Revision 65
+
+### Added
+
+- Support for Wazuh v3.13.1
+- Support for Splunk v8.0.4
+
+### Fixed
+
+- Update references of the field `vulnerability.reference` to `vulnerability.references` [#931](https://github.com/wazuh/wazuh-splunk/pull/931)
+- Fixed wazuh-monitoring indices on Splunk 8.0+ version [#927](https://github.com/wazuh/wazuh-splunk/issues/927)
+
+## Wazuh v3.13.0 - Splunk Enterprise v8.0.2.1 - Revision 63
+
+### Added
+
+- Support for Wazuh v3.13.0
+
+
+## Wazuh v3.12.3 - Splunk Enterprise v8.0.2.1 - Revision 61
+
+### Added
+
+- Support for Wazuh v3.12.3
+
+
+## Wazuh v3.12.2 - Splunk Enterprise v8.0.2.1 - Revision 59
+
+### Added
+
+- Support for Wazuh v3.12.2
+
+
+## Wazuh v3.12.1 - Splunk Enterprise v8.0.2.1 - Revision 58
+
+### Added
+
+- Support for Wazuh v3.12.1
+- Added new FIM settings on configuration on demand. [#912](https://github.com/wazuh/wazuh-splunk/issues/912)
+
+
+## Wazuh v3.12.0 - Splunk Enterprise v8.0.2.1 - Revision 56
+
+### Added
+
+- Support for Wazuh v3.12.0
+- Support for Splunk 8.0.2.1
+- Added azure-logs wodle configuration section [#860](https://github.com/wazuh/wazuh-splunk/issues/860)
+- Added new condition field to SCA tab [#861](https://github.com/wazuh/wazuh-splunk/issues/861)
+
+### Changed
+
+- Changed some ambiguous messages in configuration section [#879](https://github.com/wazuh/wazuh-splunk/issues/879)
+
+
+## Wazuh v3.11.4 - Splunk Enterprise v8.0.1 - Revision 54
+
+### Added
+
+- Support for Wazuh v3.11.4
+
+## Wazuh v3.11.3 - Splunk Enterprise v8.0.1 - Revision 52
+
+### Added
+
+- Support for Wazuh v3.11.3
+
+
+## Wazuh v3.11.2 - Splunk Enterprise v8.0.1 - Revision 50
+
+### Added
+
+- Support for Wazuh v3.11.2
+- Support for Splunk v8.0.1
+
+
+## Wazuh v3.11.1 - Splunk Enterprise v7.3.2, v8.0.0 - Revision 48
+
+### Added
+
+- Support for Wazuh v3.11.1
+
+
+## Wazuh v3.11.0 - Splunk Enterprise v7.3.2, v8.0.0 - Revision 46
 
 ### Added
 
 - Support for Wazuh v3.11.0
+- Support for Splunk 8.0.0
 - Allow upload rules/decoders/CDB-lists files [#828](https://github.com/wazuh/wazuh-splunk/issues/828)
 - Added new field for Log collection configuration section  [#845](https://github.com/wazuh/wazuh-splunk/issues/845)
 
@@ -21,7 +299,14 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - CDB lists section is now showing the correct name of the list [#841](https://github.com/wazuh/wazuh-splunk/issues/841)
 - Fix error when exporting group configuration [#834](https://github.com/wazuh/wazuh-splunk/issues/834)
 - Fix missing custom integrations [#855](https://github.com/wazuh/wazuh-splunk/issues/855)
+- Fix Monitored directories table in agent report [#888](https://github.com/wazuh/wazuh-splunk/issues/888)
 
+## Wazuh v3.10.2 - Splunk Enterprise v8.0.0 - Revision 45
+
+### Added
+
+- Support for Wazuh v3.10.2
+- Support for Splunk 8.0.0
 
 ## Wazuh v3.10.2 - Splunk Enterprise v7.3.0 / v7.3.1 - Revision 44
 

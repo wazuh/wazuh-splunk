@@ -1228,7 +1228,6 @@ class report(controllers.BaseController):
         return parsed_data
 
     # Print group info
-
     def print_group_info(self, group, pdf):
         pdf.ln(8)
         pdf.set_font('RobotoLight', '', 11)
@@ -1400,7 +1399,7 @@ class report(controllers.BaseController):
 
     # Sum arr of numbers
     def sum_numbers_arr(self, arr):
-        self.logger.debug("report: Sum arr of numbers")
+        self.logger.debug("report: Sum array of numbers")
         total = 0
         for i in arr:
             total = total + i
@@ -1408,7 +1407,7 @@ class report(controllers.BaseController):
 
     # Sum dic of numbers
     def sum_numbers_dic(self, dic):
-        self.logger.debug("report: Sum dic of numbers")
+        self.logger.debug("report: Sum dictionary of numbers")
         total = 0
         for key in dic.keys():
             total = total + dic[key]
@@ -1416,7 +1415,7 @@ class report(controllers.BaseController):
 
     # Excludes fields from dic
     def exclude_fields(self, fields, dic):
-        self.logger.debug("report: Excluding fields from dic")
+        self.logger.debug("report: Excluding fields from dictionary")
         dic_to_exclude = dic.copy()
         for f in fields:
             del dic_to_exclude[f]
@@ -1433,7 +1432,7 @@ class report(controllers.BaseController):
 
     # Calculates the width of the fields
     def calculate_table_width(self, pdf, table, max_width=190):
-        self.logger.debug("report: Calculating table widths.")
+        self.logger.debug("report: Calculating table widths")
         sizes = {}
         total_width = 0
         fields = table['fields']

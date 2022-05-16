@@ -9,9 +9,9 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(app) {
+define(['../module'], function (app) {
   'use strict'
-  app.directive('wzMultipleSelector', function(BASE_URL) {
+  app.directive('wzMultipleSelector', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -22,16 +22,16 @@ define(['../module'], function(app) {
         titleSelectedItems: '@',
         titleAvailableItems: '@',
         totalSelectedItems: '=',
-        reloadScroll: '&'
+        reloadScroll: '&',
       },
       controller($scope) {
-        $scope.moveItem = function(item, from, to, type) {
+        $scope.moveItem = function (item, from, to, type) {
           if (item.length > 0) {
-            item.forEach(function(elem) {
+            item.forEach(function (elem) {
               $scope.moveItem(elem, from, to, type)
             })
           } else {
-            var idx = from.findIndex(x => x.key === item.key)
+            var idx = from.findIndex((x) => x.key === item.key)
             if (idx !== -1) {
               from.splice(idx, 1)
               item.type = !item.type ? type : ''
@@ -41,7 +41,7 @@ define(['../module'], function(app) {
         }
 
         $scope.moveAll = (from, to, type) => {
-          from.forEach(item => {
+          from.forEach((item) => {
             item.type = !item.type ? type : ''
             to.push(item)
           })
@@ -54,11 +54,11 @@ define(['../module'], function(app) {
           }
         }
 
-        $scope.sort = a => {
+        $scope.sort = (a) => {
           return parseInt(a.key)
         }
 
-        $('#wzMultipleSelector select').scroll(function(ev) {
+        $('#wzMultipleSelector select').scroll(function (ev) {
           $scope.scrollList(ev.currentTarget)
         })
 
@@ -66,10 +66,10 @@ define(['../module'], function(app) {
           $scope.reloadScroll({
             element: side,
             searchTerm: term,
-            start: fromStart
+            start: fromStart,
           })
         }
-        $scope.scrollList = target => {
+        $scope.scrollList = (target) => {
           let pos = target.scrollTop + target.offsetHeight
           let max = target.scrollHeight
           if (pos >= max) {
@@ -82,7 +82,7 @@ define(['../module'], function(app) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selector/wz-multiple-selector.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-multiple-selector/wz-multiple-selector.html',
     }
   })
 })

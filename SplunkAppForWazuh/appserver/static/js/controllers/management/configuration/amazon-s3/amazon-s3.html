@@ -1,102 +1,182 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'aws-s3'" ng-init="switchConfigurationSubTab('amazon-general')">
-
+<div
+  flex="auto"
+  layout="column"
+  ng-if="configurationTab === 'aws-s3'"
+  ng-init="switchConfigurationSubTab('amazon-general')">
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
       <span class="font-size-18">Amazon S3</span>
-      <span ng-if="currentConfig['aws-s3'] && currentConfig['aws-s3'].buckets" class="wz-agent-status-indicator small teal">Enabled</span>
-      <span ng-if="!currentConfig['aws-s3'] || !currentConfig['aws-s3'].buckets"
-        class="wz-agent-status-indicator small red">Disabled</span>
+      <span
+        ng-if="currentConfig['aws-s3'] && currentConfig['aws-s3'].buckets"
+        class="wz-agent-status-indicator small teal"
+        >Enabled</span
+      >
+      <span
+        ng-if="!currentConfig['aws-s3'] || !currentConfig['aws-s3'].buckets"
+        class="wz-agent-status-indicator small red"
+        >Disabled</span
+      >
     </div>
-    <span>Security events related to Amazon AWS services, collected directly via AWS API</span>
+    <span
+      >Security events related to Amazon AWS services, collected directly via
+      AWS API</span
+    >
   </div>
   <!-- End headline -->
 
   <!-- Amazon S3 navigation bar -->
-  <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab" nav-bar-aria-label="Amazon S3 navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('amazon-general')" name="amazon-general">General</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('amazon-buckets')" name="amazon-buckets">Buckets</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('amazon-services')" ng-if="currentConfig['aws-s3'].services" name="amazon-services">Services</md-nav-item>
+  <md-nav-bar
+    class="wz-nav-bar"
+    md-selected-nav-item="configurationSubTab"
+    nav-bar-aria-label="Amazon S3 navigation links">
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('amazon-general')"
+      name="amazon-general"
+      >General</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('amazon-buckets')"
+      name="amazon-buckets"
+      >Buckets</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('amazon-services')"
+      ng-if="currentConfig['aws-s3'].services"
+      name="amazon-services"
+      >Services</md-nav-item
+    >
   </md-nav-bar>
   <!-- End Amazon S3 navigation bar -->
 
-<!-- Loading bar -->
-<div class="loader-bar" ng-show="load">
-  <div class="loader"></div>
-</div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="load">
+    <div class="loader"></div>
+  </div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig['aws-s3'] && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['wmodules-wmodules']"
+      ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig && !currentConfig['aws-s3'] && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig && currentConfig['aws-s3']">
-
-
+    <div
+      class="configuration-margin-top"
+      flex
+      layout="column"
+      ng-if="currentConfig && currentConfig['aws-s3']">
       <!-- No configuration section -->
-      <wz-no-config flex error="'not-present'" ng-if="configurationSubTab === 'amazon-buckets' && currentConfig && currentConfig['aws-s3'] && !currentConfig['aws-s3'].buckets"></wz-no-config>
+      <wz-no-config
+        flex
+        error="'not-present'"
+        ng-if="configurationSubTab === 'amazon-buckets' && currentConfig && currentConfig['aws-s3'] && !currentConfig['aws-s3'].buckets"></wz-no-config>
       <!-- End no configuration section -->
 
       <!-- Buckets card -->
-      <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'amazon-buckets' && currentConfig && currentConfig['aws-s3'] && currentConfig['aws-s3'].buckets">
+      <md-card
+        flex="auto"
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'amazon-buckets' && currentConfig && currentConfig['aws-s3'] && currentConfig['aws-s3'].buckets">
         <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Buckets</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Amazon buckets from where logs are read</span>
+                <span class="md-subheader small"
+                  >Amazon buckets from where logs are read</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- The container for both list and detail -->
           <div flex="auto" layout="row" class="wz-margin-top-10">
-
             <!-- List container -->
             <div flex="30" layout="column">
-
               <md-list flex="auto" class="wz-item-list">
-                <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['aws-s3'].buckets">{{item.name}}
-                  ({{item.aws_account_alias}})</md-list-item>
+                <md-list-item
+                  class="wz-text-link"
+                  ng-click="updateSelectedItem($index)"
+                  ng-repeat="item in currentConfig['aws-s3'].buckets"
+                  >{{item.name}} ({{item.aws_account_alias}})</md-list-item
+                >
               </md-list>
-
             </div>
             <!-- End list container -->
 
             <!-- Detail container -->
-            <div flex layout="column" ng-if="currentConfig['aws-s3'].buckets.length">
+            <div
+              flex
+              layout="column"
+              ng-if="currentConfig['aws-s3'].buckets.length">
               <div flex="auto" class="wz-item-detail">
-                <wz-config-item label="Bucket name" value="currentConfig['aws-s3'].buckets[selectedItem].name">
+                <wz-config-item
+                  label="Bucket name"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].name">
                 </wz-config-item>
-                <wz-config-item label="Bucket type" value="currentConfig['aws-s3'].buckets[selectedItem].type">
+                <wz-config-item
+                  label="Bucket type"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].type">
                 </wz-config-item>
-                <wz-config-item label="AWS account ID" value="currentConfig['aws-s3'].buckets[selectedItem].aws_account_id">
+                <wz-config-item
+                  label="AWS account ID"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].aws_account_id">
                 </wz-config-item>
-                <wz-config-item label="AWS account alias" value="currentConfig['aws-s3'].buckets[selectedItem].aws_account_alias">
+                <wz-config-item
+                  label="AWS account alias"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].aws_account_alias">
                 </wz-config-item>
-                <wz-config-item label="Profile name with read permissions" value="currentConfig['aws-s3'].buckets[selectedItem].aws_profile">
+                <wz-config-item
+                  label="Profile name with read permissions"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].aws_profile">
                 </wz-config-item>
-                <wz-config-item label="IAM ARN role to read bucket logs" value="currentConfig['aws-s3'].buckets[selectedItem].iam_role_arn">
+                <wz-config-item
+                  label="IAM ARN role to read bucket logs"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].iam_role_arn">
                 </wz-config-item>
-                <wz-config-item label="Bucket path" value="currentConfig['aws-s3'].buckets[selectedItem].path">
+                <wz-config-item
+                  label="Bucket path"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].path">
                 </wz-config-item>
-                <wz-config-item label="Parse only logs from this date onwards" value="currentConfig['aws-s3'].buckets[selectedItem].only_logs_after">
+                <wz-config-item
+                  label="Parse only logs from this date onwards"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].only_logs_after">
                 </wz-config-item>
-                <wz-config-item label="Remove bucket logs after being read" value="currentConfig['aws-s3'].buckets[selectedItem].remove_from_bucket || 'yes'">
+                <wz-config-item
+                  label="Remove bucket logs after being read"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].remove_from_bucket || 'yes'">
                 </wz-config-item>
-                <wz-config-item label="Limit log parsing to these regions" value="currentConfig['aws-s3'].buckets[selectedItem].regions">
+                <wz-config-item
+                  label="Limit log parsing to these regions"
+                  value="currentConfig['aws-s3'].buckets[selectedItem].regions">
                 </wz-config-item>
               </div>
-
             </div>
             <!-- End detail container -->
           </div>
@@ -105,138 +185,197 @@
       </md-card>
       <!-- End buckets card -->
 
-
       <!-- Services card -->
-      <md-card flex="auto" class="wz-md-card height-full"
-      ng-if="!JSONContent && !XMLContent && configurationSubTab === 'amazon-services' && currentConfig && currentConfig['aws-s3'] && currentConfig['aws-s3'].services">
-      <md-card-content flex layout="column" class="height-full">
+      <md-card
+        flex="auto"
+        class="wz-md-card height-full"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'amazon-services' && currentConfig && currentConfig['aws-s3'] && currentConfig['aws-s3'].services">
+        <md-card-content flex layout="column" class="height-full">
           <div layout="row" layout-align="start center">
-              <div>
-                  <span class="font-size-16">Services</span>
-                  <div class="wz-margin-top-10">
-                      <span class="md-subheader small">Amazon services from where logs are read</span>
-                  </div>
+            <div>
+              <span class="font-size-16">Services</span>
+              <div class="wz-margin-top-10">
+                <span class="md-subheader small"
+                  >Amazon services from where logs are read</span
+                >
               </div>
-              <span flex></span>
-              <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
-                  ng-click="getJSON()">JSON</span>
-              <span class="small">&nbsp;&centerdot;&nbsp;</span>
-              <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small"
-                  ng-click="getXML()">XML</span>
+            </div>
+            <span flex></span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
+            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
-  
-           <!-- The container for both list and detail -->
-          <div flex="auto" layout="row" class="wz-margin-top-10 min-height-300 height-full">
-  
-               <!-- List container -->
-              <div flex="30" layout="column">
-  
-                   <md-list flex="auto" class="wz-item-list">
-                      <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)"
-                          ng-repeat="item in currentConfig['aws-s3'].services">{{item.type}}</span>
-                      </md-list-item>
-                  </md-list>
-  
-               </div>
-              <!-- End list container -->
-  
-               <!-- Detail container -->
-              <div flex layout="column" ng-if="currentConfig['aws-s3'].services.length">
-                  <div flex="auto" class="wz-item-detail">
-                      <wz-config-item label="Service type"
-                          value="currentConfig['aws-s3'].services[selectedItem].type">
-                      </wz-config-item>
-                      <wz-config-item label="Profile name with read permissions"
-                          value="currentConfig['aws-s3'].services[selectedItem].aws_profile">
-                      </wz-config-item>
-                      <wz-config-item label="AWS account alias"
-                          value="currentConfig['aws-s3'].services[selectedItem].account_alias">
-                      </wz-config-item>
-                      <wz-config-item label="IAM ARN role to read bucket logs"
-                          value="currentConfig['aws-s3'].services[selectedItem].iam_role_arn">
-                      </wz-config-item>
-                      <wz-config-item label="Parse only logs from this date onwards"
-                          value="currentConfig['aws-s3'].services[selectedItem].only_logs_after">
-                      </wz-config-item>
-                      <wz-config-item label="Limit log parsing to these regions"
-                          value="currentConfig['aws-s3'].services[selectedItem].regions">
-                      </wz-config-item>
-                  </div>
-  
-               </div>
-              <!-- End detail container -->
+
+          <!-- The container for both list and detail -->
+          <div
+            flex="auto"
+            layout="row"
+            class="wz-margin-top-10 min-height-300 height-full">
+            <!-- List container -->
+            <div flex="30" layout="column">
+              <md-list flex="auto" class="wz-item-list">
+                <md-list-item
+                  class="wz-text-link"
+                  ng-click="updateSelectedItem($index)"
+                  ng-repeat="item in currentConfig['aws-s3'].services"
+                  ><span>{{item.type}}</span>
+                </md-list-item>
+              </md-list>
+            </div>
+            <!-- End list container -->
+
+            <!-- Detail container -->
+            <div
+              flex
+              layout="column"
+              ng-if="currentConfig['aws-s3'].services.length">
+              <div flex="auto" class="wz-item-detail">
+                <wz-config-item
+                  label="Service type"
+                  value="currentConfig['aws-s3'].services[selectedItem].type">
+                </wz-config-item>
+                <wz-config-item
+                  label="Profile name with read permissions"
+                  value="currentConfig['aws-s3'].services[selectedItem].aws_profile">
+                </wz-config-item>
+                <wz-config-item
+                  label="AWS account alias"
+                  value="currentConfig['aws-s3'].services[selectedItem].account_alias">
+                </wz-config-item>
+                <wz-config-item
+                  label="IAM ARN role to read bucket logs"
+                  value="currentConfig['aws-s3'].services[selectedItem].iam_role_arn">
+                </wz-config-item>
+                <wz-config-item
+                  label="Parse only logs from this date onwards"
+                  value="currentConfig['aws-s3'].services[selectedItem].only_logs_after">
+                </wz-config-item>
+                <wz-config-item
+                  label="Limit log parsing to these regions"
+                  value="currentConfig['aws-s3'].services[selectedItem].regions">
+                </wz-config-item>
+              </div>
+            </div>
+            <!-- End detail container -->
           </div>
           <!-- End container for both list and detail -->
-      </md-card-content>
-  </md-card>
+        </md-card-content>
+      </md-card>
       <!-- End services card -->
 
-
       <!-- General card -->
-      <md-card class="wz-md-card" ng-if="!JSONContent && !XMLContent && configurationSubTab === 'amazon-general'">
+      <md-card
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'amazon-general'">
         <md-card-content class="overflow-auto">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Main settings</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Common settings applied to all Amazon S3 buckets</span>
+                <span class="md-subheader small"
+                  >Common settings applied to all Amazon S3 buckets</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- Configuration block -->
           <div class="wz-padding-top-10">
-
-            <wz-config-item label="Amazon S3 integration status" value="currentConfig['aws-s3'].disabled === 'no' ? 'enabled' : 'disabled'">
+            <wz-config-item
+              label="Amazon S3 integration status"
+              value="currentConfig['aws-s3'].disabled === 'no' ? 'enabled' : 'disabled'">
             </wz-config-item>
-            <wz-config-item label="Frequency for reading from S3 buckets" value="currentConfig['aws-s3'].interval">
+            <wz-config-item
+              label="Frequency for reading from S3 buckets"
+              value="currentConfig['aws-s3'].interval">
             </wz-config-item>
-            <wz-config-item label="Run on start" value="currentConfig['aws-s3'].run_on_start">
+            <wz-config-item
+              label="Run on start"
+              value="currentConfig['aws-s3'].run_on_start">
             </wz-config-item>
-            <wz-config-item label="Remove bucket logs after being read" value="currentConfig['aws-s3'].remove_from_bucket || 'yes'">
+            <wz-config-item
+              label="Remove bucket logs after being read"
+              value="currentConfig['aws-s3'].remove_from_bucket || 'yes'">
             </wz-config-item>
-            <wz-config-item label="Skip logs that can't be processed" value="currentConfig['aws-s3'].skip_on_error">
+            <wz-config-item
+              label="Skip logs that can't be processed"
+              value="currentConfig['aws-s3'].skip_on_error">
             </wz-config-item>
-
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
       <!-- End general card -->
 
-      
       <!-- JSON && XML card-->
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/amazon/index.html">Using
-          Wazuh to monitor AWS</md-list-item>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-s3.html">Amazon
-          S3 module reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/amazon/index.html"
+          >Using Wazuh to monitor AWS</md-list-item
+        >
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/wodle-s3.html"
+          >Amazon S3 module reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
-
-
 </div>

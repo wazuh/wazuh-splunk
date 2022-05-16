@@ -12,12 +12,12 @@ the Free Software Foundation; either version 2 of the License, or
 Find more information about this on the LICENSE file.
 """
 
+import splunk
+from splunk import entity, rest
+
 import jsonbak
 import requestsbak
 from log import log
-# from splunk import AuthorizationFailed as AuthorizationFailed
-import splunk
-from splunk import entity, rest
 
 
 class JobsQueue():
@@ -38,7 +38,8 @@ class JobsQueue():
             )
             self.sessionKey = splunk.getSessionKey()
         except Exception as e:
-            self.logger.error("bin.jobs_queu: Error in queue module constructor: %s" % (e))
+            self.logger.error(
+                "bin.jobs_queue: Error in queue module constructor: %s" % (e))
 
     def insert_job(self, job, session_key=False):
         """Insert a job.
@@ -49,18 +50,25 @@ class JobsQueue():
             The job information
         str : session_key
             The authorized session key
-
         """
         try:
-            self.logger.debug("bin.jobs_queu: Inserting job.")
+            self.logger.debug("bin.jobs_queue: Inserting job.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
             job = jsonbak.dumps(job)
-            result = self.session.post(kvstoreUri, data=job, headers={
-                                       "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            result = self.session.post(
+                kvstoreUri,
+                data=job,
+                headers={
+                    "Authorization": "Splunk %s" % auth_key,
+                    "Content-Type": "application/json"
+                },
+                verify=False
+            ).json()
             return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error('bin.jobs_queu: Error inserting a job in JobsQueue module: %s ' % (e))
+            self.logger.error(
+                'bin.jobs_queue: Error inserting a job in JobsQueue module: %s ' % (e))
             return jsonbak.dumps({"error": str(e)})
 
     def update_job(self, job, session_key=False):
@@ -70,7 +78,6 @@ class JobsQueue():
         ----------
         obj : dict
             The API to edit.
-
         """
         try:
             self.logger.debug("bin.jobs_queue: Updating job.")
@@ -81,14 +88,22 @@ class JobsQueue():
             job = jsonbak.dumps(job)
             kvstoreUri = self.kvstoreUri+'/'+id+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
-            result = self.session.post(kvstoreUri, data=job, headers={
-                                       "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            result = self.session.post(
+                kvstoreUri,
+                data=job,
+                headers={
+                    "Authorization": "Splunk %s" % auth_key,
+                    "Content-Type": "application/json"
+                },
+                verify=False
+            ).json()
             if '_key' in result.keys() and result['_key'] == id:
                 return 'Job updated.'
             else:
                 raise Exception('Job cannot be updated.')
         except Exception as e:
-            self.logger.error("bin.jobs_queu: Error updating in JobsQueue module: %s" % (e))
+            self.logger.error(
+                "bin.jobs_queue: Error updating in JobsQueue module: %s" % (e))
             raise e
 
     def remove_job(self, _key, session_key=False):
@@ -98,7 +113,6 @@ class JobsQueue():
         ----------
         obj : dict
             The API to be removed.
-
         """
         try:
             self.logger.debug("bin.jobs_queue: Removing job.")
@@ -106,8 +120,13 @@ class JobsQueue():
                 raise Exception('Missing ID in remove JobQueue module')
             kvstoreUri = self.kvstoreUri+'/'+str(_key)+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
-            result = self.session.delete(kvstoreUri, headers={
-                                         "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False)
+            result = self.session.delete(
+                kvstoreUri,
+                headers={
+                    "Authorization": "Splunk %s" % auth_key,
+                    "Content-Type": "application/json"
+                },
+                verify=False)
             if result.status_code == 200:
                 return 'Job removed.'
             else:
@@ -115,7 +134,8 @@ class JobsQueue():
                 text = msg['messages'][0]['text']
                 raise Exception(text)
         except Exception as e:
-            self.logger.error("bin.jobs_queu: Error removing a Job in JobsQueue module: %s" % (e))
+            self.logger.error(
+                "bin.jobs_queue: Error removing a Job in JobsQueue module: %s" % (e))
             raise e
 
     def get_jobs(self, session_key=False):
@@ -125,19 +145,25 @@ class JobsQueue():
         ----------
         str : session_key
             The authorized session key
-
         """
         try:
-            self.logger.debug("bin.jobs_queue: Getting all jobs.")
+            # self.logger.debug("bin.jobs_queue: Getting all jobs.")
             kvstoreUri = self.kvstoreUri+'?output_mode=json'
             auth_key = session_key if session_key else splunk.getSessionKey()
-            result = self.session.get(kvstoreUri, headers={
-                                      "Authorization": "Splunk %s" % auth_key, "Content-Type": "application/json"}, verify=False).json()
+            result = self.session.get(
+                kvstoreUri,
+                headers={
+                    "Authorization": "Splunk %s" % auth_key,
+                    "Content-Type": "application/json"
+                },
+                verify=False
+            ).json()
             if 'messages' in result:
                 r = result['messages'][0]
                 if r['type'] == 'ERROR' and r['text'] == 'KV Store is initializing. Please try again later.':
                     result = []
             return jsonbak.dumps(result)
         except Exception as e:
-            self.logger.error('bin.jobs_queu: Error getting the jobs queue in JobsQueue module: %s ' % (e))
+            self.logger.error(
+                'bin.jobs_queue: Error getting the jobs queue in JobsQueue module: %s ' % (e))
             raise e

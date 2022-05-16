@@ -1,126 +1,203 @@
 <!-- Cluster disabled-->
 <div flex layout="column" ng-show="!isClusterEnabled || !isClusterRunning">
-    <!-- Cluster disabled breadcrumbs -->
-    <div layout="row" layout-align="start center">
-      <div layout="row" layout-padding>
-        <div>
-          <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
-          <span> / </span>
-          <span>Manager</span>
-        </div>
+  <!-- Cluster disabled breadcrumbs -->
+  <div layout="row" layout-align="start center">
+    <div layout="row" layout-padding>
+      <div>
+        <span class="wz-text-link cursor-pointer" ui-sref="manager"
+          >Management</span
+        >
+        <span> / </span>
+        <span>Manager</span>
       </div>
     </div>
-    <!-- End cluster disabled breadcrumbs -->
-    <!-- Nav bar -->
-    <md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab">
-      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status
-      </md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">
-        Cluster
-      </md-nav-item>
-      <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">
-        Reporting
-      </md-nav-item>
-    </md-nav-bar>
-  
-  
-    <!-- Cluster disabled section -->
-    <div flex layout="row" layout-align="start start" ng-if="!isClusterEnabled">
-      <md-card flex class="wz-md-card" flex>
-        <md-card-content class="wz-text-center">
-          <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Cluster
-            disabled</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="column" class="wz-padding-top-10">
-            <p>The cluster is disabled. Visit the documentation on <a target="_blank"
-                href="https://documentation.wazuh.com/current/user-manual/manager/wazuh-cluster.html">this link</a> to
-              learn about how to enable it.
-            </p>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-    <!-- End cluster disabled section -->
-  
-    <!-- Cluster not running section -->
-    <div flex layout="row" layout-align="start start" ng-if="!isClusterRunning && isClusterEnabled">
-      <md-card flex class="wz-md-card" flex>
-        <md-card-content class="wz-text-center">
-          <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i> <span class="wz-headline-title">Cluster not
-            running</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="column" class="wz-padding-top-10">
-            <p>
-              The cluster is enabled but it's not running.
-            </p>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-    <!-- End cluster not running section -->
-  
   </div>
+  <!-- End cluster disabled breadcrumbs -->
+  <!-- Nav bar -->
+  <md-nav-bar
+    class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"
+    md-selected-nav-item="selectedNavTab">
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="mg-status"
+      name="status"
+      >Status
+    </md-nav-item>
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="mg-logs"
+      name="logs"
+      >Logs</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="mg-monitoring"
+      name="monitoring">
+      Cluster
+    </md-nav-item>
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="mg-reporting"
+      name="reporting">
+      Reporting
+    </md-nav-item>
+  </md-nav-bar>
 
-  
+  <!-- Cluster disabled section -->
+  <div flex layout="row" layout-align="start start" ng-if="!isClusterEnabled">
+    <md-card flex class="wz-md-card" flex>
+      <md-card-content class="wz-text-center">
+        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+        <span class="wz-headline-title">Cluster disabled</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="column" class="wz-padding-top-10">
+          <p>
+            The cluster is disabled. Visit the documentation on
+            <a
+              target="_blank"
+              href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/configuring-cluster/index.html"
+              >this link</a
+            >
+            to learn about how to enable it.
+          </p>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End cluster disabled section -->
+
+  <!-- Cluster not running section -->
+  <div
+    flex
+    layout="row"
+    layout-align="start start"
+    ng-if="!isClusterRunning && isClusterEnabled">
+    <md-card flex class="wz-md-card" flex>
+      <md-card-content class="wz-text-center">
+        <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+        <span class="wz-headline-title">Cluster not running</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="column" class="wz-padding-top-10">
+          <p>The cluster is enabled but it's not running.</p>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End cluster not running section -->
+</div>
 
 <!-- Cards for main monitoring section -->
-<div flex layout="column" layout-align="start stretch" ng-show="isClusterEnabled && isClusterRunning">
+<div
+  flex
+  layout="column"
+  layout-align="start stretch"
+  ng-show="isClusterEnabled && isClusterRunning">
   <!-- Breadcrumbs -->
   <div layout="row">
     <!-- Main monitoring section -->
-    <div class='wz-breadcrumb-margin' ng-if="!showConfig && !showNodes && !currentNode">
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+    <div
+      class="wz-breadcrumb-margin"
+      ng-if="!showConfig && !showNodes && !currentNode">
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / </span>
       <span>Cluster</span>
       <span> / </span>
       <span>{{ currentApi }}</span>
     </div>
     <!-- Overview section -->
-    <div class='wz-breadcrumb-margin' ng-if="showConfig && !currentNode">
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+    <div class="wz-breadcrumb-margin" ng-if="showConfig && !currentNode">
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
+      <span class="wz-text-link cursor-pointer" ng-click="reset()"
+        >Cluster</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>{{ currentApi }}</span>
+      <span class="wz-text-link cursor-pointer" ng-click="reset()"
+        >{{ currentApi }}</span
+      >
       <span> / Overview</span>
     </div>
     <!-- The nodes list -->
-    <div class='wz-breadcrumb-margin' ng-if="showNodes && !currentNode">
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+    <div class="wz-breadcrumb-margin" ng-if="showNodes && !currentNode">
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
+      <span class="wz-text-link cursor-pointer" ng-click="reset()"
+        >Cluster</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>{{ currentApi }}</span>
+      <span class="wz-text-link cursor-pointer" ng-click="reset()"
+        >{{ currentApi }}</span
+      >
       <span> / </span>
       <span>Nodes</span>
     </div>
     <!-- Single node section -->
-    <div class='wz-breadcrumb-margin' ng-if="currentNode">
-      <span class="wz-text-link cursor-pointer" ui-sref='manager'>Management</span>
+    <div class="wz-breadcrumb-margin" ng-if="currentNode">
+      <span class="wz-text-link cursor-pointer" ui-sref="manager"
+        >Management</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>Cluster</span>
+      <span class="wz-text-link cursor-pointer" ng-click="reset()"
+        >Cluster</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click='reset()'>{{ currentApi }}</span>
+      <span class="wz-text-link cursor-pointer" ng-click="reset()"
+        >{{ currentApi }}</span
+      >
       <span> / </span>
-      <span class="wz-text-link cursor-pointer" ng-click="goNodes()">Nodes</span>
+      <span class="wz-text-link cursor-pointer" ng-click="goNodes()"
+        >Nodes</span
+      >
       <span> / </span>
       <span class="wz-text-bold">{{ currentNode.name }}</span>
     </div>
     <div flex></div>
-    <div style="margin-right:7px;" id='timePicker'></div>
+    <div style="margin-right: 7px" id="timePicker"></div>
   </div>
 </div>
 <!-- End breadcrumbs -->
 <!-- Nav bar -->
-<md-nav-bar class="wz-nav-bar wz-margin-left-16 wz-margin-right-16" md-selected-nav-item="selectedNavTab"
+<md-nav-bar
+  class="wz-nav-bar wz-margin-left-16 wz-margin-right-16"
+  md-selected-nav-item="selectedNavTab"
   ng-show="isClusterEnabled && isClusterRunning">
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-status" name="status">Status
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-status"
+    name="status"
+    >Status
   </md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-logs" name="logs">Logs</md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-monitoring" name="monitoring">Cluster
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-logs"
+    name="logs"
+    >Logs</md-nav-item
+  >
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-monitoring"
+    name="monitoring"
+    >Cluster
   </md-nav-item>
-  <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="mg-reporting" name="reporting">Reporting
+  <md-nav-item
+    class="wz-nav-item"
+    md-nav-click="stopPropagation()"
+    ui-sref="mg-reporting"
+    name="reporting"
+    >Reporting
   </md-nav-item>
 </md-nav-bar>
 
@@ -131,45 +208,64 @@
   </div>
 </div>
 <div>
-
-
-<!-- Nodes list -->
-<div layout="column" ng-if="showNodes && !currentNode">
-    <div layout="row" class='wz-padding-5 wz-padding-left-15 wz-padding-right-25'>
-
+  <!-- Nodes list -->
+  <div layout="column" ng-if="showNodes && !currentNode">
+    <div
+      layout="row"
+      class="wz-padding-5 wz-padding-left-15 wz-padding-right-25">
       <!-- Back button -->
-      <md-button class="md-icon-button" aria-label="Back to cluster monitoring" ng-click="goBack()">
+      <md-button
+        class="md-icon-button"
+        aria-label="Back to cluster monitoring"
+        ng-click="goBack()">
         <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Back
-        </md-tooltip>
+        <md-tooltip md-direction="bottom" class="wz-tooltip"> Back </md-tooltip>
       </md-button>
 
       <label class="wz-icon-loupe">
-        <input placeholder="Filter nodes..." ng-model="custom_search" type="text" flex
-          class="kuiLocalSearchInput height-40 ng-empty ng-pristine ng-scope ng-touched ng-valid" aria-invalid="false"
-          wz-enter="search(custom_search)">
+        <input
+          placeholder="Filter nodes..."
+          ng-model="custom_search"
+          type="text"
+          flex
+          class="kuiLocalSearchInput height-40 ng-empty ng-pristine ng-scope ng-touched ng-valid"
+          aria-invalid="false"
+          wz-enter="search(custom_search)" />
       </label>
-      <button type="submit" aria-label="Search" class="btn height-40 wz-button-empty wz-margin-left-10"
+      <button
+        type="submit"
+        aria-label="Search"
+        class="btn height-40 wz-button-empty wz-margin-left-10"
         ng-click="search(custom_search)">
         <span>Search</span>
       </button>
     </div>
     <div layout="row" class="md-padding">
-      <wazuh-table flex path="'/cluster/nodes'" keys="['name','version','ip','type']" allow-click="true"></wazuh-table>
+      <wazuh-table
+        flex
+        path="'/cluster/nodes'"
+        keys="['name','version','ip','type']"
+        allow-click="true"></wazuh-table>
     </div>
   </div>
-  <div ng-show='!showConfig && !showNodes && isClusterEnabled && isClusterRunning'>
-    <div layout='row'>
+  <div
+    ng-show="!showConfig && !showNodes && isClusterEnabled && isClusterRunning">
+    <div layout="row">
       <!-- Overview card -->
-      <md-card layout='column' flex class="wz-md-card">
+      <md-card layout="column" flex class="wz-md-card">
         <md-card-content>
-          <i class="fa fa-fw fa-pie-chart" aria-hidden="true"></i> <span ng-click="goConfiguration()"
-            class="wz-headline-title wz-text-link cursor-pointer">Overview</span>
+          <i class="fa fa-fw fa-pie-chart" aria-hidden="true"></i>
+          <span
+            ng-click="goConfiguration()"
+            class="wz-headline-title wz-text-link cursor-pointer"
+            >Overview</span
+          >
           <md-divider class="wz-margin-top-10"></md-divider>
           <div layout="row" class="wz-padding-top-10">
             <span flex="25">IP</span>
-            <span class="color-grey">{{configuration.nodes[0] || 'Unknown'}}</span>
+            <span class="color-grey"
+              >{{configuration.nodes[0] || 'Unknown'}}</span
+            >
           </div>
           <div layout="row" class="wz-padding-top-10">
             <span flex="25">Running</span>
@@ -184,31 +280,42 @@
       <!-- End overview card -->
 
       <!-- Info card -->
-      <md-card layout='column' flex class="wz-md-card">
+      <md-card layout="column" flex class="wz-md-card">
         <md-card-content>
-          <i class="fa fa-fw fa-info" aria-hidden="true"></i> <span class="wz-headline-title">Information</span>
+          <i class="fa fa-fw fa-info" aria-hidden="true"></i>
+          <span class="wz-headline-title">Information</span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <!-- Nodes -->
-          <div layout="row" class="wz-padding-top-10 cursor-pointer" ng-click="goNodes()">
-            <span flex="25" class="wz-text-link">Nodes
-              <md-tooltip md-direction="left" class="wz-tooltip">
+          <div
+            layout="row"
+            class="wz-padding-top-10 cursor-pointer"
+            ng-click="goNodes()">
+            <span flex="25" class="wz-text-link"
+              >Nodes
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
                 Click to open the list of nodes
               </md-tooltip>
             </span>
-            <span class="wz-text-link">{{nodesCount}}
+            <span class="wz-text-link"
+              >{{nodesCount}}
               <md-tooltip md-direction="right" class="wz-tooltip">
                 Click to open the list of nodes
               </md-tooltip>
             </span>
           </div>
           <!-- Agents -->
-          <div layout="row" class="wz-padding-top-10 cursor-pointer" ui-sref='agents'>
-            <span flex="25" class="wz-text-link">Agents
-              <md-tooltip md-direction="left" class="wz-tooltip">
+          <div
+            layout="row"
+            class="wz-padding-top-10 cursor-pointer"
+            ui-sref="agents">
+            <span flex="25" class="wz-text-link"
+              >Agents
+              <md-tooltip md-direction="bottom" class="wz-tooltip">
                 Click to open the list of agents
               </md-tooltip>
             </span>
-            <span class="wz-text-link">{{agentsCount}}
+            <span class="wz-text-link"
+              >{{agentsCount}}
               <md-tooltip md-direction="right" class="wz-tooltip">
                 Click to open the list of agents
               </md-tooltip>
@@ -222,14 +329,14 @@
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Cluster alerts summary</span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertSummary'></div>
+          <div id="alertSummary"></div>
         </md-card-content>
       </md-card>
       <md-card flex class="wz-md-card">
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Alerts by node summary</span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='alertNodeSummary'></div>
+          <div id="alertNodeSummary"></div>
         </md-card-content>
       </md-card>
     </div>
@@ -239,11 +346,12 @@
   <div ng-show="showConfig">
     <div layout="row" layout-align="start stretch">
       <!-- Back button -->
-      <md-button class="md-icon-button" aria-label="Back to cluster monitoring" ng-click="goBack()">
+      <md-button
+        class="md-icon-button"
+        aria-label="Back to cluster monitoring"
+        ng-click="goBack()">
         <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Back
-        </md-tooltip>
+        <md-tooltip md-direction="bottom" class="wz-tooltip"> Back </md-tooltip>
       </md-button>
     </div>
     <div layout="row" layout-align="start stretch">
@@ -252,228 +360,288 @@
         <md-card-content class="wazuh-column">
           <span class="wz-headline-title">Top 5 nodes</span>
           <md-divider class="wz-margin-top-10"></md-divider>
-          <div id='topNodes'></div>
+          <div id="topNodes"></div>
         </md-card-content>
       </md-card>
-      
-    <!-- Cluster configuration card -->
-    <md-card flex="75" class="wz-md-card">
-      <md-card-content>
-        <i class="fa fa-fw fa-info" aria-hidden="true"></i> <span class="wz-headline-title">Cluster configuration</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Disabled</span>
-          <span class="color-grey">{{configuration.disabled}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Hidden</span>
-          <span class="color-grey">{{configuration.hidden}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Name</span>
-          <span class="color-grey">{{configuration.name}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Node name</span>
-          <span class="color-grey">{{configuration.node_name}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Node type</span>
-          <span class="color-grey">{{configuration.node_type}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Bind address</span>
-          <span class="color-grey">{{ configuration.bind_addr }}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">IP</span>
-          <span class="color-grey">{{ configuration.nodes[0] || '-'}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Port</span>
-          <span class="color-grey">{{ configuration.port }}</span>
-        </div>
-      </md-card-content>
-    </md-card>
-    </div>
-  </div>
 
-    <!-- Last files sync card -->
-    <md-card flex class="wz-md-card" ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.status">
-      <md-card-content>
-        <i class="fa fa-fw fa-file" aria-hidden="true"></i> <span class="wz-headline-title">Last files integrity
-          synchronization</span>
-        <md-divider class="wz-margin-top-10"></md-divider>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Last sync</span>
-          <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.date_end_master}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Duration</span>
-          <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.duration}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Total shared files</span>
-          <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.shared}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Total missing files</span>
-          <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.missing}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Total extra but valid files</span>
-          <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra_valid}}</span>
-        </div>
-        <div layout="row" class="wz-padding-top-10">
-          <span flex="30">Total extra files</span>
-          <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra}}</span>
-        </div>
-      </md-card-content>
-    </md-card>
-  </div>
-  <!-- End cards for overview monitoring section -->
-  <div layout="column" layout-align="start stretch" ng-show="currentNode">
-    <div layout="row" layout-align="start stretch">
-      <!-- Back button -->
-      <md-button class="md-icon-button" aria-label="Back to cluster monitoring" ng-click="goBack()">
-        <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
-        <md-tooltip md-direction="bottom" class="wz-tooltip">
-          Back
-        </md-tooltip>
-      </md-button>
-    </div>
-
-    <!-- Node alerts summary card -->
-    <div layout="row" layout-align="start stretch">
-      <md-card flex class="wz-md-card">
-        <md-card-content class="wazuh-column">
-          <span class="wz-headline-title">{{ currentNode.name }} alerts summary</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div id="overviewNode"></div>
-        </md-card-content>
-      </md-card>
-    </div>
-    <!-- End node alerts summary card -->
-
-    <!-- Node info and files cards section -->
-    <div layout="row" class="wz-margin-top-40" layout-align="start stretch"
-      ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck">
-
-      <!-- Node information card -->
-      <md-card flex class="wz-md-card" ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.info">
+      <!-- Cluster configuration card -->
+      <md-card flex="75" class="wz-md-card" ng-show="configuration">
         <md-card-content>
-          <i class="fa fa-fw fa-info" aria-hidden="true"></i> <span class="wz-headline-title">Node information</span>
+          <i class="fa fa-fw fa-info" aria-hidden="true"></i>
+          <span class="wz-headline-title">Cluster configuration</span>
           <md-divider class="wz-margin-top-10"></md-divider>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="30">IP</span>
-            <span class="color-grey">{{currentNode.healthCheck.info.ip}}</span>
+            <span flex="30">Disabled</span>
+            <span class="color-grey">{{configuration.disabled}}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Version</span>
-            <span class="color-grey">{{currentNode.healthCheck.info.version}}</span>
-          </div>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Type</span>
-            <span class="color-grey">{{currentNode.healthCheck.info.type}}</span>
+            <span flex="30">Hidden</span>
+            <span class="color-grey">{{configuration.hidden}}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
             <span flex="30">Name</span>
-            <span class="color-grey">{{currentNode.healthCheck.info.name}}</span>
+            <span class="color-grey">{{configuration.name}}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Active agents</span>
-            <span class="color-grey">{{ currentNode.healthCheck.info.n_active_agents }}</span>
-          </div>
-        </md-card-content>
-      </md-card>
-
-      <!-- Last files sync card -->
-      <md-card flex class="wz-md-card"
-        ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.status">
-        <md-card-content>
-          <i class="fa fa-fw fa-file" aria-hidden="true"></i> <span class="wz-headline-title">Last files integrity
-            synchronization</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Last sync</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.date_end_master}}</span>
+            <span flex="30">Node name</span>
+            <span class="color-grey">{{configuration.node_name}}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Duration</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.duration}}</span>
+            <span flex="30">Node type</span>
+            <span class="color-grey">{{configuration.node_type}}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Total shared files</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.shared}}</span>
+            <span flex="30">Bind address</span>
+            <span class="color-grey">{{ configuration.bind_addr }}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Total missing files</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.missing}}</span>
+            <span flex="30">IP</span>
+            <span class="color-grey">{{ configuration.nodes[0] || '-'}}</span>
           </div>
           <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Total extra but valid files</span>
-            <span
-              class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra_valid}}</span>
-          </div>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Total extra files</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra}}</span>
+            <span flex="30">Port</span>
+            <span class="color-grey">{{ configuration.port }}</span>
           </div>
         </md-card-content>
       </md-card>
     </div>
-
-    <!-- End node info and files cards section -->
-
-    <!-- Node agents cards section -->
-    <div layout="row" layout-align="start stretch"
-      ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.status">
-
-      <!-- Agents sync card -->
-      <md-card flex class="wz-md-card">
-        <md-card-content>
-          <i class="fa fa-fw fa-tv" aria-hidden="true"></i> <span class="wz-headline-title">Last agents information
-            synchronization</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Last sync</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_agentinfo.date_end_master}}</span>
-          </div>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Duration</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_agentinfo.duration}}</span>
-          </div>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Total agent info</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_agentinfo.total_agentinfo}}</span>
-          </div>
-        </md-card-content>
-      </md-card>
-
-      <!-- Groups sync card -->
-      <md-card flex class="wz-md-card">
-        <md-card-content>
-          <i class="fa fa-fw fa-object-group" aria-hidden="true"></i> <span class="wz-headline-title">Last agents groups
-            synchronization</span>
-          <md-divider class="wz-margin-top-10"></md-divider>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Last sync</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_agentgroups.date_end_master}}</span>
-          </div>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Duration</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_agentgroups.duration}}</span>
-          </div>
-          <div layout="row" class="wz-padding-top-10">
-            <span flex="30">Total agent info</span>
-            <span class="color-grey">{{currentNode.healthCheck.status.last_sync_agentgroups.total_agentgroups}}</span>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
-    <!-- End ode agents cards section -->
   </div>
-  <!-- End cards for main monitoring section -->
+
+  <!-- Last files sync card -->
+  <md-card
+    flex
+    class="wz-md-card"
+    ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.status">
+    <md-card-content>
+      <i class="fa fa-fw fa-file" aria-hidden="true"></i>
+      <span class="wz-headline-title"
+        >Last files integrity synchronization</span
+      >
+      <md-divider class="wz-margin-top-10"></md-divider>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="30">Last sync</span>
+        <span class="color-grey"
+          >{{currentNode.healthCheck.status.last_sync_integrity.date_end_master}}</span
+        >
+      </div>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="30">Duration</span>
+        <span class="color-grey"
+          >{{currentNode.healthCheck.status.last_sync_integrity.duration}}</span
+        >
+      </div>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="30">Total shared files</span>
+        <span class="color-grey"
+          >{{currentNode.healthCheck.status.last_sync_integrity.total_files.shared}}</span
+        >
+      </div>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="30">Total missing files</span>
+        <span class="color-grey"
+          >{{currentNode.healthCheck.status.last_sync_integrity.total_files.missing}}</span
+        >
+      </div>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="30">Total extra but valid files</span>
+        <span class="color-grey"
+          >{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra_valid}}</span
+        >
+      </div>
+      <div layout="row" class="wz-padding-top-10">
+        <span flex="30">Total extra files</span>
+        <span class="color-grey"
+          >{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra}}</span
+        >
+      </div>
+    </md-card-content>
+  </md-card>
 </div>
+<!-- End cards for overview monitoring section -->
+<div layout="column" layout-align="start stretch" ng-show="currentNode">
+  <div layout="row" layout-align="start stretch">
+    <!-- Back button -->
+    <md-button
+      class="md-icon-button"
+      aria-label="Back to cluster monitoring"
+      ng-click="goBack()">
+      <i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>
+      <md-tooltip md-direction="bottom" class="wz-tooltip"> Back </md-tooltip>
+    </md-button>
+  </div>
 
+  <!-- Node alerts summary card -->
+  <div layout="row" layout-align="start stretch">
+    <md-card flex class="wz-md-card">
+      <md-card-content class="wazuh-column">
+        <span class="wz-headline-title"
+          >{{ currentNode.name }} alerts summary</span
+        >
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div id="overviewNode"></div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End node alerts summary card -->
 
+  <!-- Node info and files cards section -->
+  <div
+    layout="row"
+    class="wz-margin-top-40"
+    layout-align="start stretch"
+    ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck">
+    <!-- Node information card -->
+    <md-card
+      flex
+      class="wz-md-card"
+      ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.info">
+      <md-card-content>
+        <i class="fa fa-fw fa-info" aria-hidden="true"></i>
+        <span class="wz-headline-title">Node information</span>
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">IP</span>
+          <span class="color-grey">{{currentNode.healthCheck.info.ip}}</span>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Version</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.info.version}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Type</span>
+          <span class="color-grey">{{currentNode.healthCheck.info.type}}</span>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Name</span>
+          <span class="color-grey">{{currentNode.healthCheck.info.name}}</span>
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Active agents</span>
+          <span class="color-grey"
+            >{{ currentNode.healthCheck.info.n_active_agents }}</span
+          >
+        </div>
+      </md-card-content>
+    </md-card>
+
+    <!-- Last files sync card -->
+    <md-card
+      flex
+      class="wz-md-card"
+      ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.status">
+      <md-card-content>
+        <i class="fa fa-fw fa-file" aria-hidden="true"></i>
+        <span class="wz-headline-title"
+          >Last files integrity synchronization</span
+        >
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Last sync</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_integrity.date_end_master}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Duration</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_integrity.duration}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Total shared files</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_integrity.total_files.shared}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Total missing files</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_integrity.total_files.missing}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Total extra but valid files</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra_valid}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Total extra files</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_integrity.total_files.extra}}</span
+          >
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <!-- End node info and files cards section -->
+
+  <!-- Node agents cards section -->
+  <div
+    layout="row"
+    layout-align="start stretch"
+    ng-show="currentNode && currentNode.healthCheck && currentNode.healthCheck.status">
+    <!-- Agents sync card -->
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <i class="fa fa-fw fa-tv" aria-hidden="true"></i>
+        <span class="wz-headline-title"
+          >Last agents information synchronization</span
+        >
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Last sync</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_agentinfo.date_end_master}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Duration</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_agentinfo.duration}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Total agent info</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_agentinfo.total_agentinfo}}</span
+          >
+        </div>
+      </md-card-content>
+    </md-card>
+
+    <!-- Groups sync card -->
+    <md-card flex class="wz-md-card">
+      <md-card-content>
+        <i class="fa fa-fw fa-object-group" aria-hidden="true"></i>
+        <span class="wz-headline-title"
+          >Last agents groups synchronization</span
+        >
+        <md-divider class="wz-margin-top-10"></md-divider>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Last sync</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_agentgroups.date_end_master}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Duration</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_agentgroups.duration}}</span
+          >
+        </div>
+        <div layout="row" class="wz-padding-top-10">
+          <span flex="30">Total agent info</span>
+          <span class="color-grey"
+            >{{currentNode.healthCheck.status.last_sync_agentgroups.total_agentgroups}}</span
+          >
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
+  <!-- End ode agents cards section -->
+</div>
+<!-- End cards for main monitoring section -->

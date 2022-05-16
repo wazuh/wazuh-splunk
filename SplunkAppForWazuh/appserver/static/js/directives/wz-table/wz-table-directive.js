@@ -10,16 +10,6 @@
  * Find more information about this on the LICENSE file.
  */
 
-// import { calcTableRows } from ;
-// import { parseValue } from './lib/parse-value';
-// import * as pagination from './lib/pagination';
-// import { sort } from './lib/sort';
-// import * as listeners from './lib/listeners';
-// import { searchData, filterData } from './lib/data';
-// import { clickAction } from './lib/click-action';
-// import { initTable } from './lib/init';
-// import { checkGap } from './lib/check-gap';
-
 define([
   '../module',
   './lib/rows',
@@ -30,8 +20,8 @@ define([
   './lib/data',
   './lib/click-action',
   './lib/check-gap',
-  'JqueryUI'
-], function(
+  'JqueryUI',
+], function (
   app,
   calcTableRows,
   parseValue,
@@ -43,7 +33,7 @@ define([
   checkGap
 ) {
   'use strict'
-  app.directive('wazuhTable', function(BASE_URL) {
+  app.directive('wazuhTable', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
@@ -53,11 +43,12 @@ define([
         implicitFilter: '=implicitFilter',
         rowSizes: '=rowSizes',
         extraLimit: '=extraLimit',
-        adminMode: '=adminMode',
         emptyResults: '=emptyResults',
         customColumns: '=customColumns',
         implicitSort: '=implicitSort',
-        wzConfigViewer: '=wzConfigViewer'
+        wzConfigViewer: '=wzConfigViewer',
+        isRegistryValue: '=isRegistryValue',
+        agentId: '=agentId',
       },
       controller(
         $rootScope,
@@ -74,12 +65,21 @@ define([
         $groupHandler,
         $sce,
         $fileEditor,
-        $dateDiffService
+        $dateDiffService,
+        $mdDialog,
+        $security_service,
+        $ruleService,
+        $roleService,
+        $policyService,
+        $userService
       ) {
         /**
          * Init variables
          */
 
+        $scope.isAllowed = (action, resource, params = '*') => {
+          return $security_service.getPolicy(action, resource, params).isAllowed
+        }
         $scope.showingChecks = false
         let realTime = false
         const instance = new $dataService(
@@ -99,9 +99,9 @@ define([
         $scope.originalkeys = $scope.keys.map((key, idx) => ({ key, idx }))
         $scope.scapepath = $scope.path.split('/').join('')
 
-        $scope.updateColumns = key => {
+        $scope.updateColumns = (key) => {
           if (!$scope.isLastKey(key)) {
-            const cleanArray = $scope.keys.map(item => item.value || item)
+            const cleanArray = $scope.keys.map((item) => item.value || item)
             if (cleanArray.includes(key)) {
               const idx = cleanArray.indexOf(key)
               if (idx > -1) {
@@ -109,23 +109,23 @@ define([
               }
             } else {
               let originalKey = $scope.originalkeys.filter(
-                k => k.key.value === key || k.key === key
+                (k) => k.key.value === key || k.key === key
               )
               originalKey = originalKey[0].key
 
               const originalIdx = $scope.originalkeys.findIndex(
-                item => item.key === originalKey
+                (item) => item.key === originalKey
               )
               if (originalIdx >= 0) {
                 $scope.keys.splice(originalIdx, 0, originalKey)
               } else {
                 let originalKey = $scope.originalkeys.filter(
-                  k => k.key.value === key || k.key === key
+                  (k) => k.key.value === key || k.key === key
                 )
                 try {
                   originalKey = originalKey[0].key
                   const originalIdx = $scope.originalkeys.findIndex(
-                    item => item.key === originalKey
+                    (item) => item.key === originalKey
                   )
                   if (originalIdx >= 0) {
                     $scope.keys.splice(originalIdx, 0, originalKey)
@@ -140,16 +140,15 @@ define([
               }
             }
           }
-          //updateStoredKeys($scope.keys)
         }
 
-        $scope.exists = key => {
+        $scope.exists = (key) => {
           const str = key || key.value
           for (const k of $scope.keys) if ((k.value || k) === str) return true
           return false
         }
 
-        $scope.isLastKey = key => {
+        $scope.isLastKey = (key) => {
           const exists = $scope.exists(key)
           const keysLength = $scope.keys.length === 1
           const keyValue = key || key.value
@@ -168,7 +167,7 @@ define([
                 },
                 end: () => {
                   $scope.resizingColumns = false
-                }
+                },
               })
               $scope.$applyAsync()
             }
@@ -249,7 +248,7 @@ define([
           }
         }
 
-        $scope.canFilter = keyTmp => {
+        $scope.canFilter = (keyTmp) => {
           return (
             ($scope.path === '/rules' &&
               (keyTmp === 'level' || keyTmp === 'file' || keyTmp === 'path')) ||
@@ -258,7 +257,7 @@ define([
           )
         }
 
-        $scope.parseKey = key => {
+        $scope.parseKey = (key) => {
           return key ? key.value || key : key
         }
 
@@ -273,19 +272,20 @@ define([
               $scope.$emit('applyFilter', { filter })
             } else if (keyTmp === 'file') {
               const readOnly = !(
-                item.path === 'etc/rules' || item.path === 'etc/decoders'
+                item.relative_dirname === 'etc/rules' ||
+                item.relative_dirname === 'etc/decoders'
               )
               $scope.$emit('editFile', {
-                file: item.file,
-                path: item.path,
-                readOnly
+                file: item.filename,
+                path: item.relative_dirname,
+                readOnly,
               })
             }
             ev.stopPropagation()
           }
         }
 
-        $scope.sort = async field =>
+        $scope.sort = async (field) =>
           sort(field, $scope, instance, fetch, $notificationService)
 
         /**
@@ -339,7 +339,7 @@ define([
          * Filters API results
          * @param {String} filter
          */
-        const filter = async filter =>
+        const filter = async (filter) =>
           data.filterData(
             filter,
             $scope,
@@ -363,8 +363,9 @@ define([
             }
           } catch (error) {
             realTime = false
-            $scope.error = `Real time feature aborted - ${error.message ||
-              error}.`
+            $scope.error = `Real time feature aborted - ${
+              error.message || error
+            }.`
             $notificationService.handle(
               `Real time feature aborted. ${error.message || error}`,
               'Data factory'
@@ -390,7 +391,6 @@ define([
           try {
             $scope.error = false
             await fetch()
-            //getStoredKeys()
             $tableFilterService.set(instance.filters)
             $scope.wazuhTableLoading = false
             $scope.$emit('loadedTable')
@@ -429,7 +429,7 @@ define([
             fetch,
             last
           )
-        $scope.setPage = function(page = false, last = false, first = false) {
+        $scope.setPage = function (page = false, last = false, first = false) {
           $scope.currentPage = page || this.n
           if (!first) {
             $scope.nextPage(this.n, last)
@@ -498,7 +498,7 @@ define([
 
         $scope.isLookingGroup = () => {
           try {
-            const regexp = new RegExp(/^\/agents\/groups\/[a-zA-Z0-9_\-.]*$/)
+            const regexp = new RegExp(/^\/groups\/[a-zA-Z0-9_\-.]*\/agents$/)
             $scope.isLookingDefaultGroup =
               instance.path.split('/').pop() === 'default'
             return regexp.test(instance.path)
@@ -511,6 +511,110 @@ define([
           $rootScope.$broadcast('editXmlFile', { target: group })
         }
 
+        // SECURITY SECTION FOR USERS
+        $scope.showConfirmRemoveSecurityUser = (ev, user) => {
+          $scope.removingUser =
+            $scope.removingUser === user.username ? null : user.username
+        }
+
+        $scope.cancelRemoveSecurityUser = () => {
+          $scope.removingUser = null
+        }
+
+        $scope.editSecurityUser = (user) => {
+          $scope.$emit('openUserFromList', { user })
+        }
+
+        $scope.viewUserContent = (user) => {
+          $scope.$emit('viewUserContent', { user })
+        }
+
+        $scope.confirmRemoveSecurityUser = async (user) => {
+          try {
+            await $userService.removeUser(user.id)
+            $notificationService.showSuccessToast(
+              `Success. User ${user.username} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
+        }
+        // END SECURITY SECTION FOR USERS
+
+        // SECURITY SECTION FOR ROLES
+        $scope.showConfirmRemoveSecurityRoles = (ev, role) => {
+          $scope.removingRoles =
+            $scope.removingRoles === role.name ? null : role.name
+        }
+        $scope.cancelRemoveSecurityRoles = () => {
+          $scope.removingRoles = null
+        }
+        $scope.editSecurityRoles = (role) => {
+          $scope.$emit('openRoleFromList', { role })
+        }
+        $scope.confirmRemoveSecurityRoles = async (role) => {
+          try {
+            await $roleService.removeRole(role.id)
+            $notificationService.showSuccessToast(
+              `Success. Role ${role.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingGroup = null
+          return init()
+        }
+        // END SECURITY SECTION FOR ROLES
+        // SECURITY SECTION FOR POLICIES
+        $scope.showConfirmRemoveSecurityPolicies = (ev, policy) => {
+          $scope.removingPolicies =
+            $scope.removingPolicies === policy.name ? null : policy.name
+        }
+        $scope.cancelRemoveSecurityPolicies = () => {
+          $scope.removingPolicies = null
+        }
+        $scope.editSecurityPolicies = (policy) => {
+          $scope.$emit('openPolicyFromList', { policy })
+        }
+        $scope.confirmRemoveSecurityPolicies = async (policy) => {
+          try {
+            await $policyService.removePolicy(policy.id)
+            $notificationService.showSuccessToast(
+              `Success. Policy ${policy.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingPolicy = null
+          return init()
+        }
+        // END SECURITY SECTION FOR POLICIES
+        // SECURITY SECTION FOR ROLE MAPPING
+        $scope.showConfirmRemoveRoleMapping = (ev, rule) => {
+          $scope.removingRoleMapping =
+            $scope.removingRoleMapping === rule.name ? null : rule.name
+        }
+        $scope.cancelRemoveRoleMapping = () => {
+          $scope.removingRoleMapping = null
+        }
+        $scope.editRoleMapping = (rule) => {
+          $scope.$emit('openRuleFromList', { rule })
+        }
+        $scope.confirmRemoveRoleMapping = async (rule) => {
+          try {
+            await $ruleService.removeRule(rule.id)
+            $notificationService.showSuccessToast(
+              `Success. Role mapping ${rule.name} has been removed`
+            )
+          } catch (error) {
+            $notificationService.showErrorToast(`${error.message || error}`)
+          }
+          $scope.removingRoleMapping = null
+          return init()
+        }
+        // END SECURITY SECTION FOR ROLE MAPPING
         $scope.showConfirmRemoveGroup = (ev, group) => {
           $scope.removingGroup =
             $scope.removingGroup === group.name ? null : group.name
@@ -529,19 +633,23 @@ define([
           $scope.removingGroup = null
         }
 
-        $scope.editGroup = group => {
+        $scope.editGroup = (group) => {
           $scope.$emit('openGroupFromList', { group })
         }
 
-        $scope.confirmRemoveAgent = async agent => {
+        $scope.confirmRemoveAgent = async (agent) => {
           try {
-            const group = instance.path.split('/').pop()
+            // eslint-disable-next-line no-unused-vars
+            const [_, group] =
+              instance.path.match(/^\/groups\/([a-zA-Z0-9_\-.]*)\/agents$/) ||
+              []
             const result = await $groupHandler.removeAgentFromGroup(
               group,
               agent
             )
             $notificationService.showSuccessToast(
-              result || `Success. Agent ${agent} has been removed from ${group}`
+              result.message ||
+                `Success. Agent ${agent} has been removed from ${group}`
             )
           } catch (error) {
             $notificationService.showErrorToast(`${error.message || error}`)
@@ -550,7 +658,7 @@ define([
           return init()
         }
 
-        $scope.confirmRemoveGroup = async group => {
+        $scope.confirmRemoveGroup = async (group) => {
           try {
             await $groupHandler.removeGroup(group)
             $notificationService.showSuccessToast(
@@ -569,11 +677,11 @@ define([
           )
         }
 
-        $scope.expandPolicyMonitoringCheck = item => {
+        $scope.expandPolicyMonitoringCheck = (item) => {
           if (item.expanded) item.expanded = false
           else {
             $scope.pagedItems[$scope.currentPage].map(
-              item => (item.expanded = false)
+              (item) => (item.expanded = false)
             )
             item.expanded = true
           }
@@ -594,7 +702,7 @@ define([
           $scope.removingFile = item
         }
 
-        $scope.confirmRemoveFile = async item => {
+        $scope.confirmRemoveFile = async (item) => {
           try {
             $scope.removingFile = false
             const result = await $fileEditor.removeFile(item)
@@ -603,7 +711,7 @@ define([
             $scope.$applyAsync()
           } catch (error) {
             $notificationService.showErrorToast(
-              error || `Cannot delete ${item.file || item.name}`
+              error || `Cannot delete ${item.filename || item.name}`
             )
           }
         }
@@ -613,7 +721,7 @@ define([
           return init()
         }
 
-        $scope.getWitdh = key => {
+        $scope.getWitdh = (key) => {
           try {
             if (key.includes('id') || key.includes('level')) {
               return 'wz-width-85'
@@ -644,13 +752,53 @@ define([
           }
         }
 
-        $scope.expandItem = item => {
+        $scope.expandItem = (item) => {
           if (item.expanded) item.expanded = false
           else {
             $scope.pagedItems[$scope.currentPage].map(
-              item => (item.expanded = false)
+              (item) => (item.expanded = false)
             )
             item.expanded = true
+          }
+        }
+
+        $scope.loadRegistryValueDetails = async (item) => {
+          var parentEl = angular.element(document.body) // eslint-disable-line
+          $mdDialog.show({
+            parent: parentEl,
+            template: `<md-dialog aria-label="List dialog">
+              <h3 class="wz-headline-title boldText">Registry values</h3>
+              <md-divider class="wz-margin-top-10"></md-divider>
+              <md-dialog-content>
+                <span class="wz-lh-32">File: ${item.file}</span>
+                <wazuh-table
+                  flex
+                  path="'/syscheck/${$scope.agentId}'"
+                  implicit-filter="[{name:'type',value:'registry_value'},{name:'file',value:'${item.file.replaceAll(
+                    '\\',
+                    '\\\\'
+                  )}'}]"
+                  row-sizes="[6,6,6]"
+                  extra-limit="true"
+                  keys="['date','value.name','value.type','sha1']"
+                ></wazuh-table>
+              </md-dialog-content>
+              <md-dialog-actions>
+                <md-button ng-click="ctrl.closeDialog()" class="splButton-primary">
+                  Close
+                </md-button>
+              </md-dialog-actions>
+            </md-dialog>;`,
+            locals: {
+              items: item,
+            },
+            controller: DialogController,
+            controllerAs: 'ctrl',
+          })
+          function DialogController($mdDialog) {
+            this.closeDialog = function () {
+              $mdDialog.hide()
+            }
           }
         }
 
@@ -660,14 +808,14 @@ define([
         const cleanKeys = () => {
           if ($scope.customColumns && sessionStorage[$scope.path]) {
             $scope.cleanKeys = {}
-            $scope.keys.map(key => {
+            $scope.keys.map((key) => {
               const k = key.value || key
               let storedKeys = sessionStorage[$scope.path].split(';')
               $scope.cleanKeys[k] = storedKeys.indexOf(k) !== -1
             })
           } else {
             $scope.cleanKeys = {}
-            $scope.keys.map(key => {
+            $scope.keys.map((key) => {
               const k = key.value || key
               $scope.cleanKeys[k] = true
             })
@@ -677,13 +825,13 @@ define([
         /**
          * Launch an event to open the discover with the agent id
          */
-        $scope.launchAgentDiscover = agentId => {
+        $scope.launchAgentDiscover = (agentId) => {
           $scope.$emit('openDiscover', agentId)
         }
 
         cleanKeys()
 
-        $scope.getEquivalence = key => {
+        $scope.getEquivalence = (key) => {
           return $scope.keyEquivalence[key]
         }
 
@@ -691,18 +839,18 @@ define([
           $scope.showingChecks = !$scope.showingChecks
         }
 
-        $scope.switchKey = key => {
+        $scope.switchKey = (key) => {
           $scope.cleanKeys[key] = !$scope.cleanKeys[key]
         }
 
-        $scope.showKey = item => {
+        $scope.showKey = (item) => {
           const it = item.value || item
           return $scope.cleanKeys[it]
         }
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-table/wz-table.html',
     }
   })
 })

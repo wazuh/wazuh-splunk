@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
+define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function (
   app,
   CodeMirror
 ) {
@@ -26,7 +26,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         jsoncontent: '=',
         xmlcontent: '=',
         hideHeader: '=',
-        noLocal: '='
+        noLocal: '=',
       }
       this.templateUrl =
         BASE_URL +
@@ -49,7 +49,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
             theme: 'ttcn',
             foldGutter: true,
             styleSelectedText: true,
-            gutters: ['CodeMirror-foldgutter']
+            gutters: ['CodeMirror-foldgutter'],
           }
         )
       }
@@ -68,7 +68,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
             theme: 'ttcn',
             foldGutter: true,
             styleSelectedText: true,
-            gutters: ['CodeMirror-foldgutter']
+            gutters: ['CodeMirror-foldgutter'],
           }
         )
         bindXmlListener()
@@ -76,20 +76,20 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
 
       const bindXmlListener = () => {
         const scrollElement = $scope.xmlCodeBox.getScrollerElement()
-        $(scrollElement).bind('scroll', function(e) {
+        $(scrollElement).bind('scroll', function (e) {
           var element = $(e.currentTarget)[0]
           if (
             element.scrollHeight - element.scrollTop ===
             element.clientHeight
           ) {
             $scope.$emit('scrolledToBottom', {
-              lines: $scope.xmlCodeBox.lineCount()
+              lines: $scope.xmlCodeBox.lineCount(),
             })
           }
         })
       }
 
-      const getPosition = element => {
+      const getPosition = (element) => {
         var xPosition = 0
         var yPosition = 0
 
@@ -104,7 +104,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
       }
 
       const dynamicHeight = () => {
-        setTimeout(function() {
+        setTimeout(function () {
           const editorContainer = $('.wzConfigViewer')
           const windows = $(window).height()
           const offsetTop = getPosition(editorContainer[0]).y
@@ -127,14 +127,14 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         dynamicHeight()
       }
 
-      const refreshJsonBox = json => {
+      const refreshJsonBox = (json) => {
         $scope.jsoncontent = json
         if (!$scope.jsonCodeBox) {
           setJsonBox()
         }
         if ($scope.jsoncontent != false) {
           $scope.jsonCodeBox.setValue($scope.jsoncontent.replace(/\\\\/g, '\\'))
-          setTimeout(function() {
+          setTimeout(function () {
             $scope.jsonCodeBox.refresh()
             $scope.$applyAsync()
             window.dispatchEvent(new Event('resize'))
@@ -150,7 +150,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         }
         if ($scope.xmlcontent != false) {
           $scope.xmlCodeBox.setValue($scope.xmlcontent)
-          setTimeout(function() {
+          setTimeout(function () {
             $scope.xmlCodeBox.refresh()
             $scope.$applyAsync()
             isLogs ? dynamicHeight() : window.dispatchEvent(new Event('resize')) // eslint-disable-line
@@ -170,7 +170,7 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
         refreshXmlBox(params.data, params.logs)
       })
 
-      $(window).on('resize', function() {
+      $(window).on('resize', function () {
         dynamicHeight()
       })
 
@@ -178,5 +178,5 @@ define(['../module', '../../libs/codemirror-conv/lib/codemirror'], function(
     }
   }
 
-  app.directive('wzConfigViewer', BASE_URL => new WzConfigViewer(BASE_URL))
+  app.directive('wzConfigViewer', (BASE_URL) => new WzConfigViewer(BASE_URL))
 })

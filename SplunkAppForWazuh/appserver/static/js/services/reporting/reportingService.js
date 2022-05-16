@@ -1,4 +1,4 @@
-define(['../module', 'jquery'], function(module, $) {
+define(['../module', 'jQuery'], function (module, $) {
   'use strict'
   class ReportingService {
     constructor(
@@ -129,9 +129,9 @@ define(['../module', 'jquery'], function(module, $) {
         const appliedFilters = this.currentDataService.getSerializedFilters()
 
         const images = await this.vis2png.checkArray(vizz)
-        const name = `wazuh-${
-          isAgents ? 'agents' : 'overview'
-        }-${tab}-${(Date.now() / 1000) | 0}.pdf`
+        const name = `wazuh-${isAgents ? 'agents' : 'overview'}-${tab}-${
+          (Date.now() / 1000) | 0
+        }.pdf`
 
         let timeRange
 
@@ -163,10 +163,10 @@ define(['../module', 'jquery'], function(module, $) {
           pdfName: tab,
           section: isAgents ? 'agents' : 'overview',
           isAgents,
-          timeZone
+          timeZone,
         }
         await this.genericReq('POST', '/report/generate', {
-          data: JSON.stringify(data)
+          data: JSON.stringify(data),
         })
         this.$rootScope.$applyAsync()
         try {
@@ -205,14 +205,14 @@ define(['../module', 'jquery'], function(module, $) {
         //Get agent info and formating tables
         try {
           const agent = await Promise.all([
-            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/agents?q=id=${agentId}`),
             this.apiReq(`/syscheck/${agentId}/last_scan`),
             this.apiReq(`/rootcheck/${agentId}/last_scan`),
             this.apiReq(`/syscollector/${agentId}/hardware`),
-            this.apiReq(`/syscollector/${agentId}/os`)
+            this.apiReq(`/syscollector/${agentId}/os`),
           ])
 
-          const agentInfo = agent[0].data.data
+          const agentInfo = agent[0].data.data.affected_items[0]
           const {
             name,
             id,
@@ -222,7 +222,7 @@ define(['../module', 'jquery'], function(module, $) {
             os,
             dateAdd,
             lastKeepAlive,
-            group
+            group,
           } = agentInfo
 
           isAgents = {
@@ -236,7 +236,7 @@ define(['../module', 'jquery'], function(module, $) {
               : `${os.name} ${os.version}`,
             dateAdd: dateAdd,
             lastKeepAlive: lastKeepAlive,
-            group: group.toString()
+            group: group.toString(),
           }
         } catch (error) {
           isAgents = 'inventory'
@@ -245,26 +245,28 @@ define(['../module', 'jquery'], function(module, $) {
         //Network interfaces
         const netiface = await this.apiReq(`/syscollector/${agentId}/netiface`)
         const networkInterfaceKeys = ['Name', 'Mac', 'State', 'MTU', 'Type']
-        const networkInterfaceData = netiface.data.data.items.map(i => {
-          i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
-          return [i.name, i.mac, i.state, i.mtu, i.type]
-        })
+        const networkInterfaceData = netiface.data.data.affected_items.map(
+          (i) => {
+            i.mtu = i.mtu ? i.mtu.toString() : 'undefined'
+            return [i.name, i.mac, i.state, i.mtu, i.type]
+          }
+        )
         const networkInterfaceTable = {
           fields: networkInterfaceKeys,
-          rows: networkInterfaceData
+          rows: networkInterfaceData,
         }
         tableResults['Network interfaces'] = networkInterfaceTable
 
         //Network ports
         const ports = await this.apiReq(`/syscollector/${agentId}/ports`)
         const networkPortsKeys = ['Local IP', 'Local Port', 'State', 'Protocol']
-        const networkPortsData = ports.data.data.items.map(p => {
+        const networkPortsData = ports.data.data.affected_items.map((p) => {
           p.local.port = p.local.port ? p.local.port.toString() : 'undefined'
           return [p.local.ip, p.local.port, p.state, p.protocol]
         })
         const networkPortsTable = {
           fields: networkPortsKeys,
-          rows: networkPortsData
+          rows: networkPortsData,
         }
         tableResults['Network ports'] = networkPortsTable
 
@@ -275,14 +277,16 @@ define(['../module', 'jquery'], function(module, $) {
           'Address',
           'Netmask',
           'Protocol',
-          'Broadcast'
+          'Broadcast',
         ]
-        const networkAdressessData = netaddr.data.data.items.map(n => {
-          return [n.iface, n.address, n.netmask, n.proto, n.broadcast]
-        })
+        const networkAdressessData = netaddr.data.data.affected_items.map(
+          (n) => {
+            return [n.iface, n.address, n.netmask, n.proto, n.broadcast]
+          }
+        )
         const networkAdressessTable = {
           fields: networkAdressessKeys,
-          rows: networkAdressessData
+          rows: networkAdressessData,
         }
         tableResults['Network addresses'] = networkAdressessTable
 
@@ -291,7 +295,7 @@ define(['../module', 'jquery'], function(module, $) {
           `/syscollector/${agentId}/processes`
         )
         const processesKeys = ['Name', 'Euser', 'Priority', 'State']
-        const processesData = processes.data.data.items.map(n => {
+        const processesData = processes.data.data.affected_items.map((n) => {
           n.nice = n.nice || n.nice === 0 ? n.nice.toString() : 'undefined'
           n.state = this.keyEquivalence[n.state]
           return [n.name, n.euser, n.nice, n.state]
@@ -302,7 +306,7 @@ define(['../module', 'jquery'], function(module, $) {
         //Packages
         const packages = await this.apiReq(`/syscollector/${agentId}/packages`)
         const packagesKeys = ['Name', 'Architecture', 'Version', 'Description']
-        const packagesData = packages.data.data.items.map(p => {
+        const packagesData = packages.data.data.affected_items.map((p) => {
           return [p.name, p.architecture, p.version, p.description]
         })
         const packagesTable = { fields: packagesKeys, rows: packagesData }
@@ -319,11 +323,11 @@ define(['../module', 'jquery'], function(module, $) {
           metrics: {},
           pdfName: 'agents-inventory',
           isAgents,
-          timeZone
+          timeZone,
         }
 
         await this.genericReq('POST', '/report/generate', {
-          data: JSON.stringify(data)
+          data: JSON.stringify(data),
         })
 
         this.$rootScope.$applyAsync()
@@ -358,11 +362,11 @@ define(['../module', 'jquery'], function(module, $) {
           pdfName: 'group-conf',
           timeZone,
           data: reportData,
-          groupName: groupName
+          groupName: groupName,
         }
 
         await this.genericReq('POST', '/report/generateConfigurationReport', {
-          data: JSON.stringify(data)
+          data: JSON.stringify(data),
         })
 
         if (!this.$rootScope.$$phase) this.$rootScope.$digest()
@@ -387,14 +391,14 @@ define(['../module', 'jquery'], function(module, $) {
         this.$rootScope.$broadcast('loadingReporting', { status: true })
         try {
           const agent = await Promise.all([
-            this.apiReq(`/agents/${agentId}`),
+            this.apiReq(`/agents?q=id=${agentId}`),
             this.apiReq(`/syscheck/${agentId}/last_scan`),
             this.apiReq(`/rootcheck/${agentId}/last_scan`),
             this.apiReq(`/syscollector/${agentId}/hardware`),
-            this.apiReq(`/syscollector/${agentId}/os`)
+            this.apiReq(`/syscollector/${agentId}/os`),
           ])
 
-          const agentInfo = agent[0].data.data
+          const agentInfo = agent[0].data.data.affected_items[0]
           const {
             name,
             id,
@@ -404,7 +408,7 @@ define(['../module', 'jquery'], function(module, $) {
             os,
             dateAdd,
             lastKeepAlive,
-            group
+            group,
           } = agentInfo
 
           isAgents = {
@@ -416,7 +420,7 @@ define(['../module', 'jquery'], function(module, $) {
             OS: `${os.name} ${os.version}`,
             dateAdd: dateAdd,
             lastKeepAlive: lastKeepAlive,
-            group: group.toString()
+            group: group.toString(),
           }
         } catch (error) {
           isAgents = false
@@ -438,11 +442,11 @@ define(['../module', 'jquery'], function(module, $) {
           pdfName: 'agent-conf',
           timeZone,
           data: reportData,
-          agentId: agentId
+          agentId: agentId,
         }
 
         await this.genericReq('POST', '/report/generateConfigurationReport', {
-          data: JSON.stringify(data)
+          data: JSON.stringify(data),
         })
 
         this.$rootScope.$broadcast('loadingReporting', { status: false })

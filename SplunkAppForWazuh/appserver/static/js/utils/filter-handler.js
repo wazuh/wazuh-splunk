@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define([], function() {
+define([], function () {
   'use strict'
 
   return class FilterHandler {
@@ -30,15 +30,15 @@ define([], function() {
           value: null,
           params: {
             query: null,
-            type: 'phrase'
-          }
+            type: 'phrase',
+          },
         },
         query: {
-          match: null
+          match: null,
         },
         $state: {
-          store: 'appState'
-        }
+          store: 'appState',
+        },
       }
     }
 
@@ -50,8 +50,8 @@ define([], function() {
       result.query.match = {
         'agent.id': {
           query: agent,
-          type: 'phrase'
-        }
+          type: 'phrase',
+        },
       }
       return result
     }
@@ -64,8 +64,8 @@ define([], function() {
       result.query.match = {
         'cluster.node': {
           query: node,
-          type: 'phrase'
-        }
+          type: 'phrase',
+        },
       }
       return result
     }
@@ -78,8 +78,8 @@ define([], function() {
       result.query.match = {
         'rule.groups': {
           query: group,
-          type: 'phrase'
-        }
+          type: 'phrase',
+        },
       }
       return result
     }
@@ -93,8 +93,8 @@ define([], function() {
       result.query.match = {
         'rule.id': {
           query: ruleId,
-          type: 'phrase'
-        }
+          type: 'phrase',
+        },
       }
       return result
     }
@@ -108,14 +108,14 @@ define([], function() {
         ? {
             'cluster.name': {
               query: manager,
-              type: 'phrase'
-            }
+              type: 'phrase',
+            },
           }
         : {
             'manager.name': {
               query: manager,
-              type: 'phrase'
-            }
+              type: 'phrase',
+            },
           }
       return result
     }
@@ -126,7 +126,7 @@ define([], function() {
       result.meta.value = 'exists'
       result.meta.key = 'rule.pci_dss'
       result.exists = {
-        field: 'rule.pci_dss'
+        field: 'rule.pci_dss',
       }
       delete result.query
       return result
@@ -138,7 +138,7 @@ define([], function() {
       result.meta.value = 'exists'
       result.meta.key = 'rule.gdpr'
       result.exists = {
-        field: 'rule.gdpr'
+        field: 'rule.gdpr',
       }
       delete result.query
       return result
@@ -150,7 +150,7 @@ define([], function() {
       result.meta.value = 'exists'
       result.meta.key = 'rule.hipaa'
       result.exists = {
-        field: 'rule.hipaa'
+        field: 'rule.hipaa',
       }
       delete result.query
       return result
@@ -162,7 +162,7 @@ define([], function() {
       result.meta.value = 'exists'
       result.meta.key = 'rule.nist_800_53'
       result.exists = {
-        field: 'rule.nist_800_53'
+        field: 'rule.nist_800_53',
       }
       delete result.query
       return result

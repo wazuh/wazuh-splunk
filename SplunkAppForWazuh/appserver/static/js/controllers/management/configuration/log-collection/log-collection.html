@@ -1,6 +1,8 @@
-<div flex="auto" layout="column" ng-if="configurationTab === 'log-collection'"
+<div
+  flex="auto"
+  layout="column"
+  ng-if="configurationTab === 'log-collection'"
   ng-init="switchConfigurationSubTab('logs')">
-
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
@@ -11,13 +13,27 @@
   <!-- End headline -->
 
   <!-- Log collection navigation bar -->
-  <md-nav-bar class="wz-nav-bar" md-selected-nav-item="configurationSubTab"
+  <md-nav-bar
+    class="wz-nav-bar"
+    md-selected-nav-item="configurationSubTab"
     nav-bar-aria-label="Log collection navigation links">
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('logs')" name="logs">Logs
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('logs')"
+      name="logs"
+      >Logs
     </md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('logCommands')" name="logCommands">Commands
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('logCommands')"
+      name="logCommands"
+      >Commands
     </md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="switchConfigurationSubTab('socket')" name="socket">Sockets
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('socket')"
+      name="socket"
+      >Sockets
     </md-nav-item>
   </md-nav-bar>
 </div>
@@ -26,17 +42,23 @@
 <!-- This section contains the main content and the right sidenav -->
 <!-- LOGS -->
 <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'logs'">
-
   <!-- No configuration section -->
-  <wz-no-config flex error="currentConfig['logcollector-localfile']"
+  <wz-no-config
+    flex
+    error="currentConfig['logcollector-localfile']"
     ng-if="currentConfig['logcollector-localfile'].length && !isString(currentConfig['logcollector-localfile'])"></wz-no-config>
-  <wz-no-config flex error="'not-present'" ng-if="!currentConfig['logcollector-localfile'].localfile.length"></wz-no-config>
+  <wz-no-config
+    flex
+    error="'not-present'"
+    ng-if="!currentConfig['logcollector-localfile'].localfile.length"></wz-no-config>
   <!-- End no configuration section -->
 
   <!-- This section is the main content -->
-  <div class="configuration-margin-top" flex layout="column"
+  <div
+    class="configuration-margin-top"
+    flex
+    layout="column"
     ng-if="currentConfig['logcollector-localfile'] && !isString(currentConfig['logcollector-localfile']) && currentConfig['logcollector-localfile'].localfile && currentConfig['logcollector-localfile'].localfile.length">
-
     <!-- The main card will all the settings -->
     <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
       <md-card-content class="overflow-auto" flex layout="column">
@@ -48,61 +70,81 @@
             </div>
           </div>
           <span flex></span>
-          <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
-            ng-click="getJSON()">JSON</span>
+          <span
+            ng-class="JSONContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getJSON()"
+            >JSON</span
+          >
           <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <span
+            ng-class="XMLContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getXML()"
+            >XML</span
+          >
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
 
         <!-- The container for both list and detail -->
         <div flex="auto" layout="row" class="wz-margin-top-10">
-
           <!-- List container -->
           <div flex="30" layout="column">
-
             <md-list flex="auto" class="wz-item-list">
-              <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)"
+              <md-list-item
+                class="wz-text-link"
+                ng-click="updateSelectedItem($index)"
                 ng-repeat="item in currentConfig['logcollector-localfile']['localfile-logs']">
-                <span ng-if='item.file || item.alias || item.command'>{{ item.file || item.alias ||
-                                    item.command }}</span>
-                <span ng-if='!item.file && !item.alias && !item.command'>{{ item.logformat }} - {{
-                                    item.targetStr }}</span></md-list-item>
+                <span ng-if="item.file || item.alias || item.command"
+                  >{{ item.file || item.alias || item.command }}</span
+                >
+                <span ng-if="!item.file && !item.alias && !item.command"
+                  >{{ item.logformat }} - {{ item.targetStr }}</span
+                ></md-list-item
+              >
             </md-list>
-
           </div>
           <!-- End list container -->
 
           <!-- Detail container -->
-          <div flex layout="column" ng-if="currentConfig['logcollector-localfile']['localfile-logs'].length">
-
+          <div
+            flex
+            layout="column"
+            ng-if="currentConfig['logcollector-localfile']['localfile-logs'].length">
             <div flex="auto" class="wz-item-detail">
-              <wz-config-item label="Log format"
+              <wz-config-item
+                label="Log format"
                 value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem].logformat">
               </wz-config-item>
-              <wz-config-item label="Log location"
+              <wz-config-item
+                label="Log location"
                 value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem].file || '-'">
               </wz-config-item>
-              <wz-config-item label="Only receive logs occured after start"
+              <wz-config-item
+                label="Only receive logs occured after start"
                 ng-if="agent && agent.os && agent.os.platform === 'windows'"
                 value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem]['only-future-events'] ">
               </wz-config-item>
-              <wz-config-item label="Time in seconds to try to reconnect with Windows Event Channel when it has fallen"
-              ng-if="agent && agent.os && agent.os.platform === 'windows'"
-              value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem]['reconnect_time']">
+              <wz-config-item
+                label="Time in seconds to try to reconnect with Windows Event Channel when it has fallen"
+                ng-if="agent && agent.os && agent.os.platform === 'windows'"
+                value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem]['reconnect_time']">
               </wz-config-item>
-              <wz-config-item label="Filter logs using this XPATH query"
+              <wz-config-item
+                label="Filter logs using this XPATH query"
                 ng-if="agent && agent.os && agent.os.platform === 'windows'"
                 value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem].query || '-'">
               </wz-config-item>
-              <wz-config-item label="Log labels"
+              <wz-config-item
+                label="Log labels"
                 value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem].labels || '-'">
               </wz-config-item>
-              <wz-config-item is-array="true" label="Redirect output to this socket"
+              <wz-config-item
+                is-array="true"
+                label="Redirect output to this socket"
                 value="currentConfig['logcollector-localfile']['localfile-logs'][selectedItem].target || 'agent'">
               </wz-config-item>
             </div>
-
           </div>
           <!-- End detail container -->
         </div>
@@ -111,50 +153,74 @@
     </md-card>
     <!-- End main card with all the settings -->
 
-    <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+    <wz-config-viewer
+      flex
+      getjson="getJSON()"
+      getxml="getXML()"
+      jsoncontent="JSONContent"
+      xmlcontent="XMLContent" />
   </div>
   <!-- End main content section -->
 
   <!-- This section is the right sidenav content -->
   <!-- Help button -->
-  <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left"
-    ng-click="showInfo()" aria-label="Link to open app about section">
+  <md-button
+    md-no-ink
+    class="md-icon-button small"
+    tooltip="About and help"
+    tooltip-placement="left"
+    ng-click="showInfo()"
+    aria-label="Link to open app about section">
     <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
   </md-button>
   <!-- End help button -->
-  <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+  <md-sidenav
+    ng-show="showingInfo"
+    class="md-sidenav-right"
+    md-is-locked-open="true">
     <md-list>
       <md-subheader>More info about this section</md-subheader>
-      <md-list-item target="_blank" class="wz-text-link"
-        ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/log-data-collection/index.html">Log
-        data collection documentation</md-list-item>
-      <md-list-item target="_blank" class="wz-text-link"
-        ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/localfile.html">Localfile
-        reference</md-list-item>
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/log-data-collection/index.html"
+        >Log data collection documentation</md-list-item
+      >
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/localfile.html"
+        >Localfile reference</md-list-item
+      >
     </md-list>
   </md-sidenav>
   <!-- End right sidenav section -->
-
 </div>
 <!-- End main content and right sidenav section -->
 
-
 <!-- COMMANDS -->
-<div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'logCommands'">
-
+<div
+  flex="auto"
+  layout="row"
+  ng-if="!load && configurationSubTab === 'logCommands'">
   <!-- No configuration section -->
-  <wz-no-config flex error="currentConfig['logcollector-localfile']"
+  <wz-no-config
+    flex
+    error="currentConfig['logcollector-localfile']"
     ng-if="currentConfig['logcollector-localfile'] && isString(currentConfig['logcollector-localfile'])"></wz-no-config>
-  <wz-no-config flex error="'not-present'"
+  <wz-no-config
+    flex
+    error="'not-present'"
     ng-if="currentConfig['logcollector-localfile'] && !isString(currentConfig['logcollector-localfile']) && !currentConfig['logcollector-localfile'].localfile">
   </wz-no-config>
   <!-- End no configuration section -->
 
   <!-- This section is the main content -->
-  <div class="configuration-margin-top" flex layout="column"
+  <div
+    class="configuration-margin-top"
+    flex
+    layout="column"
     ng-if="currentConfig['logcollector-localfile'] && !isString(currentConfig['logcollector-localfile']) && currentConfig['logcollector-localfile'].localfile && currentConfig['logcollector-localfile'].localfile.length">
-
     <!-- The main card will all the settings -->
     <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
       <md-card-content class="overflow-auto" flex layout="column">
@@ -162,57 +228,78 @@
           <div>
             <span class="font-size-16">Command monitoring</span>
             <div class="wz-margin-top-10">
-              <span>All output from these commands will be read as one or more
-                log messages depending on whether command or full_command is used.</span>
+              <span
+                >All output from these commands will be read as one or more log
+                messages depending on whether command or full_command is
+                used.</span
+              >
             </div>
           </div>
           <span flex></span>
-          <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
-            ng-click="getJSON()">JSON</span>
+          <span
+            ng-class="JSONContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getJSON()"
+            >JSON</span
+          >
           <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <span
+            ng-class="XMLContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getXML()"
+            >XML</span
+          >
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
 
         <!-- The container for both list and detail -->
         <div flex="auto" layout="row" class="wz-margin-top-10">
-
           <!-- List container -->
           <div flex="30" layout="column">
-
             <md-list flex="auto" class="wz-item-list">
-              <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)"
+              <md-list-item
+                class="wz-text-link"
+                ng-click="updateSelectedItem($index)"
                 ng-repeat="item in currentConfig['logcollector-localfile']['localfile-commands']">
-                <span ng-if='item.file || item.alias || item.command'>{{ item.file || item.alias ||
-                                                item.command }}</span>
-                <span ng-if='!item.file && !item.alias && !item.command'>{{ item.logformat }} - {{
-                                                item.targetStr }}</span></md-list-item>
+                <span ng-if="item.file || item.alias || item.command"
+                  >{{ item.file || item.alias || item.command }}</span
+                >
+                <span ng-if="!item.file && !item.alias && !item.command"
+                  >{{ item.logformat }} - {{ item.targetStr }}</span
+                ></md-list-item
+              >
             </md-list>
-
           </div>
           <!-- End list container -->
 
           <!-- Detail container -->
-          <div flex layout="column" ng-if="currentConfig['logcollector-localfile']['localfile-commands'].length">
-
+          <div
+            flex
+            layout="column"
+            ng-if="currentConfig['logcollector-localfile']['localfile-commands'].length">
             <div flex="auto" class="wz-item-detail">
-              <wz-config-item label="Log format"
+              <wz-config-item
+                label="Log format"
                 value="currentConfig['logcollector-localfile']['localfile-commands'][selectedItem].logformat">
               </wz-config-item>
-              <wz-config-item label="Run this command"
+              <wz-config-item
+                label="Run this command"
                 value="currentConfig['logcollector-localfile']['localfile-commands'][selectedItem].command || '-'">
               </wz-config-item>
-              <wz-config-item label="Command alias"
+              <wz-config-item
+                label="Command alias"
                 value="currentConfig['logcollector-localfile']['localfile-commands'][selectedItem].alias || '-'">
               </wz-config-item>
-              <wz-config-item label="Interval between command executions"
+              <wz-config-item
+                label="Interval between command executions"
                 value="currentConfig['logcollector-localfile']['localfile-commands'][selectedItem].frequency || '-'">
               </wz-config-item>
-              <wz-config-item is-array="true" label="Redirect output to this socket"
+              <wz-config-item
+                is-array="true"
+                label="Redirect output to this socket"
                 value="currentConfig['logcollector-localfile']['localfile-commands'][selectedItem].target || 'agent'">
               </wz-config-item>
             </div>
-
           </div>
           <!-- End detail container -->
         </div>
@@ -221,48 +308,69 @@
     </md-card>
     <!-- End main card with all the settings -->
 
-    <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+    <wz-config-viewer
+      flex
+      getjson="getJSON()"
+      getxml="getXML()"
+      jsoncontent="JSONContent"
+      xmlcontent="XMLContent" />
   </div>
   <!-- End main content section -->
 
   <!-- This section is the right sidenav content -->
   <!-- Help button -->
-  <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left"
-    ng-click="showInfo()" aria-label="Link to open app about section">
+  <md-button
+    md-no-ink
+    class="md-icon-button small"
+    tooltip="About and help"
+    tooltip-placement="left"
+    ng-click="showInfo()"
+    aria-label="Link to open app about section">
     <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
   </md-button>
   <!-- End help button -->
-  <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+  <md-sidenav
+    ng-show="showingInfo"
+    class="md-sidenav-right"
+    md-is-locked-open="true">
     <md-list>
       <md-subheader>More info about this section</md-subheader>
-      <md-list-item target="_blank" class="wz-text-link"
-        ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/log-data-collection/index.html">Log
-        data collection documentation</md-list-item>
-      <md-list-item target="_blank" class="wz-text-link"
-        ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/localfile.html">Localfile
-        reference</md-list-item>
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/log-data-collection/index.html"
+        >Log data collection documentation</md-list-item
+      >
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/localfile.html"
+        >Localfile reference</md-list-item
+      >
     </md-list>
   </md-sidenav>
   <!-- End right sidenav section -->
-
 </div>
 
 <!-- This section contains the main content and the right sidenav -->
 <div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'socket'">
-
   <!-- No configuration section -->
-  <wz-no-config flex error="currentConfig['logcollector-socket']"
+  <wz-no-config
+    flex
+    error="currentConfig['logcollector-socket']"
     ng-if="currentConfig['logcollector-socket'] && isString(currentConfig['logcollector-socket'])"></wz-no-config>
-  <wz-no-config flex error="'not-present'"
+  <wz-no-config
+    flex
+    error="'not-present'"
     ng-if="currentConfig['logcollector-socket'] && !isString(currentConfig['logcollector-socket']) && !currentConfig['logcollector-socket'].target">
   </wz-no-config>
   <!-- End no configuration section -->
 
   <!-- This section is the main content -->
-  <div flex layout="column"
+  <div
+    flex
+    layout="column"
     ng-if="currentConfig['logcollector-socket'] && !isString(currentConfig['logcollector-socket']) && currentConfig['logcollector-socket'].target && currentConfig['logcollector-socket'].target.length">
-
     <!-- The main card will all the settings -->
     <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
       <md-card-content class="overflow-auto" flex layout="column">
@@ -270,50 +378,66 @@
           <div>
             <span class="font-size-16">Output sockets</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Define custom outputs to send log data</span>
+              <span class="md-subheader small"
+                >Define custom outputs to send log data</span
+              >
             </div>
           </div>
           <span flex></span>
-          <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small"
-            ng-click="getJSON()">JSON</span>
+          <span
+            ng-class="JSONContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getJSON()"
+            >JSON</span
+          >
           <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <span
+            ng-class="XMLContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getXML()"
+            >XML</span
+          >
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
 
         <!-- The container for both list and detail -->
         <div flex="auto" layout="row" class="wz-margin-top-10">
-
           <!-- List container -->
           <div flex="30" layout="column">
-
             <md-list flex="auto" class="wz-item-list">
-              <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)"
-                ng-repeat="item in currentConfig['logcollector-socket'].target">{{
-                item.name }}</md-list-item>
+              <md-list-item
+                class="wz-text-link"
+                ng-click="updateSelectedItem($index)"
+                ng-repeat="item in currentConfig['logcollector-socket'].target"
+                >{{ item.name }}</md-list-item
+              >
             </md-list>
-
           </div>
           <!-- End list container -->
 
           <!-- Detail container -->
-          <div flex layout="column" ng-if="currentConfig['logcollector-socket'].target.length">
-
+          <div
+            flex
+            layout="column"
+            ng-if="currentConfig['logcollector-socket'].target.length">
             <div flex="auto" class="wz-item-detail">
-              <wz-config-item label="Socket name"
+              <wz-config-item
+                label="Socket name"
                 value="currentConfig['logcollector-socket'].target[selectedItem].name || '-'">
               </wz-config-item>
-              <wz-config-item label="Socket location"
+              <wz-config-item
+                label="Socket location"
                 value="currentConfig['logcollector-socket'].target[selectedItem].location || '-'">
               </wz-config-item>
-              <wz-config-item label="UNIX socket protocol"
+              <wz-config-item
+                label="UNIX socket protocol"
                 value="currentConfig['logcollector-socket'].target[selectedItem].mode || 'udp'">
               </wz-config-item>
-              <wz-config-item label="Prefix to place before the message"
+              <wz-config-item
+                label="Prefix to place before the message"
                 value="currentConfig['logcollector-socket'].target[selectedItem].prefix || '-'">
               </wz-config-item>
             </div>
-
           </div>
           <!-- End detail container -->
         </div>
@@ -322,31 +446,48 @@
     </md-card>
     <!-- End main card with all the settings -->
 
-    <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
+    <wz-config-viewer
+      flex
+      getjson="getJSON()"
+      getxml="getXML()"
+      jsoncontent="JSONContent"
+      xmlcontent="XMLContent" />
 
     <!-- </div> -->
     <!-- End main content section -->
   </div>
   <!-- This section is the right sidenav content -->
   <!-- Help button -->
-  <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left"
-    ng-click="showInfo()" aria-label="Link to open app about section">
+  <md-button
+    md-no-ink
+    class="md-icon-button small"
+    tooltip="About and help"
+    tooltip-placement="left"
+    ng-click="showInfo()"
+    aria-label="Link to open app about section">
     <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
   </md-button>
   <!-- End help button -->
-  <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+  <md-sidenav
+    ng-show="showingInfo"
+    class="md-sidenav-right"
+    md-is-locked-open="true">
     <md-list>
       <md-subheader>More info about this section</md-subheader>
-      <md-list-item target="_blank" class="wz-text-link"
-        ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/log-data-collection/log-data-configuration.html#using-multiple-outputs">
-        Using
-        multiple outputs</md-list-item>
-      <md-list-item target="_blank" class="wz-text-link"
-        ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/socket.html">Socket
-        reference</md-list-item>
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/log-data-collection/log-data-configuration.html#using-multiple-outputs">
+        Using multiple outputs</md-list-item
+      >
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/socket.html"
+        >Socket reference</md-list-item
+      >
     </md-list>
   </md-sidenav>
   <!-- End right sidenav section -->
   <!-- End main content and right sidenav section -->
-
 </div>

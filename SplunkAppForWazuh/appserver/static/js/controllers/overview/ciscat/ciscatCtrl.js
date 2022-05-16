@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -35,6 +35,9 @@ define([
      * @param {*} $scope
      * @param {*} $currentDataService
      * @param {*} $state
+     * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -43,14 +46,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -140,31 +145,31 @@ define([
          */
         new ColumnChart(
           'topCiscatGroups',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
+          `${this.filters} rule.groups{}="ciscat" | top data.cis.group`,
           'topCiscatGroups',
           this.scope
         ),
         new LinearChart(
           'scanResultEvolution',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
+          `${this.filters} rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          `${this.filters} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters}  sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.group" as "Group" | fields - data.cis.remediation`,
+          `${this.filters} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -203,7 +208,7 @@ define([
         'Last errors': this.scope.lastErrors,
         'Last fails': this.scope.lastFails,
         'Last unknown': this.scope.lastUnknown,
-        'Last scan benchmark': this.scope.lastScanBenchmark
+        'Last scan benchmark': this.scope.lastScanBenchmark,
       }
     }
   }

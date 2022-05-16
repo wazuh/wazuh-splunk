@@ -10,15 +10,15 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module'], function(app) {
+define(['../module'], function (app) {
   'use strict'
-  app.directive('wzTagFilter', function(BASE_URL) {
+  app.directive('wzTagFilter', function (BASE_URL) {
     return {
       restrict: 'E',
       scope: {
         path: '=path',
         queryFn: '&',
-        fieldsModel: '='
+        fieldsModel: '=',
       },
       controller($scope, $timeout, $document, $notificationService) {
         $scope.tagList = []
@@ -39,7 +39,7 @@ define(['../module'], function(app) {
             const term = $scope.newTag.split(':')
             const obj = {
               name: term[0].trim(),
-              value: term[1] ? term[1].trim() : ''
+              value: term[1] ? term[1].trim() : '',
             }
             const isFilter = obj.value
             if (
@@ -54,9 +54,9 @@ define(['../module'], function(app) {
                 id: generateUID(),
                 key: obj.name,
                 value: obj,
-                type: isFilter ? 'filter' : 'search'
+                type: isFilter ? 'filter' : 'search',
               }
-              const idxSearch = $scope.tagList.find(function(x) {
+              const idxSearch = $scope.tagList.find(function (x) {
                 return x.type === 'search'
               })
               if (!isFilter && idxSearch) {
@@ -69,7 +69,7 @@ define(['../module'], function(app) {
                 )
               }
               if (
-                !$scope.tagList.find(function(x) {
+                !$scope.tagList.find(function (x) {
                   return (
                     x.type === 'filter' &&
                     x.key === tag.key &&
@@ -95,14 +95,14 @@ define(['../module'], function(app) {
          * Build a query from an array of groups
          * @param {Array} groups
          */
-        const buildQuery = groups => {
+        const buildQuery = (groups) => {
           try {
             const queryObj = {
               query: '',
-              search: ''
+              search: '',
             }
             groups.forEach((group, idx) => {
-              const search = group.find(x => x.type === 'search')
+              const search = group.find((x) => x.type === 'search')
               if (search) {
                 $scope.searchIdx = idx
                 queryObj.search = search.value.name
@@ -117,9 +117,11 @@ define(['../module'], function(app) {
                   queryObj.query += '('
                 }
                 group
-                  .filter(x => x.type === 'filter')
+                  .filter((x) => x.type === 'filter')
                   .forEach((tag, idx2) => {
-                    queryObj.query += tag.key + '=' + tag.value.value
+                    const value =
+                      tag.value.value === 'unknown' ? 'null' : tag.value.value
+                    queryObj.query += tag.key + '~' + value
                     if (idx2 != group.length - 1) {
                       queryObj.query +=
                         $scope.connectors[idx].subgroup[idx2].value
@@ -140,7 +142,7 @@ define(['../module'], function(app) {
           }
         }
 
-        const addConnectors = groups => {
+        const addConnectors = (groups) => {
           const result = []
           groups.forEach((group, index) => {
             result.push({})
@@ -153,7 +155,7 @@ define(['../module'], function(app) {
                       ((($scope.connectors || [])[index] || {}).subgroup || [])[
                         idx
                       ] || {}
-                    ).value || ','
+                    ).value || ',',
                 })
               }
             })
@@ -202,11 +204,11 @@ define(['../module'], function(app) {
           }
           return result
         }
-        $scope.addTagKey = key => {
+        $scope.addTagKey = (key) => {
           $scope.newTag = key + ':'
           $scope.showAutocomplete(true)
         }
-        $scope.addTagValue = value => {
+        $scope.addTagValue = (value) => {
           $scope.newTag = $scope.newTag.substring(
             0,
             $scope.newTag.indexOf(':') + 1
@@ -222,10 +224,13 @@ define(['../module'], function(app) {
           overwrite = false
         ) => {
           if (deleteGroup) {
-            $scope.tagList = $scope.tagList.filter(x => x.key !== id)
+            $scope.tagList = $scope.tagList.filter((x) => x.key !== id)
             $scope.connectors.splice(parentIdx, 1)
           } else {
-            $scope.tagList.splice($scope.tagList.findIndex(x => x.id === id), 1)
+            $scope.tagList.splice(
+              $scope.tagList.findIndex((x) => x.id === id),
+              1
+            )
             if (idx < 0) {
               idx = 0
             }
@@ -240,7 +245,7 @@ define(['../module'], function(app) {
             $scope.connectors = [{}]
           }
           $scope.groupedTagList = groupBy($scope.tagList, 'key')
-          const search = $scope.tagList.find(x => x.type === 'search')
+          const search = $scope.tagList.find((x) => x.type === 'search')
           if (!search) {
             $scope.searchIdx = false
           }
@@ -258,7 +263,7 @@ define(['../module'], function(app) {
           $scope.showAutocomplete(false)
         }
 
-        $scope.showAutocomplete = flag => {
+        $scope.showAutocomplete = (flag) => {
           if (flag) {
             $scope.getAutocompleteContent()
           }
@@ -277,13 +282,13 @@ define(['../module'], function(app) {
               }
             }
           } else {
-            const model = $scope.dataModel.find(function(x) {
+            const model = $scope.dataModel.find(function (x) {
               return x.key === $scope.newTag.split(':')[0].trim()
             })
 
             if (model) {
               const listTmp = new Set(
-                model.list.filter(function(x) {
+                model.list.filter(function (x) {
                   return x.toUpperCase().includes(term[1].trim().toUpperCase())
                 })
               )
@@ -319,7 +324,7 @@ define(['../module'], function(app) {
         }
         const load = async () => {
           try {
-            Object.keys($scope.fieldsModel).forEach(key => {
+            Object.keys($scope.fieldsModel).forEach((key) => {
               $scope.dataModel.push({ key: key, list: $scope.fieldsModel[key] })
             })
             return
@@ -336,7 +341,7 @@ define(['../module'], function(app) {
           secondPart = ('000' + secondPart.toString(36)).slice(-3)
           return firstPart + secondPart
         }
-        $('#wz-search-filter-bar-input').bind('keydown', function(e) {
+        $('#wz-search-filter-bar-input').bind('keydown', function (e) {
           let $current = $(
             '#wz-search-filter-bar-autocomplete-list li.selected'
           )
@@ -392,7 +397,7 @@ define(['../module'], function(app) {
       },
       templateUrl:
         BASE_URL +
-        '/static/app/SplunkAppForWazuh/js/directives/wz-tag-filter/wz-tag-filter.html'
+        '/static/app/SplunkAppForWazuh/js/directives/wz-tag-filter/wz-tag-filter.html',
     }
   })
 })

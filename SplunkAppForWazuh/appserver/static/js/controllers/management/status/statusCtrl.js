@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Status {
@@ -9,8 +9,8 @@ define(['../../module'], function(controllers) {
      * @param {*} $notificationService
      * @param {Array} statusData
      * @param {Object} agentInfo
-     * @param {Boolean} isAdmin
      * @param {*} $restartService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -18,14 +18,31 @@ define(['../../module'], function(controllers) {
       $notificationService,
       statusData,
       agentInfo,
-      isAdmin,
-      $restartService
+      $restartService,
+      $security_service
     ) {
       this.scope = $scope
       this.scope.load = true
       this.apiReq = $requestService.apiReq
       this.notification = $notificationService
-      const parsedStatusData = statusData.map(item =>
+
+      /* RBAC flags */
+      this.scope.canReadCluster = $security_service.isAllowed('CLUSTER_READ', [
+        'RESOURCELESS',
+      ])
+      this.scope.canRestartCluster = $security_service.isAllowed(
+        'CLUSTER_RESTART',
+        ['RESOURCELESS']
+      )
+      this.scope.canReadManager = $security_service.isAllowed('MANAGER_READ', [
+        'RESOURCELESS',
+      ])
+      this.scope.canRestartManager = $security_service.isAllowed(
+        'MANAGER_RESTART',
+        ['RESOURCELESS']
+      )
+
+      const parsedStatusData = statusData.map((item) =>
         item && item.data && item.data.data ? item.data.data : item
       )
       const [
@@ -36,7 +53,7 @@ define(['../../module'], function(controllers) {
         decoders,
         masterNode,
         nodes,
-        status
+        status,
       ] = parsedStatusData
       this.masterNode = masterNode
       this.nodes = nodes
@@ -47,8 +64,7 @@ define(['../../module'], function(controllers) {
       this.rules = rules
       this.decoders = decoders
       this.scope.clusterEnabled = masterNode || false
-      this.agentInfo = agentInfo.data.data
-      this.isAdmin = isAdmin
+      this.agentInfo = agentInfo && agentInfo.data.data
       this.restartService = $restartService
     }
 
@@ -58,13 +74,12 @@ define(['../../module'], function(controllers) {
     $onInit() {
       this.scope.selectedNavTab = 'status'
       this.scope.confirmingRestart = false
-      this.scope.isAdmin = this.isAdmin
       this.scope.switchRestart = () => this.switchRestart()
       this.scope.restartInProgress = false
       if (this.masterNode && this.masterNode.name) {
         const masterNodeName = this.masterNode.name
         this.scope.nodeId = masterNodeName
-        this.scope.nodes = this.nodes.items.filter(node => node.name)
+        this.scope.nodes = this.nodes.affected_items.filter((node) => node.name)
       }
       if (
         this.status &&
@@ -77,15 +92,17 @@ define(['../../module'], function(controllers) {
         this.scope.$applyAsync()
       }
 
-      this.scope.changeNode = node => this.changeNode(node)
+      this.scope.changeNode = (node) => this.changeNode(node)
       this.scope.restart = () => this.restart()
       this.bindStatus()
 
-      if (this.nodeStatus) {
-        this.scope.daemons = this.objToArr(this.nodeStatus)
+      if (this.nodeStatus.affected_items) {
+        this.scope.daemons = this.objToArr(
+          this.nodeStatus?.affected_items[0] || {}
+        )
       }
-      if (this.nodeInfo) {
-        this.scope.managerInfo = this.nodeInfo
+      if (this.nodeInfo.affected_items) {
+        this.scope.managerInfo = this.nodeInfo.affected_items[0]
       }
 
       this.scope.$on('loadingContent', (event, data) => {
@@ -115,7 +132,7 @@ define(['../../module'], function(controllers) {
         this.scope.nodeId = node
         const daemonResult = await Promise.all([
           this.apiReq(`/cluster/${node}/status`),
-          this.apiReq(`/cluster/${node}/info`)
+          this.apiReq(`/cluster/${node}/info`),
         ])
         if (
           (daemonResult[0] && daemonResult[0].data.error) ||
@@ -132,8 +149,10 @@ define(['../../module'], function(controllers) {
             'This cluster is enabled but not running. Please check your cluster health.'
           )
         }
-        this.scope.daemons = this.objToArr(daemonResult[0].data.data)
-        this.scope.managerInfo = daemonResult[1].data.data
+        this.scope.daemons = this.objToArr(
+          daemonResult[0].data.data.affected_items[0]
+        )
+        this.scope.managerInfo = daemonResult[1].data.data.affected_items[0]
       } catch (err) {
         this.scope.clusterError = err.message || err
       }
@@ -148,20 +167,23 @@ define(['../../module'], function(controllers) {
       try {
         this.scope.load = true
 
-        this.scope.getDaemonStatusClass = daemonStatus =>
+        this.scope.getDaemonStatusClass = (daemonStatus) =>
           daemonStatus === 'running' ? 'status teal' : 'status red'
         // Once Wazuh core fixes agent 000 issues, this should be adjusted
-        const active = this.summary.Active - 1
-        const total = this.summary.Total - 1
+        const active = this.summary.active
+        const total = this.summary.total
         this.scope.agentsCountActive = active
-        this.scope.agentsCountDisconnected = this.summary.Disconnected
-        this.scope.agentsCountNeverConnected = this.summary['Never connected']
+        this.scope.agentsCountDisconnected = this.summary.disconnected
+        this.scope.agentsCountNeverConnected = this.summary['never_connected']
         this.scope.agentsCountTotal = total
         this.scope.agentsCoverity = (active / total) * 100
 
-        this.scope.totalRules = this.rules.totalItems
-        this.scope.totalDecoders = this.decoders.totalItems
-        this.scope.agentInfo = this.agentInfo
+        this.scope.totalRules = this.rules.total_affected_items
+        this.scope.totalDecoders = this.decoders.total_affected_items
+        this.scope.agentInfo =
+          this.agentInfo &&
+          this.agentInfo.affected_items &&
+          this.agentInfo.affected_items[0]
       } catch (err) {
         this.notification.showErrorToast(err.message || err)
       }

@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module', '../../../dashboardMain'], function(
+define(['../../module', '../../../dashboardMain'], function (
   app,
   DashboardMain
 ) {
@@ -20,14 +20,20 @@ define(['../../module', '../../../dashboardMain'], function(
     /**
      * Class Agents Policy-Monitoring
      * @param {Object} $urlTokenModel
+     * @param {Object} $rootScope
      * @param {Object} $scope
      * @param {Object} $state
      * @param {Object} $currentDataService
      * @param {Object} agent
-     * @param {*} $reportingService
+     * @param {Object} configAssess
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} BASE_URL
+     * @param {*} extensions
+     * @param {*} $dateDiffService
      */
 
     constructor(
@@ -82,17 +88,17 @@ define(['../../module', '../../../dashboardMain'], function(
         this.agent.data.data.id
       )
         this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+          `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
 
       if (
         this.configAssess &&
         this.configAssess.data &&
         this.configAssess.data.data &&
-        this.configAssess.data.data.items &&
+        this.configAssess.data.data.affected_items &&
         this.configAssess.data.error === 0
       ) {
-        this.configAssess = this.configAssess.data.data.items
+        this.configAssess = this.configAssess.data.data.affected_items
         this.scope.configAssess = this.configAssess
       }
 
@@ -111,18 +117,27 @@ define(['../../module', '../../../dashboardMain'], function(
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
-          ? this.agent.data.data
+          ? this.agent.data.data.affected_items[0]
           : { error: true }
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      // Capitalize Status
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
+      }
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
 
       this.scope.refreshScans = () => this.refreshScans()
-      this.scope.search = term => this.search(term)
+      this.scope.search = (term) => this.search(term)
 
-      this.scope.loadCharts = policy => {
-        setTimeout(function() {
+      this.scope.loadCharts = (policy) => {
+        setTimeout(function () {
+          // eslint-disable-next-line no-undef
           const chart = new Chart(document.getElementById(policy.policy_id), {
             type: 'doughnut',
             data: {
@@ -130,20 +145,20 @@ define(['../../module', '../../../dashboardMain'], function(
               datasets: [
                 {
                   backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
-                  data: [policy.pass, policy.fail, policy.invalid]
-                }
-              ]
+                  data: [policy.pass, policy.fail, policy.invalid],
+                },
+              ],
             },
             options: {
               cutoutPercentage: 85,
               legend: {
                 display: true,
-                position: 'right'
+                position: 'right',
               },
               tooltips: {
-                displayColors: false
-              }
-            }
+                displayColors: false,
+              },
+            },
           })
           chart.update()
         }, 250)
@@ -208,24 +223,6 @@ define(['../../module', '../../../dashboardMain'], function(
     }
 
     /**
-     * Loads policies checks
-     */
-    async loadPolicyChecks(policy) {
-      this.scope.showPolicyChecks = true
-      this.scope.policy = policy
-      const agentId = this.agent.data.data.id
-      this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
-    }
-
-    /**
-     *
-     * Backs to config assessment
-     */
-    backToConfAssess() {
-      this.scope.showPolicyChecks = false
-    }
-
-    /**
      *
      * Backs to config assessment
      */
@@ -239,16 +236,8 @@ define(['../../module', '../../../dashboardMain'], function(
     async loadPolicyChecks(policy) {
       this.scope.showPolicyChecks = true
       this.scope.policy = policy
-      const agentId = this.agent.data.data.id
+      const agentId = this.agent.data.data.affected_items[0].id
       this.scope.wzTablePath = `/sca/${agentId}/checks/${policy.policy_id}`
-    }
-
-    /**
-     *
-     * Backs to config assessment
-     */
-    backToConfAssess() {
-      this.scope.showPolicyChecks = false
     }
 
     /**

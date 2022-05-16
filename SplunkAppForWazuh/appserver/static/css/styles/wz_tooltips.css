@@ -1,63 +1,64 @@
 /* Custom tooltip styles */
 
 .wz-tooltip {
-    opacity: 100 !important;
+  opacity: 100 !important;
 }
 
 .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
 }
 
-.md-panel.md-tooltip.md-default-theme, .md-panel.md-tooltip {
-    color: rgba(255,255,255,0.87) !important;
-    background-color: rgb(0, 0, 0) !important;
-    padding-left: 0.5em !important;
-    padding-bottom: 0.5em !important;
-    padding-right: 0.5em !important;
-    padding-top: 0.5em !important;
-    margin-top: 0.5em !important;
-    margin-bottom: 0.5em !important;
-    margin-left: 0.5em !important;
-    margin-right: 0.5em !important;
+.md-panel.md-tooltip.md-default-theme,
+.md-panel.md-tooltip {
+  color: rgba(255, 255, 255, 0.87) !important;
+  background-color: rgb(0, 0, 0) !important;
+  padding-left: 0.5em !important;
+  padding-bottom: 0.5em !important;
+  padding-right: 0.5em !important;
+  padding-top: 0.5em !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  margin-left: 0.5em !important;
+  margin-right: 0.5em !important;
 }
 
 .md-tooltip.md-hide {
-    -webkit-transition: all .0s cubic-bezier(.55,0,.55,.2) !important;
-    transition: all .0s cubic-bezier(.55,0,.55,.2) !important;
-    transition-property: all !important;
-    transition-duration: 0.0s !important;
-    transition-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2) !important;
-    transition-delay: 0s !important;
+  -webkit-transition: all 0s cubic-bezier(0.55, 0, 0.55, 0.2) !important;
+  transition: all 0s cubic-bezier(0.55, 0, 0.55, 0.2) !important;
+  transition-property: all !important;
+  transition-duration: 0s !important;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2) !important;
+  transition-delay: 0s !important;
 }
 
 .wz-tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    top: 150%;
-    left: 50%;
-    margin-left: -60px;
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -60px;
 }
 
 .wz-tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent black transparent;
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
 }
 
 .wz-tooltip:hover .tooltiptext {
-    visibility: visible;
+  visibility: visible;
 }

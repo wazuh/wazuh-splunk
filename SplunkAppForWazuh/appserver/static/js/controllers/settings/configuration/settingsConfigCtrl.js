@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers) {
+define(['../../module'], function (controllers) {
   'use strict'
 
   class Configuration {
@@ -7,10 +7,12 @@ define(['../../module'], function(controllers) {
       $currentDataService,
       $notificationService,
       configuration,
-      $requestService
+      $requestService,
+      isWazuhAdmin
     ) {
       this.scope = $scope
       this.scope.extensions = {}
+      this.scope.isWazuhAdmin = isWazuhAdmin
       this.notification = $notificationService
       this.currentApi = $currentDataService.getApi()
       this.getCurrentConfiguration = $currentDataService.getCurrentConfiguration
@@ -20,17 +22,15 @@ define(['../../module'], function(controllers) {
 
     $onInit() {
       try {
-        const id = this.currentApi['_key']
         this.scope.configuration = this.configuration.data.data
-
         this.dropDownValue = false
         this.editingNewValue = false
         this.scope.logLevelOptions = ['info', 'debug']
-        this.scope.getDescription = key => this.getDescription(key)
+        this.scope.getDescription = (key) => this.getDescription(key)
         this.scope.switchEdit = (key, value) => this.switchEdit(key, value)
         this.scope.cancelEdition = () => this.cancelEdition()
-        this.scope.setValue = key => this.setValue(key)
-        this.scope.selectValue = value => this.selectValue(value)
+        this.scope.setValue = (key) => this.setValue(key)
+        this.scope.selectValue = (value) => this.selectValue(value)
       } catch (error) {
         console.error('onInit err : ', error)
       }
@@ -44,9 +44,9 @@ define(['../../module'], function(controllers) {
       try {
         const description = {
           'log.level':
-            'Set the app loggin level, allowed values are info and debug.',
+            'Set the app logging level, allowed values are info and debug.',
           timeout:
-            'Define the maximun time in seconds the app will wait for an API reponse when making request to it.'
+            'Define the maximum time in seconds the app will wait for an API response when making a request to it.',
         }
         return description[key]
       } catch (error) {

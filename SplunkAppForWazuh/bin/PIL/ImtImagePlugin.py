@@ -15,19 +15,24 @@
 #
 
 
-__version__ = "0.2"
-
 import re
 
-import Image, ImageFile
+from . import Image, ImageFile
+
+# __version__ is deprecated and will be removed in a future version. Use
+# PIL.__version__ instead.
+__version__ = "0.2"
+
 
 #
 # --------------------------------------------------------------------
 
-field = re.compile(r"([a-z]*) ([^ \r\n]*)")
+field = re.compile(br"([a-z]*) ([^ \r\n]*)")
+
 
 ##
 # Image plugin for IM Tools images.
+
 
 class ImtImageFile(ImageFile.ImageFile):
 
@@ -39,24 +44,24 @@ class ImtImageFile(ImageFile.ImageFile):
         # Quick rejection: if there's not a LF among the first
         # 100 bytes, this is (probably) not a text header.
 
-        if not "\n" in self.fp.read(100):
-            raise SyntaxError, "not an IM file"
+        if b"\n" not in self.fp.read(100):
+            raise SyntaxError("not an IM file")
         self.fp.seek(0)
 
         xsize = ysize = 0
 
-        while 1:
+        while True:
 
             s = self.fp.read(1)
             if not s:
                 break
 
-            if s == chr(12):
+            if s == b"\x0C":
 
                 # image data begins
-                self.tile = [("raw", (0,0)+self.size,
-                             self.fp.tell(),
-                             (self.mode, 0, 1))]
+                self.tile = [
+                    ("raw", (0, 0) + self.size, self.fp.tell(), (self.mode, 0, 1))
+                ]
 
                 break
 
@@ -67,19 +72,19 @@ class ImtImageFile(ImageFile.ImageFile):
                 s = s + self.fp.readline()
                 if len(s) == 1 or len(s) > 100:
                     break
-                if s[0] == "*":
-                    continue # comment
+                if s[0] == ord(b"*"):
+                    continue  # comment
 
                 m = field.match(s)
                 if not m:
                     break
-                k, v = m.group(1,2)
+                k, v = m.group(1, 2)
                 if k == "width":
                     xsize = int(v)
-                    self.size = xsize, ysize
+                    self._size = xsize, ysize
                 elif k == "height":
                     ysize = int(v)
-                    self.size = xsize, ysize
+                    self._size = xsize, ysize
                 elif k == "pixel" and v == "n8":
                     self.mode = "L"
 
@@ -87,7 +92,7 @@ class ImtImageFile(ImageFile.ImageFile):
 #
 # --------------------------------------------------------------------
 
-Image.register_open("IMT", ImtImageFile)
+Image.register_open(ImtImageFile.format, ImtImageFile)
 
 #
 # no extension registered (".im" is simply too common)

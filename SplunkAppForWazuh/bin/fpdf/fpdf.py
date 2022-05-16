@@ -1115,11 +1115,9 @@ class FPDF(object):
                 dest='I'
             else:
                 dest='F'
-        if PY3K:
             # manage binary data as latin1 until PEP461 or similar is implemented
-            buffer = self.buffer.encode("latin1")
-        else:
-            buffer = self.buffer
+        buffer = self.buffer.encode("latin1")
+        
         if dest in ('I', 'D'):
             # Python < 3 writes byte data transparently without "buffer"
             stdout = getattr(sys.stdout, 'buffer', sys.stdout)
@@ -1138,14 +1136,9 @@ class FPDF(object):
         "Check that text input is in the correct format/encoding"
         # - for TTF unicode fonts: unicode object (utf8 encoding)
         # - for built-in fonts: string instances (encoding: latin-1, cp1252)
-        if not PY3K:
-            if self.unifontsubset and isinstance(txt, str):
-                return txt.decode("utf-8")
-            elif not self.unifontsubset and isinstance(txt, unicode):
-                return txt.encode(self.core_fonts_encoding)
-        else:
-            if not self.unifontsubset and self.core_fonts_encoding:
-                return txt.encode(self.core_fonts_encoding).decode("latin-1")
+        
+        if not self.unifontsubset and self.core_fonts_encoding:
+            return txt.encode(self.core_fonts_encoding).decode("latin-1")
         return txt
 
     def _dochecks(self):
@@ -1223,7 +1216,7 @@ class FPDF(object):
             content = self.pages[n]["content"]
             if self.compress:
                 # manage binary data as latin1 until PEP461 or similar is implemented
-                p = content.encode("latin1") if PY3K else content
+                p = content.encode("latin1") 
                 p = zlib.compress(p)
             else:
                 p = content
@@ -1425,9 +1418,8 @@ class FPDF(object):
                     cidtogidmap[cc*2] = chr(glyph >> 8)
                     cidtogidmap[cc*2 + 1] = chr(glyph & 0xFF)
                 cidtogidmap = ''.join(cidtogidmap)
-                if PY3K:
                     # manage binary data as latin1 until PEP461-like function is implemented
-                    cidtogidmap = cidtogidmap.encode("latin1")
+                cidtogidmap = cidtogidmap.encode("latin1")
                 cidtogidmap = zlib.compress(cidtogidmap);
                 self._newobj()
                 self._out('<</Length ' + str(len(cidtogidmap)) + '')
@@ -1846,7 +1838,6 @@ class FPDF(object):
         #Check signature
         magic = f.read(8).decode("latin1")
         signature = '\x89'+'PNG'+'\r'+'\n'+'\x1a'+'\n'
-        if not PY3K: signature = signature.decode("latin1")
         if(magic!=signature):
             self.error('Not a PNG file: ' + filename)
         #Read header chunk
@@ -1884,7 +1875,7 @@ class FPDF(object):
         #Scan chunks looking for palette, transparency and image data
         pal=''
         trns=''
-        data=bytes() if PY3K else str()
+        data=bytes()
         n=1
         while n != None:
             n=self._freadint(f)

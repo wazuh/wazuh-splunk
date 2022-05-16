@@ -6,8 +6,8 @@ define([
   '../../../services/visualizations/chart/column-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/map/map',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -28,6 +28,7 @@ define([
      * @param {*} $state
      * @param {*} $notificationService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
      */
     constructor(
       $urlTokenModel,
@@ -43,7 +44,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.currentDataService.addFilter(
@@ -59,7 +61,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.filters = this.getFilters()
@@ -70,57 +72,57 @@ define([
          */
         new AreaChart(
           'eventsBySourceVizz',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.source usenull=f`,
+          `${this.filters} | timechart count by data.aws.source usenull=f`,
           'eventsBySourceVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new ColumnChart(
           'eventsByS3BucketsVizz',
-          `${this.filters} sourcetype=wazuh | timechart count by data.aws.log_info.s3bucket usenull=f`,
+          `${this.filters} | timechart count by data.aws.log_info.s3bucket usenull=f`,
           'eventsByS3BucketsVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'sourcesVizz',
-          `${this.filters} sourcetype=wazuh | stats count BY data.aws.source`,
+          `${this.filters} | stats count BY data.aws.source`,
           'sourcesVizz',
           this.scope
         ),
         new PieChart(
           'accountsVizz',
-          `${this.filters} sourcetype=wazuh | top data.aws.responseElements.instancesSet.items.instanceId`,
+          `${this.filters} | top data.aws.responseElements.instancesSet.items.instanceId`,
           'accountsVizz',
           this.scope
         ),
         new PieChart(
           's3BucketsVizz',
-          `${this.filters} sourcetype=wazuh | stats count by data.aws.log_info.s3bucket`,
+          `${this.filters} | stats count by data.aws.log_info.s3bucket`,
           's3BucketsVizz',
           this.scope
         ),
         new PieChart(
           'regionsVizz',
-          `${this.filters} sourcetype=wazuh | top data.aws.awsRegion`,
+          `${this.filters} | top data.aws.awsRegion`,
           'regionsVizz',
           this.scope
         ),
         new Table(
           'top5Buckets',
-          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
+          `${this.filters} | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
           'top5Buckets',
           this.scope
         ),
         new Table(
           'top5Rules',
-          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters} | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'top5Rules',
           this.scope
         ),
         new RawTableDataService(
           'top5BucketsTable',
-          `${this.filters} sourcetype=wazuh | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
+          `${this.filters} | top data.aws.source limit=5 | rename data.aws.source as Source, count as Count, percent as Percent`,
           'top5BucketsTableToken',
           '$result$',
           this.scope,
@@ -128,7 +130,7 @@ define([
         ),
         new RawTableDataService(
           'top5RulesTable',
-          `${this.filters} sourcetype=wazuh | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters} | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'top5RulesTableToken',
           '$result$',
           this.scope,
@@ -136,10 +138,10 @@ define([
         ),
         new Map(
           'map',
-          `${this.filters} sourcetype=wazuh | stats count by data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat, data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon as "lon" | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat as "lat" | geostats count`,
+          `${this.filters} | stats count by data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat, data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lon as "lon" | rename data.aws.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation.lat as "lat" | geostats count`,
           'map',
           this.scope
-        )
+        ),
       ]
     }
 
@@ -159,7 +161,7 @@ define([
               'eventsByS3BucketsVizz',
               'map',
               'top5Buckets',
-              'top5Rules'
+              'top5Rules',
             ],
             {}, //Metrics
             this.tableResults

@@ -1,9 +1,10 @@
-define(['../module'], function(app) {
+define(['../module'], function (app) {
   'use strict'
 
   class ApiIndexStorageService {
-    constructor() {
+    constructor($notificationService) {
       this.sessionStorage = sessionStorage
+      this.notification = $notificationService
     }
 
     /**
@@ -37,8 +38,10 @@ define(['../module'], function(app) {
     removeAPI() {
       try {
         delete this.sessionStorage.selectedAPI
-      } catch (err) {
-        return
+      } catch (error) {
+        this.notification.showErrorToast(
+          'Error removing API:' + (error.message || error)
+        )
       }
     }
 
@@ -53,7 +56,9 @@ define(['../module'], function(app) {
           this.sessionStorage.selectedAPI = JSON.stringify(Api)
         }
       } catch (error) {
-        return
+        this.notification.showErrorToast(
+          'Error selecting API: ' + (error.message || error)
+        )
       }
     }
 
@@ -71,53 +76,55 @@ define(['../module'], function(app) {
       }
     }
 
-    getExtensions(id) {
-      try {
-        if (this.sessionStorage.extensions) {
-          const currentExtensions = JSON.parse(this.sessionStorage.extensions)
-          const result =
-            currentExtensions.length >= 1
-              ? currentExtensions.filter(item => item.id === id)[0]
-              : false
-          return result
+    getExtensionKey(apiId) {
+      const extensions = this.sessionStorage?.extensions || false
+
+      if (extensions) {
+        const extensionsKey = JSON.parse(extensions)
+
+        if (extensionsKey && extensionsKey[apiId]) {
+          return extensionsKey[apiId]
         }
-      } catch (err) {
+      }
+
+      return false
+    }
+
+    setExtensionKey(apiId, extensionKey) {
+      try {
+        const prevExtensions =
+          JSON.parse(this.sessionStorage.getItem('extensions')) || {}
+        this.sessionStorage.setItem(
+          'extensions',
+          JSON.stringify({ ...prevExtensions, [apiId]: extensionKey })
+        )
+        return true
+      } catch (e) {
+        this.notification.showErrorToast(
+          'Extensions management failed: ' + (e.message || e)
+        )
         return false
       }
     }
 
-    setExtensions(id, extensions) {
+    removeExtensionKey(apiId) {
       try {
-        const newExtensions = Object.assign(extensions, { id })
-        if (extensions.length && this.sessionStorage.getItem('extensions')) {
-          let parsedExtensions = JSON.parse(
+        if (this.sessionStorage.getItem('extensions')) {
+          const parsedExtensions = JSON.parse(
             this.sessionStorage.getItem('extensions')
           )
-          let existentApi = false
-          for (let i = 0; i < parsedExtensions.length; i++) {
-            if (parsedExtensions[i].id === id) {
-              parsedExtensions[i] = newExtensions //eslint-disable-line
-              existentApi = true
-              break
-            }
-          }
-          if (!existentApi) {
-            parsedExtensions.push(newExtensions)
+          if (apiId in parsedExtensions) {
+            delete parsedExtensions[apiId]
           }
           this.sessionStorage.setItem(
             'extensions',
-            JSON.stringify(parsedExtensions) || []
-          )
-        } else if (extensions) {
-          const newSet = []
-          newSet.push(newExtensions)
-          this.sessionStorage.setItem(
-            'extensions',
-            JSON.stringify(newSet) || []
+            JSON.stringify({ ...parsedExtensions })
           )
         }
-      } catch (err) {
-        return
+      } catch (e) {
+        this.notification.showErrorToast(
+          'Extensions management failed: ' + (e.message || e)
+        )
       }
     }
   }

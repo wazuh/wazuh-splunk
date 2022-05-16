@@ -18,8 +18,8 @@ define([
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -38,6 +38,9 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     *@param {*} $notificationService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -45,6 +48,7 @@ define([
       $currentDataService,
       $state,
       $reportingService,
+      $notificationService,
       reportingEnabled,
       extensions
     ) {
@@ -53,8 +57,10 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
+      this.notification = $notificationService
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.currentDataService.addFilter(
@@ -72,7 +78,7 @@ define([
         false,
         false,
         false,
-        false
+        false,
       ]
 
       this.filters = this.getFilters()
@@ -83,7 +89,7 @@ define([
          */
         new SearchHandler(
           `filesAddedSearch`,
-          `${this.filters} sourcetype=wazuh rule.id=80790 | stats count`,
+          `${this.filters} rule.id=80790 | stats count`,
           `filesAddedToken`,
           '$result.count$',
           'newFiles',
@@ -92,7 +98,7 @@ define([
         ),
         new SearchHandler(
           `readFilesSearch`,
-          `${this.filters} sourcetype=wazuh rule.id=80784 | stats count`,
+          `${this.filters} rule.id=80784 | stats count`,
           `readFilesToken`,
           '$result.count$',
           'readFiles',
@@ -101,7 +107,7 @@ define([
         ),
         new SearchHandler(
           `modifiedFiles`,
-          `${this.filters} sourcetype=wazuh rule.id=80781 | stats count`,
+          `${this.filters} rule.id=80781 | stats count`,
           `filesModifiedToken`,
           '$result.count$',
           'filesModifiedToken',
@@ -110,7 +116,7 @@ define([
         ),
         new SearchHandler(
           `deletedFiles`,
-          `${this.filters} sourcetype=wazuh rule.id=80791 | stats count`,
+          `${this.filters} rule.id=80791 | stats count`,
           'filesDeletedToken',
           '$result.count$',
           'filesDeleted',
@@ -122,49 +128,49 @@ define([
          */
         new PieChart(
           'groupsElement',
-          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | top limit=5 rule.groups{}`,
+          `${this.filters} rule.groups{}="audit" | top limit=5 rule.groups{}`,
           'groupsElement',
           this.scope
         ),
         new ColumnChart(
           'agentsElement',
-          `${this.filters} sourcetype=wazuh rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
+          `${this.filters} rule.groups{}="audit" agent.name=* | top  limit=5  agent.name`,
           'agentsElement',
           this.scope
         ),
         new PieChart(
           'commandsVizz',
-          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | top limit=5 data.audit.command`,
+          `${this.filters} rule.groups{}="audit" | top limit=5 data.audit.command`,
           'commandsVizz',
           this.scope
         ),
         new PieChart(
           'filesElement',
-          `${this.filters} sourcetype=wazuh rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
+          `${this.filters} rule.groups{}="audit" data.audit.file.name=* | top limit=5 data.audit.file.name`,
           'filesElement',
           this.scope
         ),
         new AreaChart(
           'alertsOverTime',
-          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | timechart limit=10 count by rule.description`,
+          `${this.filters} rule.groups{}="audit" | timechart limit=10 count by rule.description`,
           'alertsOverTimeElement',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          `${this.filters} rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryElement',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
+          `${this.filters} rule.groups{}="audit" | stats count sparkline by agent.name,rule.description, data.audit.exe, data.audit.type, data.audit.euid | sort count DESC | rename agent.name as "Agent name", rule.description as Description, data.audit.exe as Command, data.audit.type as Type, data.audit.euid as "Effective user id"`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -174,7 +180,7 @@ define([
           'New files': this.scope.newFiles,
           'Read files': this.scope.readFiles,
           'Modified files': this.scope.filesModifiedToken,
-          'Deleted files': this.scope.filesDeleted
+          'Deleted files': this.scope.filesDeleted,
         }
 
         /**
@@ -191,12 +197,14 @@ define([
               'commandsVizz',
               'filesElement',
               'alertsOverTimeElement',
-              'alertsSummaryElement'
+              'alertsSummaryElement',
             ],
             this.reportMetrics,
             this.tableResults
           )
-      } catch (error) {}
+      } catch (error) {
+        this.notification.showErrorToast(error.message || error)
+      }
     }
   }
   app.controller('overviewAuditCtrl', Audit)

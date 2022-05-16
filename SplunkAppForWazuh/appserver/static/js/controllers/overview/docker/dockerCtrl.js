@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -36,6 +36,8 @@ define([
      * @param {*} $state
      * @param {*} $notificationService
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -44,14 +46,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -67,44 +71,44 @@ define([
          */
         new PieChart(
           'top5images',
-          `${this.filters} sourcetype=wazuh | stats count by data.docker.id`,
+          `${this.filters} | stats count by data.docker.id`,
           'top5images',
           this.scope
         ),
         new LinearChart(
           'eventsOcurred',
-          `${this.filters} sourcetype=wazuh data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
+          `${this.filters} data.docker.Action="*" | timechart span=1h count by data.docker.Action`,
           'eventsOcurred',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'top5actions',
-          `${this.filters} sourcetype=wazuh  | top data.docker.Action limit=5`,
+          `${this.filters}  | top data.docker.Action limit=5`,
           'top5actions',
           this.scope
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
+          `${this.filters}  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
           'alertsSummary',
           this.scope
         ),
         new LinearChart(
           'resourceUsage',
-          `${this.filters} sourcetype=wazuh data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
+          `${this.filters} data.docker.Type="*" | timechart span=1h count by data.docker.Type`,
           'resourceUsage',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new RawTableDataService(
           'alertsSummaryRawTable',
-          `${this.filters} sourcetype=wazuh  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count`,
+          `${this.filters}  | stats count sparkline by data.docker.Actor.Attributes.image, data.docker.Actor.Attributes.name, data.docker.Action, timestamp | sort count DESC | rename data.docker.Actor.Attributes.image as Image, data.docker.Actor.Attributes.name as Container, data.docker.Action as Action, timestamp as Date, count as Count, sparkline as Sparkline`,
           'alertsSummaryRawTableToken',
           '$result$',
           this.scope,
           'Alerts summary'
-        )
+        ),
       ]
     }
 

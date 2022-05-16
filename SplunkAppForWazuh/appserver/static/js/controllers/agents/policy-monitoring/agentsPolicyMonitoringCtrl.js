@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -39,6 +39,9 @@ define([
      * @param {*} $requestService
      * @param {*} $notificationService
      * @param {*} $csvRequestService
+     * @param {*} $tableFilterService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
 
     constructor(
@@ -61,7 +64,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
@@ -81,10 +85,12 @@ define([
         this.agent &&
         this.agent.data &&
         this.agent.data.data &&
-        this.agent.data.data.id
+        this.agent.data.data.affected_items &&
+        this.agent.data.data.affected_items.length &&
+        this.agent.data.data.affected_items.length
       )
         this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+          `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
 
       this.filters = this.getFilters()
@@ -95,44 +101,44 @@ define([
          */
         new AreaChart(
           'elementOverTime',
-          `${this.filters} sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description  `,
+          `${this.filters} rule.description=* | timechart span=1h count by rule.description  `,
           'elementOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'ruleDistribution',
-          `${this.filters} sourcetype=wazuh rule.description=* | top rule.description`,
+          `${this.filters} rule.description=* | top rule.description`,
           'ruleDistribution',
           this.scope
         ),
         new PieChart(
           'topPciDss',
-          `${this.filters} sourcetype=wazuh rule.pci_dss{}=* | top  rule.pci_dss{}`,
+          `${this.filters} rule.pci_dss{}=* | top  rule.pci_dss{}`,
           'topPciDss',
           this.scope
         ),
         new AreaChart(
           'eventsPerAgent',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count by agent.name  `,
+          `${this.filters} | timechart span=2h count by agent.name  `,
           'eventsPerAgent',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          `${this.filters} |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          `${this.filters} |stats count sparkline by agent.name, rule.description, title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
@@ -146,7 +152,7 @@ define([
           OS: this.agent.data.data.os.name,
           dateAdd: this.agent.data.data.dateAdd,
           lastKeepAlive: this.agent.data.data.lastKeepAlive,
-          group: this.agent.data.data.group.toString()
+          group: this.agent.data.data.group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -164,7 +170,7 @@ define([
             'elementOverTime',
             'ruleDistribution',
             'eventsPerAgent',
-            'alertsSummary'
+            'alertsSummary',
           ],
           {}, //Metrics,
           this.tableResults,
@@ -176,16 +182,22 @@ define([
       this.scope.searchRootcheck = (term, specificFilter) =>
         this.scope.$broadcast('wazuhSearch', { term, specificFilter })
       this.scope.downloadCsv = () => this.downloadCsv()
-      this.scope.launchRootcheckScan = () => this.launchRootcheckScan()
-      this.scope.launchSyscheckScan = () => this.launchSyscheckScan()
 
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
-          ? this.agent.data.data
+          ? this.agent.data.data.affected_items[0]
           : { error: true }
-      this.scope.getAgentStatusClass = agentStatus =>
+
+      // Capitalize Status
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
+      }
+
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.formatAgentStatus = agentStatus =>
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
     }
 

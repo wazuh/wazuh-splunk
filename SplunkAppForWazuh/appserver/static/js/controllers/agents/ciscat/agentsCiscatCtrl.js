@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/linear-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   ColumnChart,
@@ -38,6 +38,8 @@ define([
      * @param {*} $currentDataService
      * @param {Object} agent
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -47,14 +49,16 @@ define([
       agent,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.currentDataService.addFilter(
         `{"rule.groups{}":"ciscat", "implicit":true, "onlyShow":true}`
@@ -73,10 +77,10 @@ define([
         this.agent &&
         this.agent.data &&
         this.agent.data.data &&
-        this.agent.data.data.id
+        this.agent.data.data.affected_items[0].id
       )
         this.currentDataService.addFilter(
-          `{"agent.id":"${this.agent.data.data.id}", "implicit":true}`
+          `{"agent.id":"${this.agent.data.data.affected_items[0].id}", "implicit":true}`
         )
 
       this.filters = this.getFilters()
@@ -162,45 +166,45 @@ define([
          */
         new ColumnChart(
           'topCiscatGroups',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | top data.cis.group`,
+          `${this.filters} rule.groups{}="ciscat" | top data.cis.group`,
           'topCiscatGroups',
           this.scope
         ),
         new LinearChart(
           'scanResultEvolution',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
+          `${this.filters} rule.groups{}="ciscat" | timechart count by data.cis.result usenull=f`,
           'scanResultEvolution',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          `${this.filters} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
+          `${this.filters} rule.groups{}="ciscat" | stats count sparkline by data.cis.rule_title, data.cis.remediation,data.cis.group | sort count desc | rename "data.cis.rule_title" as "Title",  "data.cis.remediation" as "Remediation",  "data.cis.group" as "Group" `,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
 
       // Set agent info
       try {
         this.agentReportData = {
-          ID: this.agent.data.data.id,
-          Name: this.agent.data.data.name,
-          IP: this.agent.data.data.ip,
-          Version: this.agent.data.data.version,
-          Manager: this.agent.data.data.manager,
-          OS: this.agent.data.data.os.name,
-          dateAdd: this.agent.data.data.dateAdd,
-          lastKeepAlive: this.agent.data.data.lastKeepAlive,
-          group: this.agent.data.data.group.toString()
+          ID: this.agent.data.data.affected_items[0].id,
+          Name: this.agent.data.data.affected_items[0].name,
+          IP: this.agent.data.data.affected_items[0].ip,
+          Version: this.agent.data.data.affected_items[0].version,
+          Manager: this.agent.data.data.affected_items[0].manager,
+          OS: this.agent.data.data.affected_items[0].os.name,
+          dateAdd: this.agent.data.data.affected_items[0].dateAdd,
+          lastKeepAlive: this.agent.data.data.affected_items[0].lastKeepAlive,
+          group: this.agent.data.data.affected_items[0].group.toString(),
         }
       } catch (error) {
         this.agentReportData = false
@@ -227,13 +231,20 @@ define([
     $onInit() {
       this.scope.agent =
         this.agent && this.agent.data && this.agent.data.data
-          ? this.agent.data.data
+          ? this.agent.data.data.affected_items[0]
           : { error: true }
-      this.scope.formatAgentStatus = agentStatus =>
+      // Capitalize Status
+      if (this.scope.agent && this.scope.agent.status) {
+        this.scope.agent.status =
+          this.scope.agent.status.charAt(0).toUpperCase() +
+          this.scope.agent.status.slice(1)
+      }
+
+      this.scope.formatAgentStatus = (agentStatus) =>
         this.formatAgentStatus(agentStatus)
-      this.scope.getAgentStatusClass = agentStatus =>
+      this.scope.getAgentStatusClass = (agentStatus) =>
         this.getAgentStatusClass(agentStatus)
-      this.scope.$on('deletedFilter', event => {
+      this.scope.$on('deletedFilter', (event) => {
         event.stopPropagation()
         this.launchSearches()
       })
@@ -269,7 +280,7 @@ define([
         'Last errores': this.scope.lastErrors,
         'Last fails': this.scope.lastFails,
         'Last unknown': this.scope.lastUnknown,
-        'Last scan benchmark': this.scope.lastScanBenchmark
+        'Last scan benchmark': this.scope.lastScanBenchmark,
       }
     }
   }

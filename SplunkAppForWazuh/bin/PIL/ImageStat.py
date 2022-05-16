@@ -21,52 +21,35 @@
 # See the README file for information on usage and redistribution.
 #
 
-import Image
-import operator, math
+import functools
+import math
+import operator
 
-##
-# The <b>ImageStat</b> module calculates global statistics for an
-# image, or a region of an image.
-##
 
-##
-# Calculate statistics for the given image.  If a mask is included,
-# only the regions covered by that mask are included in the
-# statistics.
-
-class Stat:
-    "Get image or feature statistics"
-
-    ##
-    # Create a statistics object.
-    #
-    # @def __init__(image, mask=None)
-    # @param image A PIL image, or a precalculate histogram.
-    # @param mask An optional mask.
-
-    def __init__(self, image_or_list, mask = None):
+class Stat(object):
+    def __init__(self, image_or_list, mask=None):
         try:
             if mask:
                 self.h = image_or_list.histogram(mask)
             else:
                 self.h = image_or_list.histogram()
         except AttributeError:
-            self.h = image_or_list # assume it to be a histogram list
-        if type(self.h) != type([]):
-            raise TypeError, "first argument must be image or list"
-        self.bands = range(len(self.h) / 256)
+            self.h = image_or_list  # assume it to be a histogram list
+        if not isinstance(self.h, list):
+            raise TypeError("first argument must be image or list")
+        self.bands = list(range(len(self.h) // 256))
 
     def __getattr__(self, id):
-        "Calculate missing attribute"
+        """Calculate missing attribute"""
         if id[:4] == "_get":
-            raise AttributeError, id
+            raise AttributeError(id)
         # calculate missing attribute
         v = getattr(self, "_get" + id)()
         setattr(self, id, v)
         return v
 
     def _getextrema(self):
-        "Get min/max values for each band in the image"
+        """Get min/max values for each band in the image"""
 
         def minmax(histogram):
             n = 255
@@ -75,7 +58,7 @@ class Stat:
                 if histogram[i]:
                     n = min(n, i)
                     x = max(x, i)
-            return n, x # returns (255, 0) if there's no data in the histogram
+            return n, x  # returns (255, 0) if there's no data in the histogram
 
         v = []
         for i in range(0, len(self.h), 256):
@@ -83,37 +66,37 @@ class Stat:
         return v
 
     def _getcount(self):
-        "Get total number of pixels in each layer"
+        """Get total number of pixels in each layer"""
 
         v = []
         for i in range(0, len(self.h), 256):
-            v.append(reduce(operator.add, self.h[i:i+256]))
+            v.append(functools.reduce(operator.add, self.h[i : i + 256]))
         return v
 
     def _getsum(self):
-        "Get sum of all pixels in each layer"
+        """Get sum of all pixels in each layer"""
 
         v = []
         for i in range(0, len(self.h), 256):
-            sum = 0.0
+            layerSum = 0.0
             for j in range(256):
-                sum = sum + j * self.h[i+j]
-            v.append(sum)
+                layerSum += j * self.h[i + j]
+            v.append(layerSum)
         return v
 
     def _getsum2(self):
-        "Get squared sum of all pixels in each layer"
+        """Get squared sum of all pixels in each layer"""
 
         v = []
         for i in range(0, len(self.h), 256):
             sum2 = 0.0
             for j in range(256):
-                sum2 = sum2 + (j ** 2) * float(self.h[i+j])
+                sum2 += (j ** 2) * float(self.h[i + j])
             v.append(sum2)
         return v
 
     def _getmean(self):
-        "Get average pixel level for each layer"
+        """Get average pixel level for each layer"""
 
         v = []
         for i in self.bands:
@@ -121,44 +104,44 @@ class Stat:
         return v
 
     def _getmedian(self):
-        "Get median pixel level for each layer"
+        """Get median pixel level for each layer"""
 
         v = []
         for i in self.bands:
             s = 0
-            l = self.count[i]/2
+            half = self.count[i] // 2
             b = i * 256
             for j in range(256):
-                s = s + self.h[b+j]
-                if s > l:
+                s = s + self.h[b + j]
+                if s > half:
                     break
             v.append(j)
         return v
 
     def _getrms(self):
-        "Get RMS for each layer"
+        """Get RMS for each layer"""
 
         v = []
         for i in self.bands:
             v.append(math.sqrt(self.sum2[i] / self.count[i]))
         return v
 
-
     def _getvar(self):
-        "Get variance for each layer"
+        """Get variance for each layer"""
 
         v = []
         for i in self.bands:
             n = self.count[i]
-            v.append((self.sum2[i]-(self.sum[i]**2.0)/n)/n)
+            v.append((self.sum2[i] - (self.sum[i] ** 2.0) / n) / n)
         return v
 
     def _getstddev(self):
-        "Get standard deviation for each layer"
+        """Get standard deviation for each layer"""
 
         v = []
         for i in self.bands:
             v.append(math.sqrt(self.var[i]))
         return v
 
-Global = Stat # compatibility
+
+Global = Stat  # compatibility

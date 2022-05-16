@@ -2,30 +2,48 @@
   <div flex layout="column" class="md-padding" layout-align="start">
     <div>
       <div id="wz-dev-left-column" flex layout="column">
+        <span class="wz-dev-headline-title wz-dev-title"
+          >Console
+          <i
+            ng-click="send()"
+            title="Click to send the request"
+            class="fa fa-play wz-play-dev-color cursor-pointer pull-right fa-fw wz-always-top"
+            id="play_button"
+            aria-hidden="true"></i>
+          <a
+            href=""
+            target="__blank"
+            title="Open documentation"
+            class="fa fa-info-circle cursor-pointer pull-right fa-fw wz-always-top"
+            id="wazuh_dev_tools_documentation">
+          </a>
+        </span>
 
-        <span class="wz-dev-headline-title wz-dev-title">Console <i ng-click="send()" class="fa fa-play wz-play-dev-color cursor-pointer pull-right fa-fw wz-always-top"
-            id="play_button" aria-hidden="true"></i></span>
         <textarea flex id="api_input"></textarea>
-
       </div>
       <div class="wz-dev-column-separator layout-column"><span>︙</span></div>
       <div id="wz-dev-right-column" flex layout="column">
         <span class="wz-dev-headline-title wz-dev-title">
-          <i ng-click="help()" class="fa fa-question wz-question-dev-color cursor-pointer pull-right fa-fw" aria-hidden="true">
+          <i
+            ng-click="help()"
+            class="fa fa-question wz-question-dev-color cursor-pointer pull-right fa-fw"
+            aria-hidden="true">
             <md-tooltip md-direction="bottom" class="wz-tooltip">
               Go to Wazuh documentation
             </md-tooltip>
           </i>
-          <i ng-click="exportOutput()" tooltip="Export as JSON" class="fa fa-download wz-question-dev-color cursor-pointer pull-right fa-fw"
+          <i
+            ng-click="exportOutput()"
+            tooltip="Export as JSON"
+            class="fa fa-download wz-question-dev-color cursor-pointer pull-right fa-fw"
             aria-hidden="true">
             <md-tooltip md-direction="bottom" class="wz-tooltip">
               Export as JSON
             </md-tooltip>
           </i>
         </span>
-        <textarea flex id="api_output"></textarea> 
+        <textarea flex id="api_output"></textarea>
       </div>
     </div>
   </div>
-
 </div>

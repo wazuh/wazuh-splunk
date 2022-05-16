@@ -1,4 +1,4 @@
-define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
+define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function (
   mvc,
   TimeRangeInput
 ) {
@@ -19,16 +19,16 @@ define(['splunkjs/mvc', 'splunkjs/mvc/simpleform/input/timerange'], function(
           searchWhenChanged: true,
           earliest_time: '$form.when.earliest$',
           latest_time: '$form.when.latest$',
-          el: $(`${element}`)
+          el: $(`${element}`),
         },
         { tokens: true }
       ).render()
       this.handleValueChange = handleValueChange
-      this.input.on('change', newValue => {
+      this.input.on('change', (newValue) => {
         try {
           localStorage.setItem('searchTimeRange', JSON.stringify(newValue))
         } catch (error) {} //eslint-disable-line
-        if (newValue && this.input) this.handleValueChange(this.input)
+        if (newValue && this.input) this.handleValueChange(this.input, newValue)
       })
     }
 

@@ -9,7 +9,7 @@
  *
  * Find more information about this on the LICENSE file.
  */
-define(['../module'], function(app) {
+define(['../module'], function (app) {
   class CSVRequest {
     /**
      * Constructor
@@ -30,7 +30,7 @@ define(['../module'], function(app) {
         let filterStr = '{'
         if (filters && typeof filters === 'object' && filters.length > 0) {
           filters.map(
-            filter => (filterStr += `"${filter.name}": "${filter.value}",`)
+            (filter) => (filterStr += `"${filter.name}": "${filter.value}",`)
           )
           filterStr = filterStr.slice(0, -1)
           filterStr += '}'
@@ -38,8 +38,8 @@ define(['../module'], function(app) {
           filterStr = null
         }
         const payload = filterStr
-          ? { path: path, id: id, filters: filterStr }
-          : { path: path, id: id }
+          ? { endpoint: path, apiId: id, filters: filterStr }
+          : { endpoint: path, apiId: id }
         const output = await this.httpReq('POST', '/api/csv', payload)
         if (output.data.error) {
           throw Error(output.data.error)

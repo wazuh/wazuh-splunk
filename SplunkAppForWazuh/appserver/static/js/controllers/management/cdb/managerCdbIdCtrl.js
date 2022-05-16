@@ -2,8 +2,8 @@ define([
   '../../module',
   '../rules/ruleset',
   '../../../directives/wz-table/lib/pagination',
-  '../../../directives/wz-table/lib/check-gap'
-], function(controllers, Ruleset, pagination, checkGap) {
+  '../../../directives/wz-table/lib/check-gap',
+], function (controllers, Ruleset, pagination, checkGap) {
   'use strict'
   class CdbListId extends Ruleset {
     /**
@@ -15,6 +15,10 @@ define([
      * @param {*} $currentDataService
      * @param {*} $tableFilterService
      * @param {*} $csvRequestService
+     * @param {*} $cdbEditor
+     * @param {*} cdbInfo
+     * @param {*} $restartService
+     * @param {*} $security_service
      */
     constructor(
       $scope,
@@ -24,10 +28,10 @@ define([
       $currentDataService,
       $tableFilterService,
       $csvRequestService,
-      isAdmin,
       $cdbEditor,
       cdbInfo,
-      $restartService
+      $restartService,
+      $security_service
     ) {
       super(
         $scope,
@@ -40,13 +44,15 @@ define([
         $restartService
       )
       this.state = $state
-      this.isAdmin = isAdmin
       this.cdbEditor = $cdbEditor
       this.cdbInfo = cdbInfo
       this.notification = $notificationService
       this.pagination = pagination
       this.checkGap = checkGap
       this.restartService = $restartService
+      this.scope.canUpdateList = $security_service.isAllowed('LISTS_UPDATE', [
+        'LIST_FILE',
+      ])
       try {
         this.filters = JSON.parse(window.localStorage.cdb) || []
       } catch (err) {
@@ -58,6 +64,10 @@ define([
      * On controller load
      */
     $onInit() {
+      // Data validation
+      this.scope.keyValidationRegex = '(?:^"([\\w\\-:]+?)"|^[^:"\\s]+$)'
+      this.scope.valueValidationRegex = '(?:^"([\\w\\-:]*?)"$|^[^:"]*$)'
+
       try {
         this.scope.downloadCsv = (path, name) => this.downloadCsv(path, name)
         this.scope.addDetailFilter = (name, value) =>
@@ -72,20 +82,19 @@ define([
           this.showConfirmRemoveEntry(ev, key)
         this.scope.editKey = (key, value) => this.editKey(key, value)
         this.scope.cancelRemoveEntry = () => this.cancelRemoveEntry()
-        this.scope.confirmRemoveEntry = key => this.confirmRemoveEntry(key)
+        this.scope.confirmRemoveEntry = (key) => this.confirmRemoveEntry(key)
         this.scope.firstPage = () => this.firstPage()
 
         // Edit cdb lists
         this.scope.currentList = {
           details: {
             file: this.cdbInfo.file,
-            path: this.cdbInfo.path
-          }
+            path: this.cdbInfo.path,
+          },
         }
         this.cdbInfo.content = this.stringToObj(this.cdbInfo.content)
 
         this.scope.currentList.list = this.cdbInfo.content
-        this.scope.adminMode = this.isAdmin
         this.scope.saveList = () => this.saveList()
 
         /**
@@ -105,14 +114,14 @@ define([
         this.scope.range = (size, start, end) =>
           this.pagination.range(size, start, end, this.scope.gap)
         this.scope.prevPage = () => this.pagination.prevPage(this.scope)
-        this.scope.nextPage = async currentPage =>
+        this.scope.nextPage = async (currentPage) =>
           this.pagination.nextPage(
             currentPage,
             this.scope,
             this.notification,
             null
           )
-        this.scope.setPage = n => {
+        this.scope.setPage = (n) => {
           this.scope.currentPage = n
           this.scope.nextPage(n)
         }
@@ -134,11 +143,45 @@ define([
       }
     }
 
+    /**
+     * Validates the Key and Value of a new CDB List entry.
+     *
+     * @param {String} key the new key
+     * @param {String} value the new value
+     * @returns {Boolean} true if both the key and the value are valid.
+     */
+    validateCdbEntry(key, value) {
+      let isValid = true
+      const errorMessage = (type, regex) =>
+        `The ${type} must match this regular expression ${regex}`
+
+      const keyRegex = new RegExp(this.scope.keyValidationRegex)
+      const valRegex = new RegExp(this.scope.valueValidationRegex)
+
+      if (!keyRegex.test(key)) {
+        this.notification.showWarningToast(
+          errorMessage('Key', this.scope.keyValidationRegex)
+        )
+        isValid = false
+      }
+      if (!valRegex.test(value)) {
+        this.notification.showWarningToast(
+          errorMessage('Value', this.scope.valueValidationRegex)
+        )
+        isValid = false
+      }
+
+      return isValid
+    }
+
+    /**
+     * Adds new entry field
+     * @param {String} key
+     * @param {String} value
+     */
     async addEntry(key, value) {
       try {
-        if (!key) {
-          this.notification.showWarningToast('Cannot send empty fields.')
-        } else {
+        if (this.validateCdbEntry(key, value)) {
           if (!this.scope.currentList.list[key]) {
             value = value ? value : ''
             this.scope.currentList.list[key] = value
@@ -152,7 +195,9 @@ define([
           }
         }
       } catch (error) {
-        this.notification.showErrorToast('Error adding entry.')
+        this.notification.showErrorToast(
+          `Error adding entry: ${error.message || error}`
+        )
       }
     }
 
@@ -243,7 +288,7 @@ define([
     stringToObj(string) {
       let result = {}
       const splitted = string.split('\n')
-      splitted.forEach(element => {
+      splitted.forEach((element) => {
         const keyValue = element.split(':')
         if (keyValue[0]) result[keyValue[0]] = keyValue[1]
       })

@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -34,6 +34,8 @@ define([
      * @param {*} $currentDataService
      * @param {*} $state
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -42,14 +44,16 @@ define([
       $state,
       $reportingService,
       reportingEnabled,
-      extensions
+      extensions,
+      $notificationService
     ) {
       super(
         $scope,
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -67,44 +71,44 @@ define([
          */
         new AreaChart(
           'elementOverTime',
-          `${this.filters} sourcetype=wazuh rule.description=* | timechart span=1h count by rule.description`,
+          `${this.filters} rule.description=* | timechart span=1h count by rule.description`,
           'elementOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'ruleDistribution',
-          `${this.filters} sourcetype=wazuh rule.level=* | top rule.level`,
+          `${this.filters} rule.level=* | top rule.level`,
           'ruleDistribution',
           this.scope
         ),
         new PieChart(
           'topAgents',
-          `${this.filters} sourcetype=wazuh agent.name=* | top agent.name`,
+          `${this.filters} agent.name=* | top agent.name`,
           'topAgents',
           this.scope
         ),
         new AreaChart(
           'eventsPerAgent',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count by data.title`,
+          `${this.filters} | timechart span=2h count by data.title`,
           'eventsPerAgent',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          `${this.filters} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
+          `${this.filters} |stats count sparkline by agent.name, rule.description,data.title | sort count DESC | rename rule.description as "Rule description", agent.name as Agent, title as Control`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
           'Alerts Summary'
-        )
+        ),
       ]
     }
 
@@ -123,7 +127,7 @@ define([
               'ruleDistribution',
               'topAgents',
               'eventsPerAgent',
-              'alertsSummary'
+              'alertsSummary',
             ],
             {}, //Metrics
             this.tableResults

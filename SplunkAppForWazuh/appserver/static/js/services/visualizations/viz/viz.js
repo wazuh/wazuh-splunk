@@ -1,8 +1,8 @@
 define([
   'splunkjs/mvc',
   'splunkjs/mvc/utils',
-  'splunkjs/mvc/searchmanager'
-], function(mvc, utils, SearchManager) {
+  'splunkjs/mvc/searchmanager',
+], function (mvc, utils, SearchManager) {
   'use strict'
 
   return class Viz {
@@ -31,7 +31,7 @@ define([
           auto_cancel: 90,
           preview: true,
           tokenDependencies: {},
-          runWhenTimeIsUndefined: false
+          runWhenTimeIsUndefined: false,
         },
         { tokens: true, tokenNamespace: 'submitted' }
       )
@@ -58,8 +58,8 @@ define([
       this.search = new SearchManager(
         {
           id: `${this.id}Search`,
-          earliest_time: '$when.earliest$',
-          latest_time: '$when.latest$',
+          earliest_time: this.earliestTime || '$when.earliest$',
+          latest_time: this.latestTime || '$when.latest$',
           status_buckets: 0,
           sample_ratio: null,
           cancelOnUnload: true,
@@ -68,7 +68,7 @@ define([
           auto_cancel: 90,
           preview: true,
           tokenDependencies: {},
-          runWhenTimeIsUndefined: false
+          runWhenTimeIsUndefined: false,
         },
         { tokens: true, tokenNamespace: 'submitted' }
       )

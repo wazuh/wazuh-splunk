@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class FilterService {
@@ -30,7 +30,7 @@ define(['../module'], function(module) {
         if (window.localStorage.filters) {
           const filters = JSON.parse(window.localStorage.filters)
           let isInIt = false
-          filters.map(fil => {
+          filters.map((fil) => {
             let key = Object.keys(filterJson)
             if (key.length > 1) {
               key = key[0]
@@ -49,7 +49,7 @@ define(['../module'], function(module) {
         }
       } catch (err) {
         this.notification.showErrorToast(
-          'Incorrent format. Please use key:value syntax'
+          'Incorrect format. Please use key:value syntax'
         )
       }
     }
@@ -65,7 +65,7 @@ define(['../module'], function(module) {
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
           filters = hideOnlyShowFilters
-            ? filters.filter(fil => !fil.onlyShow)
+            ? filters.filter((fil) => !fil.onlyShow)
             : filters
         }
         for (const filter of filters) {
@@ -73,7 +73,9 @@ define(['../module'], function(module) {
             const key = Object.keys(filter)[0]
             filterStr += key
             filterStr += '='
-            filterStr += filter[key]
+            filterStr += filter[key].includes(' ')
+              ? `"${filter[key]}"`
+              : filter[key] // If phrase, use quotes
             filterStr += ' '
           } else {
             filterStr += filter + ' '
@@ -100,7 +102,9 @@ define(['../module'], function(module) {
           return
         }
         filters.map((item, index) => {
-          if (Object.keys(item)[0] === Object.keys(filter)[0]) {
+          if (
+            Object.keys(item)[0].replace(/{}$/, '') === Object.keys(filter)[0]
+          ) {
             filters.splice(index, 1)
           }
         })
@@ -121,7 +125,7 @@ define(['../module'], function(module) {
         const value = filter[key]
         const pined = filter.pined
         let filters = JSON.parse(window.localStorage.filters)
-        filters = filters.filter(fil => Object.keys(fil)[0] != key)
+        filters = filters.filter((fil) => Object.keys(fil)[0] != key)
         if (pined) {
           filter = JSON.parse(`{"${key}":"${value}"}`)
         } else {
@@ -142,7 +146,7 @@ define(['../module'], function(module) {
       try {
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
-          filters = filters.filter(fil => fil.pined)
+          filters = filters.filter((fil) => fil.pined)
           filters = JSON.stringify(filters)
           window.localStorage.setItem('filters', filters)
         }
@@ -160,9 +164,11 @@ define(['../module'], function(module) {
         let pined = []
         if (window.localStorage.filters) {
           filters = JSON.parse(window.localStorage.filters)
-          pined = filters.filter(fil => fil.pined)
-          filters = filters.filter(fil => !fil.pined)
-          pined = pined.filter(pin => !Object.keys(pin)[0].startsWith('agent.'))
+          pined = filters.filter((fil) => fil.pined)
+          filters = filters.filter((fil) => !fil.pined)
+          pined = pined.filter(
+            (pin) => !Object.keys(pin)[0].startsWith('agent.')
+          )
           filters.push(...pined)
         }
         filters = JSON.stringify(filters)

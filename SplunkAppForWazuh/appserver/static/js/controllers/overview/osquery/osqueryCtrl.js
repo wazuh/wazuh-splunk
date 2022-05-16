@@ -16,8 +16,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/chart/area-chart',
   '../../../services/visualizations/table/table',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   PieChart,
@@ -37,6 +37,8 @@ define([
      * @param {*} $notificationService
      * @param {*} osquery
      * @param {*} $reportingService
+     * @param {*} reportingEnabled
+     * @param {*} extensions
      */
     constructor(
       $urlTokenModel,
@@ -54,7 +56,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
@@ -74,38 +77,38 @@ define([
          */
         new AreaChart(
           'alertsPacksOverTime',
-          `${this.filters} sourcetype=wazuh | timechart span=1h count by data.osquery.pack`,
+          `${this.filters} | timechart span=1h count by data.osquery.pack`,
           'alertsPacksOverTime',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'topOsqueryAdded',
-          `${this.filters} sourcetype=wazuh data.osquery.action="added"  | top data.osquery.name limit=5`,
+          `${this.filters} data.osquery.action="added"  | top data.osquery.name limit=5`,
           'topOsqueryAdded',
           this.scope
         ),
         new PieChart(
           'topOsqueryRemoved',
-          `${this.filters} sourcetype=wazuh data.osquery.action="removed"  | top data.osquery.name limit=5`,
+          `${this.filters} data.osquery.action="removed"  | top data.osquery.name limit=5`,
           'topOsqueryRemoved',
           this.scope
         ),
         new PieChart(
           'mostCommonPacks',
-          `${this.filters} sourcetype=wazuh  | top data.osquery.pack limit=5`,
+          `${this.filters}  | top data.osquery.pack limit=5`,
           'mostCommonPacks',
           this.scope
         ),
         new Table(
           'alertsSummary',
-          `${this.filters} sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummary',
           this.scope
         ),
         new RawTableDataService(
           'alertsSummaryTable',
-          `${this.filters} sourcetype=wazuh  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
+          `${this.filters}  | stats count by data.osquery.name, data.osquery.action,agent.name,data.osquery.pack | rename data.osquery.name as Name, data.osquery.action as Action, agent.name as Agent, data.osquery.pack as Pack, count as Count`,
           'alertsSummaryTableToken',
           '$result$',
           this.scope,
@@ -113,19 +116,19 @@ define([
         ),
         new Table(
           'topRules',
-          `${this.filters} sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters}  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRules',
           this.scope
         ),
 
         new RawTableDataService(
           'topRulesTable',
-          `${this.filters} sourcetype=wazuh  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
+          `${this.filters}  | top rule.id, rule.description limit=5 | rename rule.id as "Rule ID", rule.description as "Rule description", count as Count, percent as Percent`,
           'topRulesTableToken',
           '$result$',
           this.scope,
           'Top 5 Rules'
-        )
+        ),
       ]
     }
 
@@ -135,7 +138,9 @@ define([
     $onInit() {
       try {
         const wodles = this.osquery.data.data.wmodules
-        this.scope.osqueryWodle = wodles.filter(item => item.osquery)[0].osquery
+        this.scope.osqueryWodle = wodles.filter(
+          (item) => item.osquery
+        )[0].osquery
         /**
          * Generates report
          */
@@ -150,7 +155,7 @@ define([
               'topOsqueryRemoved',
               'mostCommonPacks',
               'alertsSummary',
-              'topRules'
+              'topRules',
             ],
             {}, //Metrics
             this.tableResults

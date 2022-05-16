@@ -1,64 +1,104 @@
 <md-content flex layout="column" layout-align="end">
   <div layout="row" class="wz-height-35">
-    <div class='wz-breadcrumb-margin'>
-      <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
+    <div class="wz-breadcrumb-margin">
+      <span class="wz-text-link cursor-pointer" ui-sref="overview"
+        >Overview</span
+      >
       <span> / Audit </span>
     </div>
     <div flex></div>
     <!-- Report button -->
-    <div style="display:flex; padding-right: 10px;">
-      <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
-        ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
+    <div style="display: flex; padding-right: 10px">
+      <button
+        ng-if="reportingEnabled"
+        ng-if="reportingEnabled"
+        md-no-ink
+        class="btn wz-button-empty wz-button-report"
+        ng-disabled="loadingVizz || loadingReporting"
+        ng-click="startVis2Png()"
+        aria-label="Generate report button">
         <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-        <md-tooltip md-direction="left" class="wz-tooltip">
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
           Generate report
         </md-tooltip>
       </button>
-      <wz-discover breadcrumbs="{section: 'Overview', subSection: 'Audit', ref: 'overview'}"></wz-discover>
+      <wz-discover
+        breadcrumbs="{section: 'Overview', subSection: 'Audit', ref: 'overview'}"></wz-discover>
     </div>
-    <div style="margin-right:7px;" id='timePicker'></div>
+    <div style="margin-right: 7px" id="timePicker"></div>
   </div>
 
   <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
-      aria-hidden="true"></i></div>
+  <div align="center" ng-if="loadingReporting">
+    {{reportStatus}}<br /><i
+      class="fa fa-fw fa-spin fa-spinner"
+      aria-hidden="true"></i>
+  </div>
 
   <!-- Auditing and Policy Monitoring navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'audit'">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-pm" name="pm">Policy monitoring
+  <md-nav-bar
+    class="wz-nav-bar wz-margin-10 no-margin-left"
+    md-selected-nav-item="'audit'">
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="ow-pm"
+      name="pm"
+      >Policy monitoring
     </md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="audit">System auditing</md-nav-item>
-    <md-nav-item ng-if="extensions.oscap === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
-      ui-sref="ow-os" name="openscap">OpenSCAP</md-nav-item>
-    <md-nav-item ng-if="extensions.ciscat === 'true'" class="wz-nav-item" md-nav-click="stopPropagation()"
-      ui-sref="ow-ciscat" name="ciscat">CIS-CAT</md-nav-item>
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      name="audit"
+      >System auditing</md-nav-item
+    >
+    <md-nav-item
+      ng-if="extensions.oscap === 'true'"
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="ow-os"
+      name="openscap"
+      >OpenSCAP</md-nav-item
+    >
+    <md-nav-item
+      ng-if="extensions.ciscat === 'true'"
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="ow-ciscat"
+      name="ciscat"
+      >CIS-CAT</md-nav-item
+    >
   </md-nav-bar>
-
-
 
   <div>
     <!-- Filter bar -->
     <wazuh-bar></wazuh-bar>
 
     <div ng-show="loadingVizz">
-      <div align='center'>
-        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      <div align="center">
+        Fetching data...<br /><i
+          class="fa fa-fw fa-spin fa-spinner"
+          aria-hidden="true"></i>
       </div>
     </div>
     <div ng-show="!loadingVizz">
       <div layout="row" class="wz-margin-9">
         <md-card flex class="wz-metric-color">
           <md-card-content layout="row" class="wz-padding-metric">
-            <div class="wz-text-truncatable" flex>New files:
+            <div class="wz-text-truncatable" flex>
+              New files:
               <span class="wz-text-bold" ng-bind="newFiles"></span>
             </div>
-            <div class="wz-text-truncatable" flex>Read files:
+            <div class="wz-text-truncatable" flex>
+              Read files:
               <span class="wz-text-bold" ng-bind="readFiles"></span>
             </div>
-            <div class="wz-text-truncatable" flex>Modified files:
+            <div class="wz-text-truncatable" flex>
+              Modified files:
               <span class="wz-text-bold" ng-bind="filesModifiedToken"></span>
             </div>
-            <div class="wz-text-truncatable" flex>Removed files:
+            <div class="wz-text-truncatable" flex>
+              Removed files:
               <span class="wz-text-bold" ng-bind="filesDeleted"></span>
             </div>
           </md-card-content>
@@ -66,75 +106,135 @@
       </div>
 
       <div layout="row" layout-align="center stretch">
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[0]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Groups
-              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'groupsElement')">
+            <span class="wz-headline-title"
+              >Groups
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(0,'groupsElement')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="groupsElement" class="dashboard-element single" style="width: 100%"></div>
+            <div
+              id="groupsElement"
+              class="dashboard-element single"
+              style="width: 100%"></div>
           </md-card-content>
         </md-card>
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[1]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Agents
-              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'agentsElement')">
+            <span class="wz-headline-title"
+              >Agents
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(1,'agentsElement')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="agentsElement" class="dashboard-element single" style="width: 100%"></div>
+            <div
+              id="agentsElement"
+              class="dashboard-element single"
+              style="width: 100%"></div>
           </md-card-content>
         </md-card>
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[2]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Commands
-              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'commandsVizz')">
+            <span class="wz-headline-title"
+              >Commands
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(2,'commandsVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="commandsVizz" class="dashboard-element single" style="width: 100%"></div>
+            <div
+              id="commandsVizz"
+              class="dashboard-element single"
+              style="width: 100%"></div>
           </md-card-content>
         </md-card>
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[3]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Files
-              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'filesElement')">
+            <span class="wz-headline-title"
+              >Files
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(3,'filesElement')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="filesElement" class="dashboard-element single" style="width: 100%"></div>
+            <div
+              id="filesElement"
+              class="dashboard-element single"
+              style="width: 100%"></div>
           </md-card-content>
         </md-card>
       </div>
 
       <div layout="row" layout-align="center stretch">
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+        <md-card
+          flex
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[4]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Alerts over time
-              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'alertsOverTimeElement')">
+            <span class="wz-headline-title"
+              >Alerts over time
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(4,'alertsOverTimeElement')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="alertsOverTimeElement" class="dashboard-element single" style="width: 100%"></div>
+            <div
+              id="alertsOverTimeElement"
+              class="dashboard-element single"
+              style="width: 100%"></div>
           </md-card-content>
         </md-card>
       </div>
       <div flex layout="row">
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[10]}">
+        <md-card
+          flex
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[10]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Alerts summary
-              <span class="wz-text-link" style="float:right;" ng-click="expand(10,'alertsSummaryElement')">
+            <span class="wz-headline-title"
+              >Alerts summary
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(10,'alertsSummaryElement')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id="alertsSummaryElement" class="dashboard-element single" style="width: 100%"></div>
+            <div
+              id="alertsSummaryElement"
+              class="dashboard-element single"
+              style="width: 100%"></div>
           </md-card-content>
         </md-card>
       </div>

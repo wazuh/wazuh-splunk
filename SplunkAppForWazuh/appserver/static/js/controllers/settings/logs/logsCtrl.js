@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../../module'], function(module) {
+define(['../../module'], function (module) {
   'use strict'
   class Logs {
     constructor($scope, $requestService, logs, $rootScope) {
@@ -18,6 +18,7 @@ define(['../../module'], function(module) {
       this.logs = logs
       this.httpReq = $requestService.httpReq
       this.root = $rootScope
+      this.scope.logs_path = ''
     }
 
     /**
@@ -31,14 +32,16 @@ define(['../../module'], function(module) {
         if (Array.isArray(this.logs.data.logs)) {
           this.parseLogs(this.logs.data.logs)
         }
+        this.scope.logs_path = this.logs.data.logs_path
       } catch (error) {
         this.scope.logs = [
           {
             date: new Date(),
             level: 'ERROR',
-            message: 'Error when loading Wazuh app logs'
-          }
+            message: 'Error when loading Wazuh app logs',
+          },
         ]
+        this.scope.logs_path = ''
       }
     }
 
@@ -49,21 +52,19 @@ define(['../../module'], function(module) {
     parseLogs(logs) {
       try {
         if (Array.isArray(logs)) {
-          logs.map(log => {
+          logs.map((log) => {
             const l = log.split("'")
             const message = l[1]
             const levelAndDate = l[0].split(':')
             const level = levelAndDate[0]
-            const date = `${levelAndDate[1]}:${levelAndDate[2]}:${
-              levelAndDate[3]
-            }`
+            const date = `${levelAndDate[1]}:${levelAndDate[2]}:${levelAndDate[3]}`
             const formatLog = { date, level, message }
             this.scope.logs.push(formatLog)
           })
           this.scope.$applyAsync()
         } else {
           this.scope.logs = [
-            { date: new Date(), level: 'INFO', message: 'Empty logs' }
+            { date: new Date(), level: 'INFO', message: 'Empty logs' },
           ]
         }
         return
@@ -72,8 +73,8 @@ define(['../../module'], function(module) {
           {
             date: new Date(),
             level: 'ERROR',
-            message: 'Error when loading Wazuh app logs'
-          }
+            message: 'Error when loading Wazuh app logs',
+          },
         ]
       }
     }
@@ -87,6 +88,7 @@ define(['../../module'], function(module) {
         this.scope.logs = []
         const result = await this.httpReq(`GET`, `/manager/get_log_lines`)
         this.parseLogs(result.data.logs)
+        this.scope.logs_path = result.data.logs_path
         this.scope.refreshing = false
         return
       } catch (error) {
@@ -94,9 +96,10 @@ define(['../../module'], function(module) {
           {
             date: new Date(),
             level: 'ERROR',
-            message: 'Error when loading Wazuh app logs'
-          }
+            message: 'Error when loading Wazuh app logs',
+          },
         ]
+        this.scope.logs_path = ''
       }
     }
   }

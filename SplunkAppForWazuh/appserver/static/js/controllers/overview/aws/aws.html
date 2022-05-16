@@ -1,97 +1,151 @@
 <md-content flex layout="column" layout-align="end">
   <div layout="row" class="wz-height-35">
-    <div class='wz-breadcrumb-margin'>
-      <span class="wz-text-link cursor-pointer" ui-sref='overview'>Overview</span>
+    <div class="wz-breadcrumb-margin">
+      <span class="wz-text-link cursor-pointer" ui-sref="overview"
+        >Overview</span
+      >
       <span>/ Amazon Web Services </span>
     </div>
     <div flex></div>
     <!-- Report button -->
-    <div style="display:flex; padding-right: 10px;">
-      <button ng-if="reportingEnabled" ng-if="reportingEnabled" md-no-ink class="btn wz-button-empty wz-button-report"
-        ng-disabled="loadingVizz || loadingReporting" ng-click="startVis2Png()" aria-label="Generate report button">
+    <div style="display: flex; padding-right: 10px">
+      <button
+        ng-if="reportingEnabled"
+        ng-if="reportingEnabled"
+        md-no-ink
+        class="btn wz-button-empty wz-button-report"
+        ng-disabled="loadingVizz || loadingReporting"
+        ng-click="startVis2Png()"
+        aria-label="Generate report button">
         <i class="fa fa-fw fa-print" aria-hidden="true"></i>
-        <md-tooltip md-direction="left" class="wz-tooltip">
+        <md-tooltip md-direction="bottom" class="wz-tooltip">
           Generate report
         </md-tooltip>
       </button>
-      <wz-discover breadcrumbs="{section: 'Overview', subSection: 'AWS', ref: 'overview'}"></wz-discover>
+      <wz-discover
+        breadcrumbs="{section: 'Overview', subSection: 'AWS', ref: 'overview'}"></wz-discover>
     </div>
-    <div style="margin-right:7px;" id='timePicker'></div>
+    <div style="margin-right: 7px" id="timePicker"></div>
   </div>
 
   <!-- Loading report-->
-  <div align='center' ng-if='loadingReporting'>{{reportStatus}}<br><i class="fa fa-fw fa-spin fa-spinner"
-      aria-hidden="true"></i></div>
+  <div align="center" ng-if="loadingReporting">
+    {{reportStatus}}<br /><i
+      class="fa fa-fw fa-spin fa-spinner"
+      aria-hidden="true"></i>
+  </div>
 
   <!-- Security information management navbar -->
-  <md-nav-bar class="wz-nav-bar wz-margin-10 no-margin-left" md-selected-nav-item="'aws'">
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-general" name="general">Security
-      events</md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" ui-sref="ow-fim" name="fim">Integrity monitoring
+  <md-nav-bar
+    class="wz-nav-bar wz-margin-10 no-margin-left"
+    md-selected-nav-item="'aws'">
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="ow-general"
+      name="general"
+      >Security events</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="stopPropagation()"
+      ui-sref="ow-fim"
+      name="fim"
+      >Integrity monitoring
     </md-nav-item>
-    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="aws">Amazon AWS</md-nav-item>
+    <md-nav-item class="wz-nav-item" md-nav-click="stopPropagation()" name="aws"
+      >Amazon AWS</md-nav-item
+    >
   </md-nav-bar>
-
-
 
   <div>
     <!-- Filter bar -->
     <wazuh-bar></wazuh-bar>
 
     <div ng-show="loadingVizz">
-      <div align='center'>
-        Fetching data...<br></b><i class="fa fa-fw fa-spin fa-spinner" aria-hidden="true"></i>
+      <div align="center">
+        Fetching data...<br /><i
+          class="fa fa-fw fa-spin fa-spinner"
+          aria-hidden="true"></i>
       </div>
     </div>
     <div ng-show="!loadingVizz">
       <!-- first row  -->
       <div id="row1" layout="row">
         <!-- first row - first vis -->
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[0]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[0]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Sources
-              <span class="wz-text-link" style="float:right;" ng-click="expand(0,'sourcesVizz')">
+            <span class="wz-headline-title"
+              >Sources
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(0,'sourcesVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='sourcesVizz'></div>
+            <div id="sourcesVizz"></div>
           </md-card-content>
         </md-card>
         <!-- first row - second vis -->
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[1]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[1]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Accounts
-              <span class="wz-text-link" style="float:right;" ng-click="expand(1,'accountsVizz')">
+            <span class="wz-headline-title"
+              >Accounts
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(1,'accountsVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='accountsVizz'></div>
+            <div id="accountsVizz"></div>
           </md-card-content>
         </md-card>
         <!-- first row - third vis -->
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[2]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[2]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">S3 buckets
-              <span class="wz-text-link" style="float:right;" ng-click="expand(2,'s3BucketsVizz')">
+            <span class="wz-headline-title"
+              >S3 buckets
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(2,'s3BucketsVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='s3BucketsVizz'></div>
+            <div id="s3BucketsVizz"></div>
           </md-card-content>
         </md-card>
         <!-- first row - fourth vis -->
-        <md-card flex="25" class="wz-md-card" ng-class="{'fullscreen': expandArray[3]}">
+        <md-card
+          flex="25"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[3]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Regions
-              <span class="wz-text-link" style="float:right;" ng-click="expand(3,'regionsVizz')">
+            <span class="wz-headline-title"
+              >Regions
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(3,'regionsVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='regionsVizz'></div>
+            <div id="regionsVizz"></div>
           </md-card-content>
         </md-card>
       </div>
@@ -99,27 +153,41 @@
       <!-- second row  -->
       <div id="row2" layout="row">
         <!-- second row - first vis -->
-        <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[4]}">
+        <md-card
+          flex="50"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[4]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Events by source over time
-              <span class="wz-text-link" style="float:right;" ng-click="expand(4,'eventsBySourceVizz')">
+            <span class="wz-headline-title"
+              >Events by source over time
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(4,'eventsBySourceVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='eventsBySourceVizz'></div>
+            <div id="eventsBySourceVizz"></div>
           </md-card-content>
         </md-card>
         <!-- second row - second vis -->
-        <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[5]}">
+        <md-card
+          flex="50"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[5]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Events by S3 over time
-              <span class="wz-text-link" style="float:right;" ng-click="expand(5,'eventsByS3BucketsVizz')">
+            <span class="wz-headline-title"
+              >Events by S3 over time
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(5,'eventsByS3BucketsVizz')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='eventsByS3BucketsVizz'></div>
+            <div id="eventsByS3BucketsVizz"></div>
           </md-card-content>
         </md-card>
       </div>
@@ -127,45 +195,65 @@
       <!-- third row -->
       <div id="row3" layout="row">
         <!-- fourth row - first vis -->
-        <md-card flex class="wz-md-card" ng-class="{'fullscreen': expandArray[8]}">
+        <md-card
+          flex
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[8]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Geolocation map
-              <span class="wz-text-link" style="float:right;" ng-click="expand(8,'map')">
+            <span class="wz-headline-title"
+              >Geolocation map
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(8,'map')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='map'></div>
+            <div id="map"></div>
           </md-card-content>
         </md-card>
         <!-- fourth row - second vis -->
       </div>
 
-
       <!-- fourth row -->
       <div id="row4" layout="row">
         <!-- fourth row - first vis -->
-        <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[6]}">
+        <md-card
+          flex="50"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[6]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top 5 buckets
-              <span class="wz-text-link" style="float:right;" ng-click="expand(6,'top5Buckets')">
+            <span class="wz-headline-title"
+              >Top 5 buckets
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(6,'top5Buckets')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='top5Buckets'></div>
+            <div id="top5Buckets"></div>
           </md-card-content>
         </md-card>
         <!-- fourth row - second vis -->
-        <md-card flex="50" class="wz-md-card" ng-class="{'fullscreen': expandArray[7]}">
+        <md-card
+          flex="50"
+          class="wz-md-card"
+          ng-class="{'fullscreen': expandArray[7]}">
           <md-card-content class="wazuh-column">
-            <span class="wz-headline-title">Top 5 rules
-              <span class="wz-text-link" style="float:right;" ng-click="expand(7,'top5Rules')">
+            <span class="wz-headline-title"
+              >Top 5 rules
+              <span
+                class="wz-text-link"
+                style="float: right"
+                ng-click="expand(7,'top5Rules')">
                 <wz-svg icon="expand"></wz-svg>
               </span>
             </span>
             <md-divider class="wz-margin-top-10"></md-divider>
-            <div id='top5Rules'></div>
+            <div id="top5Rules"></div>
           </md-card-content>
         </md-card>
       </div>

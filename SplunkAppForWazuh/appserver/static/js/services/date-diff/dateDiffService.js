@@ -1,4 +1,4 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class DateDiffService {
@@ -11,14 +11,20 @@ define(['../module'], function(module) {
      * Returns the difference between dates
      */
     getDateDiff(start, end) {
-      this.start = new Date(start)
-      this.end = new Date(end)
       const result = {
         duration: 'Unknown',
         inProgress: false,
         end: this.end || 'Unknown',
-        start: this.start || 'Unknown'
+        start: this.start || 'Unknown',
       }
+
+      if (!start || !end) {
+        return result
+      }
+
+      this.start = new Date(start)
+      this.end = new Date(end)
+
       if (this.end && this.start) {
         result.duration = (this.end - this.start) / 1000 / 60
         result.duration = Math.round(result.duration * 100) / 100
@@ -30,6 +36,10 @@ define(['../module'], function(module) {
     }
 
     setBrowserOffset(d) {
+      if (!d) {
+        return ''
+      }
+
       try {
         const [day, time] = d.indexOf('T') !== -1 ? d.split('T') : d.split(' ')
         const splitChar =
@@ -45,10 +55,10 @@ define(['../module'], function(module) {
         const date = new Date(
           year,
           parseInt(month) - 1,
-          monthDay,
-          hour,
-          minute,
-          seconds ? seconds.split('.')[0] : '0'
+          parseInt(monthDay),
+          parseInt(hour),
+          parseInt(minute),
+          seconds ? parseInt(seconds.split('.')[0]) : 0
         )
         const offset = new Date().getTimezoneOffset()
         const offsetTime = new Date(date.getTime() - offset * 60000)

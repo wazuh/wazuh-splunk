@@ -16,25 +16,28 @@
 # See the README file for information on usage and redistribution.
 #
 
-import Image, ImageColor, ImageDraw, ImageFont, ImagePath
+from . import Image, ImageColor, ImageDraw, ImageFont, ImagePath
 
-class Pen:
+
+class Pen(object):
     def __init__(self, color, width=1, opacity=255):
         self.color = ImageColor.getrgb(color)
         self.width = width
 
-class Brush:
+
+class Brush(object):
     def __init__(self, color, opacity=255):
         self.color = ImageColor.getrgb(color)
 
-class Font:
+
+class Font(object):
     def __init__(self, color, file, size=12):
         # FIXME: add support for bitmap fonts
         self.color = ImageColor.getrgb(color)
         self.font = ImageFont.truetype(file, size)
 
-class Draw:
 
+class Draw(object):
     def __init__(self, image, size=None, color=None):
         if not hasattr(image, "im"):
             image = Image.new(image, size, color)
@@ -47,7 +50,8 @@ class Draw:
 
     def render(self, op, xy, pen, brush=None):
         # handle color arguments
-        outline = fill = None; width = 1
+        outline = fill = None
+        width = 1
         if isinstance(pen, Pen):
             outline = pen.color
             width = pen.width
@@ -68,7 +72,8 @@ class Draw:
         else:
             getattr(self.draw, op)(xy, fill=fill, outline=outline)
 
-    def settransform(self, (xoffset, yoffset)):
+    def settransform(self, offset):
+        (xoffset, yoffset) = offset
         self.transform = (1, 0, xoffset, 0, 1, yoffset)
 
     def arc(self, xy, start, end, *options):
@@ -91,9 +96,6 @@ class Draw:
 
     def rectangle(self, xy, *options):
         self.render("rectangle", xy, *options)
-
-    def symbol(self, xy, symbol, *options):
-        raise NotImplementedError("not in this version")
 
     def text(self, xy, text, font):
         if self.transform:

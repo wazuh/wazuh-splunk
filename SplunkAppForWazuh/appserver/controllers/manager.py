@@ -13,49 +13,44 @@ Find more information about this on the LICENSE file.
 """
 
 
-from . import api
+import json
+
+import get_api_by_id as API_services
 import jsonbak
-import requestsbak
-import uuid
-# from splunk import AuthorizationFailed as AuthorizationFailed
-from splunk.clilib import cli_common as cli
 import splunk.appserver.mrsparkle.controllers as controllers
-from splunk.appserver.mrsparkle.lib.decorators import expose_page
+import utils
+from API_model import API_model
+from check_daemons import check_daemons
 from db import database
 from log import log
-from requestsbak.exceptions import ConnectionError
+from splunk.appserver.mrsparkle.lib.decorators import expose_page
+from splunk.appserver.mrsparkle.lib.util import make_splunkhome_path
+from splunk.clilib import cli_common as cli
+from wazuh_api import Wazuh_API
 
-def getSelfConfStanza(file, stanza):
-    """Get the configuration from a stanza.
 
-    Parameters
-    ----------
-    stanza : unicode
-        The selected stanza
-
-    """
+def getDefaultExtensions():
     try:
-        apikeyconf = cli.getConfStanza(file, stanza)
-        parsed_data = jsonbak.dumps(apikeyconf)
+        stanza = utils.getSelfConfStanza("config", "extensions")
+        return stanza
     except Exception as e:
-        raise e
-    return parsed_data
+        return jsonbak.dumps({'error': str(e)})
 
 
 def diff_keys_dic_update_api(kwargs_dic):
-    """Get the missing fields for the API entry.
+    """
+    Get the missing fields for the API entry.
 
     Parameters
     ----------
     kwargs_dic : dict
         The current dict to be compared
-
     """
     try:
         diff = []
         kwargs_dic_keys = kwargs_dic.keys()
-        dic_keys = ['_key', 'url', 'portapi', 'userapi',
-                    'passapi', 'filterName', 'filterType', 'managerName']
+        dic_keys = ['_key', 'url', 'portapi', 'userapi', 'passapi',
+                    'filterName', 'filterType', 'managerName', 'runAs']
         for key in dic_keys:
             if key not in kwargs_dic_keys:
                 diff.append(key)
@@ -72,224 +67,347 @@ class manager(controllers.BaseController):
         self.logger = log()
         try:
             controllers.BaseController.__init__(self)
-            self.db = database()
-            self.config =  self.get_config_on_memory()
-            self.timeout = int(self.config['timeout'])
-            self.wazuh_api = api.api()
-            self.session = requestsbak.Session()            
-            self.session.trust_env = False
+            self.db = database("credentials")
+            self.extensionsdb = database("extensions")
+            self.wz_api = Wazuh_API()
         except Exception as e:
-            self.logger.error("manager: Error in manager module constructor: %s" % (e))
+            self.logger.error(
+                "manager: Error in manager module constructor: %s" % (e)
+            )
 
     @expose_page(must_login=False, methods=['GET'])
     def polling_state(self, **kwargs):
-        """Check agent monitoring status.
+        """
+        Check agent monitoring status.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting agents polling state.")
             app = cli.getConfStanza(
                 'inputs',
-                'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py')
+                'script:///opt/splunk/etc/apps/SplunkAppForWazuh/bin/get_agents_status.py'
+            )
 
             disabled = app.get('disabled')
             polling_dict = {}
             polling_dict['disabled'] = disabled
             data_temp = jsonbak.dumps(polling_dict)
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return data_temp
 
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(must_login=False, methods=['GET', 'POST'])
     def extensions(self, **kwargs):
-        """Obtain extension from file.
+        """
+        Obtain extension from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
+
         try:
-            self.logger.debug("manager: Getting extensions.")
-            stanza = getSelfConfStanza("config", "extensions")
-            data_temp = stanza
+            self.logger.debug('Fetching extensions with kwargs %s' %
+                              jsonbak.dumps(kwargs))
+            # If we are provided with a key for a db entry, it is retrieved
+            if '_key' in kwargs:
+                key = kwargs['_key']
+                self.logger.debug(
+                    "manager: Getting extensions from db for %s" % (key))
+                stanza = jsonbak.dumps(jsonbak.loads(
+                    self.extensionsdb.get(key))['data'])
+
+            # if no key is provided, we check whether there is a value in the
+            # db that matches the api
+            elif 'api' in kwargs:
+                stanzas = {}
+                api = kwargs['api']
+                self.logger.debug("manager: Getting extensions for %s" % (api))
+                stanzas = jsonbak.loads(self.extensionsdb.all())
+                filtered = [s for s in stanzas if s['api'] == api]
+                if filtered:
+                    data_temp = filtered[0]
+                    stanza = jsonbak.dumps(data_temp)
+                # if no value matches, we create an entry for that API and
+                # return the stanza
+                else:
+                    data_temp = jsonbak.loads(getDefaultExtensions())
+                    data_temp['api'] = api
+                    key = self.extensionsdb.insert(jsonbak.dumps(data_temp))
+                    stanza = jsonbak.dumps(jsonbak.loads(
+                        self.extensionsdb.get(key))['data'])
+            else:
+                stanza = getDefaultExtensions()
+            return stanza
         except Exception as e:
             return jsonbak.dumps({'error': str(e)})
-        return data_temp
+
+    @expose_page(must_login=False, methods=['POST'])
+    def remove_extensions(self, **kwargs):
+        try:
+            self.logger.debug("manager: Removing extensions.")
+
+            key = kwargs['_key']
+            response = self.extensionsdb.remove(key)
+            return response
+        except Exception as e:
+            return {'error': str(e)}
+
+    @expose_page(must_login=False, methods=['POST'])
+    def save_extensions(self, **kwargs):
+        """
+        Save extensions to file
+
+        Parameters
+        ----------
+        kwargs : dict
+            The request's parameters
+        """
+        try:
+            self.logger.debug("manager: Saving extensions.")
+
+            extensions = jsonbak.loads(kwargs['extensions'])
+            response = self.extensionsdb.update(extensions)
+        except Exception as e:
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
+        return jsonbak.dumps(response)
 
     @expose_page(must_login=False, methods=['GET'])
     def admin_extensions(self, **kwargs):
-        """Obtain extension from file.
+        """
+        Obtain extension from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting admin extensions.")
-            stanza = getSelfConfStanza("config", "admin_extensions")
+            stanza = utils.getSelfConfStanza("config", "admin_extensions")
             data_temp = stanza
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
     def configuration(self, **kwargs):
-        """Obtain extension from file.
+        """
+        Obtain extension from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
-            self.logger.debug("manager: Getting configuration on memory from frondent.")
-            stanza = getSelfConfStanza("config", "configuration")
+            self.logger.debug(
+                "manager: Getting configuration on memory from frontend.")
+            stanza = utils.getSelfConfStanza("config", "configuration")
             data_temp = stanza
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return data_temp
 
     @expose_page(must_login=False, methods=['GET'])
     def app_info(self, **kwargs):
-        """Obtain app information from file.
+        """
+        Obtain app information from file.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
+        self.logger.debug("manager: reading App's info.")
+        app_info = {}
         try:
-            self.logger.debug("manager: Getting app info.")
-            stanza = cli.getConfStanza(
-                'package',
-                'app')
-            data_temp = stanza
-            stanza = cli.getConfStanza(
-                'package',
-                'splunk')
-            data_temp['splunk_version'] = stanza['version']
-            parsed_data = jsonbak.dumps(data_temp)
+            app_info = {
+                'version': cli.getConfStanza('app', 'launcher')['version'],
+                'revision': cli.getConfStanza('app', 'install')['build'],
+                'splunk_version': cli.getConfStanza('package', 'splunk')['version']
+            }
         except Exception as e:
-            return jsonbak.dumps({'error': str(e)})
-        return parsed_data
+            self.logger.error("manager: error reading App's info." + str(e))
+            app_info = {
+                'error': str(e)
+            }
+        finally:
+            return jsonbak.dumps(app_info)
 
     @expose_page(must_login=False, methods=['GET'])
     def get_api(self, **kwargs):
-        """Obtain Wazuh API from DB.
+        """
+        Obtain Wazuh API from DB.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Getting API info from _key.")
             if 'apiId' not in kwargs:
                 return jsonbak.dumps({'error': 'Missing ID.'})
             id = kwargs['apiId']
-            data_temp = self.db.get(id)
+
+            # TODO: This conditional statement is done to ensure
+            # retrocompatibility with registered managers that do
+            # not have an alias. Replace the following 4 lines with
+            # data_temp=self.db.get(id) when these are no longer supported.
+            data_temp = jsonbak.loads(self.db.get(id))["data"]
+            if not "alias" in data_temp:
+                data_temp["alias"] = data_temp["url"]
+            data_temp = jsonbak.dumps({"data": data_temp})
+
             parsed_data = jsonbak.dumps(data_temp)
         except Exception as e:
-            self.logger.error("manager: Error in get_apis endpoint: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
-        return parsed_data
+            self.logger.error("manager::get_api(): %s" % (e))
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['GET'])
     def get_apis(self, **kwargs):
-        """Obtain all Wazuh APIs from DB.
+        """
+        Obtain all Wazuh APIs from DB.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Getting API list.")
+
             apis = self.db.all()
             parsed_apis = jsonbak.loads(apis)
+
             # Remove the password from the list of apis
             for api in parsed_apis:
                 if "passapi" in api:
                     del api["passapi"]
-            result = jsonbak.dumps(parsed_apis)
+                # TODO: This conditional is put in place in order to support
+                # previous installations that did not have the "alias" field
+                # in the database. Remove it when these are no longer supported.
+                if not "alias" in api:
+                    api["alias"] = api["url"]
+            return jsonbak.dumps(parsed_apis)
         except Exception as e:
-            self.logger.error(jsonbak.dumps({"error": str(e)}))
-            return jsonbak.dumps({"error": str(e)})
-        return result
+            error = jsonbak.dumps(
+                {
+                    "error": str(e)
+                }
+            )
+            self.logger.error(error)
+            return error
 
     @expose_page(must_login=False, methods=['POST'])
     def add_api(self, **kwargs):
-        """Add a Wazuh API.
+        """
+        Add a Wazuh API.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Adding a new API.")
             record = kwargs
-            keys_list = ['url', 'portapi', 'userapi', 'passapi',
-                         'managerName', 'filterType', 'filterName']
+            self.logger.debug(record)
+            keys_list = ['url', 'portapi', 'userapi', 'passapi', 'managerName',
+                         'filterType', 'filterName', 'alias', 'runAs']
             if set(record.keys()) == set(keys_list):
                 key = self.db.insert(jsonbak.dumps(record))
-                parsed_data = jsonbak.dumps({'result': key})
+                parsed_data = jsonbak.dumps(
+                    {
+                        'result': key
+                    }
+                )
                 return parsed_data
             else:
                 raise Exception('Invalid number of arguments')
         except Exception as e:
             self.logger.error({'manager - add_api': str(e)})
-            return jsonbak.dumps({'error': str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['POST'])
     def remove_api(self, **kwargs):
-        """Delete Wazuh API from DB.
+        """
+        Delete Wazuh API from DB.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
+        # TODO USE MODEL AND SERVICE
         try:
             self.logger.debug("manager: Removing API.")
-            api_id = kwargs
-            if '_key' not in api_id:
-                return jsonbak.dumps({'error': 'Missing ID'})
-            self.db.remove(api_id['_key'])
-            parsed_data = jsonbak.dumps({'data': 'success'})
+
+            api_id = utils.get_parameter(kwargs, '_key')
+            self.db.remove(api_id)
+
+            return jsonbak.dumps(
+                {
+                    'data': 'success'
+                }
+            )
         except Exception as e:
-            self.logger.error("manager: Error in remove_api endpoint: %s" % (e))
-            return jsonbak.dumps({'error': str(e)})
-        return parsed_data
+            self.logger.error(
+                "manager: Error in remove_api endpoint: %s" % (e))
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
 
     @expose_page(must_login=False, methods=['POST'])
     def update_api(self, **kwargs):
-        """Update Wazuh API.
+        """
+        Update Wazuh API.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
+        # TODO USE MODEL AND SERVICE
+        self.logger.debug("manager::update_api() called")
         try:
-            self.logger.debug("manager: Updating API information.")
             entry = kwargs
+            self.logger.debug(f"manager: Updating API information")
             if '_user' in kwargs:
                 del kwargs['_user']
             if not "passapi" in entry:
@@ -298,275 +416,334 @@ class manager(controllers.BaseController):
                 current_api = jsonbak.loads(data_temp)
                 current_api = current_api["data"]
                 entry["passapi"] = current_api["passapi"]
-            keys_list = ['_key', 'url', 'portapi', 'userapi',
-                         'passapi', 'filterName', 'filterType', 'managerName']
+            keys_list = ['_key', 'url', 'portapi', 'userapi', 'passapi', 'filterName',
+                         'filterType', 'managerName', 'alias', 'runAs']
             if set(entry.keys()) == set(keys_list):
-                self.db.update(entry)
-                parsed_data = jsonbak.dumps({'data': 'success'})
+                result = self.db.update(entry)
             else:
                 missing_params = diff_keys_dic_update_api(entry)
                 raise Exception(
                     "Invalid arguments, missing params : %s"
                     % str(missing_params))
         except Exception as e:
-            self.logger.error("manager: Error in update_api endpoint: %s" % (e))
+            self.logger.error(
+                "manager: Error in update_api endpoint: %s" % (e))
             return jsonbak.dumps({"error": str(e)})
-        return parsed_data
+        return result
 
     @expose_page(must_login=False, methods=['GET'])
     def get_log_lines(self, **kwargs):
-        """Get last log lines.
+        """
+        Get last log lines.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
-
         """
         try:
             self.logger.debug("manager: Getting last log lines.")
             lines = self.logger.get_last_log_lines(20)
-            parsed_data = jsonbak.dumps({'logs': lines})
+            parsed_data = jsonbak.dumps(
+                {
+                    'logs': lines,
+                    'logs_path': make_splunkhome_path(
+                        ['var', 'log', 'splunk', 'SplunkAppForWazuh.log'])
+                }
+            )
         except Exception as e:
             self.logger.error("manager: Get_log_lines endpoint: %s" % (e))
-            return jsonbak.dumps({"error": str(e)})
+            return jsonbak.dumps(
+                {
+                    'error': str(e)
+                }
+            )
         return parsed_data
 
     @expose_page(must_login=False, methods=['GET'])
     def check_connection(self, **kwargs):
-        """Check API connection.
+        """
+        Check API connection BEFORE registration.
+
+        FIXME API registration logic is wrongly done on the frontend. The
+        registration process takes 2 steps guided by the frontend:
+            - 1. This endpoint is accessed to check API connectivity.
+                 Full API info is sent.
+            - 2. If the connection was successful (checked on the frontend),
+                 then the frontend sends another request to register the API
+                 on the DB, sending the API information again.
 
         Parameters
         ----------
         kwargs : dict
-            The request's parameters
-
+            ip: str: API URL.
+            port: str: API port.
+            user: str: API username.
+            pass: str: API user password.
+            cluster: str: true or false
         """
+        self.logger.debug("manager::check_connection() called")
         try:
-            self.logger.debug("manager: Checking API connection.")
-            opt_username = kwargs["user"]
-            opt_password = kwargs["pass"]
-            opt_base_url = kwargs["ip"]
-            opt_base_port = kwargs["port"]
-            opt_cluster = kwargs["cluster"] == "true"
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            try:
-                # Checks in the first request if the credentials are ok
-                request_manager = self.session.get(
-                    url + '/agents/000?select=name', auth=auth, timeout=20, verify=verify)
-                if request_manager.status_code == 401:
-                    self.logger.error("Cannot connect to API; Invalid credentials.")
-                    return jsonbak.dumps({"status": "400", "error": "Invalid credentials, please check the username and password."})
-                request_manager = request_manager.json()  
-                request_cluster = self.session.get(
-                    url + '/cluster/status', auth=auth, timeout=20, verify=verify).json()
-                request_cluster_name = self.session.get(
-                    url + '/cluster/node', auth=auth, timeout=20, verify=verify).json()
-            except ConnectionError as e:
-                self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
-            output = {}
-            try:
-                self.check_wazuh_version(kwargs)
-            except Exception as e:
-                error = {"status": 400, "error": str(e)}
-                return jsonbak.dumps(error)
-            daemons_ready = self.check_daemons(url, auth, verify, opt_cluster)
-            # Pass the cluster status instead of always False
-            if not daemons_ready:
-                raise Exception("Daemons are not ready yet.")
-            output['managerName'] = request_manager['data']
-            output['clusterMode'] = request_cluster['data']
-            output['clusterName'] = request_cluster_name['data']
-            del kwargs['pass']
-            result = jsonbak.dumps(output) 
+            api = API_model(
+                address=kwargs['ip'],
+                port=kwargs['port'],
+                user=kwargs['user'],
+                password=kwargs['pass'],
+                cluster=kwargs['cluster'] == "true",
+            )
+        except KeyError as e:
+            self.log.error(f"Missing parameters: {e}")
+
+        try:
+            self.check_wazuh_version(api)
+            # Raise error if Wazuh Daemons are not ready.
+            if not check_daemons(api):
+                raise Exception("DAEMONS-NOT-READY")
+            output = self.get_cluster_info(api)
+            result = jsonbak.dumps(output)
         except Exception as e:
-            if not daemons_ready:
-                self.logger.error("manager: Cannot connect to API; Wazuh not ready yet.")
-                return jsonbak.dumps({"status": "200", "error": 3099, "message": "Wazuh not ready yet."})
+            if e == "DAEMONS-NOT-READY":
+                self.logger.error(
+                    "manager: Cannot connect to API; Wazuh not ready yet.")
+                return jsonbak.dumps(
+                    {
+                        "status": 200,
+                        "error": 3099,
+                        "message": "Wazuh not ready yet."
+                    }
+                )
             else:
                 self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": 400, "error": "Cannot connect to the API"})
+                return jsonbak.dumps(
+                    {
+                        "status": 400,
+                        "error": "Cannot connect to the API, please check the App logs"
+                    }
+                )
         return result
 
     @expose_page(must_login=False, methods=['GET'])
     def check_connection_by_id(self, **kwargs):
-        """Given an API id we check the connection.
-        
-        Parameters
-        ----------
-        kwargs : dict
-            The request's parameters
-
         """
-        try:
-            self.logger.debug("manager: Checking API connection by id.")
-            opt_id = kwargs["apiId"]
-            current_api = self.get_api(apiId=opt_id)
-            current_api_json = jsonbak.loads(jsonbak.loads(current_api))
-            if not "data" in current_api_json:
-                return jsonbak.dumps({"status": "400", "error": "Error when checking API connection."})
-            opt_username = str(current_api_json["data"]["userapi"])
-            opt_password = str(current_api_json["data"]["passapi"])
-            opt_base_url = str(current_api_json["data"]["url"])
-            opt_base_port = str(current_api_json["data"]["portapi"])
-            opt_cluster = False
-            if "cluster" in current_api_json["data"]:
-                opt_cluster = current_api_json["data"]["cluster"] == "true"
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            try:
-                manager_info =  self.session.get(
-                    url + '/manager/info', auth=auth, timeout=20, verify=verify)
-                manager_info = manager_info.json()
-            except ConnectionError as e:
-                self.logger.error("manager: Cannot connect to API : %s" % (e))
-                return jsonbak.dumps({"status": "400", "error": "Unreachable API, please check the URL and port."})
-            output = {}
-            if "error" in manager_info and manager_info["error"] != 0: #Checks if daemons are up and running
-                return jsonbak.dumps({"status": "400", "error": manager_info["message"]})
-            output['managerName'] = { 'name' : manager_info['data']['name'] }
-            output['clusterMode'] = { "enabled" : manager_info['data']['cluster']['enabled'], "running" : manager_info['data']['cluster']['running'] }
-            output['clusterName'] = { "type" : manager_info['data']['cluster']['node_type'], "cluster" : manager_info['data']['cluster']['name'], "node" : manager_info['data']['cluster']['node_name'] }
-            del current_api_json["data"]["passapi"]
-            output['api'] = current_api_json
-            result = jsonbak.dumps(output)             
-        except Exception as e:
-            self.logger.error("Error when checking API connection: %s" % (e))
-            raise e
-        return result
-
-    def check_wazuh_version(self, kwargs):
-        """Check Wazuh version
+        Check API connection AFTER registration.
 
         Parameters
         ----------
         kwargs : dict
             The request's parameters
         """
+        self.logger.debug("manager::check_connection_by_id() called")
         try:
-            opt_username = kwargs["user"]
-            opt_password = kwargs["pass"]
-            opt_base_url = kwargs["ip"]
-            opt_base_port = kwargs["port"]
-            url = opt_base_url + ":" + opt_base_port
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api: API_model = API_services.get_api_by_id(api_id)
+            # NOTE the frontend expects a different interface, so the API_model
+            # cannot be used yet.
+            # TODO Needs a refactor on the frontend
+            current_api_json: dict = jsonbak.loads(self.db.get(api_id))['data']
 
-            wazuh_version = self.session.get(
-                url + '/version', auth=auth, timeout=20, verify=verify).json()   
-            wazuh_version = wazuh_version['data']
-            wazuh_version = wazuh_version.split('v')[1]
+            output = self.get_cluster_info(api)
 
-            app_version = cli.getConfStanza(
-                'package',
-                'app')
-            app_version = app_version['version']
+            # Hide API password
+            api.hide_password()
+            del current_api_json['passapi']  # FIXME
 
-            v_split = wazuh_version.split('.')
-            a_split = app_version.split('.')
-
-            wazuh_version = str(v_split[0]+"."+v_split[1])
-            app_version = str(a_split[0]+"."+a_split[1])
-            if wazuh_version != app_version:
-                raise Exception("Unexpected Wazuh version. App version: %s, Wazuh version: %s" % (app_version, wazuh_version))
+            output['api'] = {
+                "data": current_api_json
+            }
+            return jsonbak.dumps(output)
+        except KeyError as e:
+            self.logger.error(f"KeyError {e}")
         except Exception as e:
-            self.logger.error("Error when checking Wazuh version: %s" % (e))
-            raise e
-            
-    def check_daemons(self, url, auth, verify, check_cluster):
-        """ Request to check the status of this daemons: execd, modulesd, wazuhdb and clusterd
-
-        Parameters
-        ----------
-        url: str
-        auth: str
-        verify: str
-        cluster_enabled: bool
-        """
-        try:
-            self.logger.debug("manager: Checking Wazuh daemons.")
-            request_cluster = self.session.get(
-                url + '/cluster/status', auth=auth, timeout=self.timeout, verify=verify).json()
-            # Try to get cluster is enabled if the request fail set to false
-            try:
-                cluster_enabled = request_cluster['data']['enabled'] == 'yes'
-            except Exception as e:
-                cluster_enabled = False
-            cc = check_cluster and cluster_enabled # Var to check the cluster demon or not
-            opt_endpoint = "/manager/status"
-            daemons_status = self.session.get(
-                    url + opt_endpoint, auth=auth,
-                    verify=verify).json()
-            if not daemons_status['error']:
-                d = daemons_status['data']
-                daemons = {"execd": d['ossec-execd'], "modulesd": d['wazuh-modulesd'], "db": d['wazuh-db']}
-                if cc:
-                    daemons['clusterd'] = d['wazuh-clusterd']
-                values = list(daemons.values())
-                wazuh_ready = len(set(values)) == 1 and values[0] == "running" # Checks all the status are equals, and running
-                return wazuh_ready
-        except Exception as e:
-            self.logger.error("manager: Error checking daemons: %s" % (e))
-            raise e
+            msg = f"Error checking API connection: {e}"
+            self.logger.error(msg)
+            return jsonbak.dumps(
+                {
+                    "status": 500,
+                    "error": msg
+                }
+            )
 
     @expose_page(must_login=False, methods=['POST'])
     def upload_file(self, **kwargs):
-        # Only rules files are uploaded currently
         self.logger.debug("manager: Uploading file(s)")
         try:
-            # Get file name and file content
-            split_file = str(kwargs["file"]).split('\', \'')
-            file_name = split_file[1]
-            file_content = split_file[2]
-            file_content = file_content[:len(file_content)-2]
-            file_content2 = file_content
-
-            # Get path 
-            dest_path = kwargs["path"]
-
-
-            # Get current API data
-            opt_id = kwargs["apiId"]
-            current_api_json = self.db.get(opt_id)
-            current_api_json = jsonbak.loads(current_api_json)
-            opt_username = str(current_api_json["data"]["userapi"])
-            opt_password = str(current_api_json["data"]["passapi"])
-            opt_base_url = str(current_api_json["data"]["url"])
-            opt_base_port = str(current_api_json["data"]["portapi"])
-            opt_cluster = False
-            if "filterType" in current_api_json["data"] and current_api_json["data"]["filterType"] == 'cluster.name':
-                opt_cluster = True
-
-            # API requests auth
-            auth = requestsbak.auth.HTTPBasicAuth(opt_username, opt_password)
-            verify = False
-            url = opt_base_url + ":" + opt_base_port
-            
-
-            if dest_path and dest_path == 'etc/lists/':
-                file_content = file_content.replace('\\n',"\n")
-                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/octet-stream"}, auth=auth, timeout=20, verify=verify)
-            else:
-                file_content = file_content.replace('\\n','')
-                result = self.session.post(url + '/manager/files?path='+ dest_path +file_name, data=file_content, headers= {"Content-type": "application/xml"}, auth=auth, timeout=20, verify=verify)
-            result = jsonbak.loads(result.text)
-            if 'error' in result and result['error'] != 0:
-                return jsonbak.dumps({"status": "400", "text": "Error adding file: %s. Cause: %s" % (file_name,result["message"])})
-            return jsonbak.dumps({"status": "200", "text": "File %s was updated successfully. " % file_name})
+            api_id = utils.get_parameter(kwargs, 'apiId')
+            api: API_model = API_services.get_api_by_id(api_id)
         except Exception as e:
-            self.logger.error("manager: Error trying to upload a file(s): %s" % (e))
+            self.logger.error(str(e))
 
+        try:
+            # Get file name and file content
+            file_info = kwargs['file'].__dict__
+            file_name = file_info['filename']
+            file_content = kwargs['file'].file
+            # Get path
+            dest_resource = kwargs['resource']
+
+            # wazuh_api.py verifies the "origin" of the request to be "raw" when a binary file is sent
+            # also expects the file content to be in "content"
+            params = {}
+            params['origin'] = "raw"
+            params['content'] = file_content
+
+            result = self.wz_api.make_request(
+                method='PUT',
+                endpoint_url=f"/{dest_resource}/files/{file_name}",
+                kwargs=params,
+                current_api=api
+            )
+
+            if 'error' in result and result['error'] != 0:
+                return jsonbak.dumps(
+                    {
+                        "status": result.get('status_code', 400),
+                        "text": "Error adding file: %s. Cause: %s" % (file_name, result['message'])
+                    }
+                )
+            else:
+                return jsonbak.dumps(
+                    {
+                        "status": result.get('status_code', 200),
+                        "text": "File %s was updated successfully. " % file_name
+                    }
+                )
+        except Exception as e:
+            self.logger.error(
+                "manager: Error trying to upload a file(s): %s" % (e))
+            return jsonbak.dumps(
+                {
+                    "status": 400,
+                    "text": "Error adding file: %s. Cause: %s" % (file_name, e)
+                }
+            )
+
+    # ------------------------------------------------------------ #
+    #   Utility methods
+    # ------------------------------------------------------------ #
+
+    def get_cluster_info(self, api: API_model) -> dict:
+        """
+        Get information about the cluster.
+        """
+        self.logger.debug("manager::get_cluster_info() called")
+
+        # Response model
+        output: dict = {
+            'managerName': {
+                'name': 'NoName'
+            },
+            'clusterMode': {
+                'enabled': 'no',
+                'running': 'no'
+            },
+            'clusterName': {
+                'cluster': False
+            }
+        }
+
+        # A little cheat to force the use of a basic token. This solves the
+        # situation when an user has no permissions to fetch the cluster's or
+        # manager's information. These requests below are required for internal
+        # usage (to set the filters), and are not triggered by the user's
+        # activity on the frontend.
+        api.run_as = False
+
+        # Get manager's name
+        endpoint = "/agents?q=id=000&select=name"
+        response = self.wz_api.make_request(
+            method='GET',
+            endpoint_url=endpoint,
+            kwargs={},
+            current_api=api
+        )
+        try:
+            manager_name: str = response['data']['affected_items'][0]['name']
+        except IndexError:
+            # data.affected_items is empty
+            self.logger.error(
+                f"manager::get_cluster_info(): {endpoint} did not return any data |-> "
+                + json.dumps(response)
+            )
+            return response  # API error response
+        else:
+            output['managerName']['name'] = manager_name
+
+        # Get cluster's status
+        response = self.wz_api.make_request(
+            method='GET',
+            endpoint_url='/cluster/status',
+            kwargs={},
+            current_api=api
+        )
+        try:
+            cluster_data: dict = response['data']
+            output['clusterMode'] = cluster_data
+
+            # Cluster enabled and running
+            if all(value == "yes" for value in cluster_data.values()):
+                # Get cluster's info
+                response = self.wz_api.make_request(
+                    method='GET',
+                    endpoint_url='/cluster/local/info',
+                    kwargs={},
+                    current_api=api
+                )
+                cluster_info: dict = response['data']['affected_items'][0]
+                output['clusterName'] = {
+                    'type':     cluster_info['type'],
+                    'cluster':  cluster_info['cluster'],
+                    'node':     cluster_info['node']
+                }
+        except (IndexError, KeyError):
+            # data does not exist or data.affected_items is empty
+            self.logger.error(
+                f"manager: {endpoint} did not return any data |-> "
+                + json.dumps(response)
+            )
+        except Exception as e:
+            self.logger.error(f"manager: error on get_cluster_info(): {e}")
+
+        return output
+
+    def check_wazuh_version(self, api: API_model):
+        """
+        Check Wazuh version.
+
+        Compares the App's Wazuh version with the API's Wazuh version.
+
+        Parameters
+        ----------
+        api : API_model
+            The selected API data.
+        """
+        self.logger.debug("manager::check_wazuh_version() called")
+
+        try:
+            response = self.wz_api.make_request(
+                method='GET',
+                endpoint_url='/',
+                kwargs={},
+                current_api=api
+            )
+
+            api_version = utils.get_parameter(response, 'data')['api_version']
+            app_version = cli.getConfStanza('app', 'launcher')['version']
+
+            if api_version != app_version:
+                raise Exception(
+                    "Unexpected Wazuh version. App version: %s, API version: %s"
+                    % (app_version, api_version))
+        except Exception as e:
+            self.logger.error("Error checking the Wazuh API version: %s" % (e))
+            raise e
 
     def get_config_on_memory(self):
         try:
             self.logger.debug("manager: Getting configuration on memory.")
-            config_str = getSelfConfStanza("config", "configuration")
+            config_str = utils.getSelfConfStanza("config", "configuration")
             config = jsonbak.loads(config_str)
             return config
         except Exception as e:
-            self.logger.error("manager: Error getting the configuration on memory: %s" % (e))
+            self.logger.error(
+                "manager: Error getting the configuration on memory: %s" % (e))
             raise e

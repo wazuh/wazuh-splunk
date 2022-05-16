@@ -1,57 +1,58 @@
 /* Custom Icons */
 td.icon {
-    text-align: center;
+  text-align: center;
 }
 td.icon i {
-    font-size: 25px;
-    text-shadow: 1px 1px #aaa;
+  font-size: 25px;
+  text-shadow: 1px 1px #aaa;
 }
 td.icon .severe {
-    color: red;
+  color: red;
 }
 td.icon .elevated {
-    color: orangered;
+  color: orangered;
 }
 td.icon .low {
-    color: #006400;
+  color: #006400;
 }
 /* Row Coloring */
 #highlight tr td {
-    background-color: #c1ffc3 !important;
+  background-color: #c1ffc3 !important;
 }
 #highlight tr.range-elevated td {
-    background-color: #ffc57a !important;
+  background-color: #ffc57a !important;
 }
 #highlight tr.range-severe td {
-    background-color: #d59392 !important;
+  background-color: #d59392 !important;
 }
 #highlight .table td {
-    border-top: 1px solid #fff;
+  border-top: 1px solid #fff;
 }
-#highlight td.range-severe, td.range-elevated {
-    font-weight: bold;
+#highlight td.range-severe,
+td.range-elevated {
+  font-weight: bold;
 }
 .icon-inline i {
-    font-size: 18px;
-    margin-left: 5px;
+  font-size: 18px;
+  margin-left: 5px;
 }
 .icon-inline i.icon-alert-circle {
-    color: #ef392c;
+  color: #ef392c;
 }
 .icon-inline i.icon-alert {
-    color: #ff9c1a;
+  color: #ff9c1a;
 }
 .icon-inline i.icon-check {
-    color: #5fff5e;
+  color: #5fff5e;
 }
 
 /* Removing outline */
 
 table.wz-no-outline th:focus,
 table.wz-no-outline td:focus {
-    outline-color: transparent !important;
+  outline-color: transparent !important;
 }
 
 table.wz-no-outline tr:focus td {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }

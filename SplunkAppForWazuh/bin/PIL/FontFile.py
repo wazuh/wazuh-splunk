@@ -14,29 +14,28 @@
 # See the README file for information on usage and redistribution.
 #
 
+from __future__ import print_function
+
 import os
-import Image
 
-import marshal
-
-try:
-    import zlib
-except ImportError:
-    zlib = None
+from . import Image, _binary
 
 WIDTH = 800
+
 
 def puti16(fp, values):
     # write network order (big-endian) 16-bit sequence
     for v in values:
         if v < 0:
-            v = v + 65536
-        fp.write(chr(v>>8&255) + chr(v&255))
+            v += 65536
+        fp.write(_binary.o16be(v))
+
 
 ##
 # Base class for raster font file handlers.
 
-class FontFile:
+
+class FontFile(object):
 
     bitmap = None
 
@@ -49,7 +48,7 @@ class FontFile:
         return self.glyph[ix]
 
     def compile(self):
-        "Create metrics and bitmap"
+        """Create metrics and bitmap"""
 
         if self.bitmap:
             return
@@ -63,8 +62,8 @@ class FontFile:
                 h = max(h, src[3] - src[1])
                 w = w + (src[2] - src[0])
                 if w > WIDTH:
-                    lines = lines + 1
-                    w = (src[2] - src[0])
+                    lines += 1
+                    w = src[2] - src[0]
                 maxwidth = max(maxwidth, w)
 
         xsize = maxwidth
@@ -83,7 +82,8 @@ class FontFile:
             glyph = self[i]
             if glyph:
                 d, dst, src, im = glyph
-                xx, yy = src[2] - src[0], src[3] - src[1]
+                xx = src[2] - src[0]
+                # yy = src[3] - src[1]
                 x0, y0 = x, y
                 x = x + xx
                 if x > WIDTH:
@@ -92,12 +92,10 @@ class FontFile:
                     x = xx
                 s = src[0] + x0, src[1] + y0, src[2] + x0, src[3] + y0
                 self.bitmap.paste(im.crop(src), s)
-                # print chr(i), dst, s
                 self.metrics[i] = d, dst, s
 
-
-    def save1(self, filename):
-        "Save font in version 1 format"
+    def save(self, filename):
+        """Save font"""
 
         self.compile()
 
@@ -105,42 +103,13 @@ class FontFile:
         self.bitmap.save(os.path.splitext(filename)[0] + ".pbm", "PNG")
 
         # font metrics
-        fp = open(os.path.splitext(filename)[0] + ".pil", "wb")
-        fp.write("PILfont\n")
-        fp.write(";;;;;;%d;\n" % self.ysize) # HACK!!!
-        fp.write("DATA\n")
-        for id in range(256):
-            m = self.metrics[id]
-            if not m:
-                puti16(fp, [0] * 10)
-            else:
-                puti16(fp, m[0] + m[1] + m[2])
-        fp.close()
-
-
-    def save2(self, filename):
-        "Save font in version 2 format"
-
-        # THIS IS WORK IN PROGRESS
-
-        self.compile()
-
-        data = marshal.dumps((self.metrics, self.info))
-
-        if zlib:
-            data = "z" + zlib.compress(data, 9)
-        else:
-            data = "u" + data
-
-        fp = open(os.path.splitext(filename)[0] + ".pil", "wb")
-
-        fp.write("PILfont2\n" + self.name + "\n" + "DATA\n")
-
-        fp.write(data)
-
-        self.bitmap.save(fp, "PNG")
-
-        fp.close()
-
-
-    save = save1 # for now
+        with open(os.path.splitext(filename)[0] + ".pil", "wb") as fp:
+            fp.write(b"PILfont\n")
+            fp.write((";;;;;;%d;\n" % self.ysize).encode("ascii"))  # HACK!!!
+            fp.write(b"DATA\n")
+            for id in range(256):
+                m = self.metrics[id]
+                if not m:
+                    puti16(fp, [0] * 10)
+                else:
+                    puti16(fp, m[0] + m[1] + m[2])

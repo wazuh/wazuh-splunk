@@ -1,5 +1,7 @@
 define([
   './general/overviewGeneralCtrl',
+  './mitre/overviewMitreCtrl',
+  './mitre-ids/overviewMitreIdsCtrl',
   './welcome/overviewWelcomeCtrl',
   './audit/overviewAuditCtrl',
   './fim/overviewFimCtrl',
@@ -15,5 +17,5 @@ define([
   './vulnerabilities/overviewVulnerabilitiesCtrl',
   './sca/overviewSCACtrl',
   './hipaa/overviewHipaaCtrl',
-  './nist/overviewNistCtrl'
-], function() {})
+  './nist/overviewNistCtrl',
+], function () {})

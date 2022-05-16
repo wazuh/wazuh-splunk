@@ -1,13 +1,24 @@
-<div flex="auto" layout="row" ng-if="!load && configurationSubTab === 'commands'">
-
+<div
+  flex="auto"
+  layout="row"
+  ng-if="!load && configurationSubTab === 'commands'">
   <!-- No configuration section -->
-  <wz-no-config flex error="currentConfig['analysis-command']" ng-if="currentConfig['analysis-command'] && isString(currentConfig['analysis-command'])"></wz-no-config>
-  <wz-no-config flex error="'not-present'" ng-if="currentConfig['analysis-command'] && !isString(currentConfig['analysis-command']) && currentConfig['analysis-command'].command && !currentConfig['analysis-command'].command.length"></wz-no-config>
+  <wz-no-config
+    flex
+    error="currentConfig['analysis-command']"
+    ng-if="currentConfig['analysis-command'] && isString(currentConfig['analysis-command'])"></wz-no-config>
+  <wz-no-config
+    flex
+    error="'not-present'"
+    ng-if="currentConfig['analysis-command'] && !isString(currentConfig['analysis-command']) && currentConfig['analysis-command'].command && !currentConfig['analysis-command'].command.length"></wz-no-config>
   <!-- End no configuration section -->
 
   <!-- This section is the main content -->
-  <div class="configuration-margin-top" flex layout="column" ng-if="currentConfig['analysis-command'] && !isString(currentConfig['analysis-command']) && currentConfig['analysis-command'].command && currentConfig['analysis-command'].command.length">
-
+  <div
+    class="configuration-margin-top"
+    flex
+    layout="column"
+    ng-if="currentConfig['analysis-command'] && !isString(currentConfig['analysis-command']) && currentConfig['analysis-command'].command && currentConfig['analysis-command'].command.length">
     <!-- The main card will all the settings -->
     <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
       <md-card-content class="overflow-auto" flex layout="column">
@@ -15,46 +26,71 @@
           <div>
             <span class="font-size-16">Command definitions</span>
             <div class="wz-margin-top-10">
-              <span class="md-subheader small">Find here all the currently defined commands used for
-                Active response</span>
+              <span class="md-subheader small"
+                >Find here all the currently defined commands used for Active
+                response</span
+              >
             </div>
           </div>
           <span flex></span>
-          <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+          <span
+            ng-class="JSONContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getJSON()"
+            >JSON</span
+          >
           <span class="small">&nbsp;&centerdot;&nbsp;</span>
-          <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+          <span
+            ng-class="XMLContent ? 'wz-text-active' : ''"
+            class="wz-text-link small"
+            ng-click="getXML()"
+            >XML</span
+          >
         </div>
         <md-divider class="wz-margin-top-10"></md-divider>
 
         <!-- The container for both list and detail -->
         <div flex="auto" layout="row" class="wz-margin-top-10">
-
           <!-- List container -->
           <div flex="30" layout="column">
-
             <md-list flex="auto" class="wz-item-list">
-              <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig['analysis-command'].command">{{item.name}}</md-list-item>
+              <md-list-item
+                class="wz-text-link"
+                ng-click="updateSelectedItem($index)"
+                ng-repeat="item in currentConfig['analysis-command'].command"
+                >{{item.name}}</md-list-item
+              >
             </md-list>
-
           </div>
           <!-- End list container -->
 
           <!-- Detail container -->
-          <div flex layout="column" ng-if="currentConfig['analysis-command'].command.length">
-
+          <div
+            flex
+            layout="column"
+            ng-if="currentConfig['analysis-command'].command.length">
             <div flex="auto" class="wz-item-detail">
-              <wz-config-item label="Command name" value="currentConfig['analysis-command'].command[selectedItem].name">
+              <wz-config-item
+                label="Command name"
+                value="currentConfig['analysis-command'].command[selectedItem].name">
               </wz-config-item>
-              <wz-config-item label="Name of executable file" value="currentConfig['analysis-command'].command[selectedItem].executable">
+              <wz-config-item
+                label="Name of executable file"
+                value="currentConfig['analysis-command'].command[selectedItem].executable">
               </wz-config-item>
-              <wz-config-item label="List of expected fields" value="currentConfig['analysis-command'].command[selectedItem].expect">
+              <wz-config-item
+                label="List of expected fields"
+                value="currentConfig['analysis-command'].command[selectedItem].expect">
               </wz-config-item>
-              <wz-config-item label="Extra arguments" value="currentConfig['analysis-command'].command[selectedItem].extra_args">
+              <wz-config-item
+                label="Extra arguments"
+                value="currentConfig['analysis-command'].command[selectedItem].extra_args">
               </wz-config-item>
-              <wz-config-item label="Allow this command to be reverted" value="currentConfig['analysis-command'].command[selectedItem].timeout_allowed ? 'yes' : 'no'">
+              <wz-config-item
+                label="Allow this command to be reverted"
+                value="currentConfig['analysis-command'].command[selectedItem].timeout_allowed ? 'yes' : 'no'">
               </wz-config-item>
             </div>
-
           </div>
           <!-- End detail container -->
         </div>
@@ -63,36 +99,54 @@
     </md-card>
     <!-- End main card with all the settings -->
 
-    <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+    <wz-config-viewer
+      flex
+      getjson="getJSON()"
+      getxml="getXML()"
+      jsoncontent="JSONContent"
+      xmlcontent="XMLContent" />
   </div>
   <!-- End main content section -->
 
-    <!-- This section is the right sidenav content -->
-    <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
-      aria-label="Link to open app about section">
-      <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
-    </md-button>
-    <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+  <!-- This section is the right sidenav content -->
+  <!-- Help button -->
+  <md-button
+    md-no-ink
+    class="md-icon-button small"
+    tooltip="About and help"
+    tooltip-placement="left"
+    ng-click="showInfo()"
+    aria-label="Link to open app about section">
+    <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
+  </md-button>
+  <!-- End help button -->
+  <md-sidenav
+    ng-show="showingInfo"
+    class="md-sidenav-right"
+    md-is-locked-open="true">
     <md-list>
       <md-subheader>More info about this section</md-subheader>
-      <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/capabilities/active-response/index.html">Active
-        response documentation</md-list-item>
-      <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/commands.html">Commands
-        reference</md-list-item>
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/capabilities/active-response/index.html"
+        >Active response documentation</md-list-item
+      >
+      <md-list-item
+        target="_blank"
+        class="wz-text-link"
+        ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/commands.html"
+        >Commands reference</md-list-item
+      >
     </md-list>
   </md-sidenav>
   <!-- End right sidenav section -->
-
 </div>
 <!-- End main content and right sidenav section -->
 
 <!-- </div> -->
 
 <div flex="auto" layout="column" ng-if="configurationTab === 'command'">
-
   <!-- Headline -->
   <div layout="column" layout-padding>
     <div>
@@ -102,80 +156,124 @@
   </div>
   <!-- End headline -->
 
-<!-- Loading bar -->
-<div class="loader-bar" ng-show="load">
-  <div class="loader"></div>
-</div>
+  <!-- Loading bar -->
+  <div class="loader-bar" ng-show="load">
+    <div class="loader"></div>
+  </div>
 
   <!-- This section contains the main content and the right sidenav -->
   <div flex="auto" layout="row" ng-if="!load">
-
     <!-- No configuration section -->
-    <wz-no-config flex error="currentConfig['wmodules-wmodules']" ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
-    <wz-no-config flex error="'not-present'" ng-if="currentConfig && !currentConfig.commands && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="currentConfig['wmodules-wmodules']"
+      ng-if="currentConfig['wmodules-wmodules'] && isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
+    <wz-no-config
+      flex
+      error="'not-present'"
+      ng-if="currentConfig && !currentConfig.commands && !isString(currentConfig['wmodules-wmodules'])"></wz-no-config>
     <!-- End no configuration section -->
 
     <!-- This section is the main content -->
-    <div flex layout="column" ng-if="currentConfig && currentConfig.commands && !isString(currentConfig['wmodules-wmodules']) && currentConfig.commands.length">
-
+    <div
+      flex
+      layout="column"
+      ng-if="currentConfig && currentConfig.commands && !isString(currentConfig['wmodules-wmodules']) && currentConfig.commands.length">
       <!-- The main card will all the settings -->
-      <md-card flex="auto" class="wz-md-card" ng-if="!JSONContent && !XMLContent">
+      <md-card
+        flex="auto"
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent">
         <md-card-content class="overflow-auto" flex layout="column">
           <div layout="row" layout-align="start center">
             <div>
               <span class="font-size-16">Command definitions</span>
               <div class="wz-margin-top-10">
-                <span class="md-subheader small">Find here all the currently defined commands</span>
+                <span class="md-subheader small"
+                  >Find here all the currently defined commands</span
+                >
               </div>
             </div>
             <span flex></span>
-            <span ng-class="JSONContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getJSON()">JSON</span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
             <span class="small">&nbsp;&centerdot;&nbsp;</span>
-            <span ng-class="XMLContent ? 'wz-text-active' : ''" class="wz-text-link small" ng-click="getXML()">XML</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
           </div>
           <md-divider class="wz-margin-top-10"></md-divider>
 
           <!-- The container for both list and detail -->
           <div flex="auto" layout="row" class="wz-margin-top-10">
-
             <!-- List container -->
             <div flex="30" layout="column">
-
               <md-list flex="auto" class="wz-item-list">
-                <md-list-item class="wz-text-link" ng-click="updateSelectedItem($index)" ng-repeat="item in currentConfig.commands">{{item.tag}}</md-list-item>
+                <md-list-item
+                  class="wz-text-link"
+                  ng-click="updateSelectedItem($index)"
+                  ng-repeat="item in currentConfig.commands"
+                  >{{item.tag}}</md-list-item
+                >
               </md-list>
-
             </div>
             <!-- End list container -->
 
             <!-- Detail container -->
             <div flex layout="column">
-
               <div flex="auto" class="wz-item-detail">
-                <wz-config-item label="Command status" value="currentConfig.commands[selectedItem].disabled === 'no' ? 'enabled' : 'disabled'">
+                <wz-config-item
+                  label="Command status"
+                  value="currentConfig.commands[selectedItem].disabled === 'no' ? 'enabled' : 'disabled'">
                 </wz-config-item>
-                <wz-config-item label="Command name" value="currentConfig.commands[selectedItem].tag">
+                <wz-config-item
+                  label="Command name"
+                  value="currentConfig.commands[selectedItem].tag">
                 </wz-config-item>
-                <wz-config-item label="Command to execute" value="currentConfig.commands[selectedItem].command">
+                <wz-config-item
+                  label="Command to execute"
+                  value="currentConfig.commands[selectedItem].command">
                 </wz-config-item>
-                <wz-config-item label="Interval between executions" value="currentConfig.commands[selectedItem].interval">
+                <wz-config-item
+                  label="Interval between executions"
+                  value="currentConfig.commands[selectedItem].interval">
                 </wz-config-item>
-                <wz-config-item label="Run on start" value="currentConfig.commands[selectedItem].run_on_start">
+                <wz-config-item
+                  label="Run on start"
+                  value="currentConfig.commands[selectedItem].run_on_start">
                 </wz-config-item>
-                <wz-config-item label="Ignore command output" value="currentConfig.commands[selectedItem].ignore_output">
+                <wz-config-item
+                  label="Ignore command output"
+                  value="currentConfig.commands[selectedItem].ignore_output">
                 </wz-config-item>
-                <wz-config-item label="Timeout (in seconds) to wait for execution" value="currentConfig.commands[selectedItem].timeout">
+                <wz-config-item
+                  label="Timeout (in seconds) to wait for execution"
+                  value="currentConfig.commands[selectedItem].timeout">
                 </wz-config-item>
-                <wz-config-item label="Verify MD5 sum" value="currentConfig.commands[selectedItem].verify_md5">
+                <wz-config-item
+                  label="Verify MD5 sum"
+                  value="currentConfig.commands[selectedItem].verify_md5">
                 </wz-config-item>
-                <wz-config-item label="Verify SHA1 sum" value="currentConfig.commands[selectedItem].verify_sha1">
+                <wz-config-item
+                  label="Verify SHA1 sum"
+                  value="currentConfig.commands[selectedItem].verify_sha1">
                 </wz-config-item>
-                <wz-config-item label="Verify SHA256 sum" value="currentConfig.commands[selectedItem].verify_sha256">
+                <wz-config-item
+                  label="Verify SHA256 sum"
+                  value="currentConfig.commands[selectedItem].verify_sha256">
                 </wz-config-item>
-                <wz-config-item label="Ignore checksum verification" value="currentConfig.commands[selectedItem].skip_verification">
+                <wz-config-item
+                  label="Ignore checksum verification"
+                  value="currentConfig.commands[selectedItem].skip_verification">
                 </wz-config-item>
               </div>
-
             </div>
             <!-- End detail container -->
           </div>
@@ -184,28 +282,42 @@
       </md-card>
       <!-- End main card with all the settings -->
 
-      <wz-config-viewer flex getjson="getJSON()" getxml="getXML()" jsoncontent="JSONContent" xmlcontent="XMLContent" />
-
+      <wz-config-viewer
+        flex
+        getjson="getJSON()"
+        getxml="getXML()"
+        jsoncontent="JSONContent"
+        xmlcontent="XMLContent" />
     </div>
     <!-- End main content section -->
 
     <!-- This section is the right sidenav content -->
     <!-- Help button -->
-    <md-button md-no-ink class="md-icon-button small" tooltip="About and help" tooltip-placement="left" ng-click="showInfo()"
+    <md-button
+      md-no-ink
+      class="md-icon-button small"
+      tooltip="About and help"
+      tooltip-placement="left"
+      ng-click="showInfo()"
       aria-label="Link to open app about section">
       <i class="fa fa-fw fa-question-circle-o" aria-hidden="true"></i>
     </md-button>
     <!-- End help button -->
-    <md-sidenav ng-show="showingInfo" class="md-sidenav-right" md-is-locked-open="true">
+    <md-sidenav
+      ng-show="showingInfo"
+      class="md-sidenav-right"
+      md-is-locked-open="true">
       <md-list>
         <md-subheader>More info about this section</md-subheader>
-        <md-list-item target="_blank" class="wz-text-link" ng-href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/wodle-command.html">Command
-          module reference</md-list-item>
+        <md-list-item
+          target="_blank"
+          class="wz-text-link"
+          ng-href="https://documentation.wazuh.com/{{appDocuVersion}}/user-manual/reference/ossec-conf/wodle-command.html"
+          >Command module reference</md-list-item
+        >
       </md-list>
     </md-sidenav>
     <!-- End right sidenav section -->
-
   </div>
   <!-- End main content and right sidenav section -->
-
 </div>

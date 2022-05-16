@@ -1,11 +1,13 @@
-define(['../module'], function(module) {
+define(['../module'], function (module) {
   'use strict'
 
   class navigationService {
-    constructor($state, $window, $location) {
+    constructor($state, $window, $location, $apiMgrService, $rootScope) {
       this.$state = $state
       this.$window = $window
       this.$location = $location
+      this.$apiMgrService = $apiMgrService
+      this.$rootScope = $rootScope
 
       this.$window.onpopstate = () => {
         try {
@@ -26,9 +28,7 @@ define(['../module'], function(module) {
             )
           }
         } catch (error) {
-          sessionStorage.params
-            ? $state.go(sessionStorage.params)
-            : $state.go('settings.api')
+          this.goToLastState()
         }
       }
     }
@@ -66,9 +66,21 @@ define(['../module'], function(module) {
     }
 
     goToLastState() {
-      sessionStorage.params
-        ? this.$state.go(sessionStorage.params)
-        : this.$state.go('settings.api') // redirects to settings.api if no previous states were visited
+      const lastState = this.getLastState()
+      lastState ? this.$state.go(lastState) : this.goToDefaultPage()
+    }
+
+    async goToDefaultPage() {
+      let currentApi
+      try {
+        currentApi = await this.$apiMgrService.resolveCurrentApi()
+        this.$rootScope.$broadcast('updatedAPI', () => {})
+      } catch (error) {
+        console.warn('Wazuh API is not configured or it is down.')
+      }
+
+      if (currentApi) this.$state.go('overview')
+      else this.$state.go('settings.api')
     }
 
     /**
@@ -112,7 +124,7 @@ define(['../module'], function(module) {
           this.goToLastState()
         }
       } catch (error) {
-        this.$state.go('settings.api')
+        this.goToLastState()
       }
     }
 

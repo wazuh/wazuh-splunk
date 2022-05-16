@@ -17,8 +17,8 @@ define([
   '../../../services/visualizations/chart/pie-chart',
   '../../../services/visualizations/table/table',
   '../../../services/visualizations/search/search-handler',
-  '../../../services/rawTableData/rawTableDataService'
-], function(
+  '../../../services/rawTableData/rawTableDataService',
+], function (
   app,
   DashboardMain,
   LinearChart,
@@ -41,6 +41,8 @@ define([
      * @param {Object} pollingState
      * @param {*} $reportingService
      * @param {*} $rootScope
+     * @param {*} reportingEnabled
+     * @param {*} awsExtensionEnabled
      */
     constructor(
       $urlTokenModel,
@@ -60,7 +62,8 @@ define([
         $reportingService,
         $state,
         $currentDataService,
-        $urlTokenModel
+        $urlTokenModel,
+        $notificationService
       )
       this.rootScope = $rootScope
       this.scope.reportingEnabled = reportingEnabled
@@ -94,78 +97,90 @@ define([
           '$result.count$',
           'totalAlerts',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         new SearchHandler(
           `searchLevel12`,
-          `${this.filters} sourcetype=wazuh "rule.level">=12 | chart count`,
+          `${this.filters} "rule.level">=12 | chart count`,
           `level12token`,
           '$result.count$',
           'levelTwelve',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         new SearchHandler(
           `searchAuthFailure`,
-          `${this.filters} sourcetype=wazuh "rule.groups{}"="authentication_fail*" | stats count`,
+          `${this.filters} "rule.groups{}"="authentication_fail*" | stats count`,
           `authFailureToken`,
           '$result.count$',
           'authFailure',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         new SearchHandler(
           `searchAuthSuccess`,
-          `${this.filters} sourcetype=wazuh  "rule.groups{}"="authentication_success" | stats count`,
+          `${this.filters}  "rule.groups{}"="authentication_success" | stats count`,
           `authSuccessToken`,
           '$result.count$',
           'authSuccess',
           this.submittedTokenModel,
-          this.scope
+          this.scope,
+          undefined,
+          undefined,
+          this.notification
         ),
         /**
          * Visualizations
          */
         new LinearChart(
           'alertLevEvoVizz',
-          `${this.filters} sourcetype=wazuh rule.level=*| timechart count by rule.level  `,
+          `${this.filters} rule.level=*`,
           'alertLevEvoVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new LinearChart(
           'alertsVizz',
-          `${this.filters} sourcetype=wazuh | timechart span=2h count  `,
+          `${this.filters} | timechart span=2h count  `,
           'alertsVizz',
           this.scope,
           { customAxisTitleX: 'Time span' }
         ),
         new PieChart(
           'alertsEvoTop5Agents',
-          `${this.filters} index=wazuh  sourcetype=wazuh | stats count by agent.name`,
+          `${this.filters} index=wazuh  | stats count by agent.name`,
           'alertsEvoTop5Agents',
           this.scope
         ),
         new PieChart(
           'top5ruleGroups',
-          `${this.filters} sourcetype=wazuh | top rule.groups{} limit=5`,
+          `${this.filters} | top rule.groups{} limit=5`,
           'top5ruleGroups',
           this.scope
         ),
         new Table(
           'agentsSummaryVizz',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryVizz',
           this.scope
         ),
         (this.agentsSummaryTable = new RawTableDataService(
           'agentsSummaryTable',
-          `${this.filters} sourcetype=wazuh |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
+          `${this.filters} |stats count sparkline by rule.id, rule.description, rule.level | sort count DESC  | rename rule.id as "Rule ID", rule.description as "Description", rule.level as Level, count as Count`,
           'agentsSummaryTableToken',
           '$result$',
           this.scope,
           'Agents Summary'
-        ))
+        )),
       ]
     }
 
@@ -176,56 +191,57 @@ define([
       try {
         if (!this.pollingEnabled) {
           this.scope.wzMonitoringEnabled = false
-          this.apiReq(`/agents/summary`)
-            .then(data => {
-              this.scope.agentsCountTotal = data.data.data.Total - 1
-              this.scope.agentsCountActive = data.data.data.Active - 1
-              this.scope.agentsCountDisconnected = data.data.data.Disconnected
+          this.apiReq(`/agents/summary/status`)
+            .then((data) => {
+              this.scope.agentsCountTotal = data.data.data.total
+              this.scope.agentsCountActive = data.data.data.active
+              this.scope.agentsCountDisconnected = data.data.data.disconnected
               this.scope.agentsCountNeverConnected =
-                data.data.data['Never connected']
+                data.data.data.never_connected
               this.scope.agentsCoverity = this.scope.agentsCountTotal
                 ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) *
                   100
                 : 0
               this.scope.$applyAsync()
             })
-            .catch(error => {
+            .catch((error) => {
               this.notification.showErrorToast(
                 `Cannot fetch agent status data: ${error}`
               )
             })
         } else {
           this.scope.wzMonitoringEnabled = true
-
-          //Filters for agents Status
           try {
-            this.clusOrMng = Object.keys(
-              this.currentDataService.getFilters()[0]
-            )[0]
+            //Filters for agents Status
+            const [filters] = this.currentDataService.getFilters()
+            const [nodeType] = Object.keys(filters)
+            let agentsStatusFilter = false
 
-            if (this.clusOrMng == 'manager.name') {
-              this.mngName = this.currentDataService.getFilters()[0][
-                'manager.name'
-              ]
-              this.agentsStatusFilter = `manager.name=${this.mngName} index=wazuh-monitoring-3x`
+            if (nodeType === 'manager.name') {
+              const managerName = filters['manager.name']
+              agentsStatusFilter = `manager.name=${managerName} index=wazuh-monitoring*`
             } else {
-              this.clusName = this.currentDataService.getFilters()[0][
-                'cluster.name'
-              ]
-              this.agentsStatusFilter = `cluster.name=${this.clusName} index=wazuh-monitoring-3x`
+              const clusterName = filters['cluster.name']
+              agentsStatusFilter = `cluster.name=${clusterName} index=wazuh-monitoring*`
             }
-          } catch (error) {} //eslint-disable-line
 
-          this.spanTime = '15m'
-          this.vizz.push(
-            new LinearChart(
-              `agentStatusHistory`,
-              `${this.agentsStatusFilter} status=* | timechart span=${this.spanTime} cont=FALSE count by status usenull=f`,
-              `agentStatus`,
-              this.scope,
-              { customAxisTitleX: 'Time span' }
+            if (agentsStatusFilter != false) {
+              const spanTime = '1m'
+              this.vizz.push(
+                new LinearChart(
+                  `agentStatusHistory`,
+                  `${agentsStatusFilter} id!=000 status=* | timechart span=${spanTime} cont=FALSE count by status usenull=f`,
+                  `agentStatus`,
+                  this.scope,
+                  { customAxisTitleX: 'Time span' }
+                )
+              )
+            }
+          } catch (error) {
+            this.notification.showErrorToast(
+              'Error fetching agents status ' + (error.message || error)
             )
-          )
+          }
         }
 
         this.scope.startVis2Png = () =>
@@ -238,7 +254,7 @@ define([
               'alertsVizz',
               'alertsEvoTop5Agents',
               'top5ruleGroups',
-              'agentsSummaryVizz'
+              'agentsSummaryVizz',
             ],
             this.reportMetrics,
             this.tableResults
@@ -256,7 +272,7 @@ define([
         Alerts: this.scope.totalAlerts,
         'Level 12 or above alerts': this.scope.levelTwelve,
         'Authentication failure': this.scope.authFailure,
-        'Authentication success': this.scope.authSuccess
+        'Authentication success': this.scope.authSuccess,
       }
     }
   }

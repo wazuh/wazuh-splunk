@@ -17,78 +17,127 @@
 #
 
 import array
-import Image, ImageColor
 
-##
-# Colour palette wrapper for palette mapped images.
+from . import GimpGradientFile, GimpPaletteFile, ImageColor, PaletteFile
 
-class ImagePalette:
-    "Colour palette for palette mapped images"
 
-    def __init__(self, mode = "RGB", palette = None):
+class ImagePalette(object):
+    """
+    Color palette for palette mapped images
+
+    :param mode: The mode to use for the Palette. See:
+        :ref:`concept-modes`. Defaults to "RGB"
+    :param palette: An optional palette. If given, it must be a bytearray,
+        an array or a list of ints between 0-255 and of length ``size``
+        times the number of colors in ``mode``. The list must be aligned
+        by channel (All R values must be contiguous in the list before G
+        and B values.) Defaults to 0 through 255 per channel.
+    :param size: An optional palette size. If given, it cannot be equal to
+        or greater than 256. Defaults to 0.
+    """
+
+    def __init__(self, mode="RGB", palette=None, size=0):
         self.mode = mode
-        self.rawmode = None # if set, palette contains raw data
-        self.palette = palette or range(256)*len(self.mode)
+        self.rawmode = None  # if set, palette contains raw data
+        self.palette = palette or bytearray(range(256)) * len(self.mode)
         self.colors = {}
         self.dirty = None
-        if len(self.mode)*256 != len(self.palette):
-            raise ValueError, "wrong palette size"
+        if (size == 0 and len(self.mode) * 256 != len(self.palette)) or (
+            size != 0 and size != len(self.palette)
+        ):
+            raise ValueError("wrong palette size")
+
+    def copy(self):
+        new = ImagePalette()
+
+        new.mode = self.mode
+        new.rawmode = self.rawmode
+        if self.palette is not None:
+            new.palette = self.palette[:]
+        new.colors = self.colors.copy()
+        new.dirty = self.dirty
+
+        return new
 
     def getdata(self):
-        # experimental: get palette contents in format suitable
-        # for the low-level im.putpalette primitive
+        """
+        Get palette contents in format suitable for the low-level
+        ``im.putpalette`` primitive.
+
+        .. warning:: This method is experimental.
+        """
         if self.rawmode:
             return self.rawmode, self.palette
-        return self.mode + ";L", self.tostring()
+        return self.mode + ";L", self.tobytes()
 
-    def tostring(self):
-        # experimental: convert palette to string
+    def tobytes(self):
+        """Convert palette to bytes.
+
+        .. warning:: This method is experimental.
+        """
         if self.rawmode:
             raise ValueError("palette contains raw palette data")
-        if Image.isStringType(self.palette):
+        if isinstance(self.palette, bytes):
             return self.palette
-        return array.array("B", self.palette).tostring()
+        arr = array.array("B", self.palette)
+        if hasattr(arr, "tobytes"):
+            return arr.tobytes()
+        return arr.tostring()
+
+    # Declare tostring as an alias for tobytes
+    tostring = tobytes
 
     def getcolor(self, color):
-        # experimental: given an rgb tuple, allocate palette entry
+        """Given an rgb tuple, allocate palette entry.
+
+        .. warning:: This method is experimental.
+        """
         if self.rawmode:
             raise ValueError("palette contains raw palette data")
-        if Image.isTupleType(color):
+        if isinstance(color, tuple):
             try:
                 return self.colors[color]
             except KeyError:
                 # allocate new color slot
-                if Image.isStringType(self.palette):
-                    self.palette = map(int, self.palette)
+                if isinstance(self.palette, bytes):
+                    self.palette = bytearray(self.palette)
                 index = len(self.colors)
                 if index >= 256:
                     raise ValueError("cannot allocate more than 256 colors")
                 self.colors[color] = index
                 self.palette[index] = color[0]
-                self.palette[index+256] = color[1]
-                self.palette[index+512] = color[2]
+                self.palette[index + 256] = color[1]
+                self.palette[index + 512] = color[2]
                 self.dirty = 1
                 return index
         else:
             raise ValueError("unknown color specifier: %r" % color)
 
     def save(self, fp):
-        # (experimental) save palette to text file
+        """Save palette to text file.
+
+        .. warning:: This method is experimental.
+        """
         if self.rawmode:
             raise ValueError("palette contains raw palette data")
-        if type(fp) == type(""):
+        if isinstance(fp, str):
             fp = open(fp, "w")
         fp.write("# Palette\n")
         fp.write("# Mode: %s\n" % self.mode)
         for i in range(256):
             fp.write("%d" % i)
-            for j in range(i, len(self.palette), 256):
-                fp.write(" %d" % self.palette[j])
+            for j in range(i * len(self.mode), (i + 1) * len(self.mode)):
+                try:
+                    fp.write(" %d" % self.palette[j])
+                except IndexError:
+                    fp.write(" 0")
             fp.write("\n")
         fp.close()
 
+
 # --------------------------------------------------------------------
 # Internal
+
 
 def raw(rawmode, data):
     palette = ImagePalette()
@@ -97,88 +146,76 @@ def raw(rawmode, data):
     palette.dirty = 1
     return palette
 
+
 # --------------------------------------------------------------------
 # Factories
 
-def _make_linear_lut(black, white):
+
+def make_linear_lut(black, white):
     lut = []
     if black == 0:
         for i in range(256):
-            lut.append(white*i/255)
+            lut.append(white * i // 255)
     else:
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
     return lut
 
-def _make_gamma_lut(exp, mode="RGB"):
+
+def make_gamma_lut(exp):
     lut = []
     for i in range(256):
         lut.append(int(((i / 255.0) ** exp) * 255.0 + 0.5))
     return lut
 
-def new(mode, data):
-    return Image.core.new_palette(mode, data)
 
 def negative(mode="RGB"):
-    palette = range(256)
+    palette = list(range(256))
     palette.reverse()
     return ImagePalette(mode, palette * len(mode))
 
+
 def random(mode="RGB"):
     from random import randint
+
     palette = []
-    for i in range(256*len(mode)):
+    for i in range(256 * len(mode)):
         palette.append(randint(0, 255))
     return ImagePalette(mode, palette)
 
+
 def sepia(white="#fff0c0"):
     r, g, b = ImageColor.getrgb(white)
-    r = _make_linear_lut(0, r)
-    g = _make_linear_lut(0, g)
-    b = _make_linear_lut(0, b)
+    r = make_linear_lut(0, r)
+    g = make_linear_lut(0, g)
+    b = make_linear_lut(0, b)
     return ImagePalette("RGB", r + g + b)
 
+
 def wedge(mode="RGB"):
-    return ImagePalette(mode, range(256) * len(mode))
+    return ImagePalette(mode, list(range(256)) * len(mode))
+
 
 def load(filename):
 
     # FIXME: supports GIMP gradients only
 
-    fp = open(filename, "rb")
+    with open(filename, "rb") as fp:
 
-    lut = None
+        for paletteHandler in [
+            GimpPaletteFile.GimpPaletteFile,
+            GimpGradientFile.GimpGradientFile,
+            PaletteFile.PaletteFile,
+        ]:
+            try:
+                fp.seek(0)
+                lut = paletteHandler(fp).getpalette()
+                if lut:
+                    break
+            except (SyntaxError, ValueError):
+                # import traceback
+                # traceback.print_exc()
+                pass
+        else:
+            raise IOError("cannot load palette")
 
-    if not lut:
-        try:
-            import GimpPaletteFile
-            fp.seek(0)
-            p = GimpPaletteFile.GimpPaletteFile(fp)
-            lut = p.getpalette()
-        except (SyntaxError, ValueError):
-            pass
-
-    if not lut:
-        try:
-            import GimpGradientFile
-            fp.seek(0)
-            p = GimpGradientFile.GimpGradientFile(fp)
-            lut = p.getpalette()
-        except (SyntaxError, ValueError):
-            pass
-
-    if not lut:
-        try:
-            import PaletteFile
-            fp.seek(0)
-            p = PaletteFile.PaletteFile(fp)
-            lut = p.getpalette()
-        except (SyntaxError, ValueError):
-            pass
-
-    if not lut:
-        raise IOError, "cannot load palette"
-
-    return lut # data, rawmode
-
-
-# add some psuedocolour palettes as well
+    return lut  # data, rawmode

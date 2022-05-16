@@ -1,8 +1,11 @@
-define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
+define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
   SearchEventHandler,
   Viz
 ) {
   'use strict'
+
+  const FORWARDER_ERROR =
+    'Unable to retrieve results. It may be due to a connection problem with the Splunk forwarder,\nplease try restarting this service.'
 
   return class SearchHandler extends Viz {
     /**
@@ -24,7 +27,8 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
       submittedTokenModel,
       scope,
       loading,
-      loadingBindedValue
+      loadingBindedValue,
+      notification = null
     ) {
       super(
         new SearchEventHandler({
@@ -35,9 +39,9 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
             {
               attr: 'any',
               value: '*',
-              actions: [{ type: 'set', token: token, value: value }]
-            }
-          ]
+              actions: [{ type: 'set', token: token, value: value }],
+            },
+          ],
         }),
         id,
         search,
@@ -47,6 +51,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
       this.token = token
       this.loading = loading
       this.loadingBindedValue = loadingBindedValue
+      this.notification = notification
 
       this.getSearch().on('search:failed', () => {
         console.error('Failed search')
@@ -55,7 +60,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         console.error('Cancelled search')
       })
 
-      this.getSearch().on('search:error', error => {
+      this.getSearch().on('search:error', (error) => {
         console.error(error)
       })
 
@@ -69,7 +74,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
         if (this.loading) {
           this.scope[this.loadingBindedValue] = false
         }
-        const result = submittedTokenModel.get(this.token)
+        const result = this.submittedTokenModel.get(this.token)
         if (
           result &&
           result !== value &&
@@ -79,12 +84,13 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           this.scope[bindedValue] = result
         } else {
           this.scope[bindedValue] = '0'
+          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
         }
         this.scope.$applyAsync()
       })
 
       this.submittedTokenModel.on(`change:${this.token}`, () => {
-        const loadedTokenJS = this.submittedTokenModel.get(token)
+        const loadedTokenJS = this.submittedTokenModel.get(this.token)
         if (
           loadedTokenJS &&
           loadedTokenJS !== value &&
@@ -94,6 +100,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function(
           this.scope[bindedValue] = loadedTokenJS
         } else {
           this.scope[bindedValue] = '0'
+          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
         }
         this.scope.$applyAsync()
       })

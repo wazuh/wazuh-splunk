@@ -10,7 +10,7 @@
  * Find more information about this on the LICENSE file.
  */
 
-define(['../module', 'domToImg'], function(app, domToImg) {
+define(['../module', 'domToImg'], function (app, domToImg) {
   'use strict'
   class Vis2PNG {
     constructor($rootScope, $currentDataService) {
@@ -28,7 +28,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
         const len = visArray.length
         let currentCompleted = 0
         await Promise.all(
-          visArray.map(async currentValue => {
+          visArray.map(async (currentValue) => {
             const tmpNode = $('#' + currentValue + ' .panel-body')
             const noResults = $('#' + currentValue + ' .panel-body .alert')
             let error = false
@@ -42,14 +42,11 @@ define(['../module', 'domToImg'], function(app, domToImg) {
               //Try to fetch the title of the visualization
               title = document
                 .getElementById(currentValue)
-                .parentElement.getElementsByTagName('span')[0].innerHTML
+                .parentElement.getElementsByTagName('span')[0].innerText
 
-              if (title.search('<span')) {
-                title = title.substring(0, title.search('<span'))
-                classes = document
-                  .getElementById(currentValue)
-                  .className.split(' ')
-              }
+              classes = document
+                .getElementById(currentValue)
+                .className.split(' ')
             } catch (error) {} // eslint-disable-line
 
             try {
@@ -58,7 +55,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                   error ? noResults[0] : tmpNode[0],
                   {
                     width: tmpNode.width(),
-                    height: tmpNode.height()
+                    height: tmpNode.height(),
                   }
                 )
                 if (tmpResult === 'data:,') {
@@ -69,7 +66,7 @@ define(['../module', 'domToImg'], function(app, domToImg) {
                   width: error ? -1 : tmpNode.width(),
                   height: tmpNode.height(),
                   id: currentValue,
-                  title: title
+                  title: title,
                 })
               }
             } catch (error) {} // eslint-disable-line
