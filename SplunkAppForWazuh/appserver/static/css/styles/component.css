@@ -1338,3 +1338,7 @@ span.CodeMirror-selectedtext {
 #policies-dropdown-view > div:nth-child(1) > div {
   width: 25% !important;
 }
+ul.wz-callout-list {
+  list-style: inside;
+  font-weight: normal;
+}

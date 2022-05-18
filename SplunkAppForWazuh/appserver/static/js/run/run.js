@@ -19,28 +19,70 @@ define(['./module'], function (module) {
       $appVersionService,
       $notificationService
     ) {
-      //Go to last state or to a specified tab if "currentTab" param is specified in the url
+      // Go to last state or to a specified tab if "currentTab" param
+      // is specified in the url
       $navigationService.manageState()
 
-      async function getAppVersion() {
-        try {
-          const result = await $requestService.httpReq(
-            'GET',
-            '/manager/app_info'
-          )
-          $appVersionService.setAppInfo(result.data)
-          //compare app and backend versions
-          if ($appVersionService.getDiffAppVersions()) {
-            $rootScope.$broadcast('showAppVersionsDiff', {
-              hasDiffVersions: true,
-            })
+      /**
+       *
+       */
+      async function checkVersions() {
+        await checkAppVersions()
+        // Check that the Wazuh API version matches the App's version.
+        const appVersion = $appVersionService.getAppInfo().version
+        await checkWazuhVersions(appVersion)
+
+        // --------------------------- //
+
+        // Utility inner function.
+        async function checkAppVersions() {
+          try {
+            // Request backend metadata
+            const result = await $requestService.httpReq(
+              'GET',
+              '/manager/app_info'
+            )
+
+            // Store backend metadata.
+            $appVersionService.setAppInfo(result.data)
+
+            // Compare App's frontend and backend versions.
+            // Show toast on versions mismatch.
+            // @sends_event APP_REVISION_MISMATCH
+            if ($appVersionService.appRevisionsMismatch()) {
+              $rootScope.$broadcast('APP_REVISION_MISMATCH', {})
+            }
+          } catch (error) {
+            $state.go('settings.api')
           }
-          return result
-        } catch (error) {
-          $state.go('settings.api')
+        }
+
+        // Utility inner function.
+        async function checkWazuhVersions(appVersion) {
+          try {
+            // Request API metadata
+            const result = await $requestService.apiReq('/')
+
+            if (result.data && result.data.data && !result.data.error) {
+              const APIversion = result.data.data.api_version
+
+              // Compare App's and API's versions.
+              // Show toast on versions mismatch.
+              // @sends_event WAZUH_VERSION_MISMATCH
+              if (appVersion !== APIversion) {
+                $rootScope.$broadcast('WAZUH_VERSION_MISMATCH', {
+                  appVersion,
+                  APIversion,
+                })
+              }
+            }
+          } catch (error) {
+            $state.go('settings.api')
+          }
         }
       }
-      getAppVersion()
+      // Run once when App starts.
+      checkVersions()
 
       async function checkBeforeTransition(state) {
         try {
@@ -60,7 +102,8 @@ define(['./module'], function (module) {
               $currentDataService.getSourceType().sourceType
             }", "implicit":true}`
           )
-          // If change the primary state and do not receive an error the two below code lines clear the warning message
+          // If change the primary state and do not receive an error
+          // the two below code lines clear the warning message.
           window.localStorage.setItem('wazuhIsReady', 'true')
           $rootScope.wazuhNotReadyYet = false
           $rootScope.wazuhCouldNotBeRecovered = false
@@ -86,7 +129,8 @@ define(['./module'], function (module) {
         }
       }
 
-      // Check secondary states when Wazuh is not ready to prevent change the state
+      // Check secondary states when Wazuh is not ready to prevent
+      // changing the state.
       $transitions.onBefore({}, async (trans) => {
         const to = trans.to().name
         if (
@@ -138,8 +182,8 @@ define(['./module'], function (module) {
         } else if (to !== 'discover') {
           $rootScope.$broadcast('stateChanged', to)
         }
-        //Select secondary states
 
+        // Select secondary states
         if (to.startsWith('agent') || to.startsWith('ag-')) {
           if (
             from !== 'agents' &&
@@ -159,8 +203,10 @@ define(['./module'], function (module) {
         } else if (to.startsWith('security')) {
           $rootScope.$broadcast('stateChanged', 'security')
         }
+
         // This selects "api" tab when there some state transition error.
-        // It solves that another setting tab could appear as selected when show the view of "api" tab.
+        // It solves that another setting tab could appear as selected when
+        // show the view of "api" tab.
         if (to === 'settings.api') {
           $rootScope.$broadcast('changeSettingsTab', { tabName: 'api' })
         }
@@ -177,7 +223,8 @@ define(['./module'], function (module) {
         }
       })
 
-      // When access to a state and Wazuh is not ready is detected, this funcion checks if is a secondary state, if it is, go to primary state
+      // When access to a state and Wazuh is not ready is detected, this
+      // function checks if is a secondary state, if it is, go to primary state
       const toPrimaryState = (to) => {
         if (to.startsWith('ag-') || to.startsWith('agent-')) {
           $state.go('agents')
