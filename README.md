@@ -1,41 +1,55 @@
-# Splunk app for Wazuh
+# Splunk App for Wazuh
 
 [![Slack](https://img.shields.io/badge/slack-join-blue.svg)](https://wazuh.com/community/join-us-on-slack/)
 [![Email](https://img.shields.io/badge/email-join-blue.svg)](https://groups.google.com/forum/#!forum/wazuh)
 [![Documentation](https://img.shields.io/badge/docs-view-green.svg)](https://documentation.wazuh.com)
 [![Documentation](https://img.shields.io/badge/web-view-green.svg)](https://wazuh.com)
 
- Wazuh app for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
+ The Wazuh App for Splunk offers an option to visualize _Wazuh Alerts_ and _API data_. Wazuh helps you to gain deeper security visibility into your infrastructure by monitoring hosts at an operating system and application level.
 * * *
 ![Overview](SplunkOverview.png)
 ### Documentation
 
-- [Wazuh app for Splunk installation guide](https://documentation.wazuh.com/current/installation-guide/installing-splunk/index.html)
+- [Wazuh App for Splunk installation guide](https://documentation.wazuh.com/current/deployment-options/splunk/index.html)
 
 ## Branches
 
-- `stable` branch on correspond to the last Wazuh app stable version.
+- `stable` branch on correspond to the last Wazuh App stable version.
 - `master` branch contains the latest code, be aware of possible bugs on this branch.
 
-### Requisites
-1. An already installed Wazuh Manager with access to the API.
-2. __Splunk Universal Forwarder__ where Wazuh Manager is installed.
-3. At least one __Splunk Enterprise indexer__.
+## Installation and Upgrade
 
-## Installation
+### Requirements
+1. A Wazuh Manager with a running and accesible API.
+2. A __Splunk Universal Forwarder__ installed along with the Wazuh Manager.
+3. At least one __Splunk Enterprise Indexer__.
+
+### Using the Web User Interface (WUI)
+
+1. Download the App package that matches your installation (Wazuh and Splunk version, check the [Compatibilty Matrix](#compatibility-matrix)).
+2. Go to the Splunk WUI main page and click on the **gear** icon (Manage Apps), at the sidebar.
+3. Click on the `Install App from file` button.
+4. Select and upload the downloaded App package.
+5. Check the `Upgrade App` checkbox if a Wazuh App is already installed.
+6. Click on `Upload`. An Indexer restart might be required.
+
+### Using the Command Line Interface (CLI)
+
+1. Download the App package that matches your installation (Wazuh and Splunk version, check the [Compatibilty Matrix](#compatibility-matrix)).
+2. If an older App is already installed, remove it using the Splunk binary:
+    
+    ```bash
+    $SPLUNK_HOME/bin/splunk remove app SplunkAppForWazuh
+    ```
+3. Install the App:
+
+    ```bash
+    $SPLUNK_HOME/bin/splunk install app <downloaded_package>
+    ```
 
 ### Compatibility Matrix
 
 The compatibility matrix is avaliable in the repository [wiki](https://github.com/wazuh/wazuh-splunk/wiki/Compatibility).
-## Upgrade
-
-Remove the app using splunk plugin tool
-
-    $SPLUNK_HOME/bin/splunk remove app SplunkAppForWazuh
-
-Install the app
-
-     $SPLUNK_HOME/bin/splunk install app <last package file>
 
 ## Contribute
 
