@@ -847,17 +847,32 @@ define(['../module'], function (module) {
               '$requestService',
               async ($requestService) => {
                 try {
+                  const fields = [
+                    'name',
+                  ].join()
+
                   const results = await $requestService.apiReq(
-                    `/mitre?select=phase_name`
+                    `/mitre/tactics?select=${fields}`
                   )
-                  const data = results.data.data.affected_items
+                  return results.data.data.affected_items
+                } catch (err) {
+                  return false
+                }
+              },
+            ],
+            mitre_techniques: [
+              '$requestService',
+              async ($requestService) => {
+                try {
+                  const fields = [
+                    'name',
+                    'external_id',
+                  ].join()
 
-                  const tactics = data.reduce((parsed, item) => {
-                    parsed[item.phase_name[0]] = 0
-                    return parsed
-                  }, {})
-
-                  return tactics
+                  const results = await $requestService.apiReq(
+                    `/mitre/techniques?select=${fields}&limit=1000`
+                  )
+                  return results.data.data.affected_items
                 } catch (err) {
                   return false
                 }

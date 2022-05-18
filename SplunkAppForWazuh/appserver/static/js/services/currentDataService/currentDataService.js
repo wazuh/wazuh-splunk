@@ -85,9 +85,6 @@ define(['../module'], function (module) {
       const update = (register) => {
         return $apiMgrService.update(register)
       }
-      const getClusterInfo = () => {
-        return $apiMgrService.getClusterInfo()
-      }
       const getFilter = () => {
         return $apiMgrService.getFilter()
       }
@@ -263,17 +260,6 @@ define(['../module'], function (module) {
         }
       }
 
-      /**
-       * Checks if the Splunk Version are the same that the Wazuh version
-       */
-      const checkWazuhVersion = async () => {
-        try {
-          return await $apiMgrService.checkWazuhVersion()
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-
       return {
         getPollintState: getPollintState,
         getBaseUrl: getBaseUrl,
@@ -294,7 +280,6 @@ define(['../module'], function (module) {
         update: update,
         getIndex: getIndex,
         setIndex: setIndex,
-        getClusterInfo: getClusterInfo,
         getFilter: getFilter,
         getApi: getApi,
         removeCurrentApi: removeCurrentApi,
@@ -310,7 +295,6 @@ define(['../module'], function (module) {
         setExtensionsById: setExtensionsById,
         addApi: addApi,
         getReportingStatus: getReportingStatus,
-        checkWazuhVersion: checkWazuhVersion,
         getSourceType: getSourceType,
         setSourceType: setSourceType,
       }

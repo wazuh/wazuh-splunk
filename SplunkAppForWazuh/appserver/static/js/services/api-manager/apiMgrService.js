@@ -112,21 +112,6 @@ define(['../module'], function (module) {
       }
 
       /**
-       * Returns currently selected API
-       * @param {String} API
-       */
-      const getClusterInfo = () => {
-        if (
-          $apiIndexStorageService.getApi() &&
-          $apiIndexStorageService.getApi().cluster
-        ) {
-          return getApi().cluster
-        } else {
-          return null
-        }
-      }
-
-      /**
        * Returns the API filter (manager.name / cluster.name)
        */
       const getFilter = () => {
@@ -256,7 +241,7 @@ define(['../module'], function (module) {
         } catch (err) {
           if (err.status === 500) {
             throw new Error(
-              'There was an error connecting to the api. Please check your api configuration.'
+              'There was an error connecting to the API. Please check your API configuration.'
             )
           }
           return Promise.reject(err)
@@ -347,41 +332,6 @@ define(['../module'], function (module) {
         }
       }
 
-      /**
-       * Checks if the Splunk Version are the same that the Wazuh version
-       */
-      const checkWazuhVersion = async () => {
-        try {
-          const wazuhVersion = await $requestService.apiReq('/version')
-          const appVersion = await $requestService.httpReq(
-            'GET',
-            '/manager/app_info'
-          )
-          if (
-            wazuhVersion.data &&
-            wazuhVersion.data.data &&
-            !wazuhVersion.data.error &&
-            appVersion.data &&
-            appVersion.data.version &&
-            !appVersion.data.error
-          ) {
-            const wv = wazuhVersion.data.data
-            const av = appVersion.data.version
-            const wazuhSplit = wv.split('v')[1].split('.')
-            const appSplit = av.split('.')
-
-            if (
-              wazuhSplit[0] !== appSplit[0] ||
-              wazuhSplit[1] !== appSplit[1]
-            ) {
-              throw `Unexpected Wazuh version. App version: ${appSplit[0]}.${appSplit[1]}, Wazuh version: ${wazuhSplit[0]}.${wazuhSplit[1]}`
-            }
-          }
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-
       const resolveCurrentApi = async () => {
         let [currentApi, apiList] = await Promise.all([getApi(), getApiList()])
 
@@ -420,14 +370,12 @@ define(['../module'], function (module) {
         remove: remove,
         update: update,
         checkRawConnection: checkRawConnection,
-        getClusterInfo: getClusterInfo,
         getFilter: getFilter,
         getIndex: getIndex,
         setIndex: setIndex,
         getApi: getApi,
         setApi: setApi,
         addApi: addApi,
-        checkWazuhVersion: checkWazuhVersion,
         resolveCurrentApi: resolveCurrentApi,
         setSourceType: setSourceType,
         getSourceType: getSourceType,
