@@ -861,9 +861,8 @@ class report(controllers.BaseController):
                             elif 'affected_items' not in conf_data['data']:
                                 self.setTableTitle(pdf)
                                 # Get Wazuh version for the documentation link
-                                wazuhVersion = cli.getConfStanza('package', 'app')['version']
-                                wazuhVersion = wazuhVersion.split(
-                                    '.')[0] + '.' + wazuhVersion.split('.')[1]
+                                docu_version = cli.getConfStanza('app', 'launcher')['version']
+                                docu_version = '.'.join(version.split('.')[:2])
                                 pdf.cell(
                                     0, 
                                     10, 
@@ -872,7 +871,7 @@ class report(controllers.BaseController):
                                     ln=1, 
                                     align='C', 
                                     fill=False,
-                                    link=f'https://documentation.wazuh.com/{wazuhVersion}/user-manual/reference/centralized-configuration.html'
+                                    link=f'https://documentation.wazuh.com/{docu_version}/user-manual/reference/centralized-configuration.html'
                                 )
                                 pdf.add_page()
                                 pdf.ln(20)

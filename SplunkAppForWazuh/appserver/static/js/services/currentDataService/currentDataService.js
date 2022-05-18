@@ -260,17 +260,6 @@ define(['../module'], function (module) {
         }
       }
 
-      /**
-       * Checks if the Splunk Version are the same that the Wazuh version
-       */
-      const checkWazuhVersion = async () => {
-        try {
-          return await $apiMgrService.checkWazuhVersion()
-        } catch (error) {
-          return Promise.reject(error)
-        }
-      }
-
       return {
         getPollintState: getPollintState,
         getBaseUrl: getBaseUrl,
@@ -306,7 +295,6 @@ define(['../module'], function (module) {
         setExtensionsById: setExtensionsById,
         addApi: addApi,
         getReportingStatus: getReportingStatus,
-        checkWazuhVersion: checkWazuhVersion,
         getSourceType: getSourceType,
         setSourceType: setSourceType,
       }
