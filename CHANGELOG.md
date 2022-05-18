@@ -2,6 +2,20 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.3.1 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4304
+
+### Added
+
+- Added PowerShell version warning to Windows agent installation wizard [#1322](https://github.com/wazuh/wazuh-splunk/pull/1322)
+
+### Changed
+
+- The compability checks of the App has been changed in order to simplify our release flow. [#1323](https://github.com/wazuh/wazuh-splunk/pull/1323)
+
+### Fixed
+
+- Fixed the render condition of a toast message related to the forwarder when there is no data of agents and the agent deployment guide is displayed in the `Agents` section [#1320](https://github.com/wazuh/wazuh-splunk/pull/1320)
+- Fixed the access to `Management/Configuration` due to missing permissions when the manager cluster is disabled [#1318](https://github.com/wazuh/wazuh-splunk/pull/1318)
 
 ## Wazuh v4.3.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4301
 
@@ -54,6 +68,11 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 - Fixed an error on the search string used on the Alerts Summary table on the Overview > Vulnerability section, causing the table to showno data [#1283](https://github.com/wazuh/wazuh-splunk/issues/1264)
 - Fixed not allowing to see view settings without permission [#1316](https://github.com/wazuh/wazuh-splunk/pull/1316)
 
+## Wazuh v4.2.6 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4207
+
+### Added
+
+- Support for Wazuh 4.2.6
 ## Wazuh v4.2.5 - Splunk Enterprise v8.1.4, v8.2.2 - Revision 4206
 
 ### Added

@@ -75,6 +75,24 @@ define([
         let groups = parsedResult.groups
 
         this.scope.noAgents = summary.Total < 1
+        
+        // When there are agents, the view will display the agents details (table, stat: most active agent).
+        // Only when the most active agent indicator will be displayed, the search should be started.
+        if(!this.scope.noAgents){
+          this.topAgent = new SearchHandler(
+            'searchTopAgent',
+            `${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
+            'activeAgentToken',
+            '$result.agent.name$',
+            'mostActiveAgent',
+            this.submittedTokenModel,
+            this.scope,
+            true,
+            'loadingSearch',
+            this.notification
+          )
+        }
+        
         this.scope.agentsCountActive = summary.Active
         this.scope.lastAgent = lastAgent || 'Unknown'
         const os = parsedResult.agent_os
@@ -154,18 +172,6 @@ define([
         }
       } catch (error) {} //eslint-disable-line
 
-      this.topAgent = new SearchHandler(
-        'searchTopAgent',
-        `${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
-        'activeAgentToken',
-        '$result.agent.name$',
-        'mostActiveAgent',
-        this.submittedTokenModel,
-        this.scope,
-        true,
-        'loadingSearch',
-        this.notification
-      )
 
       /* RBAC flags */
       this.isAllowed = (action, resource, params = ['*']) => {
@@ -198,7 +204,7 @@ define([
       this.scope.downloadCsv = () => this.downloadCsv()
       this.scope.$on('$destroy', () => {
         this.linearChartAgent && this.linearChartAgent.destroy()
-        this.topAgent.destroy()
+        this.topAgent && this.topAgent.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
 

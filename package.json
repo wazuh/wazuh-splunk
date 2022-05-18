@@ -1,11 +1,10 @@
 {
-  "author": "Wazuh, Inc",
+  "author": "Wazuh, Inc.",
   "bugs": {
     "url": "https://github.com/wazuh/wazuh-splunk/issues"
   },
-  "code": "4303-0",
   "dependencies": {},
-  "description": "Splunk app for Wazuh",
+  "description": "Splunk App for Wazuh",
   "devDependencies": {
     "chai": "^4.3.6",
     "chai-match": "^1.1.1",
@@ -23,9 +22,6 @@
     "wazuh",
     "ossec"
   ],
-  "kibana": {
-    "version": "8.2.6"
-  },
   "license": "GPL-2.0",
   "main": "index.js",
   "name": "wazuh-splunk",
@@ -33,7 +29,6 @@
     "type": "git",
     "url": "git+https://github.com/wazuh/wazuh-splunk.git"
   },
-  "revision": "4301",
   "scripts": {
     "build": "make build",
     "clean": "make clean",
@@ -44,5 +39,7 @@
     "pretty": "prettier --config .prettierrc --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html SplunkAppForWazuh/**/*.css !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
     "test": "mocha tests/manager.js"
   },
-  "version": "4.3.0"
+  "version": "4.3.1",
+  "revision": "4304",
+  "splunk": "8.2.x"
 }

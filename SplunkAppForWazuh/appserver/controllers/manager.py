@@ -240,20 +240,21 @@ class manager(controllers.BaseController):
         kwargs : dict
             The request's parameters
         """
+        self.logger.debug("manager: reading App's info.")
+        app_info = {}
         try:
-            self.logger.debug("manager: Getting app info.")
-            stanza = cli.getConfStanza('package', 'app')
-            data_temp = stanza
-            stanza = cli.getConfStanza('package', 'splunk')
-            data_temp['splunk_version'] = stanza['version']
-            parsed_data = jsonbak.dumps(data_temp)
+            app_info = {
+                'version': cli.getConfStanza('app', 'launcher')['version'],
+                'revision': cli.getConfStanza('app', 'install')['build'],
+                'splunk_version': cli.getConfStanza('package', 'splunk')['version']
+            }
         except Exception as e:
-            return jsonbak.dumps(
-                {
-                    'error': str(e)
-                }
-            )
-        return parsed_data
+            self.logger.error("manager: error reading App's info." + str(e))
+            app_info = {
+                'error': str(e)
+            }
+        finally:
+            return jsonbak.dumps(app_info)
 
     @expose_page(must_login=False, methods=['GET'])
     def get_api(self, **kwargs):
@@ -516,7 +517,7 @@ class manager(controllers.BaseController):
                 return jsonbak.dumps(
                     {
                         "status": 400,
-                        "error": "Cannot connect to the API, please see the app logs"
+                        "error": "Cannot connect to the API, please check the App logs"
                     }
                 )
         return result
@@ -706,12 +707,14 @@ class manager(controllers.BaseController):
 
     def check_wazuh_version(self, api: API_model):
         """
-        Check Wazuh version
+        Check Wazuh version.
+
+        Compares the App's Wazuh version with the API's Wazuh version.
 
         Parameters
         ----------
-        kwargs : dict
-            The request's parameters
+        api : API_model
+            The selected API data.
         """
         self.logger.debug("manager::check_wazuh_version() called")
 
@@ -723,22 +726,16 @@ class manager(controllers.BaseController):
                 current_api=api
             )
 
-            wazuh_version = utils.get_parameter(
-                response, 'data')['api_version']
-            v_split = wazuh_version.split('.')
-            wazuh_version = str(v_split[0]+"."+v_split[1])
+            api_version = utils.get_parameter(response, 'data')['api_version']
+            app_version = cli.getConfStanza('app', 'launcher')['version']
 
-            app_version = cli.getConfStanza('package', 'app')['version']
-            a_split = app_version.split('.')
-            app_version = str(a_split[0]+"."+a_split[1])
-
-            if wazuh_version != app_version:
+            if api_version != app_version:
                 raise Exception(
-                    "Unexpected Wazuh version. App version: %s, Wazuh version: %s"
-                    % (app_version, wazuh_version))
-        except Exception as ex:
-            self.logger.error("Error when checking Wazuh version: %s" % (ex))
-            raise ex
+                    "Unexpected Wazuh version. App version: %s, API version: %s"
+                    % (app_version, api_version))
+        except Exception as e:
+            self.logger.error("Error checking the Wazuh API version: %s" % (e))
+            raise e
 
     def get_config_on_memory(self):
         try:
