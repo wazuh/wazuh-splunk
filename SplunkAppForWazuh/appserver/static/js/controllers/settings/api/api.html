@@ -101,11 +101,6 @@
             layout-align="space-between center"
             class="wz-padding-top-10 wz-text-align-center">
             <p flex="10" class="wz-word-wrap">
-              <i
-                ng-show="entry.selected"
-                class="fa fa-star wz-color-orange"
-                aria-hidden="true">
-              </i>
               {{entry.alias}}
               <md-tooltip md-direction="right" class="wz-tooltip">
                 This is the default Manager
@@ -134,7 +129,8 @@
                 ng-click="selectManager(entry['_key'])"
                 class="cursor-pointer"
                 aria-hidden="true">
-                <wz-svg icon="star"></wz-svg>
+                <i ng-show="entry.selected" class="fa fa-star wz-color-orange" aria-hidden="true"></i>
+                <wz-svg ng-show="!entry.selected" icon="star"></wz-svg>
                 <md-tooltip
                   md-direction="bottom"
                   class="wz-tooltip wz-margin-left-16">
