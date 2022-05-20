@@ -635,7 +635,7 @@
       <tbody>
         <tr
           ng-class="{'cursor-pointer':allowClick, 'backgroundSky':item.expanded, 'noBorderBottom':item.expanded}"
-          class="wz-word-wrap"
+          class="wz-word-wrap, cursor-pointer"
           ng-repeat-start="item in pagedItems[currentPage] | filter:{item:'!'}"
           ng-click="expandPolicyMonitoringCheck(item)">
           <td
