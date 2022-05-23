@@ -57,7 +57,9 @@ define(['../../module', '../../../utils/config-handler'], function (
 
     $onInit() {
       try {
-        this.scope.nodes = (((this.clusterInfo.nodes || []).data || []).data || []).affected_items || []
+        this.scope.nodes =
+          (((this.clusterInfo.nodes || []).data || []).data || [])
+            .affected_items || []
         if (this.clusterInfo?.clusterEnabled && this.scope.nodes.length > 0) {
           this.scope.clusterEnabled = this.clusterInfo.clusterEnabled
           this.scope.selectedNode = this.scope.nodes[0].name

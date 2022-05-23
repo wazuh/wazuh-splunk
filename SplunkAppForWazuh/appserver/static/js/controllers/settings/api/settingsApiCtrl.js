@@ -19,7 +19,8 @@ define(['../../module'], function (controllers) {
       this.scope = $scope
       this.scope.addManagerContainer = false
       this.scope.isEditing = false
-      this.scope.showForm = Array.isArray(apiList) && apiList.length === 0 ? true : false
+      this.scope.showForm =
+        Array.isArray(apiList) && apiList.length === 0 ? true : false
       this.scope.entry = {}
       this.scope.currentEntryKey = ''
       this.userRegEx = new RegExp(/^.{3,100}$/)

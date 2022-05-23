@@ -129,7 +129,10 @@
                 ng-click="selectManager(entry['_key'])"
                 class="cursor-pointer"
                 aria-hidden="true">
-                <i ng-show="entry.selected" class="fa fa-star wz-color-orange" aria-hidden="true"></i>
+                <i
+                  ng-show="entry.selected"
+                  class="fa fa-star wz-color-orange"
+                  aria-hidden="true"></i>
                 <wz-svg ng-show="!entry.selected" icon="star"></wz-svg>
                 <md-tooltip
                   md-direction="bottom"
