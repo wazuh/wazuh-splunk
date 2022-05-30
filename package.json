@@ -39,7 +39,7 @@
     "pretty": "prettier --config .prettierrc --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html SplunkAppForWazuh/**/*.css !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
     "test": "mocha tests/manager.js"
   },
-  "version": "4.3.1",
-  "revision": "4304",
-  "splunk": "8.2.x"
+  "version": "4.3.2",
+  "revision": "4305",
+  "splunk": "8.1.7"
 }
