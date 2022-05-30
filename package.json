@@ -1,8 +1,8 @@
 {
   "name": "wazuh-splunk",
-  "version": "4.2.6",
-  "revision": "4207",
-  "code": "4207",
+  "version": "4.2.7",
+  "revision": "4208",
+  "code": "4208",
   "kibana": {
     "version": "8.2.2"
   },
