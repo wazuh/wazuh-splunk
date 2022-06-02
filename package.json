@@ -34,9 +34,9 @@
     "clean": "make clean",
     "generate:api-info": "cd scripts/generate-api-info;./generate-api-info.sh;cd ../..",
     "inspect": "make inspect",
-    "lint": "eslint . --ext .js -c .eslintrc.json",
+    "lint": "make lint",
     "prebuild": "make prebuild",
-    "pretty": "prettier --config .prettierrc --write SplunkAppForWazuh/**/*.js SplunkAppForWazuh/**/*.html SplunkAppForWazuh/**/*.css !SplunkAppForWazuh/appserver/static/js/libs/** !SplunkAppForWazuh/appserver/static/js/utils/codemirror/**",
+    "pretty": "make pretty",
     "test": "mocha tests/manager.js"
   },
   "version": "4.3.4",
