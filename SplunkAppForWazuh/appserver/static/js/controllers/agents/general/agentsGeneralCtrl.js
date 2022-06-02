@@ -68,7 +68,7 @@ define([
         $urlTokenModel,
         $notificationService
       )
-      
+
       const DEFAULT_METRIC_VALUES = '-'
       this.scope.totalAlerts = DEFAULT_METRIC_VALUES
       this.scope.levelTwelve = DEFAULT_METRIC_VALUES

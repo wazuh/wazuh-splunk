@@ -57,7 +57,7 @@ define([
         $urlTokenModel,
         $notificationService
       )
-      
+
       const DEFAULT_KPI_VALUE = '-'
       this.scope.lastNotChecked = DEFAULT_KPI_VALUE
       this.scope.lastPass = DEFAULT_KPI_VALUE

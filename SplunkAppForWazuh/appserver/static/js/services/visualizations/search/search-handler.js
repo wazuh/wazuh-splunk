@@ -74,7 +74,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
         if (this.loading) {
           this.scope[this.loadingBindedValue] = false
         }
-        
+
         // More info in:
         // https://docs.splunk.com/DocumentationStatic/WebFramework/1.5/compref_splunkresultsmodel.html#top
         const resultModel = this.search.data('results')
@@ -93,7 +93,8 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
           console.error('Search Handler - onError: ', err)
         })
         if (!this.search.query?.changed?.data?.resultCount)
-          this.notification && this.notification.showWarningToast(FORWARDER_ERROR)
+          this.notification &&
+            this.notification.showWarningToast(FORWARDER_ERROR)
       })
 
       this.initSearch()
