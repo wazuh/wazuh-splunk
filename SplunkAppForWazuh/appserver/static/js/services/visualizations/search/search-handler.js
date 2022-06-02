@@ -4,8 +4,8 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
 ) {
   'use strict'
 
-  const FORWARDER_ERROR =
-    'Unable to retrieve results. It may be due to a connection problem with the Splunk forwarder,\nplease try restarting this service.'
+  const FORWARDER_ERROR = `Unable to retrieve results.\n
+  It may be due to a connection problem with the Splunk forwarder,\nplease try restarting this service.`
 
   return class SearchHandler extends Viz {
     /**
@@ -61,7 +61,7 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
       })
 
       this.getSearch().on('search:error', (error) => {
-        console.error(error)
+        console.error('search:error', error)
       })
 
       this.getSearch().on('search:progress', () => {
@@ -74,35 +74,26 @@ define(['splunkjs/mvc/simplexml/searcheventhandler', '../viz/viz'], function (
         if (this.loading) {
           this.scope[this.loadingBindedValue] = false
         }
-        const result = this.submittedTokenModel.get(this.token)
-        if (
-          result &&
-          result !== value &&
-          typeof result !== 'undefined' &&
-          result !== 'undefined'
-        ) {
-          this.scope[bindedValue] = result
-        } else {
-          this.scope[bindedValue] = '0'
-          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
-        }
-        this.scope.$applyAsync()
-      })
-
-      this.submittedTokenModel.on(`change:${this.token}`, () => {
-        const loadedTokenJS = this.submittedTokenModel.get(this.token)
-        if (
-          loadedTokenJS &&
-          loadedTokenJS !== value &&
-          typeof loadedTokenJS !== 'undefined' &&
-          loadedTokenJS !== 'undefined'
-        ) {
-          this.scope[bindedValue] = loadedTokenJS
-        } else {
-          this.scope[bindedValue] = '0'
-          this.notification && this.notification.showErrorToast(FORWARDER_ERROR)
-        }
-        this.scope.$applyAsync()
+        
+        // More info in:
+        // https://docs.splunk.com/DocumentationStatic/WebFramework/1.5/compref_splunkresultsmodel.html#top
+        const resultModel = this.search.data('results')
+        resultModel.on('data', (data) => {
+          try {
+            if (data.hasData()) {
+              const result = this.submittedTokenModel.get(this.token)
+              this.scope[bindedValue] = result
+              this.scope.$applyAsync()
+            }
+          } catch (err) {
+            console.error('Error fetching table data ', err)
+          }
+        })
+        resultModel.on('error', (err) => {
+          console.error('Search Handler - onError: ', err)
+        })
+        if (!this.search.query?.changed?.data?.resultCount)
+          this.notification && this.notification.showWarningToast(FORWARDER_ERROR)
       })
 
       this.initSearch()

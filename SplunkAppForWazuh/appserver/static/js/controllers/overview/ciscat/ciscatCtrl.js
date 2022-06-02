@@ -57,6 +57,17 @@ define([
         $urlTokenModel,
         $notificationService
       )
+      
+      const DEFAULT_KPI_VALUE = '-'
+      this.scope.lastNotChecked = DEFAULT_KPI_VALUE
+      this.scope.lastPass = DEFAULT_KPI_VALUE
+      this.scope.lastScanScore = DEFAULT_KPI_VALUE
+      this.scope.lastScanDate = DEFAULT_KPI_VALUE
+      this.scope.lastErrors = DEFAULT_KPI_VALUE
+      this.scope.lastFails = DEFAULT_KPI_VALUE
+      this.scope.lastUnknown = DEFAULT_KPI_VALUE
+      this.scope.lastScanBenchmark = DEFAULT_KPI_VALUE
+
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.addFilter = $currentDataService.addFilter
@@ -178,6 +189,16 @@ define([
      */
     $onInit() {
       try {
+        const DEFAULT_KPI_VALUE = '-'
+        this.scope.lastNotChecked = DEFAULT_KPI_VALUE
+        this.scope.lastPass = DEFAULT_KPI_VALUE
+        this.scope.lastScanScore = DEFAULT_KPI_VALUE
+        this.scope.lastScanDate = DEFAULT_KPI_VALUE
+        this.scope.lastErrors = DEFAULT_KPI_VALUE
+        this.scope.lastFails = DEFAULT_KPI_VALUE
+        this.scope.lastUnknown = DEFAULT_KPI_VALUE
+        this.scope.lastScanBenchmark = DEFAULT_KPI_VALUE
+
         this.addFilter(`{"rule.groups{}":"ciscat", "implicit":true}`)
         /**
          * Generates report

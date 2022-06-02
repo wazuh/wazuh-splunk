@@ -65,6 +65,12 @@ define([
         $urlTokenModel,
         $notificationService
       )
+      
+      const DEFAULT_METRIC_VALUES = '0'
+      this.scope.scapLastScore = DEFAULT_METRIC_VALUES
+      this.scope.scapHighestScore = DEFAULT_METRIC_VALUES
+      this.scope.scapLowestScore = DEFAULT_METRIC_VALUES
+
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.agent = agent

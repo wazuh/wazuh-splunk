@@ -119,13 +119,13 @@
                   <p>Most active agent</p>
                 </div>
                 <p
-                  ng-if="lastAgent && lastAgent.id && mostActiveAgent.id !== '000'"
+                  ng-if="lastAgent && lastAgent.id && mostActiveAgent.id !== '000' && mostActiveAgent"
                   ng-click="showAgent(mostActiveAgent)"
                   class="euiTitle euiTitle--small euiStat__title wz-text-link cursor-pointer">
                   {{mostActiveAgent}}
                 </p>
                 <p
-                  ng-if="!lastAgent || !lastAgent.id"
+                  ng-if="!lastAgent || !lastAgent.id || !mostActiveAgent"
                   class="euiTitle euiTitle--small euiStat__title">
                   -
                 </p>
