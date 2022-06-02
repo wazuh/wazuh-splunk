@@ -19,7 +19,8 @@ define(['../../module'], function (controllers) {
       this.scope = $scope
       this.scope.addManagerContainer = false
       this.scope.isEditing = false
-      this.scope.showForm = apiList.length === 0 ? true : false
+      this.scope.showForm =
+        Array.isArray(apiList) && apiList.length === 0 ? true : false
       this.scope.entry = {}
       this.scope.currentEntryKey = ''
       this.userRegEx = new RegExp(/^.{3,100}$/)
@@ -30,7 +31,7 @@ define(['../../module'], function (controllers) {
         /^https?:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/
       )
       this.portRegEx = new RegExp(/^[0-9]{2,5}$/)
-      this.apiList = apiList
+      this.apiList = Array.isArray(apiList) ? apiList : []
       this.currentDataService = $currentDataService
       this.notification = $notificationService
       this.savingApi = false

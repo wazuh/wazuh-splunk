@@ -75,10 +75,10 @@ define([
         let groups = parsedResult.groups
 
         this.scope.noAgents = summary.Total < 1
-        
+
         // When there are agents, the view will display the agents details (table, stat: most active agent).
         // Only when the most active agent indicator will be displayed, the search should be started.
-        if(!this.scope.noAgents){
+        if (!this.scope.noAgents) {
           this.topAgent = new SearchHandler(
             'searchTopAgent',
             `${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
@@ -92,7 +92,7 @@ define([
             this.notification
           )
         }
-        
+
         this.scope.agentsCountActive = summary.Active
         this.scope.lastAgent = lastAgent || 'Unknown'
         const os = parsedResult.agent_os
@@ -171,7 +171,6 @@ define([
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) {} //eslint-disable-line
-
 
       /* RBAC flags */
       this.isAllowed = (action, resource, params = ['*']) => {
