@@ -32,3 +32,5 @@ clean:
 prebuild:
 	node scripts/generate-build-version
 
+tags:
+	@python3 scripts/tag.py >> tags.log
