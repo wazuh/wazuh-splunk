@@ -12,9 +12,9 @@ supported_versions = [
     '8.2.4', '8.2.5', '8.2.6'
 ]
 # Wazuh version
-version = '4.3.3'
+version = '4.3.4'
 # App's revision number (previous rev + 1)
-revision = '4306'
+revision = '4307'
 # Base branch
 branch = ".".join(version.split('.')[:2])
 
