@@ -847,9 +847,7 @@ define(['../module'], function (module) {
               '$requestService',
               async ($requestService) => {
                 try {
-                  const fields = [
-                    'name',
-                  ].join()
+                  const fields = ['name'].join()
 
                   const results = await $requestService.apiReq(
                     `/mitre/tactics?select=${fields}`
@@ -864,10 +862,7 @@ define(['../module'], function (module) {
               '$requestService',
               async ($requestService) => {
                 try {
-                  const fields = [
-                    'name',
-                    'external_id',
-                  ].join()
+                  const fields = ['name', 'external_id'].join()
 
                   const results = await $requestService.apiReq(
                     `/mitre/techniques?select=${fields}&limit=1000`

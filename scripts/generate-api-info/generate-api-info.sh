@@ -1,8 +1,8 @@
 #!/bin/bash
 # Define the main function
-main(){
+main() {
   if [ -z ${WAZUH_API_URL+x} ]; then
-cat <<EOF
+    cat <<EOF
 ERROR: WAZUH_API_URL variable is not defined.
 If you are using npm script to launch it, use:
   WAZUH_API_URL="WAZUH_API_URL" npm run <script_name>
@@ -10,20 +10,20 @@ If you are using npm script to launch it, use:
 EOF
     exit 1
   fi
-  echo "Generate Wazuh API 4.0 endpoints data and format to use in Wazuh app";
-  local API_TMP_OUTPUT_PATH="output";
-  local API_OUTPUT_PATH="../../SplunkAppForWazuh/bin/api_info";
+  echo "Generate Wazuh API 4.0 endpoints data and format to use in Wazuh app"
+  local API_TMP_OUTPUT_PATH="output"
+  local API_OUTPUT_PATH="../../SplunkAppForWazuh/bin/api_info"
 
-  node generate-api-info.js $WAZUH_API_URL --full || exit_with_message "ERROR: the script had an error";
-  echo "Moving files to $API_OUTPUT_PATH";
-  mv "$API_TMP_OUTPUT_PATH"/* "$API_OUTPUT_PATH" || exit_with_message "ERROR: moving the generated files";
-  echo "Removing temporal directory $API_TMP_OUTPUT_PATH";
-  rm -rf $API_TMP_OUTPUT_PATH || exit_with_message "ERROR: removing the temporal directory";
-  echo "Success generating Wazuh API 4.0 API info!";
+  node generate-api-info.js $WAZUH_API_URL --full || exit_with_message "ERROR: the script had an error"
+  echo "Moving files to $API_OUTPUT_PATH"
+  mv "$API_TMP_OUTPUT_PATH"/* "$API_OUTPUT_PATH" || exit_with_message "ERROR: moving the generated files"
+  echo "Removing temporal directory $API_TMP_OUTPUT_PATH"
+  rm -rf $API_TMP_OUTPUT_PATH || exit_with_message "ERROR: removing the temporal directory"
+  echo "Success generating Wazuh API 4.0 API info!"
 }
 
 # Function to exit with a message
-exit_with_message(){
+exit_with_message() {
   echo $1
   exit 1
 }
