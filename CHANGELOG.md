@@ -2,16 +2,27 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
-## Wazuh v4.3.4 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4301
+## Wazuh v4.3.4 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4307
 
 ### Fixed
 - Fixed unhandled expired session when requesting Splunk DB documents. [#1329](https://github.com/wazuh/wazuh-splunk/pull/1329)
+
+## Wazuh v4.3.3 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4306
+
+### Added
+- Support for Wazuh 4.3.3
+
+## Wazuh v4.3.2 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4305
+
+### Added
+- Support for Wazuh 4.3.2
 
 ## Wazuh v4.3.1 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4304
 
 ### Added
 
 - Added PowerShell version warning to Windows agent installation wizard [#1322](https://github.com/wazuh/wazuh-splunk/pull/1322)
+- Added cursor pointer to Agents table -> SCA [#1328](https://github.com/wazuh/wazuh-splunk/pull/1328)
 
 ### Changed
 
