@@ -2,6 +2,24 @@
 
 All notable changes to the Wazuh app for Splunk project will be documented in this file.
 
+## Wazuh v4.3.4 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4307
+
+### Changed
+- Improved Splunk search-handler event management to avoid forwarder toast error mis-interpretation. [#1327](https://github.com/wazuh/wazuh-splunk/pull/1327)
+
+### Fixed
+- Fixed unhandled expired session when requesting Splunk DB documents. [#1329](https://github.com/wazuh/wazuh-splunk/pull/1329)
+
+## Wazuh v4.3.3 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4306
+
+### Added
+- Support for Wazuh 4.3.3
+
+## Wazuh v4.3.2 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4305
+
+### Added
+- Support for Wazuh 4.3.2
+
 ## Wazuh v4.3.1 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4304
 
 ### Added
