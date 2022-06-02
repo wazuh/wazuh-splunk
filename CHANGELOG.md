@@ -25,6 +25,7 @@ All notable changes to the Wazuh app for Splunk project will be documented in th
 ### Added
 
 - Added PowerShell version warning to Windows agent installation wizard [#1322](https://github.com/wazuh/wazuh-splunk/pull/1322)
+- Added cursor pointer to Agents table -> SCA [#1328](https://github.com/wazuh/wazuh-splunk/pull/1328)
 
 ### Changed
 

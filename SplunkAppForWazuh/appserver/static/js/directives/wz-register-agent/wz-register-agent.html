@@ -123,12 +123,19 @@
                     <span class="euiCallOutHeader__title">Requirements</span>
                     <ul class="wz-callout-list">
                       <li>
-                        <span>You will need administrator privileges to perform this
-                          installation.</span>
+                        <span
+                          >You will need administrator privileges to perform
+                          this installation.</span
+                        >
                       </li>
-                      <li><span>PowerShell 3.0 or greater is required.</span></li>
+                      <li>
+                        <span>PowerShell 3.0 or greater is required.</span>
+                      </li>
                     </ul>
-                    <p>Keep in mind you need to run this command in a Windows PowerShell terminal.</p>
+                    <p>
+                      Keep in mind you need to run this command in a Windows
+                      PowerShell terminal.
+                    </p>
                   </div>
                 </div>
                 <div class="register-snippet" id="step1">
@@ -141,9 +148,11 @@
                       Copy to clipboard
                     </md-tooltip>
                   </span>
-                  Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi 
-                  -OutFile ${env:tmp}\wazuh-agent-{{wazuhVersion}}.msi; msiexec.exe /i ${env:tmp}\wazuh-agent-{{wazuhVersion}}.msi /q 
-                  WAZUH_MANAGER='{{config.managerIp}}' 
+                  Invoke-WebRequest -Uri
+                  https://packages.wazuh.com/4.x/windows/wazuh-agent-{{wazuhVersion}}-1.msi
+                  -OutFile ${env:tmp}\wazuh-agent-{{wazuhVersion}}.msi;
+                  msiexec.exe /i ${env:tmp}\wazuh-agent-{{wazuhVersion}}.msi /q
+                  WAZUH_MANAGER='{{config.managerIp}}'
                   WAZUH_REGISTRATION_SERVER='{{config.managerIp}}'
                 </div>
               </div>

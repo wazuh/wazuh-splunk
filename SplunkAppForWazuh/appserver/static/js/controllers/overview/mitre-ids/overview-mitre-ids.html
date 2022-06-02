@@ -82,7 +82,9 @@
                 ng-if="!hideEmptyRows||tactic.count"
                 ng-class="{disabled:!tactic.count}">
                 <span class="euiFlexItem">{{tactic.name}}</span
-                ><span class="euiFlexItem wz-green-badge">{{tactic.count}}</span>
+                ><span class="euiFlexItem wz-green-badge"
+                  >{{tactic.count}}</span
+                >
               </li>
             </ul>
           </md-card-content>
@@ -119,12 +121,11 @@
                 </li>
               </ul>
             </div>
-            
           </md-card-content>
         </md-card>
       </div>
     </div>
-    
+
     <div ng-show="loadingVizz" class="wz-bg-loader">
       <div class="wz-loader">
         <div align="center">
@@ -135,6 +136,6 @@
       </div>
     </div>
   </div>
-  
+
   <!-- end document  -->
 </md-content>
