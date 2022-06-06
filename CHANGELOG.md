@@ -2,6 +2,14 @@
 
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
 
+## Wazuh v4.3.5 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4308
+
+### Added
+- Support for Wazuh 4.3.5
+
+### Changed
+- Added the status `Pending` to the donut chart on the Agents Overview section. [#1292](https://github.com/wazuh/wazuh-splunk/pull/1292)
+
 ## Wazuh v4.3.4 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4307
 
 ### Changed
