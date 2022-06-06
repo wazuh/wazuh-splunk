@@ -22,11 +22,15 @@ BWhite=\033[1;37m
 #--------------------------------------------------------------------#
 APP_DIR = SplunkAppForWazuh
 PACKAGE_NAME = SplunkAppForWazuh.tar.gz
+APP_INSPECT_FLAGS = --mode precert \
+	--included-tags cloud          \
+	--log-file app_inspect.log     \
+	--data-format junitxml         \
+	--output-file results.xml
 
 # Run the splunk-appinspect tool with the default tests for Splunk Cloud.
 inspect: build
-	splunk-appinspect inspect $(PACKAGE_NAME) --mode precert --included-tags \
-	cloud	--output-file jquery-audit.xml --data-format junitxml > app_inspect.log
+	splunk-appinspect inspect $(PACKAGE_NAME) $(APP_INSPECT_FLAGS)
 
 # Build App's package locally.
 build: clean prebuild
