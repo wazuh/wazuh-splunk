@@ -13,22 +13,64 @@
 #
 ##############################################################################
 
+# Bold font and white color for the console.
+Color_Off='\033[0m
+BWhite=\033[1;37m
+
 #--------------------------------------------------------------------#
 # SOURCES AND PATHS
 #--------------------------------------------------------------------#
 APP_DIR = SplunkAppForWazuh
 PACKAGE_NAME = SplunkAppForWazuh.tar.gz
+APP_INSPECT_FLAGS = --mode precert \
+	--included-tags cloud          \
+	--log-file app_inspect.log     \
+	--data-format junitxml         \
+	--output-file results.xml
 
+# Run the splunk-appinspect tool with the default tests for Splunk Cloud.
 inspect: build
-	splunk-appinspect inspect $(PACKAGE_NAME) --mode precert --included-tags \
-	cloud	--output-file jquery-audit.xml --data-format junitxml > app_inspect.log
+	splunk-appinspect inspect $(PACKAGE_NAME) $(APP_INSPECT_FLAGS)
 
+# Build App's package locally.
 build: clean prebuild
-	tar -czf $(PACKAGE_NAME) $(APP_DIR)
+	@echo "$(BWhite)- Building local package $(PACKAGE_NAME) ...$(Color_Off)"
+	@tar -czf $(PACKAGE_NAME) $(APP_DIR)
 
+# Clean compiled Python files and cache folders. Run with SUDO.
 clean:
-	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+	@echo "$(BWhite)- Removing compiled & cached Python files ...$(Color_Off)"
+	@find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
 
+# Run the prebuild script.
+# Update the Wazuh version, the Splunk version and the App's revision number 
+# in the package.json before running this script.
 prebuild:
-	node scripts/generate-build-version
+	@echo "$(BWhite)- Updating project's versions ...$(Color_Off)"
+	@node scripts/generate-build-version
 
+# Generate tags for a release automatically.
+# Update the tag.py file before running this script.
+tags:
+	@echo "$(BWhite)- Generating Git tags ...$(Color_Off)"
+	@python3 scripts/tag.py >> tags.log
+
+# Update the API info. The Wazuh API must be running and reachable locally.
+api-info:
+	@echo "$(BWhite)- Updating the WAZUH API endpoints local registry ...$(Color_Off)"
+	@WAZUH_API_URL=https://0.0.0.0:55000 npm run generate:api-info
+
+# Run ESLint
+lint: clean
+	@echo "$(BWhite)- Running ESLint ...$(Color_Off)"
+	@npx eslint . --ext .js -c .eslintrc.json
+
+# Run Prettier
+pretty: clean
+	@echo "$(BWhite)- Running Prettier ...$(Color_Off)"
+	@npx prettier --config .prettierrc --write \
+	SplunkAppForWazuh/**/*.js \
+	SplunkAppForWazuh/**/*.html \
+	SplunkAppForWazuh/**/*.css \
+	!SplunkAppForWazuh/appserver/static/js/libs/** \
+	!SplunkAppForWazuh/appserver/static/js/utils/codemirror/**

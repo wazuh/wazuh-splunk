@@ -256,7 +256,7 @@ class manager(controllers.BaseController):
         finally:
             return jsonbak.dumps(app_info)
 
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(must_login=True, methods=['GET'])
     def get_api(self, **kwargs):
         """
         Obtain Wazuh API from DB.
@@ -291,7 +291,7 @@ class manager(controllers.BaseController):
                 }
             )
 
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(must_login=True, methods=['GET'])
     def get_apis(self, **kwargs):
         """
         Obtain all Wazuh APIs from DB.
@@ -324,7 +324,7 @@ class manager(controllers.BaseController):
                     "error": str(e)
                 }
             )
-            self.logger.error(error)
+            self.logger.error("manager::get_apis(): %s" % (error))
             return error
 
     @expose_page(must_login=False, methods=['POST'])
@@ -522,7 +522,7 @@ class manager(controllers.BaseController):
                 )
         return result
 
-    @expose_page(must_login=False, methods=['GET'])
+    @expose_page(must_login=True, methods=['GET'])
     def check_connection_by_id(self, **kwargs):
         """
         Check API connection AFTER registration.
