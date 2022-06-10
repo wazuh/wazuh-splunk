@@ -244,9 +244,9 @@ class manager(controllers.BaseController):
         app_info = {}
         try:
             app_info = {
-                'version': cli.getConfStanza('app', 'launcher')['version'],
-                'revision': cli.getConfStanza('app', 'install')['build'],
-                'splunk_version': cli.getConfStanza('package', 'splunk')['version']
+                'version': utils.get_default_conf('app', 'launcher')['version'],
+                'revision': utils.get_default_conf('app', 'install')['build'],
+                'splunk_version': utils.get_default_conf('package', 'splunk')['version']
             }
         except Exception as e:
             self.logger.error("manager: error reading App's info." + str(e))
@@ -727,7 +727,7 @@ class manager(controllers.BaseController):
             )
 
             api_version = utils.get_parameter(response, 'data')['api_version']
-            app_version = cli.getConfStanza('app', 'launcher')['version']
+            app_version = utils.get_default_conf('app', 'launcher')['version']
 
             if api_version != app_version:
                 raise Exception(
