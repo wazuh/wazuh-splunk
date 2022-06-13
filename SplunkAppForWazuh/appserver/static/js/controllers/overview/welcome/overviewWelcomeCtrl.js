@@ -41,6 +41,7 @@ define(['../../module'], function (controllers) {
       try {
         this.scope.agentsCountTotal = agentsInfo.data.data.total
         this.scope.agentsCountActive = agentsInfo.data.data.active
+        this.scope.agentsCountPending = agentsInfo.data.data.pending
         this.scope.agentsCountDisconnected = agentsInfo.data.data.disconnected
         this.scope.agentsCountNeverConnected =
           agentsInfo.data.data.never_connected

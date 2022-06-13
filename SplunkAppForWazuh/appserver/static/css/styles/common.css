@@ -1879,6 +1879,11 @@ input:focus {
   background-color: none !important;
 }
 
+.agentField.pending {
+  color: var(--text-warn-color) !important;
+  background-color: none !important;
+}
+
 .agentField.disconnected {
   color: #c74d4d !important;
   background-color: none !important;

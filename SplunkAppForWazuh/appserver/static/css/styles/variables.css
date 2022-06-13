@@ -16,6 +16,7 @@
   --bg-menu-select-color: rgb(0, 68, 90);
   --bg-active-color: #46BFBD;
   --bg-pending-color: #FFD35E;
+  --text-warn-color: #b18e2c;
   --bg-disconnected-color: #F7464A;
   --bg-never-connected-color: #949FB1;
 }
