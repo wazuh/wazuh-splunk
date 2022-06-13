@@ -852,9 +852,10 @@ define(['../module'], function (module) {
                   const results = await $requestService.apiReq(
                     `/mitre/tactics?select=${fields}`
                   )
-                  return results.data.data.affected_items
-                } catch (err) {
-                  return false
+                  return results?.data?.data?.affected_items || []
+                } catch (error) {
+                  console.error(error)
+                  return []
                 }
               },
             ],
@@ -865,11 +866,12 @@ define(['../module'], function (module) {
                   const fields = ['name', 'external_id'].join()
 
                   const results = await $requestService.apiReq(
-                    `/mitre/techniques?select=${fields}&limit=1000`
+                    `/mitre/techniques?select=${fields}`
                   )
-                  return results.data.data.affected_items
-                } catch (err) {
-                  return false
+                  return results?.data?.data?.affected_items || []
+                } catch (error) {
+                  console.error(error)
+                  return []
                 }
               },
             ],
