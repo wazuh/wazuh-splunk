@@ -1879,6 +1879,11 @@ input:focus {
   background-color: none !important;
 }
 
+.agentField.pending {
+  color: var(--text-warn-color) !important;
+  background-color: none !important;
+}
+
 .agentField.disconnected {
   color: #c74d4d !important;
   background-color: none !important;
@@ -2895,4 +2900,20 @@ body > div.tooltip {
 
 .wz-color-info {
   color: var(--info-color);
+}
+
+.wz-color-active {
+  color: var(--bg-active-color);
+}
+
+.wz-color-pending {
+  color: var(--bg-pending-color);
+}
+
+.wz-color-disconnected {
+  color: var(--bg-disconnected-color);
+}
+
+.wz-color-never-connected {
+  color: var(--bg-never-connected-color);
 }

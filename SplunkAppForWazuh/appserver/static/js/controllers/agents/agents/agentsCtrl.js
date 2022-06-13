@@ -116,6 +116,7 @@ define([
           : false
         this.scope.agentsCountDisconnected = summary.Disconnected
         this.scope.agentsCountNeverConnected = summary.Never_connected
+        this.scope.agentsCountPending = summary.Pending
         const agentsCountTotal = summary.Total
         this.scope.agentsCoverity = agentsCountTotal
           ? (this.scope.agentsCountActive / agentsCountTotal) * 100
@@ -123,7 +124,7 @@ define([
 
         this.scope.searchBarModel = {
           name: [],
-          status: ['active', 'disconnect', 'never_connected'],
+          status: ['active', 'pending', 'disconnect', 'never_connected'],
           group: groups
             ? groups.sort((a, b) => {
                 return a.toString().localeCompare(b.toString())
@@ -224,12 +225,13 @@ define([
           const chart = new Chart(document.getElementById(id), {
             type: 'doughnut',
             data: {
-              labels: ['Active', 'Disconected', 'Never connected'],
+              labels: ['Active', 'Pending', 'Disconnected', 'Never connected' ],
               datasets: [
                 {
-                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                  backgroundColor: ['#46BFBD', '#FFD35E', '#F7464A', '#949FB1'],
                   data: [
                     this.scope.agentsCountActive,
+                    this.scope.agentsCountPending,
                     this.scope.agentsCountDisconnected,
                     this.scope.agentsCountNeverConnected,
                   ],

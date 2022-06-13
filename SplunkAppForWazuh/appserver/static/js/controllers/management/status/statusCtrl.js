@@ -173,6 +173,7 @@ define(['../../module'], function (controllers) {
         const active = this.summary.active
         const total = this.summary.total
         this.scope.agentsCountActive = active
+        this.scope.agentsCountPending = this.summary.pending
         this.scope.agentsCountDisconnected = this.summary.disconnected
         this.scope.agentsCountNeverConnected = this.summary['never_connected']
         this.scope.agentsCountTotal = total
