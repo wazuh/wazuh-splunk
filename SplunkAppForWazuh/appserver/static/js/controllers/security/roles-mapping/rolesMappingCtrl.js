@@ -28,9 +28,11 @@ define([
       splunkUsers,
       $notificationService,
       $ruleService,
-      $security_service
+      $security_service,
+      $appVersionService,
     ) {
       this.scope = $scope
+      this.scope.appDocuVersion = $appVersionService.getDocumentationVersion()
       this.scope.roles = this.getRolesList(roles.data.data.affected_items || [])
       this.scope.splunkUsersDropdown = this.getSplunkUsersList(
         splunkUsers.data || []
