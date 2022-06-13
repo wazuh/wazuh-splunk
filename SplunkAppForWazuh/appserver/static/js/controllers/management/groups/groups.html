@@ -157,6 +157,7 @@
             </button>
             <button
               ng-hide="moreThan500"
+              ng-disabled="!(currentAdding || currentDeleting)"
               ng-click="saveAddAgents()"
               class="btn wz-button-empty wz-margin-left-8 wz-margin-left-5">
               <i aria-hidden="true" class="fa fa-fw fa-save"></i> Apply changes
