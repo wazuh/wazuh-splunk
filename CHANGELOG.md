@@ -9,8 +9,12 @@ All notable changes to the Wazuh App for Splunk project will be documented in th
 
 ### Changed
 - Added the status `Pending` to the donut chart on the Agents Overview section. [#1292](https://github.com/wazuh/wazuh-splunk/pull/1292)
+- Added a disabled state to the `Apply changes` button on the Agents group editor when no changes on the group are made. [#1276](https://github.com/wazuh/wazuh-splunk/pull/1276)
 
 ## Wazuh v4.3.4 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4307
+
+### Added
+- Support for Wazuh 4.3.4
 
 ### Changed
 - Improved Splunk search-handler event management to avoid forwarder toast error mis-interpretation. [#1327](https://github.com/wazuh/wazuh-splunk/pull/1327)
