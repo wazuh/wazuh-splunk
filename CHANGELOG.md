@@ -2,6 +2,14 @@
 
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
 
+## Wazuh v4.3.5 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4308
+
+### Added
+- Support for Wazuh 4.3.5
+
+### Changed
+- Added a disabled state to the `Apply changes` button on the Agents group editor when no changes on the group are made. [#1276](https://github.com/wazuh/wazuh-splunk/pull/1276)
+
 ## Wazuh v4.3.4 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4307
 
 ### Added
