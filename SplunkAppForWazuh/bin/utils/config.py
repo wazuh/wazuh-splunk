@@ -52,12 +52,17 @@ def get_default_conf(filename: str, stanza: str) -> dict:
         A dictionary with the configuration block requested from the file.
     """
     try:
-        app_conf = cli.getAppConf(
-            confName="app", 
-            app="SplunkAppForWazuh", 
-            use_btool=False, 
-            app_path=WAZUH_HOME
-        )
+        # ------------------------------
+        # Interesting Splunk utility. Returned values can be seen at:
+        # https://github.com/wazuh/wazuh-splunk/pull/1340#discussion_r900338325
+        # ------------------------------
+        # app_conf = cli.getAppConf(
+        #     confName="app", 
+        #     app="SplunkAppForWazuh", 
+        #     use_btool=False, 
+        #     app_path=WAZUH_HOME
+        # )
+        # ------------------------------
 
         file_path = get_default_conf_path(filename)
         settings = cli.getConfStanza(file_path, stanza)
