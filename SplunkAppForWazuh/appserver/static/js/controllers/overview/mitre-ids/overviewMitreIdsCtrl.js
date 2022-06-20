@@ -21,19 +21,20 @@ define([
 
   class OverviewMitreIds {
     /**
-     * Class constructor
-     * @param {Object} $scope
-     * @param {Object} $currentDataService
-     * @param {Object} $state
-     * @param {Object} $notificationService
-     * @param {Object} $requestService
-     * @param {Object} mitre_tactics
+     * Constructor
+     *
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $notificationService
+     * @param {*} $requestService
+     * @param {*} mitre_tactics
+     * @param {*} mitre_techniques
      * @param {*} $mdDialog
      * @param {*} $dateDiffService
      * @param {*} $urlTokenModel
      * @param {*} extensions
      */
-
     constructor(
       $scope,
       $currentDataService,
@@ -59,18 +60,7 @@ define([
       this.scope.extensions = extensions
       this.notification = $notificationService
       this.filters = this.currentDataService.getSerializedFilters(false)
-      this.scope.tactics = mitre_tactics.map((tactic) => {
-        return {
-          name: tactic.name,
-          count: 0,
-        }
-      })
-      this.scope.techniques = mitre_techniques.map((technique) => {
-        return {
-          ...technique,
-          count: 0,
-        }
-      })
+      this.#initMitre(mitre_tactics, mitre_techniques)
       this.scope.sortedTactics = this.scope.tactics
       this.scope.sortedTechniques = this.scope.techniques
       this.$mdDialog = $mdDialog
@@ -108,6 +98,38 @@ define([
       }
 
       this.scope.$applyAsync()
+    }
+
+    /**
+     * Initialize the data estructures related to MITRE from the responses
+     * processed on the route resolver. Also checks for the presence of errors
+     * on the responses, and creates an error toats for each of them.
+     *
+     * @param {responseModel} mitre_tactics {error: Bool, message: String, data: Array}
+     * @param {responseModel} mitre_techniques {error: Bool, message: String, data: Array}
+     */
+    #initMitre(mitre_tactics, mitre_techniques) {
+      this.scope.tactics = (mitre_tactics.data || []).map((tactic) => {
+        return {
+          name: tactic.name,
+          count: 0,
+        }
+      })
+      this.scope.techniques = (mitre_techniques.data || []).map((technique) => {
+        return {
+          ...technique,
+          count: 0,
+        }
+      })
+
+      const errors = [mitre_tactics, mitre_techniques]
+        .filter((x) => x.error)
+        .map((x) => x.message)
+
+      for (const e of errors) {
+        console.error(e)
+        this.notification.showErrorToast(e)
+      }
     }
 
     /**

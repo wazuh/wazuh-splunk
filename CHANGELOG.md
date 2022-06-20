@@ -8,6 +8,7 @@ All notable changes to the Wazuh App for Splunk project will be documented in th
 
 ### Fixed
 - Outdated documentation links have been updated [#1290](https://github.com/wazuh/wazuh-splunk/pull/1290)
+- The Alerts view from the MITRE section has been hardened in case of errors during the requests to the API (for example timeouts) [#1343](https://github.com/wazuh/wazuh-splunk/pull/1343)
 
 ### Changed
 - Added the status `Pending` to the Agents sections. [#1292](https://github.com/wazuh/wazuh-splunk/pull/1292)
