@@ -16,11 +16,61 @@ Find more information about this on the LICENSE file.
 import json
 import os
 
+from log import log
 from splunk.clilib import cli_common as cli
 from splunk.clilib.control_exceptions import ParsingError
 
-splunk_home = os.path.normpath(os.environ['SPLUNK_HOME'])
+SPLUNK_HOME = os.path.normpath(os.environ['SPLUNK_HOME'])
+WAZUH_HOME = os.path.join(SPLUNK_HOME, "etc", "apps", "SplunkAppForWazuh")
 
+LOGGER = log()
+
+
+def get_default_conf_path(filename: str) -> str:
+    """Returns the absolute path to $WAZUH_HOME/default/${filename}"""
+    return os.path.join(WAZUH_HOME, "default", filename)
+
+
+def get_default_conf(filename: str, stanza: str) -> dict:
+    """
+    Reads the file $WAZUH_HOME/default/${file} and returns its contents as a 
+    dictionary.
+    
+    The absolute path of the file is built automatically using the 
+    get_default_conf_path() function, so simply provide the filename without 
+    extension.
+
+    Parameters
+    ----------
+    filename : str
+        The filename to be read in the /default directory, without extension.
+    stanza : str
+        The configuration block to be returned from the conf file.
+
+    Returns
+    --------
+        A dictionary with the configuration block requested from the file.
+    """
+    try:
+        # ------------------------------
+        # Interesting Splunk utility. Returned values can be seen at:
+        # https://github.com/wazuh/wazuh-splunk/pull/1340#discussion_r900338325
+        # ------------------------------
+        # app_conf = cli.getAppConf(
+        #     confName="app", 
+        #     app="SplunkAppForWazuh", 
+        #     use_btool=False, 
+        #     app_path=WAZUH_HOME
+        # )
+        # ------------------------------
+
+        file_path = get_default_conf_path(filename)
+        settings = cli.getConfStanza(file_path, stanza)
+        json_data = json.dumps(settings)
+        LOGGER.debug(f'Reading "{stanza}" from {file_path}: {json_data}')
+        return settings
+    except Exception as e:
+        raise e
 
 def getLocalConfPath(file):
     return os.path.join(

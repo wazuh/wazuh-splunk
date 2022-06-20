@@ -60,8 +60,7 @@ class log():
 
     def error(self, msg):
         """Error log message."""
-        enable_exc_info = True if self.debug_enabled else False
-        self.logger.error(msg, exc_info=enable_exc_info)
+        self.logger.error(msg, exc_info=self.debug_enabled)
 
     def info(self, msg):
         """Info log message."""
