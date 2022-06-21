@@ -9,7 +9,12 @@ define(['../module'], function (module) {
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
-    function ($locationProvider, $stateProvider, $mdThemingProvider, BASE_URL) {
+    function (
+      $locationProvider,
+      $stateProvider,
+      $mdThemingProvider,
+      BASE_URL
+    ) {
       $mdThemingProvider
         .theme('default')
         .primaryPalette('blue')
