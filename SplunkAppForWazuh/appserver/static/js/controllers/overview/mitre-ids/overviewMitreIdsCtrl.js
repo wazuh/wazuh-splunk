@@ -46,7 +46,6 @@ define([
       $mdDialog,
       $dateDiffService,
       $urlTokenModel,
-      $modelFactory,
       extensions
     ) {
       this.scope = $scope

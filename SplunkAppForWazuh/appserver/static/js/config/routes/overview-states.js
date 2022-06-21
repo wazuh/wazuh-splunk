@@ -843,7 +843,6 @@ define(['../module'], function (module) {
             ],
             mitre_tactics: [
               '$requestService',
-              '$modelFactory',
               async ($requestService) => {
                 const fields = ['name'].join()
 
@@ -854,7 +853,6 @@ define(['../module'], function (module) {
             ],
             mitre_techniques: [
               '$requestService',
-              '$modelFactory',
               async ($requestService) => {
                 const fields = ['name', 'external_id'].join()
 

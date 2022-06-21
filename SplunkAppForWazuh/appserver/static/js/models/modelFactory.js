@@ -12,9 +12,9 @@ define(['./module'], function (app) {
      * are inherited on the rest of the models.
      */
     class SuccessResponseModel {
-      #data
-      #message
-      #error
+      #data     // Object
+      #message  // String
+      #error    // Int
 
       /**
        *
@@ -80,8 +80,8 @@ define(['./module'], function (app) {
      *   - 405 Method Not Allowed
      */
     class ErrorResponseModel extends GenericResponseModel {
-      #title
-      #detail
+      #title  // String
+      #detail // String
 
       constructor(api_response = {}) {
         super(api_response)
@@ -122,13 +122,13 @@ define(['./module'], function (app) {
      *   - 429 Too Many Requests
      */
     class ExtendedErrorResponseModel extends ErrorResponseModel {
-      #remediation
-      #dapi_errors
+      #remediation  // String
+      #dapi_errors  // Object
 
       constructor(api_response = {}) {
         super(api_response)
         this.#remediation = api_response?.remediation ?? ''
-        this.#dapi_errors = api_response?.dapi_errors ?? ''
+        this.#dapi_errors = api_response?.dapi_errors ?? {}
         this.setError(api_response?.error ?? api_response?.code ?? 1)
       }
 
@@ -151,7 +151,7 @@ define(['./module'], function (app) {
 
     return {
       /**
-       * Factory method.
+       * Factory Method pattern.
        * @param {Object} opt response.data
        */
       getResponse(opt = {}) {
