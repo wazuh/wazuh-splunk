@@ -28,8 +28,8 @@ define([
      * @param {*} $state
      * @param {*} $notificationService
      * @param {*} $requestService
-     * @param {*} mitre_tactics
-     * @param {*} mitre_techniques
+     * @param {*} mitre_tactics any of the response models.
+     * @param {*} mitre_techniques any of the response models.
      * @param {*} $mdDialog
      * @param {*} $dateDiffService
      * @param {*} $urlTokenModel
@@ -46,6 +46,7 @@ define([
       $mdDialog,
       $dateDiffService,
       $urlTokenModel,
+      $modelFactory,
       extensions
     ) {
       this.scope = $scope
@@ -101,30 +102,34 @@ define([
     }
 
     /**
-     * Initialize the data estructures related to MITRE from the responses
+     * Initialize the data structures related to MITRE from the responses
      * processed on the route resolver. Also checks for the presence of errors
-     * on the responses, and creates an error toats for each of them.
+     * on the responses, and creates error toasts for each of them.
      *
-     * @param {responseModel} mitre_tactics {error: Bool, message: String, data: Array}
-     * @param {responseModel} mitre_techniques {error: Bool, message: String, data: Array}
+     * @param {responseModel} mitre_tactics any of the response models.
+     * @param {responseModel} mitre_techniques any of the response models.
      */
     #initMitre(mitre_tactics, mitre_techniques) {
-      this.scope.tactics = (mitre_tactics.data || []).map((tactic) => {
+      this.scope.tactics = mitre_tactics
+        .getAffectedItems()
+        .map((tactic) => {
         return {
           name: tactic.name,
           count: 0,
         }
       })
-      this.scope.techniques = (mitre_techniques.data || []).map((technique) => {
-        return {
-          ...technique,
-          count: 0,
-        }
-      })
+      this.scope.techniques = mitre_techniques
+        .getAffectedItems()
+        .map((technique) => {
+          return {
+            ...technique,
+            count: 0,
+          }
+        })
 
       const errors = [mitre_tactics, mitre_techniques]
-        .filter((x) => x.error)
-        .map((x) => x.message)
+        .filter((x) => x.hasError())
+        .map((x) => x.getMessage())
 
       for (const e of errors) {
         console.error(e)
@@ -315,7 +320,7 @@ define([
       this.scope.$on('$destroy', () => {
         this.destroy()
         this.cleanModalTable()
-        this.timePicker.destroy()
+        this?.timePicker.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
       this.loadTacticsTechniques()

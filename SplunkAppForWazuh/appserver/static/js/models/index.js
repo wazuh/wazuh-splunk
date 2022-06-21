@@ -1,0 +1,5 @@
+define([
+    // BasicResponseModel
+    './modelFactory',
+  ], function () {})
+  

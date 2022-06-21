@@ -9,12 +9,7 @@ define(['../module'], function (module) {
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
-    function (
-      $locationProvider,
-      $stateProvider,
-      $mdThemingProvider,
-      BASE_URL
-    ) {
+    function ($locationProvider, $stateProvider, $mdThemingProvider, BASE_URL) {
       $mdThemingProvider
         .theme('default')
         .primaryPalette('blue')
@@ -843,78 +838,24 @@ define(['../module'], function (module) {
             ],
             mitre_tactics: [
               '$requestService',
+              '$modelFactory',
               async ($requestService) => {
-                let responseModel = {
-                  error: false,
-                  message: "",
-                  data: []
-                }
                 const fields = ['name'].join()
 
-                try {
-                  const results = await $requestService.apiReq(
-                    `/mitre/tactics?select=${fields}`
-                  )
-                  
-                  //* --------------- *//
-                  //* Error handling  *//
-                  //* --------------- *//
-                  // No response (timeout exceeded or similar)
-                  if (results.data.error) {
-                    throw new Error(results.data.error)
-                  }
-                  // Response arrived, but with errors.
-                  if (results.data.data.error) {
-                    throw new Error(results.data.data.message)
-                  }
-                  //* --------------- *//
-
-                  responseModel.message = results.data.message
-                  responseModel.data = results.data.data.affected_items
-                } catch (error) {
-                  responseModel.error = true
-                  responseModel.message = error
-                }
-
-                return responseModel
+                return await $requestService.apiReqInModel(
+                  `/mitre/tactics?select=${fields}`
+                )
               },
             ],
             mitre_techniques: [
               '$requestService',
+              '$modelFactory',
               async ($requestService) => {
-                let responseModel = {
-                  error: false,
-                  message: "",
-                  data: []
-                }
                 const fields = ['name', 'external_id'].join()
 
-                try {
-                  const results = await $requestService.apiReq(
-                    `/mitre/techniques?select=${fields}&limit=1000`
-                  )
-                  
-                  //* --------------- *//
-                  //* Error handling  *//
-                  //* --------------- *//
-                  // No response (timeout exceeded or similar)
-                  if (results.data.error) {
-                    throw new Error(results.data.error)
-                  }
-                  // Response arrived, but with errors.
-                  if (results.data.data.error) {
-                    throw new Error(results.data.data.message)
-                  }
-                  //* --------------- *//
-
-                  responseModel.message = results.data.message
-                  responseModel.data = results.data.data.affected_items
-                } catch (error) {
-                  responseModel.error = true
-                  responseModel.message = error
-                }
-
-                return responseModel
+                return await $requestService.apiReqInModel(
+                  `/mitre/techniques?select=${fields}&limit=1000`
+                )
               },
             ],
             extensions: [
