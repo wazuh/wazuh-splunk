@@ -10,6 +10,7 @@ define([
   './factories/index',
   './run/index',
   './config/index',
+  './models/index',
   'chart',
   'angularChart',
 ], function (ng) {
@@ -25,5 +26,6 @@ define([
     'app.factories',
     'app.run',
     'app.config',
+    'app.models'
   ])
 })
