@@ -187,16 +187,16 @@ define(['../module'], function (module) {
 
       /**
        * Performs a request to the Wazuh API and returns its response in a model.
-       * @param {String} endpoint 
+       * @param {String} endpoint
        * @param {Object} opts body parameters
        * @param {String} method any Http method - GET, POST, PUT, DELETE
-       * @returns 
+       * @returns
        */
       const apiReqInModel = async (endpoint, opts = null, method = 'GET') => {
         let responseModel = $modelFactory.getResponse()
         try {
           const results = await apiReq(endpoint, opts, method)
-          
+
           // No response (timeout exceeded or similar)
           if (results.data.error) {
             throw new Error(results.data.error)

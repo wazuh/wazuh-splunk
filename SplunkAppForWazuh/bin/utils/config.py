@@ -33,11 +33,11 @@ def get_default_conf_path(filename: str) -> str:
 
 def get_default_conf(filename: str, stanza: str) -> dict:
     """
-    Reads the file $WAZUH_HOME/default/${file} and returns its contents as a 
+    Reads the file $WAZUH_HOME/default/${file} and returns its contents as a
     dictionary.
-    
-    The absolute path of the file is built automatically using the 
-    get_default_conf_path() function, so simply provide the filename without 
+
+    The absolute path of the file is built automatically using the
+    get_default_conf_path() function, so simply provide the filename without
     extension.
 
     Parameters
@@ -57,9 +57,9 @@ def get_default_conf(filename: str, stanza: str) -> dict:
         # https://github.com/wazuh/wazuh-splunk/pull/1340#discussion_r900338325
         # ------------------------------
         # app_conf = cli.getAppConf(
-        #     confName="app", 
-        #     app="SplunkAppForWazuh", 
-        #     use_btool=False, 
+        #     confName="app",
+        #     app="SplunkAppForWazuh",
+        #     use_btool=False,
         #     app_path=WAZUH_HOME
         # )
         # ------------------------------
