@@ -24,6 +24,7 @@ define(['../../module', '../../../utils/config-handler'], function (
      * @param {*} $state
      * @param {*} $stateParams
      * @param {*} $currentDataService
+     * @param {*} $appVersionService
      * @param {*} $beautifierJson
      * @param {*} $notificationService
      * @param {*} $reportingService
@@ -36,6 +37,7 @@ define(['../../module', '../../../utils/config-handler'], function (
       $state,
       $stateParams,
       $currentDataService,
+      $appVersionService,
       $beautifierJson,
       $notificationService,
       $reportingService,
@@ -53,6 +55,7 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.load = false
       this.id = $stateParams.id || $currentDataService.getCurrentAgent()
       this.$scope.isArray = Array.isArray
+      this.$scope.appDocuVersion = $appVersionService.getDocumentationVersion()
       this.configurationHandler = new ConfigHandler(
         this.apiReq,
         $beautifierJson,
