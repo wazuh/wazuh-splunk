@@ -5,13 +5,11 @@ define(['../module'], function (module) {
   }
   module.constant('BASE_URL', module.paths.root)
   module.config([
-    '$mdIconProvider',
     '$locationProvider',
     '$stateProvider',
     '$mdThemingProvider',
     'BASE_URL',
     function (
-      $mdIconProvider,
       $locationProvider,
       $stateProvider,
       $mdThemingProvider,
@@ -846,31 +844,21 @@ define(['../module'], function (module) {
             mitre_tactics: [
               '$requestService',
               async ($requestService) => {
-                try {
-                  const fields = ['name'].join()
+                const fields = ['name'].join()
 
-                  const results = await $requestService.apiReq(
-                    `/mitre/tactics?select=${fields}`
-                  )
-                  return results.data.data.affected_items
-                } catch (err) {
-                  return false
-                }
+                return await $requestService.apiReqInModel(
+                  `/mitre/tactics?select=${fields}`
+                )
               },
             ],
             mitre_techniques: [
               '$requestService',
               async ($requestService) => {
-                try {
-                  const fields = ['name', 'external_id'].join()
+                const fields = ['name', 'external_id'].join()
 
-                  const results = await $requestService.apiReq(
-                    `/mitre/techniques?select=${fields}&limit=1000`
-                  )
-                  return results.data.data.affected_items
-                } catch (err) {
-                  return false
-                }
+                return await $requestService.apiReqInModel(
+                  `/mitre/techniques?select=${fields}&limit=1000`
+                )
               },
             ],
             extensions: [

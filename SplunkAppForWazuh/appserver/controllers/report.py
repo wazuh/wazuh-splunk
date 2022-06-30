@@ -21,6 +21,7 @@ from operator import itemgetter
 
 import jsonbak
 import splunk.appserver.mrsparkle.controllers as controllers
+import utils
 from fpdf import FPDF
 from log import log
 from splunk.appserver.mrsparkle.lib.decorators import expose_page
@@ -872,7 +873,7 @@ class report(controllers.BaseController):
                             elif 'affected_items' not in conf_data['data']:
                                 self.setTableTitle(pdf)
                                 # Get Wazuh version for the documentation link
-                                docu_version = cli.getConfStanza('app', 'launcher')['version']
+                                docu_version = utils.get_default_conf('app', 'launcher')['version']
                                 docu_version = '.'.join(version.split('.')[:2])
                                 pdf.cell(
                                     0, 
