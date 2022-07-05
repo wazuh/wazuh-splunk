@@ -973,9 +973,12 @@ define([
             JSONraw = {}
           }
 
-          //if (typeof JSONraw === 'object') JSONraw.devTools = true
           if (!firstTime) {
-            const output = await this.request.apiReq(path, JSONraw, method)
+            const payload =
+              method != 'GET'
+                ? { content: JSON.stringify(JSONraw), origin: 'json' }
+                : JSONraw
+            const output = await this.request.apiReq(path, payload, method)
             const result = output.data
               ? JSON.stringify((output || {}).data || {}, null, 2).replace(
                   /\\\\/g,

@@ -7,6 +7,7 @@ All notable changes to the Wazuh App for Splunk project will be documented in th
 
 ### Fixed
 - Fixed broken links that did not redirect correctly to the documentation [#1351](https://github.com/wazuh/wazuh-splunk/pull/1351)
+- Fixed an error on the DevTools where the payload was not being sent, causing the request to fail. [#1296](https://github.com/wazuh/wazuh-splunk/pull/1296)
 
 ### Changed
 - Updadted documenation links to match their respective title at the Wazuh documentation page [#1351](https://github.com/wazuh/wazuh-splunk/pull/1351)
