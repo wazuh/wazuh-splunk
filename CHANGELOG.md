@@ -2,6 +2,13 @@
 
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
 
+## Wazuh v4.3.6 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4309
+### Added
+- Support for Wazuh 4.3.6
+
+### Changed
+- Re-allow the use of all tags to filter Wazuh Server logs [#1263](https://github.com/wazuh/wazuh-splunk/issues/1263)
+
 ## Wazuh v4.3.5 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4308
 ### Added
 - Support for Wazuh 4.3.5
