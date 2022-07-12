@@ -103,6 +103,17 @@
                 </p>
               </div>
             </div>
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
+                  <p>Agents synced</p>
+                </div>
+                <p
+                  class="euiTitle euiTitle--small euiStat__title wz-text-align-center">
+                  {{(agentsSynced | number:2)}}%
+                </p>
+              </div>
+            </div>
           </div>
           <div
             class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive">
@@ -204,7 +215,7 @@
         flex
         path="'/agents'"
         custom-columns="true"
-        keys="['id',{value:'name',size:2},'ip','status','group','os.name','os.version','version','node_name', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
+        keys="['id',{value:'name',size:2},'ip','status','group_config_status','group','os.name','os.version','version','node_name', {value: 'dateAdd', offset: true}, {value: 'lastKeepAlive', offset: true}]"
         allow-click="true"
         rows-per-page="17">
       </wazuh-table-server-side>

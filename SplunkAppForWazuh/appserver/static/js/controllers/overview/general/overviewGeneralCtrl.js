@@ -200,11 +200,11 @@ define([
           this.scope.wzMonitoringEnabled = false
           this.apiReq(`/agents/summary/status`)
             .then((data) => {
-              this.scope.agentsCountTotal = data.data.data.total
-              this.scope.agentsCountActive = data.data.data.active
-              this.scope.agentsCountDisconnected = data.data.data.disconnected
-              this.scope.agentsCountNeverConnected =
-                data.data.data.never_connected
+              const status =data.data.data.connection
+              this.scope.agentsCountTotal = status.total
+              this.scope.agentsCountActive = status.active
+              this.scope.agentsCountDisconnected = status.disconnected
+              this.scope.agentsCountNeverConnected = status.never_connected
               this.scope.agentsCoverity = this.scope.agentsCountTotal
                 ? (this.scope.agentsCountActive / this.scope.agentsCountTotal) *
                   100
