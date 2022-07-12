@@ -63,6 +63,13 @@ define([
         $urlTokenModel,
         $notificationService
       )
+
+      const DEFAULT_METRIC_VALUES = '-'
+      this.scope.criticalSeverity = DEFAULT_METRIC_VALUES
+      this.scope.highSeverity = DEFAULT_METRIC_VALUES
+      this.scope.mediumSeverity = DEFAULT_METRIC_VALUES
+      this.scope.lowSeverity = DEFAULT_METRIC_VALUES
+
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.currentDataService.addFilter(

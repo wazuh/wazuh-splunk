@@ -61,6 +61,13 @@ define([
         $urlTokenModel,
         $notificationService
       )
+
+      const DEFAULT_METRIC_VALUES = '-'
+      this.scope.newFiles = DEFAULT_METRIC_VALUES
+      this.scope.readFiles = DEFAULT_METRIC_VALUES
+      this.scope.filesModifiedToken = DEFAULT_METRIC_VALUES
+      this.scope.filesDeleted = DEFAULT_METRIC_VALUES
+
       this.scope.reportingEnabled = reportingEnabled
       this.scope.extensions = extensions
       this.agent = agent

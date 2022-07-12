@@ -75,10 +75,10 @@ define([
         let groups = parsedResult.groups
 
         this.scope.noAgents = summary.Total < 1
-        
+
         // When there are agents, the view will display the agents details (table, stat: most active agent).
         // Only when the most active agent indicator will be displayed, the search should be started.
-        if(!this.scope.noAgents){
+        if (!this.scope.noAgents) {
           this.topAgent = new SearchHandler(
             'searchTopAgent',
             `${this.filters} earliest=-1w NOT agent.id=000 | top agent.name`,
@@ -92,7 +92,7 @@ define([
             this.notification
           )
         }
-        
+
         this.scope.agentsCountActive = summary.Active
         this.scope.lastAgent = lastAgent || 'Unknown'
         const os = parsedResult.agent_os
@@ -116,6 +116,7 @@ define([
           : false
         this.scope.agentsCountDisconnected = summary.Disconnected
         this.scope.agentsCountNeverConnected = summary.Never_connected
+        this.scope.agentsCountPending = summary.Pending
         const agentsCountTotal = summary.Total
         this.scope.agentsCoverity = agentsCountTotal
           ? (this.scope.agentsCountActive / agentsCountTotal) * 100
@@ -123,7 +124,7 @@ define([
 
         this.scope.searchBarModel = {
           name: [],
-          status: ['active', 'disconnect', 'never_connected'],
+          status: ['active', 'pending', 'disconnect', 'never_connected'],
           group: groups
             ? groups.sort((a, b) => {
                 return a.toString().localeCompare(b.toString())
@@ -171,7 +172,6 @@ define([
           this.scope.searchBarModel.node_name = nodes || []
         }
       } catch (error) {} //eslint-disable-line
-
 
       /* RBAC flags */
       this.isAllowed = (action, resource, params = ['*']) => {
@@ -225,12 +225,13 @@ define([
           const chart = new Chart(document.getElementById(id), {
             type: 'doughnut',
             data: {
-              labels: ['Active', 'Disconected', 'Never connected'],
+              labels: ['Active', 'Pending', 'Disconnected', 'Never connected' ],
               datasets: [
                 {
-                  backgroundColor: ['#46BFBD', '#F7464A', '#949FB1'],
+                  backgroundColor: ['#46BFBD', '#FFD35E', '#F7464A', '#949FB1'],
                   data: [
                     this.scope.agentsCountActive,
+                    this.scope.agentsCountPending,
                     this.scope.agentsCountDisconnected,
                     this.scope.agentsCountNeverConnected,
                   ],

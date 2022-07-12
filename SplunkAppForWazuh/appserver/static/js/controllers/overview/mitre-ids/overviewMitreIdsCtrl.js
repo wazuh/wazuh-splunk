@@ -21,19 +21,20 @@ define([
 
   class OverviewMitreIds {
     /**
-     * Class constructor
-     * @param {Object} $scope
-     * @param {Object} $currentDataService
-     * @param {Object} $state
-     * @param {Object} $notificationService
-     * @param {Object} $requestService
-     * @param {Object} mitre_tactics
+     * Constructor
+     *
+     * @param {*} $scope
+     * @param {*} $currentDataService
+     * @param {*} $state
+     * @param {*} $notificationService
+     * @param {*} $requestService
+     * @param {*} mitre_tactics any of the response models.
+     * @param {*} mitre_techniques any of the response models.
      * @param {*} $mdDialog
      * @param {*} $dateDiffService
      * @param {*} $urlTokenModel
      * @param {*} extensions
      */
-
     constructor(
       $scope,
       $currentDataService,
@@ -59,20 +60,7 @@ define([
       this.scope.extensions = extensions
       this.notification = $notificationService
       this.filters = this.currentDataService.getSerializedFilters(false)
-      this.scope.tactics = mitre_tactics.map(
-        tactic => {
-          return {
-            name: tactic.name,
-            count: 0
-          } 
-        })
-      this.scope.techniques = mitre_techniques.map(
-        technique => {
-          return {
-            ...technique,
-            count: 0
-          } 
-        })
+      this.#initMitre(mitre_tactics, mitre_techniques)
       this.scope.sortedTactics = this.scope.tactics
       this.scope.sortedTechniques = this.scope.techniques
       this.$mdDialog = $mdDialog
@@ -92,7 +80,7 @@ define([
           this.urlTokenModel.set({ earliest: '0', latest: '' })
         }
         this.timePicker = new TimePicker('#timePicker', (e) => {
-          if (!this.modalOpen){     
+          if (!this.modalOpen) {
             this.reloadFilters(e)
           }
         })
@@ -113,17 +101,53 @@ define([
     }
 
     /**
+     * Initialize the data structures related to MITRE from the responses
+     * processed on the route resolver. Also checks for the presence of errors
+     * on the responses, and creates error toasts for each of them.
+     *
+     * @param {responseModel} mitre_tactics any of the response models.
+     * @param {responseModel} mitre_techniques any of the response models.
+     */
+    #initMitre(mitre_tactics, mitre_techniques) {
+      this.scope.tactics = mitre_tactics
+        .getAffectedItems()
+        .map((tactic) => {
+        return {
+          name: tactic.name,
+          count: 0,
+        }
+      })
+      this.scope.techniques = mitre_techniques
+        .getAffectedItems()
+        .map((technique) => {
+          return {
+            ...technique,
+            count: 0,
+          }
+        })
+
+      const errors = [mitre_tactics, mitre_techniques]
+        .filter((x) => x.hasError())
+        .map((x) => x.getMessage())
+
+      for (const e of errors) {
+        console.error(e)
+        this.notification.showErrorToast(e)
+      }
+    }
+
+    /**
      * Parse the results of the MITRE Tactics Search on the index.
-     * 
+     *
      * For each result (row), transform the array into a named object in order
      * to be able to merge the arrays of found tactics and general tactics.
-     * 
-     * @param {Array} rows array of arrays. Each subarray contains a pair of 
+     *
+     * @param {Array} rows array of arrays. Each subarray contains a pair of
      * string elements which are the MITRE_TACTIC_NAME and the COUNT.
-     * 
+     *
      * Example:
      *  - rows: [ ["Defense Evasion", "1"] ]
-     * 
+     *
      *   This is transformed to: { name: 'Defense Evasion', count: '1' }
      *   And this is later on merge with the rest of the MITRE Tactics stored
      *   on this.scope.tactics, which count is set to 0 by default.
@@ -131,7 +155,7 @@ define([
     onDataTactics(rows) {
       let foundTactics = []
       rows.forEach((row) => {
-        let [name, count] = row 
+        let [name, count] = row
         foundTactics.push({
           name,
           count,
@@ -152,16 +176,16 @@ define([
 
     /**
      * Parse the results of the MITRE Techniques Search on the index.
-     * 
+     *
      * For each result (row), transform the array into a named object in order
      * to be able to map the arrays of found techniques and general tecnhiques.
-     * 
-     * @param {Array} rows array of arrays. Each subarray contains a pair of 
+     *
+     * @param {Array} rows array of arrays. Each subarray contains a pair of
      * string elements which are the MITRE_TECHNIQUE_NAME and the COUNT.
-     * 
+     *
      * Example:
      *  - rows: [ ["T1562.001", "1"] ]
-     * 
+     *
      *   This is transformed to: { name: 'T1562.001', count: '1' }
      *   And this is later on merge with the rest of the MITRE Techniques stored
      *   on this.scope.techniques, which count is set to 0 by default.
@@ -176,7 +200,7 @@ define([
         })
       })
 
-      // Make a copy of the techniques, look for found techniques 
+      // Make a copy of the techniques, look for found techniques
       // and update its count accordingly.
       const techniques = this.scope.techniques.map((technique) => {
         for (const techniqueFound of foundTechniques) {
@@ -295,7 +319,7 @@ define([
       this.scope.$on('$destroy', () => {
         this.destroy()
         this.cleanModalTable()
-        this.timePicker.destroy()
+        this?.timePicker.destroy()
       })
       this.scope.reloadList = () => this.reloadList()
       this.loadTacticsTechniques()
@@ -414,7 +438,7 @@ define([
       this.scope.$applyAsync()
 
       try {
-        const {external_id, name} = this.scope.selectedItem
+        const { external_id, name } = this.scope.selectedItem
         const mitreTecnhique = await this.getTechniqueById(external_id)
         const mitreTecnhiqueTactics = await this.getTacticsById(
           // Generate a comma separated string.
@@ -450,7 +474,9 @@ define([
                         <span>
                             <dt>Data sources</dt>
                             <dd>
-                                <a href="${mitreTecnhique?.url}" target="_blank">
+                                <a href="${
+                                  mitreTecnhique?.url
+                                }" target="_blank">
                                     ${mitreTecnhique?.url}
                                 </a>
                             </dd>
@@ -468,7 +494,10 @@ define([
 
                     <div class="wz-margin-20">
                         <dt>Description</dt>
-                        <dd>${mitreTecnhique?.description || 'No description was returned.'}</dd>
+                        <dd>${
+                          mitreTecnhique?.description ||
+                          'No description was returned.'
+                        }</dd>
                     </div>
 
                     <h6 class="wz-headline-title">Events</h6>

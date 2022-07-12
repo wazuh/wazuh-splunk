@@ -62,6 +62,17 @@
             <div class="euiFlexItem euiFlexItem--flexGrowZero">
               <div class="euiStat">
                 <div class="euiText euiText--small euiStat__description">
+                  <p>Pending</p>
+                </div>
+                <p
+                  class="euiTitle euiTitle--small euiStat__title wz-text-align-center">
+                  {{agentsCountPending}}
+                </p>
+              </div>
+            </div>
+            <div class="euiFlexItem euiFlexItem--flexGrowZero">
+              <div class="euiStat">
+                <div class="euiText euiText--small euiStat__description">
                   <p>Disconnected</p>
                 </div>
                 <p
@@ -119,13 +130,13 @@
                   <p>Most active agent</p>
                 </div>
                 <p
-                  ng-if="lastAgent && lastAgent.id && mostActiveAgent.id !== '000'"
+                  ng-if="lastAgent && lastAgent.id && mostActiveAgent.id !== '000' && mostActiveAgent"
                   ng-click="showAgent(mostActiveAgent)"
                   class="euiTitle euiTitle--small euiStat__title wz-text-link cursor-pointer">
                   {{mostActiveAgent}}
                 </p>
                 <p
-                  ng-if="!lastAgent || !lastAgent.id"
+                  ng-if="!lastAgent || !lastAgent.id || !mostActiveAgent"
                   class="euiTitle euiTitle--small euiStat__title">
                   -
                 </p>

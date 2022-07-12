@@ -28,6 +28,16 @@
         </div>
         <div class="euiFlexItem euiFlexItem">
           <div class="euiStat euiStat--leftAligned wz-text-align-center">
+            <p class="euiText--small euiStat__description">Pending agents</p>
+            <div class="euiText euiText--small euiStat__description">
+              <p class="agentField pending">
+                {{agentsCountPending >= 0 ? agentsCountPending : '0'}}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="euiFlexItem euiFlexItem">
+          <div class="euiStat euiStat--leftAligned wz-text-align-center">
             <p class="euiText--small euiStat__description">
               Disconnected agents
             </p>
