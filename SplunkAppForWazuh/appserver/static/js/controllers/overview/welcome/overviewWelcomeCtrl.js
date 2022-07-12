@@ -39,12 +39,12 @@ define(['../../module'], function (controllers) {
       this.scope.isSplunkAdmin = isSplunkAdmin
 
       try {
-        this.scope.agentsCountTotal = agentsInfo.data.data.total
-        this.scope.agentsCountActive = agentsInfo.data.data.active
-        this.scope.agentsCountPending = agentsInfo.data.data.pending
-        this.scope.agentsCountDisconnected = agentsInfo.data.data.disconnected
-        this.scope.agentsCountNeverConnected =
-          agentsInfo.data.data.never_connected
+        const status = agentsInfo.data.data.connection
+        this.scope.agentsCountTotal = status.total
+        this.scope.agentsCountActive = status.active
+        this.scope.agentsCountPending = status.pending
+        this.scope.agentsCountDisconnected = status.disconnected
+        this.scope.agentsCountNeverConnected = status.never_connected
       } catch (error) {} //eslint-disable-line
       try {
         this.extensions = extensions

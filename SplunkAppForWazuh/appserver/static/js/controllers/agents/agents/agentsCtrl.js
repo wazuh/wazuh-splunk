@@ -70,7 +70,8 @@ define([
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
         const parsedResult = agentData.data.data
-        let summary = this.formatAgentStatusData(parsedResult.agent_status)
+        let summary = this.formatAgentStatusData(parsedResult.agent_status.connection)
+        let agentSynced = this.formatAgentStatusData(parsedResult.agent_status.configuration)
         let lastAgent = parsedResult.last_registered_agent[0]
         let groups = parsedResult.groups
 
@@ -120,6 +121,9 @@ define([
         const agentsCountTotal = summary.Total
         this.scope.agentsCoverity = agentsCountTotal
           ? (this.scope.agentsCountActive / agentsCountTotal) * 100
+          : 0
+        this.scope.agentsSynced = agentSynced
+          ? (agentSynced.Synced / agentSynced.Total) * 100
           : 0
 
         this.scope.searchBarModel = {

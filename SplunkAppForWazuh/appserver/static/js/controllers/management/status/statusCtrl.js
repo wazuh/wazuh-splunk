@@ -170,14 +170,13 @@ define(['../../module'], function (controllers) {
         this.scope.getDaemonStatusClass = (daemonStatus) =>
           daemonStatus === 'running' ? 'status teal' : 'status red'
         // Once Wazuh core fixes agent 000 issues, this should be adjusted
-        const active = this.summary.active
-        const total = this.summary.total
-        this.scope.agentsCountActive = active
-        this.scope.agentsCountPending = this.summary.pending
-        this.scope.agentsCountDisconnected = this.summary.disconnected
-        this.scope.agentsCountNeverConnected = this.summary['never_connected']
-        this.scope.agentsCountTotal = total
-        this.scope.agentsCoverity = (active / total) * 100
+        const agentsStatus = this.summary.connection
+        this.scope.agentsCountActive = agentsStatus.active
+        this.scope.agentsCountPending = agentsStatus.pending
+        this.scope.agentsCountDisconnected = agentsStatus.disconnected
+        this.scope.agentsCountNeverConnected = agentsStatus.never_connected
+        this.scope.agentsCountTotal = agentsStatus.total
+        this.scope.agentsCoverity = (agentsStatus.active / agentsStatus.total) * 100
 
         this.scope.totalRules = this.rules.total_affected_items
         this.scope.totalDecoders = this.decoders.total_affected_items
