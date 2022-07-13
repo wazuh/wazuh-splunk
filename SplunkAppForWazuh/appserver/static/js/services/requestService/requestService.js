@@ -5,8 +5,8 @@ define(['../module'], function (module) {
     '$http',
     '$apiIndexStorageService',
     '$q',
-    '$modelFactory',
-    function ($https, $apiIndexStorageService, $q, $modelFactory) {
+    '$apiResponseModelFactory',
+    function ($https, $apiIndexStorageService, $q, $apiResponseModelFactory) {
       constructor
       /**
        * Generated and returns the browser base URL + Splunk Port
@@ -76,6 +76,8 @@ define(['../module'], function (module) {
        * Performs a GET request to Wazuh API
        * @param {String} endpoint
        * @param {Object} opts
+       * 
+       * @see apiReqInModel
        */
       const apiReq = async (endpoint, opts = null, method = 'GET') => {
         try {
@@ -190,25 +192,25 @@ define(['../module'], function (module) {
        * @param {String} endpoint
        * @param {Object} opts body parameters
        * @param {String} method any Http method - GET, POST, PUT, DELETE
-       * @returns
+       * @returns request's reponse in a model.
        */
       const apiReqInModel = async (endpoint, opts = null, method = 'GET') => {
-        let responseModel = $modelFactory.getResponse()
+        let results = {}
         try {
-          const results = await apiReq(endpoint, opts, method)
+          results = await apiReq(endpoint, opts, method)
 
           // No response (timeout exceeded or similar)
-          if (results.data.error) {
+          // API replies with 'error' as an integer, so any other type 
+          // arriving is not a API response.
+          if (results.data.error && !Number.isInteger(results.data.error)) {
             throw new Error(results.data.error)
           }
 
-          // Response arrived
-          responseModel = $modelFactory.getResponse(results.data)
         } catch (error) {
-          responseModel.setError()
-          responseModel.setMessage(error)
+          console.error(error)
         }
-        return responseModel
+        // Response arrived
+        return $apiResponseModelFactory.getResponse(results.data)
       }
 
       const service = {

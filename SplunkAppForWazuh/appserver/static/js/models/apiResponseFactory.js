@@ -1,5 +1,5 @@
 define(['./module'], function (app) {
-  app.factory('$modelFactory', function () {
+  app.factory('$apiResponseModelFactory', function () {
     // TODO: analize code coverage of setters.
 
     /**
@@ -17,13 +17,21 @@ define(['./module'], function (app) {
       #error    // Int
 
       /**
-       *
+       * Constructor
        * @param {Object} api_response response.data
        */
       constructor(api_response = {}) {
         this.#data = api_response?.data ?? {}
         this.#message = api_response?.message ?? ''
         this.#error = api_response?.error ?? 0
+        this.rawResponse = api_response || {}
+
+        // Sometimes, the App's backend will return a string as error. 
+        // This block of code ammends this situations.
+        if (typeof this.#error === 'string') {
+          this.setError()
+          this.setMessage(api_response?.error)
+        }
       }
 
       getError() {
@@ -47,15 +55,36 @@ define(['./module'], function (app) {
       }
 
       setError(error_code = 1) {
+        if (!Number.isInteger(error_code)) {
+          throw new TypeError(
+            "Integer expected as 'error_code', got " + error_code
+          )
+        }
+
         this.#error = error_code
       }
 
       setMessage(msg) {
+        if (typeof msg !== "string") {
+          throw new TypeError(
+            "String expected as 'message', got " + msg
+          )
+        }
+
         this.#message = msg
       }
 
       setData(data) {
         this.#data = data
+      }
+
+      /**
+       * Returns the raw response object. Used by the Dev Tools.
+       * Do not use this methos unless you know what you are doing.
+       * @returns {Object} Unprocessed response object
+       */
+      getRawResponse() {
+        return this.rawResponse
       }
     }
 
