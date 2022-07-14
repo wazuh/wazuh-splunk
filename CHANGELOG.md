@@ -12,7 +12,7 @@ All notable changes to the Wazuh App for Splunk project will be documented in th
 - Fixed an error on the DevTools where the payload was not being sent, causing the request to fail. [#1296](https://github.com/wazuh/wazuh-splunk/pull/1296)
 
 ### Changed
-- Updated documenation links to match their respective title at the Wazuh documentation page [#1351](https://github.com/wazuh/wazuh-splunk/pull/1351)
+- Updated documentation links to match their respective title at the Wazuh documentation page [#1351](https://github.com/wazuh/wazuh-splunk/pull/1351)
 - Re-allow the use of all tags to filter Wazuh Server logs [#1354](https://github.com/wazuh/wazuh-splunk/pull/1354)
 
 ## Wazuh v4.3.5 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4308
