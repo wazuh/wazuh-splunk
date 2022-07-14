@@ -12,9 +12,9 @@ define(['./module'], function (app) {
      * are inherited on the rest of the models.
      */
     class SuccessResponseModel {
-      #data     // Object
-      #message  // String
-      #error    // Int
+      #data // Object
+      #message // String
+      #error // Int
 
       /**
        * Constructor
@@ -26,7 +26,7 @@ define(['./module'], function (app) {
         this.#error = api_response?.error ?? 0
         this.rawResponse = api_response || {}
 
-        // Sometimes, the App's backend will return a string as error. 
+        // Sometimes, the App's backend will return a string as error.
         // This block of code ammends this situations.
         if (typeof this.#error === 'string') {
           this.setError()
@@ -65,10 +65,8 @@ define(['./module'], function (app) {
       }
 
       setMessage(msg) {
-        if (typeof msg !== "string") {
-          throw new TypeError(
-            "String expected as 'message', got " + msg
-          )
+        if (typeof msg !== 'string') {
+          throw new TypeError("String expected as 'message', got " + msg)
         }
 
         this.#message = msg
@@ -109,7 +107,7 @@ define(['./module'], function (app) {
      *   - 405 Method Not Allowed
      */
     class ErrorResponseModel extends GenericResponseModel {
-      #title  // String
+      #title // String
       #detail // String
 
       constructor(api_response = {}) {
@@ -151,8 +149,8 @@ define(['./module'], function (app) {
      *   - 429 Too Many Requests
      */
     class ExtendedErrorResponseModel extends ErrorResponseModel {
-      #remediation  // String
-      #dapi_errors  // Object
+      #remediation // String
+      #dapi_errors // Object
 
       constructor(api_response = {}) {
         super(api_response)

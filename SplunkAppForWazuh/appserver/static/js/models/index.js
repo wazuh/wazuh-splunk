@@ -1,6 +1,5 @@
 define([
-    // Response models and Factory Method
-    './apiResponseFactory',
-    './apiRequestFactory',
-  ], function () {})
-
+  // Response models and Factory Method
+  './apiResponseFactory',
+  './apiRequestFactory',
+], function () {})

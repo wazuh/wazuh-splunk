@@ -76,7 +76,7 @@ define(['../module'], function (module) {
        * Performs a GET request to Wazuh API
        * @param {String} endpoint
        * @param {Object} opts
-       * 
+       *
        * @see apiReqInModel
        */
       const apiReq = async (endpoint, opts = null, method = 'GET') => {
@@ -200,12 +200,11 @@ define(['../module'], function (module) {
           results = await apiReq(endpoint, opts, method)
 
           // No response (timeout exceeded or similar)
-          // API replies with 'error' as an integer, so any other type 
+          // API replies with 'error' as an integer, so any other type
           // arriving is not a API response.
           if (results.data.error && !Number.isInteger(results.data.error)) {
             throw new Error(results.data.error)
           }
-
         } catch (error) {
           console.error(error)
         }
