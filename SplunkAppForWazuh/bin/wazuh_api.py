@@ -106,7 +106,7 @@ class Wazuh_API():
                 elif status_code != 200:
                     result = response.json()
                     response = {
-                        'error': True,
+                        'error': 1,
                         'status_code': status_code,
                         'message': result['title'] + ": " + result['detail']
                     }
