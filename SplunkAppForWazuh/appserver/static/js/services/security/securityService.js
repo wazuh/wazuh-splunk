@@ -15,21 +15,17 @@ define(['../module'], function (app) {
     /**
      * Constructor.
      * @param {Object} $requestService
-     * @param {Object} ACTIONS
      * @param {Object} $requirementService
      * @param {Object} $validationService
      * @param {Object} userPermissions
      */
     constructor(
       $requestService,
-      ACTIONS,
       $requirementService,
       $validationService,
       userPermissions
     ) {
       this.apiReq = $requestService.apiReq
-      this.ACTIONS_ENUM = ACTIONS.ACTIONS_ENUM
-      this.ACTIONS_MAP = ACTIONS.ACTIONS_MAP
       this.$requirementService = $requirementService
       this.$validationService = $validationService
       this.userPermissions = userPermissions
