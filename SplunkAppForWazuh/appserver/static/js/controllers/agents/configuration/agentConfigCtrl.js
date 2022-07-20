@@ -41,7 +41,6 @@ define(['../../module', '../../../utils/config-handler'], function (
       $beautifierJson,
       $notificationService,
       $reportingService,
-      data,
       agent
     ) {
       this.api = $currentDataService.getApi()
@@ -66,13 +65,7 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.configurationSubTab = ''
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
-      this.$scope.isSynchronized =
-        data &&
-        data.data &&
-        data.data.data &&
-        data.data.data.affected_items &&
-        data.data.data.affected_items.length &&
-        data.data.data.affected_items[0].synced
+      this.$scope.isSynchronized = this.$scope.currentAgent.group_config_status == 'synced'
       this.excludeModulesByOs = {
         linux: [],
         windows: ['audit', 'oscap', 'docker'],
@@ -288,9 +281,9 @@ define(['../../module', '../../../utils/config-handler'], function (
     async checkAgentSync() {
       try {
         const sync = await this.apiReq.apiReq(
-          `/agents/${this.$scope.agent.id}/group/is_sync`
+          `/agents?q=id=${this.$scope.agent.id}&select=group_config_status`
         )
-        return sync.data.data.affected_items[0].synced
+        return sync.data.data.affected_items[0].group_config_status == 'synced'
       } catch (error) {
         return false
       }

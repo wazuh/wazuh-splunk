@@ -175,6 +175,13 @@
           >
           <span ng-if="!agentsCoverity" class="wz-text-bold">0%</span>
         </div>
+        <div flex class="wz-text-truncatable">
+          Synced agents:
+          <span ng-if="agentsCoverity" class="wz-text-bold"
+            >{{(agentsSynced | number:2)}}%</span
+          >
+          <span ng-if="!agentsCoverity" class="wz-text-bold">0%</span>
+        </div>
       </md-card-content>
     </md-card>
   </div>

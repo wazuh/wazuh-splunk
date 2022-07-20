@@ -70,9 +70,9 @@ define([
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
         const parsedResult = agentData.data.data
-        let summary = this.formatAgentStatusData(parsedResult.agent_status.connection)
-        let agentSynced = this.formatAgentStatusData(parsedResult.agent_status.configuration)
-        let lastAgent = parsedResult.last_registered_agent[0]
+        const summary = this.formatAgentStatusData(parsedResult.agent_status.connection)
+        const agentSynced = this.formatAgentStatusData(parsedResult.agent_status.configuration)
+        const lastAgent = parsedResult.last_registered_agent[0]
         let groups = parsedResult.groups
 
         this.scope.noAgents = summary.Total < 1
