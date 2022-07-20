@@ -147,6 +147,7 @@ const generateAPISecurityActionsInformation = async () => {
     const authenticationResponse = await request(
       `${WAZUH_API_URL}/security/user/authenticate`,
       {
+        method: 'POST',
         headers: {
           Authorization:
             'Basic ' +

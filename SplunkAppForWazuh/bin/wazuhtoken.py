@@ -146,7 +146,7 @@ class wazuhtoken():
         """
         self.logger.debug("wazuh-token: using basic auth")
         try:
-            return self.session.get(
+            return self.session.post(
                 f"{self.api.get_url()}/security/user/authenticate",
                 auth=self.api.get_auth(),
                 timeout=self.timeout,
