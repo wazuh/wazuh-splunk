@@ -550,31 +550,6 @@ define(['../module'], function (module) {
           controller: 'configurationAgentCtrl',
           params: { id: null },
           resolve: {
-            data: [
-              '$requestService',
-              '$stateParams',
-              '$currentDataService',
-              '$state',
-              async (
-                $requestService,
-                $stateParams,
-                $currentDataService,
-                $state
-              ) => {
-                try {
-                  const id =
-                    $stateParams.id ||
-                    $currentDataService.getCurrentAgent() ||
-                    $state.go('agents')
-                  const result = await $requestService.apiReq(
-                    `/agents/${id}/group/is_sync`
-                  )
-                  return result
-                } catch (err) {
-                  return false
-                }
-              },
-            ],
             agent: [
               '$requestService',
               '$stateParams',

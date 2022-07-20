@@ -1,7 +1,7 @@
 # Change Log
 
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
-## Wazuh v4.4.0 - Splunk Enterprise v8.1.4, v8.2.2, v8.2.4 - Revision 4401
+## Wazuh v4.4.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4401
 
 ## Added
 - Added agent synchronization status in the agent module. [#1355](https://github.com/wazuh/wazuh-splunk/pull/1355)
@@ -9,7 +9,7 @@ All notable changes to the Wazuh App for Splunk project will be documented in th
 ## Fixed
 
 ## Changed
-- endpoint `/agents/summary/status` response was adapted. [#1355](https://github.com/wazuh/wazuh-splunk/pull/1355)
+- Update response handlers for the endpoint /agents/summary/status. [#1355](https://github.com/wazuh/wazuh-splunk/pull/1355)
 
 
 ## Wazuh v4.3.5 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4308
