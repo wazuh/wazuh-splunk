@@ -928,6 +928,7 @@
     "related_endpoints": [
       "GET /security/users",
       "GET /security/roles",
+      "GET /security/rules",
       "GET /security/policies"
     ]
   },
@@ -1101,7 +1102,9 @@
       "effect": "allow"
     },
     "related_endpoints": [
-      "GET /vulnerability/{agent_id}"
+      "GET /vulnerability/{agent_id}",
+      "GET /vulnerability/{agent_id}/last_scan",
+      "GET /vulnerability/{agent_id}/summary/{field}"
     ]
   }
 }

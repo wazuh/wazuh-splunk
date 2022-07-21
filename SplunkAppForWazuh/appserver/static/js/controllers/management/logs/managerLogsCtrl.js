@@ -150,11 +150,9 @@ define(['../../module', 'FileSaver'], function (app) {
         } else {
           this.notification.showWarningToast('Empty results.')
         }
-        return
       } catch (error) {
         this.notification.showErrorToast('Error downloading CSV')
       }
-      return
     }
 
     /**
@@ -190,38 +188,23 @@ define(['../../module', 'FileSaver'], function (app) {
           ? `/cluster/${this.scope.selectedNode}/logs`
           : '/manager/logs'
 
-        const data = this.clusterEnabled
-          ? await this.apiReq(
-              `/cluster/${this.scope.selectedNode}/logs/summary`
-            )
-          : await this.apiReq('/manager/logs/summary')
-
-        // NOTE Remove on v4.4.0
-        const daemonsNotIncluded = [
-          'wazuh-modulesd:task-manager',
-          'wazuh-modulesd:agent-upgrade',
-        ]
-        // END NOTE
-
-        const daemons = data.data.data.affected_items
-          // NOTE Remove on v4.4.0
-          .flatMap(Object.keys)
-          .filter((daemon) => !daemonsNotIncluded.includes(daemon))
-
-        this.scope.daemons = daemons.map((d) => ({ title: d }))
-        // END NOTE
-
-        // NOTE uncomment on v4.4.0
-        // this.scope.daemons = daemons.map((item) => ({
-        //   title: Object.keys(item)[0],
-        // }))
-        // END NOTE
-        this.scope.$applyAsync()
-        return
-      } catch (err) {
-        this.notification.showErrorToast('Error initializing data')
+        this.getDaemonLogs(this.scope.logsPath)
+      } catch (e) {
+        this.notification.showErrorToast('Error initializing data: ' + e)
       }
-      return
+    }
+
+    /**
+     * Obtains the logs for the current node and daemon.
+     * @param {String} endpoint
+     */
+    async getDaemonLogs(endpoint) {
+      const response = await this.apiReq(endpoint.concat('/summary'))
+      const daemons = response.data.data.affected_items.flatMap(Object.keys)
+      this.scope.daemons = daemons.map((d) => ({ title: d }))
+
+      // Update view
+      this.scope.$applyAsync()
     }
 
     /**
@@ -237,14 +220,10 @@ define(['../../module', 'FileSaver'], function (app) {
         this.scope.$broadcast('wazuhUpdateInstancePath', {
           path: `/cluster/${node}/logs`,
         })
-        const summary = await this.apiReq(`/cluster/${node}/logs/summary`, {})
-        const daemons = summary.data.data.affected_items
-        this.scope.daemons = daemons.map((item) => ({
-          title: Object.keys(item)[0],
-        }))
-        this.scope.$applyAsync()
-      } catch (error) {
-        this.notification.showErrorToast('Error at fetching logs')
+
+        this.getDaemonLogs(`/cluster/${node}/logs`)
+      } catch (e) {
+        this.notification.showErrorToast('Error at fetching logs: ' + e)
       }
     }
 
@@ -254,7 +233,6 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     search(term) {
       this.scope.$broadcast('wazuhSearch', { term })
-      return
     }
 
     /**
@@ -263,7 +241,6 @@ define(['../../module', 'FileSaver'], function (app) {
      */
     async filter(filter) {
       this.scope.$broadcast('wazuhFilter', { filter })
-      return
     }
 
     /**
@@ -272,7 +249,6 @@ define(['../../module', 'FileSaver'], function (app) {
     playRealtime() {
       this.scope.realtime = true
       this.scope.$broadcast('wazuhPlayRealTime')
-      return
     }
 
     /**
@@ -281,7 +257,6 @@ define(['../../module', 'FileSaver'], function (app) {
     stopRealtime() {
       this.scope.realtime = false
       this.scope.$broadcast('wazuhStopRealTime')
-      return
     }
   }
   app.controller('managerLogsCtrl', Logs)

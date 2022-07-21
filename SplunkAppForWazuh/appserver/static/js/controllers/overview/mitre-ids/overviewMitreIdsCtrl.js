@@ -109,9 +109,7 @@ define([
      * @param {responseModel} mitre_techniques any of the response models.
      */
     #initMitre(mitre_tactics, mitre_techniques) {
-      this.scope.tactics = mitre_tactics
-        .getAffectedItems()
-        .map((tactic) => {
+      this.scope.tactics = mitre_tactics.getAffectedItems().map((tactic) => {
         return {
           name: tactic.name,
           count: 0,
