@@ -59,10 +59,9 @@
     ng-show="!loading"
     layout="row"
     layout-align="start start"
-    class="wz-margin-left-10 wz-margin-right-600 less-25-side"
-    style="margin-left: 25px !important">
+    class="less-25-side">
     <select
-      class="input input-dropdown"
+      class="input input-dropdown wz-logs-select"
       flex
       id="categoryBox"
       ng-disabled="realtime"
@@ -78,7 +77,7 @@
     </select>
 
     <select
-      class="input input-dropdown wz-margin-left-10"
+      class="input input-dropdown wz-logs-select wz-margin-left-10"
       flex
       id="levelBox"
       ng-disabled="realtime"
@@ -98,7 +97,7 @@
     <select
       flex
       ng-show="nodeList && nodeList.length"
-      class="input input-dropdown wz-margin-left-10"
+      class="input input-dropdown wz-logs-select wz-margin-left-10"
       id="categoryBox"
       ng-model="selectedNode"
       ng-change="changeNode(selectedNode)"
