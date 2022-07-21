@@ -129,6 +129,7 @@ define([
         this.scope.searchBarModel = {
           name: [],
           status: ['active', 'pending', 'disconnect', 'never_connected'],
+          group_config_status:['synced', 'not synced'],
           group: groups
             ? groups.sort((a, b) => {
                 return a.toString().localeCompare(b.toString())
