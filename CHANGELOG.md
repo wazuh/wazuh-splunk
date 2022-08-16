@@ -3,6 +3,9 @@
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
 
 ## Wazuh v4.3.7 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4310
+### Added
+
+- Support for Wazuh 4.3.7
 
 ### Fixed
 - Fixed the API console suggestions, as they were not working in 4.3.6. [#1359](https://github.com/wazuh/wazuh-splunk/pull/1359)
