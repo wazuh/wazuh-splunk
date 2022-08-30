@@ -29,7 +29,7 @@ define([
       $notificationService,
       $ruleService,
       $security_service,
-      $appVersionService,
+      $appVersionService
     ) {
       this.scope = $scope
       this.scope.appDocuVersion = $appVersionService.getDocumentationVersion()

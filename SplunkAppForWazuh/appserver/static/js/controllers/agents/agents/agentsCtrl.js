@@ -225,7 +225,7 @@ define([
           const chart = new Chart(document.getElementById(id), {
             type: 'doughnut',
             data: {
-              labels: ['Active', 'Pending', 'Disconnected', 'Never connected' ],
+              labels: ['Active', 'Pending', 'Disconnected', 'Never connected'],
               datasets: [
                 {
                   backgroundColor: ['#46BFBD', '#FFD35E', '#F7464A', '#949FB1'],

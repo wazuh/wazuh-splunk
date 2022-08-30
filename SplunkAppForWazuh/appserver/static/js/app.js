@@ -26,6 +26,6 @@ define([
     'app.factories',
     'app.run',
     'app.config',
-    'app.models'
+    'app.models',
   ])
 })

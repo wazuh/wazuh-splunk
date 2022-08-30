@@ -2,6 +2,28 @@
 
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
 
+## Wazuh v4.3.7 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4310
+### Added
+
+- Support for Wazuh 4.3.7
+
+### Fixed
+- Fixed the API console suggestions, as they were not working in 4.3.6. [#1359](https://github.com/wazuh/wazuh-splunk/pull/1359)
+
+
+## Wazuh v4.3.6 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4309
+### Added
+
+- Support for Wazuh 4.3.6
+
+### Fixed
+- Fixed broken links that did not redirect correctly to the documentation [#1351](https://github.com/wazuh/wazuh-splunk/pull/1351)
+- Fixed an error on the DevTools where the payload was not being sent, causing the request to fail. [#1296](https://github.com/wazuh/wazuh-splunk/pull/1296)
+
+### Changed
+- Updated documentation links to match their respective title at the Wazuh documentation page [#1351](https://github.com/wazuh/wazuh-splunk/pull/1351)
+- Re-allow the use of all tags to filter Wazuh Server logs [#1354](https://github.com/wazuh/wazuh-splunk/pull/1354)
+
 ## Wazuh v4.3.5 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4308
 ### Added
 - Support for Wazuh 4.3.5

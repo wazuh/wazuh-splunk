@@ -603,6 +603,11 @@ div.uil-ring-css {
 
 /* Custom input filter box styles */
 
+.wz-logs-select {
+  width: 100%;
+  max-width: 400px;
+}
+
 .input-filter-box {
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1) !important;
   border: 1px solid #d9d9d9 !important;

@@ -1,8 +1,8 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-unused-vars */
 /*
- * Wazuh app - Dev tools controller
- * Copyright (C) 2015-2019 Wazuh, Inc.
+ * Wazuh App - API console - Dev tools controller
+ * Copyright (C) 2015-2022 Wazuh, Inc.
  *
  * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,14 +31,14 @@ define([
   $,
   CodeMirror,
   jsonLint,
-  javascript,
-  braceFold,
-  foldcode,
-  foldgutter,
-  searchCursor,
-  markSeletion,
-  showHint,
-  queryString,
+  _javascript,
+  _braceFold,
+  _foldcode,
+  _foldgutter,
+  _searchCursor,
+  _markSeletion,
+  _showHint,
+  _queryString,
   ExcludedIntelliSenseTriggerKeys
 ) {
   'use strict'
@@ -59,7 +59,8 @@ define([
       $navigationService,
       $notificationService,
       $appVersionService,
-      $document
+      $document,
+      $apiRequestModelFactory
     ) {
       this.$scope = $scope
       this.appDocuVersion = $appVersionService.getDocumentationVersion()
@@ -68,10 +69,11 @@ define([
       this.appState = $navigationService
       this.notification = $notificationService
       this.$document = $document
-      this.groups = []
+      this.apiRequestFactory = $apiRequestModelFactory
+      this.groups = [] // Each request is a group of lines in the editor
+      this.selectedGroup = null // Selected request group (focused one)
       this.linesWithClass = []
-      this.widgets = []
-      this.multipleKeyPressed = []
+      this.errorWidgets = []
     }
 
     /**
@@ -79,92 +81,172 @@ define([
      */
     $onInit() {
       try {
-        $(this.$document[0]).keydown((e) => {
-          if (!this.multipleKeyPressed.includes(e.which)) {
-            this.multipleKeyPressed.push(e.which)
-          }
-          if (
-            this.multipleKeyPressed.includes(13) &&
-            this.multipleKeyPressed.includes(16) &&
-            this.multipleKeyPressed.length === 2
-          ) {
-            e.preventDefault()
-            return this.send()
-          }
-        })
+        this.initKeyListeners()
+        this.initWindowsResizeListeners()
+        this.initCodeMirror()
+        this.restoreStateFromCache()
+        // Read the groups of requests
+        this.identifyGroups()
+        // On init, select and highlight the first request group
+        this.selectedGroup = this.groups[0]
+        this.highlightSelectedGroup()
+        this.initButtons()
 
-        // eslint-disable-next-line
-        $(this.$document[0]).keyup((_) => {
-          this.multipleKeyPressed = []
-        })
-        this.apiInputBox = CodeMirror.fromTextArea(
-          this.$document[0].getElementById('api_input'),
-          {
-            lineNumbers: true,
-            matchBrackets: true,
-            mode: { name: 'javascript', json: true },
-            theme: 'ttcn',
-            foldGutter: true,
-            styleSelectedText: true,
-            gutters: ['CodeMirror-foldgutter'],
-          }
-        )
-        // Register plugin for code mirror
-        CodeMirror.commands.autocomplete = function (cm) {
-          CodeMirror.showHint(cm, CodeMirror.hint.dictionaryHint, {
-            completeSingle: false,
-          })
-        }
+        // Refresh the panels when the initialization is complete
+        setTimeout((_) => {
+          this.apiInputBox.refresh()
+          this.apiOutputBox.refresh()
+        }, 1)
 
-        this.apiInputBox.on('change', () => {
-          this.groups = this.analyzeGroups()
-          const currentState = this.apiInputBox.getValue().toString()
-          this.appState.setCurrentDevTools(currentState)
-          const currentGroup = this.calculateWhichGroup()
-          if (currentGroup) {
-            const hasWidget = this.widgets.filter(
-              (item) => item.start === currentGroup.start
-            )
-            if (hasWidget.length)
-              this.apiInputBox.removeLineWidget(hasWidget[0].widget)
-            setTimeout(() => this.checkJsonParseError(), 150)
-          }
-        })
-
-        this.apiInputBox.on('cursorActivity', () => {
-          const currentGroup = this.calculateWhichGroup()
-          this.highlightGroup(currentGroup)
-          this.checkJsonParseError()
-        })
-
-        this.apiOutputBox = CodeMirror.fromTextArea(
-          this.$document[0].getElementById('api_output'),
-          {
-            lineNumbers: true,
-            matchBrackets: true,
-            mode: { name: 'javascript', json: true },
-            readOnly: true,
-            lineWrapping: true,
-            styleActiveLine: true,
-            theme: 'ttcn',
-            foldGutter: true,
-            gutters: ['CodeMirror-foldgutter'],
-          }
-        )
-
-        this.$scope.send = (firstTime) => this.send(firstTime)
-
+        /**
+         * Scope callbacks
+         */
+        this.$scope.send = () => this.send()
         this.$scope.help = () => {
           this.$window.open(
             `https://documentation.wazuh.com/${this.appDocuVersion}/user-manual/api/reference.html`
           )
         }
-
-        this.init()
-        this.$scope.send(true)
         this.$scope.exportOutput = () => this.exportOutput()
       } catch (error) {
         this.notification.showErrorToast(error)
+      }
+    }
+
+    /**
+     * Keyboard listeners
+     */
+    initKeyListeners() {
+      let multipleKeyPressed = []
+
+      $(this.$document[0]).keydown((e) => {
+        // Record keys pressed, saving them in the array.
+        if (!multipleKeyPressed.includes(e.which)) {
+          multipleKeyPressed.push(e.which)
+        }
+        // Look for the Shift + Enter keys combination
+        if (
+          multipleKeyPressed.includes(16) && // Shift key
+          multipleKeyPressed.includes(13) && // Enter key
+          multipleKeyPressed.length === 2
+        ) {
+          e.preventDefault()
+          this.send()
+        }
+      })
+
+      // Clear the array
+      $(this.$document[0]).keyup((_) => {
+        multipleKeyPressed = []
+      })
+    }
+
+    /**
+     * Register event listerner for window resizing and panels width changes.
+     */
+    initWindowsResizeListeners() {
+      // Event: onMouseDown - windows separator
+      $('.wz-dev-column-separator').mousedown(function (e) {
+        e.preventDefault()
+        const leftOrigWidth = $('#wz-dev-left-column').width()
+        const rightOrigWidth = $('#wz-dev-right-column').width()
+
+        $(document).mousemove(function (e) {
+          const leftWidth = e.pageX - 85 + 14
+          let rightWidth = leftOrigWidth - leftWidth
+          $('#wz-dev-left-column').css('width', leftWidth)
+          $('#wz-dev-right-column').css('width', rightOrigWidth + rightWidth)
+        })
+      })
+
+      // Event: onMouseUp - windows separator
+      $(document).mouseup(function () {
+        $(document).unbind('mousemove')
+      })
+
+      // Event: onWindowResize
+      this.$window.onresize = () => {
+        $('#wz-dev-left-column').attr(
+          'style',
+          'width: calc(30% - 7px); !important'
+        )
+        $('#wz-dev-right-column').attr(
+          'style',
+          'width: calc(70% - 7px); !important'
+        )
+      }
+    }
+
+    /**
+     * CodeMirror initialization
+     */
+    async initCodeMirror() {
+      // Input panel
+      this.apiInputBox = CodeMirror.fromTextArea(
+        this.$document[0].getElementById('api_input'),
+        {
+          lineNumbers: true,
+          matchBrackets: true,
+          mode: { name: 'javascript', json: true },
+          theme: 'ttcn',
+          foldGutter: true,
+          styleSelectedText: true,
+          gutters: ['CodeMirror-foldgutter'],
+        }
+      )
+      this.apiInputBox.setSize('auto', '100%')
+      this.apiInputBox.model = []
+
+      // Input panel: onKeyUp
+      this.apiInputBox.on('keyup', function (cm, e) {
+        if (
+          !ExcludedIntelliSenseTriggerKeys[(e.keyCode || e.which).toString()]
+        ) {
+          cm.execCommand('autocomplete', null, {
+            completeSingle: false,
+          })
+        }
+      })
+
+      // Input panel: onChange
+      this.apiInputBox.on('change', () => {
+        this.identifyGroups()
+        this.validateGroupsAsJSON()
+      })
+
+      // Input panel: onCursorActivity
+      this.apiInputBox.on('cursorActivity', () => {
+        this.setSelectedGroup()
+        this.highlightSelectedGroup()
+      })
+
+      // Output panel
+      this.apiOutputBox = CodeMirror.fromTextArea(
+        this.$document[0].getElementById('api_output'),
+        {
+          lineNumbers: true,
+          matchBrackets: true,
+          mode: { name: 'javascript', json: true },
+          readOnly: true,
+          lineWrapping: true,
+          styleActiveLine: true,
+          theme: 'ttcn',
+          foldGutter: true,
+          gutters: ['CodeMirror-foldgutter'],
+        }
+      )
+      this.apiOutputBox.setSize('auto', '100%')
+      // Initial welcome message
+      this.setOutput('Welcome!')
+
+      // Fetch the API spec, used for hints and validation
+      await this.getAPIspec()
+      // Register helper plugin for CodeMirror
+      this.registerCodeMirrorHintPlugin()
+      CodeMirror.commands.autocomplete = function (cm) {
+        CodeMirror.showHint(cm, CodeMirror.hint.dictionaryHint, {
+          completeSingle: false,
+        })
       }
     }
 
@@ -184,14 +266,16 @@ define([
     }
 
     /**
-     * Detect de groups of instructions
+     * Reads the instructions on the input panel and identify each group of
+     * lines composing a request.
+     *
+     * Once completed, updates this.groups array with the new groups.
      */
-    analyzeGroups() {
+    identifyGroups() {
       try {
-        const currentState = this.apiInputBox.getValue().toString()
-        this.appState.setCurrentDevTools(currentState)
+        const currentState = this.saveCurrentState()
 
-        const tmpgroups = []
+        const groups = []
         const splitted = currentState
           .split(/[\r\n]+(?=(?:GET|PUT|POST|DELETE|#)\b)/gm)
           .filter((item) => item.replace(/\s/g, '').length)
@@ -201,14 +285,18 @@ define([
         const slen = splitted.length
         for (let i = 0; i < slen; i++) {
           let tmp = splitted[i].split('\n')
-          if (Array.isArray(tmp))
+          if (Array.isArray(tmp)) {
             tmp = tmp.filter((item) => !item.includes('#'))
+          }
           const cursor = this.apiInputBox.getSearchCursor(splitted[i], null, {
             multiline: true,
           })
 
-          if (cursor.findNext()) start = cursor.from().line
-          else return []
+          if (cursor.findNext()) {
+            start = cursor.from().line
+          } else {
+            throw new Error() // break this for loop the hard way :'(
+          }
 
           /**
            * Prevents from user frustation when there are duplicated queries.
@@ -216,14 +304,16 @@ define([
            * already exists but it's not the selected query.
            */
           if (tmp.length) {
-            // It's a safe loop since findNext method returns null if there is no next query.
+            // It's a safe loop since findNext method returns null if there
+            // is no next query.
             while (
               this.apiInputBox.getLine(cursor.from().line) !== tmp[0] &&
               cursor.findNext()
             ) {
               start = cursor.from().line
             }
-            // It's a safe loop since findNext method returns null if there is no next query.
+            // It's a safe loop since findNext method returns null if there
+            // is no next query.
             while (starts.includes(start) && cursor.findNext()) {
               start = cursor.from().line
             }
@@ -261,25 +351,25 @@ define([
 
           end--
 
-          tmpgroups.push({
+          groups.push({
             requestText: tmpRequestText,
             requestTextJson: tmpRequestTextJson,
             start,
             end,
           })
         }
-        starts = []
-        return tmpgroups
+
+        this.groups = groups
       } catch (error) {
-        return []
+        this.groups = []
       }
     }
 
     /**
-     * This seta group as active, and highlight it
-     * @param {Object} group
+     * Highlight the selected group, unhighlighting the previous one.
      */
-    highlightGroup(group) {
+    highlightSelectedGroup() {
+      // Clear previous group
       for (const line of this.linesWithClass) {
         this.apiInputBox.removeLineClass(
           line,
@@ -288,21 +378,14 @@ define([
         )
       }
       this.linesWithClass = []
+
+      // Highlight the selected group, if present
+      const group = this.selectedGroup
       if (group) {
-        if (!group.requestTextJson) {
+        for (let line = group.start; line <= group.end; line++) {
           this.linesWithClass.push(
             this.apiInputBox.addLineClass(
-              group.start,
-              'background',
-              'CodeMirror-styled-background'
-            )
-          )
-          return
-        }
-        for (let i = group.start; i <= group.end; i++) {
-          this.linesWithClass.push(
-            this.apiInputBox.addLineClass(
-              i,
+              line,
               'background',
               'CodeMirror-styled-background'
             )
@@ -312,42 +395,51 @@ define([
     }
 
     /**
-     * This validate fromat of JSON group
+     * Validate the payload of the requests. Adds an error icon (widget)
+     * next to the request.
      */
-    checkJsonParseError() {
-      const affectedGroups = []
-      for (const widget of this.widgets) {
+    validateGroupsAsJSON() {
+      // Clear previous widgets
+      for (const widget of this.errorWidgets) {
         this.apiInputBox.removeLineWidget(widget.widget)
       }
-      this.widgets = []
-      for (const item of this.groups) {
-        if (item.requestTextJson) {
-          try {
-            jsonLint.parse(item.requestTextJson)
-          } catch (error) {
-            affectedGroups.push(item.requestText)
-            const msg = this.$document[0].createElement('div')
-            msg.id = new Date().getTime() / 1000
-            const icon = msg.appendChild(this.$document[0].createElement('div'))
+      this.errorWidgets = []
 
+      // For each group, parse its payload as JSON in order to validate it,
+      // and create a new error widget if it has syntax errors.
+      for (const group of this.groups) {
+        if (group.requestTextJson) {
+          try {
+            jsonLint.parse(group.requestTextJson)
+          } catch (error) {
+            const root = this.$document[0]
+
+            // Error message
+            const msg = root.createElement('div')
+            msg.id = new Date().getTime() / 1000
+
+            // Error icon
+            const icon = msg.appendChild(root.createElement('div'))
             icon.className = 'lint-error-icon'
             icon.id = new Date().getTime() / 1000
+
+            // Error icon: onMouseOver
             icon.onmouseover = () => {
-              const advice = msg.appendChild(
-                this.$document[0].createElement('span')
-              )
+              const advice = msg.appendChild(root.createElement('span'))
               advice.id = new Date().getTime() / 1000
               advice.innerText = error.message || 'Error parsing query'
               advice.className = 'lint-block-wz'
             }
 
+            // Error icon: onMouseLeave
             icon.onmouseleave = () => {
               msg.removeChild(msg.lastChild)
             }
 
-            this.widgets.push({
-              start: item.start,
-              widget: this.apiInputBox.addLineWidget(item.start, msg, {
+            // Add the error to the errorWidgets array.
+            this.errorWidgets.push({
+              start: group.start,
+              widget: this.apiInputBox.addLineWidget(group.start, msg, {
                 coverGutter: false,
                 noHScroll: true,
               }),
@@ -355,13 +447,13 @@ define([
           }
         }
       }
-      return affectedGroups
     }
 
     /**
-     * This loads all available paths of the API to show them in the autocomplete
+     * Load the API specification to provide hints (autocomplete) using the
+     * plugin helper.
      */
-    async getAvailableMethods() {
+    async getAPIspec() {
       try {
         const response = await this.request.httpReq(
           'GET',
@@ -375,36 +467,9 @@ define([
     }
 
     /**
-     * This set some required settings at init
+     * Initialize the hint plugin for CodeMirror
      */
-    init() {
-      this.apiInputBox.setSize('auto', '100%')
-      this.apiInputBox.model = []
-      this.getAvailableMethods()
-      this.apiInputBox.on('keyup', function (cm, e) {
-        if (
-          !ExcludedIntelliSenseTriggerKeys[(e.keyCode || e.which).toString()]
-        ) {
-          cm.execCommand('autocomplete', null, {
-            completeSingle: false,
-          })
-        }
-      })
-      this.apiOutputBox.setSize('auto', '100%')
-      const currentState = this.appState.getCurrentDevTools()
-      if (!currentState) {
-        const demoStr =
-          'GET /agents?status=active\n\n#Example comment\nGET /manager/info\n\nGET /syscollector/000/packages?search=ssh\n' +
-          JSON.stringify({ limit: 5 }, null, 2)
-
-        this.appState.setCurrentDevTools(demoStr)
-        this.apiInputBox.getDoc().setValue(demoStr)
-      } else {
-        this.apiInputBox.getDoc().setValue(currentState)
-      }
-      this.groups = this.analyzeGroups()
-      const currentGroup = this.calculateWhichGroup()
-      this.highlightGroup(currentGroup)
+    registerCodeMirrorHintPlugin() {
       const self = this
       // Register our custom Codemirror hint plugin.
       CodeMirror.registerHelper('hint', 'dictionaryHint', function (editor) {
@@ -412,7 +477,7 @@ define([
         function getDictionary(line, word) {
           let hints = []
           const exp = line.split(/\s+/g)
-          const currentGroup = self.calculateWhichGroup()
+          const currentGroup = self.selectedGroup
           const editorCursor = editor.getCursor()
           // Get http method, path, query params from API request
           const [
@@ -421,44 +486,11 @@ define([
             inputPath,
             inputQueryParamsStart,
             inputQueryParams,
-          ] =
-            (currentGroup &&
-              currentGroup.requestText &&
-              currentGroup.requestText.match(
-                /^(GET|PUT|POST|DELETE) ([^\?]*)(\?)?(\S+)?/
-              )) ||
-            []
-          // Split the input request path as array and lowercase
-          const inputEndpoint =
-            (inputPath &&
-              inputPath
-                .split('/')
-                .filter((item) => item)
-                .map((item) => item.toLowerCase())) ||
-            []
-          // Get all API endpoints with http method in the request
-          const inputHttpMethodEndpoints =
-            (model.find((item) => item.method === inputHttpMethod) || {})
-              .endpoints || []
-          // Find the API endpoint in the request
-          const apiEndpoint = inputHttpMethodEndpoints
-            .map((endpoint) => ({
-              ...endpoint,
-              splitURL: endpoint.name.split('/').filter((item) => item),
-            }))
-            .filter(
-              (endpoint) => endpoint.splitURL.length === inputEndpoint.length
-            )
-            .find((endpoint) =>
-              endpoint.splitURL.reduce(
-                (accum, str, index) =>
-                  accum &&
-                  (str.startsWith(':')
-                    ? true
-                    : str.toLowerCase() === inputEndpoint[index]),
-                true
-              )
-            )
+            inputEndpoint,
+            inputHttpMethodEndpoints,
+            apiEndpoint,
+          ] = self.destructureGroup(currentGroup)
+
           // Get API endpoint path hints
           if (
             exp[0] &&
@@ -699,7 +731,7 @@ define([
                   _moveCursor: ['string', 'array'].includes(bodyParam.type),
                   displayText: bodyParam.name,
                   bodyParam,
-                  hint: (cm, self, data) => {
+                  hint: (_cm, _self, data) => {
                     editor.replaceRange(
                       line.replace(/\S+/, '') + data.text,
                       { line: editorCursor.line, ch: editorCursor.ch },
@@ -733,9 +765,12 @@ define([
         let start = cur.ch
         let end = start
         const whiteSpace = /\s/
-        while (end < curLine.length && !whiteSpace.test(curLine.charAt(end)))
+        while (end < curLine.length && !whiteSpace.test(curLine.charAt(end))) {
           ++end
-        while (start && !whiteSpace.test(curLine.charAt(start - 1))) --start
+        }
+        while (start && !whiteSpace.test(curLine.charAt(start - 1))) {
+          --start
+        }
         const curWord = start !== end && curLine.slice(start, end)
         return {
           list: (!curWord
@@ -748,260 +783,289 @@ define([
           to: CodeMirror.Pos(cur.line, end),
         }
       })
-      $('.wz-dev-column-separator').mousedown(function (e) {
-        e.preventDefault()
-        const leftOrigWidth = $('#wz-dev-left-column').width()
-        const rightOrigWidth = $('#wz-dev-right-column').width()
-        $(document).mousemove(function (e) {
-          const leftWidth = e.pageX - 85 + 14
-          let rightWidth = leftOrigWidth - leftWidth
-          $('#wz-dev-left-column').css('width', leftWidth)
-          $('#wz-dev-right-column').css('width', rightOrigWidth + rightWidth)
-        })
-      })
-      $(document).mouseup(function () {
-        $(document).unbind('mousemove')
-      })
-      this.$window.onresize = () => {
-        $('#wz-dev-left-column').attr(
-          'style',
-          'width: calc(30% - 7px); !important'
-        )
-        $('#wz-dev-right-column').attr(
-          'style',
-          'width: calc(70% - 7px); !important'
-        )
-      }
-
-      setTimeout((_) => {
-        this.apiInputBox.refresh()
-        this.apiOutputBox.refresh()
-      }, 1)
     }
 
     /**
-     * This method highlights one of the groups the first time
-     * @param {Boolean} firstTime
+     * Saves the current state of the API console to the browser's cache
+     * @returns saved state (current)
      */
-    calculateWhichGroup(firstTime) {
+    saveCurrentState() {
+      const currentState = this.apiInputBox.getValue().toString()
+      this.appState.setCurrentDevTools(currentState)
+      return currentState
+    }
+
+    /**
+     * Restores the API console state from the browser's cache.
+     * If not available, the default requests are used instead.
+     */
+    restoreStateFromCache() {
+      const currentState = this.appState.getCurrentDevTools()
+      if (!currentState) {
+        const demoStr =
+          'GET /agents?status=active\n\n' +
+          '#Example comment\n' +
+          'GET /manager/info\n\n' +
+          'GET /syscollector/000/packages?search=ssh\n' +
+          JSON.stringify({ limit: 5 }, null, 2)
+
+        this.appState.setCurrentDevTools(demoStr)
+        this.apiInputBox.getDoc().setValue(demoStr)
+      } else {
+        this.apiInputBox.getDoc().setValue(currentState)
+      }
+    }
+
+    /**
+     * Finds the selected group and updates this.selectedGroup.
+     * Updates the buttons.
+     * @see updateButtons
+     */
+    setSelectedGroup() {
       try {
         const selection = this.apiInputBox.getCursor()
-        const desiredGroup = firstTime
-          ? this.groups.filter((item) => item.requestText)
-          : this.groups.filter(
-              (item) =>
-                item.requestText &&
-                item.end >= selection.line &&
-                item.start <= selection.line
-            )
+        const desiredGroup = this.groups.filter(
+          (item) =>
+            item.requestText &&
+            item.end >= selection.line &&
+            item.start <= selection.line
+        )
+        let docuURL = ''
 
-        // Place play button at first line from the selected group
-        const cords = this.apiInputBox.cursorCoords({
-          line: desiredGroup[0].start,
-          ch: 0,
-        })
-        if (!$('#play_button').is(':visible')) $('#play_button').show()
-        if (!$('#wazuh_dev_tools_documentation').is(':visible'))
-          $('#wazuh_dev_tools_documentation').show()
-        const currentPlayButton = $('#play_button').offset()
-        $('#play_button').offset({
-          top: cords.top,
-          left: currentPlayButton.left,
-        })
-        $('#wazuh_dev_tools_documentation').offset({
-          top: cords.top,
-        })
-        if (firstTime) this.highlightGroup(desiredGroup[0])
-        if (desiredGroup[0]) {
-          const [
-            inputRequest,
-            inputHttpMethod,
-            inputPath,
-            inputQueryParamsStart,
-            inputQueryParams,
-          ] =
-            (desiredGroup[0] &&
-              desiredGroup[0].requestText &&
-              desiredGroup[0].requestText.match(
-                /^(GET|PUT|POST|DELETE) ([^\?]*)(\?)?(\S+)?/
-              )) ||
-            []
-          // Split the input request path as array and lowercase
-          const inputEndpoint =
-            (inputPath &&
-              inputPath
-                .split('/')
-                .filter((item) => item)
-                .map((item) => item.toLowerCase())) ||
-            []
-          // Get all API endpoints with http method in the request
-          const inputHttpMethodEndpoints =
-            (
-              this.apiInputBox.model.find(
-                (item) => item.method === inputHttpMethod
-              ) || {}
-            ).endpoints || []
-          // Find the API endpoint in the request
-          const apiEndpoint = inputHttpMethodEndpoints
-            .map((endpoint) => ({
-              ...endpoint,
-              splitURL: endpoint.name.split('/').filter((item) => item),
-            }))
-            .filter(
-              (endpoint) => endpoint.splitURL.length === inputEndpoint.length
-            )
-            .find((endpoint) =>
-              endpoint.splitURL.reduce(
-                (accum, str, index) =>
-                  accum &&
-                  (str.startsWith(':')
-                    ? true
-                    : str.toLowerCase() === inputEndpoint[index]),
-                true
-              )
-            )
+        if (desiredGroup.length > 0) {
+          // apiEndpoint is at the last position of the array, hence .pop()
+          const apiEndpoint = this.destructureGroup(desiredGroup[0]).pop()
+
+          // Arrange the documentation for this request
           if (apiEndpoint && apiEndpoint.documentation) {
-            const docuUrl = apiEndpoint.documentation.replace(
+            docuURL = apiEndpoint.documentation.replace(
               '/current/',
               `/${this.appDocuVersion}/`
             )
-            $('#wazuh_dev_tools_documentation').attr('href', docuUrl).show()
-          } else {
-            $('#wazuh_dev_tools_documentation').attr('href', '').hide()
           }
         }
-        return desiredGroup[0]
+
+        this.selectedGroup = desiredGroup[0] || null
+
+        // Get the cursor's position for the selected line.
+        // The line can be part of a group (request) or not.
+        const coords = this.apiInputBox.cursorCoords({
+          line: desiredGroup[0]?.start ?? selection.line ?? 0,
+          ch: 0,
+        })
+        this.updateButtons(coords, docuURL)
       } catch (error) {
-        $('#play_button').hide()
-        $('#wazuh_dev_tools_documentation').hide()
-        return null
+        console.error(error)
+        this.selectedGroup = null
       }
     }
 
     /**
-     * This perfoms the typed request to API
-     * @param {Boolean} firstTime
+     * Destructure the API request represented by the given group
+     * @param {object} group group from this.groups to destructure
+     * @returns array
      */
-    async send(firstTime) {
+    destructureGroup(group) {
+      const [
+        inputRequest,
+        inputHttpMethod,
+        inputPath,
+        inputQueryParamsStart,
+        inputQueryParams,
+      ] =
+        (group &&
+          group.requestText &&
+          group.requestText.match(
+            /^(GET|PUT|POST|DELETE) ([^\?]*)(\?)?(\S+)?/
+          )) ||
+        []
+
+      // Split the input request path as array and lowercase
+      const inputEndpoint =
+        (inputPath &&
+          inputPath
+            .split('/')
+            .filter((item) => item)
+            .map((item) => item.toLowerCase())) ||
+        []
+
+      // Get all API endpoints with http method in the request
+      const inputHttpMethodEndpoints =
+        (
+          this.apiInputBox.model.find(
+            (item) => item.method === inputHttpMethod
+          ) || {}
+        ).endpoints || []
+
+      // Find the API endpoint in the request
+      const apiEndpoint = inputHttpMethodEndpoints
+        .map((endpoint) => ({
+          ...endpoint,
+          splitURL: endpoint.name.split('/').filter((item) => item),
+        }))
+        .filter((endpoint) => endpoint.splitURL.length === inputEndpoint.length)
+        .find((endpoint) =>
+          endpoint.splitURL.reduce(
+            (accum, str, index) =>
+              accum &&
+              (str.startsWith(':')
+                ? true
+                : str.toLowerCase() === inputEndpoint[index]),
+            true
+          )
+        )
+      return [
+        inputRequest,
+        inputHttpMethod,
+        inputPath,
+        inputQueryParamsStart,
+        inputQueryParams,
+        inputEndpoint,
+        inputHttpMethodEndpoints,
+        apiEndpoint,
+      ]
+    }
+
+    /**
+     * Applies initial styles to the Play and the Documentaion buttons.
+     *
+     * This is required, as the buttons would be placed outside of the
+     * input panel otherwise.
+     */
+    initButtons() {
+      const coords = this.apiInputBox.cursorCoords({
+        line: 0,
+        ch: 0,
+      })
+      const currentPlayButton = $('#play_button').offset()
+
+      // Initial offset
+      $('#play_button')
+        .offset({
+          top: coords.top + 35,
+          left: currentPlayButton.left,
+        })
+        .show()
+      $('#wazuh_dev_tools_documentation')
+        .offset({
+          top: coords.top + 35,
+        })
+        .show()
+    }
+
+    /**
+     * Updates the Play and Documentation buttons, by modifying their position
+     * and visibility depending on the cursor's position.
+     *
+     * If the cursor position is not over a valid API endpoint, both buttons
+     * are hidden.
+     *
+     * If no documentation link is found for the selected request, the
+     * documentation link is hidden.
+     *
+     * The buttons are re-enabled if the previous conditions are no longer
+     * present.
+     *
+     * The buttons positions are always updated to the cursor's position.
+     *
+     * @param {object} coords CodeMirror's cursor coordinates
+     * @param {string} docuLink documentation link for the selected request
+     */
+    updateButtons(coords, docuLink = '') {
+      // Update buttons' visbility
+      docuLink === ''
+        ? $('#wazuh_dev_tools_documentation').hide()
+        : $('#wazuh_dev_tools_documentation').show()
+      this.selectedGroup === null
+        ? $('#play_button').hide()
+        : $('#play_button').show()
+
+      const currentPlayButton = $('#play_button').offset()
+      // Update buttons' position
+      $('#play_button').offset({
+        top: coords.top,
+        left: currentPlayButton.left,
+      })
+      $('#wazuh_dev_tools_documentation').attr('href', docuLink).offset({
+        top: coords.top,
+      })
+    }
+
+    /**
+     * Updates the value of the output panel.
+     * @param {string} value text to set
+     */
+    setOutput(value) {
+      this.apiOutputBox.setValue(value)
+    }
+
+    /**
+     * Makes a request to the Wazuh API
+     * @param {string} method one of GET, POST, PUT, DELETE
+     * @param {string} path API endpoint
+     * @param {object} payload requests payload, body
+     * @returns API response, as a model
+     * @see apiResponseFactory.js
+     */
+    async actuallySend(method, path, payload = {}) {
+      return await this.apiRequestFactory
+        .getRequest(method, path, payload)
+        .send()
+    }
+
+    /**
+     * Prepares the selected request to be sent to the API.
+     *
+     * Checks that the request is valid, sends it and updates the output panel,
+     * also handling any error that might have happened.
+     * @see actuallySend @see groupHasErrors @see setOutput
+     */
+    async send() {
       try {
-        this.groups = this.analyzeGroups()
-        const desiredGroup = this.calculateWhichGroup(firstTime)
-        if (desiredGroup) {
-          if (firstTime) {
-            const cords = this.apiInputBox.cursorCoords({
-              line: desiredGroup.start,
-              ch: 0,
-            })
-            const currentPlayButton = $('#play_button').offset()
-            $('#play_button').offset({
-              top: cords.top + 35,
-              left: currentPlayButton.left,
-            })
-          }
-
-          const affectedGroups = this.checkJsonParseError()
-          const filteredAffectedGroups = affectedGroups.filter(
-            (item) => item === desiredGroup.requestText
-          )
-          if (filteredAffectedGroups.length) {
-            this.apiOutputBox.setValue('Error parsing JSON query')
-            return
-          }
-
-          const method = desiredGroup.requestText.startsWith('GET')
-            ? 'GET'
-            : desiredGroup.requestText.startsWith('POST')
-            ? 'POST'
-            : desiredGroup.requestText.startsWith('PUT')
-            ? 'PUT'
-            : desiredGroup.requestText.startsWith('DELETE')
-            ? 'DELETE'
-            : 'GET'
-
-          let requestCopy = desiredGroup.requestText.includes(method)
-            ? desiredGroup.requestText.split(method)[1].trim()
-            : desiredGroup.requestText
-
-          // Checks for inline parameters
-          let paramsInline = false
-          if (requestCopy.includes('{') && requestCopy.includes('}')) {
-            paramsInline = `{${requestCopy.split('{')[1]}`
-            requestCopy = requestCopy.split('{')[0]
-          }
-          const inlineSplit = requestCopy.split('?')
-
-          const extra =
-            inlineSplit && inlineSplit[1]
-              ? queryString.parse(inlineSplit[1])
-              : {}
-
-          const req = requestCopy
-            ? requestCopy.startsWith('/')
-              ? requestCopy
-              : `/${requestCopy}`
-            : '/'
-
-          let JSONraw = {}
-          try {
-            JSONraw = JSON.parse(paramsInline || desiredGroup.requestTextJson)
-          } catch (error) {
-            JSONraw = {}
-          }
-
-          if (typeof extra.pretty !== 'undefined') delete extra.pretty
-          if (typeof JSONraw.pretty !== 'undefined') delete JSONraw.pretty
-
-          let path = ''
-          if (method === 'PUT' || method === 'POST') {
-            // Assign inline parameters
-            for (const key in extra) JSONraw[key] = extra[key]
-            path = req.includes('?') ? req.split('?')[0] : req
-          } else {
-            if (extra) {
-              Object.keys(JSONraw).map((k) => {
-                if (extra[k]) {
-                  delete JSONraw[k]
-                }
-              })
-            }
-            path =
-              typeof JSONraw === 'object' && Object.keys(JSONraw).length
-                ? `${req}${req.includes('?') ? '&' : '?'}${queryString.unescape(
-                    queryString.stringify(JSONraw)
-                  )}`
-                : req
-            JSONraw = {}
-          }
-
-          //if (typeof JSONraw === 'object') JSONraw.devTools = true
-          if (!firstTime) {
-            const output = await this.request.apiReq(path, JSONraw, method)
-            const result = output.data
-              ? JSON.stringify((output || {}).data || {}, null, 2).replace(
-                  /\\\\/g,
-                  '\\'
-                )
-              : output.data.message || 'Unkown error'
-            this.apiOutputBox.setValue(result)
-          }
+        const group = this.selectedGroup
+        if (!group) {
+          throw new RangeError('No group is selected')
         }
-        ;(firstTime || !desiredGroup) && this.apiOutputBox.setValue('Welcome!') // eslint-disable-line
+        if (this.groupHasErrors(group)) {
+          throw new SyntaxError('The selected group contains syntax errors')
+        }
+
+        const [mMethod, mPath] = group.requestText.split(' ')
+        const mPayload =
+          group.requestTextJson.length > 0
+            ? JSON.parse(group.requestTextJson)
+            : {}
+        const response = await this.actuallySend(mMethod, mPath, mPayload)
+        const output = JSON.stringify(
+          response.getRawResponse(),
+          null,
+          2
+        ).replace(/\\\\/g, '\\')
+        this.setOutput(output)
       } catch (error) {
-        if ((error || {}).status === -1) {
-          return this.apiOutputBox.setValue(
-            "Wazuh API don't reachable. Reason: timeout."
-          )
+        if (error instanceof RangeError || error instanceof SyntaxError) {
+          this.setOutput(error.name + ': ' + error.message)
+        } else if (typeof error === 'string') {
+          this.setOutput(error)
+        } else if (error.data && typeof error.data === 'object') {
+          this.setOutput(JSON.stringify(error))
         } else {
-          this.notification.showErrorToast(error)
-          if (typeof error === 'string') {
-            return this.apiOutputBox.setValue(error)
-          } else if (error && error.data && typeof error.data === 'object') {
-            return this.apiOutputBox.setValue(JSON.stringify(error))
-          } else {
-            return this.apiOutputBox.setValue('Empty')
-          }
+          this.setOutput('Empty')
         }
       }
+    }
+
+    /**
+     * Look for errors on the given group
+     * @param {object} group group to check
+     * @returns true if the group has errors, false otherwise
+     */
+    groupHasErrors(group) {
+      return (
+        this.errorWidgets.filter(
+          (item) => item.widget.line.text === group.requestText
+        ).length > 0
+      )
     }
   }
   app.controller('devToolsCtrl', DevToolsController)
