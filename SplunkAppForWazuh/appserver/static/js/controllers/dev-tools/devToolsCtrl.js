@@ -489,7 +489,7 @@ define([
             inputEndpoint,
             inputHttpMethodEndpoints,
             apiEndpoint,
-          ] = this.destructureGroup(currentGroup)
+          ] = self.destructureGroup(currentGroup)
 
           // Get API endpoint path hints
           if (
