@@ -19,6 +19,7 @@ define(['../module'], function (module) {
           'os.name': 'OS name',
           'os.version': 'OS version',
           status: 'Status',
+          group_config_status: 'Synced',
           group: 'Group',
           ip: 'IP',
           description: 'Description',
