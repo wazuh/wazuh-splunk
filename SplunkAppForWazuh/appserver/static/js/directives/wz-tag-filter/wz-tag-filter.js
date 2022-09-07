@@ -120,10 +120,10 @@ define(['../module'], function (app) {
                   .filter((x) => x.type === 'filter')
                   .forEach((tag, idx2) => {
                     const [dataModelTag] = $scope.dataModel.filter((c) => c.key === tag.key)
-                    const operador = dataModelTag.list.includes(tag.value.value) ? '=' : '~'
+                    const operator = dataModelTag.list.includes(tag.value.value) ? '=' : '~'
                     const value =
                       tag.value.value === 'unknown' ? 'null' : tag.value.value
-                    queryObj.query += tag.key + operador + value
+                    queryObj.query += tag.key + operator + value
                     if (idx2 != group.length - 1) {
                       queryObj.query +=
                         $scope.connectors[idx].subgroup[idx2].value
