@@ -125,6 +125,51 @@
           <!-- End configuration block -->
 
           <div class="wz-margin-top-10">
+            <span class="font-size-16">Key request settings</span>
+            <div class="wz-margin-top-10">
+              <span class="md-subheader small"
+                >The key request feature allows fetching the agent keys stored on an external database</span
+              >
+            </div>
+          </div>
+          <md-divider class="wz-margin-top-10"></md-divider>
+
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10">
+            <wz-config-item
+              label="Key request status"
+              value="currentConfig['auth-auth'].auth.key_request.enabled === 'no' ? 'disabled' : 'enabled'">
+            </wz-config-item>
+            <wz-config-item
+              label="Full path to the executable"
+              value="currentConfig['auth-auth'].auth.key_request.exec_path"
+              ng-if="currentConfig['auth-auth'].auth.key_request.exec_path != undefined">
+            </wz-config-item>
+            <wz-config-item
+              label="Full path to the Unix domain socket"
+              value="currentConfig['auth-auth'].auth.key_request.socket"
+              ng-if="currentConfig['auth-auth'].auth.key_request.socket != undefined">
+            </wz-config-item>
+            <wz-config-item
+              label="Maximum time for waiting a response from the executable"
+              value="currentConfig['auth-auth'].auth.key_request.timeout"
+              ng-if="currentConfig['auth-auth'].auth.key_request.timeout != undefined">
+            </wz-config-item>
+            <wz-config-item
+              label="Number of threads for dispatching the external keys requests"
+              value="currentConfig['auth-auth'].auth.key_request.threads"
+              ng-if="currentConfig['auth-auth'].auth.key_request.threads != undefined">
+            </wz-config-item>
+            <wz-config-item
+              label="Indicates the maximum size of the queue for fetching external keys"
+              value="currentConfig['auth-auth'].auth.key_request.queue_size"
+              ng-if="currentConfig['auth-auth'].auth.key_request.queue_size != undefined">
+            </wz-config-item>
+          </div>
+
+          <!-- End configuration block -->
+
+          <div class="wz-margin-top-10">
             <span class="font-size-16">SSL settings</span>
             <div class="wz-margin-top-10">
               <span class="md-subheader small"
