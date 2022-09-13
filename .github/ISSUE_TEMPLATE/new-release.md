@@ -1,6 +1,6 @@
 ---
 name: New release
-about: "[wazuh-team]  Track the effort of the team to release a new version of Wazuh "
+about: "[wazuh-team] Track the effort of the team to release a new version of Wazuh"
 title: Support for Wazuh 4.x.x
 labels: enhancement
 assignees: ''
@@ -10,7 +10,7 @@ assignees: ''
 ## Description
 
 Example:
-> Wazuh 4.3.8 will be released shortly. Our Wazuh-dashboard and Kibana needs to support this new version. From our side, no changes will be included, so we only need to bump the version.
+> Wazuh 4.3.8 will be released shortly. Our app for Splunk needs to support this new version. From our side, no changes will be included, so we only need to bump the version.
 
 ## Tasks
 
@@ -29,4 +29,4 @@ Example:
 
 ### Supported versions
 
-Same as on [previous releases](https://github.com/wazuh/wazuh-kibana-app/wiki/Compatibility)
+Same as on previous releases: listed on our [supported versions](https://github.com/wazuh/wazuh-splunk/blob/master/scripts/tag.py#L7-L13).
