@@ -251,6 +251,26 @@ All notable changes to the Wazuh App for Splunk project will be documented in th
 - Fixed regex field in Decoder detail
 - Fixed search bar on Agents table
 
+## Wazuh v3.13.6 - Splunk Enterprise v8.0.4.1 - Revision 70
+
+### Added
+
+- Support for Wazuh v3.13.6
+
+
+## Wazuh v3.13.5 - Splunk Enterprise v8.0.4.1 - Revision 69
+
+### Added
+
+- Support for Wazuh v3.13.5
+
+
+## Wazuh v3.13.4 - Splunk Enterprise v8.0.4.1 - Revision 68
+
+### Added
+
+- Support for Wazuh v3.13.4
+
 ## Wazuh v3.13.2 - Splunk Enterprise v8.0.4.1 - Revision 67
 
 ### Added
