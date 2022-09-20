@@ -12,6 +12,11 @@ All notable changes to the Wazuh App for Splunk project will be documented in th
 - Update response handlers for the endpoint /agents/summary/status. [#1355](https://github.com/wazuh/wazuh-splunk/pull/1355)
 
 
+## Wazuh v4.3.8 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4311
+### Added
+
+- Support for Wazuh 4.3.8
+
 ## Wazuh v4.3.7 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4310
 ### Added
 
