@@ -4,13 +4,7 @@ import logging
 import os
 
 # Splunk versions
-supported_versions = [
-    '8.1.1', '8.1.2', '8.1.3', '8.1.4',
-    '8.1.5', '8.1.6', '8.1.7', '8.1.7.1',
-    '8.1.7.2', '8.1.8', '8.1.9', '8.1.10',
-    '8.2.0', '8.2.1', '8.2.2', '8.2.3',
-    '8.2.4', '8.2.5', '8.2.6'
-]
+supported_versions = ['8.1', '8.2']
 # Wazuh version
 version = '4.4.0'
 # App's revision number (previous rev + 1)
