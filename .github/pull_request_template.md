@@ -1,22 +1,14 @@
 ### Description
-<!--
 [Describe what this change achieves]
--->
 
 ### Issues Resolved
-<!--
 [List any issues this PR will resolve]
--->
 
 ### Evidence
-<!--
 [Provide screenshots or videos to prove this PR solves the issues]
--->
 
 ### Test
-<!--
 [Provide instructions to test this PR]
--->
 
 ### Check List
 - [ ] New functionality has been documented.
