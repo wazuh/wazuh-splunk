@@ -40,6 +40,6 @@
     "test": "mocha tests/manager.js"
   },
   "version": "4.4.0",
-  "revision": "4401",
+  "revision": "4400",
   "splunk": "8.2"
 }
