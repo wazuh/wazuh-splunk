@@ -53,7 +53,7 @@ prebuild:
 # Update the tag.py file before running this script.
 tags:
 	@echo "$(BWhite)- Generating Git tags ...$(Color_Off)"
-	@python3 scripts/tag.py >> tags.log
+	@python3 scripts/tag.py
 
 # Update the API info. The Wazuh API must be running and reachable locally.
 api-info:
