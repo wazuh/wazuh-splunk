@@ -26,6 +26,7 @@ Example:
 ### Post-release
 - [ ] Make draft releases final and public.
 - [ ] Sync branches.
+- [ ] Update [Compatibility Matrix](https://github.com/wazuh/wazuh-splunk/wiki/Compatibility).
 
 ### Supported versions
 
