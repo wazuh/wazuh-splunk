@@ -13,9 +13,9 @@ supported_versions = [
     '8.2.8',
 ]
 # Wazuh version
-version = '4.3.9'
+version = '4.3.10'
 # App's revision number (previous rev + 1)
-revision = '4312'
+revision = '4313'
 # Base branch
 branch = ".".join(version.split('.')[:2])
 
@@ -47,17 +47,20 @@ def setup():
 
 def main():
     logging.info(f'Wazuh version is {version}. App revision is {revision}')
-    for splunk in supported_versions:
-        tag = f"v{version}-{splunk}"
-        logging.info(f'Generating tag {tag}')
-        update_package_json(splunk)
-        os.system('make prebuild')
-        os.system(f'git commit -am "Bump {tag}"')
-        os.system(f'git tag -a {tag} -m "Wazuh {version} for Splunk {splunk}"')
-        logging.info(f'Pushing tag {tag} to remote.')
-        os.system(f'git push origin {tag}')
-        # Undo latest commit
-        os.system(f'git reset --hard origin/{branch}')
+    with open('tags.log', 'w') as f:
+        for splunk in supported_versions:
+            tag = f"v{version}-{splunk}"
+            logging.info(f'Generating tag {tag}')
+            update_package_json(splunk)
+            os.system('make prebuild')
+            os.system(f'git commit -am "Bump {tag}"')
+            os.system(f'git tag -a {tag} -m "Wazuh {version} for Splunk {splunk}"')
+            logging.info(f'Pushing tag {tag} to remote.')
+            os.system(f'git push origin {tag}')
+            # Write tag to file (used later by the CI)
+            f.write(f'{tag}\n')
+            # Undo latest commit
+            os.system(f'git reset --hard origin/{branch}')
 
 
 if __name__ == '__main__':
