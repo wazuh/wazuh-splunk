@@ -15,7 +15,7 @@ import os
 # ================================================ #
 
 # Splunk versions
-supported_versions = ['8.1', '8.2']
+supported_versions = ['8.2']
 # Wazuh version
 version = '4.4.1'
 # RC number(optional, set to 0 or None to disable)
@@ -94,8 +94,8 @@ def main():
                 os.system(f'git push origin {tag}')
 
                 # Undo latest commit
-                # os.system(f'git reset HEAD~1')
-                os.system(f'git reset --hard origin/{BRANCH}')
+                os.system(f'git reset --hard HEAD~1')
+                # os.system(f'git reset --hard origin/{BRANCH}')
 
             # Write tag to file (used later by the CI)
             f.write(f'{tag}\n')
