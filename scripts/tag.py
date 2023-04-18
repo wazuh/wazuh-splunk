@@ -17,11 +17,11 @@ import os
 # Splunk versions
 supported_versions = ['8.1', '8.2']
 # Wazuh version
-version = '4.4.1'
+version = '4.5.0'
 # RC number(optional, set to 0 or None to disable)
 rc_number = 0
 # App's revision number (previous rev + 1)
-revision = '4402'
+revision = '4501'
 # Debug mode
 dry_run = False
 
