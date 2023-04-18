@@ -866,6 +866,7 @@
             value="currentConfig['syscheck-syscheck'].syscheck.file_limit.enabled === 'yes' ? 'enabled' : 'disabled'">
           </wz-config-item>
           <wz-config-item
+            ng-if="currentConfig['syscheck-syscheck'].syscheck.file_limit.enabled === 'yes'"
             label="Maximum number of files to monitor"
             value="currentConfig['syscheck-syscheck'].syscheck.file_limit.entries">
           </wz-config-item>
@@ -913,6 +914,7 @@
             value="currentConfig['syscheck-syscheck'].syscheck.registry_limit.enabled === 'yes' ? 'enabled' : 'disabled'">
           </wz-config-item>
           <wz-config-item
+            ng-if="currentConfig['syscheck-syscheck'].syscheck.registry_limit.enabled === 'yes'"
             label="Maximum number of registries to monitor"
             value="currentConfig['syscheck-syscheck'].syscheck.registry_limit.entries">
           </wz-config-item>
