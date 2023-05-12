@@ -1,5 +1,5 @@
 const UI_METADATA = {
-  "version": "4.4.1",
+  "version": "4.4.2",
   "revision": "4402"
 }
 
