@@ -170,7 +170,7 @@
                   </span>
                   curl -so wazuh-agent.pkg
                   https://packages.wazuh.com/4.x/osx/wazuh-agent-{{wazuhVersion}}-1.pkg
-                  && sudo launchctl setenv WAZUH_MANAGER '{{config.managerIp}}'
+                  && sudo echo "WAZUH_MANAGER='{{config.managerIp}}'" > /tmp/wazuh_envs
                   && sudo installer -pkg ./wazuh-agent.pkg -target /
                 </div>
               </div>
@@ -344,7 +344,7 @@
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step2">
-                    /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
+                    sudo /Library/Ossec/bin/manage_agents -i {{config.agentKey}}
                   </div>
                   3. Restart the agent.
                   <span class="clip cursor-pointer">
@@ -357,7 +357,7 @@
                     </md-tooltip>
                   </span>
                   <div class="register-snippet" id="step3">
-                    /Library/Ossec/bin/wazuh-control restart
+                    sudo /Library/Ossec/bin/wazuh-control restart
                   </div>
                 </div>
               </div>
