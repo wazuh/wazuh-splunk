@@ -60,12 +60,12 @@ This report can be used by the auditors to dig deeper into any possible failures
 
 ## Conclusions
 
-| Status         | Platform                       |
-|----------------|--------------------------------|
-| :black_circle: | Wazuh dashboards [VERSION][RC] |
-| :black_circle: | Kibana 7.17.9                  |
-| :black_circle: | Kibana 7.16.3                  |
-| :black_circle: | Kibana 7.10.2 + ODFE 1.2.0     |
+| Status         | Platform   |
+|----------------|------------|
+| :black_circle: | Splunk 8.1 |
+| :black_circle: | Splunk 8.2 |
+
+See [Supported versions](https://github.com/wazuh/wazuh-splunk/wiki/Compatibility).
 
 <!-- ** Copy and paste as a new comment. Modify as needed. **
 
