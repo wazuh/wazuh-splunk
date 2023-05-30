@@ -65,7 +65,8 @@ define(['../../module', '../../../utils/config-handler'], function (
       this.$scope.configurationSubTab = ''
       this.$scope.integrations = {}
       this.$scope.selectedItem = 0
-      this.$scope.isSynchronized = this.$scope.currentAgent.group_config_status == 'synced'
+      this.$scope.isSynchronized =
+        this.$scope.currentAgent.group_config_status == 'synced'
       this.excludeModulesByOs = {
         linux: [],
         windows: ['audit', 'oscap', 'docker'],

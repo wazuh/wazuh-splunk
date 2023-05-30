@@ -200,7 +200,7 @@ define([
           this.scope.wzMonitoringEnabled = false
           this.apiReq(`/agents/summary/status`)
             .then((data) => {
-              const status =data.data.data.connection
+              const status = data.data.data.connection
               this.scope.agentsCountTotal = status.total
               this.scope.agentsCountActive = status.active
               this.scope.agentsCountDisconnected = status.disconnected
