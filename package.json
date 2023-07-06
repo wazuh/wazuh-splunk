@@ -39,7 +39,7 @@
     "pretty": "make pretty",
     "test": "mocha tests/manager.js"
   },
-  "version": "4.4.4",
-  "revision": "4404",
+  "version": "4.4.5",
+  "revision": "4405",
   "splunk": "8.2"
 }
