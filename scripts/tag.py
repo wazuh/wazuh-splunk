@@ -17,18 +17,18 @@ import os
 # Splunk versions
 supported_versions = ['8.1', '8.2']
 # Wazuh version
-version = '4.4.4'
+version = '4.4.5'
 # RC number(optional, set to 0 or None to disable)
 rc_number = 1
 # App's revision number (previous rev + 1)
-revision = '4404'
+revision = '4405'
 # Debug mode
 dry_run = False
 
 # ================================================ #
 # Constants and global variables                   #
 # ================================================ #
-BRANCH = ".".join(version.split('.')[:2])
+BRANCH = version
 LOG_FILE = 'output.log'
 TAGS_FILE = 'tags.log'
 
