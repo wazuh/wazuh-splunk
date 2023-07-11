@@ -1,6 +1,6 @@
 const UI_METADATA = {
-  "version": "4.4.5",
-  "revision": "4405"
+  "version": "4.5.0",
+  "revision": "4500"
 }
 
 define(['../module'], function (module) {
