@@ -28,7 +28,7 @@ dry_run = False
 # ================================================ #
 # Constants and global variables                   #
 # ================================================ #
-BRANCH = ".".join(version.split('.')[:2])
+BRANCH = version
 LOG_FILE = 'output.log'
 TAGS_FILE = 'tags.log'
 
