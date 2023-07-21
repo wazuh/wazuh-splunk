@@ -37,7 +37,9 @@
     "lint": "make lint",
     "prebuild": "make prebuild",
     "pretty": "make pretty",
-    "test": "mocha tests/manager.js"
+    "test": "mocha tests/manager.js",
+    "release:bump": "node scripts/release/bump --manifest-package package.json",
+    "release:tag": "node scripts/release/tag --manifest-package package.json"
   },
   "version": "4.7.0",
   "revision": "4700",
