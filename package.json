@@ -14,7 +14,8 @@
     "eslint-plugin-requirejs": "^4.0.1",
     "mocha": "^9.2.0",
     "needle": "^3.0.0",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "swagger-client": "3.19.8"
   },
   "homepage": "https://github.com/wazuh/wazuh-splunk#readme",
   "keywords": [
@@ -38,6 +39,7 @@
     "prebuild": "make prebuild",
     "pretty": "make pretty",
     "test": "mocha tests/manager.js",
+    "generate:api-data": "node scripts/generate-api-data.js --spec https://raw.githubusercontent.com/wazuh/wazuh/$(node -e \"console.log(require('./package.json').version.split('.').splice(0,2).join('.'))\")/api/api/spec/spec.yaml --output file --output-directory SplunkAppForWazuh/bin/api_info --display-configuration",
     "release:bump": "node scripts/release/bump --manifest-package package.json",
     "release:tag": "node scripts/release/tag --manifest-package package.json"
   },
