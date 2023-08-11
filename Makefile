@@ -49,12 +49,6 @@ prebuild:
 	@echo "$(BWhite)- Updating project's versions ...$(Color_Off)"
 	@node scripts/generate-build-version
 
-# Generate tags for a release automatically.
-# Update the tag.py file before running this script.
-tags:
-	@echo "$(BWhite)- Generating Git tags ...$(Color_Off)"
-	@python3 scripts/tag.py
-
 # Update the API info. The Wazuh API must be running and reachable locally.
 api-info:
 	@echo "$(BWhite)- Updating the WAZUH API endpoints local registry ...$(Color_Off)"
