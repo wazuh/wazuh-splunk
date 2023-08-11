@@ -177,8 +177,10 @@ define(['../../module'], function (controllers) {
         this.scope.agentsCountDisconnected = agentsStatus.disconnected
         this.scope.agentsCountNeverConnected = agentsStatus.never_connected
         this.scope.agentsCountTotal = agentsStatus.total
-        this.scope.agentsCoverity = (agentsStatus.active / agentsStatus.total) * 100
-        this.scope.agentsSynced = (agentsSynced.synced / agentsSynced.total) * 100
+        this.scope.agentsCoverity =
+          (agentsStatus.active / agentsStatus.total) * 100
+        this.scope.agentsSynced =
+          (agentsSynced.synced / agentsSynced.total) * 100
 
         this.scope.totalRules = this.rules.total_affected_items
         this.scope.totalDecoders = this.decoders.total_affected_items
