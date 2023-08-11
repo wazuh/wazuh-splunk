@@ -2,22 +2,6 @@
 
 All notable changes to the Wazuh App for Splunk project will be documented in this file.
 
-## Wazuh v4.8.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4800
-
-### Added
-- Added support for Wazuh 4.8.0.
-
-## Wazuh v4.7.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4700
-
-### Added
-- Added support for Wazuh 4.7.0.
-
-## Wazuh v4.6.0 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4600
-
-### Added
-- Added support for Wazuh 4.6.0.
-- Added Files and Registries limits sections in configurations [#1395](https://github.com/wazuh/wazuh-splunk/pull/1395)
-
 ## Wazuh v4.5.2 - Splunk Enterprise v8.1.[1-10], v8.2.x - Revision 4503
 
 ### Added
