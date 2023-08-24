@@ -9701,7 +9701,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "wazuh_path"
+              "format": "wpk_path"
             }
           },
           {

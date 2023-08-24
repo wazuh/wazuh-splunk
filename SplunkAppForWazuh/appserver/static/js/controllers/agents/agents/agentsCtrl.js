@@ -70,8 +70,12 @@ define([
       this.setBrowserOffset = $dateDiffService.setBrowserOffset
       try {
         const parsedResult = agentData.data.data
-        const summary = this.formatAgentStatusData(parsedResult.agent_status.connection)
-        const agentSynced = this.formatAgentStatusData(parsedResult.agent_status.configuration)
+        const summary = this.formatAgentStatusData(
+          parsedResult.agent_status.connection
+        )
+        const agentSynced = this.formatAgentStatusData(
+          parsedResult.agent_status.configuration
+        )
         const lastAgent = parsedResult.last_registered_agent[0]
         let groups = parsedResult.groups
 
@@ -129,7 +133,7 @@ define([
         this.scope.searchBarModel = {
           name: [],
           status: ['active', 'pending', 'disconnect', 'never_connected'],
-          group_config_status:['synced', 'not synced'],
+          group_config_status: ['synced', 'not synced'],
           group: groups
             ? groups.sort((a, b) => {
                 return a.toString().localeCompare(b.toString())

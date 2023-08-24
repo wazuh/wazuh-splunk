@@ -119,8 +119,12 @@ define(['../module'], function (app) {
                 group
                   .filter((x) => x.type === 'filter')
                   .forEach((tag, idx2) => {
-                    const [dataModelTag] = $scope.dataModel.filter((c) => c.key === tag.key)
-                    const operator = dataModelTag.list.includes(tag.value.value) ? '=' : '~'
+                    const [dataModelTag] = $scope.dataModel.filter(
+                      (c) => c.key === tag.key
+                    )
+                    const operator = dataModelTag.list.includes(tag.value.value)
+                      ? '='
+                      : '~'
                     const value =
                       tag.value.value === 'unknown' ? 'null' : tag.value.value
                     queryObj.query += tag.key + operator + value
