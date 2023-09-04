@@ -42,6 +42,6 @@
     "release:tag": "node scripts/release/tag --manifest-package package.json"
   },
   "version": "4.5.2",
-  "revision": "4504",
+  "revision": "4505",
   "splunk": "8.2"
 }
