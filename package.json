@@ -41,7 +41,7 @@
     "release:bump": "node scripts/release/bump --manifest-package package.json",
     "release:tag": "node scripts/release/tag --manifest-package package.json"
   },
-  "version": "4.5.3",
-  "revision": "4508",
+  "version": "4.5.4",
+  "revision": "4509",
   "splunk": "8.2"
 }
