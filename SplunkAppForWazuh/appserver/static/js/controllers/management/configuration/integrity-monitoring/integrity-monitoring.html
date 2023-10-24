@@ -76,6 +76,19 @@
       name="fim-synchronization"
       >Synchronization</md-nav-item
     >
+    <md-nav-item
+      class="wz-nav-item"
+      md-nav-click="switchConfigurationSubTab('fim-files-limit')"
+      name="fim-files-limit"
+      >Files limit</md-nav-item
+    >
+    <md-nav-item
+      class="wz-nav-item"
+      ng-if="((agent || {}).os || {}).platform === 'windows'"
+      md-nav-click="switchConfigurationSubTab('fim-registries-limit')"
+      name="fim-registries-limit"
+      >Registries limit</md-nav-item
+    >
   </md-nav-bar>
   <!-- End Integrity monitoring navigation bar -->
 
@@ -807,10 +820,110 @@
               label="Maximum message throughput"
               value="currentConfig['syscheck-syscheck'].syscheck.synchronization.max_eps">
             </wz-config-item>
+            <wz-config-item
+              label="Number of threads"
+              value="currentConfig['syscheck-syscheck'].syscheck.synchronization.thread_pool">
+            </wz-config-item>
           </div>
           <!-- End configuration block -->
         </md-card-content>
       </md-card>
+
+      <md-card
+        class="wz-md-card"
+        ng-if="!JSONContent && !XMLContent && configurationSubTab === 'fim-files-limit'">
+        <md-card-content>
+          <div layout="row" layout-align="start center">
+            <div>
+              <span class="font-size-16">Files limit</span>
+              <div class="wz-margin-top-10">
+                <span class="md-subheader small"
+                  >Limit the maximum files in the FIM database</span
+                >
+              </div>
+            </div>
+            <span flex></span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
+            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
+          </div>
+          <md-divider class="wz-margin-top-10"></md-divider>
+
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10">
+            <wz-config-item
+              label="File limit status"
+              value="currentConfig['syscheck-syscheck'].syscheck.file_limit.enabled === 'yes' ? 'enabled' : 'disabled'">
+            </wz-config-item>
+            <wz-config-item
+              ng-if="currentConfig['syscheck-syscheck'].syscheck.file_limit.enabled === 'yes'"
+              label="Maximum number of files to monitor"
+              value="currentConfig['syscheck-syscheck'].syscheck.file_limit.entries">
+            </wz-config-item>
+          </div>
+          <!-- End configuration block -->
+        </md-card-content>
+      </md-card>
+
+      <!-- End of Files limit section -->
+
+      <md-card
+        class="wz-md-card"
+        ng-if="((agent || {}).os || {}).platform === 'windows' && !JSONContent && !XMLContent && configurationSubTab === 'fim-registries-limit'">
+        <md-card-content>
+          <div layout="row" layout-align="start center">
+            <div>
+              <span class="font-size-16">Registries limit</span>
+              <div class="wz-margin-top-10">
+                <span class="md-subheader small"
+                  >Limit the maximum registries in the FIM database</span
+                >
+              </div>
+            </div>
+            <span flex></span>
+            <span
+              ng-class="JSONContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getJSON()"
+              >JSON</span
+            >
+            <span class="small">&nbsp;&centerdot;&nbsp;</span>
+            <span
+              ng-class="XMLContent ? 'wz-text-active' : ''"
+              class="wz-text-link small"
+              ng-click="getXML()"
+              >XML</span
+            >
+          </div>
+          <md-divider class="wz-margin-top-10"></md-divider>
+
+          <!-- Configuration block -->
+          <div class="wz-padding-top-10">
+            <wz-config-item
+              label="Registries limit status"
+              value="currentConfig['syscheck-syscheck'].syscheck.registry_limit.enabled === 'yes' ? 'enabled' : 'disabled'">
+            </wz-config-item>
+            <wz-config-item
+              ng-if="currentConfig['syscheck-syscheck'].syscheck.registry_limit.enabled === 'yes'"
+              label="Maximum number of registries to monitor"
+              value="currentConfig['syscheck-syscheck'].syscheck.registry_limit.entries">
+            </wz-config-item>
+          </div>
+          <!-- End configuration block -->
+        </md-card-content>
+      </md-card>
+
+      <!-- End of Registries limit section -->
 
       <!-- JSON && XML card-->
       <wz-config-viewer
